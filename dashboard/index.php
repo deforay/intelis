@@ -1,23 +1,8 @@
 <?php
-
 $title = "Dashboard";
-
-#require_once('../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
-
-
-/* Total data set length */
-$vlFormTotal =  $db->rawQuery("SELECT COUNT(vl_sample_id) as total FROM vl_request_form");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$labCount = $vlFormTotal[0]['total'];
-
-$facilityTotal =  $db->rawQuery("SELECT COUNT(facility_id) as total FROM facility_details");
-$facilityCount = $facilityTotal[0]['total'];
-
 ?>
 <link rel="stylesheet" href="/assets/css/components-rounded.min.css">
-<link href="/assets/css/toastr.css" rel="stylesheet" />
 <style>
 	.bluebox,
 	.dashboard-stat2 {
@@ -264,12 +249,12 @@ $facilityCount = $facilityTotal[0]['total'];
 	</section>
 </div>
 
-<script src="/assets/js/toastr.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
 <script>
 	$(function() {
+
 
 		$("#myTab li:first-child").addClass("active");
 		$("#myTabContent div:first-child").addClass("active");
@@ -308,15 +293,18 @@ $facilityCount = $facilityTotal[0]['total'];
 		getNoOfSampleCount(requestType);
 		searchVlRequestData(requestType);
 		getSamplesOverview(requestType);
-		if (requestType == 'eid')
-			loadEidRequestData();
-		else if (requestType == 'vl')
-			loadVlRequestData();
-		else if (requestType == 'covid19')
-			loadCovid19RequestData();
-		else if (requestType == 'hepatitis')
-			loadHepatitisRequestData();
-		loadVlSuppressedData();
+		<?php if (!empty($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') { ?>
+			if (requestType == 'vl') {
+				getVlMonthlyTargetsReport();
+				getVlSuppressionTargetReport();
+			} else if (requestType == 'eid') {
+				getEidMonthlyTargetsReport();
+			} else if (requestType == 'covid19') {
+				getCovid19MonthlyTargetsReport();
+			} else if (requestType == 'hepatitis') {
+				getHepatitisMonthlyTargetsReport();
+			}
+		<?php } ?>
 
 
 	}
@@ -502,7 +490,7 @@ $facilityCount = $facilityTotal[0]['total'];
 		generateDashboard(requestType);
 	}
 
-	function loadEidRequestData() {
+	function getEidMonthlyTargetsReport() {
 		$.blockUI();
 
 		$.post("/eid/management/getEidMonthlyThresholdReport.php", {
@@ -515,18 +503,18 @@ $facilityCount = $facilityTotal[0]['total'];
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' EID testing labs did not meet the monthly test target. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> more </a>\
+							<span>' + data['aaData'].length + ' EID testing lab(s) did not meet the monthly test target. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> more </a>\
 							</div>';
 					$("#contEid").html(div);
 				}
-				// toastr.info('Are you the 6 fingered man?')
+
 
 
 			});
 		$.unblockUI();
 	}
 
-	function loadVlRequestData() {
+	function getVlMonthlyTargetsReport() {
 		$.blockUI();
 
 		$.post("/vl/program-management/getVlMonthlyThresholdReport.php", {
@@ -539,18 +527,18 @@ $facilityCount = $facilityTotal[0]['total'];
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' VL testing labs did not meet the monthly test target. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> more </a>\
+							<span>' + data['aaData'].length + ' VL testing lab(s) did not meet the monthly test target. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> more </a>\
 							</div>';
 					$("#cont").html(div);
 				}
-				// toastr.info('Are you the 6 fingered man?')
+
 
 
 			});
 		$.unblockUI();
 	}
 
-	function loadVlSuppressedData() {
+	function getVlSuppressionTargetReport() {
 		$.blockUI();
 
 		$.post("/vl/program-management/getSuppressedTargetReport.php", {
@@ -562,18 +550,18 @@ $facilityCount = $facilityTotal[0]['total'];
 				if (data == 1) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span> VL testing labs did not meet suppression targets </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> more </a>\
+							<span> VL testing lab(s) did not meet suppression targets </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> more </a>\
 							</div>';
 					$("#contVl").html(div);
 				}
-				// toastr.info('Are you the 6 fingered man?')
+
 
 
 			});
 		$.unblockUI();
 	}
 
-	function loadCovid19RequestData() {
+	function getCovid19MonthlyTargetsReport() {
 		$.blockUI();
 
 		$.post("/covid-19/management/getCovid19MonthlyThresholdReport.php", {
@@ -586,18 +574,18 @@ $facilityCount = $facilityTotal[0]['total'];
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span >' + data['aaData'].length + ' Covid-19 testing labs did not meet the monthly test target.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> more </a>\
+							<span >' + data['aaData'].length + ' Covid-19 testing lab(s) did not meet the monthly test target.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> more </a>\
 							</div>';
 					$("#contCovid").html(div);
 				}
-				// toastr.info('Are you the 6 fingered man?')
+
 
 
 			});
 		$.unblockUI();
 	}
 
-	function loadHepatitisRequestData() {
+	function getHepatitisMonthlyTargetsReport() {
 		$.blockUI();
 
 		$.post("/hepatitis/management/get-hepatitis-monthly-threshold-report.php", {
@@ -610,11 +598,11 @@ $facilityCount = $facilityTotal[0]['total'];
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' Covid-19 testing labs did not meet the monthly test target.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> more </a>\
+				<span >' + data['aaData'].length + ' Hepatitis testing lab(s) did not meet the monthly test target.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> more </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}
-				// toastr.info('Are you the 6 fingered man?')
+
 
 
 			});
@@ -623,4 +611,3 @@ $facilityCount = $facilityTotal[0]['total'];
 </script>
 <?php
 include(APPLICATION_PATH . '/footer.php');
-?>

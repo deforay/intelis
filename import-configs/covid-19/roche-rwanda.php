@@ -219,7 +219,7 @@ try {
                 if ($uResult) {
                     $data['sample_review_by'] = $uResult[0]['user_id'];
                 } else {
-                    $userId = $general->generateUserID();
+                    $userId = $general->generateUUID();
                     $userdata = array(
                         'user_id' => $userId,
                         'user_name' => $d['reviewBy'],

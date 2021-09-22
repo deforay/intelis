@@ -199,7 +199,7 @@ class Users
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
             $general = new \Vlsm\Models\General($this->db);
-            $userId = $general->generateUserID();
+            $userId = $general->generateUUID();
             $userData = array(
                 'user_id' => $userId,
                 'user_name' => $name,
@@ -230,26 +230,30 @@ class Users
         $result = $this->db->rawQueryOne($query, array($token));
         $tokenExpiration = !empty($result['api_token_exipiration_days']) ? $result['api_token_exipiration_days'] : 30;
 
+
         // Tokens with expiration = 0 are tokens that never expire
         if ($tokenExpiration == 0) {
             // do nothing
-        } else if (
-            empty($result['api_token_generated_datetime'])
-            || $result['api_token_generated_datetime'] < date('Y-m-d H:i:s', strtotime("-$tokenExpiration days"))
-        ) {
-            $general = new \Vlsm\Models\General($this->db);
-            $token = $general->generateUserID(6);
-            $data['api_token'] = base64_encode($result['user_id'] . "-" . $token);
-            $data['api_token_generated_datetime'] = $general->getDateTime();
+        } else {
+            $today = new \DateTime();
+            $lastTokenDate = null;
+            if (!empty($result['api_token_generated_datetime'])) {
+                $lastTokenDate = new \DateTime($result['api_token_generated_datetime']);
+            }
+            if ((empty($lastTokenDate) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
+                $general = new \Vlsm\Models\General($this->db);
+                $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
+                $data['api_token_generated_datetime'] = $general->getDateTime();
 
-            $this->db = $this->db->where('user_id', $result['user_id']);
-            $id = $this->db->update($this->table, $data);
+                $this->db = $this->db->where('user_id', $result['user_id']);
+                $id = $this->db->update($this->table, $data);
 
-            if ($id > 0) {
-                $result['token_updated'] = true;
-                $result['new_token'] = $token;
-            } else {
-                $result['token_updated'] = false;
+                if ($id > 0) {
+                    $result['token_updated'] = true;
+                    $result['new_token'] = $data['api_token'];
+                } else {
+                    $result['token_updated'] = false;
+                }
             }
         }
 

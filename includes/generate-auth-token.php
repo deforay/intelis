@@ -5,4 +5,4 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $general = new \Vlsm\Models\General($db);
 
-echo $general->generateUserID();
+echo $general->generateToken();

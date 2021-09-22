@@ -33,7 +33,7 @@ try {
 
         $password = sha1($_POST['password'] . $systemConfig['passwordSalt']);
         $data = array(
-            'user_id'       => $general->generateUserID(),
+            'user_id'       => $general->generateUUID(),
             //'user_alpnum_id'=>$idOne."-".$idTwo."-".$idThree."-".$idFour."-".$idFive,
             'user_name'     => $_POST['userName'],
             'email'         => $_POST['email'],

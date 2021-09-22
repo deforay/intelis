@@ -7,7 +7,6 @@ if (session_status() == PHP_SESSION_NONE) {
 $general = new \Vlsm\Models\General($db);
 $facilitiesDb = new \Vlsm\Models\Facilities($db);
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
-// $facilityMap = '3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30';
 $formId = $general->getGlobalConfig('vl_form');
 
 //system config

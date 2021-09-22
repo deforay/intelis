@@ -49,7 +49,7 @@ try {
                     'timestamp' => $general->getDateTime()
                 );
             } else {
-                $randomString = $general->generateUserID();
+                $randomString = $general->generateToken();
 
                 $userData['api_token'] = $randomString;
                 $userData['api_token_generated_datetime'] = $general->getDateTime();

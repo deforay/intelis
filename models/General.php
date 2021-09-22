@@ -19,28 +19,36 @@ class General
     }
 
 
-    public static function generateRandomString($length = 8, $type = 'alphanum')
+    public static function generateRandomString($length = 8)
     {
-
-        // Possible seeds
-        $seeds['alpha'] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwqyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwqyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwqyz';
-        $seeds['numeric'] = '01234567890123456789012345678901234567890123456789';
-        $seeds['alphanum'] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwqyz0123456789abcdefghijklmnopqrstuvwqyz0123456789abcdefghijklmnopqrstuvwqyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $seeds['hexidec'] = '0123456789abcdef';
-
-        if (isset($seeds[$type])) {
-            $keyspace = $seeds[$type];
+        $random_string = '';
+        for ($i = 0; $i < $length; $i++) {
+            $number = random_int(0, 36);
+            $character = base_convert($number, 10, 36);
+            $random_string .= $character;
         }
 
-        $pieces = [];
-        $max = mb_strlen($keyspace, '8bit') - 1;
-        for ($i = 0; $i < $length; ++$i) {
-            $pieces[] = $keyspace[random_int(0, $max)];
-        }
-        return implode('', $pieces);
+        return $random_string;
     }
 
-    public function generateUserID($length = 16)
+    // Returns a UUID format string
+    public function generateUUID()
+    {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0C2f) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0x2Aff),
+            mt_rand(0, 0xffD3),
+            mt_rand(0, 0xff4B)
+        );
+    }
+
+    //This will return a hex token that is twice the specified length
+    public function generateToken($length = 16)
     {
         return bin2hex(random_bytes($length));
     }

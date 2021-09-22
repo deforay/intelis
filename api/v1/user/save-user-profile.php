@@ -62,7 +62,7 @@ try {
 
     $password = sha1($post->password . $systemConfig['passwordSalt']);
     $data = array(
-        'user_id' => $general->generateUserID(),
+        'user_id' => $general->generateUUID(),
         'user_name' => $post->userName,
         'email' => $post->email,
         'login_id' => $post->loginId,
