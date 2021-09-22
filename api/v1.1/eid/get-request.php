@@ -234,7 +234,7 @@ try {
         );
 
         $app = new \Vlsm\Models\App($db);
-        $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'eid', $requestUrl, $params, 'json');
+        $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'get-requests', 'eid', $requestUrl, $params, 'json');
         http_response_code(200);
         echo json_encode($response);
         exit(0);

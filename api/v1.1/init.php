@@ -89,13 +89,25 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     $activeModule .= '"vl"';
 }
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
-    $activeModule .= ', "eid"';
+    if ($activeModule != "") {
+        $activeModule .= ', "eid"';
+    } else {
+        $activeModule .= '"eid"';
+    }
 }
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
-    $activeModule .= ', "covid19"';
+    if ($activeModule != "") {
+        $activeModule .= ', "covid19"';
+    } else {
+        $activeModule .= '"covid19"';
+    }
 }
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
-    $activeModule .= ', "hepatitis"';
+    if ($activeModule != "") {
+        $activeModule .= ', "hepatitis"';
+    } else {
+        $activeModule .= '"hepatitis"';
+    }
 }
 
 $data = array();
@@ -103,6 +115,15 @@ $data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id']);
 $data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations();
 $data['healthFacilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], true, 1, false, $activeModule);
 $data['testingLabsList'] = $app->getTestingLabs(null, $user['user_id'], false, false, $activeModule);
+/* Province Details */
+$data['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
+/* District Details */
+$data['districtList'] = $app->getDistrictDetails($user['user_id'], true);
+$data['implementingPartnerList'] = $implementingPartnerList;
+$data['fundingSourceList'] = $app->generateSelectOptions($fundingSourceList);
+$data['nationalityList'] = $nationalityList;
+$data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
+$data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
     $covid19Obj = new \Vlsm\Models\Covid19($db);
@@ -263,6 +284,56 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     $data['eid']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
     $data['eid']['statusFilterList'] = array(
+        array('value' => '7', 'show' => 'Approved'),
+        array('value' => '1', 'show' => 'Pending'),
+        array('value' => '4', 'show' => 'Rejected')
+    );
+    $status = true;
+}
+
+// Check if vl module active/inactive
+if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+    $vlObj = new \Vlsm\Models\Vl($db);
+    /* SAMPLE INFORMATION SECTION */
+    $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes());
+    /* Current regimen */
+    $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
+    $aResult = $db->query($aQuery);
+    foreach ($aResult as $subKey => $reject) {
+        $rejectionReason[$subKey]['value'] = $regimen['art_code'];
+        $rejectionReason[$subKey]['show'] = $regimen['art_code'];
+    }
+    /* ARV Adherence */
+    $data['vl']['arvAdherence'] = array(
+        array('value' => 'good', 'show' => 'Good >= 95%'),
+        array('value' => 'fair', 'show' => 'Fair (85-94%)'),
+        array('value' => 'poor', 'show' => 'Poor < 85%')
+    );
+
+    /* Rejected Reason*/
+    $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active' GROUP BY rejection_type";
+    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+    $rejectionReason = array();
+    foreach ($rejectionTypeResult as $key => $type) {
+        $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
+        $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
+        $rejectionResult = $db->rawQuery($rejectionQuery);
+        foreach ($rejectionResult as $subKey => $reject) {
+            $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
+            $rejectionReason[$key]['reasons'][$subKey]['show'] = ucwords($reject['rejection_reason_name']);
+        }
+    }
+    $data['vl']['rejectedReasonList'] = $rejectionReason;
+
+    /* Testing Platform Details */
+    $testPlatformList = array();
+    $testPlatformResult = $general->getTestingPlatforms('vl');
+    foreach ($testPlatformResult as $row) {
+        $testPlatformList[$row['machine_name']] = $row['machine_name'];
+    }
+    $data['vl']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
+
+    $data['vl']['statusFilterList'] = array(
         array('value' => '7', 'show' => 'Approved'),
         array('value' => '1', 'show' => 'Pending'),
         array('value' => '4', 'show' => 'Rejected')
