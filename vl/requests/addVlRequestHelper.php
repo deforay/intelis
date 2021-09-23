@@ -135,13 +135,6 @@ try {
         $_POST['sampleReceivedAtHubOn'] = NULL;
     }
 
-    if (isset($_POST['sampleReceivedAtHubOn']) && trim($_POST['sampleReceivedAtHubOn']) != "") {
-        $sampleReceivedAtHubOn = explode(" ", $_POST['sampleReceivedAtHubOn']);
-        $_POST['sampleReceivedAtHubOn'] = $general->dateFormat($sampleReceivedAtHubOn[0]) . " " . $sampleReceivedAtHubOn[1];
-    } else {
-        $_POST['sampleReceivedAtHubOn'] = NULL;
-    }
-
     if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
         $approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
         $_POST['approvedOnDateTime'] = $general->dateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
@@ -290,9 +283,9 @@ try {
         $vldata['locked'] = 'yes';
     }
     $vldata['source_of_request'] = 'web';
-	if (!empty($_POST['api']) && $_POST['api'] = "yes") {
-		$vldata['source_of_request'] = 'api';
-	}
+    if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+        $vldata['source_of_request'] = 'api';
+    }
     if (isset($_POST['api']) && $_POST['api'] = "yes") {
     } else {
         $vldata['request_created_by'] =  $_SESSION['userId'];

@@ -80,9 +80,9 @@ try {
         vl.is_patient_pregnant                               as patientPregnant,
         vl.is_patient_breastfeeding                          as breastfeeding,
         vl.patient_art_no                                    as artNo,
-        vl.treatment_initiated_date                          as dateOfArtInitiation
+        vl.treatment_initiated_date                          as dateOfArtInitiation,
         vl.current_regimen                                   as artRegimen,
-        vl.date_of_initiation_of_current_regimen             as regimenInitiatedOn
+        vl.date_of_initiation_of_current_regimen             as regimenInitiatedOn,
         vl.patient_mobile_number                             as patientPhoneNumber,
         vl.consent_to_receive_sms                            as receiveSms,
         vl.sample_type                                       as specimenType,
@@ -101,10 +101,10 @@ try {
         vl.vl_focal_person_phone_number                      as vlFocalPersonPhoneNumber,
         vl.lab_id                                            as labId,
         vl.vl_test_platform                                  as testingPlatform,
-        vl.sample_received_at_hub_datetime                   as sampleReceivedAtHubOn
-        vl.sample_received_at_vl_lab_datetime                as sampleReceivedDate
-        vl.sample_tested_datetime                            as sampleTestingDateAtLab
-        vl.result_dispatched_datetime                        as resultDispatchedOn
+        vl.sample_received_at_hub_datetime                   as sampleReceivedAtHubOn,
+        vl.sample_received_at_vl_lab_datetime                as sampleReceivedDate,
+        vl.sample_tested_datetime                            as sampleTestingDateAtLab,
+        vl.result_dispatched_datetime                        as resultDispatchedOn,
         vl.is_sample_rejected                                as noResult,
         vl.reason_for_sample_rejection                       as rejectionReason,
         vl.result_value_absolute                             as vlResult,
@@ -133,7 +133,7 @@ try {
         r_i_p.i_partner_name                                 as implementingPartnerName,                  
         ts.status_name                                       as resultStatusName
         
-        FROM eid_form as vl 
+        FROM vl_request_form as vl 
         LEFT JOIN province_details as p ON vl.province_id=p.province_id
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
         LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
@@ -143,9 +143,9 @@ try {
         LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
         LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician 
         LEFT JOIN user_details as t_b ON t_b.user_id=vl.tested_by 
-        LEFT JOIN r_eid_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_eid_test 
-        LEFT JOIN r_eid_sample_type as rst ON rst.sample_id=vl.specimen_type 
-        LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
+        LEFT JOIN r_vl_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_vl_testing 
+        LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.sample_type 
+        LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
         LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
