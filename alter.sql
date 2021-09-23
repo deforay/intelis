@@ -2293,3 +2293,7 @@ ALTER TABLE `covid19_tests` ADD `updated_datetime` DATETIME NULL DEFAULT CURRENT
 
 -- Amit 17 Sep 2021
 UPDATE `global_config` SET `remote_sync_needed` = 'yes', `value` = 'no' WHERE `name` = 'vl_monthly_target';
+
+
+-- Thana -- 22-Sep-2021
+ALTER TABLE `vl_request_form` ADD `app_local_test_req_id` VARCHAR(256) NULL DEFAULT NULL AFTER `is_result_mail_sent`;

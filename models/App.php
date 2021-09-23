@@ -128,8 +128,8 @@ class App
         $query .= $where;
         $result = $this->db->rawQuery($query);
         foreach ($result as $key => $row) {
-            $condition1 = " province_name like '" . $row['province_name'] . "%'";
-            $condition2 = " facility_state like '" . $row['province_name'] . "%'";
+            // $condition1 = " province_name like '" . $row['province_name'] . "%'";
+            // $condition2 = " (facility_state like '" . $row['province_name'] . "%' OR facility_district_id like )";
             if ($module) {
                 $response[$key]['value']        = $row['facility_id'];
                 $response[$key]['show']         = $row['facility_name'] . ' (' . $row['facility_code'] . ')';
@@ -148,8 +148,8 @@ class App
             if (!$module && $facilityType == 1) {
                 $response[$key]['test_type'] = $row['test_type'];
             }
-            $response[$key]['provinceDetails'] = $this->getSubFields('province_details', 'province_id', 'province_name', $condition1);
-            $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition2);
+            // $response[$key]['provinceDetails'] = $this->getSubFields('province_details', 'province_id', 'province_name', $condition1);
+            // $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition2);
         }
         return $response;
     }

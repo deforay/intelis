@@ -101,8 +101,14 @@ try {
         }
         $update = "no";
         $rowData = false;
-        if ($data['sampleCode'] != "" && !empty($data['sampleCode'])) {
-            $sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 where sample_code like '%" . $data['sampleCode'] . "%' or remote_sample_code like '%" . $data['sampleCode'] . "%' limit 1";
+        if (($data['sampleCode'] != "" && !empty($data['sampleCode'])) || ($data['remoteSampleCode'] != "" && !empty($data['remoteSampleCode']))) {
+            $sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
+            if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
+                $sQuery .= "where sample_code like '" . $data['sampleCode'] . "'";
+            } else if (isset($data['remoteSampleCode']) != "" && !empty($data['remoteSampleCode'])) {
+                $sQuery .= "where remote_sample_code like '" . $data['sampleCode'] . "'";
+            }
+            $sQuery .= "limit 1";
             $rowData = $db->rawQueryOne($sQuery);
             if ($rowData) {
                 $update = "yes";

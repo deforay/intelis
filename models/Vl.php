@@ -133,20 +133,30 @@ class Vl
     function vlResultCategory($result)
     {
         $res = NULL;
-        if($result >= 1000)
+        if ($result >= 1000)
             $res = 'not suppressed';
-        else if($result < 1000)
+        else if ($result < 1000)
             $res = 'suppressed';
         return $res;
     }
 
     public function getVlSampleTypesByName($name = "")
-    {   
+    {
         $where = "";
-        if(!empty($name)){
+        if (!empty($name)) {
             $where = " AND sample_name LIKE '$name%'";
         }
         $query = "SELECT * FROM r_vl_sample_type where status='active'$where";
         return $this->db->rawQuery($query);
+    }
+
+    public function getVlSampleTypes()
+    {
+        $results = $this->db->rawQuery("SELECT * FROM r_vl_sample_type where status='active'");
+        $response = array();
+        foreach ($results as $row) {
+            $response[$row['sample_id']] = $row['sample_name'];
+        }
+        return $response;
     }
 }

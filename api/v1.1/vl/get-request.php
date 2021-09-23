@@ -29,9 +29,7 @@ $app = new \Vlsm\Models\App($db);
 $arr = $general->getGlobalConfig();
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);
-/* echo "<pre>";
-print_r($input);
-die; */
+
 /* For API Tracking params */
 $requestUrl = $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
@@ -161,7 +159,7 @@ try {
             }
             $where .= " vl.facility_id IN (" . $facilityMap . ")";
         } else {
-            $where = " WHERE (vl.request_created_by = '" . $user['user_id'] . "' OR vl.vlsm_country_id = '" . $arr['vl_form'] . "')";
+            $where = " WHERE (request_created_by = '" . $user['user_id'] . "' OR vlsm_country_id = '" . $arr['vl_form'] . "')";
         }
     }
     /* To check the sample code filter */
@@ -174,7 +172,7 @@ try {
         } else {
             $where .= " WHERE ";
         }
-        $where .= " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') )";
+        $where .= " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
     }
     /* To check the facility and date range filter */
     $from = $input['sampleCollectionDate'][0];
@@ -186,7 +184,7 @@ try {
         } else {
             $where .= " WHERE ";
         }
-        $where .= " DATE(vl.sample_collection_date) between '$from' AND '$to' ";
+        $where .= " DATE(sample_collection_date) between '$from' AND '$to' ";
 
         $facilityId = implode("','", $facilityId);
         $where .= " AND vl.facility_id IN ('$facilityId') ";
@@ -220,7 +218,7 @@ try {
         } else {
             $where .= " WHERE ";
         }
-        $where .= " vl.result_status IN ('$sampleStatus') ";
+        $where .= " result_status IN ('$sampleStatus') ";
     }
 
     // $sQuery .= " ORDER BY sample_collection_date ASC ";
@@ -239,7 +237,7 @@ try {
         );
 
         $app = new \Vlsm\Models\App($db);
-        $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, 'json');
+        $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'get-requests', 'vl', $requestUrl, $params, 'json');
         http_response_code(200);
         echo json_encode($response);
         exit(0);

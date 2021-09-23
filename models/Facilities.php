@@ -79,10 +79,10 @@ class Facilities
     {
         if (empty($userId)) return null;
 
-        if (!empty($facilityType)) {
+        /* if (!empty($facilityType)) {
             $this->db->join("facility_details f", "map.facility_id=f.facility_id", "INNER");
             $this->db->joinWhere("facility_details f", "f.facility_type", $facilityType);
-        }
+        } */
 
         $this->db->where("user_id", $userId);
         $response = $this->db->getValue("vl_user_facility_map", "facility_id",  null);
