@@ -28,7 +28,7 @@ try {
     }
 
     $lastUpdate = $rResult[count($rResult) - 1]['last_modified_datetime'];
-    $output['timestamp'] = strtotime($instanceUpdateOn);
+    $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime($instanceUpdateOn) : time();
     foreach ($rResult as $aRow) {
 
         
@@ -78,7 +78,7 @@ try {
     $result = curl_exec($ch);
     curl_close($ch);
 
-    //var_dump($result);
+    var_dump($result);
     $deResult = json_decode($result, true);
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {

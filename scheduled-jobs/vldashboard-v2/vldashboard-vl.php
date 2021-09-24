@@ -28,14 +28,14 @@ $suppressedArray = array(
 try {
 
     $instanceUpdateOn = $db->getValue('s_vlsm_instance', 'vl_last_dash_sync');
-
+    
     if (!empty($instanceUpdateOn)) {
         $db->where('last_modified_datetime', $instanceUpdateOn, ">");
     }
 
     $db->orderBy("last_modified_datetime", "ASC");
 
-    $rResult = $db->get('vl_request_form', 5000);
+    $rResult = $db->get('vl_request_form', 500);
 
     if (empty($rResult)) {
         exit(0);
@@ -43,7 +43,7 @@ try {
 
     $lastUpdate = $rResult[count($rResult) - 1]['last_modified_datetime'];
 
-    $output['timestamp'] = strtotime($instanceUpdateOn);
+    $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime($instanceUpdateOn) : time();
     foreach ($rResult as $aRow) {
 
         if ($aRow['result'] == NULL || empty($aRow['result'])) {
@@ -119,7 +119,6 @@ try {
     $result = curl_exec($ch);
     curl_close($ch);
 
-    // echo ($result);die;
     $deResult = json_decode($result, true);
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {

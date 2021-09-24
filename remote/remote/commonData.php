@@ -187,6 +187,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
 
     $condition = null;
+    $signatureCondition = null;
     // Using same facilityLastModified to check if any signatures were added
     if (isset($data['facilityLastModified']) && !empty($data['facilityLastModified'])) {
         $condition = "updated_datetime > '" . $data['facilityLastModified'] . "'";

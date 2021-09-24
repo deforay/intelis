@@ -1,6 +1,9 @@
 <?php
 
 require_once(dirname(__FILE__) . "/../../startup.php");
+
+
+
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
@@ -222,21 +225,13 @@ $dataToSync = array_merge(
 );
 
 
+$client = new GuzzleHttp\Client();
 
-// echo "<pre>";print_r($data);die;
-$ch = curl_init($url);
-$json_data = json_encode($data);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Content-Length: ' . strlen($json_data)
-));
-// execute post
-$jsonResponse = curl_exec($ch);
-//close connection
-curl_close($ch);
+$response = $client->post($url, [
+    GuzzleHttp\RequestOptions::JSON => $data
+]);
+
+$jsonResponse = $response->getBody()->getContents();
 
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
