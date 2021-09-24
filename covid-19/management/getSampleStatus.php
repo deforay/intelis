@@ -131,7 +131,8 @@ $tatSampleQuery = "SELECT
                         ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) as daydiff,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_vl_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
-                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested
+                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
+                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted
 
                         FROM form_covid19 as vl 
                         INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -171,6 +172,7 @@ foreach ($tatResult as $sRow) {
     $result['sampleTestedDiff'][$j] = (isset($sRow["AvgTestedDiff"]) && $sRow["AvgTestedDiff"] > 0 && $sRow["AvgTestedDiff"] != null) ? round($sRow["AvgTestedDiff"], 2) : 'null';
     $result['sampleReceivedDiff'][$j] = (isset($sRow["AvgReceivedDiff"]) && $sRow["AvgReceivedDiff"] > 0 && $sRow["AvgReceivedDiff"] != null) ? round($sRow["AvgReceivedDiff"], 2) : 'null';
     $result['sampleReceivedTested'][$j] = (isset($sRow["AvgReceivedTested"]) && $sRow["AvgReceivedTested"] > 0 && $sRow["AvgReceivedTested"] != null) ? round($sRow["AvgReceivedTested"], 2) : 'null';
+    $result['sampleReceivedPrinted'][$j] = (isset($sRow["AvgReceivedPrinted"]) && $sRow["AvgReceivedPrinted"] > 0 && $sRow["AvgReceivedPrinted"] != null) ? round($sRow["AvgReceivedPrinted"], 2) : 'null';
     $result['date'][$j] = $sRow["monthDate"];
     $j++;
 }
@@ -181,7 +183,7 @@ $testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name
                     JOIN facility_details as f ON vl.facility_id=f.facility_id 
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-$sWhere = ' WHERE vl.reason_for_covid19_test IS NOT NULL '. $whereCondition;
+$sWhere = ' WHERE vl.reason_for_covid19_test IS NOT NULL ' . $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere .= ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -454,6 +456,16 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                         name: 'Collected - Tested',
                         data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
                         color: '#ed7c7d',
+                    },
+                <?php
+                }
+                if (isset($result['sampleReceivedPrinted'])) {
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: 'Collected - Printed',
+                        data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
+                        color: '#000',
                     },
                 <?php
                 }

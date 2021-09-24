@@ -2297,3 +2297,8 @@ UPDATE `global_config` SET `remote_sync_needed` = 'yes', `value` = 'no' WHERE `n
 
 -- Thana -- 22-Sep-2021
 ALTER TABLE `vl_request_form` ADD `app_local_test_req_id` VARCHAR(256) NULL DEFAULT NULL AFTER `is_result_mail_sent`;
+
+-- Amit 24 Sep 2021
+ALTER TABLE `vl_request_form` CHANGE `vldash_sync` `vldash_sync` INT(11) NULL DEFAULT '0';
+ALTER TABLE `vl_request_form` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
+
