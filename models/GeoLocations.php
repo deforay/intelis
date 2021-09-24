@@ -18,7 +18,7 @@ class GeoLocations
         $this->db = $db;
     }
 
-    public function fetchActiveGeolocations($geoId = 0, $parent = '')
+    public function fetchActiveGeolocations($geoId = 0, $parent = '', $api = "yes")
     {
         $returnArr = array();
         $queryParams = array('active');
@@ -35,8 +35,12 @@ class GeoLocations
             $queryParams[] = 0;
         }
         $response = $this->db->rawQuery("SELECT * FROM geographical_divisions " . $where, $queryParams);
-        foreach ($response as $row) {
-            $returnArr[$row['geo_id']] = ucwords($row['geo_name']);
+        if ($api == 'yes') {
+            foreach ($response as $row) {
+                $returnArr[$row['geo_id']] = ucwords($row['geo_name']);
+            }
+        } else {
+            $returnArr = $response;
         }
         return $returnArr;
     }

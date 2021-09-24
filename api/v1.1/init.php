@@ -112,7 +112,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
 $data = array();
 $data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id']);
-$data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations();
+$data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations("", "", "no");
 $data['healthFacilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], true, 1, false, $activeModule);
 $data['testingLabsList'] = $app->getTestingLabs(null, $user['user_id'], false, false, $activeModule);
 /* Province Details */
