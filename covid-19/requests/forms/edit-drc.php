@@ -473,9 +473,9 @@ $pResult = $db->rawQuery($pQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Date d'apparition des symptômes <span class="mandatory">*</span> </th>
+                                        <th style="width:15% !important">Date d'apparition des symptômes <span class="mandatory symptomMandatoryLabel">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control date isRequired" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo $general->humanDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
+                                            <input class="form-control date isRequired symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo $general->humanDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
                                         </td>
                                         <th style="width:15% !important">Date de la consultation initiale</th>
                                         <td style="width:35% !important;">
@@ -506,7 +506,7 @@ $pResult = $db->rawQuery($pQuery);
                                         <th></th>
                                         <td></td>
                                     </tr>
-                                    <tr class="sysmptoms" style="display: <?php echo ($covid19Info['asymptomatic'] == 'yes') ? "none" : "contents"; ?>;">
+                                    <tr class="symptoms" style="display: <?php echo ($covid19Info['asymptomatic'] == 'yes') ? "none" : "contents"; ?>;">
                                         <td colspan="4">
                                             <table id="symptomsTable" class="table table-bordered table-striped">
                                                 <?php $index = 0;
@@ -789,6 +789,7 @@ $pResult = $db->rawQuery($pQuery);
                                                                             <option value="">--Select--</option>
                                                                             <option value="PCR/RT-PCR" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'PCR/RT-PCR') ? "selected='selected'" : ""; ?>>PCR/RT-PCR</option>
                                                                             <option value="RdRp-SARS Cov-2" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'RdRp-SARS Cov-2') ? "selected='selected'" : ""; ?>>RdRp-SARS Cov-2</option>
+                                                                            <option value="GeneXpert" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'GeneXpert') ? "selected='selected'" : ""; ?>>GeneXpert</option>
                                                                             <option value="other" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'other') ? "selected='selected'" : ""; ?>>Others</option>
                                                                         </select>
                                                                         <?php
@@ -1504,9 +1505,13 @@ $pResult = $db->rawQuery($pQuery);
 
     function asymptomaticFn(value) {
         if (value == "yes") {
-            $(".sysmptoms").hide();
+            $(".symptoms").hide();
+            $(".symptomSpecificFields").removeClass('isRequired');
+            $(".symptomMandatoryLabel").hide();
         } else {
-            $(".sysmptoms").show();
+            $(".symptoms").show();
+            $(".symptomSpecificFields").addClass('isRequired');
+            $(".symptomMandatoryLabel").show();
         }
     }
 </script>

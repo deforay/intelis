@@ -431,9 +431,9 @@ $pResult = $db->rawQuery($pQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Date d'apparition des symptômes <span class="mandatory">*</span> </th>
+                                        <th style="width:15% !important">Date d'apparition des symptômes <span class="mandatory symptomMandatoryLabel">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control date isRequired" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" title="Date d'apparition des symptômes" />
+                                            <input class="form-control date isRequired symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" title="Date d'apparition des symptômes" />
                                         </td>
                                         <th style="width:15% !important">Date de la consultation initiale</th>
                                         <td style="width:35% !important;">
@@ -464,7 +464,7 @@ $pResult = $db->rawQuery($pQuery);
                                         <th></th>
                                         <td></td>
                                     </tr>
-                                    <tr class="sysmptoms">
+                                    <tr class="symptoms">
                                         <td colspan="4">
                                             <table id="symptomsTable" class="table table-bordered table-striped">
                                                 <?php $index = 0;
@@ -744,6 +744,7 @@ $pResult = $db->rawQuery($pQuery);
                                                                     <option value="">--Select--</option>
                                                                     <option value="PCR/RT-PCR">PCR/RT-PCR</option>
                                                                     <option value="RdRp-SARS Cov-2">RdRp-SARS Cov-2</option>
+                                                                    <option value="GeneXpert">GeneXpert</option>
                                                                     <option value="other">Others</option>
                                                                 </select>
                                                                 <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testInputOther1" title="Veuillez saisir le nom du test pour les lignes 1" placeholder="Entrez le nom du test 1" style="display: none;margin-top: 10px;" />
@@ -1398,9 +1399,13 @@ $pResult = $db->rawQuery($pQuery);
 
     function asymptomaticFn(value) {
         if (value == "yes") {
-            $(".sysmptoms").hide();
+            $(".symptoms").hide();
+            $(".symptomSpecificFields").removeClass('isRequired');
+            $(".symptomMandatoryLabel").hide();
         } else {
-            $(".sysmptoms").show();
+            $(".symptoms").show();
+            $(".symptomSpecificFields").addClass('isRequired');
+            $(".symptomMandatoryLabel").show();
         }
     }
 </script>
