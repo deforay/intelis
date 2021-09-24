@@ -2302,3 +2302,4 @@ ALTER TABLE `vl_request_form` ADD `app_local_test_req_id` VARCHAR(256) NULL DEFA
 ALTER TABLE `vl_request_form` CHANGE `vldash_sync` `vldash_sync` INT(11) NULL DEFAULT '0';
 ALTER TABLE `vl_request_form` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
 
+UPDATE `system_config` SET `value` = '4.4.1' WHERE `system_config`.`name` = 'sc_version';
