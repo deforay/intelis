@@ -96,7 +96,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
     </section>
     <!-- Main content -->
     <section class="content">
-        
+
         <div class="box box-default">
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -343,12 +343,14 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="Confirmation of positive first EID PCR test result" <?php echo ($eidInfo['reason_for_pcr'] == 'Confirmation of positive first EID PCR test result') ? "selected='selected'" : ""; ?>> Confirmation of positive first EID PCR test result </option>
-                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option> <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
+                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
+                                                <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="1st Test Positive" <?php echo ($eidInfo['reason_for_pcr'] == '1st Test Positive') ? "selected='selected'" : ""; ?>> 1st Test Positive </option>
                                                 <option value="DBS Invalid" <?php echo ($eidInfo['reason_for_pcr'] == 'DBS Invalid') ? "selected='selected'" : ""; ?>> DBS Invalid </option>
                                                 <option value="Indeterminate" <?php echo ($eidInfo['reason_for_pcr'] == 'Indeterminate') ? "selected='selected'" : ""; ?>> Indeterminate </option>
                                                 <option value="Infant Still breastfeeding" <?php echo ($eidInfo['reason_for_pcr'] == 'Infant Still breastfeeding') ? "selected='selected'" : ""; ?>> Infant Still breastfeeding </option>
-                                                <option value="Infact <2 months post cessation of breastfeeding" <?php echo ($eidInfo['reason_for_pcr'] == 'Infact <2 months post cessation of breastfeeding') ? "selected='selected'" : ""; ?>> Infact <2 months post cessation of breastfeeding </option> <option value="Infants less than 6 weeks" <?php echo ($eidInfo['reason_for_pcr'] == 'Infants less than 6 weeks') ? "selected='selected'" : ""; ?>> Infants less than 6 weeks </option>
+                                                <option value="Infact <2 months post cessation of breastfeeding" <?php echo ($eidInfo['reason_for_pcr'] == 'Infact <2 months post cessation of breastfeeding') ? "selected='selected'" : ""; ?>> Infact <2 months post cessation of breastfeeding </option>
+                                                <option value="Infants less than 6 weeks" <?php echo ($eidInfo['reason_for_pcr'] == 'Infants less than 6 weeks') ? "selected='selected'" : ""; ?>> Infants less than 6 weeks </option>
                                                 <option value="Inadequate feeding history" <?php echo ($eidInfo['reason_for_pcr'] == 'Inadequate feeding history') ? "selected='selected'" : ""; ?>> Inadequate feeding history </option>
                                                 <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
                                             </select>
@@ -413,12 +415,12 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>
                                                     <option value="yes"> Yes </option>
-                                                    <option value="no" /> No </option>
+                                                    <option value="no"> No </option>
                                                 </select>
                                             </td>
 
                                             <th class="rejected" style="display: none;">Reason for Rejection</th>
-                      						<td class="rejected" style="display: none;">
+                                            <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value=''> -- Select -- </option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>

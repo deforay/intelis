@@ -8,13 +8,13 @@ include_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
 $general = new \Vlsm\Models\General($db);
 $geolocation = new \Vlsm\Models\GeoLocations($db);
-/* echo "<pre>";
-print_r($_POST);die; */
+/* For reference we define the table names */
 $tableName = "facility_details";
 $facilityId = base64_decode($_POST['facilityId']);
 $tableName1 = "province_details";
 $tableName2 = "vl_user_facility_map";
 $tableName3 = "testing_labs";
+$tableName4 = "health_facilities";
 $signTableName = "lab_report_signatories";
 try {
 	if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != "") {
@@ -57,6 +57,7 @@ try {
 				}
 			}
 		}
+
 
 		if (!empty($_POST['testingPoints'])) {
 			$_POST['testingPoints'] = explode(",", $_POST['testingPoints']);
@@ -118,6 +119,28 @@ try {
 					"updated_datetime" => $general->getDateTime()
 				);
 				$db->insert($tableName3, $dataTest);
+			}
+
+			if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+
+				$db = $db->where('facility_id', $facilityId);
+				$delId = $db->delete($tableName4);
+				$tid = $hid = 0;
+				foreach ($_POST['testType'] as $testType) {
+					if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
+						$hid = $db->insert($tableName4, array(
+							'test_type' => $testType,
+							'facility_id' => $facilityId,
+							'updated_datetime' => $general->getDateTime()
+						));
+					} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
+						$tid = $db->insert($tableName3, array(
+							'test_type' => $testType,
+							'facility_id' => $facilityId,
+							'updated_datetime' => $general->getDateTime()
+						));
+					}
+				}
 			}
 		}
 		if (isset($_POST['removedLabLogoImage']) && trim($_POST['removedLabLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {

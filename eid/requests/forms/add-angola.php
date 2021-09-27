@@ -63,7 +63,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     </section>
     <!-- Main content -->
     <section class="content">
-        
+
         <div class="box box-default">
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -359,12 +359,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Selecione -- </option>
                                                     <option value="yes"> Yes </option>
-                                                    <option value="no" /> No </option>
+                                                    <option value="no"> No </option>
                                                 </select>
                                             </td>
 
                                             <th class="rejected" style="display: none;">Razão de rejeição</th>
-                      						<td class="rejected" style="display: none;">
+                                            <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value=''> -- Selecione -- </option>
                                                     <?php echo $rejectionReason; ?>

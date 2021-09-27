@@ -11,12 +11,12 @@ include_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
 $general = new \Vlsm\Models\General($db);
 $geolocation = new \Vlsm\Models\GeoLocations($db);
-/* echo "<pre>";
-print_r($_FILES);*/
+/* For reference we define the table names */
 $tableName = "facility_details";
 $tableName1 = "province_details";
 $tableName2 = "vl_user_facility_map";
 $tableName3 = "testing_labs";
+$tableName4 = "health_facilities";
 $signTableName = "lab_report_signatories";
 // print_r($_POST);die;
 try {
@@ -100,6 +100,25 @@ try {
 
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();
+
+		if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+			foreach ($_POST['testType'] as $testType) {
+				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
+					$db->insert($tableName4, array(
+						'test_type' => $testType,
+						'facility_id' => $lastId,
+						'updated_datetime' => $general->getDateTime()
+					));
+				} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
+					$db->insert($tableName3, array(
+						'test_type' => $testType,
+						'facility_id' => $lastId,
+						'updated_datetime' => $general->getDateTime()
+					));
+				}
+			}
+		}
+
 		if ($lastId > 0 && trim($_POST['selectedUser']) != '') {
 			$selectedUser = explode(",", $_POST['selectedUser']);
 			for ($j = 0; $j < count($selectedUser); $j++) {
