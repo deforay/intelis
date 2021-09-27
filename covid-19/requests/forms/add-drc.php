@@ -135,7 +135,7 @@ $pResult = $db->rawQuery($pQuery);
                                             </select>
                                         </td>
                                         <td>
-                                            <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addFacility">Add Facility</button>
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addFacility">Add Facility</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -1042,16 +1042,16 @@ $pResult = $db->rawQuery($pQuery);
     machineName = true;
     tableRowId = 2;
 
-    function addFacility(){
+    function addFacility() {
         flag = deforayValidator.init({
             formId: 'addFacilityForm'
         });
         if (flag) {
-        $.ajax({
+            $.ajax({
                 type: 'POST',
                 url: '/facilities/addFacilityHelper.php',
                 data: $('#addFacilityForm').serialize(),
-                success: function () {
+                success: function() {
                     alert('Facility details added successfully');
                     $('#addFacility').modal('hide');
                     getfacilityDistrictwise('');
@@ -1256,15 +1256,7 @@ $pResult = $db->rawQuery($pQuery);
                 $('.oxygen-saturation').css('display', 'none');
             }
         });
-        $('#result').change(function(e) {
-            if (this.value == 'positive') {
-                $('.other-diseases').hide();
-                $('#otherDiseases').removeClass('isRequired');
-            } else {
-                $('.other-diseases').show();
-                $('#otherDiseases').addClass('isRequired');
-            }
-        });
+
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             $(document).on('change', '.test-result, #result', function(e) {
                 checkPostive();

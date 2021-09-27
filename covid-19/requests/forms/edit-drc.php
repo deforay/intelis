@@ -1334,16 +1334,6 @@ $pResult = $db->rawQuery($pQuery);
         $('#isResultAuthorized').change(function(e) {
             checkIsResultAuthorized();
         });
-        $('#result').change(function(e) {
-
-            if (this.value == 'positive') {
-                $('.other-diseases').hide();
-                $('#otherDiseases').removeClass('isRequired');
-            } else {
-                $('.other-diseases').show();
-                $('#otherDiseases').addClass('isRequired');
-            }
-        });
 
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             $('.test-result,#result').change(function(e) {

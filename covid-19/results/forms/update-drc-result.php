@@ -1067,16 +1067,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $('#isResultAuthorized').change(function(e) {
             checkIsResultAuthorized();
         });
-        $('#result').change(function(e) {
-            if (this.value == 'positive') {
-                $('.other-diseases').hide();
-                $('#otherDiseases').removeClass('isRequired');
-            } else {
-                $('.other-diseases').show();
-                $('#otherDiseases').addClass('isRequired');
-            }
-        });
-
         checkIsResultAuthorized();
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             $(document).change('.test-result, #result', function(e) {
