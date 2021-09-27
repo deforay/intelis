@@ -75,7 +75,6 @@ try {
         vl.clinician_phone                      as clinicianPhone,
         vl.clinician_email                      as clinicianEmail,
         vl.test_number                          as testNumber,
-        f.facility_district                     as district,
         vl.lab_id                               as labId,
         vl.testing_point                        as testingPoint,
         vl.source_of_alert                      as sourceOfAlertPOE,
@@ -89,7 +88,6 @@ try {
         vl.patient_age                          as patientAge,
         vl.patient_phone_number                 as patientPhoneNumber,
         vl.patient_address                      as patientAddress,
-        vl.patient_district                     as patientDistrict,
         vl.patient_city                         as patientCity,
         vl.patient_zone                         as patientZone,
         vl.patient_occupation                   as patientOccupation,
@@ -159,15 +157,19 @@ try {
         vl.tested_by                            as testedBy,
         t_b.user_name                           as testedByName,
         rs.rejection_reason_name                as rejectionReason,
-        vl.rejection_on                         as rejectionDate,                  
-        vl.province_id                          as provinceId,                             
-        p.province_name                         as provinceName,  
-        vl.funding_source                       as fundingSource,                                  
+        vl.rejection_on                         as rejectionDate,
+        vl.funding_source                       as fundingSource,
         r_f_s.funding_source_name               as fundingSourceName,
-        vl.implementing_partner                 as implementingPartner,                  
-        r_i_p.i_partner_name                    as implementingPartnerName,              
-        vl.patient_province                     as patientProvince,
-        pp.province_name                        as patientProvinceName,
+        vl.implementing_partner                 as implementingPartner,
+        r_i_p.i_partner_name                    as implementingPartnerName,
+        gdp.geo_name                            as province,
+        gdp.geo_id                              as provinceId,
+        gdd.geo_name                            as district,
+        gdd.geo_id                              as districtId,
+        gdpp.geo_name                           as patientProvince,
+        gdpp.geo_id                             as patientProvinceId,
+        gdpd.geo_name                           as patientDistrict,
+        gdpd.geo_id                             as patientDistrictId,    
         ts.status_name                          as resultStatusName,
         vl.patient_nationality                  as patientNationality,
         CONCAT_WS('',c.iso_name, ' (', c.iso3,')') as patientNationalityName
@@ -175,10 +177,12 @@ try {
         FROM form_covid19 as vl 
         
         LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
-        LEFT JOIN province_details as p ON vl.province_id=p.province_id
-        LEFT JOIN province_details as pp ON vl.patient_province=pp.province_name
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
+        LEFT JOIN geographical_divisions as gdd ON f.facility_district_id=gdd.geo_id
+        LEFT JOIN geographical_divisions as gdp ON vl.province_id=gdp.geo_id
+        LEFT JOIN geographical_divisions as gdpp ON vl.patient_province=gdpp.geo_name
+        LEFT JOIN geographical_divisions as gdpd ON vl.patient_district=gdpd.geo_name
         LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
         LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
