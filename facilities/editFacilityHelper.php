@@ -107,8 +107,15 @@ try {
 			}
 		}
 		$lastId = $facilityId;
-		$db = $db->where('facility_id', $facilityId);
-		$delId = $db->delete($tableName3);
+
+		if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+			$db = $db->where('test_type NOT IN(' . sprintf("'%s'", implode("', '", $_POST['testType'])) . ')');
+			$db = $db->where('facility_id', $facilityId);
+			$delId = $db->delete($tableName3);
+		} else {
+			$db = $db->where('facility_id', $facilityId);
+			$delId = $db->delete($tableName3);
+		}
 		if ($lastId > 0) {
 			for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
 				$dataTest = array(
