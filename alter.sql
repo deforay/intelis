@@ -2245,7 +2245,7 @@ UPDATE `system_config` SET `name` = 'sc_version' WHERE `system_config`.`name` = 
 -- Amit -- 25-Jul-2021
 UPDATE `system_config` SET `value` = '4.3.8' WHERE `system_config`.`name` = 'sc_version';
 
--- Thana -- 28-Jul-2021
+-- Thana 28-Jul-2021
 ALTER TABLE `form_hepatitis` ADD `lab_technician` VARCHAR(256) NULL DEFAULT NULL AFTER `lab_id`; 
 ALTER TABLE `form_hepatitis` ADD `social_category` VARCHAR(256) NULL DEFAULT NULL AFTER `patient_marital_status`; 
 ALTER TABLE `s_vlsm_instance` ADD `last_remote_requests_sync` DATETIME NULL DEFAULT NULL AFTER `last_vldash_sync`, ADD `last_remote_results_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_requests_sync`, ADD `last_remote_reference_data_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_results_sync`; 
@@ -2254,7 +2254,7 @@ ALTER TABLE `s_vlsm_instance` ADD `last_remote_requests_sync` DATETIME NULL DEFA
 -- Amit -- 28-Jul-2021
 UPDATE `system_config` SET `value` = '4.3.9' WHERE `system_config`.`name` = 'sc_version';
 
--- Thana -- 29-Jul-2021
+-- Thana 29-Jul-2021
 CREATE TABLE `geographical_divisions` (
  `geo_id` int NOT NULL AUTO_INCREMENT,
  `geo_name` varchar(256) DEFAULT NULL,
@@ -2272,7 +2272,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 ALTER TABLE `facility_details` ADD `facility_state_id` VARCHAR(256) NULL DEFAULT NULL AFTER `country`, ADD `facility_district_id` VARCHAR(256) NULL DEFAULT NULL AFTER `facility_state_id`; 
 
--- Thana -- 17-Aug-2021
+-- Thana 17-Aug-2021
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'sync-history.php', 'Sync History');
 
 
@@ -2283,19 +2283,19 @@ ALTER TABLE `user_details` ADD `api_token_exipiration_days` INT NULL DEFAULT NUL
 UPDATE `system_config` SET `value` = '4.4.0' WHERE `system_config`.`name` = 'sc_version';
 
 ALTER TABLE `facility_details` CHANGE `facility_state_id` `facility_state_id` INT NULL DEFAULT NULL, CHANGE `facility_district_id` `facility_district_id` INT NULL DEFAULT NULL;
--- Thana -- 24-Aug-2021
+-- Thana 24-Aug-2021
 ALTER TABLE `track_api_requests` ADD `facility_id` VARCHAR(256) NULL DEFAULT NULL AFTER `api_params`;
--- Thana -- 25-Aug-2021
+-- Thana 25-Aug-2021
 ALTER TABLE `eid_form` ADD `app_local_test_req_id` VARCHAR(256) NULL DEFAULT NULL AFTER `result_mail_datetime`;
 
--- Thana -- 06-Sep-2021
+-- Thana 06-Sep-2021
 ALTER TABLE `covid19_tests` ADD `updated_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `result`;
 
 -- Amit 17 Sep 2021
 UPDATE `global_config` SET `remote_sync_needed` = 'yes', `value` = 'no' WHERE `name` = 'vl_monthly_target';
 
 
--- Thana -- 22-Sep-2021
+-- Thana 22-Sep-2021
 ALTER TABLE `vl_request_form` ADD `app_local_test_req_id` VARCHAR(256) NULL DEFAULT NULL AFTER `is_result_mail_sent`;
 
 -- Amit 24 Sep 2021
@@ -2303,3 +2303,16 @@ ALTER TABLE `vl_request_form` CHANGE `vldash_sync` `vldash_sync` INT(11) NULL DE
 ALTER TABLE `vl_request_form` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
 
 UPDATE `system_config` SET `value` = '4.4.1' WHERE `system_config`.`name` = 'sc_version';
+
+-- Thana 28-Sep-2021
+CREATE TABLE `failed_result_retest_tracker` (
+ `frrt_id` int NOT NULL AUTO_INCREMENT,
+ `test_type_pid` int DEFAULT NULL,
+ `test_type` varchar(256) DEFAULT NULL,
+ `sample_code` varchar(256) DEFAULT NULL,
+ `result` varchar(256) DEFAULT NULL,
+ `result_status` varchar(256) DEFAULT NULL,
+ `updated_datetime` datetime DEFAULT NULL,
+ `update_by` varchar(256) DEFAULT NULL,
+ PRIMARY KEY (`frrt_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

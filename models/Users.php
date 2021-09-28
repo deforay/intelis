@@ -60,6 +60,7 @@ class Users
         if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
             $sharedVLPrivileges = array(
                 'updateVlTestResult.php'                => 'vlTestResult.php',
+                'vl-failed-results.php'                 => 'vlTestResult.php',
                 'add-vl-art-code-details.php'           => 'vl-art-code-details.php',
                 'edit-vl-art-code-details.php'          => 'vl-art-code-details.php',
                 'vl-sample-rejection-reasons.php'       => 'vl-art-code-details.php',

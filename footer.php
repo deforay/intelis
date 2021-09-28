@@ -344,6 +344,10 @@
 		$(".test").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".vlTestResultMenu").addClass('active');
+	} else if (splitsUrl == 'vl-failed-results.php') {
+		$(".test").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".vlFailedResultMenu").addClass('active');
 	} else if (splitsUrl == 'vlResultApproval.php') {
 		$(".test").addClass('active');
 		$(".allMenu").removeClass('active');

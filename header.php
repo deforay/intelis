@@ -603,6 +603,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("vlTestResult.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu vlTestResultMenu"><a href="/vl/results/vlTestResult.php"><i class="fa fa-caret-right"></i> Enter Result Manually</a></li>
+										<li class="allMenu vlFailedResultMenu"><a href="/vl/results/vl-failed-results.php"><i class="fa fa-caret-right"></i> Failed/Hold Samples</a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("vlResultApproval.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu vlResultApprovalMenu"><a href="/vl/results/vlResultApproval.php"><i class="fa fa-caret-right"></i> Approve Results</a></li>
