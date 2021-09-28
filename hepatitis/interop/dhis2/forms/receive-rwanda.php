@@ -9,7 +9,7 @@ $receivedCounter = 0;
 $processedCounter = 0;
 
 $data = array();
-$data[] = "lastUpdatedDuration=600d";
+$data[] = "lastUpdatedDuration=6m";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=LEhPhsbgfFB";
@@ -20,7 +20,7 @@ $url = "/api/trackedEntityInstances.json";
 
 $jsonResponse = $dhis2->get($url, $data);
 
-var_dump($jsonResponse);die;
+//var_dump($jsonResponse);die;
 
 $trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
 
@@ -31,8 +31,8 @@ $dhis2SocialCategoryOptions = array('1' => 'A', '2' => 'B', '3' => 'C', '4' => '
 $dhis2VlTestReasonOptions = array('Initial Viral Load Test' => 'Initial HBV VL', 'HBV Follow-up Test' => 'Follow up HBV VL', 'SVR12 HCV Viral Load Test' => 'SVR12 HCV VL');
 
 $attributesDataElementMapping = [
-    'z12AOQeFr5H' => 'external_sample_code', //dhis2 case id
-    'iwzGzKTlYGR' => 'patient_id',
+    'iwzGzKTlYGR' => 'external_sample_code', //dhis2 case id
+    'bVXK3FxmU1L' => 'patient_id',
     'JtuGgGPsSuZ' => 'patient_province',
     'yvkYfTjxEJU' => 'patient_district',
     //'' => 'patient_city',
@@ -56,7 +56,7 @@ $eventsDataElementMapping = [
     'szTAjn4r7yM' => 'anti_hcv_result',
     'Di17rUJDIWZ' => 'hbv_vl_count',
     'Oem0BXNDPWL' => 'hcv_vl_count',
-    'zi6Kyccn42e' => 'hepatitis_test_type',
+    'Mpc3ftVuSvK' => 'hepatitis_test_type',
     'DMQSNcqWRvI' => 'lab_id',
     'KPFLSlmiY89' => 'reason_for_vl_test'
 ];
@@ -131,9 +131,12 @@ foreach ($trackedEntityInstances as $tracker) {
 
 
 
-        $db->where("test_reason_name", $formData['reason_for_hepatitis_test']);
-        $reason = $db->getOne("r_hepatitis_test_reasons");
-        $formData['reason_for_hepatitis_test'] = $reason['test_reason_id'];
+        if (!empty($formData['reason_for_hepatitis_test'])) {
+            $db->where("test_reason_name", $formData['reason_for_hepatitis_test']);
+            $reason = $db->getOne("r_hepatitis_test_reasons");
+            $formData['reason_for_hepatitis_test'] = $reason['test_reason_id'];
+        }
+
 
         if (!empty($formData['patient_nationality'])) {
 
@@ -142,11 +145,17 @@ foreach ($trackedEntityInstances as $tracker) {
             $formData['patient_nationality'] = $country['id'];
         }
 
-        $db->where("facility_name", $formData['lab_id']);
-        $lab = $db->getOne("facility_details");
-        // echo "<pre>";var_dump($formData['lab_id']);echo "</pre>";
-        // echo "<pre>";var_dump($lab);echo "</pre>";
-        $formData['lab_id'] = $lab['facility_id'];
+        if (!empty($formData['lab_id'])) {
+            $db->where("facility_name", $formData['lab_id']);
+            $db->orWhere("other_id", $formData['lab_id']);
+            $lab = $db->getOne("facility_details");
+            // echo "<pre>";var_dump($formData['lab_id']);echo "</pre>";
+            // echo "<pre>";var_dump($lab);echo "</pre>";
+            $formData['lab_id'] = $lab['facility_id'];
+        } else {
+            $formData['lab_id'] = null;
+        }
+
 
         $db->where("other_id", $facility);
         $db->orWhere("other_id", $facility);
@@ -186,47 +195,34 @@ foreach ($trackedEntityInstances as $tracker) {
         $hepatitisModel = new \Vlsm\Models\Hepatitis($db);
 
 
-        $db->where("source_of_request", $formData['source_of_request']);
-        $hepatitisData = $db->getOne("form_hepatitis");
+        // $db->where("source_of_request", $formData['source_of_request']);
+        // $hepatitisData = $db->getOne("form_hepatitis");
 
 
+        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, $general->humanDateFormat($formData['sample_collection_date']));
 
+        $sampleData = json_decode($sampleJson, true);
 
-        if (empty($hepatitisData) || empty($hepatitisData['hepatitis_id'])) {
-            $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, $general->humanDateFormat($formData['sample_collection_date']));
+        $formData['sample_code'] = $sampleData['sampleCode'];
+        $formData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+        $formData['sample_code_key'] = $sampleData['sampleCodeKey'];
 
-            $sampleData = json_decode($sampleJson, true);
+        $formData['request_created_by'] = 1;
+        $formData['request_created_datetime'] = $general->getDateTime();
 
-            $formData['sample_code'] = $sampleData['sampleCode'];
-            $formData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $formData['sample_code_key'] = $sampleData['sampleCodeKey'];
+        $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
-            $formData['request_created_by'] = 1;
-            $formData['request_created_datetime'] = $general->getDateTime();
-
-            $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
-
-            $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
-            $formData['vlsm_country_id'] = 7; // RWANDA
-            $formData['last_modified_datetime'] = $general->getDateTime();
-            //echo "<pre>";var_dump($formData);echo "</pre>";
-            $id = $db->insert("form_hepatitis", $formData);
-            if ($id != false) {
-                $processedCounter++;
-            }
-        } else {
-
-            continue; // do nothing if already exists
-
-            // $db = $db->where('hepatitis_id', $hepatitisData['hepatitis_id']);
-            // //echo "<pre>";var_dump($formData);echo "</pre>";
-            // $id = $db->update("form_hepatitis", $formData);
-            // if ($id != false) {
-            //     $processedCounter++;
-            // }
+        $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
+        $formData['vlsm_country_id'] = 7; // RWANDA
+        $formData['last_modified_datetime'] = $general->getDateTime();
+        //echo "<pre>";var_dump($formData);echo "</pre>";
+        $updateColumns = array_keys($formData);
+        $db->onDuplicate($updateColumns, 'source_of_request');
+        $id = $db->insert("form_hepatitis", $formData);
+        if ($id != false) {
+            $processedCounter++;
         }
     }
-
 }
 
 $response = array('received' => $receivedCounter, 'processed' => $processedCounter);

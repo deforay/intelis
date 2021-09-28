@@ -3,7 +3,7 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-init.php
 
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
-
+$instanceId = 'dhis2';
 
 $initOptionSets = array(
     //'province' => 'LqaKTLJFf4H',
@@ -48,7 +48,7 @@ foreach ($initOptionSets as $t => $id) {
 
             //$_SESSION['DHIS2_HEP_TESTING_LABS'][$lab['id']] = $lab['name'];
 
-            $db->where("other_id", $lab['id']);
+            $db->where("other_id", $lab['code']);
             $db->orWhere("facility_name", $lab['name']);
             $facility = $db->getOne("facility_details");
             //echo "<pre> FAC ";var_dump($facility);echo "</pre>";
@@ -56,7 +56,7 @@ foreach ($initOptionSets as $t => $id) {
                 $facilityData = array(
                     'facility_name' => $lab['name'],
                     'vlsm_instance_id' => $instanceId,
-                    'other_id' => $lab['id'],
+                    'other_id' => $lab['code'],
                     'facility_type' => 2,
                     'test_type' => 'hepatitis',
                     'updated_datetime' => $general->getDateTime(),
@@ -64,6 +64,7 @@ foreach ($initOptionSets as $t => $id) {
                 );
                 //echo "<pre> DAT ";var_dump($facilityData);echo "</pre>";
                 $id = $db->insert('facility_details', $facilityData);
+                $id = $db->getInsertId();
 
                 $dataTest = array(
                     'test_type' => 'hepatitis',
@@ -84,7 +85,7 @@ foreach ($initOptionSets as $t => $id) {
 // // https://his.rbc.gov.rw/hepatitis/api/organisationUnits?filter=level:eq:6&paging=false&
 
 
-// $data[] = "filter=level:eq:4";
+// $data[] = "filter=level:eq:6";
 // $data[] = "paging=false";
 // $data[] = "fields=id,level,name,path,coordinates[id,name,parent]";
 
@@ -95,11 +96,11 @@ foreach ($initOptionSets as $t => $id) {
 
 // foreach ($response['organisationUnits'] as $facility) {
 
-//     $db->where("other_id", $facility['id']);
-//     $db->orWhere("facility_name", $facility['name']);
-//     $facilityResult = $db->getOne("facility_details");
+//     // $db->where("other_id", $facility['id']);
+//     // $db->orWhere("facility_name", $facility['name']);
+//     // $facilityResult = $db->getOne("facility_details");
 
-
+    
 
 //     $facilityData = array(
 //         'facility_name' => $facility['name'],
@@ -111,7 +112,15 @@ foreach ($initOptionSets as $t => $id) {
 //         'status' => 'active'
 //     );
 //     $updateColumns = array("other_id", "updated_datetime");
-//     $lastInsertId = "facility_id";
-//     $db->onDuplicate($updateColumns, $lastInsertId);
-//     $id = $db->insert('facility_details', $facilityData);
+//     $db->onDuplicate($updateColumns, 'facility_id');
+//     $db->insert('facility_details', $facilityData);
+//     $id = $db->getInsertId();
+//     $db->where('facility_id  = ' . $id);
+//     $db->delete('health_facilities');
+//     $dataTest = array(
+//         'test_type' => 'hepatitis',
+//         'facility_id' => $id,
+//         "updated_datetime" => $general->getDateTime()
+//     );
+//     $db->insert('health_facilities', $dataTest);
 // }

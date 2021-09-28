@@ -3,8 +3,11 @@
 // this file is included in /covid-19/interop/dhis2/covid-19-init.php
 
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
-// Getting all Testing Labs 
+$instanceId = 'dhis2';
 
+
+// Getting all Testing Labs 
+$data = array();
 $data[] = "fields=options[id,name]";
 $data[] = "paging=false";
 
@@ -15,8 +18,6 @@ $response = $dhis2->get($url, $data);
 $response = json_decode($response, true);
 
 foreach ($response['options'] as $lab) {
-
-
 
     $db->where("other_id", $lab['id']);
     $facility = $db->getOne("facility_details");
@@ -50,35 +51,37 @@ foreach ($response['options'] as $lab) {
 
 
 // // Adding Facilities - We will only run this once
+$data = array();
+$data[] = "filter=level:eq:5";
+$data[] = "paging=false";
+$data[] = "fields=id,level,name,path,coordinates[id,name,parent]";
 
-// $data[] = "filter=level:eq:5";
-// $data[] = "paging=false";
-// $data[] = "fields=id,level,name,path,coordinates[id,name,parent]";
+$url = "/api/organisationUnits.json";
 
-// $url = "/api/organisationUnits.json";
+$response = $dhis2->get($url, $data);
+$response = json_decode($response, true);
 
-// $response = $dhis2->get($url, $data);
-// $response = json_decode($response, true);
+foreach ($response['organisationUnits'] as $facility) {
 
-// foreach ($response['organisationUnits'] as $facility) {
-
-//     $db->where("other_id", $facility['id']);
-//     $db->orWhere("facility_name", $facility['name']);
-//     $facilityResult = $db->getOne("facility_details");
-
-
-
-//     $facilityData = array(
-//         'facility_name' => $facility['name'],
-//         'vlsm_instance_id' => $instanceId,
-//         'other_id' => $facility['id'],
-//         'facility_type' => 1,
-//         'test_type' => 'covid19',
-//         'updated_datetime' => $general->getDateTime(),
-//         'status' => 'active'
-//     );
-//     $updateColumns = array("other_id", "updated_datetime");
-//     $lastInsertId = "facility_id";
-//     $db->onDuplicate($updateColumns, $lastInsertId);
-//     $id = $db->insert('facility_details', $facilityData);
-// }
+    $facilityData = array(
+        'facility_name' => $facility['name'],
+        'vlsm_instance_id' => $instanceId,
+        'other_id' => $facility['id'],
+        'facility_type' => 1,
+        'test_type' => 'covid19',
+        'updated_datetime' => $general->getDateTime(),
+        'status' => 'active'
+    );
+    $updateColumns = array("other_id", "updated_datetime");
+    $db->onDuplicate($updateColumns, 'facility_id');
+    $db->insert('facility_details', $facilityData);
+    $id = $db->getInsertId();
+    $db->where('facility_id  = ' . $id);
+    $db->delete('health_facilities');
+    $dataTest = array(
+        'test_type' => 'covid19',
+        'facility_id' => $id,
+        "updated_datetime" => $general->getDateTime()
+    );
+    $db->insert('health_facilities', $dataTest);
+}

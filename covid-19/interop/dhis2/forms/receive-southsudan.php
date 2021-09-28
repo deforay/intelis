@@ -9,8 +9,8 @@ $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 // https://southsudanhis.org/covid19southsudan/api/trackedEntityInstances.json?programStartDate=2020-04-01&programEndDate=2021-04-02&ou=OV9zi20DDXP&ouMode=DESCENDANTS&program=uYjxkTbwRNf&fields=attributes[attribute,code,value],enrollments[*],orgUnit,trackedEntityInstance&paging=false
 
 $counter = 0;
-
-$data[] = "lastUpdatedDuration=100d";
+$data = array();
+$data[] = "lastUpdatedDuration=300d";
 $data[] = "ou=OV9zi20DDXP"; // South Sudan
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=uYjxkTbwRNf";
@@ -34,8 +34,6 @@ $attributesDataElementMapping = [
     'oindugucx72' => 'patient_gender',
     'qlYg7fundnJ' => 'patient_nationality'
 ];
-
-
 
 
 $eventsDataElementMapping = [
@@ -96,26 +94,41 @@ foreach ($response['trackedEntityInstances'] as $tracker) {
     }
 
     $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ?  $formData['sample_collection_date'] : $enrollmentDate);
-    $formData['reason_for_covid19_test'] = (!empty($formData['reason_for_covid19_test']) ?  $formData['reason_for_covid19_test'] : "Suspect");
 
+    // Reason for Testing
+    if(!empty($formData['reason_for_covid19_test'])){
+        $db->where("test_reason_name", $formData['reason_for_covid19_test']);
+        $reason = $db->getOne("r_covid19_test_reasons");
+        if (!empty($reason) && $reason != false) {
+            $formData['reason_for_covid19_test'] = $reason['test_reason_id'];
+        } else {
+            $reasonData = array(
+                'test_reason_name' => $formData['reason_for_covid19_test'],
+                'test_reason_status' => 'active',
+                'updated_datetime' => $general->getDateTime()
+            );
+            $formData['reason_for_covid19_test'] =   $db->insert("r_covid19_test_reasons", $reasonData);
+        }
+    }
+    
 
-    $db->where("test_reason_name", $formData['reason_for_covid19_test']);
-    $reason = $db->getOne("r_covid19_test_reasons");
-    $formData['reason_for_covid19_test'] = $reason['test_reason_id'];
 
     $db->where("iso3", $formData['patient_nationality']);
     $country = $db->getOne("r_countries");
     $formData['patient_nationality'] = $country['id'];
 
-
+    // Platform
     $db->where("machine_name", $formData['covid19_test_platform']);
     $testPlatform = $db->getOne("import_config");
     $formData['covid19_test_platform'] = $testPlatform['config_id'];
 
+    // Lab ID
     $db->where("facility_name", $formData['lab_id']);
     $lab = $db->getOne("facility_details");
     $formData['lab_id'] = $lab['facility_id'];
 
+
+    // Facility ID
     $db->where("other_id", $facility);
     $fac = $db->getOne("facility_details");
     $formData['facility_id'] =  $fac['facility_id'];
@@ -126,9 +139,22 @@ foreach ($response['trackedEntityInstances'] as $tracker) {
     $formData['province_id'] = !empty($prov['province_id']) ? $prov['province_id'] : 1;
 
 
-    $db->where("sample_name", $formData['specimen_type']);
-    $sampleType = $db->getOne("r_covid19_sample_type");
-    $formData['specimen_type'] = $sampleType['sample_id'];
+    //Specimen Type
+    if (!empty($formData['specimen_type'])) {
+        $db->where("sample_name", $formData['specimen_type']);
+        $sampleType = $db->getOne("r_covid19_sample_type");
+
+        if (!empty($sampleType) && $sampleType != false) {
+            $formData['specimen_type'] = $sampleType['sample_id'];
+        } else {
+            $sampleTypeData = array(
+                'sample_name' => $formData['specimen_type'],
+                'status' => 'active',
+                'updated_datetime' => $general->getDateTime()
+            );
+            $formData['specimen_type'] = $db->insert("r_covid19_sample_type", $sampleTypeData);
+        }
+    }
 
 
 
@@ -176,9 +202,8 @@ foreach ($response['trackedEntityInstances'] as $tracker) {
             $counter++;
         }
     }
-    
 }
 
 $response = array('received' => count($response['trackedEntityInstances']), 'processed' => $counter);
 
-echo(json_encode($response));
+echo (json_encode($response));

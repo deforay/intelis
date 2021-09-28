@@ -1108,9 +1108,9 @@ CREATE TABLE `health_facilities` (
  PRIMARY KEY (`test_type`,`facility_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO health_facilities (SELECT 'vl' AS `test_type`,facility_id FROM facility_details);
-INSERT INTO health_facilities (SELECT 'eid' AS `test_type`,facility_id FROM facility_details);
-INSERT INTO health_facilities (SELECT 'covid19' AS `test_type`,facility_id FROM facility_details);
+-- INSERT INTO health_facilities (SELECT 'vl' AS `test_type`,facility_id FROM facility_details);
+-- INSERT INTO health_facilities (SELECT 'eid' AS `test_type`,facility_id FROM facility_details);
+-- INSERT INTO health_facilities (SELECT 'covid19' AS `test_type`,facility_id FROM facility_details);
 
 CREATE TABLE `testing_labs` (
  `test_type` enum('vl','eid','covid19') NOT NULL,
@@ -1118,9 +1118,9 @@ CREATE TABLE `testing_labs` (
  PRIMARY KEY (`test_type`,`facility_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO testing_labs (SELECT 'vl' AS `test_type`,facility_id FROM facility_details WHERE facility_type=2);
-INSERT INTO testing_labs (SELECT 'eid' AS `test_type`,facility_id FROM facility_details WHERE facility_type=2);
-INSERT INTO testing_labs (SELECT 'covid19' AS `test_type`,facility_id FROM facility_details WHERE facility_type=2);
+-- INSERT INTO testing_labs (SELECT 'vl' AS `test_type`,facility_id FROM facility_details WHERE facility_type=2);
+-- INSERT INTO testing_labs (SELECT 'eid' AS `test_type`,facility_id FROM facility_details WHERE facility_type=2);
+-- INSERT INTO testing_labs (SELECT 'covid19' AS `test_type`,facility_id FROM facility_details WHERE facility_type=2);
 
 UPDATE `system_config` SET `value` = '4.2.0' WHERE `system_config`.`name` = 'version';
 -- Version 4.2.0 -- Amit -- 20-Sep-2020
@@ -1917,7 +1917,7 @@ CREATE TABLE `r_hepatitis_comorbidities` (
  PRIMARY KEY (`comorbidity_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `r_hepatitis_rick_factors` (
+CREATE TABLE `r_hepatitis_risk_factors` (
  `riskfactor_id` int NOT NULL AUTO_INCREMENT,
  `riskfactor_name` varchar(255) DEFAULT NULL,
  `riskfactor_status` varchar(45) DEFAULT NULL,
@@ -1927,7 +1927,7 @@ CREATE TABLE `r_hepatitis_rick_factors` (
 
 INSERT INTO `r_hepatitis_comorbidities` (`comorbidity_id`, `comorbidity_name`, `comorbidity_status`, `updated_datetime`) VALUES (NULL, 'Diabetes', 'active', '2020-11-17 16:32:11'), (NULL, 'Chronic renal failure', 'active', '2020-11-17 16:32:11'), (NULL, 'Cancer', 'active', '2020-11-17 16:32:11'), (NULL, 'HIV infection', 'active', '2020-11-17 16:32:11'), (NULL, 'Cardiovascular disease', 'active', '2020-11-17 16:32:11'), (NULL, 'HPV', 'active', '2020-11-17 16:32:11');
 
-INSERT INTO `r_hepatitis_rick_factors` (`riskfactor_id`, `riskfactor_name`, `riskfactor_status`, `updated_datetime`) VALUES (NULL, 'Ever diagnosed with a liver disease', 'active', '2020-11-17 16:35:09'), (NULL, 'Viral hepatitis in the family', 'active', '2020-11-17 16:35:09'), (NULL, 'Ever been operated', 'active', '2020-11-17 16:35:09'), (NULL, 'Ever been traditionally operated (ibyinyo, ibirimi, indasago, scarification, tattoo)', 'active', '2020-11-17 16:35:09'), (NULL, 'Ever been transfused', 'active', '2020-11-17 16:35:09'), (NULL, 'Having more than one sexually partner', 'active', '2020-11-17 16:35:09'), (NULL, 'Ever experienced a physical trauma', 'active', '2020-11-17 16:35:09');
+INSERT INTO `r_hepatitis_risk_factors` (`riskfactor_id`, `riskfactor_name`, `riskfactor_status`, `updated_datetime`) VALUES (NULL, 'Ever diagnosed with a liver disease', 'active', '2020-11-17 16:35:09'), (NULL, 'Viral hepatitis in the family', 'active', '2020-11-17 16:35:09'), (NULL, 'Ever been operated', 'active', '2020-11-17 16:35:09'), (NULL, 'Ever been traditionally operated (ibyinyo, ibirimi, indasago, scarification, tattoo)', 'active', '2020-11-17 16:35:09'), (NULL, 'Ever been transfused', 'active', '2020-11-17 16:35:09'), (NULL, 'Having more than one sexually partner', 'active', '2020-11-17 16:35:09'), (NULL, 'Ever experienced a physical trauma', 'active', '2020-11-17 16:35:09');
 
 CREATE TABLE `hepatitis_patient_comorbidities` (
  `hepatitis_id` int NOT NULL,
@@ -2303,3 +2303,10 @@ ALTER TABLE `vl_request_form` CHANGE `vldash_sync` `vldash_sync` INT(11) NULL DE
 ALTER TABLE `vl_request_form` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
 
 UPDATE `system_config` SET `value` = '4.4.1' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Amit 27 Sep 2021
+ALTER TABLE `facility_details` ADD UNIQUE(`facility_name`);
+ALTER TABLE `facility_details` ADD UNIQUE(`facility_code`);
+ALTER TABLE `facility_details` ADD UNIQUE(`other_id`);
+ALTER TABLE `form_hepatitis` ADD UNIQUE(`source_of_request`);
