@@ -84,6 +84,7 @@ class Users
                 'eid-add-batch-position.php'            => 'eid-add-batch.php',
                 'eid-edit-batch-position.php'           => 'eid-edit-batch.php',
                 'eid-update-result.php'                 => 'eid-manual-results.php',
+                'eid-failed-results.php'                 => 'eid-manual-results.php',
                 'eid-bulk-import-request.php'           => 'eid-add-request.php',
                 'eid-sample-rejection-reasons.php'      => 'eid-sample-type.php',
                 'add-eid-sample-rejection-reasons.php'  => 'eid-sample-type.php',

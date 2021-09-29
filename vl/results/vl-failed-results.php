@@ -104,7 +104,7 @@ $batResult = $db->rawQuery($batQuery);
                             </td>
                             <td colspan="4">
                                 &nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>
-                                &nbsp;
+                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span>Retest the selected samples</span></button>
                                 <!-- <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export Excel</a> -->
                             </td>
                         </tr>
@@ -324,7 +324,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     });
 
     function resetBtnShowHide() {
-        console.log("log");
         var checkResult = false;
         $(".checkTests").each(function() {
             if ($(this).prop('checked')) {
@@ -556,25 +555,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                         alert("Something went wrong. Please try again later");
                     }
                 });
-        }
-    }
-
-    function toggleTest(obj) {
-        if ($(obj).is(':checked')) {
-            if ($.inArray(obj.value, selectedTests) == -1) {
-                selectedTests.push(obj.value);
-                selectedTestsId.push(obj.id);
-            }
-        } else {
-            selectedTests.splice($.inArray(obj.value, selectedTests), 1);
-            selectedTestsId.splice($.inArray(obj.id, selectedTestsId), 1);
-            $("#checkTestsData").attr("checked", false);
-        }
-        $("#checkedTests").val(selectedTests.join());
-        if (selectedTests.length != 0) {
-            $("#status").prop('disabled', false);
-        } else {
-            $("#status").prop('disabled', true);
         }
     }
 </script>

@@ -8,7 +8,7 @@ try {
     if ($sarr['sc_user_type'] == 'remoteuser') {
         $status = 9;
     }
-    if ($_POST['bulkIds'] == true) {
+    if ($_POST['bulkIds'] && count($_POST['eidId']) > 0) {
         $db = $db->where("`vl_sample_id` IN (" . implode(",", $_POST['vlId']) . ")");
     } else {
         $db = $db->where('vl_sample_id', base64_decode($_POST['vlId']));
@@ -24,7 +24,7 @@ try {
 
     if ($id > 0) {
         $query = "SELECT CASE WHEN (sample_code is not null) THEN sample_code ELSE remote_sample_code END AS sampleCode, result, result_status, vl_sample_id FROM vl_request_form";
-        if ($_POST['bulkIds'] == true) {
+        if ($_POST['bulkIds'] && count($_POST['eidId']) > 0) {
             $query .= " WHERE vl_sample_id IN (" . implode(",", $_POST['vlId']) . ")";
         } else {
             $query .= " WHERE vl_sample_id = " . base64_decode($_POST['vlId']);

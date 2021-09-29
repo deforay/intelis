@@ -420,6 +420,10 @@
 		$(".allMenu").removeClass('active');
 		$(".eidResults").addClass('active');
 		$(".eidResultsMenu").addClass('active');
+	} else if (splitsUrl == 'eid-failed-results.php') {
+		$(".allMenu").removeClass('active');
+		$(".eidResults").addClass('active');
+		$(".eidFailedResultsMenu").addClass('active');
 	} else if (splitsUrl == 'eid-result-status.php') {
 		$(".allMenu").removeClass('active');
 		$(".eidResults").addClass('active');

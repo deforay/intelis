@@ -29,7 +29,7 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> EID Test Requests</h1>
+        <h1><i class="fa fa-edit"></i> Failed/Hold Samples</h1>
         <ol class="breadcrumb">
             <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="active">Test Request</li>
@@ -102,8 +102,7 @@ $batResult = $db->rawQuery($batQuery);
                                         <a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Bulk Import EID Request</a>
                                 <?php }
                                 } ?>
-
-                                &nbsp;
+                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span>Retest the selected samples</span></button>
 
                             </td>
                         </tr>
@@ -120,16 +119,18 @@ $batResult = $db->rawQuery($batQuery);
                                 <?php }
                                 } ?>
                                 &nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>Show Advanced Search</span></button>
+                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span>Retest the selected samples</span></button>
                             </td>
                         </tr>
                     </table>
 
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="vlRequestDataTable" class="table table-bordered table-striped">
+                        <input type="hidden" name="checkedTests" id="checkedTests" />
+                        <table id="eidFailedRequestDataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
+                                    <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
                                     <th>Sample Code</th>
                                     <?php if ($sarr['sc_user_type'] != 'standalone') { ?>
                                         <th>Remote Sample <br />Code</th>
@@ -271,6 +272,20 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
     });
 
+    function resetBtnShowHide() {
+        var checkResult = false;
+        $(".checkTests").each(function() {
+            if ($(this).prop('checked')) {
+                checkResult = true;
+            }
+        });
+        if (checkResult) {
+            $(".retest-btn").show();
+        } else {
+            $(".retest-btn").hide();
+        }
+    }
+
     function fnShowHide(iCol) {
         var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
         oTable.fnSetColumnVis(iCol, bVis ? false : true);
@@ -278,7 +293,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
     function loadVlRequestData() {
         $.blockUI();
-        oTable = $('#vlRequestDataTable').dataTable({
+        oTable = $('#eidFailedRequestDataTable').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
             },
@@ -289,6 +304,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             //"bStateSave" : true,
             "bRetrieve": true,
             "aoColumns": [{
+                    "sClass": "center",
+                    "bSortable": false
+                }, {
                     "sClass": "center"
                 },
                 <?php if ($sarr['sc_user_type'] != 'standalone') { ?> {
@@ -339,7 +357,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             },
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "/eid/requests/get-failed-results.php",
+            "sAjaxSource": "/eid/results/get-failed-results.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "batchCode",
@@ -415,12 +433,54 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             });
         }
         $("#checkedTests").val(selectedTests.join());
+        resetBtnShowHide();
     }
 
 
     function hideAdvanceSearch(hideId, showId) {
         $("#" + hideId).hide();
         $("#" + showId).show();
+    }
+
+    function toggleTest(obj) {
+        if ($(obj).is(':checked')) {
+            if ($.inArray(obj.value, selectedTests) == -1) {
+                selectedTests.push(obj.value);
+                selectedTestsId.push(obj.id);
+            }
+        } else {
+            selectedTests.splice($.inArray(obj.value, selectedTests), 1);
+            selectedTestsId.splice($.inArray(obj.id, selectedTestsId), 1);
+            $("#checkTestsData").attr("checked", false);
+        }
+        $("#checkedTests").val(selectedTests.join());
+        if (selectedTests.length != 0) {
+            $("#status").prop('disabled', false);
+        } else {
+            $("#status").prop('disabled', true);
+        }
+    }
+
+    function retestSample(id, bulk = false) {
+        if (bulk) {
+            id = selectedTests;
+        }
+        if (id != "") {
+            $.blockUI();
+            $.post("failed-results-retest.php", {
+                    eidId: id,
+                    bulkIds: bulk
+                },
+                function(data) {
+                    $.unblockUI();
+                    if (data > 0) {
+                        alert("Retest has been submitted.");
+                        oTable.fnDraw();
+                    } else {
+                        alert("Something went wrong. Please try again later");
+                    }
+                });
+        }
     }
 </script>
 <?php
