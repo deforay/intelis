@@ -4,7 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 #require_once('../../startup.php');  
 
-
 $formConfigQuery = "SELECT * FROM global_config";
 $configResult = $db->query($formConfigQuery);
 $gconfig = array();
@@ -123,7 +122,6 @@ $sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM eid_form as vl
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-//echo $sQuery;die;
 $start_date = '';
 $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -138,7 +136,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 
 if (isset($sWhere) && $sWhere != "") {
     $sWhere = ' where ' . $sWhere;
-    //$sQuery = $sQuery.' '.$sWhere;
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
         $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
@@ -222,20 +219,21 @@ if ($sWhere != '') {
 }
 $sFilter = '';
 if ($sarr['sc_user_type'] == 'remoteuser') {
-    //$sWhere = $sWhere.' AND vl.request_created_by="'.$_SESSION['userId'].'"';
-    //$sFilter = ' AND request_created_by="'.$_SESSION['userId'].'"';
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
         $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
+}
+
+if (!isset($sWhere) || $sWhere == "") {
+    $sWhere = ' where ' . $sWhere;
+    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR vl.result = "failed" OR vl.result = "fail")';
 } else {
-    $sWhere = $sWhere . ' AND vl.result_status!=9';
-    $sFilter = ' AND result_status!=9';
+    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR vl.result = "failed" OR vl.result = "fail")';
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-//error_log($sQuery);
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -252,13 +250,8 @@ $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
 $aResultTotal =  $db->rawQuery("SELECT COUNT(eid_id) as total FROM eid_form as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
 $iTotal = $aResultTotal[0]['total'];
 
-/*
-          * Output
-          */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
@@ -266,18 +259,12 @@ $output = array(
     "aaData" => array()
 );
 $editRequest = false;
-$syncRequest = false;
 if (isset($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSION['privileges']))) {
     $editRequest = true;
-    $syncRequest = true;
 }
 
 foreach ($rResult as $aRow) {
 
-    $vlResult = '';
-    $edit = '';
-    $sync = '';
-    $barcode = '';
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['sample_collection_date']);
         $aRow['sample_collection_date'] = $general->humanDateFormat($xplodDate[0]);
@@ -291,14 +278,9 @@ foreach ($rResult as $aRow) {
         $aRow['last_modified_datetime'] = '';
     }
 
-    //  $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_first_name'],$aRow['patient_art_no']));
-    //  $patientMname = ucwords($general->crypto('decrypt',$aRow['patient_middle_name'],$aRow['patient_art_no']));
-    //  $patientLname = ucwords($general->crypto('decrypt',$aRow['patient_last_name'],$aRow['patient_art_no']));
-
-
     $row = array();
 
-    //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['eid_id'] . '"  value="' . $aRow['eid_id'] . '" onclick="toggleTest(this);"  />';
+    $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['eid_id'] . '"  value="' . $aRow['eid_id'] . '" onchange="resetBtnShowHide();" onclick="toggleTest(this);"  />';
     $row[] = $aRow['sample_code'];
     if ($sarr['sc_user_type'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
@@ -316,41 +298,10 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['result']);
     $row[] = $aRow['last_modified_datetime'];
     $row[] = ucwords($aRow['status_name']);
-    //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['eid_id']).'\');"><i class="fa fa-barcode"> Print Barcode</i></a>';
-    //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['eid_id']) . '\',900,520);"> Result</a>';
 
     if ($editRequest) {
-        $edit = '<a href="eid-edit-request.php?id=' . base64_encode($aRow['eid_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
-        if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-            if (isset($_SESSION['privileges']) && !in_array("edit-locked-eid-samples", $_SESSION['privileges'])) {
-                $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="Locked" disabled><i class="fa fa-lock"> Locked</i></a>';
-            }
-        }
+        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Failed result retest" onclick="retestSample(\'' . trim(base64_encode($aRow['eid_id'])) . '\')"><i class="fa fa-refresh"> Retest</i></a>';
     }
-
-    if ($syncRequest && $_SESSION['system'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
-        if ($aRow['data_sync'] == 0) {
-            $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Sync this sample" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> Sync</a>';
-        }
-    } else {
-        $sync = "";
-    }
-
-    if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
-        $fac = ucwords($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
-        $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="Barcode"><i class="fa fa-barcode"> </i> Barcode </a>';
-    }
-
-
-    $actions = "";
-    if ($editRequest) {
-        $actions .= $edit;
-    }
-    if ($syncRequest) {
-        $actions .= $sync;
-    }
-    $row[] = $actions . $barcode;
-
     $output['aaData'][] = $row;
 }
 echo json_encode($output);

@@ -720,6 +720,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("eid-manual-results.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu eidResultsMenu"><a href="/eid/results/eid-manual-results.php"><i class="fa fa-caret-right"></i> Enter Result Manually</a></li>
+										<li class="allMenu eidFailedResultsMenu"><a href="/eid/results/eid-failed-results.php"><i class="fa fa-caret-right"></i> Failed/Hold Samples</a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("eid-result-status.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu eidResultStatus"><a href="/eid/results/eid-result-status.php"><i class="fa fa-caret-right"></i> Manage Results Status</a></li>
