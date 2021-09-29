@@ -2,11 +2,7 @@
 
 // this file is included in /covid-19/interop/dhis2/covid-19-send.php
 
-use Vlsm\Models\Users;
-
-$users = new Users($db);
-
-
+$users = new \Vlsm\Models\Users($db);
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 //get facility map id
@@ -17,7 +13,8 @@ $formResults = $db->rawQuery($query);
 $counter = 0;
 foreach ($formResults as $row) {
 
-  $trackedEntityInstance = str_replace("dhis2-", "", $row['source_of_request']);
+  $sourceOfRequestArray = explode("::", $row['source_of_request']);
+  $trackedEntityInstance = $sourceOfRequestArray[1];
 
 
 
@@ -28,18 +25,17 @@ foreach ($formResults as $row) {
   $urlData[] = "programStage=CTdzCeTbYay";
   $urlData[] = "paging=false";
   $urlData[] = "status=ACTIVE";
-
-
   $url = "/api/events";
-
-
 
   $dhis2Response = $dhis2->get($url, $urlData);
 
   $dhis2Response = json_decode($dhis2Response, true);
 
+  $strategy = null;
+  $eventId = null;
   $eventPayload = array();
-  $payload = array();
+  $eventDate = date("Y-m-d");
+  $payload = array();  
 
 
   if (!empty($row['facility_id'])) {
@@ -81,14 +77,14 @@ foreach ($formResults as $row) {
     if (!empty($dataValues)) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
       $payload = json_encode($eventPayload);
-      // echo "<br><br><pre>";
-      // print_r ($payload);
-      // echo "</pre>";
+      echo "<br><br><pre>";
+      print_r ($payload);
+      echo "</pre>";
 
       $response = $dhis2->post("/api/33/events/", $payload);
-      // echo "<br><br><pre>";
-      // var_dump ($response);
-      // echo "</pre>";
+      echo "<br><br><pre>";
+      var_dump ($response);
+      echo "</pre>";
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {

@@ -191,6 +191,9 @@ foreach ($trackedEntityInstances as $tracker) {
         // var_dump($formData);
         // continue;
 
+        $formData['request_created_datetime'] = $general->getDateTime();
+        $updateColumns = array_keys($formData);
+
         $general = new \Vlsm\Models\General($db);
         $hepatitisModel = new \Vlsm\Models\Hepatitis($db);
 
@@ -208,7 +211,6 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['sample_code_key'] = $sampleData['sampleCodeKey'];
 
         $formData['request_created_by'] = 1;
-        $formData['request_created_datetime'] = $general->getDateTime();
 
         $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 

@@ -52,9 +52,6 @@ foreach ($formResults as $row) {
   }
 
 
-
-
-
   $programStagesVariables = array(
     'labResultHcvVlCount' => 'Oem0BXNDPWL',
     'labResultHbvVlCount' => 'Di17rUJDIWZ',
