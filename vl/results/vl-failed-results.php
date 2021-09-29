@@ -115,6 +115,7 @@ $batResult = $db->rawQuery($batQuery);
                                 &nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>
                                 <!-- &nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export Excel</a> -->
                                 &nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>Show Advanced Search</span></button>
+                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span>Retest the selected samples</span></button>
                             </td>
                         </tr>
                     </table>
@@ -169,10 +170,11 @@ $batResult = $db->rawQuery($batQuery);
                     </span>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="vlRequestDataTable" class="table table-bordered table-striped">
+                        <input type="hidden" name="checkedTests" id="checkedTests" />
+                        <table id="vlFailedResultDataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
+                                    <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
                                     <th>Sample Code</th>
                                     <?php if ($sarr['sc_user_type'] != 'standalone') { ?>
                                         <th>Remote Sample <br />Code</th>
@@ -321,6 +323,21 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         }
     });
 
+    function resetBtnShowHide() {
+        console.log("log");
+        var checkResult = false;
+        $(".checkTests").each(function() {
+            if ($(this).prop('checked')) {
+                checkResult = true;
+            }
+        });
+        if (checkResult) {
+            $(".retest-btn").show();
+        } else {
+            $(".retest-btn").hide();
+        }
+    }
+
     function fnShowHide(iCol) {
         var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
         oTable.fnSetColumnVis(iCol, bVis ? false : true);
@@ -329,7 +346,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     function loadVlRequestData() {
         $.blockUI();
 
-        oTable = $('#vlRequestDataTable').dataTable({
+        oTable = $('#vlFailedResultDataTable').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
             },
@@ -340,6 +357,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             "bStateSave": true,
             "bRetrieve": true,
             "aoColumns": [{
+                    "sClass": "center",
+                    "bSortable": false
+                }, {
                     "sClass": "center"
                 },
                 <?php if ($sarr['sc_user_type'] != 'standalone') { ?> {
@@ -493,6 +513,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             });
         }
         $("#checkedTests").val(selectedTests.join());
+        resetBtnShowHide();
     }
 
     function exportAllPendingVlRequest() {
@@ -516,11 +537,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         $("#" + showId).show();
     }
 
-    function retestSample(id) {
+    function retestSample(id, bulk = false) {
+        if (bulk) {
+            id = selectedTests;
+        }
         if (id != "") {
             $.blockUI();
             $.post("failed-results-retest.php", {
-                    vlId: id
+                    vlId: id,
+                    bulkIds: bulk
                 },
                 function(data) {
                     $.unblockUI();
@@ -531,6 +556,25 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                         alert("Something went wrong. Please try again later");
                     }
                 });
+        }
+    }
+
+    function toggleTest(obj) {
+        if ($(obj).is(':checked')) {
+            if ($.inArray(obj.value, selectedTests) == -1) {
+                selectedTests.push(obj.value);
+                selectedTestsId.push(obj.id);
+            }
+        } else {
+            selectedTests.splice($.inArray(obj.value, selectedTests), 1);
+            selectedTestsId.splice($.inArray(obj.id, selectedTestsId), 1);
+            $("#checkTestsData").attr("checked", false);
+        }
+        $("#checkedTests").val(selectedTests.join());
+        if (selectedTests.length != 0) {
+            $("#status").prop('disabled', false);
+        } else {
+            $("#status").prop('disabled', true);
         }
     }
 </script>
