@@ -1,6 +1,6 @@
 <?php
 #require_once('../../startup.php');
-// echo "<pre>";print_r($_POST['eidId']);die;
+// echo "<pre>";print_r($_POST['covid19Id']);die;
 try {
     $general = new \Vlsm\Models\General($db);
     $sarr = $general->getSystemConfig();
@@ -10,21 +10,23 @@ try {
         $status = 9;
     }
 
-    $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, eid_id FROM eid_form";
-    if ($_POST['bulkIds'] && is_array($_POST['eidId'])) {
-        $query .= " WHERE eid_id IN (" . implode(",", $_POST['eidId']) . ")";
+    $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, covid19_id FROM form_covid19";
+    if ($_POST['bulkIds'] && is_array($_POST['covid19Id'])) {
+        $query .= " WHERE covid19_id IN (" . implode(",", $_POST['covid19Id']) . ")";
     } else {
-        $query .= " WHERE eid_id = " . base64_decode($_POST['eidId']);
+        $query .= " WHERE covid19_id = " . base64_decode($_POST['covid19Id']);
     }
     $response = $db->rawQuery($query);
 
 
-    if ($_POST['bulkIds'] && is_array($_POST['eidId'])) {
-        $db = $db->where("`eid_id` IN (" . implode(",", $_POST['eidId']) . ")");
+    if ($_POST['bulkIds'] && is_array($_POST['covid19Id'])) {
+        $db = $db->where("`covid19_id` IN (" . implode(",", $_POST['covid19Id']) . ")");
     } else {
-        $db = $db->where('eid_id', base64_decode($_POST['eidId']));
+        $db = $db->where('covid19_id', base64_decode($_POST['covid19Id']));
     }
-    $id = $db->update("eid_form", array(
+
+
+    $id = $db->update("form_covid19", array(
         "result"            => null,
         "sample_batch_id"   => null,
         "result_status"     => $status
@@ -32,10 +34,10 @@ try {
 
     if ($id > 0 && count($response) > 0) {
         foreach ($response as $result) {
-            if (isset($result['eid_id']) && $result['eid_id'] != "") {
+            if (isset($result['covid19_id']) && $result['covid19_id'] != "") {
                 $db->insert('failed_result_retest_tracker', array(
-                    'test_type_pid'         => (isset($result['eid_id']) && $result['eid_id'] != "") ? $result['eid_id'] : null,
-                    'test_type'             => 'eid',
+                    'test_type_pid'         => (isset($result['covid19_id']) && $result['covid19_id'] != "") ? $result['covid19_id'] : null,
+                    'test_type'             => 'vl',
                     'sample_code'           => (isset($result['sample_code']) && $result['sample_code'] != "") ? $result['sample_code'] : null,
                     'remote_sample_code'    => (isset($result['remote_sample_code']) && $result['remote_sample_code'] != "") ? $result['remote_sample_code'] : null,
                     'batch_id'              => (isset($result['sample_batch_id']) && $result['sample_batch_id'] != "") ? $result['sample_batch_id'] : null,

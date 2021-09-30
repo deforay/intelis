@@ -2,10 +2,6 @@
 $title = "EID | View All Requests";
 #require_once('../../startup.php');
 
-
-// echo "<pre>";
-// var_dump($_SESSION['privileges']);die;
-
 include_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General($db);
@@ -110,7 +106,7 @@ $batResult = $db->rawQuery($batQuery);
                     <!-- /.box-header -->
                     <div class="box-body">
                         <input type="hidden" name="checkedTests" id="checkedTests" />
-                        <table id="eidFailedRequestDataTable" class="table table-bordered table-striped">
+                        <table id="covid19FailedRequestDataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
@@ -130,7 +126,7 @@ $batResult = $db->rawQuery($batQuery);
                                     <th>Result</th>
                                     <th>Last Modified On</th>
                                     <th>Status</th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSION['privileges']))) { ?>
+                                    <?php if (isset($_SESSION['privileges']) && (in_array("covid19-edit-request.php", $_SESSION['privileges']))) { ?>
                                         <th>Action</th>
                                     <?php } ?>
                                 </tr>
@@ -141,9 +137,7 @@ $batResult = $db->rawQuery($batQuery);
                                 </tr>
                             </tbody>
                         </table>
-                        <?php
-                        if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
-                        ?>
+                        <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
 
                             <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
                                 <div class="progress" style="width:100%">
@@ -159,11 +153,7 @@ $batResult = $db->rawQuery($batQuery);
                                 Zebra Printer Options<br />
                                 Printer: <select id="printers"></select>
                             </div> <!-- /printer_select -->
-
-                        <?php
-                        }
-                        ?>
-
+                        <?php } ?>
                     </div>
 
                 </div>
@@ -276,7 +266,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
     function loadVlRequestData() {
         $.blockUI();
-        oTable = $('#eidFailedRequestDataTable').dataTable({
+        oTable = $('#covid19FailedRequestDataTable').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
             },
@@ -340,7 +330,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             },
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "/eid/results/get-failed-results.php",
+            "sAjaxSource": "/covid-19/results/get-failed-results.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "batchCode",
@@ -393,7 +383,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
 
     function toggleAllVisible() {
-        //alert(tabStatus);
         $(".checkTests").each(function() {
             $(this).prop('checked', false);
             selectedTests.splice($.inArray(this.value, selectedTests), 1);
@@ -451,7 +440,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         if (id != "") {
             $.blockUI();
             $.post("failed-results-retest.php", {
-                    eidId: id,
+                    covid19Id: id,
                     bulkIds: bulk
                 },
                 function(data) {

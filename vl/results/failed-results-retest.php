@@ -8,7 +8,15 @@ try {
     if ($sarr['sc_user_type'] == 'remoteuser') {
         $status = 9;
     }
-    if ($_POST['bulkIds'] && count($_POST['eidId']) > 0) {
+    $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, vl_sample_id FROM vl_request_form";
+    if ($_POST['bulkIds'] && count($_POST['vlId']) > 0) {
+        $query .= " WHERE vl_sample_id IN (" . implode(",", $_POST['vlId']) . ")";
+    } else {
+        $query .= " WHERE vl_sample_id = " . base64_decode($_POST['vlId']);
+    }
+    $response = $db->rawQuery($query);
+
+    if ($_POST['bulkIds'] && count($_POST['vlId']) > 0) {
         $db = $db->where("`vl_sample_id` IN (" . implode(",", $_POST['vlId']) . ")");
     } else {
         $db = $db->where('vl_sample_id', base64_decode($_POST['vlId']));
@@ -23,14 +31,7 @@ try {
         "result_status"                 => $status
     ));
 
-    if ($id > 0) {
-        $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, vl_sample_id FROM vl_request_form";
-        if ($_POST['bulkIds'] && count($_POST['eidId']) > 0) {
-            $query .= " WHERE vl_sample_id IN (" . implode(",", $_POST['vlId']) . ")";
-        } else {
-            $query .= " WHERE vl_sample_id = " . base64_decode($_POST['vlId']);
-        }
-        $response = $db->rawQuery($query);
+    if ($id > 0 && count($response) > 0) {
         foreach ($response as $result) {
             if (isset($result['vl_sample_id']) && $result['vl_sample_id'] != "") {
                 $db->insert('failed_result_retest_tracker', array(

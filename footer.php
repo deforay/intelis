@@ -480,6 +480,10 @@
 		$(".allMenu").removeClass('active');
 		$(".covid19Results").addClass('active');
 		$(".covid19ResultsMenu").addClass('active');
+	} else if (splitsUrl == 'covid-19-failed-results.php') {
+		$(".allMenu").removeClass('active');
+		$(".covid19Results").addClass('active');
+		$(".covid19FailedResultsMenu").addClass('active');
 	} else if (splitsUrl == 'covid-19-confirmation-manifest.php' || splitsUrl == 'covid-19-add-confirmation-manifest.php') {
 		$(".allMenu").removeClass('active');
 		$(".covid19Results").addClass('active');

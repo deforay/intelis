@@ -817,6 +817,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("covid-19-manual-results.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu covid19ResultsMenu"><a href="/covid-19/results/covid-19-manual-results.php"><i class="fa fa-caret-right"></i> Enter Result Manually</a></li>
+										<li class="allMenu covid19FailedResultsMenu"><a href="/covid-19/results/covid-19-failed-results.php"><i class="fa fa-caret-right"></i> Failed/Hold Samples</a></li>
 									<?php }
 									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("covid-19-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu covid19ResultsConfirmationMenu"><a href="/covid-19/results/covid-19-confirmation-manifest.php"><i class="fa fa-caret-right"></i> Confirmation Manifest</a></li>
