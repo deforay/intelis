@@ -2331,3 +2331,6 @@ ALTER TABLE `form_covid19` ADD UNIQUE(`source_of_request`);
 
 -- Thana 30-Sep-2021
 ALTER TABLE `failed_result_retest_tracker` ADD `remote_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`, ADD `batch_id` VARCHAR(256) NULL DEFAULT NULL AFTER `remote_sample_code`, ADD `facility_id` VARCHAR(256) NULL DEFAULT NULL AFTER `batch_id`;
+UPDATE `resources` SET `resource_id` = 'hepatitis-management' WHERE `resources`.`resource_id` = 'hepatitis-reports';
+UPDATE `privileges` SET `resource_id` = 'hepatitis-management' WHERE `privileges`.`resource_id` = 'hepatitis-reports';
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'hepatitis-management', 'hepatitis-export-data.php', 'Hepatitis Export');
