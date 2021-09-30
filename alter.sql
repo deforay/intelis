@@ -2322,3 +2322,6 @@ CREATE TABLE `failed_result_retest_tracker` (
  `update_by` varchar(256) DEFAULT NULL,
  PRIMARY KEY (`frrt_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Thana 30-Sep-2021
+ALTER TABLE `failed_result_retest_tracker` ADD `remote_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`, ADD `batch_id` VARCHAR(256) NULL DEFAULT NULL AFTER `remote_sample_code`, ADD `facility_id` VARCHAR(256) NULL DEFAULT NULL AFTER `batch_id`;

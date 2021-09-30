@@ -15,12 +15,13 @@ try {
         $db = $db->where('eid_id', base64_decode($_POST['eidId']));
     }
     $id = $db->update("eid_form", array(
-        "result"        => null,
-        "result_status" => $status
+        "result"            => null,
+        "sample_batch_id"   => null,
+        "result_status"     => $status
     ));
 
     if ($id > 0) {
-        $query = "SELECT CASE WHEN (sample_code is not null) THEN sample_code ELSE remote_sample_code END AS sampleCode, result, result_status, eid_id FROM eid_form";
+        $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, eid_id FROM eid_form";
         if ($_POST['bulkIds'] && is_array($_POST['eidId'])) {
             $query .= " WHERE eid_id IN (" . implode(",", $_POST['eidId']) . ")";
         } else {
@@ -30,13 +31,16 @@ try {
         foreach ($response as $result) {
             if (isset($result['eid_id']) && $result['eid_id'] != "") {
                 $db->insert('failed_result_retest_tracker', array(
-                    'test_type_pid' => (isset($result['eid_id']) && $result['eid_id'] != "") ? $result['eid_id'] : null,
-                    'test_type' => 'eid',
-                    'sample_code' => (isset($result['sampleCode']) && $result['sampleCode'] != "") ? $result['sampleCode'] : null,
-                    'result' => (isset($result['result']) && $result['result'] != "") ? $result['result'] : null,
-                    'result_status' => (isset($result['result_status']) && $result['result_status'] != "") ? $result['result_status'] : null,
-                    'updated_datetime' => $general->getDateTime(),
-                    'update_by' => $_SESSION['userId']
+                    'test_type_pid'         => (isset($result['eid_id']) && $result['eid_id'] != "") ? $result['eid_id'] : null,
+                    'test_type'             => 'eid',
+                    'sample_code'           => (isset($result['sample_code']) && $result['sample_code'] != "") ? $result['sample_code'] : null,
+                    'remote_sample_code'    => (isset($result['remote_sample_code']) && $result['remote_sample_code'] != "") ? $result['remote_sample_code'] : null,
+                    'batch_id'              => (isset($result['sample_batch_id']) && $result['sample_batch_id'] != "") ? $result['sample_batch_id'] : null,
+                    'facility_id'           => (isset($result['facility_id']) && $result['facility_id'] != "") ? $result['facility_id'] : null,
+                    'result'                => (isset($result['result']) && $result['result'] != "") ? $result['result'] : null,
+                    'result_status'         => (isset($result['result_status']) && $result['result_status'] != "") ? $result['result_status'] : null,
+                    'updated_datetime'      => $general->getDateTime(),
+                    'update_by'             => $_SESSION['userId']
                 ));
             }
         }
