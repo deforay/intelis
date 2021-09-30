@@ -241,9 +241,9 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
 }
 if (!isset($sWhere) || $sWhere == "") {
     $sWhere = ' where ' . $sWhere;
-    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR vl.result IN ("Failed", "Fail", "Invalid"))';
+    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 } else {
-    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR vl.result IN ("Failed", "Fail", "Invalid"))';
+    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 //error_log($sQuery);

@@ -1,5 +1,7 @@
 <?php
 #require_once('../../startup.php');
+
+// echo "<pre>";print_r($_POST['bulkIds']);die;
 try {
     $general = new \Vlsm\Models\General($db);
     $sarr = $general->getSystemConfig();
@@ -9,14 +11,14 @@ try {
         $status = 9;
     }
     $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, vl_sample_id FROM vl_request_form";
-    if ($_POST['bulkIds'] && count($_POST['vlId']) > 0) {
+    if ($_POST['bulkIds'] && is_array($_POST['vlId'])) {
         $query .= " WHERE vl_sample_id IN (" . implode(",", $_POST['vlId']) . ")";
     } else {
         $query .= " WHERE vl_sample_id = " . base64_decode($_POST['vlId']);
     }
     $response = $db->rawQuery($query);
 
-    if ($_POST['bulkIds'] && count($_POST['vlId']) > 0) {
+    if ($_POST['bulkIds'] && is_array($_POST['vlId'])) {
         $db = $db->where("`vl_sample_id` IN (" . implode(",", $_POST['vlId']) . ")");
     } else {
         $db = $db->where('vl_sample_id', base64_decode($_POST['vlId']));
