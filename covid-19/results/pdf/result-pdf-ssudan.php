@@ -473,7 +473,7 @@ if (sizeof($requestResult) > 0) {
 
         $html .= '<table>';
         $html .= '<tr>';
-        $html .= '<td colspan="2" style="line-height:'.$lh.'px;border-bottom:2px solid #d3d3d3;"></td>';
+        $html .= '<td colspan="2" style="line-height:' . $lh . 'px;border-bottom:2px solid #d3d3d3;"></td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -511,7 +511,7 @@ if (sizeof($requestResult) > 0) {
                     if (isset($facilityInfo['address']) && $facilityInfo['address'] != "") {
                         $h = 185;
                     }
-                }else{
+                } else {
                     $h = 148.5;
                 }
                 $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');

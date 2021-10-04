@@ -35,7 +35,13 @@ if (sizeof($requestResult) > 0) {
         }
         // create new PDF document
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3);
+        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+            $logoPrintInPdf = $result['facilityLogo'];
+        } else {
+            $logoPrintInPdf = $arr['logo'];
+        }
+
+        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3);
         // set document information
         $pdf->SetCreator('VLSM');
         $pdf->SetTitle('Covid-19 Rapport du patient');
@@ -430,7 +436,32 @@ if (sizeof($requestResult) > 0) {
         $html .= '</table>';
 
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+            $ciphering = "AES-128-CTR";
+            $iv_length = openssl_cipher_iv_length($ciphering);
+            $options = 0;
+            $simple_string = $result['covid19_id'] . "&&&qr";
+            $encryption_iv = $systemConfig['tryCrypt'];
+            $encryption_key = $systemConfig['tryCrypt'];
+            $Cid = openssl_encrypt(
+                $simple_string,
+                $ciphering,
+                $encryption_key,
+                $options,
+                $encryption_iv
+            );
             $pdf->writeHTML($html);
+            $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
+            if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
+                $h = 175;
+                if (isset($signResults) && !empty($signResults)) {
+                    if (isset($facilityInfo['address']) && $facilityInfo['address'] != "") {
+                        $h = 185;
+                    }
+                } else {
+                    $h = 160.5;
+                }
+                $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+            }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
             $pdf->Output($filename, "F");
