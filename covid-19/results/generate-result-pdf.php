@@ -84,13 +84,13 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 // echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
 /* Test Results */
-if(isset($_POST['type']) && $_POST['type'] == "qr"){
-	try{
+if (isset($_POST['type']) && $_POST['type'] == "qr") {
+	try {
 		$general->trackQrViewPage('covid19', $requestResult[0]['covid19_id'], $requestResult[0]['sample_code']);
-	}catch (Exception $exc) {
+	} catch (Exception $exc) {
 		error_log($exc->getMessage());
 		error_log($exc->getTraceAsString());
-	  }
+	}
 }
 
 $_SESSION['nbPages'] = sizeof($requestResult);
@@ -123,9 +123,9 @@ class MYPDF extends TCPDF
 			if (trim($this->logo) != '') {
 				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
 					$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-					if($this->formId == 3){
+					if ($this->formId == 3) {
 						$this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-					}else{
+					} else {
 						$this->Image($image_file, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 					}
 				}
@@ -297,72 +297,52 @@ class Pdf_concat extends FPDI
 		}
 	}
 }
-	$resultFilename = '';
-	if (sizeof($requestResult) > 0) {
-		$_SESSION['rVal'] = $general->generateRandomString(6);
-		$pathFront = (UPLOAD_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
-		if (!file_exists($pathFront) && !is_dir($pathFront)) {
-			mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
-			$pathFront = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
+$resultFilename = '';
+if (sizeof($requestResult) > 0) {
+	$_SESSION['rVal'] = $general->generateRandomString(6);
+	$pathFront = (UPLOAD_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
+	if (!file_exists($pathFront) && !is_dir($pathFront)) {
+		mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
+		$pathFront = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
+	}
+	$pages = array();
+	$page = 1;
+
+	foreach ($requestResult as $result) {
+		$covid19Results = $general->getCovid19Results();
+		$countryFormId = $general->getGlobalConfig('vl_form');
+
+		$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
+		$covid19TestInfo = $db->rawQuery($covid19TestQuery);
+
+		$facilityQuery = "SELECT * from form_covid19 as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where covid19_id= " . $result['covid19_id'] . " GROUP BY fd.facility_id LIMIT 1";
+		$facilityInfo = $db->rawQueryOne($facilityQuery);
+		// echo "<pre>";print_r($covid19TestInfo);die;
+
+		$patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
+		$patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+
+		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
+		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
+		$currentTime = $general->getDateTime();
+		$_SESSION['aliasPage'] = $page;
+		if (!isset($result['labName'])) {
+			$result['labName'] = '';
 		}
-		$pages = array();
-		$page = 1;
-
-		foreach ($requestResult as $result) {
-			$covid19Results = $general->getCovid19Results();
-			$countryFormId = $general->getGlobalConfig('vl_form');
-
-			$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
-			$covid19TestInfo = $db->rawQuery($covid19TestQuery);
-
-			$facilityQuery = "SELECT * from form_covid19 as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where covid19_id= " . $result['covid19_id'] . " GROUP BY fd.facility_id LIMIT 1";
-			$facilityInfo = $db->rawQueryOne($facilityQuery);
-			// echo "<pre>";print_r($covid19TestInfo);die;
-
-			$patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-			$patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
-
-			$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
-			$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-			$currentTime = $general->getDateTime();
-			$_SESSION['aliasPage'] = $page;
-			if (!isset($result['labName'])) {
-				$result['labName'] = '';
+		$draftTextShow = false;
+		//Set watermark text
+		for ($m = 0; $m < count($mFieldArray); $m++) {
+			if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+				$draftTextShow = true;
+				break;
 			}
-			$draftTextShow = false;
-			//Set watermark text
-			for ($m = 0; $m < count($mFieldArray); $m++) {
-				if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-					$draftTextShow = true;
-					break;
-				}
-			}
-			if(isset($result['reportFormat']) && $result['reportFormat'] != ""){
-				$formats = json_decode($result['reportFormat'], true);
-				if(file_exists($formats['covid19'])){
-					/* New format selection */
-					include($formats['covid19']);
-				} else{
-					if ($arr['vl_form'] == 1) {
-						include('pdf/result-pdf-ssudan.php');
-					} else if ($arr['vl_form'] == 2) {
-						include('pdf/result-pdf-zm.php');
-					} else if ($arr['vl_form'] == 3) {
-						include('pdf/result-pdf-drc.php');
-					} else if ($arr['vl_form'] == 4) {
-						include('pdf/result-pdf-zam.php');
-					} else if ($arr['vl_form'] == 5) {
-						include('pdf/result-pdf-png.php');
-					} else if ($arr['vl_form'] == 6) {
-						include('pdf/result-pdf-who.php');
-					} else if ($arr['vl_form'] == 7) {
-						include('pdf/result-pdf-rwanda.php');
-					} else if ($arr['vl_form'] == 8) {
-						include('pdf/result-pdf-angola.php');
-					}
-					exit(0);
-				}
-			}else{
+		}
+		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
+			$formats = json_decode($result['reportFormat'], true);
+			if (file_exists($formats['covid19'])) {
+				/* New format selection */
+				include($formats['covid19']);
+			} else {
 				if ($arr['vl_form'] == 1) {
 					include('pdf/result-pdf-ssudan.php');
 				} else if ($arr['vl_form'] == 2) {
@@ -382,18 +362,37 @@ class Pdf_concat extends FPDI
 				}
 				exit(0);
 			}
-		}
-		if (count($pages) > 0) {
-			$resultPdf = new Pdf_concat();
-			$resultPdf->setFiles($pages);
-			$resultPdf->setPrintHeader(false);
-			$resultPdf->setPrintFooter(false);
-			$resultPdf->concat();
-			$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . '.pdf';
-			$resultPdf->Output(UPLOAD_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-			$general->removeDirectory($pathFront);
-			unset($_SESSION['rVal']);
+		} else {
+			if ($arr['vl_form'] == 1) {
+				include('pdf/result-pdf-ssudan.php');
+			} else if ($arr['vl_form'] == 2) {
+				include('pdf/result-pdf-zm.php');
+			} else if ($arr['vl_form'] == 3) {
+				include('pdf/result-pdf-drc.php');
+			} else if ($arr['vl_form'] == 4) {
+				include('pdf/result-pdf-zam.php');
+			} else if ($arr['vl_form'] == 5) {
+				include('pdf/result-pdf-png.php');
+			} else if ($arr['vl_form'] == 6) {
+				include('pdf/result-pdf-who.php');
+			} else if ($arr['vl_form'] == 7) {
+				include('pdf/result-pdf-rwanda.php');
+			} else if ($arr['vl_form'] == 8) {
+				include('pdf/result-pdf-angola.php');
+			}
+			exit(0);
 		}
 	}
-	echo $resultFilename;
-
+	if (count($pages) > 0) {
+		$resultPdf = new Pdf_concat();
+		$resultPdf->setFiles($pages);
+		$resultPdf->setPrintHeader(false);
+		$resultPdf->setPrintFooter(false);
+		$resultPdf->concat();
+		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . '.pdf';
+		$resultPdf->Output(UPLOAD_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+		$general->removeDirectory($pathFront);
+		unset($_SESSION['rVal']);
+	}
+}
+echo $resultFilename;

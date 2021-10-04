@@ -295,27 +295,27 @@ $html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:cen
 $html .= '</tr>';
 
 $html .= '<tr>';
-        $html .= '<td colspan="3">';
-        if (isset($signResults) && !empty($signResults)) {
-            $html .= '<table style="width:100%;padding:3px;border:1px solid gray;">';
-            $html .= '<tr>';
-            $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;">AUTORISÉ PAR</td>';
-            $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">IMPRIMER LE NOM</td>';
-            $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">SIGNATURE</td>';
-            $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">DATE & HEURE</td>';
-            $html .= '</tr>';
-            foreach ($signResults as $key => $row) {
-                $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
-                $html .= '<tr>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid gray;">' . $row['designation'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $row['name_of_signatory'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;"><img src="' . $lmSign . '" style="width:30px;"></td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . date('d-M-Y H:i:s a') . '</td>';
-                $html .= '</tr>';
-            }
-            $html .= '</table>';
-        }
-        $html .= '</td>';
+$html .= '<td colspan="3">';
+if (isset($signResults) && !empty($signResults)) {
+    $html .= '<table style="width:100%;padding:3px;border:1px solid gray;">';
+    $html .= '<tr>';
+    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;">AUTORISÉ PAR</td>';
+    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">IMPRIMER LE NOM</td>';
+    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">SIGNATURE</td>';
+    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">DATE & HEURE</td>';
+    $html .= '</tr>';
+    foreach ($signResults as $key => $row) {
+        $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+        $html .= '<tr>';
+        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid gray;">' . $row['designation'] . '</td>';
+        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $row['name_of_signatory'] . '</td>';
+        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;"><img src="' . $lmSign . '" style="width:30px;"></td>';
+        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . date('d-M-Y H:i:s a') . '</td>';
+        $html .= '</tr>';
+    }
+    $html .= '</table>';
+}
+$html .= '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
@@ -323,13 +323,38 @@ $html .= '<td width="100%" style="line-height:20px;border-bottom:2px solid #d3d3
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:left;color:#545252;" colspan="3">'.$sampleDispatchDate.' '.$sampleDispatchTime.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Department de virologie</td>';
+$html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:left;color:#545252;" colspan="3">' . $sampleDispatchDate . ' ' . $sampleDispatchTime . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Department de virologie</td>';
 $html .= '</tr>';
 $html .= '</table>';
 $html .= '</td></tr></table>';
 
 if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+    $ciphering = "AES-128-CTR";
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $options = 0;
+    $simple_string = $result['covid19_id'] . "&&&qr";
+    $encryption_iv = $systemConfig['tryCrypt'];
+    $encryption_key = $systemConfig['tryCrypt'];
+    $Cid = openssl_encrypt(
+        $simple_string,
+        $ciphering,
+        $encryption_key,
+        $options,
+        $encryption_iv
+    );
     $pdf->writeHTML($html);
+    $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
+    if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
+        $h = 175;
+        if (isset($signResults) && !empty($signResults)) {
+            if (isset($facilityInfo['address']) && $facilityInfo['address'] != "") {
+                $h = 185;
+            }
+        } else {
+            $h = 160.5;
+        }
+        $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+    }
     $pdf->lastPage();
     $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
     $pdf->Output($filename, "F");
