@@ -2309,7 +2309,7 @@ UPDATE `system_config` SET `value` = '4.4.1' WHERE `system_config`.`name` = 'sc_
 ALTER TABLE `facility_details` ADD UNIQUE(`facility_name`);
 ALTER TABLE `facility_details` ADD UNIQUE(`facility_code`);
 ALTER TABLE `facility_details` ADD UNIQUE(`other_id`);
-ALTER TABLE `form_hepatitis` ADD UNIQUE(`source_of_request`);
+-- ALTER TABLE `form_hepatitis` ADD UNIQUE(`source_of_request`);
 -- Thana 28-Sep-2021
 CREATE TABLE `failed_result_retest_tracker` (
  `frrt_id` int NOT NULL AUTO_INCREMENT,
@@ -2334,3 +2334,8 @@ ALTER TABLE `failed_result_retest_tracker` ADD `remote_sample_code` VARCHAR(256)
 UPDATE `resources` SET `resource_id` = 'hepatitis-management' WHERE `resources`.`resource_id` = 'hepatitis-reports';
 UPDATE `privileges` SET `resource_id` = 'hepatitis-management' WHERE `privileges`.`resource_id` = 'hepatitis-reports';
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'hepatitis-management', 'hepatitis-export-data.php', 'Hepatitis Export');
+
+
+-- Amit 01-Oct-2021
+ALTER TABLE `form_covid19` ADD `covid19_test_name` VARCHAR(500) NULL DEFAULT NULL AFTER `covid19_test_platform`;
+

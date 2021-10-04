@@ -259,6 +259,8 @@ try {
 					);
 					$db->insert($testTableName, $covid19TestData);
 					$covid19Data['sample_tested_datetime'] = date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey]));
+					$covid19Data['covid19_test_platform'] = $_POST['testingPlatform'][$testKey];
+					$covid19Data['covid19_test_name'] = $_POST['testName'][$testKey];
 				}
 			}
 		}

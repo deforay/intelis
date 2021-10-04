@@ -2,6 +2,45 @@
 
 // this file is included in /covid-19/interop/dhis2/covid-19-receive.php
 
+$programStages = [
+    'clinicalExaminationAndDiagnosis' => 'LpWNjNGvCO5',
+    'labRequest' => 'iR8O4hSLHnu',
+    'labReception' => 'QaAb8G10EKp',
+    'labProcessingAndResults' => 'CTdzCeTbYay',
+    'patientConditionAndManagement' => 'QHr9W5Gr1ao',
+    'finalTestResult' => 'l4KoHCW02x7',
+    'healthOutcome' => 'dZXkdh0kR3x',
+    'specimenManagement' => 'FaXWNZei3np',
+];
+
+
+$attributesDataElementMapping = [
+    'HAZ7VQ730yn' => 'external_sample_code', //dhis2 case id
+    'yCWkkKtr6vd' => 'source_of_alert',
+    'he05i8FUwu3' => 'patient_id',
+    'sB1IHYu2xQT' => 'patient_name',
+    'ENRjVGxVL6l' => 'patient_surname',
+    'NI0QRzJvQ0k' => 'patient_dob',
+    'Rv8WM2mTuS5' => 'patient_age',
+    'oindugucx72' => 'patient_gender',
+    'aMJNeET3i7B' => 'patient_occupation',
+    'fctSQp5nAYl' => 'patient_phone_number',
+    'qlYg7fundnJ' => 'patient_nationality'
+];
+
+$eventsDataElementMapping = [
+    'Q98LhagGLFj' => 'sample_collection_date',
+    'H3UJlHuglGv' => 'reason_for_covid19_test',
+    'b4PEeF4OOwc' => 'covid19_test_platform',
+    'P61FWjSAjjA' => 'sample_condition',
+    'bujqZ6Dqn4m' => 'lab_id',
+    'kL7PTi4lRSl' => 'specimen_type',
+    'pxPdKaS9CqF' => 'sample_received_datetime',
+    'Cl2I1H6Y3oj' => 'sample_tested_datetime',
+    //'f5HxreMlOWP' => 'result',
+    'ovY6E8BSdto' => 'result'
+];
+
 
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
@@ -24,6 +63,8 @@ $url = "/api/trackedEntityInstances.json";
 
 $jsonResponse = $dhis2->get($url, $data);
 
+if($jsonResponse == '' || empty($jsonResponse)) die('No Response from API');
+
 $trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
 
 // echo "<pre>";
@@ -31,32 +72,6 @@ $trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/
 // echo "</pre>";
 // die;
 
-$attributesDataElementMapping = [
-    'HAZ7VQ730yn' => 'external_sample_code', //dhis2 case id
-    'yCWkkKtr6vd' => 'source_of_alert',
-    'he05i8FUwu3' => 'patient_id',
-    'sB1IHYu2xQT' => 'patient_name',
-    'ENRjVGxVL6l' => 'patient_surname',
-    'NI0QRzJvQ0k' => 'patient_dob',
-    'Rv8WM2mTuS5' => 'patient_age',
-    'oindugucx72' => 'patient_gender',
-    'aMJNeET3i7B' => 'patient_occupation',
-    'fctSQp5nAYl' => 'patient_phone_number',
-    'qlYg7fundnJ' => 'patient_nationality'
-];
-
-
-$eventsDataElementMapping = [
-    'Q98LhagGLFj' => 'sample_collection_date',
-    'H3UJlHuglGv' => 'reason_for_covid19_test',
-    'b4PEeF4OOwc' => 'covid19_test_platform',
-    'P61FWjSAjjA' => 'sample_condition',
-    'bujqZ6Dqn4m' => 'lab_id',
-    'kL7PTi4lRSl' => 'specimen_type',
-    'pxPdKaS9CqF' => 'sample_received_datetime',
-    'Cl2I1H6Y3oj' => 'sample_tested_datetime',
-    'f5HxreMlOWP' => 'result'
-];
 
 
 // echo ("<h5>...</h5>");
@@ -79,7 +94,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $allProgramStages = array_column($enrollments['events'], 'programStage', 'event');
 
-        $screeningEventIds = array_keys($allProgramStages, 'iR8O4hSLHnu'); // screening programStage
+        $screeningEventIds = array_keys($allProgramStages, $programStages['labRequest']); // screening programStage
 
         if (count($screeningEventIds) == 0)  continue 2; // if no screening stage, skip this tracker entirely
 
@@ -91,7 +106,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $eventsData = array();
         foreach ($enrollments['events'] as $event) {
 
-            if ($event['programStage'] != 'iR8O4hSLHnu') continue;
+            if ($event['programStage'] != $programStages['labRequest']) continue;
 
             foreach ($event['dataValues'] as $dV) {
                 if (empty($eventsDataElementMapping[$dV['dataElement']])) continue;
@@ -108,9 +123,9 @@ foreach ($trackedEntityInstances as $tracker) {
     }
 
 
-    echo "<h1>";
-    var_dump($tracker['trackedEntityInstance']);
-    echo "</h1>";
+    // echo "<h1>";
+    // var_dump($tracker['trackedEntityInstance']);
+    // echo "</h1>";
 
 
     foreach ($eventsData as $sourceOfRequest => $singleEventData) {
@@ -233,7 +248,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $db->onDuplicate($updateColumns, 'source_of_request');
         $id = $db->insert("form_covid19", $formData);
-        echo "<h1>IDIDIDI: $id</h1>";
+        // echo "<h1>IDIDIDI: $id</h1>";
         if ($id != false) {
             $processedCounter++;
         }

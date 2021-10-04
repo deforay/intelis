@@ -251,6 +251,8 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $id = $db->delete('testing_labs');
             }
 
+
+
             foreach ($dataValues as $tableData) {
                 // getting column names using array_key
                 // we will update all columns ON DUPLICATE
@@ -258,6 +260,21 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $lastInsertId = $dataToSync[$dataType]['primaryKey'];
                 $db->onDuplicate($updateColumns, $lastInsertId);
                 $db->insert($dataToSync[$dataType]['tableName'], $tableData);
+                if ($dataType == 'facilities') {
+                    $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
+                    if (file_exists($labLogoFolder) && is_dir($labLogoFolder)) {
+                        $images = glob("$labLogoFolder/*.{jpg,png,gif,jpeg}", GLOB_BRACE);
+                        foreach ($images as $image) {
+                            @unlink($image);
+                        }
+                    }
+                    if (!empty($tableData['facility_logo'])) {
+                        mkdir($labLogoFolder, 0777, true);
+                        $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
+                        $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
+                        file_put_contents($localFileLocation, file_get_contents($remoteFileUrl));
+                    }
+                }
             }
         }
 
@@ -285,9 +302,9 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 unset($sign['signatory_id']);
                 if (isset($sign['signature']) && $sign['signature'] != "") {
                     /* To save file from the url */
-                    $filePath = $systemConfig['remoteURL'] . '/uploads/labs/' . $sign['lab_id'] . '/signatures/' . $sign['signature'];
-                    $pathname = $signaturesFolder . DIRECTORY_SEPARATOR . $sign['signature'];
-                    if (file_put_contents($pathname, file_get_contents($filePath))) {
+                    $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/labs/' . $sign['lab_id'] . '/signatures/' . $sign['signature'];
+                    $localFileLocation = $signaturesFolder . DIRECTORY_SEPARATOR . $sign['signature'];
+                    if (file_put_contents($localFileLocation, file_get_contents($remoteFileUrl))) {
                         $db->insert('lab_report_signatories', $sign);
                     }
                 }
