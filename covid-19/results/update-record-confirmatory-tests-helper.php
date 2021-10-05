@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+	session_start();
 }
 ob_start();
 #require_once('../../startup.php');
@@ -52,16 +52,16 @@ try {
 		$covid19Data['result'] = null;
 		$covid19Data['result_status'] = 4;
 	}
-	if(isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')){
-		$deleteRows = explode(',',$_POST['deletedRow']);
-		foreach($deleteRows as $delete){
+	if (isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+		$deleteRows = explode(',', $_POST['deletedRow']);
+		foreach ($deleteRows as $delete) {
 			$db = $db->where('test_id', base64_decode($delete));
 			$id = $db->delete($testTableName);
 		}
 	}
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-		if(isset($_POST['testName']) && count($_POST['testName']) > 0){
-			foreach($_POST['testName'] as $testKey=>$testerName){
+		if (isset($_POST['testName']) && count($_POST['testName']) > 0) {
+			foreach ($_POST['testName'] as $testKey => $testerName) {
 				if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
 					$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
 					$_POST['testDate'][$testKey] = $general->dateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
@@ -72,19 +72,21 @@ try {
 					'covid19_id'			=> $_POST['covid19SampleId'],
 					'test_name'				=> $_POST['testName'][$testKey],
 					'facility_id'           => isset($_POST['labId']) ? $_POST['labId'] : null,
-					'sample_tested_datetime'=> $_POST['testDate'][$testKey],
+					'sample_tested_datetime' => $_POST['testDate'][$testKey],
 					'result'				=> $_POST['testResult'][$testKey],
 				);
-				if(isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != ''){
+				if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
 					$db = $db->where('test_id', base64_decode($_POST['testId'][$testKey]));
-					$db->update($testTableName,$covid19TestData);
-				}else{
-					$db->insert($testTableName,$covid19TestData);
+					$db->update($testTableName, $covid19TestData);
+				} else {
+					$db->insert($testTableName, $covid19TestData);
 				}
 				$covid19Data['sample_tested_datetime'] = date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey]));
+				$covid19Data['covid19_test_platform'] = $_POST['testingPlatform'][$testKey];
+				$covid19Data['covid19_test_name'] = $_POST['testName'][$testKey];
 			}
 		}
-	}else{
+	} else {
 		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 		$id = $db->delete($testTableName);
 		$covid19Data['sample_tested_datetime'] = null;
@@ -103,10 +105,10 @@ try {
 	$general->activityLog($eventType, $action, $resource);
 
 	$data = array(
-	  'user_id' => $_SESSION['userId'],
-	  'vl_sample_id' => $_POST['covid19SampleId'],
-	  'test_type' => 'covid19',
-	  'updated_on' => $general->getDateTime()
+		'user_id' => $_SESSION['userId'],
+		'vl_sample_id' => $_POST['covid19SampleId'],
+		'test_type' => 'covid19',
+		'updated_on' => $general->getDateTime()
 	);
 	$db->insert($tableName2, $data);
 

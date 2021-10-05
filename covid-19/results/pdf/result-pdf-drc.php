@@ -15,10 +15,10 @@ if (sizeof($requestResult) > 0) {
     $page = 1;
     foreach ($requestResult as $result) {
 
-        $covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
+        $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
         $covid19TestInfo = $db->rawQuery($covid19TestQuery);
 
-        $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
+        $signQuery = "SELECT * FROM lab_report_signatories WHERE lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
         $currentTime = $general->getDateTime();
         $_SESSION['aliasPage'] = $page;
