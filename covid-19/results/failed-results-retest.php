@@ -25,6 +25,8 @@ try {
         $db = $db->where('covid19_id', base64_decode($_POST['covid19Id']));
     }
 
+    $db = $db->where('covid19_id', base64_decode($_POST['covid19Id']));
+    $db->delete('covid19_tests');
 
     $id = $db->update("form_covid19", array(
         "result"            => null,
