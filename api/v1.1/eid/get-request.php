@@ -49,7 +49,6 @@ try {
         vl.vlsm_instance_id                                  as instanceId,
         vl.vlsm_country_id                                   as formId,
         vl.facility_id                                       as facilityId,
-        vl.province_id                                       as provinceId,
         vl.lab_id                                            as labId,
         vl.implementing_partner                              as implementingPartner,
         vl.funding_source                                    as fundingSource,
@@ -106,9 +105,10 @@ try {
         lt_u_d.user_name                                     as labTechnicianName,
         t_b.user_name                                        as testedByName,
         rs.rejection_reason_name                             as rejectionReason,
-        p.province_name                                      as provinceName,                  
-        r_f_s.funding_source_name                            as fundingSourceName,                  
-        r_i_p.i_partner_name                                 as implementingPartnerName,                  
+        p.province_id                                        as provinceId,
+        p.province_name                                      as provinceName,
+        r_f_s.funding_source_name                            as fundingSourceName,
+        r_i_p.i_partner_name                                 as implementingPartnerName,
         ts.status_name                                       as resultStatusName
         
         FROM eid_form as vl 

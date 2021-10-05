@@ -40,7 +40,7 @@ if (isset($_POST['newData']) && $_POST['newData'] != '') {
 } else if (!empty($_SESSION['vlRequestSearchResultQuery'])) {
   //$query = isset($_SESSION['vlResultQuery']) ? $_SESSION['vlResultQuery'] : null;
   $searchQuery = $_SESSION['vlRequestSearchResultQuery'];
-} 
+}
 
 if (isset($_POST['id']) && trim($_POST['id']) != '') {
   //if(isset($_POST['resultMail'])){
@@ -68,7 +68,6 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
   //  $searchQuery = $query." and vl.vl_sample_id IN(".$_POST['id'].")";
   //}
 } else {
-  
 }
 //error_log($searchQuery);
 
