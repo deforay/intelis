@@ -56,5 +56,5 @@ try {
 }
 //catch exception
 catch (Exception $e) {
-    echo 'EID failed-results-retest.php: ' . $e->getMessage();
+    echo 'Covid-19 failed-results-retest.php: ' . $e->getMessage();
 }

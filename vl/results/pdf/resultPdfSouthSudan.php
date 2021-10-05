@@ -36,7 +36,10 @@ if (sizeof($requestResult) > 0) {
 
           $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = null;
           if (!empty($testedByRes['user_signature'])) {
-               $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
+               $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
+          }
+          if (!empty($reviewedByRes['user_signature'])) {
+               $reviewedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $reviewedByRes['user_signature'];
           }
 
           $resultApprovedBy = '';
@@ -215,16 +218,16 @@ if (sizeof($requestResult) > 0) {
                $isResultNumeric = is_numeric($vlResult);
                if ($isResultNumeric) {
                     if ($vlResult > 1000) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
                          $showMessage = ($arr['h_vl_msg']);
                          $messageTextSize = '15px';
                     } else if ($vlResult <= 1000) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
                          $showMessage = ($arr['l_vl_msg']);
                     }
                } else {
                     if (in_array(strtolower($vlResult), array("below detection limit", "below detection level", 'bdl', 'BDL'))) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
                          $showMessage = ucfirst($arr['l_vl_msg']);
                     } else if (in_array(strtolower($vlResult), array("tnd", "target not detected", 'ldl'))) {
                          if ($vlResult == 'ldl' || $vlResult == 'LDL') {
@@ -233,7 +236,7 @@ if (sizeof($requestResult) > 0) {
                               $vlResult = 'TND*';
                               $tndMessage = 'TND* - Target not Detected';
                          }
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
                          $showMessage = ($arr['l_vl_msg']);
                          $tndMessage = 'TND* - Target not Detected';
                     } else if (in_array(strtolower($vlResult), array("failed", "fail", "no_sample", "invalid"))) {
@@ -243,11 +246,11 @@ if (sizeof($requestResult) > 0) {
                          $messageTextSize = '14px';
                     } else if (in_array($vlResult, array("<20", "< 20", "<40", "< 40"))) {
                          $vlResult = str_replace("<", "&lt;", $vlResult);
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
                          $showMessage = ($arr['l_vl_msg']);
                     } else if ($vlResult == '>10000000' || $vlResult == '> 10000000') {
                          $vlResult = str_replace(">", "&gt;", $vlResult);
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
                          $showMessage = ($arr['h_vl_msg']);
                     }
                }
@@ -256,10 +259,10 @@ if (sizeof($requestResult) > 0) {
                $smileyContent = '';
           }
           if ($result['result_status'] == '4') {
-               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
+               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
           }
           $html = '';
-          $html .= '<table style="padding:8px 2px 2px 2px;">';
+          $html .= '<table style="padding:4px 2px 2px 2px;width:100%;">';
           $html .= '<tr>';
 
           $html .= '<td colspan="3">';
@@ -267,21 +270,21 @@ if (sizeof($requestResult) > 0) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING HEALTH FACILITY NAME</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">HEALTH FACILITY CODE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">State</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">County</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">STATE</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">COUNTY</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_name']) . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_code']) . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_state']) . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_district']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['facility_name']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['facility_code']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['facility_state']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['facility_district']) . '</td>';
           $html .= '</tr>';
           $html .= '</table>';
           $html .= '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="3">';
-          $html .= '<table style="padding:8px 2px 2px 2px;">';
+          $html .= '<table style="padding:4px 2px 2px 2px;">';
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT NAME</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">UNIQUE ART (TRACNET) NO.</td>';
@@ -293,10 +296,10 @@ if (sizeof($requestResult) > 0) {
           $patientFname = ucwords($general->crypto('decrypt', $result['patient_first_name'], $result['patient_art_no']));
 
 
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientFname . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_art_no'] . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['test_reason_name']) . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_art_no'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['test_reason_name']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '</tr>';
           $html .= '</table>';
           $html .= '</td>';
@@ -317,14 +320,14 @@ if (sizeof($requestResult) > 0) {
           }
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
           if ($result['patient_gender'] == 'female') {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords(str_replace("_", " ", $result['is_patient_breastfeeding'])) . '</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords(str_replace("_", " ", $result['is_patient_pregnant'])) . '</td>';
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", $result['is_patient_breastfeeding'])) . '</td>';
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", $result['is_patient_pregnant'])) . '</td>';
           } else {
-               $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;"></td>';
-               $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;"></td>';
+               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
+               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           }
           $html .= '</tr>';
 
@@ -334,9 +337,9 @@ if (sizeof($requestResult) > 0) {
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['request_clinician_name']) . '</td>';
-          $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
-          $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . $result['facility_emails'] . '</td>';
+          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['request_clinician_name']) . '</td>';
+          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
+          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
           $html .= '</tr>';
           $html .= '</table>';
           $html .= '</td>';
@@ -350,9 +353,9 @@ if (sizeof($requestResult) > 0) {
           $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE RECEIPT DATE</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:12px;font-size:11px;text-align:left;">' . $result['sample_code'] . '</td>';
-          $html .= '<td style="line-height:12px;font-size:11px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
-          $html .= '<td style="line-height:12px;font-size:11px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
@@ -360,24 +363,24 @@ if (sizeof($requestResult) > 0) {
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">RESULT RELEASE DATE</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['is_sample_rejected']) . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['is_sample_rejected']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
           $html .= '</tr>';
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE TYPE</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['sample_name']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['sample_name']) . '</td>';
           $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:10px;"></td>';
-          $html .= '</tr>';
+          // $html .= '<tr>';
+          // $html .= '<td colspan="3" style="line-height:10px;"></td>';
+          // $html .= '</tr>';
 
           $html .= '<tr>';
           $html .= '<td colspan="3">';
-          $html .= '<table style="padding:12px 2px 2px 2px;">';
+          $html .= '<table style="padding:10px 2px 2px 2px;">';
           $logValue = '';
           if ($result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
                $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
@@ -396,10 +399,10 @@ if (sizeof($requestResult) > 0) {
           }
           if (strpos(strtolower($result['vl_test_platform']), 'abbott') !== false) {
                $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:8px;font-size:10px;padding-top:10px;">Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml</td>';
+               $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml</td>';
                $html .= '</tr>';
           }
-          $html .= '<tr><td colspan="3"></td></tr>';
+          //$html .= '<tr><td colspan="3"></td></tr>';
           $html .= '</table>';
           $html .= '</td>';
           $html .= '</tr>';
@@ -430,35 +433,35 @@ if (sizeof($requestResult) > 0) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
+          // $html .= '<tr>';
+          // $html .= '<td colspan="3" style="line-height:14px;"></td>';
+          // $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:14px;"></td>';
+          $html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">TEST PLATFORM &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ucwords($result['vl_test_platform']) . '</span></td>';
           $html .= '</tr>';
+          // $html .= '<tr>';
+          // $html .= '<td colspan="3" style="line-height:8px;"></td>';
+          // $html .= '</tr>';
+          // if (isset($result['last_viral_load_result']) && $result['last_viral_load_result'] != null) {
+          //      $html .= '<tr>';
+          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">PREVIOUS RESULTS</td>';
+          //      $html .= '</tr>';
+          //      $html .= '<tr>';
+          //      $html .= '<td colspan="3" style="line-height:8px;"></td>';
+          //      $html .= '</tr>';
+          //      $html .= '<tr>';
+          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Date of Last Viral Load Test&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_date'] . '</span></td>';
+          //      $html .= '</tr>';
+          //      $html .= '<tr>';
+          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Result of previous viral load(copies/ml)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
+          //      $html .= '</tr>';
+          // }
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">TEST PLATFORM &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ucwords($result['vl_test_platform']) . '</span></td>';
+          $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;"></td>';
-          $html .= '</tr>';
-          if (isset($result['last_viral_load_result']) && $result['last_viral_load_result'] != null) {
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">PREVIOUS RESULTS</td>';
-               $html .= '</tr>';
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:8px;"></td>';
-               $html .= '</tr>';
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Date of Last Viral Load Test&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_date'] . '</span></td>';
-               $html .= '</tr>';
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Result of previous viral load(copies/ml)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
-               $html .= '</tr>';
-          }
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;border-bottom:2px solid #d3d3d3;"></td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;"></td>';
-          $html .= '</tr>';
+          // $html .= '<tr>';
+          // $html .= '<td colspan="3" style="line-height:8px;"></td>';
+          // $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
@@ -467,50 +470,52 @@ if (sizeof($requestResult) > 0) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-          if (!empty($reviewedSignaturePath) && file_exists($reviewedSignaturePath)) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:70px;" /></td>';
+          if (!empty($testUserSignaturePath) && file_exists($testUserSignaturePath)) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
           $html .= '</tr>';
 
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;"></td>';
-          $html .= '</tr>';
+          if (!empty($reviewedBy)) {
+               $html .= '<tr>';
+               $html .= '<td colspan="3" style="line-height:8px;"></td>';
+               $html .= '</tr>';
 
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED BY</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-          $html .= '</tr>';
+               $html .= '<tr>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED BY</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+               $html .= '</tr>';
 
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-          if (!empty($testUserSignaturePath) && file_exists($testUserSignaturePath)) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:70px;" /></td>';
-          } else {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+               $html .= '<tr>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
+               if (!empty($reviewedSignaturePath) && file_exists($reviewedSignaturePath)) {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
+               } else {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+               }
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? $result['result_reviewed_datetime'] : $result['sample_tested_datetime']) . '</td>';
+               $html .= '</tr>';
           }
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_reviewed_datetime'] . '</td>';
-          $html .= '</tr>';
 
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-          $html .= '</tr>';
+          // $html .= '<tr>';
+          // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
+          // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+          // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+          // $html .= '</tr>';
 
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          /* if (!empty($revisedSignaturePath) && file_exists($revisedSignaturePath)) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
-          } else {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          } */
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          $html .= '</tr>';
+          // $html .= '<tr>';
+          // $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          // /* if (!empty($revisedSignaturePath) && file_exists($revisedSignaturePath)) {
+          //      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:50px;" /></td>';
+          // } else {
+          //      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          // } */
+          // $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          // $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          // $html .= '</tr>';
 
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:8px;"></td>';
@@ -523,7 +528,7 @@ if (sizeof($requestResult) > 0) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
           if (!empty($userSignaturePath) && file_exists($userSignaturePath)) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:70px;" /></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
@@ -531,23 +536,26 @@ if (sizeof($requestResult) > 0) {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
           $html .= '</tr>';
 
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:2px;"></td>';
-          $html .= '</tr>';
+          // $html .= '<tr>';
+          // $html .= '<td colspan="3" style="line-height:2px;"></td>';
+          // $html .= '</tr>';
+
+          if (!empty($result['approver_comments'])) {
+               $html .= '<tr>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
+               $html .= '</tr>';
+               $html .= '<tr>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['approver_comments'] . '</td>';
+               $html .= '</tr>';
+          }
+
 
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
+          $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['approver_comments'] . '</td>';
-          $html .= '</tr>';
-
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:20px;border-bottom:2px solid #d3d3d3;"></td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:2px;"></td>';
-          $html .= '</tr>';
+          // $html .= '<tr>';
+          // $html .= '<td colspan="3" style="line-height:2px;"></td>';
+          // $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="3">';
           $html .= '<table>';

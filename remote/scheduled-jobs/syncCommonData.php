@@ -260,6 +260,9 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $lastInsertId = $dataToSync[$dataType]['primaryKey'];
                 $db->onDuplicate($updateColumns, $lastInsertId);
                 $db->insert($dataToSync[$dataType]['tableName'], $tableData);
+                
+                // For updated facilities, we delete logo images (if any) and then we get new images (if any)
+                // this ensures that if the logo was there previously it gets removed
                 if ($dataType == 'facilities') {
                     $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
                     if (file_exists($labLogoFolder) && is_dir($labLogoFolder)) {
