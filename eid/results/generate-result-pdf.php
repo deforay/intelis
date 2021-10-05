@@ -51,6 +51,7 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
   $searchQuery = "SELECT vl.*,f.*,l.facility_name as labName,
                   l.facility_logo as facilityLogo,
                   rip.i_partner_name,
+                  rst.*,
                   rsrr.rejection_reason_name ,
                   u_d.user_name as reviewedBy,
                   a_u_d.user_name as approvedBy,
@@ -59,7 +60,8 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
                   LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                   LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id 
                   LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-                  LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
+                  LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
+                  LEFT JOIN r_eid_sample_type as rst ON rst.sample_id=vl.specimen_type 
                   LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection 
                   LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner 
                   LEFT JOIN import_config_machines as tp ON tp.config_machine_id=vl.import_machine_name 
