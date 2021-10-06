@@ -299,10 +299,13 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     /* Current regimen */
     $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
     $aResult = $db->query($aQuery);
-    foreach ($aResult as $subKey => $reject) {
-        $rejectionReason[$subKey]['value'] = $regimen['art_code'];
-        $rejectionReason[$subKey]['show'] = $regimen['art_code'];
+
+    $regimenResult = array();
+    foreach ($aResult as $subKey => $regimen) {
+        $regimenResult[$subKey]['value'] = $regimen['art_code'];
+        $regimenResult[$subKey]['show'] = $regimen['art_code'];
     }
+    $data['vl']['currentRegimenList'] = $regimenResult;
     /* ARV Adherence */
     $data['vl']['arvAdherence'] = array(
         array('value' => 'good', 'show' => 'Good >= 95%'),
