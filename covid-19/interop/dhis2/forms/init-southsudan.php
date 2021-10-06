@@ -21,31 +21,28 @@ if (!empty($response) && $response != '[]') {
 
     foreach ($response['options'] as $lab) {
 
-        $db->where("other_id", $lab['id']);
-        $facility = $db->getOne("facility_details");
+        $facilityData = array(
+            'facility_name' => $lab['name'],
+            'vlsm_instance_id' => $instanceId,
+            'other_id' => $lab['id'],
+            'facility_type' => 2,
+            'test_type' => 'covid19',
+            'updated_datetime' => $general->getDateTime(),
+            'status' => 'active'
+        );
+        $updateColumns = array("other_id", "updated_datetime");
+        $db->onDuplicate($updateColumns, 'facility_id');
+        $db->insert('facility_details', $facilityData);
+        $id = $db->getInsertId();
 
-
-        if (empty($facility)) {
-            $facilityData = array(
-                'facility_name' => $lab['name'],
-                'vlsm_instance_id' => $instanceId,
-                'other_id' => $lab['id'],
-                'facility_type' => 2,
-                'test_type' => 'covid19',
-                'updated_datetime' => $general->getDateTime(),
-                'status' => 'active'
-            );
-            $id = $db->insert('facility_details', $facilityData);
-
-            $dataTest = array(
-                'test_type' => 'covid19',
-                'facility_id' => $id,
-                'monthly_target' => null,
-                'suppressed_monthly_target' => null,
-                "updated_datetime" => $general->getDateTime()
-            );
-            $db->insert('testing_labs', $dataTest);
-        }
+        $dataTest = array(
+            'test_type' => 'covid19',
+            'facility_id' => $id,
+            'monthly_target' => null,
+            'suppressed_monthly_target' => null,
+            "updated_datetime" => $general->getDateTime()
+        );
+        $db->setQueryOption(array('IGNORE'))->insert('testing_labs', $dataTest);
     }
 }
 
@@ -80,12 +77,12 @@ if (!empty($response) && $response != '[]') {
 //     $db->onDuplicate($updateColumns, 'facility_id');
 //     $db->insert('facility_details', $facilityData);
 //     $id = $db->getInsertId();
-//     $db->where('facility_id  = ' . $id);
-//     $db->delete('health_facilities');
+//     // $db->where('facility_id  = ' . $id);
+//     // $db->delete('health_facilities');
 //     $dataTest = array(
 //         'test_type' => 'covid19',
 //         'facility_id' => $id,
 //         "updated_datetime" => $general->getDateTime()
 //     );
-//     $db->insert('health_facilities', $dataTest);
+//     $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);
 // }

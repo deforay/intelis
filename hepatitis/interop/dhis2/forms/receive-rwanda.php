@@ -114,9 +114,9 @@ foreach ($trackedEntityInstances as $tracker) {
         $attributesData[$attributesDataElementMapping[$trackerAttr['attribute']]] = $trackerAttr['value'];
     }
 
-    foreach ($eventsData as $sourceOfRequest => $singleEventData) {
+    foreach ($eventsData as $uniqueID => $singleEventData) {
         $formData = array_merge($singleEventData, $attributesData);
-        $formData['source_of_request'] = $sourceOfRequest;
+        $formData['source_of_request'] = 'dhis2';
         $formData['source_data_dump'] = json_encode($tracker);
 
 
@@ -198,8 +198,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $hepatitisModel = new \Vlsm\Models\Hepatitis($db);
 
 
-        // $db->where("source_of_request", $formData['source_of_request']);
-        // $hepatitisData = $db->getOne("form_hepatitis");
+        $formData['unique_id'] = $uniqueID;
 
 
         $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, $general->humanDateFormat($formData['sample_collection_date']));

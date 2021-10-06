@@ -38,6 +38,7 @@ $sampleRejection = array('yes' => 'Rejected/Recollect', 'no' => 'Accepted');
 //get facility map id
 $query = "SELECT 
             unique_id,
+            covid19_id,
             source_of_request,
             facility_id,
             lab_id,
@@ -57,19 +58,20 @@ $query = "SELECT
             tested_by,
             lab_technician
             FROM form_covid19 
-            WHERE source_of_request LIKE 'dhis%' 
-            AND result_sent_to_source LIKE 'pending'";
+            WHERE source_of_request LIKE 'dhis2' 
+            AND result_status = 7
+            AND result_sent_to_source NOT LIKE 'sent'";
+
 $formResults = $db->rawQuery($query);
-
-
 $counter = 0;
+
 foreach ($formResults as $row) {
 
   $db->where('covid19_id', $row['covid19_id']);
   $testResults = $db->get('covid19_tests');
 
-  $sourceOfRequestArray = explode("::", $row['source_of_request']);
-  $trackedEntityInstance = $sourceOfRequestArray[1];
+  $uniqueIdArray = explode("::", $row['unique_id']);
+  $trackedEntityInstance = $uniqueIdArray[1];
 
   if (!empty($row['facility_id'])) {
     $facQuery = "SELECT facility_id, facility_name, other_id from facility_details where facility_id = " . $row['facility_id'];
@@ -92,9 +94,6 @@ foreach ($formResults as $row) {
   $payload = array();
 
 
-
-  //Lab Reception program stage
-
   $dataValues = array(
     'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
     'lHekjJANaNi' => $row['sample_received_at_vl_lab_datetime'],
@@ -110,14 +109,14 @@ foreach ($formResults as $row) {
     $dataValues[$rejectionReason['rejection_reason_code']] = "true";
   }
 
-  $idGeneratorApi = $dhis2->get("/api/system/id.json");
-  $idResponse = (json_decode($idGeneratorApi, true));
-  $eventId = $idResponse['codes'][0];
+  // $idGeneratorApi = $dhis2->get("/api/system/id.json");
+  // $idResponse = (json_decode($idGeneratorApi, true));
+  // $eventId = $idResponse['codes'][0];
 
   if ($eventId == null) $eventId = $general->generateRandomString(11);
 
   $eventPayload = array(
-    "event" => $eventId,
+    //"event" => $eventId,
     "eventDate" => date("Y-m-d"),
     "program" => "uYjxkTbwRNf",
     "orgUnit" => $facResult['other_id'],
@@ -131,18 +130,13 @@ foreach ($formResults as $row) {
   if (!empty($dataValues)) {
     $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
     $payload[] = $eventPayload;
-    echo "<br><br><pre>";
-    print_r($payload);
-    echo "</pre>";
-
-    // $response = $dhis2->post("/api/33/events/", $payload);
-    // echo "<br><br><pre>";
-    // var_dump($response);
-    // echo "</pre>";
   }
 
 
   //Updating Test Results
+  $eventId = null;
+  $eventPayload = array();
+  $eventDate = date("Y-m-d");
 
   foreach ($testResults as $testResult) {
 
@@ -156,14 +150,14 @@ foreach ($formResults as $row) {
       'S0dl5jidUnW' => $tester['user_name'],
     );
 
-    $idGeneratorApi = $dhis2->get("/api/system/id.json");
-    $idResponse = (json_decode($idGeneratorApi, true));
-    $eventId = $idResponse['codes'][0];
+    // $idGeneratorApi = $dhis2->get("/api/system/id.json");
+    // $idResponse = (json_decode($idGeneratorApi, true));
+    // $eventId = $idResponse['codes'][0];
 
     if ($eventId == null) $eventId = $general->generateRandomString(11);
 
     $eventPayload = array(
-      "event" => $eventId,
+      //"event" => $eventId,
       "eventDate" => date("Y-m-d"),
       "program" => "uYjxkTbwRNf",
       "orgUnit" => $facResult['other_id'],
@@ -175,26 +169,60 @@ foreach ($formResults as $row) {
     if (!empty($dataValues)) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
       $payload[] = $eventPayload;
-      echo "<br><br><pre>";
-      print_r($payload);
-      echo "</pre>";
     }
   }
 
 
-  $payload = json_encode($payload);
-  $response = $dhis2->post("/api/33/events/", $payload);
+
+  // Final Result
+  $eventId = null;
+  $eventPayload = array();
+  $eventDate = date("Y-m-d");
+
+
+  $dataValues = array(
+    'ovY6E8BSdto' => ucwords($row['result'])
+  );
+
+  // $idGeneratorApi = $dhis2->get("/api/system/id.json");
+  // $idResponse = (json_decode($idGeneratorApi, true));
+  // $eventId = $idResponse['codes'][0];
+
+  if ($eventId == null) $eventId = $general->generateRandomString(11);
+
+  $eventPayload = array(
+    //"event" => $eventId,
+    "eventDate" => date("Y-m-d"),
+    "program" => "uYjxkTbwRNf",
+    "orgUnit" => $facResult['other_id'],
+    "programStage" => $programStages['finalTestResult'],
+    "status" => "ACTIVE",
+    "trackedEntityInstance" => $trackedEntityInstance,
+    "dataValues" => array()
+  );
+
+
+  if (!empty($dataValues)) {
+    $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
+    $payload[] = $eventPayload;
+  }
+
+
+
+  $finalPayload['events'] = ($payload);
+  $finalPayload = json_encode($finalPayload);
+  // echo "<br><br><pre>";
+  // var_dump($finalPayload);
+  // echo "</pre>";
+  $response = $dhis2->post("/api/33/events/", $finalPayload);
   echo "<br><br><pre>";
   var_dump($response);
   echo "</pre>";
 
 
-
-
-
-  //$updateData = array('result_sent_to_source' => 'sent');
-  //$db = $db->where('covid19_id', $row['covid19_id']);
-  //$db->update('form_covid19', $updateData);
+  $updateData = array('result_sent_to_source' => 'sent');
+  $db = $db->where('covid19_id', $row['covid19_id']);
+  $db->update('form_covid19', $updateData);
   $counter++;
 }
 

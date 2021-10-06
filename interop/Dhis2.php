@@ -205,7 +205,7 @@ class Dhis2
 		}
 
 		$url = $this->dhis2url . "{$path}{$urlParams}";
-		echo $url. "<br>";
+		//echo $url. "<br>";
 
 
 		$ch = curl_init();

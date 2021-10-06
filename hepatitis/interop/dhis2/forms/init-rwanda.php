@@ -46,36 +46,28 @@ foreach ($initOptionSets as $t => $id) {
 
         foreach ($response['options'] as $lab) {
 
-            //$_SESSION['DHIS2_HEP_TESTING_LABS'][$lab['id']] = $lab['name'];
+            $facilityData = array(
+                'facility_name' => $lab['name'],
+                'vlsm_instance_id' => $instanceId,
+                'other_id' => $lab['id'],
+                'facility_type' => 2,
+                'test_type' => 'hepatitis',
+                'updated_datetime' => $general->getDateTime(),
+                'status' => 'active'
+            );
+            $updateColumns = array("other_id", "updated_datetime");
+            $db->onDuplicate($updateColumns, 'facility_id');
+            $db->insert('facility_details', $facilityData);
+            $id = $db->getInsertId();
 
-            $db->where("other_id", $lab['code']);
-            $db->orWhere("facility_name", $lab['name']);
-            $facility = $db->getOne("facility_details");
-            //echo "<pre> FAC ";var_dump($facility);echo "</pre>";
-            if (empty($facility)) {
-                $facilityData = array(
-                    'facility_name' => $lab['name'],
-                    'vlsm_instance_id' => $instanceId,
-                    'other_id' => $lab['code'],
-                    'facility_type' => 2,
-                    'test_type' => 'hepatitis',
-                    'updated_datetime' => $general->getDateTime(),
-                    'status' => 'active'
-                );
-                //echo "<pre> DAT ";var_dump($facilityData);echo "</pre>";
-                $id = $db->insert('facility_details', $facilityData);
-                $id = $db->getInsertId();
-
-                $dataTest = array(
-                    'test_type' => 'hepatitis',
-                    'facility_id' => $id,
-                    'monthly_target' => null,
-                    'suppressed_monthly_target' => null,
-                    "updated_datetime" => $general->getDateTime()
-                );
-                //echo "<pre> TESTING ";var_dump($dataTest);echo "</pre>";
-                $db->insert('testing_labs', $dataTest);
-            }
+            $dataTest = array(
+                'test_type' => 'hepatitis',
+                'facility_id' => $id,
+                'monthly_target' => null,
+                'suppressed_monthly_target' => null,
+                "updated_datetime" => $general->getDateTime()
+            );
+            $db->setQueryOption(array('IGNORE'))->insert('testing_labs', $dataTest);
         }
     }
 }
@@ -115,12 +107,11 @@ foreach ($initOptionSets as $t => $id) {
 //     $db->onDuplicate($updateColumns, 'facility_id');
 //     $db->insert('facility_details', $facilityData);
 //     $id = $db->getInsertId();
-//     $db->where('facility_id  = ' . $id);
-//     $db->delete('health_facilities');
+
 //     $dataTest = array(
 //         'test_type' => 'hepatitis',
 //         'facility_id' => $id,
 //         "updated_datetime" => $general->getDateTime()
 //     );
-//     $db->insert('health_facilities', $dataTest);
+//     $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);
 // }
