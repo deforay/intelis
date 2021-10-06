@@ -109,14 +109,14 @@ foreach ($formResults as $row) {
     $dataValues[$rejectionReason['rejection_reason_code']] = "true";
   }
 
-  $idGeneratorApi = $dhis2->get("/api/system/id.json");
-  $idResponse = (json_decode($idGeneratorApi, true));
-  $eventId = $idResponse['codes'][0];
+  // $idGeneratorApi = $dhis2->get("/api/system/id.json");
+  // $idResponse = (json_decode($idGeneratorApi, true));
+  // $eventId = $idResponse['codes'][0];
 
   if ($eventId == null) $eventId = $general->generateRandomString(11);
 
   $eventPayload = array(
-    "event" => $eventId,
+    //"event" => $eventId,
     "eventDate" => date("Y-m-d"),
     "program" => "uYjxkTbwRNf",
     "orgUnit" => $facResult['other_id'],
@@ -150,14 +150,14 @@ foreach ($formResults as $row) {
       'S0dl5jidUnW' => $tester['user_name'],
     );
 
-    $idGeneratorApi = $dhis2->get("/api/system/id.json");
-    $idResponse = (json_decode($idGeneratorApi, true));
-    $eventId = $idResponse['codes'][0];
+    // $idGeneratorApi = $dhis2->get("/api/system/id.json");
+    // $idResponse = (json_decode($idGeneratorApi, true));
+    // $eventId = $idResponse['codes'][0];
 
     if ($eventId == null) $eventId = $general->generateRandomString(11);
 
     $eventPayload = array(
-      "event" => $eventId,
+      //"event" => $eventId,
       "eventDate" => date("Y-m-d"),
       "program" => "uYjxkTbwRNf",
       "orgUnit" => $facResult['other_id'],
@@ -184,14 +184,14 @@ foreach ($formResults as $row) {
     'ovY6E8BSdto' => ucwords($row['result'])
   );
 
-  $idGeneratorApi = $dhis2->get("/api/system/id.json");
-  $idResponse = (json_decode($idGeneratorApi, true));
-  $eventId = $idResponse['codes'][0];
+  // $idGeneratorApi = $dhis2->get("/api/system/id.json");
+  // $idResponse = (json_decode($idGeneratorApi, true));
+  // $eventId = $idResponse['codes'][0];
 
   if ($eventId == null) $eventId = $general->generateRandomString(11);
 
   $eventPayload = array(
-    "event" => $eventId,
+    //"event" => $eventId,
     "eventDate" => date("Y-m-d"),
     "program" => "uYjxkTbwRNf",
     "orgUnit" => $facResult['other_id'],
@@ -215,9 +215,9 @@ foreach ($formResults as $row) {
   // var_dump($finalPayload);
   // echo "</pre>";
   $response = $dhis2->post("/api/33/events/", $finalPayload);
-  // echo "<br><br><pre>";
-  // var_dump($response);
-  // echo "</pre>";
+  echo "<br><br><pre>";
+  var_dump($response);
+  echo "</pre>";
 
 
   $updateData = array('result_sent_to_source' => 'sent');
