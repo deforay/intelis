@@ -15,11 +15,11 @@ $systemConfig['instanceName']= '';
 
 
 // Database Settings
-$systemConfig['dbHost']     = '';
-$systemConfig['dbUser']     = '';
-$systemConfig['dbPassword'] = '';
 $systemConfig['dbName']     = '';
-$systemConfig['dbPort']     = 3306;
+$systemConfig['databaseUserName']     = '';
+$systemConfig['databasePassword'] = '';
+$systemConfig['databaseName']     = '';
+$systemConfig['databasePortNumber']     = 3306;
 $systemConfig['passwordSalt']= 'PUT-A-RANDOM-STRING-HERE';
 $systemConfig['tryCrypt']= 'XTOTESTTHECRYTPD';
 
@@ -28,8 +28,8 @@ $systemConfig['adminEmailUserName'] = '';
 $systemConfig['adminEmailPassword'] = '';
 
 // If using WAMP default settings, then uncomment the following 2 lines
-//$systemConfig['dbPassword'] = '';
-//$systemConfig['dbPort'] = 3306;
+//$systemConfig['databasePassword'] = '';
+//$systemConfig['databasePortNumber'] = 3306;
 
 // Portable Uniform Server : following is the path in the portable Uniform Server
 //$systemConfig['mysqlDump'] = __DIR__.'\..\..\core\mysql\bin\mysqldump.exe';

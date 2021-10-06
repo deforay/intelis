@@ -10,7 +10,7 @@ $general = new \Vlsm\Models\General($db);
 $eidModel = new \Vlsm\Models\Eid($db);
 
 $globalConfig = $general->getGlobalConfig();
-$systemConfig = $general->getSystemConfig();
+$vlsmSystemConfig = $general->getSystemConfig();
 
 $i;
 try {
@@ -85,7 +85,7 @@ try {
         );
     }
 
-    if ($systemConfig['sc_user_type'] == 'remoteuser') {
+    if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
         $eidData['remote_sample_code'] = $sampleData['sampleCode'];
         $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
         $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];

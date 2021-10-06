@@ -2342,20 +2342,22 @@ ALTER TABLE `form_covid19` ADD `covid19_test_name` VARCHAR(500) NULL DEFAULT NUL
 -- Amit 06-Oct-2021
 ALTER TABLE `vl_request_form` ADD `unique_id` VARCHAR(1000) NULL AFTER `vl_sample_id`;
 UPDATE `vl_request_form` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null;
-UPDATE `vl_request_form` set unique_id = sha1(sample_code) WHERE remote_sample_code is null and sample_code is not null;
+UPDATE `vl_request_form` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null;
 ALTER TABLE `vl_request_form` ADD UNIQUE(`unique_id`);
 
 ALTER TABLE `eid_form` ADD `unique_id` VARCHAR(1000) NULL AFTER `eid_id`;
 UPDATE `eid_form` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null;
-UPDATE `eid_form` set unique_id = sha1(sample_code) WHERE remote_sample_code is null and sample_code is not null;
+UPDATE `eid_form` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null;
 ALTER TABLE `eid_form` ADD UNIQUE(`unique_id`);
+
 
 ALTER TABLE `form_covid19` ADD `unique_id` VARCHAR(1000) NULL AFTER `covid19_id`;
 UPDATE `form_covid19` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null;
-UPDATE `form_covid19` set unique_id = sha1(sample_code) WHERE remote_sample_code is null and sample_code is not null;
+UPDATE `form_covid19` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null;
 ALTER TABLE `form_covid19` ADD UNIQUE(`unique_id`);
+
 
 ALTER TABLE `form_hepatitis` ADD `unique_id` VARCHAR(1000) NULL AFTER `hepatitis_id`;
 UPDATE `form_hepatitis` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null;
-UPDATE `form_hepatitis` set unique_id = sha1(sample_code) WHERE remote_sample_code is null and sample_code is not null;
+UPDATE `form_hepatitis` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null;
 ALTER TABLE `form_hepatitis` ADD UNIQUE(`unique_id`);

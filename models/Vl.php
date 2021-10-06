@@ -26,14 +26,14 @@ class Vl
 
         $general = new \Vlsm\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
-        $systemConfig = $general->getSystemConfig();
+        $vlsmSystemConfig = $general->getSystemConfig();
         $sampleID = '';
 
 
         $remotePrefix = '';
         $sampleCodeKeyCol = 'sample_code_key';
         $sampleCodeCol = 'sample_code';
-        if ($systemConfig['sc_user_type'] == 'remoteuser') {
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $remotePrefix = 'R';
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';

@@ -12,7 +12,7 @@ $general = new \Vlsm\Models\General($db);
 $hepatitisModel = new \Vlsm\Models\Hepatitis($db);
 
 $globalConfig = $general->getGlobalConfig();
-$systemConfig = $general->getSystemConfig();
+$vlsmSystemConfig = $general->getSystemConfig();
 
 $i;
 try {
@@ -52,7 +52,7 @@ try {
         'last_modified_datetime' => $general->getDateTime()
     );
 
-    if ($systemConfig['sc_user_type'] == 'remoteuser') {
+    if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
         $hepatitisData['remote_sample_code'] = $sampleData['sampleCode'];
         $hepatitisData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
         $hepatitisData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];

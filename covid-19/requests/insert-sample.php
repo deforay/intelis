@@ -9,7 +9,7 @@ $general = new \Vlsm\Models\General($db);
 $covid19Model = new \Vlsm\Models\Covid19($db);
 
 $globalConfig = $general->getGlobalConfig();
-$systemConfig = $general->getSystemConfig();
+$vlsmSystemConfig = $general->getSystemConfig();
 
 $i;
 try {
@@ -51,7 +51,7 @@ try {
         'last_modified_datetime' => $general->getDateTime()
     );
 
-    if ($systemConfig['sc_user_type'] == 'remoteuser') {
+    if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
         $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
         $covid19Data['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
         $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];

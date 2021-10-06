@@ -9,7 +9,7 @@ use Aranyasen\HL7\Segments\MSH;
 
 $vlModel = new \Vlsm\Models\Vl($db);
 $globalConfig = $general->getGlobalConfig();
-$systemConfig = $general->getSystemConfig();
+$vlsmSystemConfig = $general->getSystemConfig();
 
 if ($type[1] == 'RES' || $type[1] == 'QRY') {
     $sQuery = "SELECT 
@@ -356,7 +356,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         'last_modified_datetime' => $general->getDateTime()
     );
 
-    if ($systemConfig['sc_user_type'] == 'remoteuser') {
+    if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
         $vlData['remote_sample_code'] = $sampleData['sampleCode'];
         $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
         $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
@@ -386,7 +386,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $fDetails = "facility_details";
         $vl_result_category = NULL;
         $status = 6;
-        if ($systemConfig['sc_user_type'] == 'remoteuser') {
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $status = 9;
         }
         //add province
@@ -410,7 +410,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $platForm = explode("##", $_POST['testingPlatform']);
             $testingPlatform = $platForm[0];
         }
-        if ($systemConfig['sc_user_type'] == 'remoteuser') {
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $sampleCode = 'remote_sample_code';
             $sampleCodeKey = 'remote_sample_code_key';
         } else {

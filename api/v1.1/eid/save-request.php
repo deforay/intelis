@@ -10,7 +10,7 @@ try {
     $app = new \Vlsm\Models\App($db);
     $eidModel = new \Vlsm\Models\Eid($db);
     $globalConfig = $general->getGlobalConfig();
-    $systemConfig = $general->getSystemConfig();
+    $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
 
     $input = json_decode(file_get_contents("php://input"), true);

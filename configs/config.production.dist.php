@@ -26,13 +26,14 @@ $systemConfig['dbPort']     = 3306;
 $systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
 $systemConfig['tryCrypt']= 'XTOTESTTHECRYTPD';
 
+
 //Please use only GMAIL ID AND PASSWORD
 $systemConfig['adminEmailUserName'] = '';
 $systemConfig['adminEmailPassword'] = '';
 
 // If using WAMP default settings, then uncomment the following 2 lines
-//$systemConfig['dbPassword'] = '';
-//$systemConfig['dbPort'] = 3306;
+//$systemConfig['databasePassword'] = '';
+//$systemConfig['databasePortNumber'] = 3306;
 
 // Portable Uniform Server : following is the path in the portable Uniform Server
 //$systemConfig['mysqlDump'] = __DIR__.'\..\..\core\mysql\bin\mysqldump.exe';

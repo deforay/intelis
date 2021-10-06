@@ -42,6 +42,12 @@ $eventsDataElementMapping = [
 ];
 
 
+$general = new \Vlsm\Models\General($db);
+$covid19Model = new \Vlsm\Models\Covid19($db);
+
+
+$vlsmSystemConfig = $general->getSystemConfig();
+
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 $receivedCounter = 0;
@@ -210,8 +216,13 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
 
+    
+        $status = 6;
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            $status = 9;
+        }
 
-        $formData['result_status'] = 6;
+        $formData['result_status'] = $status;
         $formData['last_modified_datetime'] = $general->getDateTime();
 
 
@@ -221,20 +232,32 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
 
-
+        // all the columns at this point will be in update columns list
+        // the columns below this are only for inserting
         $updateColumns = array_keys($formData);
 
-        $general = new \Vlsm\Models\General($db);
-        $covid19Model = new \Vlsm\Models\Covid19($db);
+
 
 
         $sampleJson = $covid19Model->generateCovid19SampleCode(null, $general->humanDateFormat($formData['sample_collection_date']), null, $formData['province_id']);
 
         $sampleData = json_decode($sampleJson, true);
 
-        $formData['sample_code'] = $sampleData['sampleCode'];
-        $formData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-        $formData['sample_code_key'] = $sampleData['sampleCodeKey'];
+        $formData['unique_id'] = $general->generateRandomString(32);
+
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            $sampleCode = 'remote_sample_code';
+            $sampleCodeKey = 'remote_sample_code_key';
+            $sampleCodeFormat = 'remote_sample_code_format';
+        } else {
+            $sampleCode = 'sample_code';
+            $sampleCodeKey = 'sample_code_key';
+            $sampleCodeFormat = 'sample_code_format';
+        }
+
+        $formData[$sampleCode] = $sampleData['sampleCode'];
+        $formData[$sampleCodeFormat] = $sampleData['sampleCodeFormat'];
+        $formData[$sampleCodeKey] = $sampleData['sampleCodeKey'];
 
         $formData['request_created_by'] = 1;
         $formData['request_created_datetime'] = $general->getDateTime();

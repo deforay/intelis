@@ -33,8 +33,11 @@ $eventsDataElementMapping = [
   'ovY6E8BSdto' => 'result'
 ];
 
+$sampleRejection = array('yes' => 'Rejected/Recollect', 'no' => 'Accepted');
+
 //get facility map id
 $query = "SELECT 
+            unique_id,
             source_of_request,
             facility_id,
             lab_id,
@@ -62,10 +65,11 @@ $formResults = $db->rawQuery($query);
 $counter = 0;
 foreach ($formResults as $row) {
 
+  $db->where('covid19_id', $row['covid19_id']);
+  $testResults = $db->get('covid19_tests');
+
   $sourceOfRequestArray = explode("::", $row['source_of_request']);
   $trackedEntityInstance = $sourceOfRequestArray[1];
-
-
 
   if (!empty($row['facility_id'])) {
     $facQuery = "SELECT facility_id, facility_name, other_id from facility_details where facility_id = " . $row['facility_id'];
@@ -80,14 +84,14 @@ foreach ($formResults as $row) {
   $labTechnician = $users->getUserInfo($row['lab_technician'], 'user_name');
 
 
-  $urlData = array();
-  $strategy = null;
+
+  // LAB RECEPTION
   $eventId = null;
   $eventPayload = array();
   $eventDate = date("Y-m-d");
   $payload = array();
 
-  $sampleRejection = array('yes' => 'Rejected/Recollect', 'no' => 'Accepted');
+
 
   //Lab Reception program stage
 
@@ -105,7 +109,6 @@ foreach ($formResults as $row) {
     $rejectionReason = $db->getOne("r_covid19_sample_rejection_reasons");
     $dataValues[$rejectionReason['rejection_reason_code']] = "true";
   }
-
 
   $idGeneratorApi = $dhis2->get("/api/system/id.json");
   $idResponse = (json_decode($idGeneratorApi, true));
@@ -127,58 +130,66 @@ foreach ($formResults as $row) {
 
   if (!empty($dataValues)) {
     $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
-    $payload = json_encode($eventPayload);
+    $payload[] = $eventPayload;
     echo "<br><br><pre>";
     print_r($payload);
     echo "</pre>";
 
-    $response = $dhis2->post("/api/33/events/", $payload);
-    echo "<br><br><pre>";
-    var_dump($response);
-    echo "</pre>";
+    // $response = $dhis2->post("/api/33/events/", $payload);
+    // echo "<br><br><pre>";
+    // var_dump($response);
+    // echo "</pre>";
   }
 
 
+  //Updating Test Results
 
+  foreach ($testResults as $testResult) {
 
-  $dataValues = array(
-    //'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
-    'b4PEeF4OOwc' => $row['covid19_test_name'],
-    'w9R4l7O9Sau' => $row['covid19_test_platform'],
-    'ZLEOP9JHZ5c' => $row['sample_tested_datetime'],
-    'ovY6E8BSdto' => ucwords($row['result']),
-    'mJFhS108OdO' => $approver['user_name'],
-    'S0dl5jidUnW' => $tester['user_name'],
-  );
+    $dataValues = array(
+      //'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
+      'b4PEeF4OOwc' => $testResult['test_name'],
+      'w9R4l7O9Sau' => $testResult['testing_platform'],
+      'ZLEOP9JHZ5c' => $testResult['sample_tested_datetime'],
+      'ovY6E8BSdto' => ucwords($testResult['result']),
+      'mJFhS108OdO' => $approver['user_name'],
+      'S0dl5jidUnW' => $tester['user_name'],
+    );
 
-  $idGeneratorApi = $dhis2->get("/api/system/id.json");
-  $idResponse = (json_decode($idGeneratorApi, true));
-  $eventId = $idResponse['codes'][0];
+    $idGeneratorApi = $dhis2->get("/api/system/id.json");
+    $idResponse = (json_decode($idGeneratorApi, true));
+    $eventId = $idResponse['codes'][0];
 
-  if ($eventId == null) $eventId = $general->generateRandomString(11);
+    if ($eventId == null) $eventId = $general->generateRandomString(11);
 
-  $eventPayload = array(
-    "event" => $eventId,
-    "eventDate" => date("Y-m-d"),
-    "program" => "uYjxkTbwRNf",
-    "orgUnit" => $facResult['other_id'],
-    "programStage" => $programStages['labProcessingAndResults'],
-    "status" => "ACTIVE",
-    "trackedEntityInstance" => $trackedEntityInstance,
-    "dataValues" => array()
-  );
-  if (!empty($dataValues)) {
-    $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
-    $payload = json_encode($eventPayload);
-    echo "<br><br><pre>";
-    print_r($payload);
-    echo "</pre>";
-
-    $response = $dhis2->post("/api/33/events/", $payload);
-    echo "<br><br><pre>";
-    var_dump($response);
-    echo "</pre>";
+    $eventPayload = array(
+      "event" => $eventId,
+      "eventDate" => date("Y-m-d"),
+      "program" => "uYjxkTbwRNf",
+      "orgUnit" => $facResult['other_id'],
+      "programStage" => $programStages['labProcessingAndResults'],
+      "status" => "ACTIVE",
+      "trackedEntityInstance" => $trackedEntityInstance,
+      "dataValues" => array()
+    );
+    if (!empty($dataValues)) {
+      $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
+      $payload[] = $eventPayload;
+      echo "<br><br><pre>";
+      print_r($payload);
+      echo "</pre>";
+    }
   }
+
+
+  $payload = json_encode($payload);
+  $response = $dhis2->post("/api/33/events/", $payload);
+  echo "<br><br><pre>";
+  var_dump($response);
+  echo "</pre>";
+
+
+
 
 
   //$updateData = array('result_sent_to_source' => 'sent');

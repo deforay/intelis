@@ -5,7 +5,7 @@ $vlModel = new \Vlsm\Models\Vl($db);
 
 
 $globalConfig = $general->getGlobalConfig();
-$systemConfig = $general->getSystemConfig();
+$vlsmSystemConfig = $general->getSystemConfig();
 
 $id = 0;
 
@@ -81,7 +81,7 @@ if (isset($_POST['api']) && $_POST['api'] = "yes") {
     );
 }
 
-if ($systemConfig['sc_user_type'] == 'remoteuser') {
+if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
     $vlData['remote_sample_code'] = $sampleData['sampleCode'];
     $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
     $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];

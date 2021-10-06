@@ -9,7 +9,7 @@ use Aranyasen\HL7\Segments\MSH;
 
 $covid19Model = new \Vlsm\Models\Covid19($db);
 $globalConfig = $general->getGlobalConfig();
-$systemConfig = $general->getSystemConfig();
+$vlsmSystemConfig = $general->getSystemConfig();
 if ($type[1] == 'RES' || $type[1] == 'QRY') {
 
     $sQuery = "SELECT 
@@ -422,7 +422,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         'last_modified_datetime' => $general->getDateTime()
     );
 
-    if ($systemConfig['sc_user_type'] == 'remoteuser') {
+    if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
         $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
         $covid19Data['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
         $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];

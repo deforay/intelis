@@ -521,7 +521,7 @@ class App
         $general = new \Vlsm\Models\General($this->db);
 
         $globalConfig = $general->getGlobalConfig();
-        $systemConfig = $general->getSystemConfig();
+        $vlsmSystemConfig = $general->getSystemConfig();
         $sampleID = '';
 
 

@@ -27,7 +27,7 @@ try {
     $covid19Model = new \Vlsm\Models\Covid19($db);
 
     $globalConfig = $general->getGlobalConfig();
-    $systemConfig = $general->getSystemConfig();
+    $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
 
     $input = json_decode(file_get_contents("php://input"), true);
