@@ -73,17 +73,6 @@ if($jsonResponse == '' || empty($jsonResponse)) die('No Response from API');
 
 $trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
 
-// echo "<pre>";
-// var_dump(iterator_to_array($trackedEntityInstances));
-// echo "</pre>";
-// die;
-
-
-
-// echo ("<h5>...</h5>");
-// echo ("<h5>...</h5>");
-// echo ("<h3>Total trackers received from DHIS2 : " . count($response['trackedEntityInstances']) . "</h3>");
-
 foreach ($trackedEntityInstances as $tracker) {
 
     $receivedCounter++;
@@ -92,9 +81,6 @@ foreach ($trackedEntityInstances as $tracker) {
     $screeningEventIds = array();
     $enrollmentDate = null;
 
-    // $facility = $tracker['orgUnit'];
-    // $formData['source_of_request'] = "dhis2-" . $tracker['trackedEntityInstance'];
-    // $formData['source_data_dump'] = json_encode($tracker);
 
     foreach ($tracker['enrollments'] as $enrollments) {
 
@@ -103,8 +89,6 @@ foreach ($trackedEntityInstances as $tracker) {
         $screeningEventIds = array_keys($allProgramStages, $programStages['labRequest']); // screening programStage
 
         if (count($screeningEventIds) == 0)  continue 2; // if no screening stage, skip this tracker entirely
-
-        //echo "<pre>";var_dump($enrollments['events']);echo "</pre>";
 
         $enrollmentDate = explode("T", $enrollments['enrollmentDate']);
         $enrollmentDate = $enrollmentDate[0];
@@ -124,15 +108,8 @@ foreach ($trackedEntityInstances as $tracker) {
     $attributesData = array();
     foreach ($tracker['attributes'] as $trackerAttr) {
         if (empty($attributesDataElementMapping[$trackerAttr['attribute']])) continue;
-        //echo $attributesDataElementMapping[$trackerAttr['attribute']] . "%%%%%%%" . $trackerAttr['value'] . PHP_EOL . PHP_EOL;
         $attributesData[$attributesDataElementMapping[$trackerAttr['attribute']]] = $trackerAttr['value'];
     }
-
-
-    // echo "<h1>";
-    // var_dump($tracker['trackedEntityInstance']);
-    // echo "</h1>";
-
 
     foreach ($eventsData as $uniqueID => $singleEventData) {
         $formData = array_merge($singleEventData, $attributesData);
@@ -190,8 +167,6 @@ foreach ($trackedEntityInstances as $tracker) {
         // Facility ID
         $db->where("other_id", $facility);
         $fac = $db->getOne("facility_details");
-        echo "<pre>";var_dump($facility);echo "</pre>";
-        echo "<pre>";var_dump($fac);echo "</pre>";
         $formData['facility_id'] =  $fac['facility_id'];
 
         $db->where("province_name", $fac['facility_state']);
@@ -269,11 +244,9 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
         $formData['vlsm_country_id'] = 1; // South Sudan
 
-        //echo "<pre>";var_dump($formData);echo "</pre>";continue 2;
 
         $db->onDuplicate($updateColumns, 'source_of_request');
         $id = $db->insert("form_covid19", $formData);
-        // echo "<h1>IDIDIDI: $id</h1>";
         if ($id != false) {
             $processedCounter++;
         }

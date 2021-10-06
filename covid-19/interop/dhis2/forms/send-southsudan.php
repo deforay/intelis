@@ -59,12 +59,12 @@ $query = "SELECT
             lab_technician
             FROM form_covid19 
             WHERE source_of_request LIKE 'dhis2' 
-            AND result_status = 7 
+            AND result_status = 7
             AND result_sent_to_source NOT LIKE 'sent'";
+
 $formResults = $db->rawQuery($query);
-
-
 $counter = 0;
+
 foreach ($formResults as $row) {
 
   $db->where('covid19_id', $row['covid19_id']);
@@ -129,15 +129,7 @@ foreach ($formResults as $row) {
 
   if (!empty($dataValues)) {
     $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
-    echo "<br><br><pre>";
-    print_r($eventPayload);
-    echo "</pre>";
-
-    $payload = json_encode($eventPayload);
-    $response = $dhis2->post("/api/33/events/", $payload);
-    echo "<br><br><pre>";
-    var_dump($response);
-    echo "</pre>";
+    $payload[] = $eventPayload;
   }
 
 
@@ -145,7 +137,6 @@ foreach ($formResults as $row) {
   $eventId = null;
   $eventPayload = array();
   $eventDate = date("Y-m-d");
-  $payload = array();
 
   foreach ($testResults as $testResult) {
 
@@ -177,15 +168,7 @@ foreach ($formResults as $row) {
     );
     if (!empty($dataValues)) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
-      echo "<br><br><pre>";
-      print_r($eventPayload);
-      echo "</pre>";
-
-      $payload = json_encode($eventPayload);
-      $response = $dhis2->post("/api/33/events/", $payload);
-      echo "<br><br><pre>";
-      var_dump($response);
-      echo "</pre>";
+      $payload[] = $eventPayload;
     }
   }
 
@@ -195,7 +178,6 @@ foreach ($formResults as $row) {
   $eventId = null;
   $eventPayload = array();
   $eventDate = date("Y-m-d");
-  $payload = array();
 
 
   $dataValues = array(
@@ -222,21 +204,25 @@ foreach ($formResults as $row) {
 
   if (!empty($dataValues)) {
     $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
-    echo "<br><br><pre>";
-    print_r($eventPayload);
-    echo "</pre>";
-
-    $payload = json_encode($eventPayload);
-    $response = $dhis2->post("/api/33/events/", $payload);
-    echo "<br><br><pre>";
-    var_dump($response);
-    echo "</pre>";
+    $payload[] = $eventPayload;
   }
 
 
-  //$updateData = array('result_sent_to_source' => 'sent');
-  //$db = $db->where('covid19_id', $row['covid19_id']);
-  //$db->update('form_covid19', $updateData);
+
+  $finalPayload['events'] = ($payload);
+  $finalPayload = json_encode($finalPayload);
+  // echo "<br><br><pre>";
+  // var_dump($finalPayload);
+  // echo "</pre>";
+  $response = $dhis2->post("/api/33/events/", $finalPayload);
+  // echo "<br><br><pre>";
+  // var_dump($response);
+  // echo "</pre>";
+
+
+  $updateData = array('result_sent_to_source' => 'sent');
+  $db = $db->where('covid19_id', $row['covid19_id']);
+  $db->update('form_covid19', $updateData);
   $counter++;
 }
 
