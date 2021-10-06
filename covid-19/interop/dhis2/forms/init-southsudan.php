@@ -9,8 +9,8 @@ $instanceId = 'dhis2';
 
 $initOptionSets = array(
     'testingLabs' => 'fsHj2ZG3iHJ',
-    'testTypes' => 'tkIsR0Lo23H',
-    'testingPlatform' => 'RFqme0EHhdF'
+    // 'testTypes' => 'tkIsR0Lo23H',
+    // 'testingPlatform' => 'RFqme0EHhdF'
 );
 
 foreach ($initOptionSets as $t => $id) {

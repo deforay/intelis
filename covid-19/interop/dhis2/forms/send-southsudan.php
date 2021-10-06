@@ -34,6 +34,21 @@ $eventsDataElementMapping = [
 ];
 
 $sampleRejection = array('yes' => 'Rejected/Recollect', 'no' => 'Accepted');
+$testTypes = array(
+  'GeneXpert' => 'GeneXpert',
+  'Real Time RT-PCR' => 'RT-PCR',
+  'RDT-Antibody' => 'Antigen RDT',
+  'RDT-Antigen' => 'Antibody RDT'
+);
+$testPlatforms = array(
+  'Abbott d/m/y' => 'Abbott m2000 System',
+  'Abbott m/d/y' => 'Abbott m2000 System',
+  'Abbott' => 'Abbott m2000 System',
+  'ABI7500' => 'ABI7500 System',
+  'BioRad PCR' => 'BioRad PCR System',
+  'GeneXpert' => 'GeneXpert System',
+  'Rotor Gene' => 'Rotor Gene PCR System'
+);
 
 //get facility map id
 $query = "SELECT 
@@ -59,8 +74,8 @@ $query = "SELECT
             lab_technician
             FROM form_covid19 
             WHERE source_of_request LIKE 'dhis2' 
-            AND result_status = 7
-            AND result_sent_to_source NOT LIKE 'sent'";
+            AND result_status = 7";
+            //AND result_sent_to_source NOT LIKE 'sent'";
 
 $formResults = $db->rawQuery($query);
 $counter = 0;
@@ -140,10 +155,13 @@ foreach ($formResults as $row) {
 
   foreach ($testResults as $testResult) {
 
+    $testName = isset($testTypes[$testResult['test_name']]) ? $testTypes[$testResult['test_name']] : 'Others';
+    $testPlatform = isset($testPlatforms[$testResult['testing_platform']]) ? $testPlatforms[$testResult['testing_platform']] : 'Others';
+
     $dataValues = array(
       //'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
-      'b4PEeF4OOwc' => $testResult['test_name'],
-      'w9R4l7O9Sau' => $testResult['testing_platform'],
+      'b4PEeF4OOwc' => $testName,
+      'w9R4l7O9Sau' => $testPlatform,
       'ZLEOP9JHZ5c' => $testResult['sample_tested_datetime'],
       'ovY6E8BSdto' => ucwords($testResult['result']),
       'mJFhS108OdO' => $approver['user_name'],

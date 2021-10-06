@@ -520,7 +520,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                     <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
-                                            <th>Authorized by</th>
+                                            <th>Authorized By</th>
                                             <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Authorized By" title="Please enter te Authorized By" /></td>
                                         </tr>
                                         <tr>
