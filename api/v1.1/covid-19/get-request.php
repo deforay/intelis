@@ -45,6 +45,7 @@ try {
 
     $sQuery = "SELECT 
         vl.app_local_test_req_id                as localTestReqID,
+        vl.unique_id                            as uniqueId,
         vl.covid19_id                           as covid19Id,
         vl.sample_code                          as sampleCode,
         vl.remote_sample_code                   as remoteSampleCode,
@@ -211,7 +212,7 @@ try {
     }
 
     // $sQuery .= " ORDER BY sample_collection_date ASC ";
-    $sQuery .= $where . " limit 100;";
+    $sQuery .= $where . " ORDER BY covid19_id DESC limit 100;";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
     $app = new \Vlsm\Models\App($db);

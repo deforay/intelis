@@ -60,6 +60,7 @@ try {
 
     $sQuery = "SELECT 
         vl.app_local_test_req_id                             as localTestReqID,
+        vl.unique_id                                         as uniqueId,
         vl.vl_sample_id                                      as vlSampleId,
         vl.sample_code                                       as sampleCode,
         vl.remote_sample_code                                as remoteSampleCode,

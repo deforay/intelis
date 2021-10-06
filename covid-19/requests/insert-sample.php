@@ -17,8 +17,6 @@ try {
     $provinceId = (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] : null;
     $sampleCollectionDate = (isset($_POST['sampleCollectionDate']) && !empty($_POST['sampleCollectionDate'])) ? $_POST['sampleCollectionDate'] : null;
 
-
-
     if (empty($sampleCollectionDate)) {
         echo 0;
         exit();
@@ -77,6 +75,7 @@ try {
 
 
         if (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '' && $_POST['sampleCollectionDate'] != null && $_POST['sampleCollectionDate'] != '') {
+            $covid19Data['unique_id'] = $general->generateRandomString(32);
             $id = $db->insert("form_covid19", $covid19Data);
         }
     }

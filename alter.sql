@@ -2339,3 +2339,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 -- Amit 01-Oct-2021
 ALTER TABLE `form_covid19` ADD `covid19_test_name` VARCHAR(500) NULL DEFAULT NULL AFTER `covid19_test_platform`;
 
+-- Amit 06-Oct-2021
+ALTER TABLE `vl_request_form` ADD `unique_id` TEXT NULL DEFAULT NULL AFTER `vlsm_country_id`;
+ALTER TABLE `eid_form` ADD `unique_id` TEXT NULL DEFAULT NULL AFTER `vlsm_country_id`;
+ALTER TABLE `form_covid19` ADD `unique_id` TEXT NULL DEFAULT NULL AFTER `vlsm_country_id`;

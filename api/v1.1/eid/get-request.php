@@ -43,6 +43,7 @@ try {
 
     $sQuery = "SELECT 
         vl.app_local_test_req_id                             as localTestReqID,
+        vl.unique_id                                         as uniqueId,
         vl.eid_id                                            as eidId,
         vl.sample_code                                       as sampleCode,
         vl.remote_sample_code                                as remoteSampleCode,
@@ -202,7 +203,7 @@ try {
     }
 
     // $sQuery .= " ORDER BY sample_collection_date ASC ";
-    $sQuery .= $where . " limit 100;";
+    $sQuery .= $where . " ORDER BY eid_id DESC limit 100;";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
