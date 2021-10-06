@@ -2326,8 +2326,8 @@ CREATE TABLE `failed_result_retest_tracker` (
 -- Amit 30 Sep 2021
 ALTER TABLE `form_hepatitis` CHANGE `source_of_request` `source_of_request` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_covid19` CHANGE `source_of_request` `source_of_request` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_hepatitis` ADD UNIQUE(`source_of_request`);
-ALTER TABLE `form_covid19` ADD UNIQUE(`source_of_request`);
+-- ALTER TABLE `form_hepatitis` ADD UNIQUE(`source_of_request`);
+-- ALTER TABLE `form_covid19` ADD UNIQUE(`source_of_request`);
 
 -- Thana 30-Sep-2021
 ALTER TABLE `failed_result_retest_tracker` ADD `remote_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`, ADD `batch_id` VARCHAR(256) NULL DEFAULT NULL AFTER `remote_sample_code`, ADD `facility_id` VARCHAR(256) NULL DEFAULT NULL AFTER `batch_id`;
@@ -2341,23 +2341,32 @@ ALTER TABLE `form_covid19` ADD `covid19_test_name` VARCHAR(500) NULL DEFAULT NUL
 
 -- Amit 06-Oct-2021
 ALTER TABLE `vl_request_form` ADD `unique_id` VARCHAR(1000) NULL AFTER `vl_sample_id`;
-UPDATE `vl_request_form` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null;
-UPDATE `vl_request_form` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null;
+UPDATE `vl_request_form` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null and unique_id is null;
+UPDATE `vl_request_form` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null and unique_id is null;
 ALTER TABLE `vl_request_form` ADD UNIQUE(`unique_id`);
 
 ALTER TABLE `eid_form` ADD `unique_id` VARCHAR(1000) NULL AFTER `eid_id`;
-UPDATE `eid_form` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null;
-UPDATE `eid_form` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null;
+UPDATE `eid_form` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null and unique_id is null;
+UPDATE `eid_form` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null and unique_id is null;
 ALTER TABLE `eid_form` ADD UNIQUE(`unique_id`);
 
 
 ALTER TABLE `form_covid19` ADD `unique_id` VARCHAR(1000) NULL AFTER `covid19_id`;
-UPDATE `form_covid19` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null;
-UPDATE `form_covid19` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null;
+UPDATE `form_covid19` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null and unique_id is null;
+UPDATE `form_covid19` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null and unique_id is null;
 ALTER TABLE `form_covid19` ADD UNIQUE(`unique_id`);
 
 
 ALTER TABLE `form_hepatitis` ADD `unique_id` VARCHAR(1000) NULL AFTER `hepatitis_id`;
-UPDATE `form_hepatitis` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null;
-UPDATE `form_hepatitis` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null;
+UPDATE `form_hepatitis` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null and unique_id is null;
+UPDATE `form_hepatitis` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null and unique_id is null;
 ALTER TABLE `form_hepatitis` ADD UNIQUE(`unique_id`);
+
+
+ALTER TABLE `form_covid19` CHANGE `clinician_phone` `clinician_phone` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `clinician_email` `clinician_email` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `health_outcome` `health_outcome` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `lab_reception_person` `lab_reception_person` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `covid19_test_platform` `covid19_test_platform` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `authorized_by` `authorized_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `result_reviewed_by` `result_reviewed_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `result_approved_by` `result_approved_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `import_machine_name` `import_machine_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `import_machine_file_name` `import_machine_file_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `sample_package_id` `sample_package_id` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `sample_package_code` `sample_package_code` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `source_of_request` `source_of_request` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `app_local_test_req_id` `app_local_test_req_id` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` DROP INDEX `source_of_request`;
+ALTER TABLE `form_hepatitis` DROP INDEX `source_of_request`;
+
+INSERT INTO `r_covid19_results` (`result_id`, `result`, `status`, `updated_datetime`, `data_sync`) VALUES ('presumptive-positive', 'Presumptive Positive', 'active', '2021-10-06 14:30:36', '1');
+INSERT INTO `r_covid19_results` (`result_id`, `result`, `status`, `updated_datetime`, `data_sync`) VALUES ('error', 'Error', 'active', '2021-10-06 14:30:36', '1');
+INSERT INTO `r_covid19_results` (`result_id`, `result`, `status`, `updated_datetime`, `data_sync`) VALUES ('inconclusive', 'Inconclusive', 'active', '2021-10-06 14:30:36', '1');

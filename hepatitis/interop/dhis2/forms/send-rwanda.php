@@ -4,14 +4,14 @@
 
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
-//$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis%' AND result_sent_to_source LIKE 'pending'";
-$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis%' AND result_status = 7 AND result_sent_to_source NOT LIKE 'sent'";
+//$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_sent_to_source LIKE 'pending'";
+$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7 AND result_sent_to_source NOT LIKE 'sent'";
 $formResults = $db->rawQuery($query);
 $counter = 0;
 foreach ($formResults as $row) {
 
-  $sourceOfRequestArray = explode("::" , $row['source_of_request']);
-  $trackedEntityInstance = $sourceOfRequestArray[1];
+  $uniqueIdArray = explode("::" , $row['unique_id']);
+  $trackedEntityInstance = $uniqueIdArray[1];
 
   $programStages = array(
     'Screening' => 'ZBWBirHgmE6',

@@ -134,9 +134,9 @@ foreach ($trackedEntityInstances as $tracker) {
     // echo "</h1>";
 
 
-    foreach ($eventsData as $sourceOfRequest => $singleEventData) {
+    foreach ($eventsData as $uniqueID => $singleEventData) {
         $formData = array_merge($singleEventData, $attributesData);
-        $formData['source_of_request'] = $sourceOfRequest;
+        $formData['source_of_request'] = 'dhis2';
         $formData['source_data_dump'] = json_encode($tracker);
 
 
@@ -190,6 +190,8 @@ foreach ($trackedEntityInstances as $tracker) {
         // Facility ID
         $db->where("other_id", $facility);
         $fac = $db->getOne("facility_details");
+        echo "<pre>";var_dump($facility);echo "</pre>";
+        echo "<pre>";var_dump($fac);echo "</pre>";
         $formData['facility_id'] =  $fac['facility_id'];
 
         $db->where("province_name", $fac['facility_state']);
@@ -243,7 +245,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $sampleData = json_decode($sampleJson, true);
 
-        $formData['unique_id'] = $general->generateRandomString(32);
+        $formData['unique_id'] = $uniqueID;
 
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $sampleCode = 'remote_sample_code';
