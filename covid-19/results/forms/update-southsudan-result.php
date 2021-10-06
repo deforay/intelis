@@ -520,7 +520,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                     <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
-                                            <th>Authorized By</th>
+                                            <th>Authorized by</th>
                                             <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Authorized By" title="Please enter te Authorized By" /></td>
                                         </tr>
                                         <tr>
@@ -537,7 +537,6 @@ $sampleSuggestionDisplay = 'display:none;';
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-
                         <a class="btn btn-primary submit-btn" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
                         <input type="hidden" name="formId" id="formId" value="7" />
                         <input type="hidden" name="deletedRow" id="deletedRow" value="" />
@@ -737,6 +736,7 @@ $sampleSuggestionDisplay = 'display:none;';
                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                     <option value="RDT-Antibody">RDT-Antibody</option>
                     <option value="RDT-Antigen">RDT-Antigen</option>
+                    <option value="GeneXpert">GeneXpert</option>
                     <option value="ELISA">ELISA</option>
                     <option value="other">Others</option>
                 </select>

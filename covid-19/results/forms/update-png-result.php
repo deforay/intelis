@@ -609,6 +609,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                         <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                                                                         <option value="RDT-Antibody">RDT-Antibody</option>
                                                                         <option value="RDT-Antigen">RDT-Antigen</option>
+                                                                        <option value="GeneXpert">GeneXpert</option>
                                                                         <option value="ELISA">ELISA</option>
                                                                         <option value="other">Others</option>
                                                                     </select>
@@ -1011,6 +1012,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                     <option value="RDT-Antibody">RDT-Antibody</option>
                     <option value="RDT-Antigen">RDT-Antigen</option>
+                    <option value="GeneXpert">GeneXpert</option>
                     <option value="ELISA">ELISA</option>
                     <option value="other">Others</option>
                 </select>

@@ -113,7 +113,7 @@ foreach ($formResults as $row) {
   // $idResponse = (json_decode($idGeneratorApi, true));
   // $eventId = $idResponse['codes'][0];
 
-  if ($eventId == null) $eventId = $general->generateRandomString(11);
+  // if ($eventId == null) $eventId = $general->generateRandomString(11);
 
   $eventPayload = array(
     //"event" => $eventId,
@@ -154,7 +154,7 @@ foreach ($formResults as $row) {
     // $idResponse = (json_decode($idGeneratorApi, true));
     // $eventId = $idResponse['codes'][0];
 
-    if ($eventId == null) $eventId = $general->generateRandomString(11);
+    // if ($eventId == null) $eventId = $general->generateRandomString(11);
 
     $eventPayload = array(
       //"event" => $eventId,
@@ -188,7 +188,7 @@ foreach ($formResults as $row) {
   // $idResponse = (json_decode($idGeneratorApi, true));
   // $eventId = $idResponse['codes'][0];
 
-  if ($eventId == null) $eventId = $general->generateRandomString(11);
+  // if ($eventId == null) $eventId = $general->generateRandomString(11);
 
   $eventPayload = array(
     //"event" => $eventId,
@@ -215,9 +215,9 @@ foreach ($formResults as $row) {
   // var_dump($finalPayload);
   // echo "</pre>";
   $response = $dhis2->post("/api/33/events/", $finalPayload);
-  echo "<br><br><pre>";
-  var_dump($response);
-  echo "</pre>";
+  // echo "<br><br><pre>";
+  // var_dump($response);
+  // echo "</pre>";
 
 
   $updateData = array('result_sent_to_source' => 'sent');
