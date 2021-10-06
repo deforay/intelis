@@ -102,13 +102,13 @@ class MYPDF extends TCPDF
           $this->Image($image_file, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
         }
       }
-      $this->SetFont('helvetica', 'B', 16);
-      $this->writeHTMLCell(0, 0, 10, 12, $this->text, 0, 0, 0, true, 'C', true);
+      $this->SetFont('helvetica', 'B', 8);
+      $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C', true);
       if (trim($this->lab) != '') {
-        $this->SetFont('helvetica', '', 10);
-        $this->writeHTMLCell(0, 0, 10, 22, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
+        $this->SetFont('helvetica', '', 9);
+        $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
       }
-      $this->SetFont('helvetica', '', 12);
+      $this->SetFont('helvetica', '', 14);
       $this->writeHTMLCell(0, 0, 10, 30, 'EARLY INFANT DIAGNOSIS TEST - PATIENT REPORT', 0, 0, 0, true, 'C', true);
       $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C', true);
     } else {
