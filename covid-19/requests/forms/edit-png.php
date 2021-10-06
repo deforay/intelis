@@ -260,9 +260,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <tr>
                                         <th><label for="patientPhoneNumber">Patient phone</label></th>
                                         <td><input type="text" class="form-control " value="<?php echo $covid19Info['patient_phone_number']; ?>" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient phone" title="Please enter the patient phone" style="width:100%;" /></td>
-                                        
+
                                         <th><label for="patientAddress">Patient Address</label></th>
-                                        <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Patient Address" title="Please enter the Patient Address" style="width:100%;"><?php echo $covid19Info['patient_address'];?></textarea></td>
+                                        <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Patient Address" title="Please enter the Patient Address" style="width:100%;"><?php echo $covid19Info['patient_address']; ?></textarea></td>
                                     </tr>
                                     <tr>
                                         <th><label for="patientProvince">Province</label></th>
@@ -317,11 +317,12 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <td colspan="4">
                                             <table id="symptomsTable" class="table table-bordered table-striped">
                                                 <?php $index = 0;
-                                                foreach ($covid19Symptoms as $symptomId => $symptomName) { 
-                                                    $diarrhée = "";$display = "display:none;";
+                                                foreach ($covid19Symptoms as $symptomId => $symptomName) {
+                                                    $diarrhée = "";
+                                                    $display = "display:none;";
                                                     if ($symptomId == 13) {
-                                                        $display = (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == "yes")?"":'display:none;';
-                                                    }?>
+                                                        $display = (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == "yes") ? "" : 'display:none;';
+                                                    } ?>
                                                     <tr class="row<?php echo $index; ?>">
                                                         <th style="width:50%;"><label for="symptomDetected<?php echo $symptomId; ?>"><?php echo $symptomName; ?></label></th>
                                                         <td style="width:50%;">
@@ -660,8 +661,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
-                                            <?php 
-                                                $disapled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no')?"disabled":"";
+                                            <?php
+                                            $disapled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
                                             ?>
                                             <th><label for="isResultAuthorized">Referred By</label></th>
                                             <td><input type="text" <?php echo $disapled; ?> value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Referred By" title="Please enter who referred result" /></td>
@@ -671,6 +672,20 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Referred On" title="Please enter when referred result" /></td>
                                             <th></th>
                                             <td></td>
+                                        </tr>
+                                        <?php
+                                        $show = "";
+                                        if (isset($covid19Info['revised_by']) && $covid19Info['revised_by'] != "") {
+                                            $show = "";
+                                        } else {
+                                            $show = "display:none;";
+                                        }
+                                        ?>
+                                        <tr class="revised" style="<?php echo $show; ?>">
+                                            <th>Revised By</th>
+                                            <td><input type="text" value="<?php echo $covid19Info['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revised By" title="Please enter the revised by" /></td>
+                                            <th>Revised on</td>
+                                            <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revised By on" /></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -910,7 +925,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
         <?php } ?>
 
         getfacilityProvinceDetails($("#facilityId").val());
-        getPatientDistrictDetails('<?php echo $covid19Info['patient_province'];?>');
+        getPatientDistrictDetails('<?php echo $covid19Info['patient_province']; ?>');
     });
 
 

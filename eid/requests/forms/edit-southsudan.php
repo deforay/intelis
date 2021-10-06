@@ -436,7 +436,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
                                             <th>Result</th>
                                             <td>
-                                                <select class="form-control" name="result" id="result">
+                                                <select class="form-control result-focus" name="result" id="result">
                                                     <option value=''> -- Select -- </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
@@ -457,6 +457,20 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <?php
+                                        $show = "display:none;";
+                                        if (isset($covid19Info['revised_by']) && $covid19Info['revised_by'] != "") {
+                                            $show = "";
+                                        } else {
+                                            $show = "display:none;";
+                                        }
+                                        ?>
+                                        <tr class="revised" style="<?php echo $show; ?>">
+                                            <th>Revised By</th>
+                                            <td><input type="text" value="<?php echo $covid19Info['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revised By" title="Please enter the revised by" /></td>
+                                            <th>Revised on</td>
+                                            <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revised By on" /></td>
                                         </tr>
                                         <tr>
                                             <td style="width:25%;"><label for="">Approve On </label></td>

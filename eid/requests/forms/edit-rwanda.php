@@ -77,7 +77,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
     </section>
     <!-- Main content -->
     <section class="content">
-        
+
         <div class="box box-default">
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -336,7 +336,8 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="Confirmation of positive first EID PCR test result" <?php echo ($eidInfo['reason_for_pcr'] == 'Confirmation of positive first EID PCR test result') ? "selected='selected'" : ""; ?>> Confirmation of positive first EID PCR test result </option>
-                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option> <option value="Positive HIV rapid test result at 9 months or later" <?php echo ($eidInfo['reason_for_pcr'] == 'Positive HIV rapid test result at 9 months or later') ? "selected='selected'" : ""; ?>> Positive HIV rapid test result at 9 months or later </option>
+                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
+                                                <option value="Positive HIV rapid test result at 9 months or later" <?php echo ($eidInfo['reason_for_pcr'] == 'Positive HIV rapid test result at 9 months or later') ? "selected='selected'" : ""; ?>> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
                                             </select>
                                         </td>
@@ -405,7 +406,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                             </td>
 
                                             <th class="rejected" style="display: none;">Reason for Rejection</th>
-                      						<td class="rejected" style="display: none;">
+                                            <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
@@ -430,7 +431,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
 
                                             <th>Result</th>
                                             <td>
-                                                <select class="form-control" name="result" id="result">
+                                                <select class="form-control result-focus" name="result" id="result">
                                                     <option value=''> -- Select -- </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
@@ -438,7 +439,20 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                                 </select>
                                             </td>
                                         </tr>
-
+                                        <?php
+                                        $show = "display:none;";
+                                        if (isset($covid19Info['revised_by']) && $covid19Info['revised_by'] != "") {
+                                            $show = "";
+                                        } else {
+                                            $show = "display:none;";
+                                        }
+                                        ?>
+                                        <tr class="revised" style="<?php echo $show; ?>">
+                                            <th>Revised By</th>
+                                            <td><input type="text" value="<?php echo $covid19Info['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revised By" title="Please enter the revised by" /></td>
+                                            <th>Revised on</td>
+                                            <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revised By on" /></td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>

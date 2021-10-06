@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 ob_start();
 #require_once('../../startup.php');
@@ -12,11 +12,8 @@ $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = NULL;
 try {
-     if(isset($_POST['api']) && $_POST['api'] = "yes")
-	{
-	}
-	else
-	{
+     if (isset($_POST['api']) && $_POST['api'] = "yes") {
+     } else {
           $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
           $chkValidation = $general->checkMandatoryFields($validateField);
           if ($chkValidation) {
@@ -25,7 +22,7 @@ try {
                die;
           }
      }
-          //system config
+     //system config
      $systemConfigQuery = "SELECT * from system_config";
      $systemConfigResult = $db->query($systemConfigQuery);
      $sarr = array();
@@ -224,8 +221,8 @@ try {
 
      if (isset($_POST['approvedBy']) && trim($_POST['approvedBy']) != '') {
           $vlObj = new \Vlsm\Models\Vl($db);
-        $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
-      }
+          $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
+     }
 
      $vldata = array(
           'vlsm_instance_id' => $instanceId,
@@ -276,7 +273,8 @@ try {
           'result' => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] :  NULL,
           'result_value_log' => (isset($_POST['vlLog']) && $_POST['vlLog'] != '') ? $_POST['vlLog'] :  NULL,
           'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
-          'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
+          'revised_by' => !empty($_POST['revisedBy']) ? $_POST['revisedBy'] : null,
+          'revised_on' => !empty($_POST['revisedOn']) ? $general->dateFormat($_POST['revisedOn']) : null,
           'result_approved_datetime' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
           'approver_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
           'result_status' => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] :  NULL,
@@ -290,15 +288,12 @@ try {
           'vl_result_category' => $vl_result_category
      );
      $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-     if($lock == 'yes' && $_POST['status'] == 7){
+     if ($lock == 'yes' && $_POST['status'] == 7) {
           $vldata['locked'] = 'yes';
      }
-     if(isset($_POST['api']) && $_POST['api'] = "yes")
-     {
-
-     }
-	else
-		$vldata['last_modified_by'] =  $_SESSION['userId'];
+     if (isset($_POST['api']) && $_POST['api'] = "yes") {
+     } else
+          $vldata['last_modified_by'] =  $_SESSION['userId'];
      if ($sarr['sc_user_type'] == 'remoteuser') {
           $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
      } else if ($_POST['sampleCodeCol'] != '') {
@@ -310,21 +305,18 @@ try {
 
      $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
-     if(isset($_POST['api']) && $_POST['api'] = "yes")
-	{
-		$payload = array(
-			        'status' => 'success',
-			        'timestamp' => time(),
-			        'message' => 'Successfully updated.'
-			    );
-			   
-			
-			    http_response_code(200);
-			    echo json_encode($payload);
-			    exit(0);
-	}
-	else
-	{
+     if (isset($_POST['api']) && $_POST['api'] = "yes") {
+          $payload = array(
+               'status' => 'success',
+               'timestamp' => time(),
+               'message' => 'Successfully updated.'
+          );
+
+
+          http_response_code(200);
+          echo json_encode($payload);
+          exit(0);
+     } else {
           if ($id > 0) {
                $_SESSION['alertMsg'] = "VL request updated successfully";
                //Add event log

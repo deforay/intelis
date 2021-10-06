@@ -231,6 +231,11 @@ if (file_exists($fileArray[$arr['vl_form']])) {
         });
         changeReject($('#isSampleRejected').val());
         changeHistory($('#hasRecentTravelHistory').val());
+
+        $('.result-focus').change(function(e) {
+            $('.change-reason,.revised').show(500);
+            $('#reasonForChanging,.revised-input').addClass('isRequired');
+        });
     });
 
     function changeHistory(val) {

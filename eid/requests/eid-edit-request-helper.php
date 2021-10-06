@@ -187,6 +187,8 @@ try {
 		'tested_by' 										=> (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
 		'result_approved_by' 								=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
 		'result_approved_datetime' 							=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
+		'revised_by' 										=> !empty($_POST['revisedBy']) ? $_POST['revisedBy'] : null,
+		'revised_on'	 									=> !empty($_POST['revisedOn']) ? $general->dateFormat($_POST['revisedOn']) : null,
 		'result_status' 									=> $status,
 		'data_sync' 										=> 0,
 		'reason_for_sample_rejection' 						=> isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,

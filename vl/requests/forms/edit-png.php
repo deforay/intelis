@@ -726,6 +726,20 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                     <td></td>
                     <td></td>
                   </tr>
+                  <?php
+                  $show = "display:none;";
+                  if (isset($vlQueryInfo['revised_by']) && $vlQueryInfo['revised_by'] != "") {
+                    $show = "";
+                  } else {
+                    $show = "display:none;";
+                  }
+                  ?>
+                  <tr class="revised" style="<?php echo $show; ?>">
+                    <th>Revised By</th>
+                    <td><input type="text" value="<?php echo $vlQueryInfo['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revised By" title="Please enter the revised by" /></td>
+                    <th>Revised on</td>
+                    <td><input type="text" value="<?php echo $general->humanDateFormat($vlQueryInfo['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revised By on" title="Please enter the revised on" /></td>
+                  </tr>
                 </table>
               </div>
             </div>

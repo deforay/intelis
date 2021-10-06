@@ -63,7 +63,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
     </section>
     <!-- Main content -->
     <section class="content">
-        
+
         <div class="box box-default">
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -338,7 +338,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                             </td>
 
                                             <th class="rejected" style="display: none;">Razão de rejeição</th>
-                      						<td class="rejected" style="display: none;">
+                                            <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value="">-- Selecione --</option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
@@ -360,10 +360,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                                 <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Data da Quantificação" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanDateFormat($eidInfo['sample_tested_datetime']) ?>" />
                                             </td>
 
-
                                             <th>Resultado</th>
                                             <td>
-                                                <select class="form-control" name="result" id="result">
+                                                <select class="form-control result-focus" name="result" id="result">
                                                     <option value=''> -- Selecione -- </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
@@ -371,7 +370,20 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                                 </select>
                                             </td>
                                         </tr>
-
+                                        <?php
+                                        $show = "display:none;";
+                                        if (isset($covid19Info['revised_by']) && $covid19Info['revised_by'] != "") {
+                                            $show = "";
+                                        } else {
+                                            $show = "display:none;";
+                                        }
+                                        ?>
+                                        <tr class="revised" style="<?php echo $show; ?>">
+                                            <th>Revisado por</th>
+                                            <td><input type="text" value="<?php echo $vlQueryInfo['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revisado por" title="Por favor, insira o revisado por" /></td>
+                                            <th>Revisado em</td>
+                                            <td><input type="text" value="<?php echo $general->humanDateFormat($vlQueryInfo['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revisado em" title="Por favor, insira o revisado em" /></td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>

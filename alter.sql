@@ -2361,3 +2361,9 @@ ALTER TABLE `form_hepatitis` ADD `unique_id` VARCHAR(1000) NULL AFTER `hepatitis
 UPDATE `form_hepatitis` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null;
 UPDATE `form_hepatitis` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null;
 ALTER TABLE `form_hepatitis` ADD UNIQUE(`unique_id`);
+
+-- Thana 06-Oct-2021
+ALTER TABLE `vl_request_form` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATE NULL DEFAULT NULL AFTER `revised_by`;
+ALTER TABLE `eid_form` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATE NULL DEFAULT NULL AFTER `revised_by`;
+ALTER TABLE `form_covid19` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATE NULL DEFAULT NULL AFTER `revised_by`;
+ALTER TABLE `form_hepatitis` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATE NULL DEFAULT NULL AFTER `revised_by`;

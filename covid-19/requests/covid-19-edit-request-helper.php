@@ -186,6 +186,8 @@ try {
 		'is_result_authorised'                => !empty($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
 		'authorized_by'                       => !empty($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
 		'authorized_on' 					  => !empty($_POST['authorizedOn']) ? $general->dateFormat($_POST['authorizedOn']) : null,
+		'revised_by'                       	  => !empty($_POST['revisedBy']) ? $_POST['revisedBy'] : null,
+		'revised_on' 					  	  => !empty($_POST['revisedOn']) ? $general->dateFormat($_POST['revisedOn']) : null,
 		'rejection_on'	 					  => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
 		'reason_for_changing'				  => (!empty($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'result_status'                       => $status,
