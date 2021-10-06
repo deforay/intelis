@@ -2367,6 +2367,9 @@ ALTER TABLE `form_covid19` CHANGE `clinician_phone` `clinician_phone` TEXT CHARA
 ALTER TABLE `form_covid19` DROP INDEX `source_of_request`;
 ALTER TABLE `form_hepatitis` DROP INDEX `source_of_request`;
 
-INSERT INTO `r_covid19_results` (`result_id`, `result`, `status`, `updated_datetime`, `data_sync`) VALUES ('presumptive-positive', 'Presumptive Positive', 'active', '2021-10-06 14:30:36', '1');
-INSERT INTO `r_covid19_results` (`result_id`, `result`, `status`, `updated_datetime`, `data_sync`) VALUES ('error', 'Error', 'active', '2021-10-06 14:30:36', '1');
-INSERT INTO `r_covid19_results` (`result_id`, `result`, `status`, `updated_datetime`, `data_sync`) VALUES ('inconclusive', 'Inconclusive', 'active', '2021-10-06 14:30:36', '1');
+
+-- Thana 06-Oct-2021
+ALTER TABLE `vl_request_form` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATE NULL DEFAULT NULL AFTER `revised_by`;
+ALTER TABLE `eid_form` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATE NULL DEFAULT NULL AFTER `revised_by`;
+ALTER TABLE `form_covid19` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATE NULL DEFAULT NULL AFTER `revised_by`;
+ALTER TABLE `form_hepatitis` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATE NULL DEFAULT NULL AFTER `revised_by`;

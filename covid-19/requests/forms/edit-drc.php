@@ -903,6 +903,20 @@ $pResult = $db->rawQuery($pQuery);
                                             <th></th>
                                             <td></td>
                                         </tr>
+                                        <?php
+                                        $show = "";
+                                        if (isset($covid19Info['revised_by']) && $covid19Info['revised_by'] != "") {
+                                            $show = "";
+                                        } else {
+                                            $show = "display:none;";
+                                        }
+                                        ?>
+                                        <tr class="revised" style="<?php echo $show; ?>">
+                                            <th>Revu par</th>
+                                            <td><input type="text" value="<?php echo $covid19Info['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revu par" title="Veuillez saisir la version révisée par" /></td>
+                                            <th>Révisé le</td>
+                                            <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Révisé le" /></td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>

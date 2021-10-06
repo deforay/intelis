@@ -274,6 +274,11 @@ if ($arr['vl_form'] == 1) {
           });
           $('.date').mask('99-aaa-9999');
           $('.dateTime').mask('99-aaa-9999 99:99');
+
+          $('.vlResult').change(function(e) {
+               $('.revised').show();
+               $('.revised-input').addClass('isRequired');
+          });
      });
 
      function checkSampleReceviedAtHubDate() {

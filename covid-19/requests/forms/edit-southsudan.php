@@ -573,6 +573,20 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             <th></th>
                                             <td></td>
                                         </tr>
+                                        <?php
+                                        $show = "display:none;";
+                                        if (isset($covid19Info['revised_by']) && $covid19Info['revised_by'] != "") {
+                                            $show = "";
+                                        } else {
+                                            $show = "display:none;";
+                                        }
+                                        ?>
+                                        <tr class="revised" style="<?php echo $show; ?>">
+                                            <th>Revised By</th>
+                                            <td><input type="text" value="<?php echo $covid19Info['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revised By" title="Please enter the revised by" /></td>
+                                            <th>Revised on</td>
+                                            <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revised By on" /></td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
