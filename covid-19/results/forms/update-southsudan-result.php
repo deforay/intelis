@@ -537,7 +537,6 @@ $sampleSuggestionDisplay = 'display:none;';
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-
                         <a class="btn btn-primary submit-btn" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
                         <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="7" />
@@ -738,6 +737,7 @@ $sampleSuggestionDisplay = 'display:none;';
                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                     <option value="RDT-Antibody">RDT-Antibody</option>
                     <option value="RDT-Antigen">RDT-Antigen</option>
+                    <option value="GeneXpert">GeneXpert</option>
                     <option value="ELISA">ELISA</option>
                     <option value="other">Others</option>
                 </select>

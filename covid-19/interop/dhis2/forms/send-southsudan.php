@@ -34,6 +34,21 @@ $eventsDataElementMapping = [
 ];
 
 $sampleRejection = array('yes' => 'Rejected/Recollect', 'no' => 'Accepted');
+$testTypes = array(
+  'GeneXpert' => 'GeneXpert',
+  'Real Time RT-PCR' => 'RT-PCR',
+  'RDT-Antibody' => 'Antigen RDT',
+  'RDT-Antigen' => 'Antibody RDT'
+);
+$testPlatforms = array(
+  'Abbott d/m/y' => 'Abbott m2000 System',
+  'Abbott m/d/y' => 'Abbott m2000 System',
+  'Abbott' => 'Abbott m2000 System',
+  'ABI7500' => 'ABI7500 System',
+  'BioRad PCR' => 'BioRad PCR System',
+  'GeneXpert' => 'GeneXpert System',
+  'Rotor Gene' => 'Rotor Gene PCR System'
+);
 
 //get facility map id
 $query = "SELECT 
@@ -97,7 +112,7 @@ foreach ($formResults as $row) {
   $dataValues = array(
     'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
     'lHekjJANaNi' => $row['sample_received_at_vl_lab_datetime'],
-    'P61FWjSAjjA' => $row['sample_condition'],
+    'P61FWjSAjjA' => ucwords($row['sample_condition']),
     'LbIwAbaSV6r' => $sampleRejection[$row['is_sample_rejected']],
     'GeR4aHFlc1O' => $labTechnician['user_name'],
   );
@@ -113,7 +128,7 @@ foreach ($formResults as $row) {
   // $idResponse = (json_decode($idGeneratorApi, true));
   // $eventId = $idResponse['codes'][0];
 
-  if ($eventId == null) $eventId = $general->generateRandomString(11);
+  // if ($eventId == null) $eventId = $general->generateRandomString(11);
 
   $eventPayload = array(
     //"event" => $eventId,
@@ -140,10 +155,13 @@ foreach ($formResults as $row) {
 
   foreach ($testResults as $testResult) {
 
+    $testName = isset($testTypes[$testResult['test_name']]) ? $testTypes[$testResult['test_name']] : 'Others';
+    $testPlatform = isset($testPlatforms[$testResult['testing_platform']]) ? $testPlatforms[$testResult['testing_platform']] : 'Others';
+
     $dataValues = array(
       //'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
-      'b4PEeF4OOwc' => $testResult['test_name'],
-      'w9R4l7O9Sau' => $testResult['testing_platform'],
+      'b4PEeF4OOwc' => $testName,
+      'w9R4l7O9Sau' => $testPlatform,
       'ZLEOP9JHZ5c' => $testResult['sample_tested_datetime'],
       'ovY6E8BSdto' => ucwords($testResult['result']),
       'mJFhS108OdO' => $approver['user_name'],
@@ -154,7 +172,7 @@ foreach ($formResults as $row) {
     // $idResponse = (json_decode($idGeneratorApi, true));
     // $eventId = $idResponse['codes'][0];
 
-    if ($eventId == null) $eventId = $general->generateRandomString(11);
+    // if ($eventId == null) $eventId = $general->generateRandomString(11);
 
     $eventPayload = array(
       //"event" => $eventId,
@@ -188,7 +206,7 @@ foreach ($formResults as $row) {
   // $idResponse = (json_decode($idGeneratorApi, true));
   // $eventId = $idResponse['codes'][0];
 
-  if ($eventId == null) $eventId = $general->generateRandomString(11);
+  // if ($eventId == null) $eventId = $general->generateRandomString(11);
 
   $eventPayload = array(
     //"event" => $eventId,
@@ -215,9 +233,9 @@ foreach ($formResults as $row) {
   // var_dump($finalPayload);
   // echo "</pre>";
   $response = $dhis2->post("/api/33/events/", $finalPayload);
-  echo "<br><br><pre>";
-  var_dump($response);
-  echo "</pre>";
+  // echo "<br><br><pre>";
+  // var_dump($response);
+  // echo "</pre>";
 
 
   $updateData = array('result_sent_to_source' => 'sent');

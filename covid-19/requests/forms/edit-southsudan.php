@@ -873,6 +873,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                     <option value="RDT-Antibody">RDT-Antibody</option>
                     <option value="RDT-Antigen">RDT-Antigen</option>
+                    <option value="GeneXpert">GeneXpert</option>
                     <option value="ELISA">ELISA</option>
                     <option value="other">Others</option>
                 </select>

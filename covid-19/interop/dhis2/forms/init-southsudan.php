@@ -5,48 +5,62 @@
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 $instanceId = 'dhis2';
 
+//tkIsR0Lo23H
 
-// Getting all Testing Labs 
-$data = array();
-$data[] = "fields=options[id,name]";
-$data[] = "paging=false";
+$initOptionSets = array(
+    'testingLabs' => 'fsHj2ZG3iHJ',
+    // 'testTypes' => 'tkIsR0Lo23H',
+    // 'testingPlatform' => 'RFqme0EHhdF'
+);
 
-$url = "/api/optionSets/fsHj2ZG3iHJ.json";
+foreach ($initOptionSets as $t => $id) {
+    $data = array();
+    $data[] = "fields=options[:all]";
+    $data[] = "paging=false";
 
-$response = $dhis2->get($url, $data);
+    $url = "/api/optionSets/$id.json";
 
-$response = json_decode($response, true);
+    $response = $dhis2->get($url, $data);
 
-if (!empty($response) && $response != '[]') {
+    $response = json_decode($response, true);
+    if (!empty($response) && $t == 'testingLabs') {
+        foreach ($response['options'] as $lab) {
 
-    foreach ($response['options'] as $lab) {
+            $facilityData = array(
+                'facility_name' => $lab['name'],
+                'vlsm_instance_id' => $instanceId,
+                'other_id' => $lab['id'],
+                'facility_type' => 2,
+                'test_type' => 'covid19',
+                'updated_datetime' => $general->getDateTime(),
+                'status' => 'active'
+            );
+            $updateColumns = array("other_id", "updated_datetime");
+            $db->onDuplicate($updateColumns, 'facility_id');
+            $db->insert('facility_details', $facilityData);
+            $id = $db->getInsertId();
 
-        $facilityData = array(
-            'facility_name' => $lab['name'],
-            'vlsm_instance_id' => $instanceId,
-            'other_id' => $lab['id'],
-            'facility_type' => 2,
-            'test_type' => 'covid19',
-            'updated_datetime' => $general->getDateTime(),
-            'status' => 'active'
-        );
-        $updateColumns = array("other_id", "updated_datetime");
-        $db->onDuplicate($updateColumns, 'facility_id');
-        $db->insert('facility_details', $facilityData);
-        $id = $db->getInsertId();
-
-        $dataTest = array(
-            'test_type' => 'covid19',
-            'facility_id' => $id,
-            'monthly_target' => null,
-            'suppressed_monthly_target' => null,
-            "updated_datetime" => $general->getDateTime()
-        );
-        $db->setQueryOption(array('IGNORE'))->insert('testing_labs', $dataTest);
+            $dataTest = array(
+                'test_type' => 'covid19',
+                'facility_id' => $id,
+                'monthly_target' => null,
+                'suppressed_monthly_target' => null,
+                "updated_datetime" => $general->getDateTime()
+            );
+            $db->setQueryOption(array('IGNORE'))->insert('testing_labs', $dataTest);
+        }
+    } else if (!empty($response) && $t == 'testTypes') {
+        $_SESSION['DHIS2_TEST_TYPES'] = array();
+        foreach ($response['options'] as $opts) {
+            $_SESSION['DHIS2_TEST_TYPES'][$opts['code']] = $opts['name'];
+        }
+    } else if (!empty($response) && $t == 'testingPlatform') {
+        $_SESSION['DHIS2_TESTING_PLATFORMS'] = array();
+        foreach ($response['options'] as $opts) {
+            $_SESSION['DHIS2_TESTING_PLATFORMS'][$opts['code']] = $opts['name'];
+        }
     }
 }
-
-
 
 
 
