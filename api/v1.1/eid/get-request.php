@@ -107,10 +107,14 @@ try {
         lt_u_d.user_name                                     as labTechnicianName,
         t_b.user_name                                        as testedByName,
         rs.rejection_reason_name                             as rejectionReason,
-        p.province_name                                      as provinceName,                  
-        r_f_s.funding_source_name                            as fundingSourceName,                  
-        r_i_p.i_partner_name                                 as implementingPartnerName,                  
-        ts.status_name                                       as resultStatusName
+        p.province_name                                      as provinceName,
+        r_f_s.funding_source_name                            as fundingSourceName,
+        r_i_p.i_partner_name                                 as implementingPartnerName,
+        ts.status_name                                       as resultStatusName,
+        vl.revised_by                                        as revisedBy,
+        r_r_b.user_name                                      as revisedByName,
+        vl.revised_on                                        as revisedOn,
+        vl.reason_for_changing                               as reasonForEidResultChanges
         
         FROM eid_form as vl 
         LEFT JOIN province_details as p ON vl.province_id=p.province_id
@@ -120,6 +124,7 @@ try {
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
         LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
         LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
+        LEFT JOIN user_details as r_r_b ON r_r_b.user_id=vl.revised_by 
         LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician 
         LEFT JOIN user_details as t_b ON t_b.user_id=vl.tested_by 
         LEFT JOIN r_eid_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_eid_test 

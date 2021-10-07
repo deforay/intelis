@@ -202,6 +202,13 @@ try {
             $data['arrivalDateTime'] = NULL;
         }
 
+        if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
+            $revisedOn = explode(" ", $data['revisedOn']);
+            $data['revisedOn'] = $general->dateFormat($revisedOn[0]) . " " . $revisedOn[1];
+        } else {
+            $data['revisedOn'] = NULL;
+        }
+
         $covid19Data = array(
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $data['formId'],
@@ -282,6 +289,9 @@ try {
             'is_result_authorised'                => !empty($data['isResultAuthorized']) ? $data['isResultAuthorized'] : null,
             'authorized_by'                       => !empty($data['authorizedBy']) ? $data['authorizedBy'] : null,
             'authorized_on'                       => !empty($data['authorizedOn']) ? $general->dateFormat($data['authorizedOn']) : null,
+            'revised_by'                          => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
+            'revised_on'                          => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
+            'reason_for_changing'                 => (!empty($_POST['reasonForCovid19ResultChanges']) && !empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
             'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->dateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
             'data_sync'                           => 0,

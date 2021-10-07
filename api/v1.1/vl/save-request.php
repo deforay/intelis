@@ -265,6 +265,13 @@ try {
             $data['result'] = $data['vlLog'];
         }
 
+        if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
+            $revisedOn = explode(" ", $data['revisedOn']);
+            $data['revisedOn'] = $general->dateFormat($revisedOn[0]) . " " . $revisedOn[1];
+        } else {
+            $data['revisedOn'] = NULL;
+        }
+
         $vlFulldata = array(
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],
@@ -315,6 +322,9 @@ try {
             'tested_by'                             => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  NULL,
             'result_approved_by'                    => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
             'result_approved_datetime'              => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedOnDateTime'] :  NULL,
+            'revised_by'                            => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
+            'revised_on'                            => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
+            'reason_for_changing'                   => (!empty($_POST['reasonForVlResultChanges']) && !empty($_POST['reasonForVlResultChanges'])) ? $_POST['reasonForVlResultChanges'] : null,
             'approver_comments'                     => (isset($data['labComments']) && trim($data['labComments']) != '') ? trim($data['labComments']) :  NULL,
             'result_status'                         => $status,
             'funding_source'                        => (isset($data['fundingSource']) && trim($data['fundingSource']) != '') ? base64_decode($data['fundingSource']) : NULL,

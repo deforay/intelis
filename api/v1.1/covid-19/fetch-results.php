@@ -155,8 +155,12 @@ try {
         gdpd.geo_name                           as patientDistrict,
         gdpd.geo_id                             as patientDistrictId,
         ts.status_name                          as resultStatusName,
+        vl.revised_by                           as revisedBy,
+        r_r_b.user_name                         as revisedByName,
+        vl.revised_on                           as revisedOn
         vl.patient_nationality                  as patientNationality,
-        CONCAT_WS('',c.iso_name, ' (', c.iso3,')') as patientNationalityName
+        CONCAT_WS('',c.iso_name, ' (', c.iso3,')') as patientNationalityName,
+        vl.reason_for_changing                  as reasonForCovid19ResultChanges
         
         FROM form_covid19 as vl 
         LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
@@ -170,6 +174,7 @@ try {
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
         LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
         LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
+        LEFT JOIN user_details as r_r_b ON r_r_b.user_id=vl.revised_by 
         LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician 
         LEFT JOIN user_details as t_b ON t_b.user_id=vl.tested_by 
         LEFT JOIN r_covid19_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_covid19_test 
