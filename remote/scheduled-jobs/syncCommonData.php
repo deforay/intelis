@@ -242,11 +242,11 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
         if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
 
             if ($dataType == 'healthFacilities' && !empty($dataValues)) {
-                $updatedFacilities = array_column($dataValues, 'facility_id');
+                $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
                 $db = $db->where('facility_id', $updatedFacilities, 'IN');
                 $id = $db->delete('health_facilities');
             } else if ($dataType == 'testingLabs' && !empty($dataValues)) {
-                $updatedFacilities = array_column($dataValues, 'facility_id');
+                $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
                 $db->where('facility_id', $updatedFacilities, 'IN');
                 $id = $db->delete('testing_labs');
             }
@@ -260,7 +260,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $lastInsertId = $dataToSync[$dataType]['primaryKey'];
                 $db->onDuplicate($updateColumns, $lastInsertId);
                 $db->insert($dataToSync[$dataType]['tableName'], $tableData);
-                
+
                 // For updated facilities, we delete logo images (if any) and then we get new images (if any)
                 // this ensures that if the logo was there previously it gets removed
                 if ($dataType == 'facilities') {

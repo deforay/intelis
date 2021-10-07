@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 #include_once '../startup.php';
 
-include_once APPLICATION_PATH . '/includes/ImageResize.php';
+
 
 $general = new \Vlsm\Models\General($db);
 //#require_once('../startup.php'); 
@@ -24,9 +24,9 @@ try {
             $imageName = "usign-" . $string . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
-                $resizeObj = new ImageResize($signatureImagePath);
-                $resizeObj->resizeImage(100, 100, 'auto');
-                $resizeObj->saveImage($signatureImagePath, 100);
+                $resizeObj = new \Vlsm\Helpers\ImageResize($signatureImagePath);
+                $resizeObj->resizeToWidth(100);
+                $resizeObj->save($signatureImagePath);
                 $data['user_signature'] = $imageName;
             }
         }

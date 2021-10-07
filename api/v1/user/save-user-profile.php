@@ -1,10 +1,6 @@
 <?php
 
 header('Content-Type: application/json');
-// require_once('../startup.php');
-
-include_once APPLICATION_PATH . '/includes/ImageResize.php';
-
 
 session_unset(); // no need of session in json response
 $general = new \Vlsm\Models\General($db);
@@ -53,9 +49,9 @@ try {
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
-            $resizeObj = new ImageResize($signatureImagePath);
-            $resizeObj->resizeImage(100, 100, 'auto');
-            $resizeObj->saveImage($signatureImagePath, 100);
+            $resizeObj = new \Vlsm\Helpers\ImageResize($signatureImagePath);
+            $resizeObj->resizeToWidth(100);
+            $resizeObj->save($signatureImagePath);            
             $data['user_signature'] = $imageName;
         }
     }

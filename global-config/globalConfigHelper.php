@@ -6,7 +6,7 @@ ob_start();
 #include_once '../startup.php';
 
 
-include_once APPLICATION_PATH . '/includes/ImageResize.php';
+
 
 $general = new \Vlsm\Models\General($db);
 $tableName = "global_config";
@@ -47,9 +47,12 @@ try {
         $string = $general->generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["instanceLogo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
-            $resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
-            $resizeObj->resizeImage(80, 80, 'auto');
-            $resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName, 100);
+
+            $resizeObj = new \Vlsm\Helpers\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
+            $resizeObj->resizeToWidth(80);
+            $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
+
+
             $image = array('instance_facility_logo' => $imageName);
             $db = $db->where('vlsm_instance_id', $_SESSION['instanceId']);
             $db->update($instanceTableName, $image);
@@ -78,16 +81,17 @@ try {
         $string = $general->generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName)) {
-            $resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName);
+            $resizeObj = new \Vlsm\Helpers\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName);
             if ($_POST['vl_form'] == 4) {
                 list($width, $height) = getimagesize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName);
                 if ($width > 240) {
-                    $resizeObj->resizeImage(240, 80, 'auto');
+                    $resizeObj->resizeToBestFit(240, 80);
                 }
             } else {
-                $resizeObj->resizeImage(80, 80, 'auto');
+                $resizeObj->resizeToWidth(80);
             }
-            $resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName, 100);
+            $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName);
+
             $data = array('value' => $imageName);
             $db = $db->where('name', 'logo');
             $id = $db->update($tableName, $data);
