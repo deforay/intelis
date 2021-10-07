@@ -620,7 +620,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     $(document).ready(function() {
         $('.result-focus').change(function(e) {
             if ($('#result').val() != '' || $('#sampleRejectionReason').val() != '') {
-                $('.change-reason').show(500);
+                $('.change-reason').show();
                 $('#reasonForChanging').addClass('isRequired');
             }
         });

@@ -187,7 +187,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				function(data) {
 					$.unblockUI();
 					if (data != "") {
-						$('.activateSample').show(500);
+						$('.activateSample').show();
 						$('#sampleId').val(data);
 					} else {
 						<?php if (isset($_SESSION['system']) && $_SESSION['system'] == 'vluser') { ?>
@@ -229,7 +229,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 							function(data) {
 								$.unblockUI();
 								if (data != "") {
-									$('.activateSample').show(500);
+									$('.activateSample').show();
 									$('#sampleId').val(data);
 									oTable.fnDraw();
 								}

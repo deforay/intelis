@@ -201,7 +201,8 @@ if ($arr['vl_form'] == 1) {
 		//$('.date').mask('99-aaa-9999');
 		//$('.dateTime').mask('99-aaa-9999 99:99');
 		$('.result-focus').change(function(e) {
-			$('#revised').val("yes");
+			$('.change-reason').show();
+			$('#reasonForChanging').addClass('isRequired');
 		});
 	});
 
