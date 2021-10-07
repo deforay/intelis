@@ -646,20 +646,6 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                         <textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Razão para as mudanças nos resultados" style="width:100%;"></textarea>
                       </td>
                     </tr>
-                    <?php
-                      $show = "display:none;";
-                      if (isset($vlQueryInfo['revised_by']) && $vlQueryInfo['revised_by'] != "") {
-                          $show = "";
-                      } else {
-                          $show = "display:none;";
-                      }
-                      ?>
-                      <tr class="revised" style="<?php echo $show; ?>">
-                          <th>Revisado por</th>
-                          <td><input type="text" value="<?php echo $vlQueryInfo['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revisado por" title="Por favor, insira o revisado por" /></td>
-                          <th>Revisado em</td>
-                          <td><input type="text" value="<?php echo $general->humanDateFormat($vlQueryInfo['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revisado em" title="Por favor, insira o revisado em" /></td>
-                      </tr>
                   </table>
                   <?php if (trim($rch) != '') { ?>
                     <div class="box-body">
@@ -673,6 +659,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
+            <input type="hidden" name="revised" id="revised" value="no" />
               <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
               <input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
               <input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />

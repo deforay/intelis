@@ -72,7 +72,7 @@ $disable = "disabled = 'disabled'";
 
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -563,6 +563,7 @@ $disable = "disabled = 'disabled'";
           </div>
           <!-- /.box-body -->
           <div class="box-footer">
+            <input type="hidden" name="revised" id="revised" value="no" />
             <input type="hidden" id="rSrc" name="rSrc" value="er" />
             <input type="hidden" id="dubPatientArtNo" name="dubPatientArtNo" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" />
             <input type="hidden" id="vlSampleId" name="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
@@ -790,7 +791,6 @@ $disable = "disabled = 'disabled'";
       document.getElementById('updateVlRequestForm').submit();
     }
   }
-
 </script>
 <?php
 //include(APPLICATION_PATH.'/footer.php');

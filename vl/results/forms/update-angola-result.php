@@ -117,7 +117,7 @@ $disable = "disabled = 'disabled'";
 
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -235,8 +235,10 @@ $disable = "disabled = 'disabled'";
                       </td>
                     </tr>
                     <tr>
-                      <td><label for="ageInMonths"> Idade (em meses se < 1 ano) </label> </td> <td>
-                            <input type="text" class="form-control checkNum" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
+                      <td><label for="ageInMonths"> Idade (em meses se < 1 ano) </label>
+                      </td>
+                      <td>
+                        <input type="text" class="form-control checkNum" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
                       </td>
                       <td colspan="3"><label for="responsiblePersonName">Nome da Mãe/ Pai/ Familiar responsáve </label></td>
                       <td>
@@ -650,6 +652,7 @@ $disable = "disabled = 'disabled'";
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
+              <input type="hidden" name="revised" id="revised" value="no" />
               <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
               <input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
               <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>

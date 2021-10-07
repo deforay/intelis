@@ -60,7 +60,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     </section>
     <!-- Main content -->
     <section class="content">
-        
+
         <div class="box box-default">
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -415,7 +415,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <tfoot>
                                                     <th colspan="3" class="text-right">Final Result</th>
                                                     <td>
-                                                        <select class="form-control" name="result" id="result">
+                                                        <select class="result-focus form-control" name="result" id="result">
                                                             <option value=''> -- Select -- </option>
                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                 <option value="<?php echo $c19ResultKey; ?>" <?php echo ($covid19Info['result'] == $c19ResultKey) ? "selected='selected'" : ""; ?>> <?php echo $c19ResultValue; ?> </option>
@@ -480,6 +480,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                         <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                     <?php } ?>
                     <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                    <input type="hidden" name="revised" id="revised" value="no" />
                     <input type="hidden" name="formId" id="formId" value="7" />
                     <input type="hidden" name="deletedRow" id="deletedRow" value="" />
                     <input type="hidden" name="covid19SampleId" id="covid19SampleId" value="<?php echo ($covid19Info['covid19_id']); ?>" />
@@ -596,7 +597,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     function validateNow() {
         if ($('#isResultAuthorized').val() != "yes" && $('#result').val() == "") {
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
-        } else{
+        } else {
             $('#isResultAuthorized').val('yes');
             $('#authorizedBy,#authorizedOn').addClass('isRequired');
         }
@@ -644,7 +645,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                 checkPostive();
             });
             checkPostive();
-        <?php }  else { ?>
+        <?php } else { ?>
             $('#result').addClass('isRequired');
             $('#isResultAuthorized').val('yes');
         <?php } ?>
@@ -714,6 +715,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
     <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
+
         function checkPostive() {
             var itemLength = document.getElementsByName("testResult[]");
             for (i = 0; i < itemLength.length; i++) {

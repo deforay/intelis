@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 ob_start();
 #require_once('../../startup.php');
@@ -170,7 +170,7 @@ try {
      }
      if (isset($_POST['approvedBy']) && trim($_POST['approvedBy']) != '') {
           $vlObj = new \Vlsm\Models\Vl($db);
-        $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
+          $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
      }
      $vldata = array(
           'facility_id' => (isset($_POST['fName']) && $_POST['fName'] != '') ? $_POST['fName'] :  NULL,
@@ -218,6 +218,8 @@ try {
           'result' => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] :  NULL,
           'result_value_log' => (isset($_POST['vlLog']) && $_POST['vlLog'] != '') ? $_POST['vlLog'] :  NULL,
           'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
+          'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+          'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
           'approver_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
           'reason_for_vl_result_changes' => $allChange,
           'last_modified_by' => $_SESSION['userId'],

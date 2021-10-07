@@ -370,20 +370,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                                 </select>
                                             </td>
                                         </tr>
-                                        <?php
-                                        $show = "display:none;";
-                                        if (isset($covid19Info['revised_by']) && $covid19Info['revised_by'] != "") {
-                                            $show = "";
-                                        } else {
-                                            $show = "display:none;";
-                                        }
-                                        ?>
-                                        <tr class="revised" style="<?php echo $show; ?>">
-                                            <th>Revisado por</th>
-                                            <td><input type="text" value="<?php echo $vlQueryInfo['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revisado por" title="Por favor, insira o revisado por" /></td>
-                                            <th>Revisado em</td>
-                                            <td><input type="text" value="<?php echo $general->humanDateFormat($vlQueryInfo['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revisado em" title="Por favor, insira o revisado em" /></td>
-                                        </tr>
                                     </table>
                                 </div>
                             </div>
@@ -394,6 +380,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                     <div class="box-footer">
 
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                        <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="8" />
                         <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
                         <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?php echo $eidInfo['sample_code']; ?>" />

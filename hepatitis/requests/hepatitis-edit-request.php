@@ -42,7 +42,7 @@ $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $comorbidityData = array();
 $comorbidityQuery = "SELECT DISTINCT comorbidity_id, comorbidity_name FROM r_hepatitis_comorbidities WHERE comorbidity_status ='active'";
 $comorbidityResult = $db->rawQuery($comorbidityQuery);
-foreach($comorbidityResult as $comorbidity){
+foreach ($comorbidityResult as $comorbidity) {
     $comorbidityData[$comorbidity['comorbidity_id']] = ucwords($comorbidity['comorbidity_name']);
 }
 $comorbidityInfo = $hepatitisDb->getComorbidityByHepatitisId($id);
@@ -51,7 +51,7 @@ $comorbidityInfo = $hepatitisDb->getComorbidityByHepatitisId($id);
 $riskFactorsData = array();
 $riskFactorsQuery = "SELECT DISTINCT riskfactor_id, riskfactor_name FROM r_hepatitis_risk_factors WHERE riskfactor_status ='active'";
 $riskFactorsResult = $db->rawQuery($riskFactorsQuery);
-foreach($riskFactorsResult as $riskFactors){
+foreach ($riskFactorsResult as $riskFactors) {
     $riskFactorsData[$riskFactors['riskfactor_id']] = ucwords($riskFactors['riskfactor_name']);
 }
 $riskFactorsInfo = $hepatitisDb->getRiskFactorsByHepatitisId($id);
@@ -98,8 +98,8 @@ foreach ($rejectionTypeResult as $type) {
     $rejectionReason .= '<optgroup label="' . ucwords($type['rejection_type']) . '">';
     foreach ($rejectionResult as $reject) {
         if ($type['rejection_type'] == $reject['rejection_type']) {
-            $selected = (isset($hepatitisInfo['reason_for_sample_rejection']) && $hepatitisInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id'])?"selected='selected'":"";
-            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '" '.$selected.'>' . ucwords($reject['rejection_reason_name']) . '</option>';
+            $selected = (isset($hepatitisInfo['reason_for_sample_rejection']) && $hepatitisInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? "selected='selected'" : "";
+            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '" ' . $selected . '>' . ucwords($reject['rejection_reason_name']) . '</option>';
         }
     }
     $rejectionReason .= '</optgroup>';
@@ -108,7 +108,7 @@ foreach ($rejectionTypeResult as $type) {
 $specimenResult = array();
 $specimenTypeResult = $general->fetchDataFromTable('r_hepatitis_sample_type', "status = 'active'");
 foreach ($specimenTypeResult as $name) {
-    $specimenResult[$name['sample_id']] = ucwords($name['sample_name']); 
+    $specimenResult[$name['sample_id']] = ucwords($name['sample_name']);
 }
 // Import machine config
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');
@@ -262,7 +262,7 @@ if (file_exists($fileArray[$arr['vl_form']])) {
                 });
             },
             onSelect: function(e) {
-                
+
             },
             yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {
@@ -281,6 +281,10 @@ if (file_exists($fileArray[$arr['vl_form']])) {
             }
         });
         getMachine($("#hepatitisPlatform").val());
+
+        $('.result-focus').change(function(e) {
+            $('#revised').val("yes");
+        });
     });
 
     function changeReject(val) {
@@ -311,16 +315,16 @@ if (file_exists($fileArray[$arr['vl_form']])) {
 
     function getMachine(value) {
         $.post("/import-configs/get-config-machine-by-config.php", {
-            configName: value,
-            machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name']  : '""'; ?>,
-            testType: 'eid'
-        },
-        function(data) {
-            $('#machineName').html('');
-            if (data != "") {
-                $('#machineName').append(data);
-            }
-        });
+                configName: value,
+                machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name']  : '""'; ?>,
+                testType: 'eid'
+            },
+            function(data) {
+                $('#machineName').html('');
+                if (data != "") {
+                    $('#machineName').append(data);
+                }
+            });
     }
 </script>
 <?php include_once(APPLICATION_PATH . '/footer.php');

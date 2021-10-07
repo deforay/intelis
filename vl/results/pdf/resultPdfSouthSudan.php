@@ -34,12 +34,24 @@ if (sizeof($requestResult) > 0) {
                }
           }
 
+          $revisedBy = '';
+          $revisedByRes = array();
+          if (isset($result['revised_by']) && !empty($result['revised_by'])) {
+               $revisedByRes = $users->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
+               if ($revisedByRes) {
+                    $revisedBy = $revisedByRes['user_name'];
+               }
+          }
+
           $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = null;
           if (!empty($testedByRes['user_signature'])) {
                $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
           }
           if (!empty($reviewedByRes['user_signature'])) {
                $reviewedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $reviewedByRes['user_signature'];
+          }
+          if (!empty($revisedByRes['user_signature'])) {
+               $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
           }
 
           $resultApprovedBy = '';
@@ -500,22 +512,21 @@ if (sizeof($requestResult) > 0) {
                $html .= '</tr>';
           }
 
-          // $html .= '<tr>';
-          // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
-          // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-          // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-          // $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+          $html .= '</tr>';
 
-          // $html .= '<tr>';
-          // $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          // /* if (!empty($revisedSignaturePath) && file_exists($revisedSignaturePath)) {
-          //      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:50px;" /></td>';
-          // } else {
-          //      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          // } */
-          // $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          // $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          // $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
+          if (!empty($revisedSignaturePath) && file_exists($revisedSignaturePath)) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
+          } else {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          }
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['revised_on'])) . '</td>';
+          $html .= '</tr>';
 
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:8px;"></td>';

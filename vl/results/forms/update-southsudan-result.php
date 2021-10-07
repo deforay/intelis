@@ -762,6 +762,7 @@ $disable = "disabled = 'disabled'";
 										</div>
 							</div>
 							<div class="box-footer">
+								<input type="hidden" name="revised" id="revised" value="no" />
 								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
 								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;

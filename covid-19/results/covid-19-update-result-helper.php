@@ -55,6 +55,8 @@ try {
 		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->dateFormat($_POST['authorizedOn']) : null,
+		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
 		'reason_for_changing'				  => (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
 		'result_status'                       => 8,
@@ -62,7 +64,7 @@ try {
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'last_modified_by'                     => $_SESSION['userId'],
 		'result_printed_datetime' 			  => NULL,
-        'result_dispatched_datetime' 		  => NULL,
+		'result_dispatched_datetime' 		  => NULL,
 		'last_modified_datetime'               => $general->getDateTime()
 	);
 

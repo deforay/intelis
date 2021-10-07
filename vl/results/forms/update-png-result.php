@@ -155,7 +155,7 @@ $disable = "disabled = 'disabled'";
 
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -365,14 +365,16 @@ $disable = "disabled = 'disabled'";
                       &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="routineOne" name="reasonForTest" <?php echo $disable; ?> value="First VL, routine monitoring (On ART for at least 6 months)" title="Please Check Routine" <?php echo ($vlQueryInfo['reason_testing_png'] == 'First VL, routine monitoring (On ART for at least 6 months)') ? "checked='checked'" : "" ?>>First VL, routine monitoring (On ART for at least 6 months)
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" id="routineTwo" name="reasonForTest" <?php echo $disable; ?> value="Annual routine follow-up VL (Previous VL < 1000 cp/mL)" title="Please Check Routine" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Annual routine follow-up VL (Previous VL < 1000 cp/mL)') ? "checked='checked'" : "" ?>>Annual routine follow-up VL (Previous VL < 1000 cp/mL) </label> </td> <td colspan="3" class="suspect">
-                        <label for="suspect">Suspected Treatment Failure</label><br />
-                        <label class="radio-inline">
-                          <input type="radio" id="suspectOne" name="reasonForTest" value="Suspected TF" <?php echo $disable; ?> title="Please Suspected TF" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Suspected TF') ? "checked='checked'" : "" ?>>Suspected TF
-                        </label>
-                        <label class="radio-inline">
-                          <input type="radio" id="suspectTwo" name="reasonForTest" <?php echo $disable; ?> value="Follow-up VL after EAC (Previous VL >= 1000 cp/mL)" title="Please Suspected TF" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Follow-up VL after EAC (Previous VL >= 1000 cp/mL)') ? "checked='checked'" : "" ?>>Follow-up VL after EAC (Previous VL >= 1000 cp/mL)
-                        </label>
+                      <input type="radio" id="routineTwo" name="reasonForTest" <?php echo $disable; ?> value="Annual routine follow-up VL (Previous VL < 1000 cp/mL)" title="Please Check Routine" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Annual routine follow-up VL (Previous VL < 1000 cp/mL)') ? "checked='checked'" : "" ?>>Annual routine follow-up VL (Previous VL < 1000 cp/mL) </label>
+                  </td>
+                  <td colspan="3" class="suspect">
+                    <label for="suspect">Suspected Treatment Failure</label><br />
+                    <label class="radio-inline">
+                      <input type="radio" id="suspectOne" name="reasonForTest" value="Suspected TF" <?php echo $disable; ?> title="Please Suspected TF" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Suspected TF') ? "checked='checked'" : "" ?>>Suspected TF
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" id="suspectTwo" name="reasonForTest" <?php echo $disable; ?> value="Follow-up VL after EAC (Previous VL >= 1000 cp/mL)" title="Please Suspected TF" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Follow-up VL after EAC (Previous VL >= 1000 cp/mL)') ? "checked='checked'" : "" ?>>Follow-up VL after EAC (Previous VL >= 1000 cp/mL)
+                    </label>
                   </td>
                 </tr>
                 <tr>
@@ -642,6 +644,7 @@ $disable = "disabled = 'disabled'";
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
+          <input type="hidden" name="revised" id="revised" value="no" />
           <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
           <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
           <a href="vlTestResult.php" class="btn btn-default"> Cancel</a>

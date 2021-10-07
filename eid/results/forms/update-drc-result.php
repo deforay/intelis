@@ -55,7 +55,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
   </section>
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -273,8 +273,10 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
                       <option value='tnd' <?php echo ($eidInfo['mother_vl_result'] == 'tnd') ? "selected='selected'" : ""; ?>> Target Not Detected </option>
                       <option value='bdl' <?php echo ($eidInfo['mother_vl_result'] == 'bdl') ? "selected='selected'" : ""; ?>> Below Detection Limit </option>
                       <option value='< 20' <?php echo ($eidInfo['mother_vl_result'] == '< 20') ? "selected='selected'" : ""; ?>>
-                        < 20 </option> <option value='< 40' <?php echo ($eidInfo['mother_vl_result'] == '< 40') ? "selected='selected'" : ""; ?>>
-                          < 40 </option> <option value='invalid' <?php echo ($eidInfo['mother_vl_result'] == 'invalid') ? "selected='selected'" : ""; ?>> Invalid
+                        < 20 </option>
+                      <option value='< 40' <?php echo ($eidInfo['mother_vl_result'] == '< 40') ? "selected='selected'" : ""; ?>>
+                        < 40 </option>
+                      <option value='invalid' <?php echo ($eidInfo['mother_vl_result'] == 'invalid') ? "selected='selected'" : ""; ?>> Invalid
                       </option>
                     </select>
                   </td>
@@ -479,7 +481,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 
                       <th>Résultat </label></th>
                       <td>
-                        <select class="form-control isRequired" name="result" id="result" title="Résultat">
+                        <select class="result-focus form-control isRequired" name="result" id="result" title="Résultat">
                           <option value=''> -- Sélectionner -- </option>
                           <option value="positive" <?php echo ($eidInfo['result'] == 'positive') ? "selected='selected'" : ""; ?>> Positif </option>
                           <option value="negative" <?php echo ($eidInfo['result'] == 'negative') ? "selected='selected'" : ""; ?>> Négatif </option>
@@ -499,6 +501,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
           <input type="hidden" name="formId" id="formId" value="3" />
           <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
           <input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo $eidInfo['sample_code'] ?>" />
+          <input type="hidden" name="revised" id="revised" value="no" />
 
           <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
           <a href="/eid/requests/eid-requests.php" class="btn btn-default"> Cancel</a>

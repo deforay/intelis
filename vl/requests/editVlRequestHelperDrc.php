@@ -221,7 +221,7 @@ try {
 
     $vldata = array(
         'facility_id' => $_POST['clinicName'],
-        'serial_no'=>(isset($_POST['serialNo']) && $_POST['serialNo']!='' ? $_POST['serialNo'] :  NULL),
+        'serial_no' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
         'request_clinician_name' => $_POST['clinicianName'],
         'request_clinician_phone_number' => $_POST['clinicanTelephone'],
         'facility_support_partner' => $_POST['supportPartner'],
@@ -257,6 +257,8 @@ try {
         'sample_collection_date' => $_POST['sampleCollectionDate'],
         'date_dispatched_from_clinic_to_lab' => $_POST['dateDispatchedFromClinicToLab'],
         //'result_printed_datetime'=>$_POST['sampleTestingDateAtLab'],
+        'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
         'last_modified_by' => $_SESSION['userId'],
         'data_sync' => 0,
         'last_modified_datetime' => $general->getDateTime(),
@@ -324,7 +326,7 @@ try {
         }
     }
     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-    if($_POST['status'] == 7  && $lock == 'yes'){
+    if ($_POST['status'] == 7  && $lock == 'yes') {
         $vldata['locked'] = 'yes';
     }
     //var_dump($vldata);die;
