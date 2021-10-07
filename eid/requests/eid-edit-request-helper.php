@@ -189,6 +189,7 @@ try {
 		'result_approved_datetime' 							=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
 		'revised_by' 										=> (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
 		'revised_on' 										=> (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
+		'reason_for_changing'				  				=> (!empty($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'result_status' 									=> $status,
 		'data_sync' 										=> 0,
 		'reason_for_sample_rejection' 						=> isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,

@@ -2373,3 +2373,5 @@ ALTER TABLE `vl_request_form` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AF
 ALTER TABLE `eid_form` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
 ALTER TABLE `form_covid19` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
 ALTER TABLE `form_hepatitis` ADD `revised_by` VARCHAR(256) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
+-- Thana 07-Oct-2021
+ALTER TABLE `eid_form` ADD `reason_for_changing` VARCHAR(256) NULL DEFAULT NULL AFTER `result`;

@@ -813,11 +813,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             placeholder: "Select Nationality"
         });
 
-        $('.result-focus').change(function(e) {
-            $('.change-reason').show(500);
-            $('#reasonForChanging').addClass('isRequired');
-        });
-
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });

@@ -66,7 +66,7 @@ foreach ($fResult as $fDetails) {
     </section>
     <!-- Main content -->
     <section class="content">
-        
+
         <div class="box box-default">
             <div class="box-header with-border">
 

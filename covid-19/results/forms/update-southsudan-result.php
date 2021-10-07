@@ -667,7 +667,7 @@ $sampleSuggestionDisplay = 'display:none;';
 
         <?php if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) { ?>
             $('.result-focus').change(function(e) {
-                $('.change-reason').show(500);
+                $('.change-reason').show();
                 $('#reasonForChanging').addClass('isRequired');
             });
         <?php } ?>

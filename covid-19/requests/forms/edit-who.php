@@ -657,7 +657,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
     $(document).ready(function() {
         $('.result-focus').change(function(e) {
-            $('.change-reason').show(500);
+            $('.change-reason').show();
             $('#reasonForChanging').addClass('isRequired');
         });
 

@@ -233,7 +233,8 @@ if (file_exists($fileArray[$arr['vl_form']])) {
         changeHistory($('#hasRecentTravelHistory').val());
 
         $('.result-focus').change(function(e) {
-            $('#revised').val("yes");
+            $('.change-reason').show();
+            $('#reasonForChanging').addClass('isRequired');
         });
     });
 

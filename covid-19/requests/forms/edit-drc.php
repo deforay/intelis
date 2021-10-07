@@ -1286,7 +1286,7 @@ $pResult = $db->rawQuery($pQuery);
 
     $(document).ready(function() {
         $('.result-focus').change(function(e) {
-            $('.change-reason').show(500);
+            $('.change-reason').show();
             $('#reasonForChanging').addClass('isRequired');
         });
 
