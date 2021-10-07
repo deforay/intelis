@@ -170,9 +170,11 @@ try {
 			$string = $general->generateRandomString(6) . ".";
 			$imageName = "logo" . $string . $extension;
 			if (move_uploaded_file($_FILES["labLogo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName)) {
-				$resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
-				$resizeObj->resizeImage(80, 80, 'auto');
-				$resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName, 100);
+
+				$resizeObj = new \Vlsm\Helpers\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
+                $resizeObj->resizeToWidth(80);
+                $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
+
 				$image = array('facility_logo' => $imageName);
 				$db = $db->where('facility_id', $lastId);
 				$db->update($tableName, $image);
@@ -221,9 +223,11 @@ try {
 						$string = $general->generateRandomString(4) . ".";
 						$imageName = $string . $extension;
 						if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {
-							$resizeObj = new ImageResize($pathname . $imageName);
-							$resizeObj->resizeImage(80, 80, 'auto');
-							$resizeObj->saveImage($pathname . $imageName, 100);
+							
+							$resizeObj = new \Vlsm\Helpers\ImageResize($pathname . $imageName);
+							$resizeObj->resizeToWidth(80);
+							$resizeObj->save($pathname . $imageName);
+
 							$image = array('signature' => $imageName);
 							$db = $db->where('signatory_id', $lastSignId);
 							$db->update($signTableName, $image);

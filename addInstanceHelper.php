@@ -1,9 +1,5 @@
 <?php
 ob_start();
-#require_once('../startup.php');  
-
-
-include_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
 $general = new \Vlsm\Models\General($db);
 $tableName = "s_vlsm_instance";
@@ -87,9 +83,10 @@ try {
         $string = $general->generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
-          $resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
-          $resizeObj->resizeImage(80, 80, 'auto');
-          $resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName, 100);
+          $resizeObj = new \Vlsm\Helpers\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
+          $resizeObj->resizeToWidth(80);
+          $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
+
           $image = array('instance_facility_logo' => $imageName);
           $db = $db->where('vlsm_instance_id', $instanceId);
           $db->update($tableName, $image);
