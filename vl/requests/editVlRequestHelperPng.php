@@ -205,6 +205,8 @@ try {
           'qc_date' => $_POST['qcDate'],
           'clinic_date' => $_POST['clinicDate'],
           'report_date' => $_POST['reportDate'],
+          'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+          'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
           'last_modified_by' => $_SESSION['userId'],
           'last_modified_datetime' => $general->getDateTime(),
           'data_sync' => 0,

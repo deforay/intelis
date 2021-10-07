@@ -276,5 +276,8 @@ include(APPLICATION_PATH . '/footer.php');
 		});
 		$('.date').mask('99-aaa-9999');
 		$('.dateTime').mask('99-aaa-9999 99:99');
+		$('#vlResult').change(function(e) {
+			$('#revised').val("yes");
+		});
 	});
 </script>

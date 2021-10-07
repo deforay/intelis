@@ -747,28 +747,6 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            </div>
                                                                       </div>
                                                                  </div>
-                                                                 <?php
-                                                                 $show = "";
-                                                                 if (isset($vlQueryInfo['revised_by']) && $vlQueryInfo['revised_by'] != "") {
-                                                                      $show = "";
-                                                                 } else {
-                                                                      $show = "display:none;";
-                                                                 }
-                                                                 ?>
-                                                                 <div class="row revised" style="<?php echo $show; ?>">
-                                                                      <div class="col-md-6" style="<?php echo $show; ?>">
-                                                                           <label class="col-lg-5 control-label" for="revisedBy">Revised By</label>
-                                                                           <div class="col-lg-7">
-                                                                                <input type="text" value="<?php echo $vlQueryInfo['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revised By" title="Please enter the revised by" />
-                                                                           </div>
-                                                                      </div>
-                                                                      <div class="col-md-6" style="<?php echo $show; ?>">
-                                                                           <label class="col-lg-2 control-label" for="revisedOn">Revised On</label>
-                                                                           <div class="col-lg-6">
-                                                                                <input type="text" value="<?php echo $general->humanDateFormat($vlQueryInfo['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revised By on" title="Please enter the revised on" />
-                                                                           </div>
-                                                                      </div>
-                                                                 </div>
                                                                  <?php if (trim($rch) != '') { ?>
                                                                       <div class="row">
                                                                            <div class="col-md-12"><?php echo $rch; ?></div>
@@ -779,6 +757,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <?php } ?>
                                              </div>
                                              <div class="box-footer">
+                                                  <input type="hidden" name="revised" id="revised" value="no" />
                                                   <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
                                                   <input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
                                                   <input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />

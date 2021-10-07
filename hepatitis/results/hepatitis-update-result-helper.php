@@ -61,13 +61,15 @@ try {
 		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->dateFormat($_POST['authorizedOn']) : null,
+		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
 		'result_status'                       => 8,
 		'result_sent_to_source'               => $resultSentToSource,
 		'data_sync'                           => 0,
 		'last_modified_by'                     => $_SESSION['userId'],
 		'last_modified_datetime'               => $general->getDateTime(),
 		'result_printed_datetime' 			  => NULL,
-        'result_dispatched_datetime' 		  => NULL,
+		'result_dispatched_datetime' 		  => NULL,
 		'reason_for_vl_test'				  => isset($_POST['reasonVlTest']) ? $_POST['reasonVlTest'] : null,
 	);
 

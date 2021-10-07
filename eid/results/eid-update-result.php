@@ -191,6 +191,9 @@ require_once($fileArray[$arr['vl_form']]);
 		});
 		//$('.date').mask('99-aaa-9999');
 		//$('.dateTime').mask('99-aaa-9999 99:99');
+		$('.result-focus').change(function(e) {
+			$('#revised').val("yes");
+		});
 	});
 </script>
 

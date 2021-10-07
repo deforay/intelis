@@ -92,14 +92,14 @@ try {
 		$_POST['status']  = $_POST['oldStatus'];
 	}
 	$resultSentToSource = 'pending';
-	
+
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['hcvCount'] = null;
 		$_POST['hbvCount'] = null;
 		$resultSentToSource = 'pending';
-	}else if (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
+	} else if (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
 		$resultSentToSource = null;
-	}	
+	}
 
 	$hepatitisData = array(
 		'external_sample_code'                => isset($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
@@ -148,6 +148,8 @@ try {
 		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->dateFormat($_POST['authorizedOn']) : null,
+		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
 		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
 		'result_status'                       => $status,
 		'result_sent_to_source'               => $resultSentToSource,

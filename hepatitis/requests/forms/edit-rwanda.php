@@ -357,13 +357,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th class="hcvFields"><label for="hcv">HCV VL Result</label></th>
                                             <td class="hcvFields">
-                                                <select class="hcvFields labSecInput form-control rejected-input" name="hcv" id="hcv" title="Please select HCV VL Result">
+                                                <select class="hcvFields result-focus labSecInput form-control rejected-input" name="hcv" id="hcv" title="Please select HCV VL Result">
                                                     <?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hcv_vl_result'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                             <th class="hbvFields"><label for="hbv">HBV VL Result</label></th>
                                             <td class="hbvFields">
-                                                <select class="hbvFields labSecInput form-control rejected-input" name="hbv" id="hbv" title="Please select the HBV VL Result">
+                                                <select class="hbvFields result-focus labSecInput form-control rejected-input" name="hbv" id="hbv" title="Please select the HBV VL Result">
                                                     <?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hbv_vl_result'], '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -421,6 +421,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo (isset($sKey) && $sKey != '') ? $sKey : ''; ?>" />
                         <?php } ?>
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                        <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="7" />
                         <input type="hidden" name="deletedRow" id="deletedRow" value="" />
                         <input type="hidden" name="hepatitisSampleId" id="hepatitisSampleId" value="<?php echo $hepatitisInfo['hepatitis_id']; ?>" />

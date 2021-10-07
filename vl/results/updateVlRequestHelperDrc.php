@@ -90,6 +90,8 @@ try {
         'last_modified_datetime' => $general->getDateTime(),
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] :  NULL),
         'data_sync' => 0,
+        'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
         'result_printed_datetime' => NULL,
         'result_dispatched_datetime' => NULL,
         'vl_result_category' => $vl_result_category

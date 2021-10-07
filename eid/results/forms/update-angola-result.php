@@ -63,7 +63,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
     </section>
     <!-- Main content -->
     <section class="content">
-        
+
         <div class="box box-default">
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -363,7 +363,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 
                                         <th>Resultado</th>
                                         <td>
-                                            <select class="form-control" name="result" id="result">
+                                            <select class="result-focus form-control" name="result" id="result">
                                                 <option value=''> -- Selecione -- </option>
                                                 <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                     <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
@@ -385,6 +385,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                         <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                     <?php } ?>
                     <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                    <input type="hidden" name="revised" id="revised" value="no" />
                     <input type="hidden" name="formId" id="formId" value="8" />
                     <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
                     <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />

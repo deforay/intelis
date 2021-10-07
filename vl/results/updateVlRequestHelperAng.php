@@ -113,6 +113,8 @@ try {
         'approver_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
         'result_status' => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] :  NULL,
         'reason_for_vl_result_changes' => $allChange,
+        'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => $general->getDateTime(),
         'data_sync' => 0,

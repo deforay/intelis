@@ -870,6 +870,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                         <div class="box-footer">
 
                             <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                            <input type="hidden" name="revised" id="revised" value="no" />
                             <input type="hidden" name="formId" id="formId" value="7" />
                             <input type="hidden" name="deletedRow" id="deletedRow" value="" />
                             <input type="hidden" name="covid19SampleId" id="covid19SampleId" value="<?php echo $covid19Info['covid19_id']; ?>" />

@@ -34,8 +34,8 @@ $id = base64_decode($_GET['id']);
 $comorbidityData = array();
 $comorbidityQuery = "SELECT DISTINCT comorbidity_id, comorbidity_name FROM r_hepatitis_comorbidities WHERE comorbidity_status ='active'";
 $comorbidityResult = $db->rawQuery($comorbidityQuery);
-foreach($comorbidityResult as $comorbidity){
-    $comorbidityData[$comorbidity['comorbidity_id']] = ucwords($comorbidity['comorbidity_name']);
+foreach ($comorbidityResult as $comorbidity) {
+	$comorbidityData[$comorbidity['comorbidity_id']] = ucwords($comorbidity['comorbidity_name']);
 }
 $comorbidityInfo = $hepatitisDb->getComorbidityByHepatitisId($id);
 
@@ -43,7 +43,7 @@ $comorbidityInfo = $hepatitisDb->getComorbidityByHepatitisId($id);
 $riskFactorsData = array();
 $riskFactorsQuery = "SELECT DISTINCT riskfactor_id, riskfactor_name FROM r_hepatitis_risk_factors WHERE riskfactor_status ='active'";
 $riskFactorsResult = $db->rawQuery($riskFactorsQuery);
-foreach($riskFactorsResult as $riskFactors){
+foreach ($riskFactorsResult as $riskFactors) {
 	$riskFactorsData[$riskFactors['riskfactor_id']] = ucwords($riskFactors['riskfactor_name']);
 }
 $riskFactorsInfo = $hepatitisDb->getRiskFactorsByHepatitisId($id);
@@ -60,19 +60,19 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = "";
 foreach ($rejectionTypeResult as $type) {
-    $rejectionReason .= '<optgroup label="' . ucwords($type['rejection_type']) . '">';
-    foreach ($rejectionResult as $reject) {
-        if ($type['rejection_type'] == $reject['rejection_type']) {
-            $selected = (isset($hepatitisInfo['reason_for_sample_rejection']) && $hepatitisInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id'])?"selected='selected'":"";
-            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '" '.$selected.'>' . ucwords($reject['rejection_reason_name']) . '</option>';
-        }
-    }
-    $rejectionReason .= '</optgroup>';
+	$rejectionReason .= '<optgroup label="' . ucwords($type['rejection_type']) . '">';
+	foreach ($rejectionResult as $reject) {
+		if ($type['rejection_type'] == $reject['rejection_type']) {
+			$selected = (isset($hepatitisInfo['reason_for_sample_rejection']) && $hepatitisInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? "selected='selected'" : "";
+			$rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '" ' . $selected . '>' . ucwords($reject['rejection_reason_name']) . '</option>';
+		}
+	}
+	$rejectionReason .= '</optgroup>';
 }
 $specimenResult = array();
 $specimenTypeResult = $general->fetchDataFromTable('r_hepatitis_sample_type', "status = 'active'");
 foreach ($specimenTypeResult as $name) {
-    $specimenResult[$name['sample_id']] = ucwords($name['sample_name']); 
+	$specimenResult[$name['sample_id']] = ucwords($name['sample_name']);
 }
 $disable = "disabled = 'disabled'";
 ?>
@@ -128,23 +128,23 @@ $disable = "disabled = 'disabled'";
 // Import machine config
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+	$testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
 $fileArray = array(
-    1 => 'forms/update-southsudan-result.php',
-    2 => 'forms/update-zimbabwe-result.php',
-    3 => 'forms/update-drc-result.php',
-    4 => 'forms/update-zambia-result.php',
-    5 => 'forms/update-png-result.php',
-    6 => 'forms/update-who-result.php',
-    7 => 'forms/update-rwanda-result.php',
-    8 => 'forms/update-angola-result.php',
+	1 => 'forms/update-southsudan-result.php',
+	2 => 'forms/update-zimbabwe-result.php',
+	3 => 'forms/update-drc-result.php',
+	4 => 'forms/update-zambia-result.php',
+	5 => 'forms/update-png-result.php',
+	6 => 'forms/update-who-result.php',
+	7 => 'forms/update-rwanda-result.php',
+	8 => 'forms/update-angola-result.php',
 );
 
 if (file_exists($fileArray[$arr['vl_form']])) {
-    require_once($fileArray[$arr['vl_form']]);
+	require_once($fileArray[$arr['vl_form']]);
 } else {
-    require_once('forms/update-who-result.php');
+	require_once('forms/update-who-result.php');
 }
 ?>
 
@@ -219,71 +219,74 @@ if (file_exists($fileArray[$arr['vl_form']])) {
 		});
 
 		$('#sampleTestedDateTime').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            onSelect: function(e) {
-                
-            },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
+					$('.ui-datepicker-calendar').show();
+				});
+			},
+			onSelect: function(e) {
+
+			},
+			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
 		//$('.date').mask('99-aaa-9999');
 		//$('.dateTime').mask('99-aaa-9999 99:99');
 		$('#isSampleRejected').change(function(e) {
-            changeReject(this.value);
+			changeReject(this.value);
 		});
-		
+
 		$("#hepatitisPlatform").on("change", function() {
-            if (this.value != "") {
-                getMachine(this.value);
-            }
-        });
-        getMachine($("#hepatitisPlatform").val());
+			if (this.value != "") {
+				getMachine(this.value);
+			}
+		});
+		getMachine($("#hepatitisPlatform").val());
+		$('.result-focus').change(function(e) {
+			$('#revised').val("yes");
+		});
 	});
 
 	function changeReject(val) {
-        if (val == 'yes') {
-            $('.show-rejection').show();
-            $('.rejected-input').prop('disabled', true);
-            $('.rejected').addClass('disabled');
-            $('#sampleRejectionReason,#rejectionDate').addClass('isRequired');
-            $('#sampleTestedDateTime').removeClass('isRequired');
-            $('#result').prop('disabled', true);
-            $('#sampleRejectionReason').prop('disabled', false);
-        } else {
-            $('#rejectionDate').val('');
-            $('.show-rejection').hide();
-            $('.rejected-input').prop('disabled', false);
-            $('.rejected').removeClass('disabled');
-            $('#sampleRejectionReason,#rejectionDate,.rejected-input').removeClass('isRequired');
-            $('#sampleTestedDateTime').addClass('isRequired');
-            $('#result').prop('disabled', false);
-            $('#sampleRejectionReason').prop('disabled', true);
-        }
+		if (val == 'yes') {
+			$('.show-rejection').show();
+			$('.rejected-input').prop('disabled', true);
+			$('.rejected').addClass('disabled');
+			$('#sampleRejectionReason,#rejectionDate').addClass('isRequired');
+			$('#sampleTestedDateTime').removeClass('isRequired');
+			$('#result').prop('disabled', true);
+			$('#sampleRejectionReason').prop('disabled', false);
+		} else {
+			$('#rejectionDate').val('');
+			$('.show-rejection').hide();
+			$('.rejected-input').prop('disabled', false);
+			$('.rejected').removeClass('disabled');
+			$('#sampleRejectionReason,#rejectionDate,.rejected-input').removeClass('isRequired');
+			$('#sampleTestedDateTime').addClass('isRequired');
+			$('#result').prop('disabled', false);
+			$('#sampleRejectionReason').prop('disabled', true);
+		}
 	}
-	
+
 	function getMachine(value) {
-        $.post("/import-configs/get-config-machine-by-config.php", {
-			configName: value,
-			machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name']  : '""'; ?>,
-			testType: 'eid'
-		},
-		function(data) {
-			$('#machineName').html('');
-			if (data != "") {
-				$('#machineName').append(data);
-			}
-		});
-    }
+		$.post("/import-configs/get-config-machine-by-config.php", {
+				configName: value,
+				machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name']  : '""'; ?>,
+				testType: 'eid'
+			},
+			function(data) {
+				$('#machineName').html('');
+				if (data != "") {
+					$('#machineName').append(data);
+				}
+			});
+	}
 </script>
 <?php
 include(APPLICATION_PATH . '/footer.php');

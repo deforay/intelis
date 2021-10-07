@@ -458,20 +458,6 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 </select>
                                             </td>
                                         </tr>
-                                        <?php
-                                        $show = "display:none;";
-                                        if (isset($covid19Info['revised_by']) && $covid19Info['revised_by'] != "") {
-                                            $show = "";
-                                        } else {
-                                            $show = "display:none;";
-                                        }
-                                        ?>
-                                        <tr class="revised" style="<?php echo $show; ?>">
-                                            <th>Revised By</th>
-                                            <td><input type="text" value="<?php echo $covid19Info['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revised By" title="Please enter the revised by" /></td>
-                                            <th>Revised on</td>
-                                            <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Revised By on" /></td>
-                                        </tr>
                                         <tr>
                                             <td style="width:25%;"><label for="">Approve On </label></td>
                                             <td style="width:25%;">
@@ -491,6 +477,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                             <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                         <?php } ?>
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                        <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="1" />
                         <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo $eidInfo['eid_id']; ?>" />
                         <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?php echo $eidInfo['sample_code']; ?>" />

@@ -521,20 +521,6 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												</select>
 											</td>
 										</tr>
-										<?php
-										$show = "";
-										if (isset($covid19Info['revised_by']) && $covid19Info['revised_by'] != "") {
-											$show = "";
-										} else {
-											$show = "display:none;";
-										}
-										?>
-										<tr class="revised" style="<?php echo $show; ?>">
-											<th>Revu par</th>
-											<td><input type="text" value="<?php echo $covid19Info['revised_by']; ?>" name="revisedBy" id="revisedBy" class="revised-input form-control" placeholder="Revu par" title="Veuillez saisir la version révisée par" /></td>
-											<th>Révisé le</td>
-											<td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['revised_on']); ?>" name="revisedOn" id="revisedOn" class="revised-input form-control date" placeholder="Révisé le" /></td>
-										</tr>
 									</table>
 								</div>
 							</div>
@@ -543,6 +529,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
+						<input type="hidden" name="revised" id="revised" value="no" />
 						<input type="hidden" name="formId" id="formId" value="3" />
 						<input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo $eidInfo['eid_id']; ?>" />
 						<input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?php echo $eidInfo['sample_code']; ?>" />
