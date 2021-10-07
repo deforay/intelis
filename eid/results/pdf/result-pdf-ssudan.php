@@ -455,21 +455,24 @@ if (sizeof($requestResult) > 0) {
             $html .= '</tr>';
         }
 
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-        if (!empty($revisedSignaturePath) && file_exists($revisedSignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
-        } else {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+        if(!empty($revisedBy)){
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+            $html .= '</tr>';
+    
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
+            if (!empty($revisedSignaturePath) && file_exists($revisedSignaturePath)) {
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
+            } else {
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+            }
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['revised_on'])) . '</td>';
+            $html .= '</tr>';
         }
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['revised_on'])) . '</td>';
-        $html .= '</tr>';
+        
 
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:20px;border-bottom:2px solid #d3d3d3;"></td>';
