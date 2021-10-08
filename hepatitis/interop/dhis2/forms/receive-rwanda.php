@@ -5,11 +5,17 @@
 
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
+
+$general = new \Vlsm\Models\General($db);
+$hepatitisModel = new \Vlsm\Models\Hepatitis($db);
+
+$vlsmSystemConfig = $general->getSystemConfig();
+
 $receivedCounter = 0;
 $processedCounter = 0;
 
 $data = array();
-$data[] = "lastUpdatedDuration=6m";
+$data[] = "lastUpdatedDuration=1d";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=LEhPhsbgfFB";
@@ -20,7 +26,7 @@ $url = "/api/trackedEntityInstances.json";
 
 $jsonResponse = $dhis2->get($url, $data);
 
-//var_dump($jsonResponse);die;
+if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('No Response from API');
 
 $trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
 
@@ -62,6 +68,8 @@ $eventsDataElementMapping = [
 ];
 
 
+$instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
+
 foreach ($trackedEntityInstances as $tracker) {
 
     $receivedCounter++;
@@ -92,14 +100,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
             foreach ($event['dataValues'] as $dV) {
                 if (empty($eventsDataElementMapping[$dV['dataElement']])) continue;
-                // echo "<h1>". $eventsDataElementMapping[$dV['dataElement']] . "</h1>";
-                //echo "<pre>"; var_dump($dV['dataElement']);echo "</pre>";
-                //echo "<pre>"; var_dump($dV['value']);echo "</pre>";
-                //echo "<h1>". $eventsDataElementMapping[$dV['value']] . "</h1>";
-                //echo "<pre>"; var_dump($dV);echo "</pre>";
                 $eventsData["dhis2::" . $tracker['trackedEntityInstance'] . "::" . $event['event']][$eventsDataElementMapping[$dV['dataElement']]] = $dV['value'];
-                //echo "<h1>". $formData[$eventsDataElementMapping[$dV['dataElement']]] . "</h1>";
-
             }
         }
     }
@@ -162,8 +163,10 @@ foreach ($trackedEntityInstances as $tracker) {
         $fac = $db->getOne("facility_details");
         $formData['facility_id'] =  $fac['facility_id'];
 
-        $db->where("province_name", $fac['facility_state']);
-        $prov = $db->getOne("province_details");
+        if (!empty($fac['facility_state'])) {
+            $db->where("province_name", $fac['facility_state']);
+            $prov = $db->getOne("province_details");
+        }
 
         $formData['province_id'] = !empty($prov['province_id']) ? $prov['province_id'] : 1;
 
@@ -194,8 +197,6 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['request_created_datetime'] = $general->getDateTime();
         $updateColumns = array_keys($formData);
 
-        $general = new \Vlsm\Models\General($db);
-        $hepatitisModel = new \Vlsm\Models\Hepatitis($db);
 
 
         $formData['unique_id'] = $uniqueID;
@@ -204,21 +205,29 @@ foreach ($trackedEntityInstances as $tracker) {
         $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, $general->humanDateFormat($formData['sample_collection_date']));
 
         $sampleData = json_decode($sampleJson, true);
-
-        $formData['sample_code'] = $sampleData['sampleCode'];
-        $formData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-        $formData['sample_code_key'] = $sampleData['sampleCodeKey'];
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            $sampleCode = 'remote_sample_code';
+            $sampleCodeKey = 'remote_sample_code_key';
+            $sampleCodeFormat = 'remote_sample_code_format';
+        } else {
+            $sampleCode = 'sample_code';
+            $sampleCodeKey = 'sample_code_key';
+            $sampleCodeFormat = 'sample_code_format';
+        }
+        $formData[$sampleCode] = $sampleData['sampleCode'];
+        $formData[$sampleCodeFormat] = $sampleData['sampleCodeFormat'];
+        $formData[$sampleCodeKey] = $sampleData['sampleCodeKey'];
 
         $formData['request_created_by'] = 1;
 
-        $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
+
 
         $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
         $formData['vlsm_country_id'] = 7; // RWANDA
         $formData['last_modified_datetime'] = $general->getDateTime();
         //echo "<pre>";var_dump($formData);echo "</pre>";
         $updateColumns = array_keys($formData);
-        $db->onDuplicate($updateColumns, 'source_of_request');
+        $db->onDuplicate($updateColumns, 'unique_id');
         $id = $db->insert("form_hepatitis", $formData);
         if ($id != false) {
             $processedCounter++;

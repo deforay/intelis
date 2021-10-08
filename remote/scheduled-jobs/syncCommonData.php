@@ -21,7 +21,7 @@ $headers = @get_headers($systemConfig['remoteURL'] . '/vlsts-icons/favicon-16x16
 
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
-    return false;
+    exit();
 }
 
 
@@ -238,7 +238,6 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
     $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
     foreach ($parsedData as $dataType => $dataValues) {
 
-
         if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
 
             if ($dataType == 'healthFacilities' && !empty($dataValues)) {
@@ -250,8 +249,6 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $db->where('facility_id', $updatedFacilities, 'IN');
                 $id = $db->delete('testing_labs');
             }
-
-
 
             foreach ($dataValues as $tableData) {
                 // getting column names using array_key

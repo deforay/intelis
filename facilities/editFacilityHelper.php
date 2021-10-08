@@ -69,8 +69,8 @@ try {
 
 		$data = array(
 			'facility_name' => $_POST['facilityName'],
-			'facility_code' => $_POST['facilityCode'],
-			'other_id' => $_POST['otherId'],
+			'facility_code' => !empty($_POST['facilityCode']) ? $_POST['facilityCode'] : null,
+			'other_id' => !empty($_POST['otherId']) ? $_POST['otherId'] : null,
 			'facility_mobile_numbers' => $_POST['phoneNo'],
 			'address' => $_POST['address'],
 			'country' => $_POST['country'],

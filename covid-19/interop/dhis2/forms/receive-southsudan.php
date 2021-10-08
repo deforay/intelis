@@ -69,7 +69,7 @@ $url = "/api/trackedEntityInstances.json";
 
 $jsonResponse = $dhis2->get($url, $data);
 
-if($jsonResponse == '' || empty($jsonResponse)) die('No Response from API');
+if($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('No Response from API');
 
 $trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
 
@@ -245,7 +245,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['vlsm_country_id'] = 1; // South Sudan
 
 
-        $db->onDuplicate($updateColumns, 'source_of_request');
+        $db->onDuplicate($updateColumns, 'unique_id');
         $id = $db->insert("form_covid19", $formData);
         if ($id != false) {
             $processedCounter++;

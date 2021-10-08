@@ -9,28 +9,31 @@ $general = new \Vlsm\Models\General($db);
 $params     = $_POST['facilityType'];
 $testType   = $_POST['testType'];
 
-if($params == "testing-labs"){
-    $tableName ="testing_labs";
-} else{
+if ($params == "testing-labs") {
+    $tableName = "testing_labs";
+} else {
     $tableName = "health_facilities";
 }
 
 try {
     $_POST['mappedFacilities'] = json_decode($_POST['mappedFacilities'], true);
-    if(isset($_POST['mappedFacilities']) && count($_POST['mappedFacilities']) > 0){
-        $db = $db->where('test_type', $testType);
-        $id = $db->delete($tableName);
+    if (isset($_POST['mappedFacilities']) && count($_POST['mappedFacilities']) > 0) {
+
+        $db->where('test_type', $testType);
+        //$db->where('facility_id', $_POST['mappedFacilities'], 'NOT IN');
+        $db->delete($tableName);
+
         $currentDateTime = $general->getDateTime();
-        
-		foreach($_POST['mappedFacilities'] as $facility){
-			$data=array(
-				'test_type'     =>$testType,
+        $data = array();
+        foreach ($_POST['mappedFacilities'] as $facility) {
+            $data[] = array(
+                'test_type'     => $testType,
                 'facility_id'   => $facility,
                 'updated_datetime'  => $currentDateTime
             );
-			$db->insert($tableName,$data);
-		}
-        $_SESSION['alertMsg']="Facility Mapped to Selected Test Type successfully";
+        }
+        $db->insertMulti($tableName, $data);
+        $_SESSION['alertMsg'] = "Facility Mapped to Selected Test Type successfully";
     }
     header("location:facilities.php");
 } catch (Exception $exc) {
