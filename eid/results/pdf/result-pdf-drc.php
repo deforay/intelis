@@ -39,7 +39,6 @@ if (sizeof($requestResult) > 0) {
         } else {
             $logoPrintInPdf = $arr['logo'];
         }
-
         if (isset($result['headerText']) && $result['headerText'] != '') {
             $headerText = $result['headerText'];
         } else {
