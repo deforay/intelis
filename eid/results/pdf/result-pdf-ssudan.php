@@ -38,7 +38,12 @@ if (sizeof($requestResult) > 0) {
         }
         // create new PDF document
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'EARLY INFANT DIAGNOSIS PATIENT REPORT');
+        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+            $logoPrintInPdf = $result['facilityLogo'];
+        } else {
+            $logoPrintInPdf = $arr['logo'];
+        }
+        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'EARLY INFANT DIAGNOSIS PATIENT REPORT');
         // set document information
         $pdf->SetCreator('VLSM');
         $pdf->SetTitle('Early Infant Diagnosis Patient Report');
@@ -455,13 +460,13 @@ if (sizeof($requestResult) > 0) {
             $html .= '</tr>';
         }
 
-        if(!empty($revisedBy)){
+        if (!empty($revisedBy)) {
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
             $html .= '</tr>';
-    
+
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
             if (!empty($revisedSignaturePath) && file_exists($revisedSignaturePath)) {
@@ -472,7 +477,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['revised_on'])) . '</td>';
             $html .= '</tr>';
         }
-        
+
 
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:20px;border-bottom:2px solid #d3d3d3;"></td>';

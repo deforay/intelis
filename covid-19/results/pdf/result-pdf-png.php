@@ -33,7 +33,12 @@ if (sizeof($requestResult) > 0) {
         }
         // create new PDF document
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 5);
+        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+            $logoPrintInPdf = $result['facilityLogo'];
+        } else {
+            $logoPrintInPdf = $arr['logo'];
+        }
+        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 5);
         // set document information
         $pdf->SetCreator('VLSM');
         $pdf->SetTitle('Covid-19 Rapport du patient');

@@ -57,7 +57,12 @@ for ($m = 0; $m < count($mFieldArray); $m++) {
 }
 // create new PDF document
 $pdf = new SouthSudan_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', $labFacilityId = null, $formId = $arr['vl_form'], $facilityInfo);
+if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+    $logoPrintInPdf = $result['facilityLogo'];
+} else {
+    $logoPrintInPdf = $arr['logo'];
+}
+$pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', $labFacilityId = null, $formId = $arr['vl_form'], $facilityInfo);
 // set document information
 $pdf->SetCreator('VLSM');
 $pdf->SetTitle('SARS-CoV-2 Patient Report');
@@ -442,7 +447,7 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     );
     $pdf->writeHTML($html);
     $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-    if(isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes'){
+    if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
         $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, 175, 20, 20, $style, 'N');
     }
     $pdf->lastPage();
