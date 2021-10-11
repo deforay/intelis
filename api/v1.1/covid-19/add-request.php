@@ -212,6 +212,7 @@ try {
         $covid19Data = array(
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $data['formId'],
+            'unique_id'                           => isset($data['uniqueId']) ? $data['uniqueId'] : null,
             'app_local_test_req_id'               => !empty($data['localTestReqID']) ? $data['localTestReqID'] : null,
             'external_sample_code'                => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,

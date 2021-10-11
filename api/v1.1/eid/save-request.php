@@ -251,6 +251,7 @@ try {
         $eidData = array(
             'vlsm_instance_id'                                  => $instanceId,
             'vlsm_country_id'                                   => $data['formId'],
+            'unique_id'                                         => isset($data['uniqueId']) ? $data['uniqueId'] : null,
             'app_local_test_req_id'                             => isset($data['localTestReqID']) ? $data['localTestReqID'] : null,
             'facility_id'                                       => isset($data['facilityId']) ? $data['facilityId'] : null,
             'province_id'                                       => isset($data['provinceId']) ? $data['provinceId'] : null,

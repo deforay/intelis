@@ -275,6 +275,7 @@ try {
         $vlFulldata = array(
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],
+            'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : null,
             'app_local_test_req_id'                 => isset($data['localTestReqID']) ? $data['localTestReqID'] : null,
             'sample_code_title'                     => (isset($data['sampleCodeTitle']) && $data['sampleCodeTitle'] != '') ? $data['sampleCodeTitle'] :  'auto',
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] != '') ? $data['sampleReordered'] :  'no',
