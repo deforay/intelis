@@ -70,7 +70,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $sWhere .= ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' .$_POST['labName'];
+    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
 }
 $tQuery .= " " . $sWhere;
 
@@ -117,7 +117,7 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
     $sWhere .= ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
 }
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' .$_POST['labName'];
+    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
 }
 $vlSuppressionQuery = $vlSuppressionQuery . ' ' . $sWhere;
 
@@ -136,7 +136,8 @@ $tatSampleQuery = "SELECT
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_vl_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
-                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted
+                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
+                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
 
                         from form_hepatitis as vl 
                         INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -155,7 +156,7 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 }
 
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' .$_POST['labName'];
+    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
 }
 
 $tatSampleQuery .= " " . $sWhere;
@@ -173,6 +174,7 @@ foreach ($tatResult as $sRow) {
     }
 
     $result['totalSamples'][$j] = (isset($sRow["totalSamples"]) && $sRow["totalSamples"] > 0 && $sRow["totalSamples"] != null) ? $sRow["totalSamples"] : 'null';
+    $result['avgResultPrinted'][$j] = (isset($sRow["AvgResultPrinted"]) && $sRow["AvgResultPrinted"] > 0 && $sRow["AvgResultPrinted"] != null) ? $sRow["AvgResultPrinted"] : 'null';
     $result['sampleTestedDiff'][$j] = (isset($sRow["AvgTestedDiff"]) && $sRow["AvgTestedDiff"] > 0 && $sRow["AvgTestedDiff"] != null) ? round($sRow["AvgTestedDiff"], 2) : 'null';
     $result['sampleReceivedDiff'][$j] = (isset($sRow["AvgReceivedDiff"]) && $sRow["AvgReceivedDiff"] > 0 && $sRow["AvgReceivedDiff"] != null) ? round($sRow["AvgReceivedDiff"], 2) : 'null';
     $result['sampleReceivedTested'][$j] = (isset($sRow["AvgReceivedTested"]) && $sRow["AvgReceivedTested"] > 0 && $sRow["AvgReceivedTested"] != null) ? round($sRow["AvgReceivedTested"], 2) : 'null';
@@ -192,10 +194,10 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere .= ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-    $sWhere.= ' AND DATE(c.sample_collection_date) >= "'.$start_date.'" AND DATE(c.sample_collection_date) <= "'.$end_date.'"';
+    $sWhere .= ' AND DATE(c.sample_collection_date) >= "' . $start_date . '" AND DATE(c.sample_collection_date) <= "' . $end_date . '"';
 }
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' .$_POST['labName'];
+    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
 }
 $testReasonQuery = $testReasonQuery . " " . $sWhere;
 $testReasonQuery = $testReasonQuery . " GROUP BY tr.test_reason_name";
@@ -360,58 +362,58 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 
     if (isset($vlSuppressionResult) && (isset($vlSuppressionResult['hbvpositiveResult']) || isset($vlSuppressionResult['hbvnegativeResult']))) {
 
-        ?>
-            Highcharts.setOptions({
-                colors: ['#FF0000', '#50B432']
-            });
-            $('#hepatitisHbvSamplesOverview').highcharts({
-                chart: {
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    type: 'pie'
-                },
-                title: {
-                    text: 'Hepatitis HBV VL Results'
-                },
-                credits: {
-                    enabled: false
-                },
-                tooltip: {
-                    pointFormat: 'Samples :<b>{point.y}</b>'
-                },
-                plotOptions: {
-                    pie: {
-                        size: '100%',
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            useHTML: true,
-                            format: '<div style="padding-bottom:10px;"><b>{point.name}</b>: {point.y}</div>',
-                            style: {
-                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                            },
-                            distance: 10
+    ?>
+        Highcharts.setOptions({
+            colors: ['#FF0000', '#50B432']
+        });
+        $('#hepatitisHbvSamplesOverview').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Hepatitis HBV VL Results'
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: 'Samples :<b>{point.y}</b>'
+            },
+            plotOptions: {
+                pie: {
+                    size: '100%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        useHTML: true,
+                        format: '<div style="padding-bottom:10px;"><b>{point.name}</b>: {point.y}</div>',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                         },
-                        showInLegend: true
-                    }
-                },
-                series: [{
-                    colorByPoint: true,
-                    data: [{
-                            name: 'Positive',
-                            y: <?php echo (isset($vlSuppressionResult['hbvpositiveResult']) && $vlSuppressionResult['hbvpositiveResult'] > 0) > 0 ? $vlSuppressionResult['hbvpositiveResult'] : 0; ?>
-                        },
-                        {
-                            name: 'Negative',
-                            y: <?php echo (isset($vlSuppressionResult['hbvnegativeResult']) && $vlSuppressionResult['hbvnegativeResult'] > 0) > 0 ? $vlSuppressionResult['hbvnegativeResult'] : 0; ?>
-                        },
-                    ]
-                }]
-            });
-        <?php
-        }
+                        distance: 10
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                colorByPoint: true,
+                data: [{
+                        name: 'Positive',
+                        y: <?php echo (isset($vlSuppressionResult['hbvpositiveResult']) && $vlSuppressionResult['hbvpositiveResult'] > 0) > 0 ? $vlSuppressionResult['hbvpositiveResult'] : 0; ?>
+                    },
+                    {
+                        name: 'Negative',
+                        y: <?php echo (isset($vlSuppressionResult['hbvnegativeResult']) && $vlSuppressionResult['hbvnegativeResult'] > 0) > 0 ? $vlSuppressionResult['hbvnegativeResult'] : 0; ?>
+                    },
+                ]
+            }]
+        });
+    <?php
+    }
     if (isset($result) && count($result) > 0) {
     ?>
         $('#hepatitisLabAverageTat').highcharts({
@@ -489,6 +491,16 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     yAxis: 1
                 },
                 <?php
+                if (isset($result['avgResultPrinted'])) {
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: 'Result - Printed',
+                        data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
+                        color: '#0f3f6e',
+                    },
+                <?php
+                }
                 if (isset($result['sampleReceivedDiff'])) {
                 ?> {
                         connectNulls: false,
@@ -532,7 +544,8 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?>
             ],
         });
-    <?php } if (isset($testReasonResult) && count($testReasonResult) > 0) { ?>
+    <?php }
+    if (isset($testReasonResult) && count($testReasonResult) > 0) { ?>
         $('#hepatitisTestReasonContainer').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -586,7 +599,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     ?> {
                             name: '<?php echo ($tRow['test_reason_name']); ?>',
                             y: <?php echo ($tRow['total']); ?>,
-                            color: '#<?php echo $general->random_color();?>',
+                            color: '#<?php echo $general->random_color(); ?>',
                         },
                     <?php
                     }

@@ -75,7 +75,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $sWhere .= ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' .$_POST['labName'];
+    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
 }
 $tQuery .= " " . $sWhere;
 
@@ -114,7 +114,7 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
     $sWhere .= ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
 }
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' .$_POST['labName'];
+    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
 }
 $vlSuppressionQuery = $vlSuppressionQuery . ' ' . $sWhere;
 
@@ -133,7 +133,8 @@ $tatSampleQuery = "SELECT
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_vl_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
-                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted
+                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
+                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
 
                         FROM eid_form as vl 
                         INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -152,7 +153,7 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 
 
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' .$_POST['labName'];
+    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
 }
 
 $tatSampleQuery .= " " . $sWhere;
@@ -168,6 +169,7 @@ foreach ($tatResult as $sRow) {
     }
 
     $result['totalSamples'][$j] = (isset($sRow["totalSamples"]) && $sRow["totalSamples"] > 0 && $sRow["totalSamples"] != null) ? $sRow["totalSamples"] : 'null';
+    $result['avgResultPrinted'][$j] = (isset($sRow["AvgResultPrinted"]) && $sRow["AvgResultPrinted"] > 0 && $sRow["AvgResultPrinted"] != null) ? $sRow["AvgResultPrinted"] : 'null';
     $result['sampleTestedDiff'][$j] = (isset($sRow["AvgTestedDiff"]) && $sRow["AvgTestedDiff"] > 0 && $sRow["AvgTestedDiff"] != null) ? round($sRow["AvgTestedDiff"], 2) : 'null';
     $result['sampleReceivedDiff'][$j] = (isset($sRow["AvgReceivedDiff"]) && $sRow["AvgReceivedDiff"] > 0 && $sRow["AvgReceivedDiff"] != null) ? round($sRow["AvgReceivedDiff"], 2) : 'null';
     $result['sampleReceivedTested'][$j] = (isset($sRow["AvgReceivedTested"]) && $sRow["AvgReceivedTested"] > 0 && $sRow["AvgReceivedTested"] != null) ? round($sRow["AvgReceivedTested"], 2) : 'null';
@@ -399,6 +401,16 @@ foreach ($tatResult as $sRow) {
                     yAxis: 1
                 },
                 <?php
+                if (isset($result['avgResultPrinted'])) {
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: 'Result - Printed',
+                        data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
+                        color: '#0f3f6e',
+                    },
+                <?php
+                }
                 if (isset($result['sampleReceivedDiff'])) {
                 ?> {
                         connectNulls: false,
