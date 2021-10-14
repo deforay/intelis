@@ -157,7 +157,7 @@ try {
         ts.status_name                          as resultStatusName,
         vl.revised_by                           as revisedBy,
         r_r_b.user_name                         as revisedByName,
-        vl.revised_on                           as revisedOn
+        vl.revised_on                           as revisedOn,
         vl.patient_nationality                  as patientNationality,
         CONCAT_WS('',c.iso_name, ' (', c.iso3,')') as patientNationalityName,
         vl.reason_for_changing                  as reasonForCovid19ResultChanges
