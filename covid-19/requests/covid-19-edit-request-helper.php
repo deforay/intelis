@@ -61,7 +61,7 @@ try {
 	}
 
 
-	if ($sarr['sc_user_type'] == 'remoteuser') {
+	if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
 		$sampleCode = 'remote_sample_code';
 		$sampleCodeKey = 'remote_sample_code_key';
 	} else {
@@ -72,7 +72,7 @@ try {
 
 
 
-	if ($sarr['sc_user_type'] == 'remoteuser') {
+	if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
 		$status = 9;
 	}
 
@@ -227,22 +227,7 @@ try {
 		$covid19Data['last_modified_by'] =  $_SESSION['userId'];
 		$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'];
 	}
-	// if ($sarr['sc_user_type'] == 'remoteuser') {
-	// 	//$covid19Data['remote_sample_code'] = (!empty($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;
-	// } else {
-	// 	if (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') {
-	// 		//$covid19Data['sample_code'] = (!empty($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : NULL;
-	// 	} else {
-	// 		$covid19Model = new \Vlsm\Models\Covid19($db);
-
-	// 		$sampleCodeKeysJson = $covid19Model->generateCovid19SampleCode($_POST['provinceCode'], $_POST['sampleCollectionDate']);
-	// 		$sampleCodeKeys = json_decode($sampleCodeKeysJson, true);
-	// 		$covid19Data['sample_code'] = $sampleCodeKeys['sampleCode'];
-	// 		$covid19Data['sample_code_key'] = $sampleCodeKeys['sampleCodeKey'];
-	// 		$covid19Data['sample_code_format'] = $sampleCodeKeys['sampleCodeFormat'];
-	// 	}
-	// }
-	// print_r($_POST['deletedRow']);die;
+	
 	if (isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		$deleteRows = explode(',', $_POST['deletedRow']);
 		foreach ($deleteRows as $delete) {

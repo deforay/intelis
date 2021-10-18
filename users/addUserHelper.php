@@ -72,7 +72,7 @@ try {
     }
     $userType = $general->getSystemConfig('sc_user_type');
     if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $userType == 'vluser') {
-        $apiUrl = $systemConfig['remoteURL'] . "/api/user/save-user-profile.php";
+        $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
         $post = array('post' => json_encode($_POST), 'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18));
 
         $ch = curl_init();

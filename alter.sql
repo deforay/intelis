@@ -2375,3 +2375,6 @@ ALTER TABLE `form_covid19` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER
 ALTER TABLE `form_hepatitis` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
 -- Thana 07-Oct-2021
 ALTER TABLE `eid_form` ADD `reason_for_changing` VARCHAR(256) NULL DEFAULT NULL AFTER `result`;
+
+-- Amit 18 Oct 2021 version 4.4.2
+UPDATE `system_config` SET `value` = '4.4.2' WHERE `system_config`.`name` = 'sc_version';

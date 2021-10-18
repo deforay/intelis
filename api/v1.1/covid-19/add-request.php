@@ -121,12 +121,18 @@ try {
             'last_modified_datetime' => $general->getDateTime()
         );
 
-        if ($roleUser['access_type'] != 'testing-lab') {
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
             $covid19Data['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
             $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $covid19Data['remote_sample'] = 'yes';
             $covid19Data['result_status'] = 9;
+            if ($roleUser['access_type'] == 'testing-lab') {
+                $covid19Data['sample_code'] = $sampleData['sampleCode'];
+                $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $covid19Data['result_status'] = 6;
+            }
         } else {
             $covid19Data['sample_code'] = $sampleData['sampleCode'];
             $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];

@@ -68,14 +68,14 @@ try {
         } else {
             $payload = array(
                 'status' => 2,
-                'message' => 'Please check your login credentials',
+                'message' => 'Please enter valid credentials',
                 'timestamp' => $general->getDateTime()
             );
         }
     } else {
         $payload = array(
             'status' => 0,
-            'message' => 'Please enter the credentials',
+            'message' => 'Please enter valid credentials',
             'timestamp' => $general->getDateTime()
         );
     }

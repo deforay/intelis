@@ -57,6 +57,12 @@ try {
         $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
         $covid19Data['remote_sample'] = 'yes';
         $covid19Data['result_status'] = 9;
+        if ($_SESSION['accessType'] == 'testing-lab') {
+            $covid19Data['sample_code'] = $sampleData['sampleCode'];
+            $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
+            $covid19Data['result_status'] = 6;
+        }
     } else {
         $covid19Data['sample_code'] = $sampleData['sampleCode'];
         $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];

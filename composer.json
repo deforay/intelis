@@ -1,4 +1,13 @@
 {
+    "name": "deforay/vlsm",
+    "description": "Open Source LIS",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Deforay",
+            "email": "hello@deforay.com"
+        }
+    ],
     "require": {
         "phpoffice/phpspreadsheet": "^1.5",
         "league/csv": "^9.0",

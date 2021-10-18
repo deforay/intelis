@@ -110,14 +110,14 @@ try {
 		}
 		$lastId = $facilityId;
 		// Mapping facility as a Testing Lab
-		if (isset($_POST['testType']) && !empty($_POST['testType'])) {
-			$db = $db->where('test_type NOT IN(' . sprintf("'%s'", implode("', '", $_POST['testType'])) . ')');
-			$db = $db->where('facility_id', $facilityId);
-			$delId = $db->delete($testingLabsTable);
-		} else {
-			$db = $db->where('facility_id', $facilityId);
-			$delId = $db->delete($testingLabsTable);
-		}
+		// if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+		// 	$db = $db->where('test_type NOT IN(' . sprintf("'%s'", implode("', '", $_POST['testType'])) . ')');
+		// 	$db = $db->where('facility_id', $facilityId);
+		// 	$delId = $db->delete($testingLabsTable);
+		// } else {
+		// 	$db = $db->where('facility_id', $facilityId);
+		// 	$delId = $db->delete($testingLabsTable);
+		// }
 		if ($lastId > 0) {
 			for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
 				$dataTest = array(

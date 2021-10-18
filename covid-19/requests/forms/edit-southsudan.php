@@ -48,14 +48,14 @@ $rKey = '';
 $pdQuery = "SELECT * FROM province_details";
 
 
-if ($_SESSION['accessType'] == 'collection-site') {
+if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     //check user exist in user_facility_map table
     $chkUserFcMapQry = "SELECT user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
     if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+        $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
     }
     $rKey = 'R';
 } else {
@@ -79,21 +79,6 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
-
-
-//suggest sample id when lab user add request sample
-//$sampleSuggestion = '';
-//$sampleSuggestionDisplay = 'display:none;';
-// $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
-// if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-//     $vlObj = new \Vlsm\Models\Covid19($db);
-//     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-//     $sampleCollectionDate = $general->humanDateFormat($sampleCollectionDate[0]);
-//     $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
-//     $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
-//     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
-//     $sampleSuggestionDisplay = 'display:block;';
-// }
 
 ?>
 
@@ -143,7 +128,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </tr>
                                     <?php } ?> -->
                                     <tr>
-                                        <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+                                        <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
                                             <td><label for="sampleCode">Sample ID </label> </td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $covid19Info[$sampleCode]; ?></span>
@@ -218,7 +203,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+                                        <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                             <td>
