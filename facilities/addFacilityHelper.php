@@ -3,23 +3,22 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-
 include_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
 #require_once('../startup.php');  
 
-
 $general = new \Vlsm\Models\General($db);
 $geolocation = new \Vlsm\Models\GeoLocations($db);
 /* For reference we define the table names */
-$tableName = "facility_details";
-$tableName1 = "province_details";
-$tableName2 = "vl_user_facility_map";
-$tableName3 = "testing_labs";
-$tableName4 = "health_facilities";
-$signTableName = "lab_report_signatories";
-// print_r($_POST);die;
+$facilityTable = "facility_details";
+$provinceTable = "province_details";
+$vlUserFacilityMapTable = "vl_user_facility_map";
+$testingLabsTable = "testing_labs";
+$healthFacilityTable = "health_facilities";
+$labSignTable = "lab_report_signatories";
 try {
+
+	//Province Table
 	if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != "") {
 		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
 			$_POST['stateId'] = $geolocation->addNewQuickGeoLocation($_POST['provinceNew']);
@@ -35,7 +34,7 @@ try {
 					'province_name' => $_POST['provinceNew'],
 					'updated_datetime' => $general->getDateTime(),
 				);
-				$db->insert($tableName1, $data);
+				$db->insert($provinceTable, $data);
 				$_POST['state'] = $_POST['provinceNew'];
 			}
 		}
@@ -98,19 +97,21 @@ try {
 			'status' => 'active'
 		);
 
-		$db->insert($tableName, $data);
+		$db->insert($facilityTable, $data);
 		$lastId = $db->getInsertId();
 
 		if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 			foreach ($_POST['testType'] as $testType) {
+				// Mapping facility as a Health Facility
 				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
-					$db->insert($tableName4, array(
+					$db->insert($healthFacilityTable, array(
 						'test_type' => $testType,
 						'facility_id' => $lastId,
 						'updated_datetime' => $general->getDateTime()
 					));
+					// Mapping facility as a Testing Lab
 				} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
-					$db->insert($tableName3, array(
+					$db->insert($testingLabsTable, array(
 						'test_type' => $testType,
 						'facility_id' => $lastId,
 						'updated_datetime' => $general->getDateTime()
@@ -118,7 +119,7 @@ try {
 				}
 			}
 		}
-
+		// Mapping facility with users
 		if ($lastId > 0 && trim($_POST['selectedUser']) != '') {
 			$selectedUser = explode(",", $_POST['selectedUser']);
 			for ($j = 0; $j < count($selectedUser); $j++) {
@@ -126,10 +127,11 @@ try {
 					'user_id' => $selectedUser[$j],
 					'facility_id' => $lastId,
 				);
-				$db->insert($tableName2, $data);
+				$db->insert($vlUserFacilityMapTable, $data);
 			}
 		}
 		if ($lastId > 0) {
+			// Mapping facility as a Testing Lab
 			for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
 				$dataTest = array(
 					'test_type' => $_POST['testData'][$tf],
@@ -138,7 +140,7 @@ try {
 					'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
 					"updated_datetime" => $general->getDateTime()
 				);
-				$db->insert($tableName3, $dataTest);
+				$db->insert($testingLabsTable, $dataTest);
 			}
 		}
 
@@ -158,10 +160,10 @@ try {
 
 				$image = array('facility_logo' => $imageName);
 				$db = $db->where('facility_id', $lastId);
-				$db->update($tableName, $image);
+				$db->update($facilityTable, $image);
 			}
 		}
-
+		// Uploading signatories
 		if (isset($_FILES['signature']['name']) && $_FILES['signature']['name'] != ""  && count($_FILES['signature']['name']) > 0 && isset($_POST['signName']) && $_POST['signName'] != "" && count($_POST['signName']) > 0) {
 			foreach ($_POST['signName'] as $key => $name) {
 				if (isset($name) && $name != "") {
@@ -176,7 +178,7 @@ try {
 						"added_on" 			=> $general->getDateTime()
 					);
 
-					$db->insert($signTableName, $signData);
+					$db->insert($labSignTable, $signData);
 					$lastSignId = $db->getInsertId();
 					if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures') && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs")) {
 						mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs");
@@ -198,7 +200,7 @@ try {
 						$resizeObj->save($pathname . $imageName);
 						$image = array('signature' => $imageName);
 						$db = $db->where('signatory_id', $lastSignId);
-						$db->update($signTableName, $image);
+						$db->update($labSignTable, $image);
 					}
 				}
 			}

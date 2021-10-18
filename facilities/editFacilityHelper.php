@@ -11,14 +11,14 @@ $geolocation = new \Vlsm\Models\GeoLocations($db);
 /* For reference we define the table names */
 $tableName = "facility_details";
 $facilityId = base64_decode($_POST['facilityId']);
-$tableName1 = "province_details";
-$tableName2 = "vl_user_facility_map";
-$tableName3 = "testing_labs";
-$tableName4 = "health_facilities";
+$provinceTable = "province_details";
+$vlUserFacilityMapTable = "vl_user_facility_map";
+$testingLabsTable = "testing_labs";
+$healthFacilityTable = "health_facilities";
 $signTableName = "lab_report_signatories";
 try {
+	//Province Table
 	if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != "") {
-
 		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
 			$_POST['stateId'] = $geolocation->addNewQuickGeoLocation($_POST['provinceNew']);
 			$_POST['state'] = $_POST['provinceNew'];
@@ -33,7 +33,7 @@ try {
 					'province_name' => $_POST['provinceNew'],
 					'updated_datetime' => $general->getDateTime(),
 				);
-				$db->insert($tableName1, $data);
+				$db->insert($provinceTable, $data);
 				$_POST['state'] = $_POST['provinceNew'];
 			}
 		}
@@ -94,8 +94,10 @@ try {
 		);
 		$db = $db->where('facility_id', $facilityId);
 		$id = $db->update($tableName, $data);
+
+		// Mapping facility with users
 		$db = $db->where('facility_id', $facilityId);
-		$delId = $db->delete($tableName2);
+		$delId = $db->delete($vlUserFacilityMapTable);
 		if ($facilityId > 0 && trim($_POST['selectedUser']) != '') {
 			$selectedUser = explode(",", $_POST['selectedUser']);
 			for ($j = 0; $j < count($selectedUser); $j++) {
@@ -103,18 +105,18 @@ try {
 					'user_id' => $selectedUser[$j],
 					'facility_id' => $facilityId,
 				);
-				$db->insert($tableName2, $data);
+				$db->insert($vlUserFacilityMapTable, $data);
 			}
 		}
 		$lastId = $facilityId;
-
+		// Mapping facility as a Testing Lab
 		if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 			$db = $db->where('test_type NOT IN(' . sprintf("'%s'", implode("', '", $_POST['testType'])) . ')');
 			$db = $db->where('facility_id', $facilityId);
-			$delId = $db->delete($tableName3);
+			$delId = $db->delete($testingLabsTable);
 		} else {
 			$db = $db->where('facility_id', $facilityId);
-			$delId = $db->delete($tableName3);
+			$delId = $db->delete($testingLabsTable);
 		}
 		if ($lastId > 0) {
 			for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
@@ -125,23 +127,31 @@ try {
 					'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
 					"updated_datetime" => $general->getDateTime()
 				);
-				$db->insert($tableName3, $dataTest);
+				$db->insert($testingLabsTable, $dataTest);
 			}
-
 			if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 
-				$db = $db->where('facility_id', $facilityId);
-				$delId = $db->delete($tableName4);
+				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
+					$db = $db->where('facility_id', $facilityId);
+					$delId = $db->delete($healthFacilityTable);
+				}
+				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
+
+					$db = $db->where('facility_id', $facilityId);
+					$delId = $db->delete($testingLabsTable);
+				}
 				$tid = $hid = 0;
 				foreach ($_POST['testType'] as $testType) {
+					// Mapping facility as a Health Facility
 					if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
-						$hid = $db->insert($tableName4, array(
+						$hid = $db->insert($healthFacilityTable, array(
 							'test_type' => $testType,
 							'facility_id' => $facilityId,
 							'updated_datetime' => $general->getDateTime()
 						));
+						// Mapping facility as a Testing Lab
 					} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
-						$tid = $db->insert($tableName3, array(
+						$tid = $db->insert($testingLabsTable, array(
 							'test_type' => $testType,
 							'facility_id' => $facilityId,
 							'updated_datetime' => $general->getDateTime()
@@ -172,14 +182,15 @@ try {
 			if (move_uploaded_file($_FILES["labLogo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName)) {
 
 				$resizeObj = new \Vlsm\Helpers\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
-                $resizeObj->resizeToWidth(80);
-                $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
+				$resizeObj->resizeToWidth(80);
+				$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
 				$image = array('facility_logo' => $imageName);
 				$db = $db->where('facility_id', $lastId);
 				$db->update($tableName, $image);
 			}
 		}
+		// Uploading signatories
 		if (isset($_FILES['signature']['name']) && $_FILES['signature']['name'] != ""  && count($_FILES['signature']['name']) > 0 && isset($_POST['signName']) && $_POST['signName'] != "" && count($_POST['signName']) > 0) {
 			$deletedRow = explode(",", $_POST['deletedRow']);
 			foreach ($deletedRow as $delete) {
@@ -223,7 +234,7 @@ try {
 						$string = $general->generateRandomString(4) . ".";
 						$imageName = $string . $extension;
 						if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {
-							
+
 							$resizeObj = new \Vlsm\Helpers\ImageResize($pathname . $imageName);
 							$resizeObj->resizeToWidth(80);
 							$resizeObj->save($pathname . $imageName);
