@@ -121,7 +121,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$sQuery = 	 "SELECT eid_id,
+$sQuery = 	 "SELECT SQL_CALC_FOUND_ROWS eid_id,
 							vl.sample_code,
 							vl.remote_sample,
 							vl.remote_sample_code,
@@ -287,17 +287,20 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT eid_id FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+// $aResultFilterTotal = $db->rawQuery("SELECT eid_id FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
 																		
-																		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+// 																		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
 																		
-																		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-																		LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner 
-																		$sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(eid_id) as total FROM eid_form as vl $dWhere");
-$iTotal = $aResultTotal[0]['total'];
+// 																		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+// 																		LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner 
+// 																		$sWhere");
+// $iFilteredTotal = count($aResultFilterTotal);
+// /* Total data set length */
+// $aResultTotal =  $db->rawQuery("select COUNT(eid_id) as total FROM eid_form as vl $dWhere");
+// $iTotal = $aResultTotal[0]['total'];
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
          * Output

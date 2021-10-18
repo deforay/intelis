@@ -446,10 +446,10 @@ $batResult = $db->rawQuery($batQuery);
                 },
             ],
             <?php if ($sarr['sc_user_type'] != 'standalone') { ?> "aaSorting": [
-                    [9, "desc"]
+                    [8, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
-                    [8, "desc"]
+                    [7, "desc"]
                 ],
             <?php } ?> "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");
@@ -550,10 +550,10 @@ $batResult = $db->rawQuery($batQuery);
                 },
             ],
             <?php if ($sarr['sc_user_type'] != 'standalone') { ?> "aaSorting": [
-                    [9, "desc"]
+                    [8, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
-                    [8, "desc"]
+                    [7, "desc"]
                 ],
             <?php } ?> "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chkPrinted[]");

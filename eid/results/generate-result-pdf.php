@@ -54,7 +54,11 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
                   rst.*,
                   rsrr.rejection_reason_name ,
                   u_d.user_name as reviewedBy,
+                  u_d.user_id as reviewedByUserId,
+                  u_d.user_signature as reviewedBySignature,
                   a_u_d.user_name as approvedBy,
+                  a_u_d.user_id as approvedByUserId,
+                  a_u_d.user_signature as approvedBySignature,
                   r_r_b.user_name as revised,
                   tp.config_machine_name as testingPlatform
                   FROM eid_form as vl 

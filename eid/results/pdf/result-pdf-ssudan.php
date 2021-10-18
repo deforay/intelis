@@ -5,13 +5,6 @@ $eidResults = $general->getEidResults();
 
 $resultFilename = '';
 
-$userRes = $users->getUserInfo($_SESSION['userId'], 'user_signature');
-$userSignaturePath = null;
-
-if (!empty($userRes['user_signature'])) {
-    $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
-}
-
 
 if (sizeof($requestResult) > 0) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
@@ -143,12 +136,20 @@ if (sizeof($requestResult) > 0) {
                 $testedBy = $testedByRes['user_name'];
             }
         }
+
+        if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
+            $resultApprovedBy = ucwords($result['approvedBy']);
+        } else {
+            $resultApprovedBy  = '';
+        }
+
         $reviewedBy = '';
-        if (isset($result['result_reviewed_by']) && !empty($result['result_reviewed_by'])) {
-            $reviewedByRes = $users->getUserInfo($result['result_reviewed_by'], array('user_name', 'user_signature'));
-            if ($reviewedByRes) {
-                $reviewedBy = $reviewedByRes['user_name'];
-            }
+        if (isset($result['reviewedBy']) && !empty($result['reviewedBy'])) {
+            $reviewedBy = $result['reviewedBy'];
+        }else{
+            $reviewedBy = $resultApprovedBy;
+            $result['reviewedBySignature'] = $result['approvedBySignature'];
+            $result['result_reviewed_datetime'] = $result['result_approved_datetime'];
         }
 
         $revisedBy = '';
@@ -160,12 +161,15 @@ if (sizeof($requestResult) > 0) {
             }
         }
 
-        $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = null;
+        $revisedSignaturePath = $reviewedBySignaturePath = $testUserSignaturePath = null;
         if (!empty($testedByRes['user_signature'])) {
             $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
         }
-        if (!empty($reviewedByRes['user_signature'])) {
-            $reviewedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $reviewedByRes['user_signature'];
+        if (!empty($result['reviewedBySignature'])) {
+            $reviewedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['reviewedBySignature'];
+        }
+        if (!empty($result['approvedBySignature'])) {
+            $approvedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
         }
         if (!empty($revisedByRes['user_signature'])) {
             $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
@@ -173,18 +177,13 @@ if (sizeof($requestResult) > 0) {
 
         if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_tested_datetime']);
-            $result['sample_tested_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
+            $result['sample_tested_datetime'] = date('d/M/Y', strtotime($expStr[0]));
         } else {
             $result['sample_tested_datetime'] = '';
         }
 
         if (!isset($result['child_gender']) || trim($result['child_gender']) == '') {
             $result['child_gender'] = 'not reported';
-        }
-        if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
-            $resultApprovedBy = ucwords($result['approvedBy']);
-        } else {
-            $resultApprovedBy  = '';
         }
 
         $finalResult = '';
@@ -284,7 +283,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['lab_reception_person']) . '</td>';
-        $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['caretaker_phone_number'] . '</td>';
+        $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_mobile_numbers'] . '</td>';
         $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
         $html .= '</tr>';
         $html .= '</table>';
@@ -419,51 +418,49 @@ if (sizeof($requestResult) > 0) {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-            if (!empty($reviewedSignaturePath) && file_exists($reviewedSignaturePath)) {
-                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
+            if (!empty($reviewedBySignaturePath) && file_exists($reviewedBySignaturePath)) {
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
             }
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? $result['result_reviewed_datetime'] : $result['sample_tested_datetime']) . '</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? date('d/M/Y', strtotime($result['result_reviewed_datetime'])) : '') . '</td>';
             $html .= '</tr>';
         }
 
 
-        $html .= '<tr>';
-        $html .= '<td colspan="3" style="line-height:8px;"></td>';
-        $html .= '</tr>';
+        if (!empty($resultApprovedBy)) {
+            $html .= '<tr>';
+            $html .= '<td colspan="3" style="line-height:22px;"></td>';
+            $html .= '</tr>';
 
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-        if (!empty($userSignaturePath) && file_exists($userSignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
-        } else {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+            $html .= '</tr>';
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
+            if (!empty($approvedBySignaturePath) && file_exists($approvedBySignaturePath)) {
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:50px;" /></td>';
+            } else {
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+            }
+
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['result_approved_datetime'])) . '</td>';
+            $html .= '</tr>';
         }
 
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['result_approved_datetime'])) . '</td>';
-        $html .= '</tr>';
+
 
         // $html .= '<tr>';
         // $html .= '<td colspan="3" style="line-height:22px;"></td>';
         // $html .= '</tr>';
 
-        if (!empty($result['approver_comments'])) {
-
-            $html .= '<tr>';
-            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
-            $html .= '</tr>';
-            $html .= '<tr>';
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['approver_comments'] . '</td>';
-            $html .= '</tr>';
-        }
 
         if (!empty($revisedBy)) {
+            $html .= '<tr>';
+            $html .= '<td colspan="3" style="line-height:22px;"></td>';
+            $html .= '</tr>';            
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
@@ -478,6 +475,17 @@ if (sizeof($requestResult) > 0) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
             }
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['revised_on'])) . '</td>';
+            $html .= '</tr>';
+        }
+        if (!empty($result['approver_comments'])) {
+            $html .= '<tr>';
+            $html .= '<td colspan="3" style="line-height:22px;"></td>';
+            $html .= '</tr>';
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
+            $html .= '</tr>';
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['approver_comments'] . '</td>';
             $html .= '</tr>';
         }
 

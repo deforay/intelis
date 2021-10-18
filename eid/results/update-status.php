@@ -11,6 +11,7 @@ try {
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'result_status'             => $_POST['status'],
+            'result_reviewed_by'        =>  $_SESSION['userId'],
             'result_approved_by'        =>  $_SESSION['userId'],
             'result_approved_datetime'  =>  $general->getDateTime(),
             'data_sync'                 => 0
