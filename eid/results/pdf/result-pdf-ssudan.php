@@ -187,7 +187,7 @@ if (sizeof($requestResult) > 0) {
             $resultApprovedBy  = '';
         }
 
-        $vlResult = '';
+        $finalResult = '';
         $smileyContent = '';
         $showMessage = '';
         $tndMessage = '';
@@ -195,13 +195,16 @@ if (sizeof($requestResult) > 0) {
         if ($result['result'] != NULL && trim($result['result']) != '') {
             $resultType = is_numeric($result['result']);
             if ($result['result'] == 'positive') {
-                $vlResult = $result['result'];
+                $finalResult = $result['result'];
                 $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="smile_face"/>';
             } else if ($result['result'] == 'negative') {
-                $vlResult = $result['result'];
+                $finalResult = $result['result'];
                 $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
             } else if ($result['result'] == 'indeterminate') {
-                $vlResult = $result['result'];
+                $finalResult = $result['result'];
+                $smileyContent = '';
+            } else {
+                $finalResult = $result['result'];
                 $smileyContent = '';
             }
         }
@@ -527,8 +530,8 @@ if (sizeof($requestResult) > 0) {
             $db->insert($tableName1, $data);
             //Update print datetime in VL tbl.
             $vlQuery = "SELECT result_printed_datetime FROM eid_form as vl WHERE vl.eid_id ='" . $result['eid_id'] . "'";
-            $vlResult = $db->query($vlQuery);
-            if ($vlResult[0]['result_printed_datetime'] == NULL || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+            $eidResult = $db->query($vlQuery);
+            if ($eidResult[0]['result_printed_datetime'] == NULL || trim($eidResult[0]['result_printed_datetime']) == '' || $eidResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                 $db = $db->where('eid_id', $result['eid_id']);
                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
             }

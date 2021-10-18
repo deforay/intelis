@@ -284,11 +284,13 @@ foreach ($rejectionTypeResult as $type) {
         },
         //{"sClass":"center","bSortable":false},
       ],
-      <?php if ($sarr['sc_user_type'] != 'standalone') { ?> "aaSorting": [
-          [10, "desc"]
+      <?php if ($sarr['sc_user_type'] != 'standalone') { ?> 
+        "aaSorting": [
+          [11, "desc"]
         ],
-      <?php } else { ?> "aaSorting": [
-          [9, "desc"]
+      <?php } else { ?> 
+        "aaSorting": [
+          [10, "desc"]
         ],
       <?php } ?> "fnDrawCallback": function() {
         var checkBoxes = document.getElementsByName("chk[]");

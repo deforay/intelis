@@ -117,7 +117,11 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 $aWhere = '';
-$sQuery = "SELECT * FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * 
+            FROM eid_form as vl 
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 //echo $sQuery;die;
 $start_date = '';
@@ -202,7 +206,8 @@ if (isset($sWhere) && $sWhere != "") {
             }
         }
     }
-    if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') { }
+    if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
+    }
 }
 if ($sWhere != '') {
     $sWhere = $sWhere . ' AND vl.vlsm_country_id="' . $arr['vl_form'] . '"';
@@ -231,16 +236,20 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 //die($sQuery);
 // echo $sQuery;
-$_SESSION['vlRequestSearchResultQuery'] = $sQuery;
+$_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id  $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
+// $aResultFilterTotal = $db->rawQuery("SELECT * FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id  $sWhere");
+// $iFilteredTotal = count($aResultFilterTotal);
 
-$aResultTotal = $db->rawQuery("SELECT * FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iTotal = count($aResultTotal);
+// $aResultTotal = $db->rawQuery("SELECT * FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
+// $iTotal = count($aResultTotal);
+
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
           * Output
@@ -268,9 +277,7 @@ foreach ($rResult as $aRow) {
         $aRow['sample_collection_date'] = '';
     }
 
-    $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
-    $patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
-    $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+    $childName = ucwords($general->crypto('decrypt', $aRow['child_name'], $aRow['child_id']));
 
 
     $status = '<select class="form-control" style="" name="status[]" id="' . $aRow['eid_id'] . '" title="Please select status" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
