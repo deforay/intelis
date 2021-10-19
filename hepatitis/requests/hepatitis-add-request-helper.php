@@ -67,15 +67,21 @@ try {
 	}
 
 	$resultSentToSource = 'pending';
-	
+
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['hcvCount'] = null;
 		$_POST['hbvCount'] = null;
 		$resultSentToSource = 'pending';
-	}else if (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
+	} else if (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
 		$resultSentToSource = null;
-	}	
+	}
 
+	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+		$reviewedOn = explode(" ", $_POST['reviewedOn']);
+		$_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+	} else {
+		$_POST['reviewedOn'] = NULL;
+	}
 
 	$hepatitisData = array(
 		'vlsm_instance_id'                    => $instanceId,
@@ -124,8 +130,10 @@ try {
 		'hepatitis_test_platform'             => isset($_POST['hepatitisPlatform']) ? $_POST['hepatitisPlatform'] : null,
 		'import_machine_name'                 => isset($_POST['machineName']) ? $_POST['machineName'] : null,
 		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
+		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
+		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
-		'social_category'                       => isset($_POST['socialCategory']) ? $_POST['socialCategory'] : null,
+		'social_category'                     => isset($_POST['socialCategory']) ? $_POST['socialCategory'] : null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->dateFormat($_POST['authorizedOn']) : null,
 		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
 		'result_status'                       => $status,

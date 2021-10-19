@@ -101,6 +101,13 @@ try {
 		$resultSentToSource = null;
 	}
 
+	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+		$reviewedOn = explode(" ", $_POST['reviewedOn']);
+		$_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+	} else {
+		$_POST['reviewedOn'] = NULL;
+	}
+
 	$hepatitisData = array(
 		'external_sample_code'                => isset($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
 		'hepatitis_test_type'                 => isset($_POST['hepatitisTestType']) ? $_POST['hepatitisTestType'] : 'hcv',
@@ -146,6 +153,8 @@ try {
 		'hepatitis_test_platform'             => isset($_POST['hepatitisPlatform']) ? $_POST['hepatitisPlatform'] : null,
 		'import_machine_name'                 => isset($_POST['machineName']) ? $_POST['machineName'] : null,
 		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
+		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
+		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->dateFormat($_POST['authorizedOn']) : null,
 		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
