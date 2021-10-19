@@ -330,7 +330,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
 
                                 <br><br>
-                                <table class="table" style="">
+                                <table class="table">
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Sample Information</h4>
@@ -426,6 +426,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?php } ?>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Reviewed By</th>
+                                            <td>
+                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                            <th>Reviewed on</td>
+                                            <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                         </tr>
                                         <tr>
                                             <th>Tested By</th>

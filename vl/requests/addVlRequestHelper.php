@@ -218,6 +218,13 @@ try {
         $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
     }
 
+    if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+        $reviewedOn = explode(" ", $_POST['reviewedOn']);
+        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+    } else {
+        $_POST['reviewedOn'] = NULL;
+    }
+
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => 1,
@@ -264,6 +271,8 @@ try {
         'result_value_absolute_decimal' => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Below Detection Level')) ? number_format((float)$_POST['vlResult'], 2, '.', '') :  NULL,
         'result' => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] :  NULL,
         'result_value_log' => (isset($_POST['vlLog']) && $_POST['vlLog'] != '') ? $_POST['vlLog'] :  NULL,
+        'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+        'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
         'result_approved_datetime' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  NULL,

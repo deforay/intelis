@@ -717,6 +717,23 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 													</div>
 												</div>
 												<div class="col-md-4">
+													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
+													<div class="col-lg-7">
+														<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<br>
+												<div class="col-md-4">
+													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+													<div class="col-lg-7">
+														<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
+													</div>
+												</div>
+												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="testedBy">Tested By </label>
 													<div class="col-lg-7">
 														<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">

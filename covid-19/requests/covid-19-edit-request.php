@@ -87,7 +87,12 @@ if (isset($covid19Info['sample_collection_date']) && trim($covid19Info['sample_c
     $covid19Info['sample_collection_date'] = '';
 }
 
-
+if (isset($covid19Info['result_reviewed_datetime']) && trim($covid19Info['result_reviewed_datetime']) != '' && $covid19Info['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+    $reviewedOn = explode(" ", $covid19Info['result_reviewed_datetime']);
+    $covid19Info['result_reviewed_datetime'] = $general->humanDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+} else {
+    $covid19Info['result_reviewed_datetime'] = '';
+}
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-zimbabwe.php',

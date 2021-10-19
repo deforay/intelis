@@ -115,7 +115,12 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
     $eidInfo['result_approved_datetime'] = $general->humanDateFormat($general->getDateTime());
 }
 
-
+if (isset($eidInfo['result_reviewed_datetime']) && trim($eidInfo['result_reviewed_datetime']) != '' && $eidInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+    $expStr = explode(" ", $eidInfo['result_reviewed_datetime']);
+    $eidInfo['result_reviewed_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+} else {
+    $eidInfo['result_reviewed_datetime'] = '';
+}
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-zimbabwe.php',
