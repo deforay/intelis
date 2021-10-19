@@ -695,6 +695,20 @@ $disable = "disabled = 'disabled'";
 														</div>
 													</div>
 													<div class="col-md-4">
+														<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
+														<div class="col-lg-7">
+															<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_by']; ?>" name="reviewedBy" id="reviewedBy" class="form-control" placeholder="Reviewed By" title="Please enter te Reviewed By" />
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-4">
+														<label class="col-lg-5 control-label" for="approvedOnDateTime">Reviewed On </label>
+														<div class="col-lg-7">
+															<input type="text" value="<?php echo $general->humanDateFormat($vlQueryInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="date-time form-control date" placeholder="Reviewed on" title="Please enter the Reviewed on" />
+														</div>
+													</div>
+													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="testedBy">Tested By </label>
 														<div class="col-lg-7">
 															<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
@@ -702,8 +716,6 @@ $disable = "disabled = 'disabled'";
 															</select>
 														</div>
 													</div>
-												</div><br />
-												<div class="row">
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
 														<div class="col-lg-7">
@@ -712,6 +724,8 @@ $disable = "disabled = 'disabled'";
 															</select>
 														</div>
 													</div>
+												</div>
+												<div class="row">
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
 														<div class="col-lg-7">
@@ -732,6 +746,7 @@ $disable = "disabled = 'disabled'";
 														</div>
 													</div>
 												</div>
+												<br>
 												<div class="row">
 													<div class="col-md-8">
 														<label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
@@ -739,9 +754,7 @@ $disable = "disabled = 'disabled'";
 															<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['approver_comments']); ?></textarea>
 														</div>
 													</div>
-
 												</div>
-
 												<div class="row reasonForResultChanges" style="display:none;">
 													<br>
 													<div class="col-md-6 ">
