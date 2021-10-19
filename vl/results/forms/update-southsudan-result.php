@@ -697,15 +697,17 @@ $disable = "disabled = 'disabled'";
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
 														<div class="col-lg-7">
-															<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_by']; ?>" name="reviewedBy" id="reviewedBy" class="form-control" placeholder="Reviewed By" title="Please enter te Reviewed By" />
+															<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+																<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
+															</select>
 														</div>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="approvedOnDateTime">Reviewed On </label>
+														<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
 														<div class="col-lg-7">
-															<input type="text" value="<?php echo $general->humanDateFormat($vlQueryInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="date-time form-control date" placeholder="Reviewed on" title="Please enter the Reviewed on" />
+															<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
 														</div>
 													</div>
 													<div class="col-md-4">

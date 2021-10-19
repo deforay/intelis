@@ -35,6 +35,13 @@ try {
     $_POST['approvedOnDateTime'] = NULL;
   }
 
+  if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+    $reviewedOn = explode(" ", $_POST['reviewedOn']);
+    $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+  } else {
+    $_POST['reviewedOn'] = NULL;
+  }
+
 
   $eidData = array(
     'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
@@ -50,7 +57,7 @@ try {
     'revised_by'                        => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
     'revised_on'                        => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
     'result_reviewed_by'                => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
-    'result_reviewed_datetime'          => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $general->dateFormat($_POST['reviewedOn']) : null,
+    'result_reviewed_datetime'          => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
     'reason_for_changing'               => (!empty($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
     'result_status'                     => 8,
     'data_sync'                         => 0,

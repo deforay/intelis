@@ -51,7 +51,12 @@ $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 
 $disable = "disabled = 'disabled'";
 
-
+if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result_reviewed_datetime']) != '' && $vlQueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $vlQueryInfo['result_reviewed_datetime']);
+	$vlQueryInfo['result_reviewed_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+} else {
+	$vlQueryInfo['result_reviewed_datetime'] = '';
+}
 ?>
 <style>
 	.disabledForm {

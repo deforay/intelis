@@ -434,9 +434,13 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </tr>
                                     <tr>
                                         <th>Reviewed By</th>
-                                        <td><input type="text" value="<?php echo $eidInfo['result_reviewed_by']; ?>" name="reviewedBy" id="reviewedBy" class="disabled-field form-control" placeholder="Reviewed By" title="Please enter te Reviewed By" /></td>
+                                        <td>
+                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+                                                <?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
+                                            </select>
+                                        </td>
                                         <th>Reviewed on</td>
-                                        <td><input type="text" value="<?php echo $general->humanDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="date-time disabled-field form-control date" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+                                        <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                     </tr>
                                     <tr>
                                         <th>Tested By</th>

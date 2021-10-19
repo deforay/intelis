@@ -52,7 +52,12 @@ $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id=$id ORDER BY t
 $covid19TestInfo = $db->rawQuery($covid19TestQuery);
 
 $disable = "disabled = 'disabled'";
-
+if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result_reviewed_datetime']) != '' && $vlQueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $vlQueryInfo['result_reviewed_datetime']);
+	$vlQueryInfo['result_reviewed_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+} else {
+	$vlQueryInfo['result_reviewed_datetime'] = '';
+}
 
 ?>
 <style>
@@ -192,6 +197,22 @@ if ($arr['vl_form'] == 1) {
 			onSelect: function(e) {
 				$('#sampleTestedDateTime').val('');
 				$('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
+			},
+			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
+
+		$('.dateTime').datetimepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
+					$('.ui-datepicker-calendar').show();
+				});
 			},
 			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
 		}).click(function() {
