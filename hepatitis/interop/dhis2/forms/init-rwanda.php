@@ -1,5 +1,8 @@
 <?php
 
+require_once(__DIR__ . "/../../../../startup.php");
+
+
 // this file is included in /hepatitis/interop/dhis2/hepatitis-init.php
 
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);

@@ -297,7 +297,7 @@ if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
-$_SESSION['vlRequestSearchResultQuery'] = $sQuery;
+$_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }

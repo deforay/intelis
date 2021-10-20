@@ -10,7 +10,7 @@ $formResults = $db->rawQuery($query);
 $counter = 0;
 foreach ($formResults as $row) {
 
-  $uniqueIdArray = explode("::" , $row['unique_id']);
+  $uniqueIdArray = explode("::", $row['unique_id']);
   $trackedEntityInstance = $uniqueIdArray[1];
 
   $programStages = array(
@@ -83,7 +83,7 @@ foreach ($formResults as $row) {
     $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
   }
 
-  
+
 
 
   if (count($dhis2Response['events']) == 0) {
@@ -105,12 +105,12 @@ foreach ($formResults as $row) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
       $payload = json_encode($eventPayload);
       echo "<br><br><pre>";
-      print_r ($payload);
+      print_r($payload);
       echo "</pre>";
-      
+
       $response = $dhis2->post("/api/33/events/", $payload);
       echo "<br><br><pre>";
-      var_dump ($response);
+      var_dump($response);
       echo "</pre>";
     }
   } else {
