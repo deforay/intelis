@@ -38,7 +38,7 @@ class ResultSet implements TabularDataReader, JsonSerializable
     /**
      * The CSV records collection header.
      *
-     * @var array<string>
+     * @var array
      */
     protected $header = [];
 

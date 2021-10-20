@@ -464,6 +464,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 </table>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <th>Reviewed By</th>
+                                            <td>
+                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_reviewed_by'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                            <th>Reviewed on</td>
+                                            <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+                                        </tr>
                                         <tr class="change-reason" style="display: none;">
                                             <th>Reason for Changing <span class="mandatory">*</span></td>
                                             <td colspan="3"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>

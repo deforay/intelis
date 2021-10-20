@@ -49,12 +49,12 @@ final class EmptyEscapeParser
     private static $document;
 
     /**
-     * @var non-empty-string
+     * @var string
      */
     private static $delimiter;
 
     /**
-     * @var non-empty-string
+     * @var string
      */
     private static $enclosure;
 

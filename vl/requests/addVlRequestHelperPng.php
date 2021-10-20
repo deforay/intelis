@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 ob_start();
 #require_once('../../startup.php');
@@ -100,7 +100,7 @@ try {
      if ($sarr['sc_user_type'] == 'remoteuser') {
           $status = 9;
      }
-     
+
      if (isset($_POST['sampleQuality']) && trim($_POST['sampleQuality']) == 'no') {
           $_POST['rejectionReason'] = NULL;
      }
@@ -130,6 +130,12 @@ try {
           }
      }
 
+     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+          $reviewedOn = explode(" ", $_POST['reviewedOn']);
+          $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+     } else {
+          $_POST['reviewedOn'] = NULL;
+     }
      $instanceId = '';
      if (isset($_SESSION['instanceId'])) {
           $instanceId = $_SESSION['instanceId'];
@@ -141,7 +147,7 @@ try {
           'vlsm_instance_id' => $instanceId,
           'vlsm_country_id' => '5',
           'facility_id' => (isset($_POST['clinicName']) && trim($_POST['clinicName']) != '') ? $_POST['clinicName'] : NULL,
-          'province_id'=>(isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  NULL,
+          'province_id' => (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  NULL,
           //'ward'=>(isset($_POST['wardData']) && $_POST['wardData']!='' ? $_POST['wardData'] :  NULL),
           'patient_art_no' => (isset($_POST['patientARTNo']) && trim($_POST['patientARTNo']) != '') ? $_POST['patientARTNo'] : NULL,
           'request_clinician_name' => (isset($_POST['officerName']) && $_POST['officerName'] != '' ? $_POST['officerName'] : NULL),
@@ -192,6 +198,8 @@ try {
           'vl_test_platform' => (isset($_POST['testingTech']) && $_POST['testingTech'] != '') ? $_POST['testingTech'] : NULL,
           'cphl_vl_result' => (isset($_POST['cphlvlResult']) && $_POST['cphlvlResult'] != '' ? $_POST['cphlvlResult'] : NULL),
           'result' => (isset($_POST['finalViralResult']) && trim($_POST['finalViralResult']) != '') ? $_POST['finalViralResult'] : NULL,
+          'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+          'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
           'qc_tech_name' => (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : NULL),
           'qc_tech_sign' => (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : NULL),
           'qc_date' => $_POST['qcDate'],
@@ -207,13 +215,13 @@ try {
      );
      // print_r($vldata);die;
      $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-     if($status == 7  && $lock == 'yes'){
+     if ($status == 7  && $lock == 'yes') {
           $vldata['locked'] = 'yes';
      }
      //$vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFname'], $vldata['patient_art_no']);
      //$vldata['patient_last_name'] = $general->crypto('encrypt', $_POST['surName'], $vldata['patient_art_no']);
 
-     
+
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
           $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
           $id = $db->update($tableName, $vldata);

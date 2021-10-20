@@ -27,14 +27,14 @@ class Statement
     /**
      * Callables to filter the iterator.
      *
-     * @var array<callable>
+     * @var callable[]
      */
     protected $where = [];
 
     /**
      * Callables to sort the iterator.
      *
-     * @var array<callable>
+     * @var callable[]
      */
     protected $order_by = [];
 
@@ -134,7 +134,7 @@ class Statement
     /**
      * Execute the prepared Statement on the {@link Reader} object.
      *
-     * @param array<string> $header an optional header to use instead of the CSV document header
+     * @param string[] $header an optional header to use instead of the CSV document header
      */
     public function process(TabularDataReader $tabular_data, array $header = []): TabularDataReader
     {

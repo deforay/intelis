@@ -280,8 +280,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 												<option value='tnd'> Target Not Detected </option>
 												<option value='bdl'> Below Detection Limit </option>
 												<option value='< 20'>
-													< 20 </option> <option value='< 40'>
-														< 40 </option> <option value='invalid'> Invalid
+													< 20 </option>
+												<option value='< 40'>
+													< 40 </option>
+												<option value='invalid'> Invalid
 												</option>
 
 											</select>
@@ -475,7 +477,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											</td>
 
 											<th class="rejected" style="display: none;">Reason for Rejection</th>
-                      						<td class="rejected" style="display: none;">
+											<td class="rejected" style="display: none;">
 												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
 													<option value=''> -- Sélectionner -- </option>
 													<option value="Technical Problem"> Problème technique </option>
@@ -503,7 +505,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 												</select>
 											</td>
 										</tr>
-
+										<tr>
+											<th>Revu par</th>
+											<td>
+												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revu par" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+												</select>
+											</td>
+											<th>Revisado Em</td>
+											<td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
+										</tr>
 									</table>
 								</div>
 							</div>
@@ -685,7 +696,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 		$('#province').select2({
 			placeholder: "Province"
 		});
-		
+
 		$("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
 			var motherVl = $("#motherViralLoadCopiesPerMl").val();
 			//var motherVlText = $("#motherViralLoadText").val();

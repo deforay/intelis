@@ -603,58 +603,75 @@ $sFormat = '';
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
-                                                                                <option value="">-- Select --</option>
-                                                                                <?php foreach ($userResult as $uName) { ?>
-                                                                                     <option value="<?php echo $uName['user_id']; ?>"><?php echo ucwords($uName['user_name']); ?></option>
-                                                                                <?php } ?>
+                                                                           <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+                                                                                <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-8">
-                                                                      <label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
-                                                                      <div class="col-lg-10">
-                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?> style="width:100%"></textarea>
+                                                                 <div class="col-md-4">
+                                                                      <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                       </div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                       <div class="row">
+                                                            <div class="col-md-4">
+                                                                 <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+                                                                 <div class="col-lg-7">
+                                                                      <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
+                                                                           <option value="">-- Select --</option>
+                                                                           <?php foreach ($userResult as $uName) { ?>
+                                                                                <option value="<?php echo $uName['user_id']; ?>"><?php echo ucwords($uName['user_name']); ?></option>
+                                                                           <?php } ?>
+                                                                      </select>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                 <label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
+                                                                 <div class="col-lg-10">
+                                                                      <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?> style="width:100%"></textarea>
                                                                  </div>
                                                             </div>
                                                        </div>
                                                   </div>
-                                             <?php } ?>
                                         </div>
-                                        <div class="box-footer">
-                                             <!-- BARCODESTUFF START -->
-                                             <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
-                                                  <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
-                                                       <div class="progress" style="width:100%">
-                                                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                                                            </div>
+                                   <?php } ?>
+                                   </div>
+                                   <div class="box-footer">
+                                        <!-- BARCODESTUFF START -->
+                                        <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
+                                             <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
+                                                  <div class="progress" style="width:100%">
+                                                       <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                                                        </div>
-                                                  </div> <!-- /printer_data_loading -->
-                                                  <div id="printer_details" style="display:none">
-                                                       <span id="selected_printer">No printer selected!</span>
-                                                       <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
-                                                  </div><br /> <!-- /printer_details -->
-                                                  <div id="printer_select" style="display:none">
-                                                       Zebra Printer Options<br />
-                                                       Printer: <select id="printers"></select>
-                                                  </div> <!-- /printer_select -->
-                                             <?php } ?>
-                                             <!-- BARCODESTUFF END -->
-                                             <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                                             <input type="hidden" name="saveNext" id="saveNext" />
-                                             <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
-                                             <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                                                  <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
-                                                  <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
-                                             <?php } ?>
-                                             <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
-                                             <input type="hidden" name="provinceId" id="provinceId" />
-                                             <a class="btn btn-primary" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                             <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
-                                        </div>
+                                                  </div>
+                                             </div> <!-- /printer_data_loading -->
+                                             <div id="printer_details" style="display:none">
+                                                  <span id="selected_printer">No printer selected!</span>
+                                                  <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
+                                             </div><br /> <!-- /printer_details -->
+                                             <div id="printer_select" style="display:none">
+                                                  Zebra Printer Options<br />
+                                                  Printer: <select id="printers"></select>
+                                             </div> <!-- /printer_select -->
+                                        <?php } ?>
+                                        <!-- BARCODESTUFF END -->
+                                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                                        <input type="hidden" name="saveNext" id="saveNext" />
+                                        <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
+                                        <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+                                             <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
+                                             <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
+                                        <?php } ?>
+                                        <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
+                                        <input type="hidden" name="provinceId" id="provinceId" />
+                                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
+                                        <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+                                   </div>
                     </form>
                </div>
      </section>

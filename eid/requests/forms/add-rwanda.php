@@ -64,7 +64,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     </section>
     <!-- Main content -->
     <section class="content">
-        
+
         <div class="box box-default">
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -302,7 +302,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="Confirmation of positive first EID PCR test result" /> Confirmation of positive first EID PCR test result </option>
-                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option> <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
+                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
+                                                <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other"> Other </option>
                                             </select>
                                         </td>
@@ -371,7 +372,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
 
                                             <th class="rejected" style="display: none;">Reason for Rejection</th>
-                      						<td class="rejected" style="display: none;">
+                                            <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value=''> -- Select -- </option>
                                                     <?php echo $rejectionReason; ?>
@@ -395,7 +396,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                         </tr>
-
+                                        <tr>
+                                            <th>Reviewed By</th>
+                                            <td>
+                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                            <th>Reviewed on</td>
+                                            <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>

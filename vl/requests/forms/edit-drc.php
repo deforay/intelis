@@ -481,8 +481,8 @@ $sampleSuggestionDisplay = 'display:none;';
 											<td>
 												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
 											</td>
-											<td style=""></td>
-											<td style=""></td>
+											<td></td>
+											<td></td>
 										</tr>
 										<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled") { ?>
 											<tr style="<?php echo (($_SESSION['userType'] == 'clinic' || $_SESSION['userType'] == 'lab') && $vlQueryInfo['result_status'] == 9) ? 'display:none;' : ''; ?>">
@@ -584,6 +584,18 @@ $sampleSuggestionDisplay = 'display:none;';
                                 </td>
                                 <td></td><td></td>
                             </tr>-->
+										<tr>
+											<td style="width:14%;"><label for="reviewedBy"> Revu par </label></td>
+											<td style="width:14%;">
+												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revu par" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
+												</select>
+											</td>
+											<td style="width:14%;"><label for="reviewedOn"> Révisé le </label></td>
+											<td style="width:14%;">
+												<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Révisé le" title="Please enter the révisé le" />
+											</td>
+										</tr>
 										<tr>
 											<td class=" reasonForResultChanges" style="visibility:hidden;">
 												<label for="reasonForResultChanges">Razão para as mudanças nos resultados <span class="mandatory">*</span></label>

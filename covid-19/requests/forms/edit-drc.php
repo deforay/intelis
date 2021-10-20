@@ -886,6 +886,16 @@ $pResult = $db->rawQuery($pQuery);
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Raison du changement" title="Raison du changement"></textarea></td>
                                         </tr>
                                         <tr>
+                                            <th>Revu par</th>
+                                            <td>
+                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revu par" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_reviewed_by'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                            <th>Revisado Em</td>
+                                            <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
+                                        </tr>
+                                        <tr>
                                             <th>Le résultat est-il autorisé?</th>
                                             <td>
                                                 <select name="isResultAuthorized" id="isResultAuthorized" class="form-control" title="Le résultat est-il autorisé?" style="width:100%">

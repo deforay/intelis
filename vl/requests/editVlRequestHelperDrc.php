@@ -216,6 +216,13 @@ try {
         $_POST['vlLog'] = '';
     }
 
+    if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+        $reviewedOn = explode(" ", $_POST['reviewedOn']);
+        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+    } else {
+        $_POST['reviewedOn'] = NULL;
+    }
+
     $vlObj = new \Vlsm\Models\Vl($db);
     $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
 
@@ -250,6 +257,8 @@ try {
         'result_value_log' => (isset($_POST['vlLog'])) ? $_POST['vlLog'] : NULL,
         'result' => (isset($_POST['vlResult'])) ? $_POST['vlResult'] : NULL,
         'result_value_text' => $textResult,
+        'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+        'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'date_test_ordered_by_physician' => $_POST['dateOfDemand'],
         'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : NULL,
         'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : NULL,

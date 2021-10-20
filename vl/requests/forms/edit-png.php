@@ -726,6 +726,18 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td></td>
 										<td></td>
 									</tr>
+									<tr>
+										<td style="width:14%;"><label for="reviewedBy"> Reviewed By </label></td>
+										<td style="width:14%;">
+											<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
+											</select>
+										</td>
+										<td style="width:14%;"><label for="reviewedOn"> Reviewed On </label></td>
+										<td style="width:14%;">
+											<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the reviewed on" />
+										</td>
+									</tr>
 								</table>
 							</div>
 						</div>

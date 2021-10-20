@@ -144,6 +144,14 @@ try {
      if (empty($_POST['status'])) {
           $_POST['status']  = $_POST['oldStatus'];
      }
+
+     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+          $reviewedOn = explode(" ", $_POST['reviewedOn']);
+          $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+     } else {
+          $_POST['reviewedOn'] = NULL;
+     }
+
      $vlObj = new \Vlsm\Models\Vl($db);
      $vl_result_category = $vlObj->vlResultCategory($_POST['finalViralResult']);
      $vldata = array(
@@ -199,6 +207,8 @@ try {
           'vl_test_platform' => (isset($_POST['testingTech']) && trim($_POST['testingTech']) != '') ? $_POST['testingTech'] : NULL,
           'cphl_vl_result' => (isset($_POST['cphlvlResult']) && $_POST['cphlvlResult'] != '' ? $_POST['cphlvlResult'] : NULL),
           'result' => (isset($_POST['finalViralResult']) && trim($_POST['finalViralResult']) != '') ? $_POST['finalViralResult'] : NULL,
+          'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+          'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
           'result_status' => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] : NULL,
           'qc_tech_name' => (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : NULL),
           'qc_tech_sign' => (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : NULL),
