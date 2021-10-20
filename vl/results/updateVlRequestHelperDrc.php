@@ -75,6 +75,13 @@ try {
         $textResult = $_POST['vlResult'] = '< 400';
         $_POST['vlLog'] = '';
     }
+
+    if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+        $reviewedOn = explode(" ", $_POST['reviewedOn']);
+        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+    } else {
+        $_POST['reviewedOn'] = NULL;
+    }
     $vlObj = new \Vlsm\Models\Vl($db);
     $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
     //echo "<pre>";var_dump($_POST);die;
@@ -87,6 +94,8 @@ try {
         'result_value_log' => $_POST['vlLog'],
         'result' => $_POST['vlResult'],
         'result_value_text' => $textResult,
+        'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+        'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'last_modified_datetime' => $general->getDateTime(),
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] :  NULL),
         'data_sync' => 0,

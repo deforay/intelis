@@ -554,6 +554,18 @@ $disable = "disabled = 'disabled'";
                                 </td>
                                 <td></td><td></td>
                             </tr>-->
+									<tr>
+										<td style="width:14%;"><label for="reviewedBy"> Revu par </label></td>
+										<td style="width:14%;">
+											<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revu par" style="width: 100%;">
+												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
+											</select>
+										</td>
+										<td style="width:14%;"><label for="reviewedOn"> Révisé le </label></td>
+										<td style="width:14%;">
+											<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Révisé le" title="Please enter the révisé le" />
+										</td>
+									</tr>
 									<tr class="change-reason">
 										<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></td>
 										<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForResultChanges" id="reasonForResultChanges" class="form-control date" placeholder="Entrez la raison du changement" title="Veuillez saisir la raison du changement"></textarea></td>

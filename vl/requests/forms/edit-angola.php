@@ -39,7 +39,7 @@ if (!isset($provinceResult[0]['province_code']) || $provinceResult[0]['province_
   $provinceResult[0]['province_code'] = '';
 }
 //get ART list
-$aQuery = "SELECT * from r_vl_art_regimen";";
+$aQuery = "SELECT * from r_vl_art_regimen";
 $aResult = $db->query($aQuery);
 $start_date = date('Y-m-01');
 $end_date = date('Y-m-31');
@@ -141,7 +141,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
   </section>
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -255,8 +255,10 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                       </td>
                     </tr>
                     <tr>
-                      <td><label for="ageInMonths"> Idade (em meses se < 1 ano) </label> </td> <td>
-                            <input type="text" class="form-control checkNum" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
+                      <td><label for="ageInMonths"> Idade (em meses se < 1 ano) </label>
+                      </td>
+                      <td>
+                        <input type="text" class="form-control checkNum" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
                       </td>
                       <td colspan="3"><label for="responsiblePersonName">Nome da Mãe/ Pai/ Familiar responsáve </label></td>
                       <td>
@@ -550,6 +552,18 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                       </td>
                     </tr>
                     <tr>
+                      <td style="width:14%;"><label for="reviewedBy"> Revisados ​Pela </label></td>
+                      <td style="width:14%;">
+                        <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revisados ​​pela" style="width: 100%;">
+                          <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
+                        </select>
+                      </td>
+                      <td style="width:14%;"><label for="reviewedOn"> Revisado Em </label></td>
+                      <td style="width:14%;">
+                        <input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Revisado em" title="Please enter the revisado em" />
+                      </td>
+                    </tr>
+                    <tr>
                       <td style="width:14%;"><label for="noResult"> Rejeição da amostra</label></td>
                       <td style="width:14%;">
                         <label class="radio-inline">
@@ -659,7 +673,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-            <input type="hidden" name="revised" id="revised" value="no" />
+              <input type="hidden" name="revised" id="revised" value="no" />
               <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
               <input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
               <input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />

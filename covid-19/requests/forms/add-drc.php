@@ -803,6 +803,16 @@ $pResult = $db->rawQuery($pQuery);
                                             </td>
                                         </tr>
                                         <tr>
+                                            <th>Revu par</th>
+                                            <td>
+                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revu par" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                            <th>Revisado Em</td>
+                                            <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
+                                        </tr>
+                                        <tr>
 
                                             <th>Le résultat est-il autorisé?</th>
                                             <td>

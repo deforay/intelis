@@ -388,7 +388,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                         </tr>
-
+                                        <tr>
+                                            <th>Revisados ​Pela</th>
+                                            <td>
+                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revisados ​Pela" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                            <th>Revisado Em</td>
+                                            <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>

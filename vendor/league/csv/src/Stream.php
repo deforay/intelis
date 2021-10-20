@@ -280,7 +280,7 @@ final class Stream implements SeekableIterator
      *
      * @see http://php.net/manual/en/SplFileObject.getcsvcontrol.php
      *
-     * @return array<string>
+     * @return string[]
      */
     public function getCsvControl(): array
     {
@@ -304,12 +304,9 @@ final class Stream implements SeekableIterator
      *
      * @return int|false
      */
-    public function fputcsv(array $fields, string $delimiter = ',', string $enclosure = '"', string $escape = '\\', string $eol = "\n")
+    public function fputcsv(array $fields, string $delimiter = ',', string $enclosure = '"', string $escape = '\\')
     {
         $controls = $this->filterControl($delimiter, $enclosure, $escape, __METHOD__);
-        if (80100 <= PHP_VERSION_ID) {
-            $controls[] = $eol;
-        }
 
         return fputcsv($this->stream, $fields, ...$controls);
     }

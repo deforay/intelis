@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 ob_start();
 #require_once('../../startup.php');  
@@ -180,8 +180,16 @@ try {
      }
      if (isset($_POST['approvedBy']) && trim($_POST['approvedBy']) != '') {
           $vlObj = new \Vlsm\Models\Vl($db);
-        $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
+          $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
      }
+
+     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+          $reviewedOn = explode(" ", $_POST['reviewedOn']);
+          $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+     } else {
+          $_POST['reviewedOn'] = NULL;
+     }
+
      $vldata = array(
           'vlsm_instance_id' => $instanceId,
           'vlsm_country_id' => 8,
@@ -234,6 +242,8 @@ try {
           'result_value_absolute_decimal' => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Low Detection Level' && $_POST['vlResult'] != 'High Detection Level')) ? number_format((float)$_POST['vlResult'], 2, '.', '') :  NULL,
           'result' => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] :  NULL,
           'result_value_log' => (isset($_POST['vlLog']) && $_POST['vlLog'] != '') ? $_POST['vlLog'] :  NULL,
+          'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+          'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
           'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
           'approver_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
           'result_status' => $status,
@@ -245,7 +255,7 @@ try {
           'vl_result_category' => $vl_result_category
      );
      $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-     if($lock == 'yes' && $status == 7){
+     if ($lock == 'yes' && $status == 7) {
           $vldata['locked'] = 'yes';
      }
      $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);

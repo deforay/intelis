@@ -658,29 +658,46 @@ $disable = "disabled = 'disabled'";
 											</div>
 											<div class="row">
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
 													<div class="col-lg-7">
-														<select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
-															<option value="">-- Select --</option>
-															<?php
-															foreach ($userResult as $uName) {
-															?>
-																<option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
-															<?php
-															}
-															?>
+														<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 														</select>
 													</div>
 												</div>
-												<div class="col-md-8">
-													<label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
-													<div class="col-lg-10">
-														<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['approver_comments']); ?></textarea>
+												<div class="col-md-4">
+													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+													<div class="col-lg-7">
+														<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
 													</div>
 												</div>
 											</div>
-											<div class="row">
-												<!-- <div class="col-md-4" style="<?php echo (($sarr['sc_user_type'] == 'remoteuser')) ? 'display:none;' : ''; ?>">
+										</div>
+										<div class="row">
+											<div class="col-md-4">
+												<label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+												<div class="col-lg-7">
+													<select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
+														<option value="">-- Select --</option>
+														<?php
+														foreach ($userResult as $uName) {
+														?>
+															<option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
+														<?php
+														}
+														?>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-8">
+												<label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
+												<div class="col-lg-10">
+													<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['approver_comments']); ?></textarea>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<!-- <div class="col-md-4" style="<?php echo (($sarr['sc_user_type'] == 'remoteuser')) ? 'display:none;' : ''; ?>">
                             <label class="col-lg-5 control-label" for="status">Status <span class="mandatory">*</span></label>
                             <div class="col-lg-7">
                               <select class="form-control labSection  <?php echo (($sarr['sc_user_type'] != 'remoteuser')) ? 'isRequired' : ''; ?>" id="status" name="status" title="Please select test status">
@@ -693,32 +710,32 @@ $disable = "disabled = 'disabled'";
                               </select>
                             </div>
                         </div> -->
-												<div class="col-md-8 reasonForResultChanges" style="visibility:hidden;">
-													<label class="col-lg-2 control-label" for="reasonForResultChanges">Reason For Changes in Result <span class="mandatory">*</span></label>
-													<div class="col-lg-10">
-														<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
-													</div>
+											<div class="col-md-8 reasonForResultChanges" style="visibility:hidden;">
+												<label class="col-lg-2 control-label" for="reasonForResultChanges">Reason For Changes in Result <span class="mandatory">*</span></label>
+												<div class="col-lg-10">
+													<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
 												</div>
 											</div>
-											<?php
-											if (trim($rch) != '') {
-											?>
-												<div class="row">
-													<div class="col-md-12"><?php echo $rch; ?></div>
-												</div>
-											<?php } ?>
 										</div>
+										<?php
+										if (trim($rch) != '') {
+										?>
+											<div class="row">
+												<div class="col-md-12"><?php echo $rch; ?></div>
+											</div>
+										<?php } ?>
 									</div>
 							</div>
-							<div class="box-footer">
-								<input type="hidden" name="revised" id="revised" value="no" />
-								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
-								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
-								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
-								<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
-							</div>
-							</form>
 						</div>
+						<div class="box-footer">
+							<input type="hidden" name="revised" id="revised" value="no" />
+							<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
+							<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
+							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
+							<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
+						</div>
+						</form>
+					</div>
 	</section>
 </div>
 <script>

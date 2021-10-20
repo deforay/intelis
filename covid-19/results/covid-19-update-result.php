@@ -125,6 +125,12 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 8) {
 	require_once('forms/update-angola-result.php');
 }
+
+if (file_exists($fileArray[$arr['vl_form']])) {
+	require_once($fileArray[$arr['vl_form']]);
+} else {
+	require_once('forms/update-who-result.php');
+}
 ?>
 
 <script>

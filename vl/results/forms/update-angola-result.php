@@ -588,6 +588,18 @@ $disable = "disabled = 'disabled'";
 											</td>
 										</tr>
 										<tr>
+											<td style="width:14%;"><label for="reviewedBy"> Revisados ​Pela </label></td>
+											<td style="width:14%;">
+												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revisados ​​pela" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
+												</select>
+											</td>
+											<td style="width:14%;"><label for="reviewedOn"> Revisado Em </label></td>
+											<td style="width:14%;">
+												<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Revisado em" title="Please enter the revisado em" />
+											</td>
+										</tr>
+										<tr>
 											<td>
 												<label for="labTechnician">Técnico Executor </label>
 											</td>

@@ -241,15 +241,22 @@ try {
         $_POST['vlLog'] = '';
     }
 
+    if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
+        $reviewedOn = explode(" ", $_POST['reviewedOn']);
+        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+    } else {
+        $_POST['reviewedOn'] = NULL;
+    }
+
     $vlObj = new \Vlsm\Models\Vl($db);
-        $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
+    $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
 
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => 3,
         //'sample_code_title'=>(isset($_POST['sampleCodeTitle']) && $_POST['sampleCodeTitle']!='' ? $_POST['sampleCodeTitle'] :  'auto'),
 
-        'serial_no'=>(isset($_POST['serialNo']) && $_POST['serialNo']!='' ? $_POST['serialNo'] :  NULL),
+        'serial_no' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
         'facility_id' => $_POST['clinicName'],
         'province_id' => (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  NULL,
         'request_clinician_name' => $_POST['clinicianName'],
@@ -286,6 +293,8 @@ try {
         'result_value_log' => (isset($_POST['vlLog'])) ? $_POST['vlLog'] : NULL,
         'result' => (isset($_POST['vlResult'])) ? $_POST['vlResult'] : NULL,
         'result_value_text' => $textResult,
+        'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+        'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'date_test_ordered_by_physician' => $_POST['dateOfDemand'],
         'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : NULL,
         'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : NULL,
@@ -301,7 +310,7 @@ try {
     );
     // print_r($vldata);die;
     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-    if($_POST['status'] == 7 && $lock == 'yes'){
+    if ($_POST['status'] == 7 && $lock == 'yes') {
         $vldata['locked'] = 'yes';
     }
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
