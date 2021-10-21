@@ -10,6 +10,7 @@ return array(
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
     'Vlsm\\Models\\' => array($baseDir . '/models'),
     'Vlsm\\Interop\\' => array($baseDir . '/interop'),
+    'Vlsm\\Helpers\\' => array($baseDir . '/helpers'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),

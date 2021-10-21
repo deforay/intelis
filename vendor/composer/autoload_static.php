@@ -89,6 +89,7 @@ class ComposerStaticInit6e4cb3a9504605e3f03628d02d1b59e1
         array (
             'Vlsm\\Models\\' => 12,
             'Vlsm\\Interop\\' => 13,
+            'Vlsm\\Helpers\\' => 13,
         ),
         'S' => 
         array (
@@ -147,6 +148,10 @@ class ComposerStaticInit6e4cb3a9504605e3f03628d02d1b59e1
         'Vlsm\\Interop\\' => 
         array (
             0 => __DIR__ . '/../..' . '/interop',
+        ),
+        'Vlsm\\Helpers\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/helpers',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (

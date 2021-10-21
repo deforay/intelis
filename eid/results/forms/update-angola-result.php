@@ -354,16 +354,22 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr class="show-rejection" style="display:none;">
+                                        <th>Data de Rejeição<span class="mandatory">*</span></th>
+                                        <td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date Data de Rejeição" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Data de Rejeição" /></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
                                     <tr>
                                         <td style="width:25%;"><label for="">Data da Quantificação </label></td>
                                         <td style="width:25%;">
-                                            <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Data da Quantificação" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanDateFormat($eidInfo['sample_tested_datetime']) ?>" />
+                                            <input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Data da Quantificação" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanDateFormat($eidInfo['sample_tested_datetime']) ?>" />
                                         </td>
 
 
                                         <th>Resultado</th>
                                         <td>
-                                            <select class="result-focus form-control" name="result" id="result">
+                                            <select class="result-focus form-control isRequired" name="result" id="result">
                                                 <option value=''> -- Selecione -- </option>
                                                 <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                     <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
@@ -374,12 +380,12 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     <tr>
                                         <th>Revisados ​Pela</th>
                                         <td>
-                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revisados ​Pela" style="width: 100%;">
+                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose Revisados ​Pela" style="width: 100%;">
                                                 <?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                         <th>Revisado Em</td>
-                                        <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
+                                        <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
                                     </tr>
                                     <tr class="change-reason">
                                         <th class="change-reason" style="display: none;">Razão para mudar <span class="mandatory">*</span></td>

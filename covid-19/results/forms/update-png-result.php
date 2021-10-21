@@ -517,19 +517,19 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <tr>
                                             <th><label for="sampleReceivedDate">Date of Sample Received </label></th>
                                             <td>
-                                                <input type="text" class="form-control" value="<?php echo $general->humanDateFormat($covid19Info['sample_received_at_vl_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> style="width:100%;" />
+                                                <input type="text" class="form-control isRequired" value="<?php echo $general->humanDateFormat($covid19Info['sample_received_at_vl_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> style="width:100%;" />
                                             </td>
 
                                             <td class="lab-show"><label for="labId">Lab ID number (Filled by lab staff)</label> </td>
                                             <td class="lab-show">
-                                                <select name="labId" id="labId" class="form-control" title="Please choose the laboratory name" style="width:100%;">
+                                                <select name="labId" id="labId" class="form-control isRequired" title="Please choose the laboratory name" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         <tr>
                                             <th><label for="isSampleRejected">Is sample Rejected?</label></th>
                                             <td>
-                                                <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select Is sample rejected or not">
+                                                <select class="form-control isRequired" name="isSampleRejected" id="isSampleRejected" title="Please select Is sample rejected or not">
                                                     <option value="">--Select--</option>
                                                     <option value="yes" <?php echo (isset($covid19Info['is_sample_rejected']) && $covid19Info['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>>yes</option>
                                                     <option value="no" <?php echo (isset($covid19Info['is_sample_rejected']) && $covid19Info['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>>No</option>
@@ -566,7 +566,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                 <tr>
                                                                     <td class="text-center"><?php echo ($indexKey + 1); ?> <input type="hidden" name="testId[]" value="<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>"></td>
                                                                     <td>
-                                                                        <select onchange="otherCovidTestName(this.value,<?php echo ($indexKey + 1); ?>)" class="form-control test-name-table-input" id="testName<?php echo ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                                                                        <select onchange="otherCovidTestName(this.value,<?php echo ($indexKey + 1); ?>)" class="form-control test-name-table-input isRequired" id="testName<?php echo ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
                                                                             <option value="">-- Select --</option>
                                                                             <option value="Real Time RT-PCR" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>>Real Time RT-PCR</option>
                                                                             <option value="RDT-Antibody" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>RDT-Antibody</option>
@@ -582,16 +582,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                         } else {
                                                                             $show =  "none";
                                                                         } ?>
-                                                                        <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?php echo ($indexKey + 1); ?>" class="form-control testNameOther<?php echo ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
+                                                                        <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?php echo ($indexKey + 1); ?>" class="form-control testNameOther<?php echo ($indexKey + 1); ?> isRequired" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
                                                                     <td><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?php echo ($indexKey + 1); ?>" /></td>
                                                                     <td>
-                                                                        <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
+                                                                        <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input isRequired" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
                                                                             <?= $general->generateSelectOptions($testPlatformList, $covid19TestInfo[$indexKey]['testing_platform'], '-- Select --'); ?>
                                                                         </select>
                                                                     </td>
                                                                     <td>
-                                                                        <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo ($indexKey + 1); ?>" title="Please select the result for row <?php echo ($indexKey + 1); ?>">
+                                                                        <select class="form-control test-result test-name-table-input isRequired" name="testResult[]" id="testResult<?php echo ($indexKey + 1); ?>" title="Please select the result for row <?php echo ($indexKey + 1); ?>">
                                                                             <?= $general->generateSelectOptions($covid19Results, $covid19TestInfo[$indexKey]['result'], '-- Select --'); ?>
                                                                         </select>
                                                                     </td>
@@ -605,7 +605,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                             <tr>
                                                                 <td class="text-center">1</td>
                                                                 <td>
-                                                                    <select onchange="otherCovidTestName(this.value,1)" class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                                                                    <select onchange="otherCovidTestName(this.value,1)" class="form-control test-name-table-input isRequired" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
                                                                         <option value="">-- Select --</option>
                                                                         <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                                                                         <option value="RDT-Antibody">RDT-Antibody</option>
@@ -616,14 +616,14 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                     </select>
                                                                     <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
                                                                 </td>
-                                                                <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
+                                                                <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime isRequired" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                                 <td>
-                                                                    <select type="text" name="testingPlatform[]" id="testingPlatform1" class="form-control test-name-table-input" title="Please select the Testing Platform for 1">
+                                                                    <select type="text" name="testingPlatform[]" id="testingPlatform1" class="form-control test-name-table-input isRequired" title="Please select the Testing Platform for 1">
                                                                         <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                     </select>
                                                                 </td>
                                                                 <td>
-                                                                    <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
+                                                                    <select class="form-control test-result test-name-table-input isRequired" name="testResult[]" id="testResult1" title="Please select the result for row 1">
                                                                         <?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?>
                                                                     </select>
                                                                 </td>
@@ -638,7 +638,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                         <tr>
                                                             <th colspan="4" class="text-right"><label for="result">Final result</label></th>
                                                             <td>
-                                                                <select class="result-focus form-control" name="result" id="result" title="Please select the Final result">
+                                                                <select class="result-focus form-control isRequired" name="result" id="result" title="Please select the Final result">
                                                                     <option value=''> -- Select -- </option>
                                                                     <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                         <option value="<?php echo $c19ResultKey; ?>" <?php echo ($covid19Info['result'] == $c19ResultKey) ? "selected='selected'" : ""; ?>> <?php echo $c19ResultValue; ?> </option>
@@ -653,18 +653,18 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <tr>
                                             <th>Reviewed By</th>
                                             <td>
-                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose reviewed by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_reviewed_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                             <th>Reviewed on</td>
-                                            <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+                                            <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                         </tr>
                                         <tr>
 
                                             <th><label for="isResultAuthorized">Referred for other testing?</label></th>
                                             <td>
-                                                <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control" title="Please select referred for other testing?" style="width:100%">
+                                                <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control isRequired" title="Please select referred for other testing?" style="width:100%">
                                                     <option value="">-- Select --</option>
                                                     <option value='yes' <?php echo ($covid19Info['is_result_authorised'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                     <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
@@ -674,11 +674,11 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             $disapled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
                                             ?>
                                             <th><label for="isResultAuthorized">Referred By</label></th>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Referred By" title="Please enter who referred result" /></td>
+                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control isRequired" placeholder="Referred By" title="Please enter who referred result" /></td>
                                         </tr>
                                         <tr>
                                             <th><label for="isResultAuthorized">Referred On</label></td>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Referred On" title="Please enter when referred result" /></td>
+                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date isRequired" placeholder="Referred On" title="Please enter when referred result" /></td>
                                             <th></th>
                                             <td></td>
                                         </tr>

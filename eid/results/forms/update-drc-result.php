@@ -451,18 +451,18 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 												</select>
 											</td>
 										<tr>
-											<th>Is Sample Rejected ? <span class="mandatory">*</span></th>
+											<th>L'échantillon est-il rejeté? <span class="mandatory">*</span></th>
 											<td>
-												<select class="form-control isRequired" name="isSampleRejected" title="Please enter if Sample Rejected or not" id="isSampleRejected" onchange="sampleRejection();">
+												<select class="form-control isRequired" name="isSampleRejected" title="Veuillez sélectionner si l'échantillon est rejeté ou non?" id="isSampleRejected" onchange="sampleRejection();">
 													<option value=''> -- Sélectionner -- </option>
 													<option value="yes" <?php echo ($eidInfo['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
 													<option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
 												</select>
 											</td>
 
-											<th class="rejected" style="display: none;">Reason for Rejection</th>
+											<th class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
-												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select reason for sample rejection">
+												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Veuillez sélectionner la raison du rejet de l'échantillon">
 													<option value=''> -- Sélectionner -- </option>
 													<option value="Technical Problem" <?php echo ($eidInfo['reason_for_sample_rejection'] == 'Technical Problem') ? "selected='selected'" : ""; ?>> Problème technique </option>
 													<option value="Poor numbering" <?php echo ($eidInfo['reason_for_sample_rejection'] == 'Poor numbering') ? "selected='selected'" : ""; ?>> Mauvaise numérotation </option>
@@ -472,10 +472,16 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 												</select>
 											</td>
 										</tr>
+										<tr class="show-rejection" style="display:none;">
+											<th>Date de rejet<span class="mandatory">*</span></th>
+											<td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date date de rejet" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+											<td></td>
+											<td></td>
+										</tr>
 										<tr>
 											<td style="width:25%;"><label for="">Test effectué le </label></td>
 											<td style="width:25%;">
-												<input type="text" readonly class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+												<input type="text" readonly class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
 											</td>
 
 
@@ -492,12 +498,12 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 										<tr>
 											<th>Reviewed By</th>
 											<td>
-												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revu par" style="width: 100%;">
+												<select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose Revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
 											<th>Revisado Em</td>
-											<td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
+											<td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
 										</tr>
 										<tr class="change-reason">
 											<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></td>

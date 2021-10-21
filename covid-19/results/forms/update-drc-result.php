@@ -849,12 +849,12 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <tr>
                                         <th>Revu par</th>
                                         <td>
-                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revu par" style="width: 100%;">
+                                            <select name="reviewedBy" id="reviewedBy" class="select2 isRequired form-control" title="Please choose Revu par" style="width: 100%;">
                                                 <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_reviewed_by'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                         <th>Revisado Em</td>
-                                        <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
+                                        <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
                                     </tr>
                                     <tr>
                                         <th>Le résultat est-il autorisé?</th>
@@ -866,11 +866,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </select>
                                         </td>
                                         <th>Autorisé par</th>
-                                        <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Autorisé par" title="Autorisé par" /></td>
+                                        <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control isRequired" placeholder="Autorisé par" title="Autorisé par" /></td>
                                     </tr>
                                     <tr>
                                         <th>Autorisé le</td>
-                                        <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Autorisé le" title="Autorisé le" /></td>
+                                        <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control isRequired date" placeholder="Autorisé le" title="Autorisé le" /></td>
                                         <th></th>
                                         <td></td>
                                     </tr>

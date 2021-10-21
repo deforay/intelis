@@ -87,6 +87,7 @@ try {
     //echo "<pre>";var_dump($_POST);die;
 
     $vldata = array(
+        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['noResult'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
         //'sample_code'=>$_POST['sampleCode'],
         'sample_tested_datetime' => $_POST['dateOfCompletionOfViralLoad'],

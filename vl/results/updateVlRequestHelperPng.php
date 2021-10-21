@@ -62,10 +62,10 @@ try {
         $platForm = explode("##", $_POST['failedTestingTech']);
         $_POST['failedTestingTech'] = $platForm[0];
     }
-    if (isset($_POST['sampleQuality']) && trim($_POST['sampleQuality']) == 'no') {
+    if (isset($_POST['isSampleRejected']) && trim($_POST['isSampleRejected']) == 'no') {
         $_POST['rejectionReason'] = NULL;
     }
-    if (isset($_POST['sampleQuality']) && trim($_POST['sampleQuality']) == 'yes') {
+    if (isset($_POST['isSampleRejected']) && trim($_POST['isSampleRejected']) == 'yes') {
         $vl_result_category = 'rejected';
         $_POST['vlResult'] = NULL;
     }
@@ -80,8 +80,9 @@ try {
     $vlObj = new \Vlsm\Models\Vl($db);
     $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
     $vldata = array(
-        'is_sample_rejected' => (isset($_POST['sampleQuality']) && $_POST['sampleQuality'] != '') ? $_POST['sampleQuality'] : NULL,
+        'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] : NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : NULL,
+        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
         'batch_quality' => (isset($_POST['batchQuality']) && $_POST['batchQuality'] != '' ? $_POST['batchQuality'] : NULL),
         'sample_test_quality' => (isset($_POST['testQuality']) && $_POST['testQuality'] != '' ? $_POST['testQuality'] : NULL),
         'sample_batch_id' => (isset($_POST['batchNo']) && $_POST['batchNo'] != '' ? $_POST['batchNo'] : NULL),

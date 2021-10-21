@@ -479,22 +479,23 @@ if (sizeof($requestResult) > 0) {
           // $html .= '<tr>';
           // $html .= '<td colspan="3" style="line-height:8px;"></td>';
           // $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-          $html .= '</tr>';
+          if (!empty($testedBy)) {
+               $html .= '<tr>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+               $html .= '</tr>';
 
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-          if (!empty($testUserSignaturePath) && file_exists($testUserSignaturePath)) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
-          } else {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+               $html .= '<tr>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
+               if (!empty($testUserSignaturePath) && file_exists($testUserSignaturePath)) {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
+               } else {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+               }
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+               $html .= '</tr>';
           }
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-          $html .= '</tr>';
-
           if (!empty($reviewedBy)) {
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:8px;"></td>';
@@ -539,21 +540,24 @@ if (sizeof($requestResult) > 0) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:8px;"></td>';
           $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-          if (!empty($userSignaturePath) && file_exists($userSignaturePath)) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
-          } else {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          }
+          if (!empty($resultApprovedBy)) {
+               $html .= '<tr>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+               $html .= '</tr>';
 
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
-          $html .= '</tr>';
+               $html .= '<tr>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
+               if (!empty($userSignaturePath) && file_exists($userSignaturePath)) {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
+               } else {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+               }
+
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
+               $html .= '</tr>';
+          }
 
           // $html .= '<tr>';
           // $html .= '<td colspan="3" style="line-height:2px;"></td>';

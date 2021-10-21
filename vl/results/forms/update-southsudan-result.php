@@ -669,6 +669,12 @@ $disable = "disabled = 'disabled'";
 															<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
 														</div>
 													</div>
+													<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
+														<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
+														<div class="col-lg-7">
+															<input value="<?php echo $general->humanDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" />
+														</div>
+													</div>
 													<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 														<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copiesl/ml) <span class="mandatory">*</span></label>
 														<div class="col-lg-7">

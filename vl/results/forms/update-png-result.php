@@ -443,13 +443,13 @@ $disable = "disabled = 'disabled'";
 										<td colspan="6" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 									</tr>
 									<tr>
-										<td><label for="sampleQuality">Sample Quality</label></td>
+										<td><label for="isSampleRejected">Sample Quality</label></td>
 										<td>
 											<label class="radio-inline">
-												<input type="radio" id="sampleQtyAccept" name="sampleQuality" value="no" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? "checked='checked'" : "" ?>>Accept
+												<input type="radio" id="sampleQtyAccept" name="isSampleRejected" value="no" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? "checked='checked'" : "" ?>>Accept
 											</label>
 											<label class="radio-inline">
-												<input type="radio" id="sampleQtyReject" name="sampleQuality" value="yes" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "checked='checked'" : "" ?>>Reject
+												<input type="radio" id="sampleQtyReject" name="isSampleRejected" value="yes" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "checked='checked'" : "" ?>>Reject
 											</label>
 										</td>
 										<td class="rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"><label for="rejectionReason">Reason <span class="mandatory">*</span></label></td>
@@ -465,6 +465,7 @@ $disable = "disabled = 'disabled'";
 												?>
 											</select>
 										</td>
+
 										<td class="laboratoryId"><label for="laboratoryId">Laboratory Name <span class="mandatory">*</span></label></td>
 										<td>
 											<select name="laboratoryId" id="laboratoryId" class="form-control isRequired" title="Please choose lab name" style="width:100%;">
@@ -473,6 +474,12 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="reasonequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"></td>
 										<td class="reasonequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"></td>
+									</tr>
+									<tr class="show-rejection" style="display:none;">
+										<th>Rejection Date<span class="mandatory">*</span></th>
+										<td><input value="<?php echo $general->humanDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+										<td></td>
+										<td></td>
 									</tr>
 									<tr>
 										<td class="sampleType"><label for="sampleType">Sample Type Received</label></td>
@@ -846,7 +853,7 @@ $disable = "disabled = 'disabled'";
 			});
 	}
 
-	$("input:radio[name=sampleQuality]").on("change", function() {
+	$("input:radio[name=isSampleRejected]").on("change", function() {
 		if ($(this).val() == 'yes') {
 			$(".rejectionReason,.vlresultequ").show();
 			$(".reasonequ,.vlResult").hide();

@@ -146,7 +146,7 @@ if (sizeof($requestResult) > 0) {
         $reviewedBy = '';
         if (isset($result['reviewedBy']) && !empty($result['reviewedBy'])) {
             $reviewedBy = $result['reviewedBy'];
-        }else{
+        } else {
             $reviewedBy = $resultApprovedBy;
             $result['reviewedBySignature'] = $result['approvedBySignature'];
             $result['result_reviewed_datetime'] = $result['result_approved_datetime'];
@@ -460,7 +460,7 @@ if (sizeof($requestResult) > 0) {
         if (!empty($revisedBy)) {
             $html .= '<tr>';
             $html .= '<td colspan="3" style="line-height:22px;"></td>';
-            $html .= '</tr>';            
+            $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';

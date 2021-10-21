@@ -316,6 +316,7 @@ try {
             'result_dispatched_datetime'            => $data['resultDispatchedOn'],
             'is_sample_rejected'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] != '') ? $data['isSampleRejected'] : NULL,
             'reason_for_sample_rejection'           => (isset($data['rejectionReason']) && $data['rejectionReason'] != '') ? $data['rejectionReason'] :  NULL,
+            'rejection_on'                          => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
             'result_value_absolute'                 => (isset($data['vlResult']) && $data['vlResult'] != '' && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? $data['vlResult'] :  NULL,
             'result_value_absolute_decimal'         => (isset($data['vlResult']) && $data['vlResult'] != '' && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? number_format((float)$data['vlResult'], 2, '.', '') :  NULL,
             'result'                                => (isset($data['result']) && $data['result'] != '') ? $data['result'] :  NULL,
