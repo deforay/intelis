@@ -463,7 +463,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="width:25%;"><label for="">Approve On </label></td>
+                                        <td style="width:25%;"><label for="">Approved On </label></td>
                                         <td style="width:25%;">
                                             <input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="form-control dateTime isRequired" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
                                         </td>

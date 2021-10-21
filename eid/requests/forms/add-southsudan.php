@@ -452,7 +452,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style="width:25%;"><label for="">Approve On </label></td>
+                                            <td style="width:25%;"><label for="">Approved On </label></td>
                                             <td style="width:25%;">
                                                 <input type="text" value="<?php $general->humanDateFormat($general->getDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
                                             </td>
