@@ -143,16 +143,6 @@ class Vl
         return json_encode($sCodeKey);
     }
 
-    function vlResultCategory($result)
-    {
-        $res = NULL;
-        if ($result >= 1000)
-            $res = 'not suppressed';
-        else if ($result < 1000)
-            $res = 'suppressed';
-        return $res;
-    }
-
     public function getVlSampleTypesByName($name = "")
     {
         $where = "";
