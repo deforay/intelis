@@ -346,7 +346,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		//$('#sampleCollectionDate').val("");
 		$('#sampleTestDate').val("");
 		$('#sampleReceivedDate').val("");
-		
+
 		loadVlRequestData();
 
 		$(".showhideCheckBox").change(function() {

@@ -457,7 +457,6 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
      }
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-//echo $sQuery;die;
 
 
 if (isset($sOrder) && $sOrder != "") {
