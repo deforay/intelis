@@ -163,7 +163,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
                         LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
                         LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-                        LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing 
+                        INNER JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing 
                         LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
                         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 //echo $sQuery;die;
@@ -269,8 +269,8 @@ if (isset($sWhere) && $sWhere != "") {
                $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
           }
      }
-     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
-          $sWhere = $sWhere . ' AND vl.sample_reordered ="' . $_POST['showReordSample'] . '"';
+     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
+          $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
      }
      if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
           $sWhere = $sWhere . ' AND vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
@@ -382,13 +382,13 @@ if (isset($sWhere) && $sWhere != "") {
                $sWhere = $sWhere . ' vl.result_status =' . $_POST['status'];
           }
      }
-     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
+     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.sample_reordered ="' . $_POST['showReordSample'] . '"';
+               $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
           } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.sample_reordered ="' . $_POST['showReordSample'] . '"';
+               $sWhere = $sWhere . ' vl.sample_reordered ="yes"';
           }
      }
      if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
