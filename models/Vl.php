@@ -184,9 +184,9 @@ class Vl
                 $finalResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
 
                 if ($finalResult < $this->suppressionLimit) {
-                    $vlResultCategory = 'Suppressed';
+                    $vlResultCategory = 'suppressed';
                 } else if ($finalResult >= $this->suppressionLimit) {
-                    $vlResultCategory = 'Not Suppressed';
+                    $vlResultCategory = 'not suppressed';
                 }
             } else {
 
@@ -199,9 +199,9 @@ class Vl
                 }
 
                 if ($textResult < $this->suppressionLimit) {
-                    $vlResultCategory = 'Suppressed';
+                    $vlResultCategory = 'suppressed';
                 } else if ($textResult >= $this->suppressionLimit) {
-                    $vlResultCategory = 'Not Suppressed';
+                    $vlResultCategory = 'not suppressed';
                 }
             }
         }
