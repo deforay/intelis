@@ -15,6 +15,19 @@ class Vl
     protected $db = null;
     protected $table = 'vl_request_form';
     protected $shortCode = 'VL';
+    protected $suppressedArray = array(
+        'target not detected',
+        'tnd',
+        'not detected',
+        'below detection limit',
+        'below detection level',
+        'bdl',
+        'suppressed',
+        'negative',
+        'negat'
+    );
+
+    protected $suppressionLimit = 1000;
 
     public function __construct($db = null)
     {
@@ -158,5 +171,46 @@ class Vl
             $response[$row['sample_id']] = $row['sample_name'];
         }
         return $response;
+    }
+
+    public function getVLResultCategory($resultStatus, $finalResult)
+    {
+
+        $vlResultCategory = null;
+        if ($resultStatus == 4) {
+            $vlResultCategory = 'Rejected';
+        } else if ($resultStatus == 7) {
+            if (is_numeric($finalResult) && $finalResult > 0 && $finalResult == round($finalResult, 0)) {
+                $finalResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
+
+                if ($finalResult < $this->suppressionLimit) {
+                    $vlResultCategory = 'suppressed';
+                } else if ($finalResult >= $this->suppressionLimit) {
+                    $vlResultCategory = 'not suppressed';
+                }
+            } else {
+
+                $textResult = NULL;
+
+                if (in_array(strtolower($finalResult), $this->suppressedArray)) {
+                    $textResult = 20;
+                } else {
+                    $textResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
+                }
+
+                if ($textResult < $this->suppressionLimit) {
+                    $vlResultCategory = 'suppressed';
+                } else if ($textResult >= $this->suppressionLimit) {
+                    $vlResultCategory = 'not suppressed';
+                }
+            }
+        }
+        if (!empty($vlResultCategory)) {
+            // $this->db->where('vl_sample_id', $sampleId);
+            // return $this->db->update($this->table, $dataForUpdate);
+            return $vlResultCategory;
+        } else {
+            return null;
+        }
     }
 }
