@@ -222,10 +222,6 @@ try {
     } else {
         $_POST['reviewedOn'] = NULL;
     }
-
-    $vlObj = new \Vlsm\Models\Vl($db);
-    $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
-
     $vldata = array(
         'facility_id' => $_POST['clinicName'],
         'serial_no' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
@@ -273,6 +269,12 @@ try {
         'last_modified_datetime' => $general->getDateTime(),
         'vl_result_category' => $vl_result_category
     );
+
+    /* Updating the high and low viral load data */
+    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+        $vlDb = new \Vlsm\Models\Vl($db);
+        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    }
     if ($sarr['sc_user_type'] == 'remoteuser') {
         $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
     } else {

@@ -77,8 +77,6 @@ try {
         $_POST['reviewedOn'] = NULL;
     }
 
-    $vlObj = new \Vlsm\Models\Vl($db);
-    $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
     $vldata = array(
         'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] : NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : NULL,
@@ -123,6 +121,11 @@ try {
         if ($_POST['status'] == 7 && $lock == 'yes') {
             $vldata['locked'] = 'yes';
         }
+    }
+    /* Updating the high and low viral load data */
+    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+        $vlDb = new \Vlsm\Models\Vl($db);
+        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);

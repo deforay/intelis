@@ -82,10 +82,6 @@ try {
     } else {
         $_POST['reviewedOn'] = NULL;
     }
-    $vlObj = new \Vlsm\Models\Vl($db);
-    $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
-    //echo "<pre>";var_dump($_POST);die;
-
     $vldata = array(
         'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['noResult'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
@@ -111,6 +107,11 @@ try {
         //if(isset($_POST['rejectionReason'])){
         $vldata['reason_for_sample_rejection'] = $_POST['rejectionReason'];
         //}
+    }
+    /* Updating the high and low viral load data */
+    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+        $vlDb = new \Vlsm\Models\Vl($db);
+        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
     if ($_POST['status'] == 7 && $lock == 'yes') {

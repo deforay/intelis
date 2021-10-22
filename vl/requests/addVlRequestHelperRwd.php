@@ -175,12 +175,6 @@ try {
     } else if (isset($_POST['vlLog']) && trim($_POST['vlLog']) != '') {
         $_POST['result'] = $_POST['vlLog'];
     }
-
-    if (isset($_POST['approvedBy']) && trim($_POST['approvedBy']) != '') {
-        $vlObj = new \Vlsm\Models\Vl($db);
-        $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
-    }
-
     if ($sarr['sc_user_type'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';
@@ -297,6 +291,11 @@ try {
     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
     if ($status == 7  && $lock == 'yes') {
         $vldata['locked'] = 'yes';
+    }
+    /* Updating the high and low viral load data */
+    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+        $vlDb = new \Vlsm\Models\Vl($db);
+        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
 

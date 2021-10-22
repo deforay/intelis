@@ -247,10 +247,6 @@ try {
     } else {
         $_POST['reviewedOn'] = NULL;
     }
-
-    $vlObj = new \Vlsm\Models\Vl($db);
-    $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
-
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => 3,
@@ -312,6 +308,11 @@ try {
     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
     if ($_POST['status'] == 7 && $lock == 'yes') {
         $vldata['locked'] = 'yes';
+    }
+    /* Updating the high and low viral load data */
+    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+        $vlDb = new \Vlsm\Models\Vl($db);
+        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('vl_sample_id', $_POST['vlSampleId']);

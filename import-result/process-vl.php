@@ -157,7 +157,11 @@ try {
                     $query = "SELECT vl_sample_id,result FROM vl_request_form WHERE sample_code='" . $sampleVal . "'";
                     $vlResult = $db->rawQuery($query);
                     $data['result_status'] = $status[$i];
-
+                    /* Updating the high and low viral load data */
+                    if ($data['result_status'] == 4 || $data['result_status'] == 7) {
+                        $vlDb = new \Vlsm\Models\Vl($db);
+                        $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+                    }
                     $data['sample_code'] = $rResult[0]['sample_code'];
                     if (count($vlResult) > 0) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
@@ -240,6 +244,11 @@ try {
                 } else if ($accResult[$i]['result_value_log'] != '') {
                     $data['result'] = $accResult[$i]['result_value_log'];
                 }
+            }
+            /* Updating the high and low viral load data */
+            if ($data['result_status'] == 4 || $data['result_status'] == 7) {
+                $vlDb = new \Vlsm\Models\Vl($db);
+                $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
             }
             //get bacth code
             $bquery = "SELECT * FROM batch_details WHERE batch_code='" . $accResult[$i]['batch_code'] . "'";

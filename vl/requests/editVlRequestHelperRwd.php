@@ -249,10 +249,6 @@ try {
             $_POST['stViralTesting'] = $id;
         }
     }
-    if (isset($_POST['approvedBy']) && trim($_POST['approvedBy']) != '') {
-        $vlObj = new \Vlsm\Models\Vl($db);
-        $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
-    }
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
@@ -320,6 +316,11 @@ try {
         'data_sync' => 0,
         'vl_result_category' => $vl_result_category
     );
+    /* Updating the high and low viral load data */
+    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+        $vlDb = new \Vlsm\Models\Vl($db);
+        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    }
     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
     if ($_POST['status'] == 7 && $lock == 'yes') {
         $vldata['locked'] = 'yes';

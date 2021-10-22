@@ -112,11 +112,11 @@ $tResult = $db->rawQuery($tQuery);
 
 $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         SUM(CASE
-                WHEN (vl.result > 1000) THEN 1
+                WHEN (vl.vl_result_category like 'not suppressed') THEN 1
                     ELSE 0
                 END) AS highVL,
         (SUM(CASE
-                WHEN (vl.result <= 1000 OR vl.result REGEXP '^[^0-9]+$') THEN 1
+                WHEN (vl.vl_result_category like 'suppressed') THEN 1
                     ELSE 0
                 END)) AS lowVL,                                        
         status_id,

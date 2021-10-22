@@ -152,8 +152,6 @@ try {
           $_POST['reviewedOn'] = NULL;
      }
 
-     $vlObj = new \Vlsm\Models\Vl($db);
-     $vl_result_category = $vlObj->vlResultCategory($_POST['finalViralResult']);
      $vldata = array(
           //'sample_code'=>(isset($_POST['sampleCode']) && $_POST['sampleCode']!='') ? $_POST['sampleCode'] :  NULL,
           'facility_id' => (isset($_POST['clinicName']) && trim($_POST['clinicName']) != '') ? $_POST['clinicName'] : NULL,
@@ -227,7 +225,11 @@ try {
           $vldata['locked'] = 'yes';
      }
 
-
+     /* Updating the high and low viral load data */
+     if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+          $vlDb = new \Vlsm\Models\Vl($db);
+          $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+     }
 
      if ($sarr['sc_user_type'] == 'remoteuser') {
           $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;

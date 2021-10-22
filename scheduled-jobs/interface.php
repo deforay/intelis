@@ -172,6 +172,11 @@ if (count($interfaceInfo) > 0) {
                 'result_dispatched_datetime' => NULL,
                 'data_sync' => 0
             );
+            /* Updating the high and low viral load data */
+            if ($data['result_status'] == 4 || $data['result_status'] == 7) {
+                $vlDb = new \Vlsm\Models\Vl($db);
+                $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+            }
             if ($vllock == 'yes' && $data['result_status'] == 7) {
                 $data['locked'] = 'yes';
             }
@@ -246,7 +251,7 @@ if (count($interfaceInfo) > 0) {
             } else if ($testType == 'hcv') {
                 $resultField = "hcv_vl_count";
                 $otherField = "hbv_vl_count";
-            }else{
+            } else {
                 continue;
             }
             //set result in result fields

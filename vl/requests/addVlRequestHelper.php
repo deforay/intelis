@@ -213,10 +213,6 @@ try {
             $_POST['stViralTesting'] = $id;
         }
     }
-    if (isset($_POST['approvedBy']) && trim($_POST['approvedBy']) != '') {
-        $vlObj = new \Vlsm\Models\Vl($db);
-        $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
-    }
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
@@ -300,7 +296,11 @@ try {
         $vldata['request_created_by'] =  $_SESSION['userId'];
         $vldata['last_modified_by'] =  $_SESSION['userId'];
     }
-
+    /* Updating the high and low viral load data */
+    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+        $vlDb = new \Vlsm\Models\Vl($db);
+        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    }
     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
     $id = 0;
     // echo "<pre>";print_r($vldata);die;

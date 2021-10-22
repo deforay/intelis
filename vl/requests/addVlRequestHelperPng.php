@@ -110,9 +110,6 @@ try {
           $status = 4;
      }
 
-     $vlObj = new \Vlsm\Models\Vl($db);
-     $vl_result_category = $vlObj->vlResultCategory($_POST['finalViralResult']);
-     // print_r($_POST['finalViralResult']);die;
      $reasonForTestField = NULL;
      if (isset($_POST['reasonForTest']) && $_POST['reasonForTest'] != '') {
 
@@ -221,7 +218,11 @@ try {
      //$vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFname'], $vldata['patient_art_no']);
      //$vldata['patient_last_name'] = $general->crypto('encrypt', $_POST['surName'], $vldata['patient_art_no']);
 
-
+     /* Updating the high and low viral load data */
+     if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+          $vlDb = new \Vlsm\Models\Vl($db);
+          $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+     }
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
           $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
           $id = $db->update($tableName, $vldata);

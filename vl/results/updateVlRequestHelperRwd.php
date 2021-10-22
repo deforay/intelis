@@ -1,4 +1,7 @@
 <?php
+
+use Vlsm\Models\Vl;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -108,10 +111,6 @@ try {
     } else if (trim($reasonForChanges) != '') {
         $allChange =  $reasonForChanges;
     }
-    if (isset($_POST['approvedBy']) && trim($_POST['approvedBy']) != '') {
-        $vlObj = new \Vlsm\Models\Vl($db);
-        $vl_result_category = $vlObj->vlResultCategory($_POST['vlResult']);
-    }
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
@@ -156,7 +155,11 @@ try {
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $vldata['result_status'] = 4;
     }
-
+    /* Updating the high and low viral load data */
+    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+        $vlDb = new \Vlsm\Models\Vl($db);
+        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    }
     //echo "<pre>";var_dump($vldata);die;
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);

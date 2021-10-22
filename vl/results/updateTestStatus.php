@@ -15,7 +15,7 @@ try {
             'result_approved_datetime'  =>  $general->getDateTime(),
             'data_sync'                 => 0
         );
-        
+
         if ($_POST['status'] == '4') {
             $status['result_value_log'] = '';
             $status['result_value_absolute'] = '';
@@ -28,8 +28,13 @@ try {
             $status['is_sample_rejected'] = 'no';
         }
 
-        if($status['result_status'] == 7 && $lock == 'yes'){
+        if ($status['result_status'] == 7 && $lock == 'yes') {
             $status['locked'] = 'yes';
+        }
+        /* Updating the high and low viral load data */
+        if ($status['result_status'] == 4 || $status['result_status'] == 7) {
+            $vlDb = new \Vlsm\Models\Vl($db);
+            $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $status['result']);
         }
         // echo "<pre>";print_r($status);die;
         $db = $db->where('vl_sample_id', $id[$i]);
