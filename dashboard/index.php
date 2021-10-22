@@ -267,7 +267,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				},
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
-				startDate: moment().subtract(30, 'days'),
+				startDate: moment().subtract(29, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -471,7 +471,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				},
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
-				startDate: moment().subtract(30, 'days'),
+				startDate: moment().subtract(29, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
