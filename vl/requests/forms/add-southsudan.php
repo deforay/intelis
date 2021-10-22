@@ -402,7 +402,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="isRequired" id="rmTesting" name="stViralTesting" value="routine" title="Please check routine monitoring" onclick="showTesting('rmTesting');">
+                                                                                <input type="radio" class="isRequired" id="rmTesting" name="stViralTesting" value="routine" title="Please check routine monitoring (Reason for testing)" onclick="showTesting('rmTesting');">
                                                                                 <strong>Routine Monitoring</strong>
                                                                            </label>
                                                                       </div>
@@ -429,7 +429,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="isRequired" id="repeatTesting" name="stViralTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling" onclick="showTesting('repeatTesting');">
+                                                                                <input type="radio" class="isRequired" id="repeatTesting" name="stViralTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling (Reason for testing)" onclick="showTesting('repeatTesting');">
                                                                                 <strong>Repeat VL test after suspected treatment failure adherence counselling </strong>
                                                                            </label>
                                                                       </div>
@@ -456,7 +456,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="isRequired" id="suspendTreatment" name="stViralTesting" value="suspect" title="Suspect Treatment Failure" onclick="showTesting('suspendTreatment');">
+                                                                                <input type="radio" class="isRequired" id="suspendTreatment" name="stViralTesting" value="suspect" title="Suspect Treatment Failure (Reason for testing)" onclick="showTesting('suspendTreatment');">
                                                                                 <strong>Suspect Treatment Failure</strong>
                                                                            </label>
                                                                       </div>
