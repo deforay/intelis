@@ -465,7 +465,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 																	$display = 'none';
 																}
 																?>
-																<input type="radio" class="" id="rmTesting" name="stViralTesting" value="routine" title="Please check routine monitoring" <?php echo $checked; ?> onclick="showTesting('rmTesting');">
+																<input type="radio" class="isRequired" id="rmTesting" name="stViralTesting" value="routine" title="Please check routine monitoring" <?php echo $checked; ?> onclick="showTesting('rmTesting');">
 																<strong>Routine Monitoring</strong>
 															</label>
 														</div>
@@ -503,7 +503,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 																	$display = 'none';
 																}
 																?>
-																<input type="radio" class="" id="repeatTesting" name="stViralTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling" <?php echo $checked; ?> onclick="showTesting('repeatTesting');">
+																<input type="radio" class="isRequired" id="repeatTesting" name="stViralTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling" <?php echo $checked; ?> onclick="showTesting('repeatTesting');">
 																<strong>Repeat VL test after suspected treatment failure adherence counselling </strong>
 															</label>
 														</div>
@@ -541,7 +541,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 																	$display = 'none';
 																}
 																?>
-																<input type="radio" class="" id="suspendTreatment" name="stViralTesting" value="suspect" title="Suspect Treatment Failure" <?php echo $checked; ?> onclick="showTesting('suspendTreatment');">
+																<input type="radio" class="isRequired" id="suspendTreatment" name="stViralTesting" value="suspect" title="Suspect Treatment Failure" <?php echo $checked; ?> onclick="showTesting('suspendTreatment');">
 																<strong>Suspect Treatment Failure</strong>
 															</label>
 														</div>
