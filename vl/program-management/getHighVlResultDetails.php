@@ -2,9 +2,6 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../../startup.php');  
-ini_set('memory_limit', -1);
-ini_set('max_execution_time', -1);
 
 $general = new \Vlsm\Models\General($db);
 $tableName = "vl_request_form";
@@ -116,7 +113,13 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 $aWhere = '';
-$sQuery = "SELECT vl.*,f.*,s.*,b.*,art.*,fd.facility_name as labName FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id where vl.result_status=7 AND vl_result_category like 'not suppressed' ";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.facility_name, b.batch_code,fd.facility_name as labName 
+    FROM vl_request_form as vl 
+    INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
+    INNER JOIN facility_details as fd ON fd.facility_id=vl.lab_id  
+    INNER JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+    WHERE vl.result_status=7 
+    AND vl_result_category like 'not suppressed' ";
 $start_date = '';
 $end_date = '';
 
@@ -124,9 +127,7 @@ if (isset($_POST['hvlBatchCode']) && trim($_POST['hvlBatchCode']) != '') {
     $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
 }
 if (isset($_POST['hvlContactStatus']) && trim($_POST['hvlContactStatus']) != '') {
-    if ($_POST['hvlContactStatus'] == 'all') {
-        $sWhere = $sWhere . ' AND (contact_complete_status = "no" OR contact_complete_status="yes" OR contact_complete_status IS NULL OR contact_complete_status="")';
-    } else {
+    if ($_POST['hvlContactStatus'] != 'all') {
         $sWhere = $sWhere . ' AND contact_complete_status = "' . $_POST['hvlContactStatus'] . '"';
     }
 }
@@ -147,7 +148,7 @@ if (isset($_POST['hvlSampleTestDate']) && trim($_POST['hvlSampleTestDate']) != '
     }
 }
 if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
-    $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['hvlSampleType'] . '"';
+    $sWhere = $sWhere . ' AND vl.sample_type = "' . $_POST['hvlSampleType'] . '"';
 }
 if (isset($_POST['hvlFacilityName']) && $_POST['hvlFacilityName'] != '') {
     $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['hvlFacilityName'] . ')';
@@ -173,11 +174,11 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
     }
 }
 
-$sWhere = $sWhere . ' AND vl.vlsm_country_id="' . $arr['vl_form'] . '"';
+$sWhere = $sWhere . ' AND reason_for_vl_testing != 9999';
 
 
 $sQuery = $sQuery . ' ' . $sWhere;
-$sQuery = $sQuery . ' group by vl.vl_sample_id';
+//$sQuery = $sQuery . ' group by vl.vl_sample_id';
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
@@ -186,17 +187,21 @@ $_SESSION['highViralResult'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//error_log($sQuery);
+//echo($sQuery);
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT vl.*,f.*,s.*,b.*,art.*,fd.facility_name as labName FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id where vl.result_status=7 AND vl.vl_result_category like 'not suppressed' $sWhere group by vl.vl_sample_id order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
+// $aResultFilterTotal = $db->rawQuery("SELECT vl.*,f.*,s.*,b.*,art.*,fd.facility_name as labName FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id where vl.result_status=7 AND vl.vl_result_category like 'not suppressed' $sWhere group by vl.vl_sample_id order by $sOrder");
+// $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(vl_sample_id) as total FROM vl_request_form as vl where result_status=7 AND vl.vl_result_category like 'not suppressed' AND vlsm_country_id='" . $arr['vl_form'] . "' $dWhere");
-$iTotal = $aResultTotal[0]['total'];
+// /* Total data set length */
+// $aResultTotal =  $db->rawQuery("select COUNT(vl_sample_id) as total FROM vl_request_form as vl where result_status=7 AND vl.vl_result_category like 'not suppressed' AND vlsm_country_id='" . $arr['vl_form'] . "' $dWhere");
+// $iTotal = $aResultTotal[0]['total'];
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
 /*
          * Output
         */

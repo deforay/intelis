@@ -486,7 +486,9 @@ $batResult = $db->rawQuery($batQuery);
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').val('');
+		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').on('cancel.daterangepicker', function(ev, picker) {
+			$(this).val('');
+		});
 		highViralLoadReport();
 		sampleRjtReport();
 		notAvailReport();

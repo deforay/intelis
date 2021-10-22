@@ -61,7 +61,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = "";
+$sWhere = " WHERE reason_for_vl_testing != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -82,7 +82,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere .= $sWhereSub;
+     $sWhere .= " AND " .$sWhereSub;
 }
 
 /* Individual column filtering */
@@ -140,9 +140,6 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         f.facility_code,
                         f.facility_state,
                         f.facility_district,
-                        rst.sample_name as routineSampleName,
-                        fst.sample_name as failureSampleName,
-                        sst.sample_name as suspectedSampleName,
                         u_d.user_name as reviewedBy,
                         a_u_d.user_name as approvedBy,
                         rs.rejection_reason_name,
@@ -152,13 +149,10 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         
                         FROM vl_request_form as vl 
                         
-                        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                        LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
+                        INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
+                        INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
                         LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
-                        INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                        LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.last_vl_sample_type_routine 
-                        LEFT JOIN r_vl_sample_type as fst ON fst.sample_id=vl.last_vl_sample_type_failure_ac  
-                        LEFT JOIN r_vl_sample_type as sst ON sst.sample_id=vl.last_vl_sample_type_failure 
+                        LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
                         LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
                         LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
@@ -213,237 +207,71 @@ if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) !=
      }
 }
 
-
-
-if (isset($sWhere) && $sWhere != "") {
-     $sWhere = ' where ' . $sWhere;
-     //$sQuery = $sQuery.' '.$sWhere;
-     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-          $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
-     }
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          if (trim($start_date) == trim($end_date)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-          } else {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
-     }
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-          if (trim($sTestDate) == trim($eTestDate)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-          } else {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
-     }
-     if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-          if (trim($sPrintDate) == trim($eTestDate)) {
-               $sWhere = $sWhere . ' AND DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
-          } else {
-               $sWhere = $sWhere . ' AND DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
-          }
-     }
-     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-          if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) = "' . $sSampleReceivedDate . '"';
-          } else {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
-          }
-     }
-     if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
-          $vLoad = '';
-          //just comment if condition
-          if ($_POST['vLoad'] == '<=1000') {
-               $vLoad = " AND vl.result_status != '4'";
-          } else {
-               //$vLoad = " OR (vl.result = '>10000000')";
-          }
-          $sWhere = $sWhere . ' AND vl.result ' . $_POST['vLoad'] . ' AND vl.result!=""' . $vLoad;
-     }
-     if (isset($_POST['status']) && trim($_POST['status']) != '') {
-          $sWhere = $sWhere . ' AND vl.result_status =' . $_POST['status'];
-     }
-     if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-          if (trim($_POST['gender']) == "not_recorded") {
-               $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-          } else {
-               $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
-          }
-     }
-     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
-          $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
-     }
-     if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
-          $sWhere = $sWhere . ' AND vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
-     }
-     if (isset($_POST['breastFeeding']) && trim($_POST['breastFeeding']) != '') {
-          $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
-     }
-     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-          $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-     }
-     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-          $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-     }
-} else {
-     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-          $setWhr = 'where';
-          $sWhere = ' where ' . $sWhere;
-          $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
-     }
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          if (isset($setWhr)) {
-               if (trim($start_date) == trim($end_date)) {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-               } else {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-               }
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
-     }
-     if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' s.sample_id = "' . $_POST['sampleType'] . '"';
-          }
-     }
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . " AND vl.facility_id IN (" . $_POST['facilityName'] . ")";
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . " vl.facility_id IN (" . $_POST['facilityName'] . ")";
-          }
-     }
-     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.lab_id = "' . $_POST['vlLab'] . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.lab_id = "' . $_POST['vlLab'] . '"';
-          }
-     }
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
-     }
-     if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
-          }
-     }
-     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
-          }
-     }
-     if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
-          $vLoad = '';
-          //just comment if condition
-          if ($_POST['vLoad'] == '<=1000') {
-               $vLoad = " AND vl.result_status != '4'";
-          } else {
-               //$vLoad = " OR (vl.result = '>10000000')";
-          }
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.result ' . $_POST['vLoad'] . ' AND vl.result!=""' . $vLoad;
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.result ' . $_POST['vLoad'] . ' AND vl.result!=""' . $vLoad;
-          }
-     }
-     if (isset($_POST['status']) && trim($_POST['status']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.result_status =' . $_POST['status'];
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.result_status =' . $_POST['status'];
-          }
-     }
-     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.sample_reordered ="yes"';
-          }
-     }
-     if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
-          }
-     }
-     if (isset($_POST['breastFeeding']) && trim($_POST['breastFeeding']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
-          }
-     }
-     if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-          if (isset($setWhr)) {
-               if (trim($_POST['gender']) == "not_recorded") {
-                    $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-               } else {
-                    $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
-               }
-          } else {
-               $sWhere = ' where ' . $sWhere;
-               if (trim($_POST['gender']) == "not_recorded") {
-                    $sWhere = $sWhere . ' (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-               } else {
-                    $sWhere = $sWhere . ' vl.patient_gender ="' . $_POST['gender'] . '"';
-               }
-          }
-     }
-     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-          }
-     }
-     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-          }
+//$sQuery = $sQuery.' '.$sWhere;
+if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+     $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
+}
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+     if (trim($start_date) == trim($end_date)) {
+          $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+     } else {
+          $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
+if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+     if (trim($sTestDate) == trim($eTestDate)) {
+          $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+     } else {
+          $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+     }
+}
+if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
+     if (trim($sPrintDate) == trim($eTestDate)) {
+          $sWhere = $sWhere . ' AND DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+     } else {
+          $sWhere = $sWhere . ' AND DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
+     }
+}
+if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
+     if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
+          $sWhere = $sWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) = "' . $sSampleReceivedDate . '"';
+     } else {
+          $sWhere = $sWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
+     }
+}
+if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
+     if ($_POST['vLoad'] == '<=1000') {
+          $sWhere = $sWhere .  " AND vl.vl_result_category ='suppressed' AND vl.result_status = 7 ";
+     } else {
+          $sWhere = $sWhere .  " AND vl.vl_result_category ='not suppressed' AND vl.result_status = 7 ";
+     }
+}
+if (isset($_POST['status']) && trim($_POST['status']) != '') {
+     $sWhere = $sWhere . ' AND vl.result_status =' . $_POST['status'];
+}
+if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
+     if (trim($_POST['gender']) == "not_recorded") {
+          $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+     } else {
+          $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
+     }
+}
+if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
+     $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
+}
+if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
+     $sWhere = $sWhere . ' AND vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
+}
+if (isset($_POST['breastFeeding']) && trim($_POST['breastFeeding']) != '') {
+     $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
+}
+if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+     $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+}
+if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+     $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+}
+
 if ($sWhere != '') {
      $sWhere = $sWhere . ' AND vl.result_status!=9';
 } else {
@@ -463,6 +291,7 @@ if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
+
 
 $_SESSION['vlResultQuery'] = $sQuery;
 

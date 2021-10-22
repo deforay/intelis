@@ -35,7 +35,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $samplesVlOverview              = "recencySmplesVlOverview";
     $labAverageTat                  = "recencyLabAverageTat";
 } else {
-    $recencyWhere = " AND reason_for_vl_testing != 9999";
+    $recencyWhere = " AND reason_for_vl_testing != 9999 ";
     $sampleStatusOverviewContainer  = "vlSampleStatusOverviewContainer";
     $samplesVlOverview              = "vlSmplesVlOverview";
     $labAverageTat                  = "vlLabAverageTat";
@@ -118,25 +118,29 @@ $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         (SUM(CASE
                 WHEN (vl.vl_result_category like 'suppressed') THEN 1
                     ELSE 0
-                END)) AS lowVL,                                        
-        status_id,
-        status_name 
+                END)) AS lowVL
         
-        FROM " . $table . " as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'" . $whereCondition  . $recencyWhere;
+        FROM " . $table . " as vl 
+        
+        JOIN facility_details as f ON vl.lab_id=f.facility_id 
+        
+        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+        WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'" .
+    $whereCondition  .
+    $recencyWhere;
 
-$sWhere = " AND (vl.result!='' and vl.result is not null) ";
+$sWhere = " AND (vl.result_status = 7) ";
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere .= ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+    $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
 }
 
 if (!empty($_POST['labName'])) {
     $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
 }
 $vlSuppressionQuery = $vlSuppressionQuery . ' ' . $sWhere;
-$vlSuppressionQuery = $vlSuppressionQuery . ' ' . "GROUP BY `status_id`";
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
 //get LAB TAT
@@ -305,7 +309,7 @@ foreach ($tatResult as $sRow) {
                 type: 'pie'
             },
             title: {
-                text: '<?php echo $suppression; ?>'
+                text: 'VL Suppression'
             },
             credits: {
                 enabled: false

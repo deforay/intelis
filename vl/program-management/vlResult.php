@@ -343,8 +343,8 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		});
 
 		$('#printDate').val("");
-		//$('#sampleCollectionDate').val("");
-		$('#sampleTestDate').val("");
+		$('#sampleCollectionDate').val("");
+		//$('#sampleTestDate').val("");
 		$('#sampleReceivedDate').val("");
 
 		loadVlRequestData();

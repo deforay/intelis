@@ -168,7 +168,7 @@ class Vl
 
         $vlResultCategory = null;
         if ($resultStatus == 4) {
-            $vlResultCategory = 'Rejected';
+            $vlResultCategory = 'rejected';
         } else if ($resultStatus == 7) {
             if (is_numeric($finalResult) && $finalResult > 0 && $finalResult == round($finalResult, 0)) {
                 $finalResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);

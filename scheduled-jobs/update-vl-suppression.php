@@ -14,7 +14,7 @@ $sql = "SELECT vl_sample_id,result_value_absolute_decimal, result_value_text, re
 
 $result = $db->rawQuery($sql);
 
-var_dump(count($result));
+// var_dump(count($result));
 
 foreach ($result as $aRow) {
 
