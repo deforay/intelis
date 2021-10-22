@@ -149,6 +149,20 @@ try {
             $where = " WHERE (request_created_by = '" . $user['user_id'] . "' OR vlsm_country_id = '" . $arr['vl_form'] . "')";
         }
     }
+
+    /* To check the uniqueId filter */
+    $uniqueId = $input['uniqueId'];
+    if (!empty($uniqueId)) {
+        $uniqueId = implode("','", $uniqueId);
+
+        if (isset($where) && trim($where) != "") {
+            $where .= " AND ";
+        } else {
+            $where .= " WHERE ";
+        }
+        $where .= " unique_id IN ('$uniqueId')";
+    }
+
     /* To check the sample code filter */
     $sampleCode = $input['sampleCode'];
     if (!empty($sampleCode)) {

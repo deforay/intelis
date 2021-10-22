@@ -85,9 +85,11 @@ try {
         }
         $update = "no";
         $rowData = false;
-        if (($data['sampleCode'] != "" && !empty($data['sampleCode'])) || ($data['remoteSampleCode'] != "" && !empty($data['remoteSampleCode']))) {
+        if ((isset($data['sampleCode']) && !empty($data['sampleCode'])) || (isset($data['remoteSampleCode']) && !empty($data['uniqueId'])) || (isset($data['uniqueId']) && !empty($data['uniqueId']))) {
             $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM eid_form ";
-            if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
+            if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
+                $sQuery .= "where unique_id like '" . $data['uniqueId'] . "'";
+            } else if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
                 $sQuery .= "where sample_code like '" . $data['sampleCode'] . "'";
             } else if (isset($data['remoteSampleCode']) != "" && !empty($data['remoteSampleCode'])) {
                 $sQuery .= "where remote_sample_code like '" . $data['sampleCode'] . "'";
