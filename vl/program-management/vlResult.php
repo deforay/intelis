@@ -57,11 +57,11 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 						<tr>
 							<td><b>Sample Collection Date&nbsp;:</b></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="Select Collection Date" style="width:220px;background:#fff;" />
 							</td>
 							<td><b>Sample Received at Lab Date&nbsp;:</b></td>
 							<td>
-								<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control" placeholder="Select Received Date" style="width:220px;background:#fff;" />
+								<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="Select Received Date" style="width:220px;background:#fff;" />
 							</td>
 
 							<td><b>Sample Type&nbsp;:</b></td>
@@ -93,7 +93,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							</td>
 							<td><b>Sample Test Date&nbsp;:</b></td>
 							<td>
-								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control daterangefield" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" />
 							</td>
 						</tr>
 						<tr>
@@ -109,7 +109,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							</td>
 							<td><b>Last Print Date&nbsp;:</b></td>
 							<td>
-								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="Select Print Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="printDate" name="printDate" class="form-control daterangefield" placeholder="Select Print Date" readonly style="width:220px;background:#fff;" />
 							</td>
 							<td><b>Gender&nbsp;:</b></td>
 							<td>
@@ -311,7 +311,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
-		$('#sampleCollectionDate,#sampleTestDate,#printDate,#sampleReceivedDate').daterangepicker({
+		$('.daterangefield').daterangepicker({
 				locale: {
 					cancelLabel: 'Clear'
 				},
@@ -337,6 +337,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
+
+		$('.daterangefield').on('cancel.daterangepicker', function(ev, picker) {
+			$(this).val('');
+		});
 
 		$('#printDate').val("");
 		//$('#sampleCollectionDate').val("");
