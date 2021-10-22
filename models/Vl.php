@@ -173,59 +173,44 @@ class Vl
         return $response;
     }
 
-    public function updateVLSuppression($sampleIds)
+    public function getVLResultCategory($resultStatus, $finalResult)
     {
 
+        $vlResultCategory = null;
+        if ($resultStatus == 4) {
+            $vlResultCategory = 'Rejected';
+        } else if ($resultStatus == 7) {
+            if (is_numeric($finalResult) && $finalResult > 0 && $finalResult == round($finalResult, 0)) {
+                $finalResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
 
-        if (is_array($sampleIds)) {
-            $sampleIds = array($sampleIds);
-        }
-
-        $cols = array("vl_sample_id", "result_value_absolute_decimal", "result_value_text", "result");
-
-        $this->db->where('vl_sample_id', $sampleIds, 'IN');
-        $this->db->where('result_status =7 OR result_status = 4');
-        $result = $this->db->get($this->table, null, $cols);
-
-
-        // $sql = "SELECT vl_sample_id,result_value_absolute_decimal, result_value_text, result
-        //         FROM vl_request_form
-        //         WHERE vl_result_category is null
-        //         AND vl_sample_id IN ?";
-
-        //$result = $this->db->rawQuery($sql);
-        foreach ($result as $aRow) {
-
-            $dataForUpdate = array();
-            if ($aRow['result_status'] == 4) {
-                $dataForUpdate['vl_result_category'] = 'Rejected';
-            } else if (is_numeric($aRow['result']) && $aRow['result'] > 0 && $aRow['result'] == round($aRow['result'], 0)) {
-                $aRow['result'] = (float)filter_var($aRow['result'], FILTER_SANITIZE_NUMBER_FLOAT);
-
-                if ($aRow['result'] < $this->suppressionLimit) {
-                    $dataForUpdate['vl_result_category'] = 'Suppressed';
-                } else if ($aRow['result'] >= $this->suppressionLimit) {
-                    $dataForUpdate['vl_result_category'] = 'Not Suppressed';
+                if ($finalResult < $this->suppressionLimit) {
+                    $vlResultCategory = 'Suppressed';
+                } else if ($finalResult >= $this->suppressionLimit) {
+                    $vlResultCategory = 'Not Suppressed';
                 }
             } else {
 
                 $textResult = NULL;
 
-                if (in_array(strtolower($aRow['result']), $this->suppressedArray) || in_array(strtolower($aRow['result_value_text']), $this->suppressedArray)) {
+                if (in_array(strtolower($finalResult), $this->suppressedArray)) {
                     $textResult = 20;
                 } else {
-                    $textResult = (float)filter_var($aRow['result_value_text'], FILTER_SANITIZE_NUMBER_FLOAT);
+                    $textResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
                 }
 
                 if ($textResult < $this->suppressionLimit) {
-                    $dataForUpdate['vl_result_category'] = 'Suppressed';
+                    $vlResultCategory = 'Suppressed';
                 } else if ($textResult >= $this->suppressionLimit) {
-                    $dataForUpdate['vl_result_category'] = 'Not Suppressed';
+                    $vlResultCategory = 'Not Suppressed';
                 }
             }
-
-            $this->db->where('vl_sample_id', $aRow['vl_sample_id']);
-            $this->db->update($this->table, $dataForUpdate);
+        }
+        if (!empty($vlResultCategory)) {
+            // $this->db->where('vl_sample_id', $sampleId);
+            // return $this->db->update($this->table, $dataForUpdate);
+            return $vlResultCategory;
+        } else {
+            return null;
         }
     }
 }
