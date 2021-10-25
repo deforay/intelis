@@ -28,7 +28,6 @@ $geoLocationDb = new \Vlsm\Models\GeoLocations($db);
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 $state = $geoLocationDb->getProvinces("yes");
-$district = $geoLocationDb->fetchActiveGeolocations(0, '');
 ?>
 <style>
 	.bluebox,
@@ -205,7 +204,6 @@ $district = $geoLocationDb->fetchActiveGeolocations(0, '');
 							<td><b>District/County :</b></td>
 							<td>
 								<select name="district" id="district" class="form-control" title="Please choose District/County" onkeyup="searchVlRequestData()">
-									<?= $general->generateSelectOptions($district, null, '-- Select --'); ?>
 								</select>
 							</td>
 						</tr>
@@ -297,7 +295,6 @@ $district = $geoLocationDb->fetchActiveGeolocations(0, '');
 						if (data != "") {
 							details = data.split("###");
 							$("#district").html(details[1]);
-							$("#district").append('<option value="other">Other</option>');
 						}
 					});
 			}
