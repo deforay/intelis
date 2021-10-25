@@ -10,6 +10,8 @@ $jobby->add('interfacing', array(
     'schedule' => '* * * * *',
     //'output' => 'logs/jobs.log',
     'enabled' => true,
+    'debug' => true,
 ));
 
 $jobby->run();
+
