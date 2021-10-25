@@ -69,7 +69,7 @@ if (count($interfaceInfo) > 0) {
         $tableInfo = array();
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
             $tableQuery = "SELECT * FROM $individualTableName WHERE sample_code = '" . $result['test_id'] . "'";
-            $tableInfo = $db->rawQueryOne($tableQuery);
+            $tableInfo = $vlsmDb->rawQueryOne($tableQuery);
             if (isset($tableInfo[$individualIdColumn]) && !empty($tableInfo[$individualIdColumn])) {
                 break;
             }
@@ -180,8 +180,8 @@ if (count($interfaceInfo) > 0) {
             if ($vllock == 'yes' && $data['result_status'] == 7) {
                 $data['locked'] = 'yes';
             }
-            $db = $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
-            $vlUpdateId = $db->update('vl_request_form', $data);
+            $db = $vlsmDb->where('vl_sample_id', $tableInfo['vl_sample_id']);
+            $vlUpdateId = $vlsmDb->update('vl_request_form', $data);
             $numberOfResults++;
             if ($vlUpdateId) {
                 $interfaceData = array(
@@ -224,8 +224,8 @@ if (count($interfaceInfo) > 0) {
             if ($eidlock['lock_approved_eid_samples'] == 'yes' && $data['result_status'] == 7) {
                 $data['locked'] = 'yes';
             }
-            $db = $db->where('eid_id', $eidInfo['eid_id']);
-            $eidUpdateId = $db->update('eid_form', $data);
+            $db = $vlsmDb->where('eid_id', $eidInfo['eid_id']);
+            $eidUpdateId = $vlsmDb->update('eid_form', $data);
             $numberOfResults++;
             if ($eidUpdateId) {
                 $interfaceData = array(
@@ -351,8 +351,8 @@ if (count($interfaceInfo) > 0) {
             if ($hepatitisLock == 'yes' && $data['result_status'] == 7) {
                 $data['locked'] = 'yes';
             }
-            $db = $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
-            $vlUpdateId = $db->update('form_hepatitis', $data);
+            $db = $vlsmDb->where('hepatitis_id', $tableInfo['hepatitis_id']);
+            $vlUpdateId = $vlsmDb->update('form_hepatitis', $data);
             $numberOfResults++;
             if ($vlUpdateId) {
                 $interfaceData = array(
