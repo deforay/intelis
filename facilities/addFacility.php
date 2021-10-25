@@ -27,7 +27,6 @@ if ($arr['vl_form'] == 7) {
 }
 
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
-$geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, '');
 ?>
 <style>
 	.ms-choice {
@@ -172,16 +171,12 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, '');
 								<div class="form-group">
 									<label for="district" class="col-lg-4 control-label">District/County <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<?php if (sizeof($geoLocationChildArray) > 0) { ?>
-											<select name="districtId" id="districtId" class="form-control isRequired" title="Please choose District/County">
-												<?= $general->generateSelectOptions($geoLocationChildArray, null, '-- Select --'); ?>
-												<option value="other">Other</option>
-											</select>
-											<input type="text" class="form-control" name="districtNew" id="districtNew" placeholder="Enter District/County" title="Please enter District/County" style="margin-top:4px;display:none;" />
-											<input type="hidden" id="district" name="district" />
-										<?php } else { ?>
-											<input type="text" class="form-control" name="districtNew" id="districtNew" placeholder="Enter District/County" title="Please enter District/County" style="margin-top:4px;" />
-										<?php } ?>
+										<select name="districtId" id="districtId" class="form-control isRequired" title="Please choose District/County">
+											<option value="">-- Select --</option>
+											<option value="other">Other</option>
+										</select>
+										<input type="text" class="form-control" name="districtNew" id="districtNew" placeholder="Enter District/County" title="Please enter District/County" style="margin-top:4px;display:none;" />
+										<input type="hidden" id="district" name="district" />
 									</div>
 								</div>
 							</div>
