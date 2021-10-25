@@ -31,24 +31,43 @@ class GeoLocations
     public function fetchActiveGeolocations($geoId = 0, $parent = '', $api = "yes", $onlyActive = true)
     {
         $returnArr = array();
-        $queryParams = array('active');
-        $where = "WHERE geo_status = ?";
+        $queryParams = array();
+        $where = null;
+        if ($onlyActive) {
+            if (isset($where) && trim($where) != "") {
+                $where .= " AND ";
+            } else {
+                $where .= " WHERE ";
+            }
+            $where .= " geo_status = ?";
+            $queryParams[] = "active";
+        }
+
         if (!empty($geoId)) {
+            if (isset($where) && trim($where) != "") {
+                $where .= " AND ";
+            } else {
+                $where .= " WHERE ";
+            }
             if ($geoId > 0) {
-                $where .= " AND geo_id = ?";
+                $where .= " geo_id = ?";
                 $queryParams[] = $geoId;
             }
         }
         if (!empty($parent)) {
+            if (isset($where) && trim($where) != "") {
+                $where .= " AND ";
+            } else {
+                $where .= " WHERE ";
+            }
             if (is_numeric($parent)) {
-                $where .= " AND geo_parent = ?";
+                $where .= " geo_parent = ?";
                 $queryParams[] = $parent;
             } else {
-                $where .= " AND geo_parent != ?";
+                $where .= " geo_parent != ?";
                 $queryParams[] = 0;
             }
         }
-
         $response = $this->db->rawQuery("SELECT * FROM geographical_divisions " . $where, $queryParams);
         if ($api == 'yes') {
             foreach ($response as $row) {
@@ -60,7 +79,7 @@ class GeoLocations
         return $returnArr;
     }
 
-    function addNewQuickGeoLocation($geoName, $parent = 0)
+    function addGeoLocation($geoName, $parent = 0)
     {
         $general = new \Vlsm\Models\General($this->db);
 

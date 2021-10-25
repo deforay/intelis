@@ -33,14 +33,14 @@ class Writer extends AbstractCsv
     /**
      * callable collection to format the record before insertion.
      *
-     * @var array<callable>
+     * @var callable[]
      */
     protected $formatters = [];
 
     /**
      * callable collection to validate the record before insertion.
      *
-     * @var array<callable>
+     * @var callable[]
      */
     protected $validators = [];
 
@@ -100,8 +100,9 @@ class Writer extends AbstractCsv
     /**
      * Get the flush threshold.
      *
+     * @return int|null
      */
-    public function getFlushThreshold(): ?int
+    public function getFlushThreshold()
     {
         return $this->flush_threshold;
     }
@@ -158,11 +159,7 @@ class Writer extends AbstractCsv
      */
     protected function addRecord(array $record)
     {
-        if (PHP_VERSION_ID < 80100) {
-            return $this->document->fputcsv($record, $this->delimiter, $this->enclosure, $this->escape);
-        }
-
-        return $this->document->fputcsv($record, $this->delimiter, $this->enclosure, $this->escape, $this->newline);
+        return $this->document->fputcsv($record, $this->delimiter, $this->enclosure, $this->escape);
     }
 
     /**
@@ -204,12 +201,7 @@ class Writer extends AbstractCsv
         }
         unset($field);
 
-        $newline = $this->newline;
-        if (PHP_VERSION_ID < 80100) {
-            $newline = "\n";
-        }
-
-        return $this->document->fwrite(implode($this->delimiter, $record).$newline);
+        return $this->document->fwrite(implode($this->delimiter, $record)."\n");
     }
 
     /**
@@ -245,7 +237,7 @@ class Writer extends AbstractCsv
     protected function consolidate(): int
     {
         $bytes = 0;
-        if (80100 > PHP_VERSION_ID && "\n" !== $this->newline) {
+        if ("\n" !== $this->newline) {
             $this->document->fseek(-1, SEEK_CUR);
             /** @var int $newlineBytes */
             $newlineBytes = $this->document->fwrite($this->newline, strlen($this->newline));

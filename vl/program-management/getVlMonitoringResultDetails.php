@@ -85,7 +85,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere .= " AND " .$sWhereSub;
+     $sWhere .= " AND " . $sWhereSub;
 }
 
 /* Individual column filtering */
@@ -176,10 +176,10 @@ if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
 }
 
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-     $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+     $sWhere = $sWhere . " AND f.facility_district_id LIKE " . $_POST['district'];
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-     $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+     $sWhere = $sWhere . " AND f.facility_state_id LIKE " . $_POST['state'];
 }
 
 if ($sWhere != '') {

@@ -20,7 +20,7 @@ try {
 	//Province Table
 	if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != "") {
 		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
-			$_POST['stateId'] = $geolocation->addNewQuickGeoLocation($_POST['provinceNew']);
+			$_POST['stateId'] = $geolocation->addGeoLocation($_POST['provinceNew']);
 			$_POST['state'] = $_POST['provinceNew'];
 			// if (trim($_POST['state']) != "") {
 			$strSearch = (isset($_POST['provinceNew']) && trim($_POST['provinceNew']) != '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
@@ -39,7 +39,7 @@ try {
 		}
 
 		if (isset($_POST['districtNew']) && $_POST['districtNew'] != "" && $_POST['districtId'] == 'other') {
-			$_POST['districtId'] = $geolocation->addNewQuickGeoLocation($_POST['districtNew'], $_POST['stateId']);
+			$_POST['districtId'] = $geolocation->addGeoLocation($_POST['districtNew'], $_POST['stateId']);
 			$_POST['district'] = $_POST['districtNew'];
 		}
 
