@@ -18,55 +18,44 @@ class GeoLocations
         $this->db = $db;
     }
 
-    public function getProvinces($isApi = "no", $onlyActive = true)
+    public function getProvinces($isApi = "no", $onlyActive = true, $facilityMap = null)
     {
-        return $this->fetchActiveGeolocations(null, null, $isApi, $onlyActive);
+        return $this->fetchActiveGeolocations(null, 0, $isApi, $onlyActive, $facilityMap);
     }
 
-    public function getDistricts($province, $isApi = "no", $onlyActive = true)
+    public function getDistricts($province, $isApi = "no", $onlyActive = true, $facilityMap = null)
     {
-        return $this->fetchActiveGeolocations(null, $province, $isApi, $onlyActive);
+        return $this->fetchActiveGeolocations(null, $province, $isApi, $onlyActive, $facilityMap);
     }
 
-    public function fetchActiveGeolocations($geoId = 0, $parent = '', $api = "yes", $onlyActive = true)
+    public function fetchActiveGeolocations($geoId = 0, $parent = 0, $api = "yes", $onlyActive = true, $facilityMap = null)
     {
         $returnArr = array();
-        $queryParams = array();
-        $whereParts = array();
-        $where = '';
         if ($onlyActive) {
-
-            $whereParts[] = " geo_status = ?";
-            $queryParams[] = "active";
+            $this->db->where('geo_status', 'active');
         }
-
-        if (!empty($geoId)) {
-            if ($geoId > 0) {
-                $whereParts[] = " geo_id = ?";
-                $queryParams[] = $geoId;
-            }
+        if (!empty($geoId) && $geoId > 0) {
+            $this->db->where('geo_id', $geoId);
         }
         if (!empty($parent)) {
-            if (is_numeric($parent)) {
-                $whereParts[] = " geo_parent = ?";
-                $queryParams[] = $parent;
+            if ($parent == 'all') {
+                $this->db->where('geo_parent != 0');
             } else {
-                $whereParts[] = " geo_parent = 0 && geo_name = ?";
-                $queryParams[] = $parent;
+                $this->db->where('geo_parent', $parent);
             }
-        }else{
-            $whereParts[] = " geo_parent = ?";
-            $queryParams[] = 0;
+        } else {
+            $this->db->where('geo_parent', 0);
         }
 
-        if (!empty($whereParts)) {
-            $where = " WHERE ";
-            $where .= implode(" AND ", $whereParts);
+        if (!empty($facilityMap)) {
+            $this->db->join("facility_details", "facility_state_id=geo_id", "INNER");
+            $this->db->where("facility_id IN (" . $facilityMap . ")");
         }
 
-        $order = " ORDER BY geo_name ASC ";
+        $this->db->orderBy("geo_name", "asc");
 
-        $response = $this->db->rawQuery("SELECT * FROM geographical_divisions " . $where.$order, $queryParams);
+        $response = $this->db->get("geographical_divisions");
+
         if ($api == 'yes') {
             foreach ($response as $row) {
                 $returnArr[$row['geo_id']] = ucwords($row['geo_name']);
