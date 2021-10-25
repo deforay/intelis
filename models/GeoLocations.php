@@ -18,22 +18,37 @@ class GeoLocations
         $this->db = $db;
     }
 
-    public function fetchActiveGeolocations($geoId = 0, $parent = '', $api = "yes")
+    public function getProvinces($isApi = "no", $onlyActive = true)
+    {
+        return $this->fetchActiveGeolocations(null, null, $isApi, $onlyActive);
+    }
+
+    public function getDistricts($province, $isApi = "no", $onlyActive = true)
+    {
+        return $this->fetchActiveGeolocations(null, $province, $isApi, $onlyActive);
+    }
+
+    public function fetchActiveGeolocations($geoId = 0, $parent = '', $api = "yes", $onlyActive = true)
     {
         $returnArr = array();
         $queryParams = array('active');
         $where = "WHERE geo_status = ?";
-        if ($geoId > 0) {
-            $where .= " AND geo_id = ?";
-            $queryParams[] = $geoId;
+        if (!empty($geoId)) {
+            if ($geoId > 0) {
+                $where .= " AND geo_id = ?";
+                $queryParams[] = $geoId;
+            }
         }
-        if (is_numeric($parent)) {
-            $where .= " AND geo_parent = ?";
-            $queryParams[] = $parent;
-        } else {
-            $where .= " AND geo_parent != ?";
-            $queryParams[] = 0;
+        if (!empty($parent)) {
+            if (is_numeric($parent)) {
+                $where .= " AND geo_parent = ?";
+                $queryParams[] = $parent;
+            } else {
+                $where .= " AND geo_parent != ?";
+                $queryParams[] = 0;
+            }
         }
+
         $response = $this->db->rawQuery("SELECT * FROM geographical_divisions " . $where, $queryParams);
         if ($api == 'yes') {
             foreach ($response as $row) {
