@@ -193,18 +193,18 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>
-              </tr>
+            </tr>
             <tr>
               <td style=""><b>Region/Province/State&nbsp;:</b></td>
               <td>
                 <input style="" type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State/Region" style="background:#fff;" onkeyup="searchVlRequestData()" />
               </td>
-            
+
               <td><b>District/County :</b></td>
               <td>
                 <input type="text" id="district" name="district" class="form-control" placeholder="Enter District/County" onkeyup="searchVlRequestData()" />
               </td>
-              </tr>
+            </tr>
             <tr>
               <!-- <td><b>Sample Test Date&nbsp;:</b></td>
               <td>
