@@ -3,115 +3,51 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-#require_once('../../startup.php');   
-
-
 
 $general = new \Vlsm\Models\General($db);
-$formConfigQuery = "SELECT * from global_config where name='vl_form'";
-$configResult = $db->query($formConfigQuery);
-$arr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-    $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
+
 if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringResultQuery']) != "") {
     $rResult = $db->rawQuery($_SESSION['vlMonitoringResultQuery']);
 
     //get current quarter total samples tested
     $sQuery = "SELECT vl.facility_id,f.facility_name,f.facility_code,f.facility_state,f.facility_district,
 
-         SUM(CASE
-               WHEN (result < 1000) THEN 1 ELSE 0 END) AS lt1000,
-
-         SUM(CASE
-               WHEN (result >= 1000) THEN 1 ELSE 0 END) AS gt1000,
-
-         SUM(CASE
-               WHEN (result < 1000 AND (patient_gender='male' OR patient_gender='MALE')) THEN 1 ELSE 0 END) AS ltMale1000,
-
-         SUM(CASE
-               WHEN (result >= 1000 AND (patient_gender='male' OR patient_gender='MALE')) THEN 1 ELSE 0 END) AS gtMale1000,
-
-         SUM(CASE
-               WHEN (result < 1000 AND (patient_gender='female' OR patient_gender='FEMALE')) THEN 1 ELSE 0 END) AS ltFemale1000,
-
-         SUM(CASE
-               WHEN (result >= 1000 AND (patient_gender='female' OR patient_gender='FEMALE')) THEN 1 ELSE 0 END) AS gtFemale1000,
-
-         SUM(CASE
-               WHEN (result < 1000 AND (patient_gender='not_specified')) THEN 1 ELSE 0 END) AS ltNotSpecified1000,
-
-         SUM(CASE
-               WHEN (result >= 1000 AND (patient_gender='not_specified')) THEN 1 ELSE 0 END) AS gtNotSpecified1000,
-
-         SUM(CASE
-               WHEN (result < 1000 AND patient_gender!='') THEN 1 ELSE 0 END) AS ltTotalGender1000,
-
-         SUM(CASE
-               WHEN (result >= 1000 AND patient_gender!='') THEN 1 ELSE 0 END) AS gtTotalGender1000,
-
-        SUM(CASE
-                WHEN (patient_age_in_years ='' AND patient_age_in_months<=12 AND result < 1000) THEN 1 ELSE 0 END) AS ltAgeOne1000,
-        SUM(CASE
-                WHEN (patient_age_in_years ='' AND patient_age_in_months<=12 AND result >= 1000) THEN 1 ELSE 0 END) AS gtAgeOne1000,
-
-        SUM(CASE
-             WHEN (patient_age_in_years >= 1 AND patient_age_in_years<=9 AND result < 1000) THEN 1 ELSE 0 END) AS ltAgeOnetoNine1000,
-        SUM(CASE
-             WHEN (patient_age_in_years >= 1 AND patient_age_in_years<=9 AND result >= 1000) THEN 1 ELSE 0 END) AS gtAgeOnetoNine1000,
-
-        SUM(CASE
-             WHEN (patient_age_in_years >= 10 AND patient_age_in_years<=14 AND result < 1000) THEN 1 ELSE 0 END) AS ltAgeTentoFourteen1000,
-        SUM(CASE
-             WHEN (patient_age_in_years >= 10 AND patient_age_in_years<=14 AND result >= 1000) THEN 1 ELSE 0 END) AS gtAgeTentoFourteen1000,
-
-        SUM(CASE
-             WHEN (patient_age_in_years<=15 AND result < 1000) THEN 1 ELSE 0 END) AS ltAgeTotalFifteen1000,
-        SUM(CASE
-             WHEN (patient_age_in_years<=15 AND result >= 1000) THEN 1 ELSE 0 END) AS gtAgeTotalFifteen1000,
-
-        SUM(CASE
-             WHEN (patient_age_in_years >= 15 AND patient_age_in_years<=19 AND result < 1000) THEN 1 ELSE 0 END) AS ltAgeFifteentoNineteen1000,
-        SUM(CASE
-             WHEN (patient_age_in_years >= 15 AND patient_age_in_years<=19 AND result >= 1000) THEN 1 ELSE 0 END) AS gtAgeFifteentoNineteen1000,
-
-        SUM(CASE
-             WHEN (patient_age_in_years >= 20 AND patient_age_in_years<=24 AND result < 1000) THEN 1 ELSE 0 END) AS ltAgeTwentytoTwentyFour1000,
-        SUM(CASE
-             WHEN (patient_age_in_years >= 20 AND patient_age_in_years<=24 AND result >= 1000) THEN 1 ELSE 0 END) AS gtAgeTwentytoTwentyFour1000,
-
-        SUM(CASE
-             WHEN (patient_age_in_years >= 15 AND patient_age_in_years<=24 AND result < 1000) THEN 1 ELSE 0 END) AS ltAgeFifteentoTwentyFour1000,
-        SUM(CASE
-             WHEN (patient_age_in_years >= 15 AND patient_age_in_years<=24 AND result >= 1000) THEN 1 ELSE 0 END) AS gtAgeFifteentoTwentyFour1000,
-
-        SUM(CASE
-             WHEN (patient_age_in_years >= 25 AND result < 1000) THEN 1 ELSE 0 END) AS ltAgetwentyFive1000,
-        SUM(CASE
-             WHEN (patient_age_in_years >= 25 AND result >= 1000) THEN 1 ELSE 0 END) AS gtAgetwentyFive1000,
-
-        SUM(CASE
-             WHEN (patient_age_in_years is NULL AND result < 1000) THEN 1 ELSE 0 END) AS ltAgeNotSpecified1000,
-        SUM(CASE
-             WHEN (patient_age_in_years is NULL AND result >= 1000) THEN 1 ELSE 0 END) AS gtAgeNotSpecified1000,
-
-        SUM(CASE
-             WHEN (result < 1000) THEN 1 ELSE 0 END) AS ltAgeTotal1000,
-        SUM(CASE
-             WHEN (result >= 1000) THEN 1 ELSE 0 END) AS gtAgeTotal1000,
-
-        SUM(CASE
-             WHEN (is_patient_pregnant = 'yes' AND result < 1000) THEN 1 ELSE 0 END) AS ltPatientPregnant1000,
-        SUM(CASE
-             WHEN (patient_age_in_years = 'yes' AND result >= 1000) THEN 1 ELSE 0 END) AS gtPatientPregnant1000,
-
-        SUM(CASE
-             WHEN (is_patient_breastfeeding = 'yes' AND result < 1000) THEN 1 ELSE 0 END) AS ltPatientBreastFeeding1000,
-        SUM(CASE
-             WHEN (is_patient_breastfeeding = 'yes' AND result >= 1000) THEN 1 ELSE 0 END) AS gtPatientBreastFeeding1000
-		 FROM vl_request_form as vl JOIN facility_details as f ON vl.facility_id=f.facility_id
-       WHERE vl.vlsm_country_id = '" . $arr['vl_form'] . "'";
+        SUM(CASE WHEN (vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS lt1000,
+        SUM(CASE WHEN (vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gt1000,
+        SUM(CASE WHEN (vl_result_category = 'suppressed' AND (patient_gender='male' OR patient_gender='MALE')) THEN 1 ELSE 0 END) AS ltMale1000,
+        SUM(CASE WHEN (vl_result_category = 'not suppressed' AND (patient_gender='male' OR patient_gender='MALE')) THEN 1 ELSE 0 END) AS gtMale1000,
+        SUM(CASE WHEN (vl_result_category = 'suppressed' AND (patient_gender='female' OR patient_gender='FEMALE')) THEN 1 ELSE 0 END) AS ltFemale1000,
+        SUM(CASE WHEN (vl_result_category = 'not suppressed' AND (patient_gender='female' OR patient_gender='FEMALE')) THEN 1 ELSE 0 END) AS gtFemale1000,
+        SUM(CASE WHEN (vl_result_category = 'suppressed' AND (patient_gender='not_specified')) THEN 1 ELSE 0 END) AS ltNotSpecified1000,
+        SUM(CASE WHEN (vl_result_category = 'not suppressed' AND (patient_gender='not_specified')) THEN 1 ELSE 0 END) AS gtNotSpecified1000,
+        SUM(CASE WHEN (vl_result_category = 'suppressed' AND patient_gender!='') THEN 1 ELSE 0 END) AS ltTotalGender1000,
+        SUM(CASE WHEN (vl_result_category = 'not suppressed' AND patient_gender!='') THEN 1 ELSE 0 END) AS gtTotalGender1000,
+        SUM(CASE WHEN (patient_age_in_years ='' AND patient_age_in_months<=12 AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeOne1000,
+        SUM(CASE WHEN (patient_age_in_years ='' AND patient_age_in_months<=12 AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeOne1000,
+        SUM(CASE WHEN (patient_age_in_years >= 1 AND patient_age_in_years<=9 AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeOnetoNine1000,
+        SUM(CASE WHEN (patient_age_in_years >= 1 AND patient_age_in_years<=9 AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeOnetoNine1000,
+        SUM(CASE WHEN (patient_age_in_years >= 10 AND patient_age_in_years<=14 AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeTentoFourteen1000,
+        SUM(CASE WHEN (patient_age_in_years >= 10 AND patient_age_in_years<=14 AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeTentoFourteen1000,
+        SUM(CASE WHEN (patient_age_in_years<=15 AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeTotalFifteen1000,
+        SUM(CASE WHEN (patient_age_in_years<=15 AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeTotalFifteen1000,
+        SUM(CASE WHEN (patient_age_in_years >= 15 AND patient_age_in_years<=19 AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeFifteentoNineteen1000,
+        SUM(CASE WHEN (patient_age_in_years >= 15 AND patient_age_in_years<=19 AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeFifteentoNineteen1000,
+        SUM(CASE WHEN (patient_age_in_years >= 20 AND patient_age_in_years<=24 AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeTwentytoTwentyFour1000,
+        SUM(CASE WHEN (patient_age_in_years >= 20 AND patient_age_in_years<=24 AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeTwentytoTwentyFour1000,
+        SUM(CASE WHEN (patient_age_in_years >= 15 AND patient_age_in_years<=24 AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeFifteentoTwentyFour1000,
+        SUM(CASE WHEN (patient_age_in_years >= 15 AND patient_age_in_years<=24 AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeFifteentoTwentyFour1000,
+        SUM(CASE WHEN (patient_age_in_years >= 25 AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgetwentyFive1000,
+        SUM(CASE WHEN (patient_age_in_years >= 25 AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgetwentyFive1000,
+        SUM(CASE WHEN (patient_age_in_years is NULL AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeNotSpecified1000,
+        SUM(CASE WHEN (patient_age_in_years is NULL AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeNotSpecified1000,
+        SUM(CASE WHEN (vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeTotal1000,
+        SUM(CASE WHEN (vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeTotal1000,
+        SUM(CASE WHEN (is_patient_pregnant = 'yes' AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltPatientPregnant1000,
+        SUM(CASE WHEN (patient_age_in_years = 'yes' AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtPatientPregnant1000,
+        SUM(CASE WHEN (is_patient_breastfeeding = 'yes' AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltPatientBreastFeeding1000,
+        SUM(CASE WHEN (is_patient_breastfeeding = 'yes' AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtPatientBreastFeeding1000
+		FROM vl_request_form as vl JOIN facility_details as f ON vl.facility_id=f.facility_id
+        WHERE reason_for_vl_testing != 9999";
     $start_date = '';
     $end_date = '';
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -166,7 +102,14 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     //question two query
     //first check empty results
     $sWhere = 'where ';
-    $checkEmptyResultQuery = "Select vl.sample_collection_date,vl.sample_tested_datetime,f.facility_name,f.facility_code,f.facility_state,f.facility_district from vl_request_form as vl JOIN facility_details as f ON vl.facility_id=f.facility_id";
+    $checkEmptyResultQuery = "SELECT vl.sample_collection_date,
+                                vl.sample_tested_datetime,
+                                f.facility_name,
+                                f.facility_code,
+                                f.facility_state,
+                                f.facility_district 
+                                FROM vl_request_form as vl 
+                                JOIN facility_details as f ON vl.facility_id=f.facility_id";
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
             $sWhere = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
@@ -183,7 +126,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
         $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
     }
-    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . $sWhere . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < NOW() - INTERVAL 1 MONTH AND vl.vlsm_country_id = "' . $arr['vl_form'] . '"';
+    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . $sWhere . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < NOW() - INTERVAL 1 MONTH AND reason_for_vl_testing != 9999';
     $checkEmptyResult = $db->rawQuery($checkEmptyResultQuery);
     //get all sample type
     $sampleType = "Select * from r_vl_sample_type where status='active'";
@@ -191,7 +134,19 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     if (count($checkEmptyResult) > 0) {
         $sWhere = '';
         foreach ($sampleTypeResult as $sample) {
-            $checkEmptyResultSampleQuery = 'Select vl.sample_collection_date,vl.sample_tested_datetime,COUNT(vl_sample_id) as total,f.facility_name,f.facility_code,f.facility_state,f.facility_district from vl_request_form as vl JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.sample_tested_datetime IS NULL AND vl.sample_type="' . $sample['sample_id'] . '" AND vl.sample_collection_date < NOW() - INTERVAL 1 MONTH AND vl.vlsm_country_id="' . $arr['vl_form'] . '"';
+            $checkEmptyResultSampleQuery = 'SELECT vl.sample_collection_date,
+                                                vl.sample_tested_datetime,
+                                                COUNT(vl_sample_id) as total,
+                                                f.facility_name,
+                                                f.facility_code,
+                                                f.facility_state,
+                                                f.facility_district 
+                                                FROM vl_request_form as vl 
+                                                JOIN facility_details as f ON vl.facility_id=f.facility_id 
+                                                WHERE vl.sample_tested_datetime IS NULL 
+                                                AND vl.sample_type="' . $sample['sample_id'] . '" 
+                                                AND vl.sample_collection_date < NOW() - INTERVAL 1 MONTH
+                                                AND reason_for_vl_testing != 9999';
 
             if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
                 if (trim($start_date) == trim($end_date)) {
@@ -214,9 +169,6 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
             $checkEmptySampleResult[$sample['sample_name']] = $db->rawQuery($checkEmptyResultSampleQuery);
         }
     }
-    // //get country name
-    // $countryName = "SELECT * FROM s_available_country_forms WHERE vlsm_country_id=" . $arr['vl_form'];
-    // $countryResult = $db->rawQuery($countryName);
 
     //question three
 
@@ -235,7 +187,18 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         $mnth = date('m', $month);
         $year = date('Y', $month);
         $dFormat = date("M-Y", $month);
-        $checkResultAvgQuery = "Select vl.sample_collection_date,vl.sample_tested_datetime,f.facility_name,f.facility_code,f.facility_state,f.facility_district,DATEDIFF(sample_tested_datetime,sample_collection_date) as diff from vl_request_form as vl JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.sample_tested_datetime IS NOT NULL AND Month(sample_collection_date)='" . $mnth . "' AND Year(sample_collection_date)='" . $year . "'";
+        $checkResultAvgQuery = "SELECT vl.sample_collection_date,
+                                vl.sample_tested_datetime,
+                                f.facility_name,
+                                f.facility_code,
+                                f.facility_state,
+                                f.facility_district,
+                                DATEDIFF(sample_tested_datetime,sample_collection_date) as diff 
+                                FROM vl_request_form as vl 
+                                JOIN facility_details as f ON vl.facility_id=f.facility_id 
+                                WHERE vl.sample_tested_datetime IS NOT NULL 
+                                AND MONTH(sample_collection_date)='$mnth' 
+                                AND YEAR(sample_collection_date)='$year'";
         if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
             if (trim($start_date) == trim($end_date)) {
                 $sWhere = ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
@@ -260,7 +223,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
             $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
         }
-        $checkResultAvgQuery = $checkResultAvgQuery . ' ' . $sWhere . ' AND vl.result="" AND vl.vlsm_country_id = "' . $arr['vl_form'] . '"';
+        $checkResultAvgQuery = $checkResultAvgQuery . ' ' . $sWhere . ' AND vl.result=""';
         $checkResultAvgResult = $db->rawQuery($checkResultAvgQuery);
         if (count($checkResultAvgResult) > 0) {
             $total = 0;
@@ -371,8 +334,8 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     }
     $atomcolumns = '';
     //$atomcolumns .= "Country:" . ucwords($countryResult[0]['form_name']) . "&nbsp;&nbsp;&nbsp;";
-    $atomcolumns .= "Region/Province:" . ucwords($_POST['state']) . "&nbsp;&nbsp;&nbsp;";
-    $atomcolumns .= "City:" . ucwords($_POST['district']) . "\n\n";
+    $atomcolumns .= "Region/Province/State:" . ucwords($_POST['state']) . "&nbsp;&nbsp;&nbsp;";
+    $atomcolumns .= "District/County:" . ucwords($_POST['district']) . "\n\n";
     $atomcolumns .= "Laboratory Name:" . ucwords($_POST['fyName']) . "\n\n";
     $atomcolumns .= "Reporting POC Name:________________";
     $atomcolumns .= "Title:________________";
@@ -709,11 +672,17 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
             $mnth = date('m', $month);
             $year = date('Y', $month);
             $dFormat = date("M-Y", $month);
-            $invalidResultQuery = "Select vl.sample_collection_date,f.facility_name,f.facility_code,f.facility_state,f.facility_district,
-							  SUM(CASE
-									 WHEN (result!='' AND result!='Target Not Detected') AND (result > 10000000 OR result < 20) THEN 1 ELSE 0 END) AS invalidTotal
-							  FROM vl_request_form as vl JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE vl.vlsm_country_id = '" . $arr['vl_form'] . "' AND
-							  Month(sample_collection_date)='" . $mnth . "' AND Year(sample_collection_date)='" . $year . "'";
+            $invalidResultQuery = "SELECT 
+                    vl.sample_collection_date,
+                    f.facility_name,
+                    f.facility_code,
+                    f.facility_state,
+                    f.facility_district,
+                    SUM(CASE WHEN (result!='' AND result!='Target Not Detected') AND (result > 10000000 OR result < 20) THEN 1 ELSE 0 END) AS invalidTotal
+                    FROM vl_request_form as vl 
+                    JOIN facility_details as f ON vl.facility_id=f.facility_id 
+                    WHERE MONTH(sample_collection_date)='$mnth' 
+                    AND YEAR(sample_collection_date)='$year'";
             if (isset($_POST['district']) && trim($_POST['district']) != '') {
                 $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
             }

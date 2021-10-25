@@ -193,20 +193,23 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>
-              <td style=""><b>Region/Province&nbsp;:</b></td>
-              <td>
-                <input style="" type="text" id="state" name="state" class="form-control" placeholder="Enter Province" style="background:#fff;" onkeyup="searchVlRequestData()" />
-              </td>
-            </tr>
+              </tr>
             <tr>
-              <td><b>City :</b></td>
+              <td style=""><b>Region/Province/State&nbsp;:</b></td>
               <td>
-                <input type="text" id="city" name="city" class="form-control" placeholder="Enter City" onkeyup="searchVlRequestData()" />
+                <input style="" type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State/Region" style="background:#fff;" onkeyup="searchVlRequestData()" />
               </td>
-              <td><b>Sample Test Date&nbsp;:</b></td>
+            
+              <td><b>District/County :</b></td>
+              <td>
+                <input type="text" id="district" name="district" class="form-control" placeholder="Enter District/County" onkeyup="searchVlRequestData()" />
+              </td>
+              </tr>
+            <tr>
+              <!-- <td><b>Sample Test Date&nbsp;:</b></td>
               <td>
                 <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="background:#fff;" />
-              </td>
+              </td> -->
             </tr>
             <tr>
               <td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
@@ -226,8 +229,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                   <th>Unique ART No</th>
                   <th>Patient's Name</th>
                   <th>Facility Name</th>
-                  <th>Province</th>
-                  <th>City</th>
+                  <th>Province/State/Region</th>
+                  <th>District/County</th>
                   <th>Sample Type</th>
                   <th>Result</th>
                   <th>Status</th>
@@ -344,16 +347,16 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         });
         aoData.push({
           "name": "district",
-          "value": $("#city").val()
+          "value": $("#district").val()
         });
         aoData.push({
           "name": "state",
           "value": $("#state").val()
         });
-        aoData.push({
-          "name": "sampleTestDate",
-          "value": $("#sampleTestDate").val()
-        });
+        // aoData.push({
+        //   "name": "sampleTestDate",
+        //   "value": $("#sampleTestDate").val()
+        // });
         $.ajax({
           "dataType": 'json',
           "type": "POST",
@@ -380,7 +383,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         fyName: $("#facilityName  option:selected").text(),
         facilityName: $("#facilityName").val(),
         state: $("#state").val(),
-        district: $("#city").val(),
+        district: $("#district").val(),
         sampleTestDate: $("#sampleTestDate").val()
       },
       function(data) {
