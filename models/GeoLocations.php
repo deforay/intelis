@@ -32,43 +32,41 @@ class GeoLocations
     {
         $returnArr = array();
         $queryParams = array();
-        $where = null;
+        $whereParts = array();
+        $where = '';
         if ($onlyActive) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " geo_status = ?";
+
+            $whereParts[] = " geo_status = ?";
             $queryParams[] = "active";
         }
 
         if (!empty($geoId)) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
             if ($geoId > 0) {
-                $where .= " geo_id = ?";
+                $whereParts[] = " geo_id = ?";
                 $queryParams[] = $geoId;
             }
         }
         if (!empty($parent)) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
             if (is_numeric($parent)) {
-                $where .= " geo_parent = ?";
+                $whereParts[] = " geo_parent = ?";
                 $queryParams[] = $parent;
             } else {
-                $where .= " geo_parent != ?";
-                $queryParams[] = 0;
+                $whereParts[] = " geo_parent = 0 && geo_name = ?";
+                $queryParams[] = $parent;
             }
+        }else{
+            $whereParts[] = " geo_parent = ?";
+            $queryParams[] = 0;
         }
-        $response = $this->db->rawQuery("SELECT * FROM geographical_divisions " . $where, $queryParams);
+
+        if (!empty($whereParts)) {
+            $where = " WHERE ";
+            $where .= implode(" AND ", $whereParts);
+        }
+
+        $order = " ORDER BY geo_name ASC ";
+
+        $response = $this->db->rawQuery("SELECT * FROM geographical_divisions " . $where.$order, $queryParams);
         if ($api == 'yes') {
             foreach ($response as $row) {
                 $returnArr[$row['geo_id']] = ucwords($row['geo_name']);

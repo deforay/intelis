@@ -19,9 +19,6 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 if (empty($labId)) {
     echo "No Lab ID set in System Config";
     exit(0);
-}else{
-    echo "all good";
-    exit(0);
 }
 
 $interfacedb = new MysqliDb(

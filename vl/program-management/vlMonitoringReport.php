@@ -199,7 +199,6 @@ $district = $geoLocationDb->fetchActiveGeolocations(0, '');
 							<td>
 								<select name="state" id="state" class="form-control" title="Please choose Province/State/Region" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, '-- Select --'); ?>
-									<option value="other">Other</option>
 								</select>
 							</td>
 
@@ -207,7 +206,6 @@ $district = $geoLocationDb->fetchActiveGeolocations(0, '');
 							<td>
 								<select name="district" id="district" class="form-control" title="Please choose District/County" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($district, null, '-- Select --'); ?>
-									<option value="other">Other</option>
 								</select>
 							</td>
 						</tr>
