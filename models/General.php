@@ -197,25 +197,16 @@ class General
 
         if (!empty($name)) {
             $this->db->where('name', $name);
-        }
-
-        $globalConfigResult = $this->db->get('global_config');
-
-        $garr = array();
-        // now we create an associative array so that we can easily create view variables
-        for ($i = 0; $i < sizeof($globalConfigResult); $i++) {
-            $garr[$globalConfigResult[$i]['name']] = $globalConfigResult[$i]['value'];
-        }
-
-        // if no name was specified, we will send the full dataset
-        if ($name == null) {
-            return $garr;
+            return $this->db->getValue("global_config", "value");
         } else {
-            if (isset($garr[$name])) {
-                return $garr[$name];
-            } else {
-                return null;
+            $garr = array();
+            $globalConfigResult = $this->db->get('global_config');
+            // now we create an associative array so that we can easily create view variables
+            for ($i = 0; $i < sizeof($globalConfigResult); $i++) {
+                $garr[$globalConfigResult[$i]['name']] = $globalConfigResult[$i]['value'];
             }
+
+            return $garr;
         }
     }
 

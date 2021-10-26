@@ -1,0 +1,71 @@
+#!/usr/bin/env php
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Crunz
+|--------------------------------------------------------------------------
+|
+| This file is part of Crunz library.
+| (c) Reza M. Lavaryan <mrl.8081@gmail.com>
+| For the full copyright and license information, please view the LICENSE
+| file that was distributed with this source code.
+|
+*/
+
+if (!\defined('CRUNZ_BIN')) {
+    \define('CRUNZ_BIN', __FILE__);
+}
+
+$generatePath = function (array $parts) {
+    return \implode(DIRECTORY_SEPARATOR, $parts);
+};
+$autoloadPaths = [
+    // Dependency
+    $generatePath(
+        [
+            __DIR__,
+            '..',
+            '..',
+            'autoload.php'
+        ]
+    ),
+    // Vendor/Bin
+    $generatePath(
+        [
+            __DIR__,
+            '..',
+            'autoload.php'
+        ]
+    ),
+    // Local dev
+    $generatePath(
+        [
+            __DIR__,
+            'vendor',
+            'autoload.php'
+        ]
+    ),
+];
+
+$autoloadFileFound = false;
+
+foreach ($autoloadPaths as $autoloadPath) {
+    if (\file_exists($autoloadPath)) {
+        require_once $autoloadPath;
+        $autoloadFileFound = true;
+        break;
+    }
+}
+
+if ($autoloadFileFound === false) {
+    throw new RuntimeException(
+        \sprintf(
+            'Unable to find "vendor/autoload.php" in "%s" paths.',
+            \implode('", "', $autoloadPaths)
+        )
+    );
+}
+
+$application = new Crunz\Application('Crunz Command Line Interface', 'v3.0.1');
+$application->run();

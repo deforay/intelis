@@ -2392,3 +2392,6 @@ ALTER TABLE `eid_form` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_f
 
 -- Amit 23-Oct-2021
 UPDATE vl_request_form set vl_result_category = null;
+
+-- Amit 25-Oct-2021
+ALTER TABLE `geographical_divisions` ADD UNIQUE( `geo_name`, `geo_parent`);
