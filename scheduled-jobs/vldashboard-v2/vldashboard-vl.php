@@ -95,19 +95,15 @@ try {
     $result = curl_exec($ch);
     curl_close($ch);
 
-    error_log("DASH RESULT : ".$result);
-
     $deResult = json_decode($result, true);
 
-    
-
-    //if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
+    if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
         $data = array(
             'vl_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : $general->getDateTime())
         );
 
         $db->update('s_vlsm_instance', $data);
-    //}
+    }
     $general->removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     exit(0);
 } catch (Exception $exc) {

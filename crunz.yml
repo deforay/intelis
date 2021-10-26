@@ -4,7 +4,7 @@
 # directories reside.
 # The path is relative to this config file.
 # Trailing slashes will be ignored.
-source: ../tasks
+source: tasks
 
 # The suffix is meant to target the task files inside the ":source" directory.
 # Please note if you change this value, you need
@@ -27,7 +27,7 @@ log_errors: false
 
 # This is the absolute path to the errors' log file
 # You need to make sure you have the required permission to write to this file though.
-errors_log_file: ~
+errors_log_file: logs/scheduled-jobs.log
 
 # By default the output is not logged as they are redirected to the
 # null output.
