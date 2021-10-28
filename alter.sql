@@ -2395,3 +2395,6 @@ UPDATE vl_request_form set vl_result_category = null;
 
 -- Amit 25-Oct-2021
 ALTER TABLE `geographical_divisions` ADD UNIQUE( `geo_name`, `geo_parent`);
+
+-- Amit 28 Oct 2021 version 4.4.3
+UPDATE `system_config` SET `value` = '4.4.3' WHERE `system_config`.`name` = 'sc_version';
