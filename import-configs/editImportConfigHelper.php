@@ -36,15 +36,15 @@ try {
             for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
                 if (trim($_POST['configMachineName'][$c]) != '') {
                     $pocDev = 'no';
-                    if(trim($_POST['latitude'][$c]) != '' && trim($_POST['longitude'][$c]) != ''){
+                    if (trim($_POST['latitude'][$c]) != '' && trim($_POST['longitude'][$c]) != '') {
                         $pocDev = 'yes';
                     }
                     if (isset($_POST['configMachineId'][$c]) && $_POST['configMachineId'][$c] != '') {
-                        $configMachineData = array('config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime'=> $general->getDateTime());
+                        $configMachineData = array('config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => $general->getDateTime());
                         $db = $db->where('config_machine_id', $_POST['configMachineId'][$c]);
                         $db->update($importMachineTable, $configMachineData);
                     } else {
-                        $configMachineData = array('config_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime'=> $general->getDateTime());
+                        $configMachineData = array('config_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => $general->getDateTime());
                         $db->insert($importMachineTable, $configMachineData);
                     }
                 }
@@ -54,14 +54,14 @@ try {
         if ($configId > 0 && isset($_POST['testType']) && count($_POST['testType']) > 0) {
             if (count($configControlInfo) > 0) {
                 foreach ($_POST['testType'] as $key => $val) {
-                    $cQuery = "SELECT * FROM import_config_controls WHERE config_id= ".$configId." AND test_type like '".$val."'";
+                    $cQuery = "SELECT * FROM import_config_controls WHERE config_id= " . $configId . " AND test_type like '" . $val . "'";
                     $cResult = $db->rawQueryOne($cQuery);
                     if (trim($val) != '' && $cResult) {
                         $configControlData = array('number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
                         $db = $db->where('config_id', $configId);
                         $db = $db->where('test_type', $val);
                         $db->update($importControlTable, $configControlData);
-                    } else{
+                    } else {
                         $configControlData = array('test_type' => $val, 'config_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
                         $db->insert($importControlTable, $configControlData);
                     }
@@ -104,7 +104,7 @@ try {
             fwrite($fp, '');
             fclose($fp);
         }
-        
+
         if (!file_exists($configFileHepatitis)) {
             $fp = fopen($configFileHepatitis, 'w');
             fwrite($fp, '');
