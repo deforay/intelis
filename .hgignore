@@ -4,6 +4,7 @@ syntax: regexp
 ^temporary/(?!.htaccess)
 ^interop/dhis2/examples/(?!index.php)
 .pid$
+.log$
 
 syntax: glob
 error_log
@@ -26,5 +27,6 @@ config.development.php
 index-new.php
 configs/bg.png
 configs/bg.jpg
-
+scheduled-jobs.log
+logs/scheduled-jobs.log
 

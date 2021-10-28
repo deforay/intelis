@@ -18,7 +18,7 @@
         "aranyasen/hl7": "^2.0",
         "guzzlehttp/guzzle": "^7.3",
         "halaxa/json-machine": "^0.7.0",
-        "hellogerard/jobby": "^3.5"
+        "lavary/crunz": "^3.0"
     },
     "autoload": {
         "psr-4": {
