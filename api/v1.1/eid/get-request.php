@@ -102,6 +102,7 @@ try {
         vl.result_status                                     as status,
         l_f.facility_name                                    as labName,
         f.facility_district                                  as district,
+        f.facility_name                                      as facilityName,
         u_d.user_name                                        as reviewedBy,
         lt_u_d.user_name                                     as labTechnicianName,
         t_b.user_name                                        as testedByName,
