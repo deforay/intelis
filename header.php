@@ -58,7 +58,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 } else {
 	$allAdminMenuAccess = false;
 }
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vlRequest.php', 'addVlRequest.php', 'addSamplesFromManifest.php', 'batchcode.php', 'specimenReferralManifestList.php', 'sampleList.php'))) {
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vlRequest.php', 'addVlRequest.php', 'addSamplesFromManifest.php', 'batchcode.php', 'specimenReferralManifestList.php'))) {
 	$vlRequestMenuAccess = true;
 } else {
 	$vlRequestMenuAccess = false;
@@ -541,6 +541,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 												<a href="/hepatitis/reference/hepatitis-test-reasons.php"><i class="fa fa-caret-right"></i>Test-Reasons</a>
 											</li>
 										</ul>
+									</li>
+								<?php }
+								if (isset($_SESSION['privileges']) && in_array("sampleList.php", $_SESSION['privileges'])) { ?>
+									<li class="treeview facility-config-menu">
+										<a href="/move-samples/sampleList.php"><i class="fa fa-hospital-o"></i> Move Samples</a>
 									</li>
 								<?php } ?>
 							</ul>

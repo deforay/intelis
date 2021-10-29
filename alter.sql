@@ -2398,3 +2398,9 @@ ALTER TABLE `geographical_divisions` ADD UNIQUE( `geo_name`, `geo_parent`);
 
 -- Amit 28 Oct 2021 version 4.4.3
 UPDATE `system_config` SET `value` = '4.4.3' WHERE `system_config`.`name` = 'sc_version';
+
+-- Thana 29-Oct-2021
+
+ALTER TABLE `move_samples` ADD `test_type` VARCHAR(256) NULL DEFAULT NULL AFTER `moved_to_lab_id`;
+ALTER TABLE `move_samples_map` ADD `test_type` VARCHAR(256) NULL DEFAULT NULL AFTER `vl_sample_id`;
+ALTER TABLE `move_samples_map` CHANGE `vl_sample_id` `test_type_sample_id` INT NULL DEFAULT NULL;
