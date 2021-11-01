@@ -58,7 +58,7 @@ Add the following in crontab (or equivalent for your Operating System)
 
 Where /var/www/vlsm/ is the full path to your VLSM folder
 
-#### Next Steps
+
 * Once you have the application set up, you can visit the vlsm URL http://vlsm/ and log in with the credentials admin and 123
 * Please add the Sample Types, Reasons for Testing, Rejection Reasons, Provinces etc. under the Admin menu
 * Now you can start adding Users, facilities and set up the global config.
