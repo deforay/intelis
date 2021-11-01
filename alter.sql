@@ -2410,3 +2410,11 @@ ALTER TABLE `form_covid19` ADD UNIQUE( `remote_sample_code`);
 ALTER TABLE `form_covid19` ADD UNIQUE( `sample_code`, `lab_id`); 
 ALTER TABLE `form_hepatitis` ADD UNIQUE( `remote_sample_code`); 
 ALTER TABLE `form_hepatitis` ADD UNIQUE( `sample_code`, `lab_id`); 
+
+
+
+-- Thana 29-Oct-2021
+
+ALTER TABLE `move_samples` ADD `test_type` VARCHAR(256) NULL DEFAULT NULL AFTER `moved_to_lab_id`;
+ALTER TABLE `move_samples_map` ADD `test_type` VARCHAR(256) NULL DEFAULT NULL AFTER `vl_sample_id`;
+ALTER TABLE `move_samples_map` CHANGE `vl_sample_id` `test_type_sample_id` INT NULL DEFAULT NULL;
