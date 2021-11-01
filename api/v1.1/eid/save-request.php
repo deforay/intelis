@@ -254,7 +254,7 @@ try {
             'vlsm_instance_id'                                  => $instanceId,
             'vlsm_country_id'                                   => $data['formId'],
             'unique_id'                                         => isset($data['uniqueId']) ? $data['uniqueId'] : null,
-            'app_sample_code'                             => isset($data['localTestReqID']) ? $data['localTestReqID'] : null,
+            'app_sample_code'                             => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'facility_id'                                       => isset($data['facilityId']) ? $data['facilityId'] : null,
             'province_id'                                       => isset($data['provinceId']) ? $data['provinceId'] : null,
             'lab_id'                                            => isset($data['labId']) ? $data['labId'] : null,
@@ -340,21 +340,21 @@ try {
         if ($id > 0) {
             $eidData = $app->getTableDataUsingId($tableName, 'eid_id', $data['eidSampleId']);
             $eidSampleCode = (isset($eidData['sample_code']) && $eidData['sample_code']) ? $eidData['sample_code'] : $eidData['remote_sample_code'];
-            if (isset($data['localTestReqID']) && $data['localTestReqID'] != "") {
+            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $eidSampleCode,
-                    'localTestReqID' => $eidData['app_sample_code'],
+                    'appSampleCode' => $eidData['app_sample_code'],
                 );
             } else {
                 $responseData[$rootKey] = array(
                     'sampleCode' => $eidSampleCode,
-                    'localTestReqID' => $eidData['app_sample_code'],
+                    'appSampleCode' => $eidData['app_sample_code'],
                 );
             }
             http_response_code(200);
         } else {
-            if (isset($data['localTestReqID']) && $data['localTestReqID'] != "") {
+            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
                 $responseData[$rootKey] = array(
                     'status' => 'failed'
                 );

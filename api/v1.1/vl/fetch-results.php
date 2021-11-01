@@ -59,7 +59,7 @@ if (empty($user) || empty($user['user_id'])) {
 try {
 
     $sQuery = "SELECT 
-        vl.app_sample_code                             as localTestReqID,
+        vl.app_sample_code                             as appSampleCode,
         vl.unique_id                                         as uniqueId,
         vl.vl_sample_id                                      as vlSampleId,
         vl.sample_code                                       as sampleCode,
