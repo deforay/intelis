@@ -2337,6 +2337,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 
 -- Amit 01-Oct-2021
+ALTER TABLE `form_covid19` CHANGE `clinician_phone` `clinician_phone` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `clinician_email` `clinician_email` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `health_outcome` `health_outcome` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `lab_reception_person` `lab_reception_person` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `covid19_test_platform` `covid19_test_platform` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `authorized_by` `authorized_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `result_reviewed_by` `result_reviewed_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `result_approved_by` `result_approved_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `import_machine_name` `import_machine_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `import_machine_file_name` `import_machine_file_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `sample_package_id` `sample_package_id` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `sample_package_code` `sample_package_code` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `source_of_request` `source_of_request` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `app_local_test_req_id` `app_local_test_req_id` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_covid19` ADD `covid19_test_name` VARCHAR(500) NULL DEFAULT NULL AFTER `covid19_test_platform`;
 
 -- Amit 06-Oct-2021
@@ -2363,7 +2364,7 @@ UPDATE `form_hepatitis` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`
 ALTER TABLE `form_hepatitis` ADD UNIQUE(`unique_id`);
 
 
-ALTER TABLE `form_covid19` CHANGE `clinician_phone` `clinician_phone` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `clinician_email` `clinician_email` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `health_outcome` `health_outcome` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `lab_reception_person` `lab_reception_person` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `covid19_test_platform` `covid19_test_platform` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `authorized_by` `authorized_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `result_reviewed_by` `result_reviewed_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `result_approved_by` `result_approved_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `import_machine_name` `import_machine_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `import_machine_file_name` `import_machine_file_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `sample_package_id` `sample_package_id` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `sample_package_code` `sample_package_code` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `source_of_request` `source_of_request` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `app_local_test_req_id` `app_local_test_req_id` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
 ALTER TABLE `form_covid19` DROP INDEX `source_of_request`;
 ALTER TABLE `form_hepatitis` DROP INDEX `source_of_request`;
 
@@ -2381,7 +2382,7 @@ UPDATE `system_config` SET `value` = '4.4.2' WHERE `system_config`.`name` = 'sc_
 
 -- Thana 19-Oct-2021
 ALTER TABLE `failed_result_retest_tracker` ADD `sample_data` TEXT NOT NULL AFTER `sample_code`;
-ALTER TABLE `vl_request_form` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
+-- ALTER TABLE `vl_request_form` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
 ALTER TABLE `eid_form` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
 ALTER TABLE `form_covid19` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
 ALTER TABLE `form_hepatitis` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
@@ -2398,6 +2399,19 @@ ALTER TABLE `geographical_divisions` ADD UNIQUE( `geo_name`, `geo_parent`);
 
 -- Amit 28 Oct 2021 version 4.4.3
 UPDATE `system_config` SET `value` = '4.4.3' WHERE `system_config`.`name` = 'sc_version';
+
+
+
+ALTER TABLE `vl_request_form` ADD UNIQUE( `remote_sample_code`); 
+ALTER TABLE `vl_request_form` ADD UNIQUE( `sample_code`, `lab_id`); 
+ALTER TABLE `eid_form` ADD UNIQUE( `remote_sample_code`); 
+ALTER TABLE `eid_form` ADD UNIQUE( `sample_code`, `lab_id`); 
+ALTER TABLE `form_covid19` ADD UNIQUE( `remote_sample_code`); 
+ALTER TABLE `form_covid19` ADD UNIQUE( `sample_code`, `lab_id`); 
+ALTER TABLE `form_hepatitis` ADD UNIQUE( `remote_sample_code`); 
+ALTER TABLE `form_hepatitis` ADD UNIQUE( `sample_code`, `lab_id`); 
+
+
 
 -- Thana 29-Oct-2021
 ALTER TABLE `move_samples` ADD `test_type` VARCHAR(256) NULL DEFAULT NULL AFTER `moved_to_lab_id`;
