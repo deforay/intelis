@@ -14,6 +14,12 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
 	$activeModules[] = 'covid19';
 }
+if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['hepatitis']['tb'] == true) {
+	$activeModules[] = 'hepatitis';
+}
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+	$activeModules[] = 'tb';
+}
 
 
 $resourcesQuery = "SELECT module, GROUP_CONCAT( DISTINCT CONCAT(resources.resource_id,',',resources.display_name) ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources' FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
@@ -37,7 +43,6 @@ $rInfo = $db->query($resourcesQuery);
 
 	<!-- Main content -->
 	<section class="content">
-
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>

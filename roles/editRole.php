@@ -21,11 +21,12 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
 	$activeModules[] = 'covid19';
 }
-
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
 	$activeModules[] = 'hepatitis';
 }
-
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+	$activeModules[] = 'tb';
+}
 
 $resourcesQuery = "SELECT module, GROUP_CONCAT( DISTINCT CONCAT(resources.resource_id,',',resources.display_name) ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources' FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
 $rInfo = $db->query($resourcesQuery);

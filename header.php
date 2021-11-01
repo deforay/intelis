@@ -138,6 +138,15 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	$hepatitisManagementMenuAccess = false;
 }
 // HEPATITIS Menu end
+
+// TB Menu start
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("tb-requests.php", "tb-add-request.php", "tb-edit-request.php", "add-Samples-from-manifest.php"))) {
+	$tbTestRequestMenuAccess = true;
+} else {
+	$tbTestRequestMenuAccess = false;
+}
+// TB Menu end
+
 ?>
 <!DOCTYPE html>
 <html lang="en-US">
@@ -973,7 +982,49 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					} ?>
 					<!-- HEPATITIS END -->
 
-					<!---->
+					<!-- TB START -->
+					<?php if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
+						<li class="header">TB</li>
+						<?php if ($tbTestRequestMenuAccess == true) { ?>
+							<li class="treeview tbRequest" style="<?php echo $hideRequest; ?>">
+								<a href="#">
+									<i class="fa fa-edit"></i>
+									<span>Request Management</span>
+									<span class="pull-right-container">
+										<i class="fa fa-angle-left pull-right"></i>
+									</span>
+								</a>
+								<ul class="treeview-menu">
+									<?php if (isset($_SESSION['privileges']) && in_array("tb-requests.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbRequestMenu">
+											<a href="/tb/requests/tb-requests.php"><i class="fa fa-caret-right"></i> View Test Requests</a>
+										</li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("tb-add-request.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu addTbRequestMenu">
+											<a href="/tb/requests/tb-add-request.php"><i class="fa fa-caret-right"></i> Add New Request</a>
+										</li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+										<li class="allMenu addSamplesFromManifestTbMenu">
+											<a href="/tb/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
+										</li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("tb-batches.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbBatchCodeMenu">
+											<a href="/tb/batch/tb-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
+										</li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] == 'remoteuser')) { ?>
+										<li class="allMenu specimenReferralManifestListC19Menu">
+											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('tb'); ?>"><i class="fa fa-caret-right"></i> Tb Specimen Manifest</a>
+										</li>
+									<?php } ?>
+								</ul>
+							</li>
+					<?php }
+					} ?>
+					<!-- TB END -->
 				</ul>
 			</section>
 			<!-- /.sidebar -->

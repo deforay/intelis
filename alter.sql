@@ -2422,3 +2422,132 @@ ALTER TABLE `move_samples_map` CHANGE `vl_sample_id` `test_type_sample_id` INT N
 ALTER TABLE `vl_request_form` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 ALTER TABLE `eid_form` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 ALTER TABLE `form_covid19` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-requests', 'tb', 'TB Request Management');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-requests', 'tb-requests.php', 'View Requests'), (NULL, 'tb-requests', 'tb-add-request.php', 'Add Request');
+
+CREATE TABLE `form_tb` (
+  `tb_id` INT NOT NULL AUTO_INCREMENT,
+  `unique_id` varchar(1000) NULL DEFAULT NULL,
+  `vlsm_instance_id` TEXT NULL DEFAULT NULL,
+  `vlsm_country_id` INT NULL DEFAULT NULL,
+  `sample_reordered` varchar(1000) NOT NULL DEFAULT 'no',
+  `sample_code_key` int(11) NOT NULL,
+  `sample_code_format` TEXT NULL DEFAULT NULL,
+  `sample_code` varchar(1000) NULL DEFAULT NULL,
+  `remote_sample` varchar(1000) NOT NULL DEFAULT 'no',
+  `remote_sample_code_key` INT NULL DEFAULT NULL,
+  `remote_sample_code_format` TEXT NULL DEFAULT NULL,
+  `remote_sample_code` varchar(1000) NULL DEFAULT NULL,
+  `sample_collection_date` datetime NOT NULL,
+  `sample_received_at_hub_datetime` datetime DEFAULT NULL,
+  `sample_received_at_lab_datetime` datetime DEFAULT NULL,
+  `sample_tested_datetime` datetime DEFAULT NULL,
+  `funding_source` INT NULL DEFAULT NULL,
+  `implementing_partner` INT NULL DEFAULT NULL,
+  `facility_id` INT NULL DEFAULT NULL,
+  `province_id` INT NULL DEFAULT NULL,
+  `patient_id` TEXT NULL DEFAULT NULL,
+  `patient_name` TEXT NULL DEFAULT NULL,
+  `patient_surname` TEXT NULL DEFAULT NULL,
+  `patient_dob` date DEFAULT NULL,
+  `patient_age` TEXT NULL DEFAULT NULL,
+  `patient_gender` TEXT NULL DEFAULT NULL,
+  `patient_address` TEXT NULL DEFAULT NULL,
+  `patient_phone` TEXT NULL DEFAULT NULL,
+  `patient_type` JSON NULL DEFAULT NULL,
+  `hiv_status` TEXT NULL DEFAULT NULL,
+  `tests_requested` JSON NULL DEFAULT NULL,
+  `sample_requestor_name` TEXT NULL DEFAULT NULL,
+  `sample_requestor_phone` TEXT NULL DEFAULT NULL,
+  `specimen_quality` TEXT NULL DEFAULT NULL,
+  `specimen_type` TEXT NULL DEFAULT NULL,
+  `reason_for_tb_test` JSON NULL DEFAULT NULL,
+  `lab_id` INT NULL DEFAULT NULL,
+  `lab_technician` TEXT NULL DEFAULT NULL,
+  `lab_reception_person` TEXT NULL DEFAULT NULL,
+  `is_sample_rejected` varchar(1000) NOT NULL DEFAULT 'no',
+  `reason_for_sample_rejection` TEXT NULL DEFAULT NULL,
+  `tb_test_platform` TEXT NULL DEFAULT NULL,
+  `result_status` INT NULL DEFAULT NULL,
+  `locked` varchar(50) NOT NULL DEFAULT 'no',
+  `result` TEXT NULL DEFAULT NULL,
+  `reason_for_changing` varchar(256) DEFAULT NULL,
+  `tested_by` TEXT NULL DEFAULT NULL,
+  `result_reviewed_by` TEXT NULL DEFAULT NULL,
+  `result_reviewed_datetime` datetime DEFAULT NULL,
+  `result_approved_by` TEXT NULL DEFAULT NULL,
+  `result_approved_datetime` datetime DEFAULT NULL,
+  `revised_by` TEXT NULL DEFAULT NULL,
+  `revised_on` datetime DEFAULT NULL,
+  `approver_comments` TEXT NULL DEFAULT NULL,
+  `result_dispatched_datetime` datetime DEFAULT NULL,
+  `result_mail_datetime` datetime DEFAULT NULL,
+  `app_sample_code` varchar(256) DEFAULT NULL,
+  `manual_result_entry` varchar(255) DEFAULT 'no',
+  `import_machine_name` TEXT NULL DEFAULT NULL,
+  `import_machine_file_name` TEXT NULL DEFAULT NULL,
+  `result_printed_datetime` datetime DEFAULT NULL,
+  `request_created_datetime` datetime DEFAULT NULL,
+  `request_created_by` TEXT NULL DEFAULT NULL,
+  `sample_registered_at_lab` datetime DEFAULT NULL,
+  `last_modified_datetime` datetime DEFAULT NULL,
+  `last_modified_by` TEXT NULL DEFAULT NULL,
+  `sample_batch_id` INT NULL DEFAULT NULL,
+  `sample_package_id` TEXT NULL DEFAULT NULL,
+  `sample_package_code` TEXT NULL DEFAULT NULL,
+  `source_of_request` varchar(50) DEFAULT NULL,
+  `source_data_dump` text,
+  `result_sent_to_source` text,
+  `data_sync` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`tb_id`),
+  UNIQUE KEY `sample_code` (`sample_code`,`lab_id`),
+  UNIQUE KEY `unique_id` (`unique_id`),
+  UNIQUE KEY `remote_sample_code` (`remote_sample_code`),
+  KEY `facility_id` (`facility_id`),
+  KEY `lab_id` (`lab_id`),
+  KEY `sample_code_key` (`sample_code_key`),
+  KEY `remote_sample_code_key` (`remote_sample_code_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `r_tb_sample_type` (
+ `sample_id` int NOT NULL AUTO_INCREMENT,
+ `sample_name` varchar(256) DEFAULT NULL,
+ `status` varchar(45) DEFAULT NULL,
+ `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `data_sync` int NOT NULL DEFAULT '0',
+ PRIMARY KEY (`sample_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+INSERT INTO `r_tb_sample_type` (`sample_id`, `sample_name`, `status`, `updated_datetime`, `data_sync`) VALUES (NULL, 'Serum', 'active', CURRENT_TIMESTAMP, '0');
+
+CREATE TABLE `r_tb_sample_rejection_reasons` (
+ `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
+ `rejection_reason_name` varchar(256) DEFAULT NULL,
+ `rejection_type` varchar(256) NOT NULL DEFAULT 'general',
+ `rejection_reason_status` varchar(45) DEFAULT NULL,
+ `rejection_reason_code` varchar(256) DEFAULT NULL,
+ `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `data_sync` int NOT NULL DEFAULT '0',
+ PRIMARY KEY (`rejection_reason_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `r_tb_sample_rejection_reasons` (`rejection_reason_id`, `rejection_reason_name`, `rejection_type`, `rejection_reason_status`, `rejection_reason_code`, `updated_datetime`, `data_sync`) VALUES (NULL, 'Sample damaged', 'general', 'active', NULL, CURRENT_TIMESTAMP, '0');
+
+CREATE TABLE `r_tb_test_reasons` (
+ `test_reason_id` int NOT NULL AUTO_INCREMENT,
+ `test_reason_name` varchar(256) DEFAULT NULL,
+ `parent_reason` int DEFAULT NULL,
+ `test_reason_status` varchar(45) DEFAULT NULL,
+ `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (`test_reason_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `r_tb_test_reasons` (`test_reason_id`, `test_reason_name`, `parent_reason`, `test_reason_status`, `updated_datetime`) VALUES (NULL, 'Case confirmed in TB', '', 'active', CURRENT_TIMESTAMP);
+
+CREATE TABLE `r_tb_results` (
+ `result_id` int NOT NULL AUTO_INCREMENT,
+ `result` varchar(256) DEFAULT NULL,
+ `status` varchar(45) DEFAULT NULL,
+ `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `data_sync` int NOT NULL DEFAULT '0',
+ PRIMARY KEY (`result_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `r_tb_results` (`result_id`, `result`, `status`, `updated_datetime`, `data_sync`) VALUES (NULL, 'Positive', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'Negative', 'active', CURRENT_TIMESTAMP, '0');

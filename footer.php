@@ -690,6 +690,22 @@
 		$(".hepatitisProgramMenu").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".hepatitisMonthlyThresholdReport").addClass('active');
+	} else if (splitsUrl == 'tb-requests.php' || splitsUrl == 'tb-edit-request.php') {
+		$(".allMenu").removeClass('active');
+		$(".tbRequest").addClass('active');
+		$(".tbRequestMenu").addClass('active');
+	} else if (splitsUrl == 'tb-add-request.php') {
+		$(".allMenu").removeClass('active');
+		$(".tbRequest").addClass('active');
+		$(".addTbRequestMenu").addClass('active');
+	} else if (splitsUrl == 'tb-batches.php' || splitsUrl == 'tb-add-batch.php' || splitsUrl == 'tb-edit-batch.php' || splitsUrl == 'tb-add-batch-position.php' || splitsUrl == 'tb-edit-batch-position.php') {
+		$(".allMenu").removeClass('active');
+		$(".tbRequest").addClass('active');
+		$(".tbBatchCodeMenu").addClass('active');
+	} else if (splitsUrl == 'addSamplesFromManifest.php' && splitsUrlCheck[1] == "tb") {
+		$(".allMenu").removeClass('active');
+		$(".tbRequest").addClass('active');
+		$(".addSamplesFromManifestTbMenu").addClass('active');
 	} else {
 		$(".allMenu").removeClass('active');
 		$(".dashboardMenu").addClass('active');
