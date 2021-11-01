@@ -65,7 +65,7 @@ if (empty($user) || empty($user['user_id'])) {
 try {
 
     $sQuery = "SELECT 
-                        vl.app_local_test_req_id                as localTestReqID,
+                        vl.app_sample_code                as localTestReqID,
                         vl.covid19_id                           as covid19Id,
                         CONCAT_WS('',vl.sample_code, vl.remote_sample_code) as sampleCode,
                         vl.external_sample_code                 as externalSampleCode,

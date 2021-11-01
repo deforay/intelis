@@ -70,7 +70,7 @@ try {
                         vl.facility_id as facilityId,
                         vl.patient_id as patientId,
                         CONCAT_WS(' ',vl.patient_name, vl.patient_surname) as patientFullName,
-                        vl.app_local_test_req_id as localTestReqID,
+                        vl.app_sample_code as localTestReqID,
                         vl.patient_age as age,
                         vl.patient_gender as gender,
                         vl.patient_address as address,

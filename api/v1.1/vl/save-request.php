@@ -278,7 +278,7 @@ try {
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],
             'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : null,
-            'app_local_test_req_id'                 => isset($data['localTestReqID']) ? $data['localTestReqID'] : null,
+            'app_sample_code'                 => isset($data['localTestReqID']) ? $data['localTestReqID'] : null,
             'sample_code_title'                     => (isset($data['sampleCodeTitle']) && $data['sampleCodeTitle'] != '') ? $data['sampleCodeTitle'] :  'auto',
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] != '') ? $data['sampleReordered'] :  'no',
             'sample_code_format'                    => (isset($data['sampleCodeFormat']) && $data['sampleCodeFormat'] != '') ? $data['sampleCodeFormat'] :  NULL,
@@ -377,12 +377,12 @@ try {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $vlSampleCode,
-                    'localTestReqID' => $vlFulldata['app_local_test_req_id'],
+                    'localTestReqID' => $vlFulldata['app_sample_code'],
                 );
             } else {
                 $responseData[$rootKey] = array(
                     'sampleCode' => $vlSampleCode,
-                    'localTestReqID' => $vlFulldata['app_local_test_req_id'],
+                    'localTestReqID' => $vlFulldata['app_sample_code'],
                 );
             }
             http_response_code(200);

@@ -254,7 +254,7 @@ try {
             'vlsm_instance_id'                                  => $instanceId,
             'vlsm_country_id'                                   => $data['formId'],
             'unique_id'                                         => isset($data['uniqueId']) ? $data['uniqueId'] : null,
-            'app_local_test_req_id'                             => isset($data['localTestReqID']) ? $data['localTestReqID'] : null,
+            'app_sample_code'                             => isset($data['localTestReqID']) ? $data['localTestReqID'] : null,
             'facility_id'                                       => isset($data['facilityId']) ? $data['facilityId'] : null,
             'province_id'                                       => isset($data['provinceId']) ? $data['provinceId'] : null,
             'lab_id'                                            => isset($data['labId']) ? $data['labId'] : null,
@@ -344,12 +344,12 @@ try {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $eidSampleCode,
-                    'localTestReqID' => $eidData['app_local_test_req_id'],
+                    'localTestReqID' => $eidData['app_sample_code'],
                 );
             } else {
                 $responseData[$rootKey] = array(
                     'sampleCode' => $eidSampleCode,
-                    'localTestReqID' => $eidData['app_local_test_req_id'],
+                    'localTestReqID' => $eidData['app_sample_code'],
                 );
             }
             http_response_code(200);
