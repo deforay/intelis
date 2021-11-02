@@ -104,11 +104,9 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 						<tr>
 							<th>Status</th>
 							<td>
-								<select name="status" id="status" class="filter-input form-control" title="Please choose status">
-									<option value=""> -- Select -- </option>
-									<?php foreach ($tsResult as $sampleStatus) { ?>
-										<option value="<?php echo $sampleStatus['status_id']; ?>"> <?php echo $sampleStatus['status_name']; ?> </option>
-									<?php } ?>
+								<select name="status" id="status" class="form-control" title="Please choose status" onchange="checkSampleCollectionDate();">
+									<option value="7" selected="selected">Accepted</option>
+									<option value="4">Rejected</option>
 								</select>
 							</td>
 
@@ -282,8 +280,9 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 			});
 
 		$('#printDate').val("");
-		//$('#sampleCollectionDate').val("");
-		$('#sampleTestDate').val("");
+		$('#sampleCollectionDate').val("");
+		$('#sampleRecievedDate').val("");
+		//$('#sampleTestDate').val("");
 		loadVlRequestData();
 
 		$(".showhideCheckBox").change(function() {
@@ -485,6 +484,14 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 					location.href = '/temporary/' + data;
 				}
 			});
+	}
+
+	function checkSampleCollectionDate() {
+		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
+			alert("Please select Sample Collection Date Range");
+		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
+			alert("Please select Sample Test Date Range");
+		}
 	}
 </script>
 <?php

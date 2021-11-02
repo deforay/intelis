@@ -115,7 +115,6 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 									<option value=""> -- Select -- </option>
 									<option value="7">Accepted</option>
 									<option value="4">Rejected</option>
-									<option value="6">Awaiting Clinic Approval</option>
 								</select>
 							</td>
 

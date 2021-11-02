@@ -82,7 +82,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere .= " AND " .$sWhereSub;
+     $sWhere .= " AND " . $sWhereSub;
 }
 
 /* Individual column filtering */
@@ -218,7 +218,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '' && $_POST['status'] == 7) {
      if (trim($sTestDate) == trim($eTestDate)) {
           $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
      } else {
@@ -272,11 +272,6 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
 }
 
-if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND vl.result_status!=9';
-} else {
-     $sWhere = $sWhere . ' where vl.result_status!=9';
-}
 $cWhere = '';
 if ($sarr['sc_user_type'] == 'remoteuser') {
      if (!empty($facilityMap)) {
