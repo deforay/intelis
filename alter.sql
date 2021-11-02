@@ -2551,3 +2551,7 @@ CREATE TABLE `r_tb_results` (
  PRIMARY KEY (`result_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 INSERT INTO `r_tb_results` (`result_id`, `result`, `status`, `updated_datetime`, `data_sync`) VALUES (NULL, 'Positive', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'Negative', 'active', CURRENT_TIMESTAMP, '0');
+
+-- Thana 02-Oct-2021
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('TB Sample Code Format', 'tb_sample_code', 'MMYY', 'tb', 'yes', '2021-11-02 17:48:32', NULL, 'active'), ('TB Sample Code Prefix', 'tb_sample_code_prefix', 'TB', 'tb', 'yes', '2021-11-02 17:48:32', NULL, 'active');
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('TB Minimum Length', 'tb_min_length', NULL, 'tb', 'yes', '2021-11-02 18:16:53', NULL, 'active'), ('TB Maximum Length', 'tb_max_length', NULL, 'tb', 'yes', '2021-11-02 18:16:53', NULL, 'active');
