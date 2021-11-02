@@ -2517,7 +2517,7 @@ CREATE TABLE `r_tb_sample_type` (
  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `data_sync` int NOT NULL DEFAULT '0',
  PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 INSERT INTO `r_tb_sample_type` (`sample_id`, `sample_name`, `status`, `updated_datetime`, `data_sync`) VALUES (NULL, 'Serum', 'active', CURRENT_TIMESTAMP, '0');
 
 CREATE TABLE `r_tb_sample_rejection_reasons` (
