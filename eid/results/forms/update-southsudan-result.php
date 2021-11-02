@@ -321,7 +321,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                             </table>
 
                             <br><br>
-                            <table class="table" style="">
+                            <table class="table">
                                 <tr>
                                     <th colspan=4>
                                         <h4>Sample Information</h4>
