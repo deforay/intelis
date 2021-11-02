@@ -100,11 +100,9 @@ $eidResults = $general->getEidResults();
 						<tr>
 							<th>Status</th>
 							<td>
-								<select name="status" id="status" class="form-control" title="Please choose status">
-									<option value=""> -- Select -- </option>
-									<option value="7">Accepted</option>
+								<select name="status" id="status" class="form-control" title="Please choose status" onchange="checkSampleCollectionDate();">
+									<option value="7" selected="selected">Accepted</option>
 									<option value="4">Rejected</option>
-									<option value="6">Awaiting Clinic Approval</option>
 								</select>
 							</td>
 
@@ -268,8 +266,8 @@ $eidResults = $general->getEidResults();
 			});
 
 		$('#printDate').val("");
-		//$('#sampleCollectionDate').val("");
-		$('#sampleTestDate').val("");
+		$('#sampleCollectionDate').val("");
+		//$('#sampleTestDate').val("");
 		loadVlRequestData();
 
 		$(".showhideCheckBox").change(function() {
@@ -459,6 +457,13 @@ $eidResults = $general->getEidResults();
 					location.href = '/temporary/' + data;
 				}
 			});
+	}
+	function checkSampleCollectionDate() {
+		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
+			alert("Please select Sample Collection Date Range");
+		}else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
+			alert("Please select Sample Test Date Range");
+		}
 	}
 </script>
 <?php

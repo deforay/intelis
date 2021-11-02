@@ -124,11 +124,9 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 						<tr>
 							<td><b>Status&nbsp;:</b></td>
 							<td>
-								<select name="status" id="status" class="form-control" title="Please choose status">
-									<option value=""> -- Select -- </option>
-									<option value="7">Accepted</option>
+								<select name="status" id="status" class="form-control" title="Please choose status" onchange="checkSampleCollectionDate();">
+									<option value="7" selected=selected>Accepted</option>
 									<option value="4">Rejected</option>
-									<option value="6">Awaiting Clinic Approval</option>
 								</select>
 							</td>
 							<td><b>Show only Reordered Samples&nbsp;:</b></td>
@@ -574,6 +572,14 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 			$('select#breastFeeding option').removeAttr("selected");
 			$("#patientPregnant").attr("disabled", true);
 			$("#breastFeeding").attr("disabled", true);
+		}
+	}
+
+	function checkSampleCollectionDate() {
+		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
+			alert("Please select Sample Collection Date Range");
+		}else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
+			alert("Please select Sample Test Date Range");
 		}
 	}
 </script>
