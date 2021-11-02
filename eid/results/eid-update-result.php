@@ -197,8 +197,10 @@ require_once($fileArray[$arr['vl_form']]);
 		//$('.date').mask('99-aaa-9999');
 		//$('.dateTime').mask('99-aaa-9999 99:99');
 		$('.result-focus').change(function(e) {
-			$('.change-reason').show();
-			$('#reasonForChanging').addClass('isRequired');
+			<?php if (isset($eidInfo['result']) && $eidInfo['result'] != "") { ?>
+				$('.change-reason').show();
+				$('#reasonForChanging').addClass('isRequired');
+			<?php } ?>
 		});
 	});
 </script>

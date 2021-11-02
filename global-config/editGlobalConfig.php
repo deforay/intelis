@@ -353,7 +353,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									</div>
 
 									<div class="row">
-										<div class="col-md-12" style="">
+										<div class="col-md-12">
 											<div class="form-group">
 												<label for="auto_approval" class="col-lg-2 control-label">Sample Code<br>Format <span class="mandatory">*</span> </label>
 												<div class="col-lg-10">
@@ -509,7 +509,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									</div>
 
 									<div class="row">
-										<div class="col-md-12" style="">
+										<div class="col-md-12">
 											<div class="form-group">
 												<label for="eid_sample_code" class="col-lg-2 control-label">Sample Code<br>Format <span class="mandatory">*</span> </label>
 												<div class="col-lg-10">
@@ -626,7 +626,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									</div>
 
 									<div class="row">
-										<div class="col-md-12" style="">
+										<div class="col-md-12">
 											<div class="form-group">
 												<label for="covid19_sample_code" class="col-lg-2 control-label">Sample Code<br>Format <span class="mandatory">*</span> </label>
 												<div class="col-lg-10">
@@ -732,22 +732,22 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											<?php } ?>
 										</div>
 									</div>
-									
+
 									<?php if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] != '') { ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="covid19ReportQrCode" class="col-lg-2 control-label">Covid-19 Report QR Code</label>
-												<div class="col-lg-4">
-													<select id="covid19ReportQrCode" name="covid19ReportQrCode" type="text" class="form-control readPage" title="Please select report QR code yes/no?">
-														<option value="">--Select--</option>
-														<option value="yes" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') ? "selected='selected'" : ''; ?>>Yes</option>
-														<option value="no" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'no') ? "selected='selected'" : ''; ?>>No</option>
-													</select>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="covid19ReportQrCode" class="col-lg-2 control-label">Covid-19 Report QR Code</label>
+													<div class="col-lg-4">
+														<select id="covid19ReportQrCode" name="covid19ReportQrCode" type="text" class="form-control readPage" title="Please select report QR code yes/no?">
+															<option value="">--Select--</option>
+															<option value="yes" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') ? "selected='selected'" : ''; ?>>Yes</option>
+															<option value="no" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'no') ? "selected='selected'" : ''; ?>>No</option>
+														</select>
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
 									<?php } ?>
 								</div>
 							</div>
@@ -818,6 +818,139 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+								</div>
+							</div>
+						<?php }
+						if ($systemConfig['modules']['tb']) { ?>
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">Tb Settings</h3>
+								</div>
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="tb_sample_code" class="col-lg-2 control-label">Sample Code<br>Format <span class="mandatory">*</span> </label>
+												<div class="col-lg-10">
+													<?php
+													$sPrefixMMYY = 'TB';
+													$sPrefixYY = '';
+													$sPrefixMMYYDisplay = 'disabled="disabled"';
+													$sPrefixYYDisplay = 'disabled="disabled"';
+													if ($arr['tb_sample_code'] == 'MMYY') {
+														$sPrefixMMYY = $arr['tb_sample_code_prefix'];
+														$sPrefixMMYYDisplay = '';
+													} else if ($arr['tb_sample_code'] == 'YY') {
+														$sPrefixYY = $arr['tb_sample_code_prefix'];
+														$sPrefixYYDisplay = '';
+													}
+													?>
+													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_auto_generate_yy" name="tb_sample_code" value="YY" <?php echo ($arr['tb_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixYY readPage" id="tb_prefixYY" name="tb_sample_code_prefix" title="Enter Prefix" value="<?php echo $sPrefixYY; ?>" /> YY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_auto_generate_mmyy" name="tb_sample_code" value="MMYY" <?php echo ($arr['tb_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixMMYY readPage" id="tb_prefixMMYY" name="tb_sample_code_prefix" title="Enter Prefix" value="<?php echo $sPrefixMMYY; ?>" /> MMYY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_auto_generate" name="tb_sample_code" value="auto" <?php echo ($arr['tb_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="tb_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_auto_generate2" name="tb_sample_code" value="auto2" <?php echo ($arr['tb_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="tb_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> Auto 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_numeric" name="tb_sample_code" value="numeric" <?php echo ($arr['tb_sample_code'] == 'numeric') ? 'checked' : ''; ?>> Numeric&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_alpha_numeric" name="tb_sample_code" value="alphanumeric" <?php echo ($arr['tb_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> Alpha Numeric
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div id="tb_auto-sample-eg" class="row" style="display:<?php echo ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+										<div class="col-md-12" style="text-align:center;">
+											<code id="tb_auto-sample-code" class="tb_autoSample" style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
+												eg. Province Code+Year+Month+Date+Increment Counter
+											</code>
+											<code id="tb_auto-sample-code2" class="tb_autoSample" style="display:<?php echo ($arr['tb_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
+												eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)
+											</code>
+											<code id="tb_auto-sample-code-MMYY" class="tb_autoSample" style="display:<?php echo ($arr['tb_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
+												eg. Prefix+Month+Year+Increment Counter (C190517999)
+											</code>
+											<code id="tb_auto-sample-code-YY" class="tb_autoSample" style="display:<?php echo ($arr['tb_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
+												eg. Prefix+Year+Increment Counter (C1917999)
+											</code>
+										</div>
+									</div><br />
+
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="tb_min_length" class="col-lg-2 control-label">Minimum Sample Code Length <span class="mandatory " style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<div class="col-lg-4">
+													<input type="text" class="form-control readPage checkNum isNumeric <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="tb_min_length" name="tb_min_length" <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="Min" title="Please enter sample code min length" value="<?php echo ($arr['tb_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
+												</div>
+												<label for="tb_max_length" class="col-lg-2 control-label">Maximum Sample Code Length <span class="mandatory " style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<div class="col-lg-4">
+													<input type="text" class="form-control readPage checkNum isNumeric <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="tb_max_length" name="tb_max_length" <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="Max" title="Please enter sample code max length" value="<?php echo ($arr['tb_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<?php if (isset($arr['tb_tests_table_in_results_pdf']) && $arr['tb_tests_table_in_results_pdf'] != '') { ?>
+													<label for="tbTestsTableInResultsPdf" class="col-lg-2 control-label">Show Tb Tests table in Results PDF<span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select name="tbTestsTableInResultsPdf" id="tbTestsTableInResultsPdf" class="form-control readPage isRequired" title="Please select tb Tests method in Results Pdf">
+															<option value="">-- Select --</option>
+															<option value='yes' <?php echo ($arr['tb_tests_table_in_results_pdf'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+															<option value='no' <?php echo ($arr['tb_tests_table_in_results_pdf'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+														</select>
+													</div>
+												<?php }
+												if (isset($arr['tb_negative']) && $arr['tb_negative'] != '') { ?>
+													<label for="tbNegative" class="col-lg-2 control-label">Tb Negative<span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<input value="<?php echo $arr['tb_negative']; ?>" name="tbNegative" id="tbNegative" type="text" class="form-control readPage" placeholder="Sample code prefix" title="Please enter sample code prefix" />
+													</div>
+												<?php } ?>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<?php if (isset($arr['tb_positive']) && $arr['tb_positive'] != '') { ?>
+													<label for="tbPositive" class="col-lg-2 control-label">Tb Positive<span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<input value="<?php echo $arr['tb_positive']; ?>" id="tbPositive" name="tbPositive" type="text" class="form-control readPage" placeholder="Sample code prefix" title="Please enter sample code prefix" />
+													</div>
+												<?php } ?>
+											</div>
+											<?php if (isset($arr['lock_approved_tb_samples']) && $arr['lock_approved_tb_samples'] != '') { ?>
+												<div class="form-group">
+													<label for="lockApprovedTbSamples" class="col-lg-2 control-label">Lock Approved Tb Samples<span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<select id="lockApprovedTbSamples" name="lockApprovedTbSamples" type="text" class="form-control readPage" title="Please select lock approved sample">
+															<option value="">--Select--</option>
+															<option value="yes" <?php echo (isset($arr['lock_approved_tb_samples']) && $arr['lock_approved_tb_samples'] == 'yes') ? "selected='selected'" : ''; ?>>Yes</option>
+															<option value="no" <?php echo (isset($arr['lock_approved_tb_samples']) && $arr['lock_approved_tb_samples'] == 'no') ? "selected='selected'" : ''; ?>>No</option>
+														</select>
+													</div>
+												</div>
+											<?php } ?>
+										</div>
+									</div>
+
+									<?php if (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="tbReportQrCode" class="col-lg-2 control-label">Tb Report QR Code</label>
+													<div class="col-lg-4">
+														<select id="tbReportQrCode" name="tbReportQrCode" type="text" class="form-control readPage" title="Please select report QR code yes/no?">
+															<option value="">--Select--</option>
+															<option value="yes" <?php echo (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] == 'yes') ? "selected='selected'" : ''; ?>>Yes</option>
+															<option value="no" <?php echo (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] == 'no') ? "selected='selected'" : ''; ?>>No</option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } ?>
 								</div>
 							</div>
 						<?php } ?>
@@ -1324,25 +1457,65 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 		}
 	});
 
+	$("input:radio[name=tb_sample_code]").click(function() {
+		if (this.value == 'MMYY' || this.value == 'YY') {
+			$('#tb_auto-sample-eg').show();
+			$('.tb_autoSample').hide();
+			if (this.value == 'MMYY') {
+				$('#tb_auto-sample-code-MMYY').show();
+			} else {
+				$('#tb_auto-sample-code-YY').show();
+			}
+			$('#tb_min_length').val('');
+			$('.tb_minlth').hide();
+			$('#tb_min_length').removeClass('isRequired');
+			$('#tb_min_length').prop('readonly', true);
+			$('#tb_max_length').val('');
+			$('.tb_maxlth').hide();
+			$('#tb_max_length').removeClass('isRequired');
+			$('#tb_max_length').prop('readonly', true);
+		} else if (this.value == 'auto') {
+			$('.tb_autoSample').hide();
+			$('#tb_auto-sample-eg').show();
+			$('#tb_auto-sample-code').show();
+			$('#tb_min_length').val('');
+			$('.tb_minlth').hide();
+			$('#tb_min_length').removeClass('isRequired');
+			$('#min_length').prop('readonly', true);
+			$('#tb_max_length').val('');
+			$('.tb_maxlth').hide();
+			$('#tb_max_length').removeClass('isRequired');
+			$('#tb_max_length').prop('readonly', true);
+			$('.tb_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
+		} else if (this.value == 'auto2') {
+			$('.tb_autoSample').hide();
+			$('#tb_auto-sample-eg').show();
+			$('#tb_auto-sample-code2').show();
+			$('#tb_min_length').val('');
+			$('.tb_minlth').hide();
+			$('#tb_min_length').removeClass('isRequired');
+			$('#tb_min_length').prop('readonly', true);
+			$('#tb_max_length').val('');
+			$('.tb_maxlth').hide();
+			$('#tb_max_length').removeClass('isRequired');
+			$('#tb_max_length').prop('readonly', true);
+			$('.tb_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
+		} else {
+			$('#tb_auto-sample-eg').hide();
+			$('.tb_minlth').show();
+			$('#tb_min_length').addClass('isRequired');
+			$('#tb_min_length').prop('readonly', false);
+			$('.tb_maxlth').show();
+			$('#tb_max_length').addClass('isRequired');
+			$('#tb_max_length').prop('readonly', false);
+			$('.tb_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
+		}
+	});
+
 	function makeReadonly(id1, id2) {
 		$("#" + id1).val('');
 		$("#" + id1).attr("disabled", 'disabled').removeClass('isRequired');
 		$("#" + id2).attr("disabled", false).addClass('isRequired');
 	}
-
-	// $("#vl_form").on('change', function() {
-	// 	$('input[name="sample_code"]:radio').prop('checked', false);
-	// 	$('.autoSample').hide();
-	// 	$('#auto-sample-eg').hide();
-	// 	if (this.value == 5) {
-	// 		$('#auto_generate2,#auto2').show();
-	// 		$('#auto1').html('Auto 1');
-	// 	} else {
-	// 		$('#auto_generate2,#auto2').hide();
-	// 		$('#auto1').html('Auto');
-	// 	}
-	// });
 </script>
-<?php
-include(APPLICATION_PATH . '/footer.php');
-?>
+<?php include(APPLICATION_PATH . '/footer.php'); ?>
