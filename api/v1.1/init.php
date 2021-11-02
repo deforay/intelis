@@ -44,7 +44,7 @@ if (empty($user) || empty($user['user_id'])) {
 }
 /* Status name list */
 $statusList = array();
-$tsQuery = "SELECT * FROM r_sample_status where status = 'active'";
+$tsQuery = "SELECT status_id, status_name FROM r_sample_status where status = 'active'";
 $tsResult = $db->rawQuery($tsQuery);
 foreach ($tsResult as $row) {
     $statusList[$row['status_id']] = $row['status_name'];
@@ -53,21 +53,21 @@ foreach ($tsResult as $row) {
 $status = false;
 /* Funding Source List */
 $fundingSourceList = array();
-$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
+$fundingSourceQry = "SELECT funding_source_id, funding_source_name FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceResult = $db->query($fundingSourceQry);
 foreach ($fundingSourceResult as $funding) {
     $fundingSourceList[$funding['funding_source_id']] = $funding['funding_source_name'];
 }
 /* Implementing Partner Details */
 $implementingPartnerList = array();
-$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
+$implementingPartnerQry = "SELECT i_partner_id, i_partner_name FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerResult = $db->query($implementingPartnerQry);
 foreach ($implementingPartnerResult as $key => $ip) {
     $implementingPartnerList[$key]['value'] = strtolower(str_replace(" ", "-", $ip['i_partner_id']));
     $implementingPartnerList[$key]['show'] = $ip['i_partner_name'];
 }
 /* Nationality Details */
-$nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
+$nationalityQry = "SELECT iso_name, iso3, id FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
 foreach ($nationalityResult as $key => $nrow) {
     $nationalityList[$key]['show'] = ucwords($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
@@ -180,7 +180,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
-        $rejectionQuery = "SELECT * FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
+        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
@@ -203,11 +203,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $labTechniciansList[$labTech['user_id']] = ucwords($labTech['user_name']);
     }
 
-    $data['covid19']['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
+    // $data['covid19']['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
     $data['covid19']['resultsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Results());
     $data['covid19']['symptomsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Symptoms());
     $data['covid19']['comorbiditiesList'] = $app->generateSelectOptions($covid19Obj->getCovid19Comorbidities());
-    $data['covid19']['sampleStatusList'] = $app->generateSelectOptions($statusList);
+    // $data['covid19']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
     /* Get covid-19 tests */
     $data['covid19']['covid19Tests'] = $covid19Obj->getCovid19TestsByFormId();
@@ -229,9 +229,9 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     $data['eid']['districtList'] = $app->getDistrictDetails($user['user_id'], true);
     /* Health Facility Details */
     // $data['eid']['healthFacilitiesList'] = $app->getAppHealthFacilities('eid', $user['user_id'], true, 1, true);
-    $data['eid']['implementingPartnerList'] = $implementingPartnerList;
-    $data['eid']['fundingSourceList'] = $app->generateSelectOptions($fundingSourceList);
-    $data['eid']['nationalityList'] = $nationalityList;
+    // $data['eid']['implementingPartnerList'] = $implementingPartnerList;
+    // $data['eid']['fundingSourceList'] = $app->generateSelectOptions($fundingSourceList);
+    // $data['eid']['nationalityList'] = $nationalityList;
     // $data['eid']['testingLabsList'] = $app->getTestingLabs('eid', null, true);
 
     /* Infant and Mother's Health Information Section */
@@ -262,7 +262,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
-        $rejectionQuery = "SELECT * FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
+        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
@@ -279,9 +279,9 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     }
     $data['eid']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
 
-    $data['eid']['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
+    // $data['eid']['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
     $data['eid']['resultsList'] = $app->generateSelectOptions($eidObj->getEidResults());
-    $data['eid']['sampleStatusList'] = $app->generateSelectOptions($statusList);
+    // $data['eid']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
     $data['eid']['statusFilterList'] = array(
         array('value' => '7', 'show' => 'Approved'),
@@ -297,7 +297,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     /* SAMPLE INFORMATION SECTION */
     $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes());
     /* Current regimen */
-    $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
+    $aQuery = "SELECT art_code FROM r_vl_art_regimen where art_status ='active'";
     $aResult = $db->query($aQuery);
 
     $regimenResult = array();
@@ -319,7 +319,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
-        $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
+        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
