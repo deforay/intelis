@@ -659,8 +659,9 @@ foreach ($rejectionTypeResult as $type) {
 			$.post("/import-result/updateAllSampleStatus.php", {},
 				function(data) {
 					oTable.fnDraw();
+					$.unblockUI();
 				});
-			$.unblockUI();
+			
 		} else {
 			oTable.fnDraw();
 		}
