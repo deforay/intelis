@@ -149,7 +149,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <!-- <tr> -->
                                         <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                         <td>
-                                            <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
+                                            <select name="labId" id="labId" class="form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
                                                 <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                             </select>
                                         </td>
@@ -395,7 +395,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th>Is Sample Rejected ?</th>
                                             <td>
-                                                <select class=" form-control" name="isSampleRejected" id="isSampleRejected">
+                                                <select class=" form-control" name="isSampleRejected" id="isSampleRejected" title="Please select if the sample is rejected or not">
                                                     <option value=''> -- Select -- </option>
                                                     <option value="yes"> Yes </option>
                                                     <option value="no" /> No </option>
@@ -404,7 +404,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                             <th class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for sample rejection">
                                                     <option value=''> -- Select -- </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
@@ -413,13 +413,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <td style="width:25%;"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th>Result</th>
                                             <td>
-                                                <select class="form-control" name="result" id="result">
+                                                <select class="form-control" name="result" id="result" title="Please select the test result">
                                                     <option value=''> -- Select -- </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
@@ -435,12 +435,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <th>Reviewed on</td>
-                                            <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+                                            <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter reviewed on" /></td>
                                         </tr>
                                         <tr>
                                             <th>Tested By</th>
                                             <td>
-                                                <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
+                                                <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by">
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['tested_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -454,7 +454,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <td style="width:25%;"><label for="">Approved On </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" value="<?php $general->humanDateFormat($general->getDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+                                                <input type="text" value="<?php $general->humanDateFormat($general->getDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on"/>
                                             </td>
                                         </tr>
                                     </table>
