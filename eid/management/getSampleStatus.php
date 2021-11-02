@@ -89,18 +89,18 @@ $tResult = $db->rawQuery($tQuery);
 //HVL and LVL Samples
 
 $vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
-                                SUM(CASE
-                                        WHEN (vl.result = 'positive') THEN 1
-                                            ELSE 0
-                                        END) AS positiveResult,
-                                (SUM(CASE
-                                        WHEN (vl.result = 'negative') THEN 1
-                                            ELSE 0
-                                        END)) AS negativeResult,
-                                status_id,
-                                status_name 
-                                
-                                FROM eid_form as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+		SUM(CASE
+				WHEN (vl.result = 'positive') THEN 1
+					ELSE 0
+				END) AS positiveResult,
+		(SUM(CASE
+				WHEN (vl.result = 'negative') THEN 1
+					ELSE 0
+				END)) AS negativeResult,
+		status_id,
+		status_name 
+		
+		FROM eid_form as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
 
 $sWhere = " AND (vl.result!='' and vl.result is not null) ";
 
@@ -128,29 +128,28 @@ if ($start_date == '' && $end_date == '') {
 }
 $tatSampleQuery = "SELECT 
         count(*) as 'totalSamples',
-                        DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
-                        ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) as daydiff,
-                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
-                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_vl_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
-                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
-                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
-                        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
+		DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
+		ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) as daydiff,
+		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
+		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_vl_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
+		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
+		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
+		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
 
-                        FROM eid_form as vl 
-                        INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                        JOIN facility_details as f ON vl.lab_id=f.facility_id 
-                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                        WHERE 
-                        vl.result is not null
-                        AND vl.result != ''
-                        AND DATE(vl.sample_tested_datetime) >= '$start_date'
-                        AND DATE(vl.sample_tested_datetime) <= '$end_date'
-                        AND vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+		FROM eid_form as vl 
+		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+		JOIN facility_details as f ON vl.lab_id=f.facility_id 
+		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+		WHERE 
+		vl.result is not null
+		AND vl.result != ''
+		AND DATE(vl.sample_tested_datetime) >= '$start_date'
+		AND DATE(vl.sample_tested_datetime) <= '$end_date'
+		AND vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
 $sWhere = '';
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 	$sWhere .= ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-
 
 if (!empty($_POST['labName'])) {
 	$sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
