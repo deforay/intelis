@@ -133,7 +133,7 @@ if ($table == "eid_form") {
     $accessionQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(vl_sample_id) as `count` FROM ' . $table . ' as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE ' . $vlWhereCondition . ' DATE(vl.sample_collection_date) <= "' . $cDate . '" AND DATE(vl.sample_collection_date) >= "' . $lastSevenDay . '" AND vl.vlsm_country_id = "' . $configFormResult[0]['value'] . '" group by `collection_date` order by `collection_date`';
 }
 
-$accessionQuery;
+
 $tRes = $db->rawQuery($accessionQuery); //overall result
 $tResult = array();
 foreach ($tRes as $tRow) {
