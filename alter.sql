@@ -2555,3 +2555,9 @@ INSERT INTO `r_tb_results` (`result_id`, `result`, `status`, `updated_datetime`,
 -- Thana 02-Oct-2021
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('TB Sample Code Format', 'tb_sample_code', 'MMYY', 'tb', 'yes', '2021-11-02 17:48:32', NULL, 'active'), ('TB Sample Code Prefix', 'tb_sample_code_prefix', 'TB', 'tb', 'yes', '2021-11-02 17:48:32', NULL, 'active');
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('TB Minimum Length', 'tb_min_length', NULL, 'tb', 'yes', '2021-11-02 18:16:53', NULL, 'active'), ('TB Maximum Length', 'tb_max_length', NULL, 'tb', 'yes', '2021-11-02 18:16:53', NULL, 'active');
+
+-- Thana 03-Oct-2021
+DELETE FROM `resources` WHERE `resources`.`resource_id` = 'move-samples';
+DELETE FROM `privileges` WHERE `privileges`.`resource_id` = 'move-samples';
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('move-samples', 'common', 'Move Samples');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'move-samples', 'sampleList.php', 'Access'), (NULL, 'move-samples', 'addSampleList.php', 'Add Samples List'), (NULL, 'move-samples', 'editSampleList.php', 'Edit Samples List');
