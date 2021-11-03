@@ -131,12 +131,15 @@ try {
         $vlData['remote_sample_code'] = "";
         $vlData['sample_code'] = "";
 
-        if ($roleUser['access_type'] != 'testing-lab') {
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $vlData['remote_sample_code'] = $sampleData['sampleCode'];
             $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
             $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $vlData['remote_sample'] = 'yes';
             $vlData['result_status'] = 9;
+            if ($roleUser['access_type'] == 'testing-lab') {
+                $vlData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
+            }
         } else {
             $vlData['sample_code'] = $sampleData['sampleCode'];
             $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];

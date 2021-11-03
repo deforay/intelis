@@ -125,12 +125,15 @@ try {
         $eidData['remote_sample_code'] = "";
         $eidData['sample_code'] = "";
 
-        if ($roleUser['access_type'] != 'testing-lab') {
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $eidData['remote_sample_code'] = $sampleData['sampleCode'];
             $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
             $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $eidData['remote_sample'] = 'yes';
             $eidData['result_status'] = 9;
+            if ($roleUser['access_type'] == 'testing-lab') {
+                $eidData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
+            }
         } else {
             $eidData['sample_code'] = $sampleData['sampleCode'];
             $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
