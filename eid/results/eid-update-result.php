@@ -135,7 +135,7 @@ require_once($fileArray[$arr['vl_form']]);
 ?>
 
 <script>
-	function changeFun() {
+	function updateSampleResult() {
 		if ($('#isSampleRejected').val() == "yes") {
 			$('.rejected').show();
 			$('#sampleRejectionReason').addClass('isRequired');
@@ -165,9 +165,9 @@ require_once($fileArray[$arr['vl_form']]);
 			width: '100%',
 			placeholder: "Select Approved By"
 		});
-		changeFun();
+		updateSampleResult();
 		$("#isSampleRejected,#result").on("change", function() {
-			changeFun();
+			updateSampleResult();
 		});
 
 		$('.date').datepicker({

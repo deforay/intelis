@@ -87,29 +87,30 @@ require_once($fileArray[$arr['vl_form']]);
 ?>
 
 <script>
-    function changeFun() {
-        if ($('#isSampleRejected').val() == "yes") {
-            $('.rejected').show();
-            $('#sampleRejectionReason').addClass('isRequired');
-            $('#sampleTestedDateTime,#result').val('');
-            $('#sampleTestedDateTime,#result').removeClass('isRequired');
-        } else {
-            $('.rejected').hide();
-            $('#sampleRejectionReason').removeClass('isRequired');
-            $('#sampleTestedDateTime').addClass('isRequired');
-        }
+    function updateSampleResult() {
+		if ($('#isSampleRejected').val() == "yes") {
+			$('.rejected').show();
+			$('#sampleRejectionReason').addClass('isRequired');
+			$('#sampleTestedDateTime,#result').val('');
+			$('#sampleTestedDateTime,#result').removeClass('isRequired');
+		} else {
+			$('.rejected').hide();
+			$('#sampleRejectionReason').removeClass('isRequired');
+			$('#sampleTestedDateTime').addClass('isRequired');
+			$('#result').addClass('isRequired');
+		}
 
-        if ($('#result').val() == "") {
-            $('#sampleTestedDateTime').removeClass('isRequired');
-        } else {
-            $('#sampleTestedDateTime').addClass('isRequired');
-        }
-    }
+		// if ($('#result').val() == "") {
+		// 	$('#sampleTestedDateTime').removeClass('isRequired');
+		// } else {
+		// 	$('#sampleTestedDateTime').addClass('isRequired');
+		// }
+	}
 
     $(document).ready(function() {
 
         $("#isSampleRejected,#result").on("change", function() {
-            changeFun();
+            updateSampleResult();
         });
 
         $('.date').datepicker({
