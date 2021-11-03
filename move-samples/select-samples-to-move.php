@@ -49,7 +49,7 @@ foreach ($fResult as $fDetails) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> Create Move Sample List</h1>
+		<h1><i class="fa fa-edit"></i> Select Samples to Move</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
 			<li class="active">Sample List</li>
@@ -134,7 +134,7 @@ foreach ($fResult as $fDetails) {
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="addSampleList" id="addSampleList" autocomplete="off" action="addSampleListHelper.php">
+				<form class="form-horizontal" method="post" name="selectSamplesToMove" id="selectSamplesToMove" autocomplete="off" action="select-samples-to-move-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -190,7 +190,7 @@ foreach ($fResult as $fDetails) {
 						<input type="hidden" name="testTypeId" id="testTypeId" />
 						<input type="hidden" name="labId" id="labId" title="Please choose lab from name" />
 						<a id="sampleSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save</a>
-						<a href="sampleList.php" class="btn btn-default"> Cancel</a>
+						<a href="move-samples.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -248,8 +248,11 @@ foreach ($fResult as $fDetails) {
 	});
 
 	function validateNow() {
+		if (!confirm("Are you sure you want to move the selected samples? This action cannot be undone.")) {
+			return false;
+		}
 		flag = deforayValidator.init({
-			formId: 'addSampleList'
+			formId: 'selectSamplesToMove'
 		});
 		$("#labId").val($("#labName").val());
 		$("#testTypeId").val($("#testType").val());
@@ -261,7 +264,7 @@ foreach ($fResult as $fDetails) {
 		}
 		if (flag) {
 			$.blockUI();
-			document.getElementById('addSampleList').submit();
+			document.getElementById('selectSamplesToMove').submit();
 		}
 	}
 
@@ -334,7 +337,7 @@ foreach ($fResult as $fDetails) {
 		var fName = $("#facilityName").val();
 		var scDate = $("#sampleCollectionDate").val();
 		if (lName != "" && testType != "") {
-			$.post("/move-samples/getMoveSampleCodeDetails.php", {
+			$.post("/move-samples/get-move-samples-codes.php", {
 					lName: lName,
 					testType: testType,
 					pName: pName,

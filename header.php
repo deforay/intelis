@@ -552,9 +552,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset($_SESSION['privileges']) && in_array("sampleList.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && in_array("move-samples.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview facility-config-menu">
-										<a href="/move-samples/sampleList.php"><i class="fa fa-hospital-o"></i> Move Samples</a>
+										<a href="/move-samples/move-samples.php"><i class="fa fa-hospital-o"></i> Move Samples</a>
 									</li>
 								<?php } ?>
 							</ul>

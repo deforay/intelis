@@ -64,7 +64,7 @@ try {
     } else {
         $_SESSION['alertMsg'] = "Something went wrong!";
     }
-    header("location:sampleList.php");
+    header("location:move-samples.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

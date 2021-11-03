@@ -2560,4 +2560,4 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 DELETE FROM `resources` WHERE `resources`.`resource_id` = 'move-samples';
 DELETE FROM `privileges` WHERE `privileges`.`resource_id` = 'move-samples';
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('move-samples', 'common', 'Move Samples');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'move-samples', 'sampleList.php', 'Access'), (NULL, 'move-samples', 'addSampleList.php', 'Add Samples List'), (NULL, 'move-samples', 'editSampleList.php', 'Edit Samples List');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'move-samples', 'move-samples.php', 'Access'), (NULL, 'move-samples', 'select-samples-to-move.php', 'Add Move Samples');
