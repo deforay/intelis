@@ -209,8 +209,6 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $data['covid19']['comorbiditiesList'] = $app->generateSelectOptions($covid19Obj->getCovid19Comorbidities());
     // $data['covid19']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
-    /* Get covid-19 tests */
-    $data['covid19']['covid19Tests'] = $covid19Obj->getCovid19TestsByFormId();
     $data['covid19']['statusFilterList'] = array(
         array('value' => '7', 'show' => 'Approved'),
         array('value' => '1', 'show' => 'Pending'),

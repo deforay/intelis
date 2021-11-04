@@ -70,8 +70,19 @@ class App
     public function getAppHealthFacilities($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null)
     {
         $facilityDb = new \Vlsm\Models\Facilities($this->db);
-        $query = "SELECT hf.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, pd.province_id, pd.province_name
-                    from health_facilities AS hf 
+        $query = "SELECT hf.test_type, 
+                        f.facility_id, 
+                        f.facility_name, 
+                        f.facility_code, f.other_id, 
+                        f.facility_state_id, 
+                        f.facility_state, 
+                        f.facility_district_id, 
+                        f.facility_district, 
+                        f.testing_points, 
+                        f.status, 
+                        pd.province_id, 
+                        pd.province_name
+                    FROM health_facilities AS hf 
                     INNER JOIN facility_details as f ON hf.facility_id=f.facility_id
                     INNER JOIN province_details as pd ON pd.province_name=f.facility_state";
         $where = "";
@@ -124,7 +135,7 @@ class App
             }
             $where .= " f.facility_type = '$facilityType'";
         }
-        $where .= ' GROUP BY facility_name ORDER BY facility_name ASC';
+        $where .= ' GROUP BY facility_name ORDER BY facility_name ASC ';
         $query .= $where;
         $result = $this->db->rawQuery($query);
         foreach ($result as $key => $row) {

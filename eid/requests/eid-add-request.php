@@ -100,11 +100,11 @@ require_once($fileArray[$arr['vl_form']]);
 			$('#result').addClass('isRequired');
 		}
 
-		// if ($('#result').val() == "") {
-		// 	$('#sampleTestedDateTime').removeClass('isRequired');
-		// } else {
-		// 	$('#sampleTestedDateTime').addClass('isRequired');
-		// }
+		if ($('#result').val() == "") {
+			$('#sampleTestedDateTime').removeClass('isRequired');
+		} else {
+			$('#sampleTestedDateTime').addClass('isRequired');
+		}
 	}
 
     $(document).ready(function() {
