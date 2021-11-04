@@ -130,10 +130,7 @@ try {
             $covid19Data['remote_sample'] = 'yes';
             $covid19Data['result_status'] = 9;
             if ($roleUser['access_type'] == 'testing-lab') {
-                $covid19Data['sample_code'] = $sampleData['sampleCode'];
-                $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $covid19Data['result_status'] = 6;
+                $covid19Data['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
             }
         } else {
             $covid19Data['sample_code'] = $sampleData['sampleCode'];
@@ -221,7 +218,7 @@ try {
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $data['formId'],
             'unique_id'                           => isset($data['uniqueId']) ? $data['uniqueId'] : null,
-            'app_sample_code'               => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
+            'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'external_sample_code'                => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,
             'investogator_name'                   => !empty($data['investigatorName']) ? $data['investigatorName'] : null,

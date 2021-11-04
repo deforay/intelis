@@ -20,8 +20,8 @@ include_once(APPLICATION_PATH . '/header.php');
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("addSampleList.php", $_SESSION['privileges'])) { ?>
-							<a href="addSampleList.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add Sample List</a>
+						<?php if (isset($_SESSION['privileges']) && in_array("select-samples-to-move.php", $_SESSION['privileges'])) { ?>
+							<a href="select-samples-to-move.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add Sample List</a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
 					</div>
@@ -36,9 +36,6 @@ include_once(APPLICATION_PATH . '/header.php');
 									<th>Reason For Moving</th>
 									<th>Approved By</th>
 									<th>Added On</th>
-									<?php if (isset($_SESSION['privileges']) && in_array("editSampleList.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] == 'remoteuser')) { ?>
-										<th>Action</th>
-									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
@@ -92,19 +89,14 @@ include_once(APPLICATION_PATH . '/header.php');
 				},
 				{
 					"sClass": "center"
-				},
-				<?php if (isset($_SESSION['privileges']) && in_array("editSampleList.php", $_SESSION['privileges']) && (($sarr['sc_user_type'] == 'remoteuser') || ($sarr['sc_user_type'] == 'standalone'))) { ?> {
-						"sClass": "center",
-						"bSortable": false
-					},
-				<?php } ?>
+				}
 			],
 			"aaSorting": [
 				[0, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "getMovedSampleListDetails.php",
+			"sAjaxSource": "get-moved-samples-lists.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
