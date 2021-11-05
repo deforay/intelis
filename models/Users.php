@@ -270,8 +270,15 @@ class Users
     }
 
     public function userHistoryLog($loginId,$credentialJson)
-    {
-        // print_r($loginId);die;
+    { 
+        $loginStatus = '';
+        if($loginId !="")
+        {
+            $loginStatus = 'Yes';
+        }
+        else {
+            $loginStatus = 'No';
+        }
         $general = new \Vlsm\Models\General($this->db);
         $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
@@ -295,7 +302,7 @@ class Users
         $data = array(
             'login_id' => $loginId,
             'login_attempted_datetime' => $general->getDateTime(),
-            'login_status' => 'Login',
+            'login_status' => $loginStatus,
             'credential' => $credentialJson,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,
