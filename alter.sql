@@ -2562,6 +2562,9 @@ DELETE FROM `privileges` WHERE `privileges`.`resource_id` = 'move-samples';
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('move-samples', 'common', 'Move Samples');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'move-samples', 'move-samples.php', 'Access'), (NULL, 'move-samples', 'select-samples-to-move.php', 'Add Move Samples');
 
+-- Amit 04 Nov 2021
+DELETE FROM roles_privileges_map where roles_privileges_map.privilege_id NOT IN (SELECT privileges.privilege_id from privileges);
+
 -- Thana 05-Oct-2021
 ALTER TABLE `r_tb_results` ADD `result_type` VARCHAR(256) NULL DEFAULT NULL AFTER `result`;
 INSERT INTO `r_tb_results` (`result_id`, `result`, `result_type`, `status`, `updated_datetime`, `data_sync`) VALUES (NULL, 'Negative', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'Positive', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'Invalid', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'N (MTB not detected)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'T (MTB detected rifampicin resistance not detected)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'TI (MTB detected rifampicin resistance indeterminate)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'RR (MTB detected rifampicin resistance detected)', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'TT (MTB detected (Trace) rifampicin resistance indeterminate)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'I (Invalid/Error/No result)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0');
@@ -2578,4 +2581,17 @@ CREATE TABLE `tb_tests` (
  KEY `tb_id` (`tb_id`),
  CONSTRAINT `tb_tests_ibfk_1` FOREIGN KEY (`tb_id`) REFERENCES `form_tb` (`tb_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
-ALTER TABLE `form_tb` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+-- Sakthivel 05-11-2021
+
+CREATE TABLE `user_login_history` (
+  `history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `login_id` varchar (1000) DEFAULT NULL,
+  `login_attempted_datetime` datetime DEFAULT NULL,
+  `login_status` varchar (1000) DEFAULT NULL,
+  `credential` JSON NULL DEFAULT NULL,
+  `ip_address` varchar (1000) DEFAULT NULL,
+  `browser` varchar (1000),
+  `operating_system` varchar (1000) DEFAULT NULL,
+   PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

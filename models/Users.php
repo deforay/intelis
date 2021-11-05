@@ -268,4 +268,48 @@ class Users
         $query = "SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE user_id = ?";
         return $this->db->rawQueryOne($query, array($userId));
     }
+
+    public function userHistoryLog($loginId,$credentialJson)
+    { 
+        $loginStatus = '';
+        if($loginId !="")
+        {
+            $loginStatus = 'Yes';
+        }
+        else {
+            $loginStatus = 'No';
+        }
+        $general = new \Vlsm\Models\General($this->db);
+        $ipaddress = '';
+        $browserAgent = $_SERVER['HTTP_USER_AGENT'];
+        $os = PHP_OS;
+        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        } else if (isset($_SERVER['REMOTE_ADDR'])) {
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
+        } else {
+            $ipaddress = 'UNKNOWN';
+        }
+
+        $data = array(
+            'login_id' => $loginId,
+            'login_attempted_datetime' => $general->getDateTime(),
+            'login_status' => $loginStatus,
+            'credential' => $credentialJson,
+            'ip_address' => $ipaddress,
+            'browser'    => $browserAgent,
+            'operating_system' =>$os
+        );
+        // print_r($data);die;
+
+        $this->db->insert('user_login_history', $data);
+    }
 }

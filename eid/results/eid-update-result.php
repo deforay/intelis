@@ -141,18 +141,26 @@ require_once($fileArray[$arr['vl_form']]);
 			$('#sampleRejectionReason').addClass('isRequired');
 			$('#sampleTestedDateTime,#result').val('');
 			$('#sampleTestedDateTime,#result').removeClass('isRequired');
-		} else {
+		} else if ($('#isSampleRejected').val() == "no") {
 			$('.rejected').hide();
 			$('#sampleRejectionReason').removeClass('isRequired');
 			$('#sampleTestedDateTime').addClass('isRequired');
 			$('#result').addClass('isRequired');
+		} else {
+			$('.rejected').hide();
+			$('#sampleRejectionReason').removeClass('isRequired');
+			$('#sampleTestedDateTime').removeClass('isRequired');
+			$('#result').removeClass('isRequired');
 		}
 
 		if ($('#result').val() == "") {
 			$('#sampleTestedDateTime').removeClass('isRequired');
+			$('#result').removeClass('isRequired');
 		} else {
 			$('#sampleTestedDateTime').addClass('isRequired');
+			$('#result').addClass('isRequired');
 		}
+
 	}
 
 	$(document).ready(function() {
@@ -209,4 +217,3 @@ require_once($fileArray[$arr['vl_form']]);
 
 <?php
 include(APPLICATION_PATH . '/footer.php');
-?>
