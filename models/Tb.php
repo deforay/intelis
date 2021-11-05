@@ -177,9 +177,13 @@ class Tb
     }
 
 
-    public function getTbResults()
+    public function getTbResults($type)
     {
-        $results = $this->db->rawQuery("SELECT result_id,result FROM r_tb_results where status='active' ORDER BY result_id DESC");
+        if ($type != "") {
+            $results = $this->db->rawQuery("SELECT result_id,result FROM r_tb_results where status='active' AND result_type = ? ORDER BY result_id DESC", $type);
+        } else {
+            $results = $this->db->rawQuery("SELECT result_id,result FROM r_tb_results where status='active' ORDER BY result_id DESC");
+        }
         $response = array();
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
