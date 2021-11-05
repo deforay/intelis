@@ -2561,3 +2561,17 @@ DELETE FROM `resources` WHERE `resources`.`resource_id` = 'move-samples';
 DELETE FROM `privileges` WHERE `privileges`.`resource_id` = 'move-samples';
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('move-samples', 'common', 'Move Samples');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'move-samples', 'move-samples.php', 'Access'), (NULL, 'move-samples', 'select-samples-to-move.php', 'Add Move Samples');
+
+-- Sakthivel 05-11-2021
+
+CREATE TABLE `user_login_history` (
+  `history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `login_id` varchar (1000) DEFAULT NULL,
+  `login_attempted_datetime` datetime DEFAULT NULL,
+  `login_status` varchar (1000) DEFAULT NULL,
+  `credential` JSON NULL DEFAULT NULL,
+  `ip_address` varchar (1000) DEFAULT NULL,
+  `browser` varchar (1000),
+  `operating_system` varchar (1000) DEFAULT NULL,
+   PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
