@@ -236,7 +236,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</td>
 									</tr>
 									<tr>
-										<th><label for="typeOfPatient">Type of patient</label></th>
+										<th><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
 										<td>
 											<select class="form-control isRequired" name="typeOfPatient" id="typeOfPatient" title="Please select the type of patient">
 												<option value=''> -- Select -- </option>

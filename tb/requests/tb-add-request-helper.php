@@ -125,6 +125,7 @@ try {
         'implementing_partner'                => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
         'funding_source'                      => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
         'patient_id'                          => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
+        'patient_type'                        => !empty($_POST['typeOfPatient']) ? $_POST['typeOfPatient'] : null,
         'patient_name'                        => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
         'patient_surname'                     => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
         'patient_dob'                         => !empty($_POST['patientDob']) ? $_POST['patientDob'] : null,

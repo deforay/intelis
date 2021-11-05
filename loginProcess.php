@@ -96,16 +96,16 @@ try {
 
             $general->activityLog($eventType, $action, $resource);
 
-            $credentialJson = json_encode(array("username"=>$username, "password"=>$password));
-            $user->userHistoryLog($admin[0]['login_id'],$credentialJson);
-    
+            $credentialJson = json_encode(array("username" => $username, "password" => $password));
+            $user->userHistoryLog($admin[0]['login_id'], $credentialJson);
+
             $_SESSION['userId'] = $admin[0]['user_id'];
             $_SESSION['userName'] = ucwords($admin[0]['user_name']);
             $_SESSION['roleCode'] = $admin[0]['role_code'];
             $_SESSION['roleId'] = $admin[0]['role_id'];
             $_SESSION['accessType'] = $admin[0]['access_type'];
             $_SESSION['email'] = $admin[0]['email'];
-            
+
             $redirect = '/error/401.php';
             //set role and privileges
             $priQuery = "SELECT p.privilege_name, rp.privilege_id, r.module FROM roles_privileges_map as rp INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id INNER JOIN resources as r ON r.resource_id=p.resource_id  where rp.role_id='" . $admin[0]['role_id'] . "'";
@@ -155,21 +155,18 @@ try {
             $_SESSION['password'] = $password;
 
             // Add user_login_history
-            if($_SESSION['user_name'] == $username && $_SESSION['password'] == $password)
-            {
-            $_SESSION['attembt'] += 1;
-            if($_SESSION['attembt'] < 3)
-            {
-            $credentialJson = json_encode(array("username"=>$username, "password"=>$password));
-            $user->userHistoryLog($admin[0]['login_id'],$credentialJson);
-            header("location:/login.php");
-            $_SESSION['alertMsg'] = "Please check your login credentials";
+            if ($_SESSION['user_name'] == $username && $_SESSION['password'] == $password) {
+                $_SESSION['attembt'] += 1;
+                if ($_SESSION['attembt'] < 3) {
+                    $credentialJson = json_encode(array("username" => $username, "password" => $password));
+                    $user->userHistoryLog($admin[0]['login_id'], $credentialJson);
+                    header("location:/login.php");
+                    $_SESSION['alertMsg'] = "Please check your login credentials";
+                } else {
+                    header("location:/login.php");
+                    $_SESSION['alertMsg'] = "You are exhausted maximum attempts. Please try to login after sometime";
+                }
             }
-            else {
-                header("location:/login.php");
-                $_SESSION['alertMsg'] = "Please try to login after sometime";
-            }
-        }
         }
     } else {
         header("location:/login.php");
