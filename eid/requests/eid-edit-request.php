@@ -163,24 +163,32 @@ require_once($fileArray[$arr['vl_form']]);
     }
 
     function updateSampleResult() {
-		if ($('#isSampleRejected').val() == "yes") {
-			$('.rejected').show();
-			$('#sampleRejectionReason').addClass('isRequired');
-			$('#sampleTestedDateTime,#result').val('');
-			$('#sampleTestedDateTime,#result').removeClass('isRequired');
-		} else {
-			$('.rejected').hide();
-			$('#sampleRejectionReason').removeClass('isRequired');
-			$('#sampleTestedDateTime').addClass('isRequired');
-			$('#result').addClass('isRequired');
-		}
+        if ($('#isSampleRejected').val() == "yes") {
+            $('.rejected').show();
+            $('#sampleRejectionReason').addClass('isRequired');
+            $('#sampleTestedDateTime,#result').val('');
+            $('#sampleTestedDateTime,#result').removeClass('isRequired');
+        } else if ($('#isSampleRejected').val() == "no") {
 
-		if ($('#result').val() == "") {
-			$('#sampleTestedDateTime').removeClass('isRequired');
-		} else {
-			$('#sampleTestedDateTime').addClass('isRequired');
-		}
-	}
+            $('.rejected').hide();
+            $('#sampleRejectionReason').removeClass('isRequired');
+            $('#sampleTestedDateTime').addClass('isRequired');
+            $('#result').addClass('isRequired');
+        } else {
+            $('.rejected').hide();
+            $('#sampleRejectionReason').removeClass('isRequired');
+            $('#sampleTestedDateTime').removeClass('isRequired');
+            $('#result').removeClass('isRequired');
+        }
+
+        if ($('#result').val() == "") {
+            $('#sampleTestedDateTime').removeClass('isRequired');
+            $('#result').removeClass('isRequired');
+        } else {
+            $('#sampleTestedDateTime').addClass('isRequired');
+            $('#result').addClass('isRequired');
+        }
+    }
     var patientSearchTimeout = null;
 
     function showPatientList(patientCode, timeOutDuration) {
