@@ -2561,3 +2561,6 @@ DELETE FROM `resources` WHERE `resources`.`resource_id` = 'move-samples';
 DELETE FROM `privileges` WHERE `privileges`.`resource_id` = 'move-samples';
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('move-samples', 'common', 'Move Samples');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'move-samples', 'move-samples.php', 'Access'), (NULL, 'move-samples', 'select-samples-to-move.php', 'Add Move Samples');
+
+-- Amit 04 Nov 2021
+DELETE FROM roles_privileges_map where roles_privileges_map.privilege_id NOT IN (SELECT privileges.privilege_id from privileges);
