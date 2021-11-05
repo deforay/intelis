@@ -109,9 +109,10 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT vl.*, f.*,  ts.status_name, b.batch_code FROM form_tb as vl 
+$sQuery = "SELECT vl.*, f.*, rtbr.result as lamResult, ts.status_name, b.batch_code FROM form_tb as vl 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+          LEFT JOIN r_tb_results as rtbr ON rtbr.result_id=vl.result 
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $start_date = '';
@@ -224,7 +225,7 @@ foreach ($rResult as $aRow) {
 
     $row[] = ucwords($aRow['facility_state']);
     $row[] = ucwords($aRow['facility_district']);
-    $row[] = ucwords($aRow['result']);
+    $row[] = ucwords($aRow['lamResult']);
     $row[] = $aRow['last_modified_datetime'];
     $row[] = ucwords($aRow['status_name']);
 

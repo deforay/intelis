@@ -25,7 +25,9 @@ if ($arr['vl_form'] == 7) {
 		$reportFormats['hepatitis'] = $general->activeReportFormats('hepatitis', $cntId['hepatitis'], null, true);
 	}
 }
-
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+	$reportFormats['tb'] = $general->activeReportFormats('tb', $cntId['tb'], null, true);
+}
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 ?>
 <style>
@@ -219,7 +221,6 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 							</div>
 						</div>
 						<div class="row">
-
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="longitude" class="col-lg-4 control-label">Longitude</label>
@@ -232,19 +233,21 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								<div class="form-group">
 									<label for="testType" class="col-lg-4 control-label">Test Type</label>
 									<div class="col-lg-7">
-
 										<select type="text" class="" id="testType" name="testType[]" title="Choose one test type" onchange="getTestType();" multiple>
 											<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
 												<option value="vl">Viral Load</option>
-											<?php } ?>
-											<?php if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
+											<?php }
+											if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
 												<option value="eid">Early Infant Diagnosis</option>
-											<?php } ?>
-											<?php if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
+											<?php }
+											if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
 												<option value="covid19">Covid-19</option>
-											<?php } ?>
-											<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
+											<?php }
+											if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
 												<option value='hepatitis'>Hepatitis</option>
+											<?php }
+											if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
+												<option value='tb'>TB</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -307,7 +310,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								</div>
 							<?php }
 							if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
-								$count = sizeof($reportFormats['covid19']); ?>
+								$count = sizeof($reportFormats['hepatitis']); ?>
 								<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 									<div class="form-group">
 										<label for="reportFormat" class="col-lg-4 control-label">Report Format For Hepatitis</label>
@@ -317,6 +320,24 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 													<option value="">-- Select --</option>
 												<?php } ?>
 												<?php foreach ($reportFormats['hepatitis'] as $key => $value) { ?>
+													<option value="<?php echo $key; ?>"><?php echo ucwords($value); ?></option>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+								</div>
+							<?php }
+							if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+								$count = sizeof($reportFormats['tb']); ?>
+								<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
+									<div class="form-group">
+										<label for="reportFormat" class="col-lg-4 control-label">Report Format For Tb</label>
+										<div class="col-lg-7">
+											<select class="form-control" name='reportFormat[tb]' id='reportFormat' title="Please select the status" onchange="checkIfExist(this);">
+												<?php if (($count > 1)) { ?>
+													<option value="">-- Select --</option>
+												<?php } ?>
+												<?php foreach ($reportFormats['tb'] as $key => $value) { ?>
 													<option value="<?php echo $key; ?>"><?php echo ucwords($value); ?></option>
 												<?php } ?>
 											</select>
@@ -381,6 +402,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 												<option value="eid">Early Infant Diagnosis</option>
 												<option value="covid19">Covid-19</option>
 												<option value='hepatitis'>Hepatitis</option>
+												<option value='tb'>Tb</option>
 											</select>
 										</td>
 										<td style="width:14%;"><input type="text" class="form-control" name="sortOrder[]" id="sortOrder1" placeholder="Display Order" title="Please enter the Display Order"></td>
@@ -571,6 +593,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 					var extraDiv = '<td></td>';
 				} else if (testType[i] == 'hepatitis') {
 					testOrg = 'Hepatitis';
+					var extraDiv = '<td></td>';
+				} else if (testType[i] == 'tb') {
+					testOrg = 'Tb';
 					var extraDiv = '<td></td>';
 				}
 				div += '<tr><td>' + testOrg + '<input type="hidden" name="testData[]" id ="testData' + i + '" value="' + testType[i] + '" /></td>';

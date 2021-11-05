@@ -69,7 +69,7 @@ $url = "/api/trackedEntityInstances.json";
 
 $jsonResponse = $dhis2->get($url, $data);
 
-if($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('No Response from API');
+if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('No Response from API');
 
 $trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
 
@@ -193,7 +193,7 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
 
-    
+
         $status = 6;
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $status = 9;

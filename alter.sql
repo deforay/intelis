@@ -2565,3 +2565,17 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 -- Thana 05-Oct-2021
 ALTER TABLE `r_tb_results` ADD `result_type` VARCHAR(256) NULL DEFAULT NULL AFTER `result`;
 INSERT INTO `r_tb_results` (`result_id`, `result`, `result_type`, `status`, `updated_datetime`, `data_sync`) VALUES (NULL, 'Negative', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'Positive', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'Invalid', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'N (MTB not detected)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'T (MTB detected rifampicin resistance not detected)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'TI (MTB detected rifampicin resistance indeterminate)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'RR (MTB detected rifampicin resistance detected)', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'TT (MTB detected (Trace) rifampicin resistance indeterminate)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'I (Invalid/Error/No result)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0');
+ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+CREATE TABLE `tb_tests` (
+ `tb_test_id` int NOT NULL AUTO_INCREMENT,
+ `tb_id` int DEFAULT NULL,
+ `actual_no` varchar(256) DEFAULT NULL,
+ `test_result` varchar(256) DEFAULT NULL,
+ `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `data_sync` int NOT NULL DEFAULT '0',
+ PRIMARY KEY (`tb_test_id`),
+ KEY `tb_id` (`tb_id`),
+ CONSTRAINT `tb_tests_ibfk_1` FOREIGN KEY (`tb_id`) REFERENCES `form_tb` (`tb_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
+ALTER TABLE `form_tb` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;

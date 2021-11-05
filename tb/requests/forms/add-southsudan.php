@@ -83,7 +83,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 	</section>
 	<!-- Main content -->
 	<section class="content">
-
 		<div class="box box-default">
 			<div class="box-header with-border">
 
@@ -99,20 +98,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">TESTING LAB INFORMATION</h3>
 								</div>
-								<!-- <div class="box-header with-border">
+								<div class="box-header with-border">
 									<h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
-								</div> -->
+								</div>
 								<table class="table" style="width:100%">
 									<tr>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-											<td><label class="label-control" for="sampleCode">Sample ID </label></td>
-											<td>
+											<th style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
+											<td style="width: 16.6%;">
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
 												<input type="hidden" id="sampleCode" name="sampleCode" />
 											</td>
 										<?php } else { ?>
-											<td><label class="label-control" for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
-											<td>
+											<th style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label><span class="mandatory">*</span></th>
+											<td style="width: 18%;">
 												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample code" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
 											</td>
 										<?php } ?>
@@ -171,7 +170,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									<tr>
 										<th><label for="requestedDate">Date of request <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control" id="requestedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date of request date" style="width:100%;" />
+											<input type="text" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date of request date" style="width:100%;" />
 										</td>
 										<th><label class="label-control" for="sno">S/No</label></th>
 										<td>
@@ -269,7 +268,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</td>
 										<th><label class="label-control" for="sampleReceivedDate">Date of Specimen Reception <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
+											<input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -282,7 +281,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<input type="text" id="sampleTypeOther" name="sampleTypeOther" placeholder="Enter sample type of others" title="Please enter the sample type if others" style="display: none;" />
 										</td>
 										<th>
-											<label class="label-control" for="testNumber">Specimen Number <span class="mandatory">*</span></label>
+											<label class="label-control" for="testNumber">Specimen Number</label>
 										</th>
 										<td>
 											<select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
@@ -295,10 +294,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									</tr>
 									<tr>
 										<th>
-											<label class="label-control" for="testTypeRequested">Test(s) requested <span class="mandatory">*</span></label>
+											<label class="label-control" for="testTypeRequested">Test(s) requested </label>
 										</th>
 										<td>
-											<select name="testTypeRequested" id="testTypeRequested" class="form-control" title="Please choose type of test request" style="width:100%">
+											<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
 												<option value="">-- Select --</option>
 												<optgroup label="Microscopy">
 													<option value="ZN">ZN</option>
@@ -315,7 +314,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 								</table>
 							</div>
 						</div>
-						<?php if ($usersModel->isAllowed('tb-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+						<?php if ($usersModel->isAllowed('tb-update-result.php', $systemConfig) || $_SESSION['accessType'] != 'collection-site') { ?>
 							<?php // if (false) { 
 							?>
 							<div class="box box-primary">
@@ -325,38 +324,38 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									</div>
 									<table class="table" style="width:100%">
 										<tr>
-											<td><label class="label-control" for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
 											<td>
-												<select name="labId" id="labId" class="form-control select2 isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
+												<select name="labId" id="labId" class="form-control select2" title="Please select Testing Testing Laboratory" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="resultDispatchedDatetime">Date of Specimen Reception <span class="mandatory">*</span></label></th>
+											<th><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
 											<td>
-												<input type="text" class="form-control" id="resultDispatchedDatetime" name="resultDispatchedDatetime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
+												<input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample tested" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
-											<th>Is Sample Rejected?</th>
+											<th><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
 											<td>
-												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
+												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
 													<option value=''> -- Select -- </option>
 													<option value="yes"> Yes </option>
 													<option value="no"> No </option>
 												</select>
 											</td>
 
-											<th class="show-rejection" style="display:none;">Reason for Rejection</th>
+											<th class="show-rejection" style="display:none;"><label class="label-control" for="sampleRejectionReason">Reason for Rejection<span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
-												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
+												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
 													<option value=''> -- Select -- </option>
 													<?php echo $rejectionReason; ?>
 												</select>
 											</td>
 										</tr>
 										<tr class="show-rejection" style="display:none;">
-											<th>Rejection Date<span class="mandatory">*</span></th>
-											<td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+											<th><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
+											<td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
 											<td></td>
 											<td></td>
 										</tr>
@@ -365,29 +364,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												<table class="table table-bordered table-striped">
 													<thead>
 														<tr>
-															<th class="text-center">No AFB</th>
-															<th class="text-center">Actual No</th>
-															<th class="text-center">Test Result</th>
+															<th style="width: 10%;" class="text-center">No AFB</th>
+															<th style="width: 40%;" class="text-center">Actual No</th>
+															<th style="width: 40%;" class="text-center">Test Result</th>
+															<th style="width: 10%;" class="text-center">Action</th>
 														</tr>
 													</thead>
 													<tbody id="testKitNameTable">
 														<tr>
 															<td class="text-center">1</td>
 															<td>
-																<select class="form-control" name="afbNo[]" id="afbNo1" title="Please select the AFB number" style="width:100%;">
-																	<option value="">--Select--</option>
-																	<?php foreach (range(1, 3) as $element) {
-																		echo '<option value="' . $element . '">' . $element . '+</option>';
-																	} ?>
-																</select>
-															</td>
-															<td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
-															<td>
-																<input type="text" id="actualNo1" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
+																<input type="text" class="form-control" id="actualNo1" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
 															</td>
 															<td>
 																<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
-																	<?= $general->generateSelectOptions($tbResults, null, '-- Select --'); ?>
+																	<?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?>
 																</select>
 															</td>
 															<td style="vertical-align:middle;text-align: center;width:100px;">
@@ -396,68 +387,40 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 															</td>
 														</tr>
 													</tbody>
-													<tfoot>
-														<tr>
-															<th colspan="4" class="text-right">X pert MTB Result</th>
-															<td>
-																<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the X Pert MTM Result">
-																	<option value=''> -- Select -- </option>
-																	<?php foreach ($tbXPertResults as $tbResultKey => $tbResultValue) { ?>
-																		<option value="<?php echo $tbResultKey; ?>"> <?php echo $tbResultValue; ?> </option>
-																	<?php } ?>
-																</select>
-															</td>
-															<th colspan="4" class="text-right">TB LAM Result</th>
-															<td>
-																<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
-																	<option value=''> -- Select -- </option>
-																	<?php foreach ($tbLamResults as $tbResultKey => $tbResultValue) { ?>
-																		<option value="<?php echo $tbResultKey; ?>"> <?php echo $tbResultValue; ?> </option>
-																	<?php } ?>
-																</select>
-															</td>
-														</tr>
-													</tfoot>
 												</table>
 											</td>
 										</tr>
 										<tr>
-											<th>Reviewed By</th>
+											<th><label class="label-control" for="xPertMTMResult">X pert MTB Result</label></th>
+											<td>
+												<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the X Pert MTM Result">
+													<?= $general->generateSelectOptions($tbXPertResults, null, '-- Select --'); ?>
+												</select>
+											</td>
+											<th><label class="label-control" for="result">TB LAM Result</label></th>
+											<td>
+												<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
+													<?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th><label class="label-control" for="reviewedBy">Reviewed By</label></th>
 											<td>
 												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th>Reviewed on</td>
+											<th><label class="label-control" for="reviewedOn">Reviewed on</label></td>
 											<td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
 										</tr>
 										<tr>
-											<th>Tested By</th>
+											<th><label class="label-control" for="testedBy">Tested By</label></th>
 											<td>
 												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th></th>
-											<td></td>
-										</tr>
-										<tr>
-											<th>Is Result Authorized ?</th>
-											<td>
-												<select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control" title="Is Result authorized ?" style="width:100%">
-													<option value="">-- Select --</option>
-													<option value='yes'> Yes </option>
-													<option value='no'> No </option>
-												</select>
-											</td>
-											<th>Authorized By</th>
-											<td><input type="text" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Authorized By" /></td>
-										</tr>
-										<tr>
-											<th>Authorized on</td>
-											<td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" /></td>
-											<th></th>
-											<td></td>
 										</tr>
 									</table>
 								</div>
@@ -470,7 +433,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 							<input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
 							<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
 							<input type="hidden" name="saveNext" id="saveNext" />
-							<input type="hidden" name="testData[]" id="testData" />
 						<?php } ?>
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
@@ -613,7 +575,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		var pName = $("#province").val();
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {
-			$.post("/tb/requests/generateSampleCode.php", {
+			$.post("/tb/requests/generate-sample-code.php", {
 					sDate: sDate,
 					pName: pName
 				},
@@ -747,24 +709,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 	function addTestRow() {
 		testCounter++;
 		let rowString = `<tr>
-                    <td class="text-center">${testCounter}</td>
-                    <td>
-                    <select onchange="otherTbTestName(this.value,${testCounter})" class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-                    <option value="">-- Select --</option>
-                    <option value="Real Time RT-PCR">Real Time RT-PCR</option>
-                    <option value="RDT-Antibody">RDT-Antibody</option>
-                    <option value="RDT-Antigen">RDT-Antigen</option>
-                    <option value="GeneXpert">GeneXpert</option>
-                    <option value="ELISA">ELISA</option>
-                    <option value="other">Others</option>
-                </select>
-                <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
-            </td>
-            <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-            <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-            <td>
-                <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($tbResults, null, '-- Select --'); ?></select>
-            </td>
+			<td class="text-center">${testCounter}</td>
+            <td><input type="text" class="form-control" id="actualNo${testCounter}" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" /></td>
+            <td><select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result for row ${testCounter}"><?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?></select></td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa fa-plus"></i></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>

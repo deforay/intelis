@@ -58,15 +58,18 @@ include_once(APPLICATION_PATH . '/header.php');
 													<option value="">--Select--</option>
 													<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
 														<option value="vl">Viral Load</option>
-													<?php } ?>
-													<?php if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
+													<?php }
+													if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
 														<option value="eid">Early Infant Diagnosis</option>
-													<?php } ?>
-													<?php if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
+													<?php }
+													if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
 														<option value="covid19">Covid-19</option>
-													<?php } ?>
-													<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
+													<?php }
+													if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
 														<option value='hepatitis'>Hepatitis</option>
+													<?php }
+													if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
+														<option value='tb'>TB</option>
 													<?php } ?>
 												</select>
 											</div>

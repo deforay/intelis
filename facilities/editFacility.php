@@ -85,6 +85,9 @@ if ($arr['vl_form'] == 7) {
 		$reportFormats['hepatitis'] = $general->activeReportFormats('hepatitis', $cntId['hepatitis'], null, true);
 	}
 }
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+	$reportFormats['tb'] = $general->activeReportFormats('tb', $cntId['tb'], null, true);
+}
 $formats = json_decode($facilityInfo[0]['report_format'], true);
 $labDiv = "none";
 if ($facilityInfo[0]['test_type'] == 2) {
@@ -321,22 +324,19 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									<div class="col-lg-7">
 										<select type="text" class="" id="testType" name="testType[]" title="Choose one test type" onchange="getTestType();" multiple>
 											<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
-												<option value="vl" <?php if (preg_match("/vl/i", $facilityInfo[0]['test_type'])) {
-																		echo "selected='selected'";
-																	}  ?>>Viral Load</option>
-											<?php } ?>
-											<?php if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
-												<option value="eid" <?php if (preg_match("/eid/i", $facilityInfo[0]['test_type'])) {
-																		echo "selected='selected'";
-																	}  ?>>Early Infant Diagnosis</option>
-											<?php } ?>
-											<?php if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
-												<option value="covid19" <?php if (preg_match("/covid19/i", $facilityInfo[0]['test_type'])) {
-																			echo "selected='selected'";
-																		}  ?>>Covid-19</option>
-											<?php } ?>
-											<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
+												<option value='vl' <?php echo (preg_match("/vl/i", $facilityInfo[0]['test_type'])) ? "selected='selected'" : '';  ?>>Viral Load</option>
+											<?php }
+											if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
+												<option value='eid' <?php echo (preg_match("/eid/i", $facilityInfo[0]['test_type'])) ? "selected='selected'" : '';  ?>>Early Infant Diagnosis</option>
+											<?php }
+											if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
+												<option value='covid19' <?php echo (preg_match("/covid19/i", $facilityInfo[0]['test_type'])) ? "selected='selected'" : '';  ?>>Covid-19</option>
+											<?php }
+											if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
 												<option value='hepatitis' <?php echo (preg_match("/hepatitis/i", $facilityInfo[0]['test_type'])) ? "selected='selected'" : '';  ?>>Hepatitis</option>
+											<?php }
+											if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
+												<option value='tb' <?php echo (preg_match("/tb/i", $facilityInfo[0]['test_type'])) ? "selected='selected'" : '';  ?>>Tb</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -400,7 +400,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 						<?php }
 						if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
-							$count = sizeof($reportFormats['covid19']); ?>
+							$count = sizeof($reportFormats['hepatitis']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
 									<label for="reportFormat" class="col-lg-4 control-label">Report Format For Hepatitis</label>
@@ -411,6 +411,24 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											<?php } ?>
 											<?php foreach ($reportFormats['hepatitis'] as $key => $value) { ?>
 												<option value="<?php echo $key; ?>" <?php echo ($formats['hepatitis'] == $key) ? "selected='selected'" : ""; ?>><?php echo ucwords($value); ?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+							</div>
+						<?php }
+						if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+							$count = sizeof($reportFormats['tb']); ?>
+							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
+								<div class="form-group">
+									<label for="reportFormat" class="col-lg-4 control-label">Report Format For Tb</label>
+									<div class="col-lg-7">
+										<select class="form-control" name='reportFormat[tb]' id='reportFormat' title="Please select the status" onchange="checkIfExist(this);">
+											<?php if (($count > 1)) { ?>
+												<option value="">-- Select --</option>
+											<?php } ?>
+											<?php foreach ($reportFormats['tb'] as $key => $value) { ?>
+												<option value="<?php echo $key; ?>" <?php echo ($formats['tb'] == $key) ? "selected='selected'" : ""; ?>><?php echo ucwords($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -498,6 +516,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 													<option value="eid" <?php echo (isset($row['test_types']) && in_array("eid", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>>Early Infant Diagnosis</option>
 													<option value="covid19" <?php echo (isset($row['test_types']) && in_array("covid19", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>>Covid-19</option>
 													<option value='hepatitis' <?php echo (isset($row['test_types']) && in_array("hepatitis", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>>Hepatitis</option>
+													<option value='tb' <?php echo (isset($row['test_types']) && in_array("tb", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>>TB</option>
 												</select>
 											</td>
 											<td style="width:14%;"><input value="<?php echo $row['display_order'] ?>" type="text" class="form-control" name="sortOrder[]" id="sortOrder<?php echo ($key + 1); ?>" placeholder="Display Order" title="Please enter the Display Order"></td>
@@ -828,6 +847,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 					<option value="eid">Early Infant Diagnosis</option>
 					<option value="covid19">Covid-19</option>
 					<option value='hepatitis'>Hepatitis</option>
+					<option value='tb'>TB</option>
 				</select>
 			</td>
 			<td style="width:14%;"><input type="text" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="Display Order" title="Please enter the Display Order"></td>

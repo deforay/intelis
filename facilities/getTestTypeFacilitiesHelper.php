@@ -24,7 +24,7 @@ if ($params == "testing-labs") {
     $mapResult = $db->getValue("health_facilities", "GROUP_CONCAT(DISTINCT facility_id SEPARATOR ',')");
 }
 
-$mapResult = explode(",",$mapResult);
+$mapResult = explode(",", $mapResult);
 $response = '';
 foreach ($facilityResult as $row) {
     $selectedText = '';
