@@ -192,7 +192,7 @@ try {
 		'data_sync'                           => 0,
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		// 'request_created_by'                  =>,
-		'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : $general->getDateTime(),
+		'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['requestedDate']) : $general->getDateTime(),
 		'sample_registered_at_lab'            => $general->getDateTime(),
 		// 'last_modified_by'                    => $_SESSION['userId'],
 		'last_modified_datetime'              => $general->getDateTime(),

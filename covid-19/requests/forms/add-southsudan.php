@@ -315,7 +315,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="GeneXpert">GeneXpert</option>
                                                 <option value="ELISA">ELISA</option>
                                             </select>
-                                            </select>
                                         </td>
                                         <th>Reason for Test Request <span class="mandatory">*</span></th>
                                         <td>

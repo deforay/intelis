@@ -2564,3 +2564,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 -- Amit 04 Nov 2021
 DELETE FROM roles_privileges_map where roles_privileges_map.privilege_id NOT IN (SELECT privileges.privilege_id from privileges);
+
+-- Thana 05-Oct-2021
+ALTER TABLE `r_tb_results` ADD `result_type` VARCHAR(256) NULL DEFAULT NULL AFTER `result`;
+INSERT INTO `r_tb_results` (`result_id`, `result`, `result_type`, `status`, `updated_datetime`, `data_sync`) VALUES (NULL, 'Negative', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'Positive', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'Invalid', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'N (MTB not detected)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'T (MTB detected rifampicin resistance not detected)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'TI (MTB detected rifampicin resistance indeterminate)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'RR (MTB detected rifampicin resistance detected)', 'lam', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'TT (MTB detected (Trace) rifampicin resistance indeterminate)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0'), (NULL, 'I (Invalid/Error/No result)', 'x-pert', 'active', CURRENT_TIMESTAMP, '0');
