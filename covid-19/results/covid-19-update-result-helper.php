@@ -90,7 +90,7 @@ try {
 	// echo "<pre>";print_r($_POST);die;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		if (isset($_POST['testName']) && count($_POST['testName']) > 0) {
-			foreach ($_POST['testName'] as $testKey => $testerName) {
+			foreach ($_POST['testName'] as $testKey => $testName) {
 				if (trim($_POST['testName'][$testKey]) != "") {
 					if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
 						$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
@@ -104,6 +104,8 @@ try {
 						'facility_id'           => isset($_POST['labId']) ? $_POST['labId'] : null,
 						'sample_tested_datetime' => $_POST['testDate'][$testKey],
 						'testing_platform'      => isset($_POST['testingPlatform'][$testKey]) ? $_POST['testingPlatform'][$testKey] : null,
+						'kit_lot_no'      		=> (strpos($testName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+						'kit_expiry_date'      	=> (strpos($testName, 'RDT') !== false) ? $general->dateFormat($_POST['expDate'][$testKey]) : null,
 						'result'				=> $_POST['testResult'][$testKey],
 					);
 					if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {

@@ -429,7 +429,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             <th class="text-center">Test No</th>
                                                             <th class="text-center">Test Method</th>
                                                             <th class="text-center">Date of Testing</th>
-                                                            <th class="text-center">Test Platform</th>
+                                                            <th class="text-center kit-label">Test Platform</th>
+                                                            <th class="text-center kit-fields" style="display: none;">Kit Lot No</th>
+                                                            <th class="text-center kit-fields" style="display: none;">Expiry Date</th>
                                                             <th class="text-center">Test Result</th>
                                                         </tr>
                                                     </thead>
@@ -437,7 +439,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                         <tr>
                                                             <td class="text-center">1</td>
                                                             <td>
-                                                                <select onchange="otherCovidTestName(this.value,1)" class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                                                                <select onchange="testMethodChanged(this.value,1)" class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
                                                                     <option value="">-- Select --</option>
                                                                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                                                                     <option value="RDT-Antibody">RDT-Antibody</option>
@@ -450,10 +452,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             </td>
                                                             <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                             <td>
-                                                                <select type="text" name="testingPlatform[]" id="testingPlatform1" class="form-control test-name-table-input" title="Please select the Testing Platform for 1">
+                                                                <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
                                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                 </select>
                                                             </td>
+                                                            <td class="kit-fields" style="display: none;"><input type="text" name="lotNo[]" id="lotNo1" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row 1" /></td>
+                                                            <td class="kit-fields" style="display: none;"><input type="text" name="expDate[]" id="expDate1" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row 1" /></td>
                                                             <td>
                                                                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
                                                                     <?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?>
@@ -1027,7 +1031,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         let rowString = `<tr>
                     <td class="text-center">${testCounter}</td>
                     <td>
-                    <select onchange="otherCovidTestName(this.value,${testCounter})" class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                    <select onchange="testMethodChanged(this.value,${testCounter})" class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
                     <option value="">-- Select --</option>
                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                     <option value="RDT-Antibody">RDT-Antibody</option>
@@ -1040,6 +1044,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             </td>
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
             <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td class="kit-fields" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row ${testCounter}" /></td>
+            <td class="kit-fields" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" /></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>
@@ -1048,8 +1054,38 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
             </td>
         </tr>`;
-
         $("#testKitNameTable").append(rowString);
+
+        $('.date').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            onSelect: function() {
+                $(this).change();
+            },
+            dateFormat: 'dd-M-yy',
+            timeFormat: "hh:mm TT",
+            maxDate: "Today",
+            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
+        ('.dateTime').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            onChangeMonthYear: function(year, month, widget) {
+                setTimeout(function() {
+                    $('.ui-datepicker-calendar').show();
+                });
+            },
+            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
 
     }
 
@@ -1101,7 +1137,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }
     }
 
-    function otherCovidTestName(val, id) {
+    function testMethodChanged(val, id) {
+        var str = $("#testName" + id + " option:selected").text();
+
+        if (~str.indexOf("RDT")) {
+            let option = `<option value=''>-- Select --</option>
+            <option value='Abbott Panbio™ COVID-19 Ag Test'>Abbott Panbio™ COVID-19 Ag Test</option>
+            <option value='STANDARD™ Q COVID-19 Ag Test'>STANDARD™ Q COVID-19 Ag Test</option>
+            <option value='LumiraDx ™ SARS-CoV-2 Ag Test'>LumiraDx ™ SARS-CoV-2 Ag Test</option>
+            <option value='Sure Status® COVID-19 Antigen Card Test'>Sure Status® COVID-19 Antigen Card Test</option>`;
+            $("#testingPlatform" + id).html(option);
+            $('.kit-label').text('Test Platform/Test Kit');
+            $('.kit-fields').show();
+        } else {
+            $('.kit-label').text('Test Platform');
+            $('.kit-fields').hide();
+            $("#testingPlatform" + id).html("<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>");
+        }
         if (val == 'other') {
             $('.testNameOther' + id).show();
         } else {
