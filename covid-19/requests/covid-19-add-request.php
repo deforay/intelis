@@ -247,7 +247,7 @@ if (file_exists($fileArray[$arr['vl_form']])) {
         }
     }
 
-    function checkSampleNameValidation(tableName, fieldName, id, fnct) {
+    function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/covid-19/requests/check-sample-duplicate.php", {
