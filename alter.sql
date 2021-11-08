@@ -2599,3 +2599,6 @@ CREATE TABLE `user_login_history` (
 -- Sakthivel 08-11-2021
 
 ALTER TABLE `user_login_history` DROP COLUMN `credential`;
+
+-- Thana 08-Nov-2021
+ALTER TABLE `covid19_tests` ADD `kit_lot_no` VARCHAR(256) NULL DEFAULT NULL AFTER `testing_platform`, ADD `kit_expiry_date` DATE NULL DEFAULT NULL AFTER `kit_lot_no`;

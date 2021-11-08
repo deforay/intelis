@@ -259,12 +259,14 @@ try {
 						$_POST['testDate'][$testKey] = NULL;
 					}
 					$covid19TestData = array(
-						'covid19_id'			=> $_POST['covid19SampleId'],
-						'test_name'				=> ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
-						'facility_id'           => isset($_POST['labId']) ? $_POST['labId'] : null,
-						'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
-						'testing_platform'      => isset($_POST['testingPlatform'][$testKey]) ? $_POST['testingPlatform'][$testKey] : null,
-						'result'				=> $_POST['testResult'][$testKey],
+						'covid19_id'				=> $_POST['covid19SampleId'],
+						'test_name'					=> ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
+						'facility_id'           	=> isset($_POST['labId']) ? $_POST['labId'] : null,
+						'sample_tested_datetime' 	=> date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
+						'testing_platform'      	=> isset($_POST['testingPlatform'][$testKey]) ? $_POST['testingPlatform'][$testKey] : null,
+						'kit_lot_no'      			=> (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+						'kit_expiry_date'      		=> (strpos($testKitName, 'RDT') !== false) ? $general->dateFormat($_POST['expDate'][$testKey]) : null,
+						'result'					=> $_POST['testResult'][$testKey]
 					);
 					$db->insert($testTableName, $covid19TestData);
 					$covid19Data['sample_tested_datetime'] = date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey]));

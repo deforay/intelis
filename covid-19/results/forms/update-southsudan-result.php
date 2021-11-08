@@ -367,7 +367,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                             </td>
                                         <tr>
                                         <tr>
-                                            <td><label for="specimenQuality">Specimen Quality</label></td>
+                                            <td><label for="specimenQuality">Specimen Quality<span class="mandatory">*</span></label></td>
                                             <td>
                                                 <select class="form-control isRequired" id="specimenQuality" name="specimenQuality" title="Please enter the specimen quality">
                                                     <option value="">--Select--</option>
@@ -434,12 +434,15 @@ $sampleSuggestionDisplay = 'display:none;';
                                                             <th class="text-center">Test No.</th>
                                                             <th class="text-center">Test Method</th>
                                                             <th class="text-center">Date of Testing</th>
-                                                            <th class="text-center">Test Platform</th>
+                                                            <th class="text-center kit-label">Test Platform</th>
+                                                            <th class="text-center kit-fields" style="display: none;">Kit Lot No</th>
+                                                            <th class="text-center kit-fields" style="display: none;">Expiry Date</th>
                                                             <th class="text-center">Test Result</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="testKitNameTable">
                                                         <?php if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) {
+                                                            $kitShow = false;
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
                                                                     <td class="text-center"><?php echo ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>"></td>
@@ -452,7 +455,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                                         } else {
                                                                             $show =  "none";
                                                                         } ?>
-                                                                        <select onchange="otherCovidTestName(this.value,<?php echo ($indexKey + 1); ?>)" class="form-control test-name-table-input isRequired" id="testName<?php echo ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                                                                        <select onchange="testMethodChanged(this.value,<?php echo ($indexKey + 1); ?>)" class="form-control test-name-table-input isRequired" id="testName<?php echo ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
                                                                             <option value="">--Select--</option>
                                                                             <option value="Real Time RT-PCR" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>>Real Time RT-PCR</option>
                                                                             <option value="RDT-Antibody" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>RDT-Antibody</option>
@@ -460,14 +463,25 @@ $sampleSuggestionDisplay = 'display:none;';
                                                                             <option value="ELISA" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>ELISA</option>
                                                                             <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
                                                                         </select>
-                                                                        <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?php echo ($indexKey + 1); ?>" class="form-control testNameOther<?php echo ($indexKey + 1); ?> isRequired" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Entrez le nom du test <?php echo ($indexKey + 1); ?>" style="display: <?php echo $show; ?>;margin-top: 10px;" />
+                                                                        <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?php echo ($indexKey + 1); ?>" class="form-control testNameOther<?php echo ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Entrez le nom du test <?php echo ($indexKey + 1); ?>" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
                                                                     <td><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime isRequired" placeholder="Tested on" title="Please enter the tested on for row <?php echo ($indexKey + 1); ?>" /></td>
                                                                     <td>
                                                                         <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input isRequired" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
-                                                                            <?= $general->generateSelectOptions($testPlatformList, $covid19TestInfo[$indexKey]['testing_platform'], '-- Select --'); ?>
+                                                                            <?php if ((strpos($covid19TestInfo[$indexKey]['test_name'], 'RDT') !== false)) {
+                                                                                $kitShow = true; ?>
+                                                                                <option value="Abbott Panbio™ COVID-19 Ag Test" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'Abbott Panbio™ COVID-19 Ag Test') ? "selected='selected'" : ""; ?>>Abbott Panbio™ COVID-19 Ag Test</option>
+                                                                                <option value="STANDARD™ Q COVID-19 Ag Test" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'STANDARD™ Q COVID-19 Ag Test') ? "selected='selected'" : ""; ?>>STANDARD™ Q COVID-19 Ag Test</option>
+                                                                                <option value="LumiraDx ™ SARS-CoV-2 Ag Test" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'LumiraDx ™ SARS-CoV-2 Ag Test') ? "selected='selected'" : ""; ?>>LumiraDx ™ SARS-CoV-2 Ag Test</option>
+                                                                                <option value="Sure Status® COVID-19 Antigen Card Test" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'Sure Status® COVID-19 Antigen Card Test') ? "selected='selected'" : ""; ?>>Sure Status® COVID-19 Antigen Card Test</option>
+                                                                                <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
+                                                                            <?php } else { ?>
+                                                                            <?= $general->generateSelectOptions($testPlatformList, $covid19TestInfo[$indexKey]['testing_platform'], '-- Select --');
+                                                                            } ?>
                                                                         </select>
                                                                     </td>
+                                                                    <td class="kit-fields" style="display: none;"><input type="text" value="<?php echo $covid19TestInfo[$indexKey]['kit_lot_no']; ?>" name="lotNo[]" id="lotNo1" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row 1" /></td>
+                                                                    <td class="kit-fields" style="display: none;"><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['kit_expiry_date']); ?>" name="expDate[]" id="expDate1" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row 1" /></td>
                                                                     <td><select class="form-control test-result test-name-table-input result-focus isRequired" name="testResult[]" id="testResult<?php echo ($indexKey + 1); ?>" title="Please select the result for row <?php echo ($indexKey + 1); ?>">
                                                                             <option value=''> -- Select -- </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
@@ -735,6 +749,10 @@ $sampleSuggestionDisplay = 'display:none;';
             $('#isResultAuthorized').val('yes');
         }
         getPatientDistrictDetails('<?php echo (isset($covid19Info['patient_province']) && $covid19Info['patient_province'] != ""); ?>');
+        <?php if ($kitShow) { ?>
+            $('.kit-label').text('Test Platform/Test Kit');
+            $('.kit-fields').show();
+        <?php } ?>
     });
 
 
@@ -743,7 +761,7 @@ $sampleSuggestionDisplay = 'display:none;';
         let rowString = `<tr>
                     <td class="text-center">${testCounter}</td>
                     <td>
-                    <select onchange="otherCovidTestName(this.value,${testCounter})" class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                    <select onchange="testMethodChanged(this.value,${testCounter})" class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
                     <option value="">--Select--</option>
                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                     <option value="RDT-Antibody">RDT-Antibody</option>
@@ -756,6 +774,8 @@ $sampleSuggestionDisplay = 'display:none;';
             </td>
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
             <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td class="kit-fields" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row ${testCounter}" /></td>
+            <td class="kit-fields" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" /></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>
@@ -778,6 +798,20 @@ $sampleSuggestionDisplay = 'display:none;';
                     $('.ui-datepicker-calendar').show();
                 });
             },
+            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
+        $('.date').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            onSelect: function() {
+                $(this).change();
+            },
+            dateFormat: 'dd-M-yy',
+            timeFormat: "hh:mm TT",
+            maxDate: "Today",
             yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
@@ -821,7 +855,26 @@ $sampleSuggestionDisplay = 'display:none;';
         }
     }
 
-    function otherCovidTestName(val, id) {
+    function testMethodChanged(val, id) {
+        var str = $("#testName" + id + " option:selected").text();
+        var selected = $("#testingPlatform" + id + " option:selected").val();
+
+        if (~str.indexOf("RDT")) {
+            let option = `<option value=''>-- Select --</option>
+            <option value='Abbott Panbio™ COVID-19 Ag Test'>Abbott Panbio™ COVID-19 Ag Test</option>
+            <option value='STANDARD™ Q COVID-19 Ag Test'>STANDARD™ Q COVID-19 Ag Test</option>
+            <option value='LumiraDx ™ SARS-CoV-2 Ag Test'>LumiraDx ™ SARS-CoV-2 Ag Test</option>
+            <option value='Sure Status® COVID-19 Antigen Card Test'>Sure Status® COVID-19 Antigen Card Test</option>`;
+            $("#testingPlatform" + id).html(option);
+            $('.kit-label').text('Test Platform/Test Kit');
+            $('.kit-fields').show();
+            console.log(selected);
+            $("#testingPlatform" + id).val(selected);
+        } else {
+            $('.kit-label').text('Test Platform');
+            $('.kit-fields').hide();
+            $("#testingPlatform" + id).html("<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>");
+        }
         if (val == 'other') {
             $('.testNameOther' + id).show();
         } else {
