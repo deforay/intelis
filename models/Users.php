@@ -269,7 +269,7 @@ class Users
         return $this->db->rawQueryOne($query, array($userId));
     }
 
-    public function userHistoryLog($loginId,$credentialJson)
+    public function userHistoryLog($loginId)
     { 
         $loginStatus = '';
         if($loginId !="")
@@ -303,7 +303,6 @@ class Users
             'login_id' => $loginId,
             'login_attempted_datetime' => $general->getDateTime(),
             'login_status' => $loginStatus,
-            'credential' => $credentialJson,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,
             'operating_system' =>$os

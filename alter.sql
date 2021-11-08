@@ -2595,3 +2595,7 @@ CREATE TABLE `user_login_history` (
   `operating_system` varchar (1000) DEFAULT NULL,
    PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Sakthivel 08-11-2021
+
+ALTER TABLE `user_login_history` DROP COLUMN `credential`;

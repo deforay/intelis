@@ -96,8 +96,8 @@ try {
 
             $general->activityLog($eventType, $action, $resource);
 
-            $credentialJson = json_encode(array("username" => $username, "password" => $password));
-            $user->userHistoryLog($admin[0]['login_id'], $credentialJson);
+            // Add user_login_history
+            $user->userHistoryLog($admin[0]['login_id']);
 
             $_SESSION['userId'] = $admin[0]['user_id'];
             $_SESSION['userName'] = ucwords($admin[0]['user_name']);
@@ -158,8 +158,7 @@ try {
             if ($_SESSION['user_name'] == $username && $_SESSION['password'] == $password) {
                 $_SESSION['attembt'] += 1;
                 if ($_SESSION['attembt'] < 3) {
-                    $credentialJson = json_encode(array("username" => $username, "password" => $password));
-                    $user->userHistoryLog($admin[0]['login_id'], $credentialJson);
+                    $user->userHistoryLog($admin[0]['login_id']);
                     header("location:/login.php");
                     $_SESSION['alertMsg'] = "Please check your login credentials";
                 } else {
