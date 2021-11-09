@@ -158,7 +158,7 @@ function generate_token()
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
               <input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="Password" title="Please enter the password">
             </div>
-            <div style="margin-bottom: 5px; " class="input-group" id="captcha">
+            <div style="margin-bottom: 5px;display:none" class="input-group" id="captcha">
             <div>
                 <input type="text" style="height: 70%;" id="challengeResponse" placeholder="Please enter the text from the image" class="form-control" title="Please enter the text from the image." maxlength="40">
               </div>
