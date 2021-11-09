@@ -2,7 +2,7 @@
 #require_once('../../startup.php');
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $tableName1 = "batch_details";
 $tableName2 = "vl_request_form";

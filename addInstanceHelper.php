@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
 function getMacLinux()

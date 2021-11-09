@@ -2,7 +2,7 @@
 #require_once('../../startup.php');
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $configQuery = "SELECT * FROM global_config WHERE name ='hepatitis_form'";
 $configResult = $db->rawQuery($configQuery);
 $formId = 0;

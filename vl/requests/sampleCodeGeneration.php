@@ -3,7 +3,7 @@ ob_start();
 #require_once('../../startup.php');
 
 
-$vLModel = new \Vlsm\Models\Vl($db);
+$vLModel = new \Vlsm\Models\Vl();
 
 $sampleCollectionDate = $province = '';
 

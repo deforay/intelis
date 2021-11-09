@@ -1,7 +1,7 @@
 <?php
 
-$general = new \Vlsm\Models\General($db);
-$vlModel = new \Vlsm\Models\Vl($db);
+$general = new \Vlsm\Models\General();
+$vlModel = new \Vlsm\Models\Vl();
 
 
 $globalConfig = $general->getGlobalConfig();

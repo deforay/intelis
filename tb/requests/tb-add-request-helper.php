@@ -6,8 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new \Vlsm\Models\General($db);
-$geoLocationDb = new \Vlsm\Models\GeoLocations($db);
+$general = new \Vlsm\Models\General();
+$geoLocationDb = new \Vlsm\Models\Geolocations();
 
 $tableName = "form_tb";
 $tableName1 = "activity_log";

@@ -23,7 +23,7 @@ $tResult = $db->rawQueryOne($tQuery, array($_SESSION['userId']));
 
 $module = $tResult['module'];
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 if ($module == 'vl') {
   include_once(APPLICATION_PATH . '/import-result/import-stats-vl.php');

@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 #require_once('../startup.php');
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "rejection_type";
 $value = trim($_POST['value']);
 $data = 0;

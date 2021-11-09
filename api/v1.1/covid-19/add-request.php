@@ -4,10 +4,10 @@ session_unset(); // no need of session in json response
 try {
     ini_set('memory_limit', -1);
     header('Content-Type: application/json');
-    $general = new \Vlsm\Models\General($db);
-    $userDb = new \Vlsm\Models\Users($db);
-    $app = new \Vlsm\Models\App($db);
-    $covid19Model = new \Vlsm\Models\Covid19($db);
+    $general = new \Vlsm\Models\General();
+    $userDb = new \Vlsm\Models\Users();
+    $app = new \Vlsm\Models\App();
+    $covid19Model = new \Vlsm\Models\Covid19();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -37,7 +37,7 @@ try {
         echo json_encode($response);
         exit(0);
     }
-    $roleUser = $userDb->getRoleDetailsUsingUserId($user['user_id']);
+    $roleUser = $userDb->getUserRole($user['user_id']);
 
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
@@ -422,7 +422,7 @@ try {
             }
             http_response_code(301);
         }
-        $app = new \Vlsm\Models\App($db);
+        $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], $data['covid19SampleId'], 'add-request', 'covid19', $requestUrl, $params, 'json');
     }
     if ($update == "yes") {

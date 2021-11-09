@@ -9,7 +9,7 @@ require_once(__DIR__ . "/../startup.php");
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $id = base64_decode($_POST['id']);
 if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];

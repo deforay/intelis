@@ -9,7 +9,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
@@ -60,7 +60,7 @@ foreach ($headings as $field => $value) {
     $colNo++;
 }
 $sheet->getStyle('A3:E3')->applyFromArray($styleArray);
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
 //date

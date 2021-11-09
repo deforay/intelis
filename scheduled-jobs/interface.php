@@ -2,42 +2,37 @@
 
 require_once(__DIR__ . "/../startup.php");
 
-
 if (!isset($interfaceConfig['enabled']) || $interfaceConfig['enabled'] === false) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
 
-$vlsmDb  = $db; // assigning to another variable to avoid confusion
+$db  = MysqliDb::getInstance();
 
-$usersModel = new \Vlsm\Models\Users($vlsmDb);
-$general = new \Vlsm\Models\General($vlsmDb);
+$usersModel = new \Vlsm\Models\Users();
+$general = new \Vlsm\Models\General();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
-
 
 if (empty($labId)) {
     echo "No Lab ID set in System Config";
     exit(0);
 }
 
-$interfacedb = new MysqliDb(
-    $interfaceConfig['dbHost'],
-    $interfaceConfig['dbUser'],
-    $interfaceConfig['dbPassword'],
-    $interfaceConfig['dbName'],
-    $interfaceConfig['dbPort']
-);
+$db->addConnection('interface', array(
+    'host' => $interfaceConfig['dbHost'],
+    'username' => $interfaceConfig['dbUser'],
+    'password' => $interfaceConfig['dbPassword'],
+    'db' =>  $interfaceConfig['dbName'],
+    'port' => (!empty($interfaceConfig['dbPort']) ? $interfaceConfig['dbPort'] : 3306),
+    'charset' => (!empty($interfaceConfig['dbCharset']) ? $interfaceConfig['dbCharset'] : 'utf8')
+));
 
-
-//$general = new \Vlsm\Models\General($vlsmDb);
-
-//$lowVlResults = $general->getLowVLResultTextFromImportConfigs();
 
 //get the value from interfacing DB
-$interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1 AND `lims_sync_status`=0";
+$interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1 AND `lims_sync_status`= 0";
 
-$interfaceInfo = $interfacedb->rawQuery($interfaceQuery);
+$interfaceInfo = $db->connection('interface')->rawQuery($interfaceQuery);
 
 $numberOfResults = 0;
 if (count($interfaceInfo) > 0) {
@@ -46,7 +41,7 @@ if (count($interfaceInfo) > 0) {
 
     if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
         $availableModules['vl_sample_id'] = 'vl_request_form';
-        $vllock = $general->getGlobalConfig('lock_approved_vl_samples');
+        $vlLock = $general->getGlobalConfig('lock_approved_vl_samples');
     }
 
     if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
@@ -56,11 +51,12 @@ if (count($interfaceInfo) > 0) {
 
     if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
         $availableModules['covid19_id'] = 'form_covid19';
+        $covid19Lock = null;
     }
 
     if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
         $availableModules['hepatitis_id'] = 'form_hepatitis';
-        $hepatitisLock = array();
+        $hepatitisLock = null;
     }
 
 
@@ -69,7 +65,7 @@ if (count($interfaceInfo) > 0) {
         $tableInfo = array();
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
             $tableQuery = "SELECT * FROM $individualTableName WHERE sample_code = '" . $result['test_id'] . "'";
-            $tableInfo = $vlsmDb->rawQueryOne($tableQuery);
+            $tableInfo = $db->rawQueryOne($tableQuery);
             if (isset($tableInfo[$individualIdColumn]) && !empty($tableInfo[$individualIdColumn])) {
                 break;
             }
@@ -174,22 +170,22 @@ if (count($interfaceInfo) > 0) {
             );
             /* Updating the high and low viral load data */
             if ($data['result_status'] == 4 || $data['result_status'] == 7) {
-                $vlDb = new \Vlsm\Models\Vl($db);
+                $vlDb = new \Vlsm\Models\Vl();
                 $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
             }
-            if ($vllock == 'yes' && $data['result_status'] == 7) {
+            if ($vlLock == 'yes' && $data['result_status'] == 7) {
                 $data['locked'] = 'yes';
             }
-            $db = $vlsmDb->where('vl_sample_id', $tableInfo['vl_sample_id']);
-            $vlUpdateId = $vlsmDb->update('vl_request_form', $data);
+            $db = $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
+            $vlUpdateId = $db->update('vl_request_form', $data);
             $numberOfResults++;
             if ($vlUpdateId) {
                 $interfaceData = array(
                     'lims_sync_status' => 1,
                     'lims_sync_date_time' => date('Y-m-d H:i:s'),
                 );
-                $interfacedb = $interfacedb->where('id', $result['id']);
-                $interfaceUpdateId = $interfacedb->update('orders', $interfaceData);
+                $db->connection('interface')->where('id', $result['id']);
+                $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
             }
         } else if (isset($tableInfo['eid_id'])) {
 
@@ -221,19 +217,19 @@ if (count($interfaceInfo) > 0) {
                 'result_dispatched_datetime' => NULL,
                 'data_sync' => 0
             );
-            if ($eidlock['lock_approved_eid_samples'] == 'yes' && $data['result_status'] == 7) {
+            if ($eidlock == 'yes' && $data['result_status'] == 7) {
                 $data['locked'] = 'yes';
             }
-            $db = $vlsmDb->where('eid_id', $eidInfo['eid_id']);
-            $eidUpdateId = $vlsmDb->update('eid_form', $data);
+            $db = $db->where('eid_id', $tableInfo['eid_id']);
+            $eidUpdateId = $db->update('eid_form', $data);
             $numberOfResults++;
             if ($eidUpdateId) {
                 $interfaceData = array(
                     'lims_sync_status' => 1,
                     'lims_sync_date_time' => date('Y-m-d H:i:s'),
                 );
-                $interfacedb = $interfacedb->where('id', $result['id']);
-                $interfaceUpdateId = $interfacedb->update('orders', $interfaceData);
+                $db->connection('interface')->where('id', $result['id']);
+                $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
             }
         } else if (isset($tableInfo['covid19_id'])) {
         } else if (isset($tableInfo['hepatitis_id'])) {
@@ -351,24 +347,24 @@ if (count($interfaceInfo) > 0) {
             if ($hepatitisLock == 'yes' && $data['result_status'] == 7) {
                 $data['locked'] = 'yes';
             }
-            $db = $vlsmDb->where('hepatitis_id', $tableInfo['hepatitis_id']);
-            $vlUpdateId = $vlsmDb->update('form_hepatitis', $data);
+            $db = $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
+            $vlUpdateId = $db->update('form_hepatitis', $data);
             $numberOfResults++;
             if ($vlUpdateId) {
                 $interfaceData = array(
                     'lims_sync_status' => 1,
                     'lims_sync_date_time' => date('Y-m-d H:i:s'),
                 );
-                $interfacedb = $interfacedb->where('id', $result['id']);
-                $interfaceUpdateId = $interfacedb->update('orders', $interfaceData);
+                $db->connection('interface')->where('id', $result['id']);
+                $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
             }
         } else {
             $interfaceData = array(
                 'lims_sync_status' => 2,
                 'lims_sync_date_time' => date('Y-m-d H:i:s'),
             );
-            $interfacedb = $interfacedb->where('id', $result['id']);
-            $interfaceUpdateId = $interfacedb->update('orders', $interfaceData);
+            $db->connection('interface')->where('id', $result['id']);
+            $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
         }
     }
 

@@ -15,7 +15,7 @@
   
   
   $id = base64_decode($_GET['id']);
-  $general = new \Vlsm\Models\General($db);
+  $general = new \Vlsm\Models\General();
   $contactInfo = "SELECT * from contact_notes_details where treament_contact_id=$id";
   $contact = $db->query($contactInfo);
   //get patient info
@@ -28,7 +28,7 @@
   } else {
     $vlResult[0]['sample_collection_date'] = '';
   }
-  $general = new \Vlsm\Models\General($db);
+  $general = new \Vlsm\Models\General();
   ?>
   <div class="content-wrapper" style="padding: 20px;">
     <!-- Content Header (Page header) -->

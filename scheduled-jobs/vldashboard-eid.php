@@ -5,7 +5,7 @@ require_once(__DIR__ . "/../startup.php");
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $lastUpdate = null;
 

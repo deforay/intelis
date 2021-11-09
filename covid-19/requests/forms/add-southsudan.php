@@ -33,7 +33,7 @@ $pResult = $db->rawQuery($pQuery);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$covid19Obj = new \Vlsm\Models\Covid19($db);
+$covid19Obj = new \Vlsm\Models\Covid19();
 
 
 $covid19Results = $covid19Obj->getCovid19Results();
@@ -430,8 +430,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             <th class="text-center">Test Method</th>
                                                             <th class="text-center">Date of Testing</th>
                                                             <th class="text-center kit-label">Test Platform</th>
-                                                            <th class="text-center kit-fields" style="display: none;">Kit Lot No</th>
-                                                            <th class="text-center kit-fields" style="display: none;">Expiry Date</th>
+                                                            <th class="text-center kitlabels" style="display: none;">Kit Lot No</th>
+                                                            <th class="text-center kitlabels" style="display: none;">Expiry Date</th>
                                                             <th class="text-center">Test Result</th>
                                                         </tr>
                                                     </thead>
@@ -456,8 +456,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                 </select>
                                                             </td>
-                                                            <td class="kit-fields" style="display: none;"><input type="text" name="lotNo[]" id="lotNo1" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row 1" /></td>
-                                                            <td class="kit-fields" style="display: none;"><input type="text" name="expDate[]" id="expDate1" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row 1" /></td>
+                                                            <td class="kitlabels kit-fields1" style="display: none;"><input type="text" name="lotNo[]" id="lotNo1" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row 1" /></td>
+                                                            <td class="kitlabels kit-fields1" style="display: none;"><input type="text" name="expDate[]" id="expDate1" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row 1" /></td>
                                                             <td>
                                                                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
                                                                     <?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?>
@@ -1044,8 +1044,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             </td>
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
             <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-            <td class="kit-fields" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row ${testCounter}" /></td>
-            <td class="kit-fields" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" /></td>
+            <td class="kitlabels kit-fields${testCounter}" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row ${testCounter}" /></td>
+            <td class="kitlabels kit-fields${testCounter}" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" /></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>
@@ -1138,7 +1138,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     function testMethodChanged(val, id) {
+        rl = document.getElementById("testKitNameTable").rows.length;
         var str = $("#testName" + id + " option:selected").text();
+        var show = true;
 
         if (~str.indexOf("RDT")) {
             let option = `<option value=''>-- Select --</option>
@@ -1148,10 +1150,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             <option value='Sure Status® COVID-19 Antigen Card Test'>Sure Status® COVID-19 Antigen Card Test</option>`;
             $("#testingPlatform" + id).html(option);
             $('.kit-label').text('Test Platform/Test Kit');
-            $('.kit-fields').show();
+            $('.kitlabels,.kit-fields' + id).show();
+            $('.span').attr('colspan', 6);
+            $('.kit-fields' + id).prop('disabled', false);
         } else {
+            for (count = 0; count <= rl; count++) {
+                if ($('.kit-fields' + count).is(':visible') == true) {
+                    show = false;
+                }
+            }
+            if (show) {
+                $('.span').attr('colspan', 4);
+                $('.kitlabels').prop('disabled', true);
+            }
             $('.kit-label').text('Test Platform');
-            $('.kit-fields').hide();
+            $('#expDate' + id + ', #lotNo' + id).prop('disabled', true);
             $("#testingPlatform" + id).html("<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>");
         }
         if (val == 'other') {

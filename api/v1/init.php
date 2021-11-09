@@ -15,11 +15,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 }
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General($db);
-$app = new \Vlsm\Models\App($db);
-$userDb = new \Vlsm\Models\Users($db);
-$covid19Obj = new \Vlsm\Models\Covid19($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
+$userDb = new \Vlsm\Models\Users();
+$covid19Obj = new \Vlsm\Models\Covid19();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 $input = json_decode(file_get_contents("php://input"), true);
 $formId = $general->getGlobalConfig('vl_form');

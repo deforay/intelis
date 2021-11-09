@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 //#require_once('../startup.php'); 
 // include_once(APPLICATION_PATH . '/header.php');
 $tableName = "user_details";

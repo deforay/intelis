@@ -8,7 +8,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "global_config";
 $instanceTableName = "s_vlsm_instance";
 try {

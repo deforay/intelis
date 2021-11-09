@@ -27,9 +27,9 @@ include_once(APPLICATION_PATH . '/header.php');
 </style>
 
 <?php
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
-$usersModel = new \Vlsm\Models\Users($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$usersModel = new \Vlsm\Models\Users();
 
 /* Get Active users for approved / reviewed / examined by */
 $users = $usersModel->getActiveUserInfo();

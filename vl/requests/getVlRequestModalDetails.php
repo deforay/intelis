@@ -2,7 +2,7 @@
 #require_once('../../startup.php');  
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "vl_request_form";
 $primaryKey = "vl_sample_id";
 

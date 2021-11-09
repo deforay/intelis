@@ -7,8 +7,8 @@ include_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
 #require_once('../startup.php');  
 
-$general = new \Vlsm\Models\General($db);
-$geolocation = new \Vlsm\Models\GeoLocations($db);
+$general = new \Vlsm\Models\General();
+$geolocation = new \Vlsm\Models\Geolocations();
 /* For reference we define the table names */
 $facilityTable = "facility_details";
 $provinceTable = "province_details";

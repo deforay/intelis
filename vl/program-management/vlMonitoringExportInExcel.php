@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringResultQuery']) != "") {
     $rResult = $db->rawQuery($_SESSION['vlMonitoringResultQuery']);

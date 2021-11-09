@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 #require_once('../startup.php');  
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 
 

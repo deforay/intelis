@@ -3,7 +3,7 @@
 require_once(__DIR__ . "/../../../startup.php");
 require_once(APPLICATION_PATH . '/configs/config.interop.php');
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $arr = $general->getGlobalConfig();
 
 // let us do init first

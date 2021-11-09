@@ -8,9 +8,9 @@ $title = "Tb | View All Requests";
 
 include_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
-$usersModel = new \Vlsm\Models\Users($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$usersModel = new \Vlsm\Models\Users();
 $healthFacilites = $facilitiesDb->getHealthFacilities('tb');
 /* Global config data */
 $arr = $general->getGlobalConfig();

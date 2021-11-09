@@ -4,7 +4,7 @@
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $id = base64_decode($_GET['id']);
 // die($id);
 // Extend the TCPDF class to create custom Header and Footer

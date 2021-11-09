@@ -7,8 +7,8 @@ $title = "Edit Batch";
 include_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 //$formId = $general->getGlobalConfig('vl_form');
 

@@ -7,8 +7,8 @@ if (session_status() == PHP_SESSION_NONE) {
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 $arr = array();
-$general = new \Vlsm\Models\General($db);
-$usersModel = new \Vlsm\Models\Users($db);
+$general = new \Vlsm\Models\General();
+$usersModel = new \Vlsm\Models\Users();
 
 $tableName = "eid_form";
 // echo "<pre>";print_r($_FILES);die;

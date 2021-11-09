@@ -7,10 +7,10 @@ require_once(dirname(__FILE__) . "/../../startup.php");
 
 $labId = $data['labName'];
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-$app = new \Vlsm\Models\App($db);
+$app = new \Vlsm\Models\App();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";
@@ -63,7 +63,7 @@ if (!empty($hepatitisRemoteResult) && count($hepatitisRemoteResult) > 0) {
         $forms[] = $row['hepatitis_id'];
     }
 
-    $hepatitisObj = new \Vlsm\Models\Hepatitis($db);
+    $hepatitisObj = new \Vlsm\Models\Hepatitis();
     $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($forms);
     $risks = $hepatitisObj->getRiskFactorsByHepatitisId($forms);
 

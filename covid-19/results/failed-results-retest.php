@@ -2,7 +2,7 @@
 #require_once('../../startup.php');
 // echo "<pre>";print_r($_POST['covid19Id']);die;
 try {
-    $general = new \Vlsm\Models\General($db);
+    $general = new \Vlsm\Models\General();
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;

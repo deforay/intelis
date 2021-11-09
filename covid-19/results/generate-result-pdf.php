@@ -13,9 +13,9 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 
 $tableName1 = "activity_log";
 $tableName2 = "form_covid19";
-$general = new \Vlsm\Models\General($db);
-$users = new \Vlsm\Models\Users($db);
-$covid19Obj = new \Vlsm\Models\Covid19($db);
+$general = new \Vlsm\Models\General();
+$users = new \Vlsm\Models\Users();
+$covid19Obj = new \Vlsm\Models\Covid19();
 
 $configQuery = "SELECT * from global_config";
 $configResult = $db->query($configQuery);

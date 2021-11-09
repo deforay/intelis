@@ -3,7 +3,7 @@ ob_start();
 #require_once('../../startup.php');  
 
 
-$general=new \Vlsm\Models\General($db);
+$general=new \Vlsm\Models\General();
 $tableName="vl_request_form";
 try {
     $id = $_POST['id'];

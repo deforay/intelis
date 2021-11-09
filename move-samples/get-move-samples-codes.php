@@ -2,7 +2,7 @@
 #require_once('../startup.php');  
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $lName = $_POST['lName'];
 $testType = $_POST['testType'];

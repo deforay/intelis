@@ -5,8 +5,8 @@
 require_once(dirname(__FILE__) . "/../../startup.php");
 //}
 
-$general = new \Vlsm\Models\General($db);
-$app = new \Vlsm\Models\App($db);
+$general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
 
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     echo "Please check your Remote URL";

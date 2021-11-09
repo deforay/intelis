@@ -10,11 +10,11 @@ use Aranyasen\HL7\Segments\MSH;
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
 $user = null;
-$general = new \Vlsm\Models\General($db);
-$userDb = new \Vlsm\Models\Users($db);
-$facilityDb = new \Vlsm\Models\Facilities($db);
-$c19Db = new \Vlsm\Models\Covid19($db);
-$vlDb = new \Vlsm\Models\Vl($db);
+$general = new \Vlsm\Models\General();
+$userDb = new \Vlsm\Models\Users();
+$facilityDb = new \Vlsm\Models\Facilities();
+$c19Db = new \Vlsm\Models\Covid19();
+$vlDb = new \Vlsm\Models\Vl();
 
 $user = null;
 try {

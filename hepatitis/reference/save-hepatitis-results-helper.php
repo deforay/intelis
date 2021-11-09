@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 #require_once('../startup.php');  
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "r_hepatitis_results";
 $primaryKey = "result_id";
 // print_r(base64_decode($_POST['resultId']));die;

@@ -8,7 +8,7 @@ use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 use Aranyasen\HL7\Segments\MSA;
 
-$eidModel = new \Vlsm\Models\Eid($db);
+$eidModel = new \Vlsm\Models\Eid();
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -131,7 +131,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
     if ($rowData && count($rowData) > 0) {
-        $app = new \Vlsm\Models\App($db);
+        $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], count($rowData), $type[1], 'eid', $requestUrl, $hl7, 'hl7');
         foreach ($rowData as $row) {
             /* MSH Information */
@@ -207,7 +207,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
         }
         // http_response_code(200);
     } else {
-        $app = new \Vlsm\Models\App($db);
+        $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], 0, $type[1], 'eid', $requestUrl, $hl7, 'hl7');
         $msh = new MSH();
         $msh->setMessageType(["EID", "RES"]);
@@ -469,7 +469,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $savedSamples = $db->rawQueryOne($sQuery);
     }
     if ($id > 0 && isset($eidData) && count($eidData) > 0) {
-        $app = new \Vlsm\Models\App($db);
+        $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], $_POST['eidSampleId'], $type[1], 'eid', $requestUrl, $hl7, 'hl7');
 
         if ($savedSamples['sample_code'] != '') {

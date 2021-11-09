@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "user_details";
 $tableName2 = "vl_user_facility_map";
 $userId = base64_decode($_POST['userId']);

@@ -8,8 +8,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 // echo "<pre>";print_r($_POST);
-$general = new \Vlsm\Models\General($db);
-$hepatitisModel = new \Vlsm\Models\Hepatitis($db);
+$general = new \Vlsm\Models\General();
+$hepatitisModel = new \Vlsm\Models\Hepatitis();
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();

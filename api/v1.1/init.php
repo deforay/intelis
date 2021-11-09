@@ -15,11 +15,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 }
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General($db);
-$app = new \Vlsm\Models\App($db);
-$userDb = new \Vlsm\Models\Users($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
-$geoLocationDb = new \Vlsm\Models\GeoLocations($db);
+$general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
+$userDb = new \Vlsm\Models\Users();
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$geoLocationDb = new \Vlsm\Models\Geolocations();
 
 $input = json_decode(file_get_contents("php://input"), true);
 $formId = $general->getGlobalConfig('vl_form');
@@ -126,7 +126,7 @@ $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
 $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
-    $covid19Obj = new \Vlsm\Models\Covid19($db);
+    $covid19Obj = new \Vlsm\Models\Covid19();
 
     if (isset($formId) && $formId == 1) {
         /* Source of Alert list */
@@ -219,7 +219,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 // Check if eid module active/inactive
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
-    $eidObj = new \Vlsm\Models\Eid($db);
+    $eidObj = new \Vlsm\Models\Eid();
     /* SITE INFORMATION SECTION */
     /* Province Details */
     $data['eid']['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
@@ -291,7 +291,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
 // Check if vl module active/inactive
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
-    $vlObj = new \Vlsm\Models\Vl($db);
+    $vlObj = new \Vlsm\Models\Vl();
     /* SAMPLE INFORMATION SECTION */
     $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes());
     /* Current regimen */

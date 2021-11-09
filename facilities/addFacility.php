@@ -2,8 +2,8 @@
 ob_start();
 #require_once('../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
-$general = new \Vlsm\Models\General($db);
-$geolocation = new \Vlsm\Models\GeoLocations($db);
+$general = new \Vlsm\Models\General();
+$geolocation = new \Vlsm\Models\Geolocations();
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);

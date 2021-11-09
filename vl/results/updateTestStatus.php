@@ -3,7 +3,7 @@ ob_start();
 #require_once('../../startup.php');
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "vl_request_form";
 try {
     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
@@ -40,7 +40,7 @@ try {
         }
         /* Updating the high and low viral load data */
         if ($status['result_status'] == 4 || $status['result_status'] == 7) {
-            $vlDb = new \Vlsm\Models\Vl($db);
+            $vlDb = new \Vlsm\Models\Vl();
             $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $status['result']);
         }
         // echo "<pre>";print_r($status);die;

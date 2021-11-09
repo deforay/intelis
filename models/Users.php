@@ -16,7 +16,7 @@ class Users
 
     public function __construct($db = null)
     {
-        $this->db = $db;
+        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
 
@@ -227,7 +227,6 @@ class Users
         }
 
         $result = array();
-        $tokenExpiration = 30; //default is 30 days
 
         $query = "SELECT * FROM $this->table as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE api_token = ? and ud.`status` = 'active'";
         $result = $this->db->rawQueryOne($query, array($token));
@@ -235,9 +234,7 @@ class Users
 
 
         // Tokens with expiration = 0 are tokens that never expire
-        if ($tokenExpiration == 0) {
-            // do nothing
-        } else {
+        if ($tokenExpiration != 0) {
             $today = new \DateTime();
             $lastTokenDate = null;
             if (!empty($result['api_token_generated_datetime'])) {
@@ -263,14 +260,41 @@ class Users
         return $result;
     }
 
-    public function getRoleDetailsUsingUserId($userId)
+    public function getUserRole($userId)
     {
-        $query = "SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE user_id = ?";
+        $query = "SELECT r.*
+                    FROM roles as r
+                    INNER JOIN user_details as ud ON ud.role_id=r.role_id 
+                    WHERE ud.user_id = ?";
         return $this->db->rawQueryOne($query, array($userId));
     }
 
-    public function userHistoryLog($userName,$loginStatus)
-    {     
+    public function getUserRolePrivileges($userId)
+    {
+        $response = array();
+        $query = "SELECT r.role_id, r.role_code, r.access_type, res.module,p.privilege_id,p.resource_id, p.privilege_name, p.display_name
+                    FROM roles as r
+                    INNER JOIN roles_privileges_map as rpm ON rpm.role_id=r.role_id 
+                    INNER JOIN privileges as p ON rpm.privilege_id=p.privilege_id 
+                    INNER JOIN resources as res ON res.resource_id=p.resource_id 
+                    INNER JOIN user_details as ud ON ud.role_id=r.role_id 
+                    WHERE ud.user_id = ?
+                    ORDER by res.module, p.resource_id, p.display_name";
+        $resultSet = $this->db->rawQuery($query, array($userId));
+        foreach ($resultSet as $row) {
+
+            $response['role']['role-code'] = $row['role_code'];
+            $response['role']['access-type'] = $row['access_type'];
+
+            $row['display_name'] =  strtolower(trim(preg_replace("![^a-z0-9]+!i", " ",$row['display_name'])));
+            $row['display_name'] =  preg_replace("![^a-z0-9]+!i", "-",$row['display_name']);
+            $response['privileges'][$row['module']][$row['resource_id']][] = $row['display_name'];
+        }
+        return $response;
+    }
+
+    public function userHistoryLog($userName, $loginStatus)
+    {
         $general = new \Vlsm\Models\General($this->db);
         $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
@@ -297,7 +321,7 @@ class Users
             'login_status' => $loginStatus,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,
-            'operating_system' =>$os
+            'operating_system' => $os
         );
         $this->db->insert('user_login_history', $data);
     }

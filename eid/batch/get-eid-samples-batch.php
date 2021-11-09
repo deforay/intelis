@@ -2,7 +2,7 @@
 #require_once('../../startup.php');
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $start_date = '';
 $end_date = '';
 //global config

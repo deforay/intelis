@@ -4,8 +4,8 @@ include(dirname(__FILE__) . "/../../startup.php");
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
-$general = new \Vlsm\Models\General($db);
-$app = new \Vlsm\Models\App($db);
+$general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";

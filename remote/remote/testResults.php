@@ -14,9 +14,9 @@ for ($i = 0; $i < sizeof($cResult); $i++) {
     $arr[$cResult[$i]['name']] = $cResult[$i]['value'];
 }
 
-$general = new \Vlsm\Models\General($db);
-$usersModel = new \Vlsm\Models\Users($db);
-$app = new \Vlsm\Models\App($db);
+$general = new \Vlsm\Models\General();
+$usersModel = new \Vlsm\Models\Users();
+$app = new \Vlsm\Models\App();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";

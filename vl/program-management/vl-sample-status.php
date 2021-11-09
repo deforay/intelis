@@ -8,7 +8,7 @@ include_once(APPLICATION_PATH . '/header.php');
 
 
 
-$general = new \Vlsm\Models\General($db); // passing $db which is coming from startup.php
+$general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -16,7 +16,7 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
 $sarr = $general->getSystemConfig();
 
 if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser') {

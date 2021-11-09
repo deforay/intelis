@@ -7,7 +7,7 @@ ob_start();
 
 
  
-$general=new \Vlsm\Models\General($db);
+$general=new \Vlsm\Models\General();
 
 //system config
 $systemConfigQuery ="SELECT * from system_config";

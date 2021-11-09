@@ -33,7 +33,7 @@ $pResult = $db->rawQuery($pQuery);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$tbObj = new \Vlsm\Models\Tb($db);
+$tbObj = new \Vlsm\Models\Tb();
 
 
 $tbXPertResults = $tbObj->getTbResults('x-pert');

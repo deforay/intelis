@@ -15,7 +15,7 @@ class GeoLocations
 
     public function __construct($db = null)
     {
-        $this->db = $db;
+        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
     public function getProvinces($isApi = "no", $onlyActive = true, $facilityMap = null)

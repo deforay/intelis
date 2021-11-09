@@ -4,7 +4,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 //get other config details
 $geQuery = "SELECT * FROM other_config WHERE type = 'request'";
 $geResult = $db->rawQuery($geQuery);

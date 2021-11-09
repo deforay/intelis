@@ -7,7 +7,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $covid19Results = $general->getCovid19Results();
 /* Global config data */

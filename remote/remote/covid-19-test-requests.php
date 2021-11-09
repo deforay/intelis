@@ -5,10 +5,10 @@ include(dirname(__FILE__) . "/../../startup.php");
 
 $labId = $data['labName'];
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-$app = new \Vlsm\Models\App($db);
+$app = new \Vlsm\Models\App();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";
@@ -61,7 +61,7 @@ if (!empty($covid19RemoteResult) && count($covid19RemoteResult) > 0) {
     $forms[] = $row['covid19_id'];
   }
 
-  $covid19Obj = new \Vlsm\Models\Covid19($db);
+  $covid19Obj = new \Vlsm\Models\Covid19();
   $symptoms = $covid19Obj->getCovid19SymptomsByFormId($forms,);
   $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($forms);
   $testResults = $covid19Obj->getCovid19TestsByFormId($forms);

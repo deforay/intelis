@@ -7,7 +7,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) != "") {
 
