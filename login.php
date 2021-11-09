@@ -36,23 +36,24 @@ if (file_exists(APPLICATION_PATH . DIRECTORY_SEPARATOR . "configs/bg.jpg")) {
 
 ?>
 
- <!-- CSRF TOKEN -->
- <?php
-  session_start();
-  function generate_token() {
-    // Check if a token is present for the current session
-    if(!isset($_SESSION["csrf_token"])) {
-        // No token present, generate a new one
-        $token = bin2hex(random_bytes(64));
+<!-- CSRF TOKEN -->
+<?php
+session_start();
+function generate_token()
+{
+  // Check if a token is present for the current session
+  if (!isset($_SESSION["csrf_token"])) {
+    // No token present, generate a new one
+    $token = bin2hex(random_bytes(64));
 
-        $_SESSION["csrf_token"] = $token;
-    } else {
-        // Reuse the token
-        $token = $_SESSION["csrf_token"];
-    }
-    // print_r($token);die;
-    return $token;
+    $_SESSION["csrf_token"] = $token;
+  } else {
+    // Reuse the token
+    $token = $_SESSION["csrf_token"];
   }
+  // print_r($token);die;
+  return $token;
+}
 ?>
 
 
@@ -147,15 +148,24 @@ if (file_exists(APPLICATION_PATH . DIRECTORY_SEPARATOR . "configs/bg.jpg")) {
         <div style="padding-top:10px;" class="panel-body">
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
           <form id="loginForm" name="loginForm" class="form-horizontal" role="form" method="post" action="loginProcess.php" onsubmit="validateNow();return false;">
-          <input type="hidden" name="csrf_token" value="<?php echo generate_token();?>" />
+            <input type="hidden" name="csrf_token" value="<?php echo generate_token(); ?>" />
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="User Name" title="Please enter the user name">
+              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="User Name" title="Please enter the user name" onblur="checkNameValidation('user_login_history','login_id', this.id,'')">
             </div>
 
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
               <input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="Password" title="Please enter the password">
+            </div>
+            <div style="margin-bottom: 5px; display:none" class="input-group" id="captcha">
+              <div class="col-md-4">
+                <img id="capChaw" src="/includes/captcha.php/<?php echo rand(); ?>" />
+              </div>
+              <div class="col-md-8">
+                <input type="text" style="height: 70%;" id="challengeResponse" placeholder="Please enter the text from the image" class="form-control" title="Please enter the text from the image." maxlength="40">
+                <a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa fa-refresh" aria-hidden="true"></i> Get New Image</a>
+              </div>
             </div>
 
             <div style="margin-top:10px" class="form-group">
@@ -175,14 +185,46 @@ if (file_exists(APPLICATION_PATH . DIRECTORY_SEPARATOR . "configs/bg.jpg")) {
   <script src="/assets/js/deforayValidation.js"></script>
   <script src="/assets/js/jquery.blockUI.js"></script>
   <script type="text/javascript">
+    function getCaptcha(captchaDivId) {
+            var d = new Date();
+            var randstr = d.getFullYear() + d.getSeconds() + d.getMilliseconds() + Math.random();
+            $("#" + captchaDivId).attr("src", '/includes/captcha.php/' + randstr);
+            $("#" + captchaDivId).load(function() {
+                $.blockUI();
+            });
+        }
+        var captcha = false;
     function validateNow() {
       flag = deforayValidator.init({
         formId: 'loginForm'
       });
 
       if (flag) {
-        document.getElementById('loginForm').submit();
-      }
+        challenge_field = document.getElementById("challengeResponse").value;
+        if(captcha == false) {
+          document.getElementById('loginForm').submit();
+        }
+                else if (challenge_field != "") {
+                    $.post('/includes/check-captcha-route.php', {
+                            challenge_field: challenge_field,
+                            format: "html"
+                        },
+                        function(data) {
+                            if (data == 'fail') {
+                                alert("Text you entered from the image is incorrect. Please try again");
+                                getCaptcha('capChaw');
+                                document.getElementById("challengeResponse").value = "";
+                                return false;
+                            } else {
+                                $.blockUI();
+                                document.getElementById('loginForm').submit();
+                            }
+                        });
+                } else {
+                    alert("Please enter the text from the image to proceed.");
+                    return false;
+                }
+            }
     }
 
     $(document).ready(function() {
@@ -240,6 +282,25 @@ if (file_exists(APPLICATION_PATH . DIRECTORY_SEPARATOR . "configs/bg.jpg")) {
       } else if (country == 'south-sudan') {
         $.unblockUI();
         window.open('/uploads/vl-south-sudan-form.pdf', '_blank');
+      }
+    }
+
+    function checkNameValidation(tableName, fieldName, id, fnct) {
+      if ($.trim($("#" + id).val()) != '') {
+        $.post("/check-login-id.php", {
+            tableName: tableName,
+            fieldName: fieldName,
+            value: $("#" + id).val(),
+            fnct: fnct,
+            format: "html"
+          },
+          function(data) {
+            console.log(data);
+            if(data >=3)
+            {
+              $('#captcha').show();
+            }
+          });
       }
     }
   </script>
