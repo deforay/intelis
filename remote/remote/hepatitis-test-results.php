@@ -6,9 +6,9 @@ require_once(dirname(__FILE__) . "/../../startup.php");
 //this file receives the lab results and updates in the remote db
 $jsonResponse = file_get_contents('php://input');
 
-$general = new \Vlsm\Models\General($db);
-$usersModel = new \Vlsm\Models\Users($db);
-$app = new \Vlsm\Models\App($db);
+$general = new \Vlsm\Models\General();
+$usersModel = new \Vlsm\Models\Users();
+$app = new \Vlsm\Models\App();
 
 
 $arr  = $general->getGlobalConfig();

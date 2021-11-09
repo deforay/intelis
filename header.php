@@ -4,8 +4,8 @@ if (!isset($_SESSION['userId'])) {
 	header("location:/login.php");
 }
 
-$general = new \Vlsm\Models\General($db);
-$usersModel = new \Vlsm\Models\Users($db);
+$general = new \Vlsm\Models\General();
+$usersModel = new \Vlsm\Models\Users();
 $syncLatestTime = $general->getLatestSynDateTime();
 /* Crosss Login Block Start */
 $crossLoginQuery = "SELECT `login_id`,`password`,`user_name` FROM `user_details` WHERE user_id = ?";

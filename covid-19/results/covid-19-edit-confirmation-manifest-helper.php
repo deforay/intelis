@@ -3,7 +3,7 @@ ob_start();
 #require_once('../../startup.php');  
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $packageTable = "covid19_positive_confirmation_manifest";
 try {
     if (isset($_POST['manifestCode']) && trim($_POST['manifestCode']) != "" && count($_POST['sampleCode']) > 0) {

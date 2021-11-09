@@ -3,10 +3,10 @@ ob_start();
 #require_once('../../startup.php');  
 
 
-$general=new \Vlsm\Models\General($db);
+$general=new \Vlsm\Models\General();
 
 $module = 'C19';
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $tableName1="covid19_positive_confirmation_manifest";
 $tableName2="form_covid19";

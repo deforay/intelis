@@ -4,8 +4,8 @@
 
 
 
-$general = new \Vlsm\Models\General($db);
-$eidObj = new \Vlsm\Models\Eid($db);
+$general = new \Vlsm\Models\General();
+$eidObj = new \Vlsm\Models\Eid();
 
 
 $sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM eid_form where eid_id IN (" . $_POST['sampleId'] . ") ORDER BY eid_id";

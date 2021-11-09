@@ -77,7 +77,7 @@ $pdf->SetFont('helvetica', '', 10);
 $pathFront = realpath(UPLOAD_PATH);
 //$pdf = new TCPDF();
 $pdf->AddPage();
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $id = $_POST['id'];
 
 $configQuery = "SELECT * from global_config";

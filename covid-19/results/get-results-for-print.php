@@ -20,7 +20,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $covid19Results = $general->getCovid19Results();
 

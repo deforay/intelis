@@ -3,7 +3,7 @@ ob_start();
 #require_once('../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $global = $general->getGlobalConfig();
 

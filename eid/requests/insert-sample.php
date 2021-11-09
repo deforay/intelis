@@ -6,8 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 #require_once('../../startup.php');
 
 
-$general = new \Vlsm\Models\General($db);
-$eidModel = new \Vlsm\Models\Eid($db);
+$general = new \Vlsm\Models\General();
+$eidModel = new \Vlsm\Models\Eid();
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();

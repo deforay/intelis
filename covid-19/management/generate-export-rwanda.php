@@ -6,11 +6,11 @@ ob_start();
 #require_once('../../startup.php');
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $eidResults = $general->getEidResults();
 
-$covid19Obj = new \Vlsm\Models\Covid19($db);
+$covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Symptoms = $covid19Obj->getCovid19Symptoms();
 $covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
 

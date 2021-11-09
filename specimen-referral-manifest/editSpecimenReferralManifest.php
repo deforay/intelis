@@ -4,7 +4,7 @@ $title = "Edit Specimen Referral Manifest";
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 
 $id = base64_decode($_GET['id']);

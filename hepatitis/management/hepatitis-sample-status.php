@@ -6,9 +6,9 @@ $title = "Hepatitis | Sample Status Report";
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General($db); // passing $db which is coming from startup.php
+$general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 $sarr = $general->getSystemConfig();
 

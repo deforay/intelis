@@ -26,7 +26,7 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new \Vlsm\Models\Covid19($db);
+$covid19Obj = new \Vlsm\Models\Covid19();
 
 
 $covid19Results = $covid19Obj->getCovid19Results();

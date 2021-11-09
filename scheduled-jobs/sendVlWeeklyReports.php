@@ -10,7 +10,7 @@ include_once(APPLICATION_PATH . "/includes/mail/PHPMailerAutoload.php");
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $configQuery = "SELECT * from global_config where name='vl_form'";
 $configResult = $db->query($configQuery);
 $country = $configResult[0]['value'];

@@ -7,7 +7,7 @@ ob_start();
 
 
  
-$general=new \Vlsm\Models\General($db);
+$general=new \Vlsm\Models\General();
 
 if(isset($_SESSION['eidTATQuery']) && trim($_SESSION['eidTATQuery'])!=""){
  

@@ -42,8 +42,8 @@ $eventsDataElementMapping = [
 ];
 
 
-$general = new \Vlsm\Models\General($db);
-$covid19Model = new \Vlsm\Models\Covid19($db);
+$general = new \Vlsm\Models\General();
+$covid19Model = new \Vlsm\Models\Covid19();
 
 
 $vlsmSystemConfig = $general->getSystemConfig();

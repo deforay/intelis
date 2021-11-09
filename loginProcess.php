@@ -10,9 +10,9 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
-$user = new \Vlsm\Models\Users($db);
+$user = new \Vlsm\Models\Users();
 
 
 $systemInfo = $general->getSystemConfig();

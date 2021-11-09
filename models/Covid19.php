@@ -17,7 +17,7 @@ class Covid19
 
     public function __construct($db = null)
     {
-        $this->db = $db;
+        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
     public function generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null)

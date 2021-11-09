@@ -6,8 +6,8 @@ $title = "Add New Specimen Referral Manifest";
 #include_once '../startup.php';
 include_once APPLICATION_PATH . '/header.php';
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 $testingLabs = $facilitiesDb->getTestingLabs($module);

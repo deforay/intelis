@@ -8,14 +8,14 @@ include_once(APPLICATION_PATH . '/header.php');
 
 
 
-$general = new \Vlsm\Models\General($db); // passing $db which is coming from startup.php
+$general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php
 
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
 // $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 // $configFormResult = $db->rawQuery($configFormQuery);
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 $sarr = $general->getSystemConfig();
 

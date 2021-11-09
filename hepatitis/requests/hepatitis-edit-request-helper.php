@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 // echo "<pre>";print_r($_POST);die;
 

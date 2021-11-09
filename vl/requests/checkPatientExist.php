@@ -2,7 +2,7 @@
 #require_once('../../startup.php');  
 
 
-$general=new \Vlsm\Models\General($db);
+$general=new \Vlsm\Models\General();
 $artNo=$_POST['artPatientNo'];
 //global config
 $cQuery="SELECT * FROM global_config";

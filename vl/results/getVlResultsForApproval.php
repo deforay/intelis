@@ -6,8 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 $tableName = "vl_request_form";
 $primaryKey = "vl_sample_id";

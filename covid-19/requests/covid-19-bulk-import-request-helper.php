@@ -6,8 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $arr = array();
-$general = new \Vlsm\Models\General($db);
-$usersModel = new \Vlsm\Models\Users($db);
+$general = new \Vlsm\Models\General();
+$usersModel = new \Vlsm\Models\Users();
 
 $tableName = "form_covid19";
 $testTableName = 'covid19_tests';

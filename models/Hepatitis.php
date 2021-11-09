@@ -17,7 +17,7 @@ class Hepatitis
 
     public function __construct($db = null)
     {
-        $this->db = $db;
+        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
     public function generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null)

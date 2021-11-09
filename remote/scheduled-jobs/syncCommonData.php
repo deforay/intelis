@@ -25,8 +25,8 @@ if (strpos($headers[0], '200') === false) {
 }
 
 
-$general = new \Vlsm\Models\General($db);
-$app = new \Vlsm\Models\App($db);
+$general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
 
 $globalConfigQuery = "SELECT * FROM system_config";
 $configResult = $db->query($globalConfigQuery);

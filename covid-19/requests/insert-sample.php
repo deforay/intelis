@@ -5,8 +5,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 #require_once('../../startup.php');
 
-$general = new \Vlsm\Models\General($db);
-$covid19Model = new \Vlsm\Models\Covid19($db);
+$general = new \Vlsm\Models\General();
+$covid19Model = new \Vlsm\Models\Covid19();
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();

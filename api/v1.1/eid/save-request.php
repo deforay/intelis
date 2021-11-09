@@ -5,10 +5,10 @@ session_unset(); // no need of session in json response
 try {
     ini_set('memory_limit', -1);
     header('Content-Type: application/json');
-    $general = new \Vlsm\Models\General($db);
-    $userDb = new \Vlsm\Models\Users($db);
-    $app = new \Vlsm\Models\App($db);
-    $eidModel = new \Vlsm\Models\Eid($db);
+    $general = new \Vlsm\Models\General();
+    $userDb = new \Vlsm\Models\Users();
+    $app = new \Vlsm\Models\App();
+    $eidModel = new \Vlsm\Models\Eid();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
@@ -371,7 +371,7 @@ try {
             }
             http_response_code(301);
         }
-        $app = new \Vlsm\Models\App($db);
+        $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], $data['eidSampleId'], 'add-request', 'eid', $requestUrl, $params, 'json');
     }
     if ($update == "yes") {

@@ -6,8 +6,8 @@ include_once(APPLICATION_PATH . '/header.php');
 $sCode = $labFieldDisabled = '';
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
-$usersModel = new \Vlsm\Models\Users($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$usersModel = new \Vlsm\Models\Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
 

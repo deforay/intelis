@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 #require_once('../startup.php');  
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $tableName = "r_vl_sample_type";
 $primaryKey = "sample_id";

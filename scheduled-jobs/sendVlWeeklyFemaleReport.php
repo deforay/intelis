@@ -12,7 +12,7 @@ include_once(APPLICATION_PATH."/includes/mail/PHPMailerAutoload.php");
 
 
 
-$general=new \Vlsm\Models\General($db);
+$general=new \Vlsm\Models\General();
 
 $query ="SELECT * from s_vlsm_instance";
 $qResult=$db->query($query);

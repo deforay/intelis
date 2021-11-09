@@ -159,7 +159,7 @@ try {
                     $data['result_status'] = $status[$i];
                     /* Updating the high and low viral load data */
                     if ($data['result_status'] == 4 || $data['result_status'] == 7) {
-                        $vlDb = new \Vlsm\Models\Vl($db);
+                        $vlDb = new \Vlsm\Models\Vl();
                         $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
                     }
                     $data['sample_code'] = $rResult[0]['sample_code'];
@@ -247,7 +247,7 @@ try {
             }
             /* Updating the high and low viral load data */
             if ($data['result_status'] == 4 || $data['result_status'] == 7) {
-                $vlDb = new \Vlsm\Models\Vl($db);
+                $vlDb = new \Vlsm\Models\Vl();
                 $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
             }
             //get bacth code

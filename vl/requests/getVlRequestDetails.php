@@ -3,8 +3,8 @@
 
 
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 

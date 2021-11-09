@@ -2,7 +2,7 @@
 #require_once('../startup.php');
 
 include_once(APPLICATION_PATH.'/includes/mail/PHPMailerAutoload.php');
-$general=new \Vlsm\Models\General($db);
+$general=new \Vlsm\Models\General();
 $reportFilename = '';
 $postdata = $_POST;
 $end_date = date('Y-m-d');

@@ -6,9 +6,9 @@ include_once(APPLICATION_PATH . '/header.php');
 
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
-$userDb = new \Vlsm\Models\Users($db);
-$hepatitisDb = new \Vlsm\Models\Hepatitis($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$userDb = new \Vlsm\Models\Users();
+$hepatitisDb = new \Vlsm\Models\Hepatitis();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();

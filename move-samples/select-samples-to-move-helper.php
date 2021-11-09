@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 #require_once('../startup.php');  
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $testType = $_POST['testTypeId'];
 $tableName = "move_samples";
 $tableName2    = "move_samples_map";

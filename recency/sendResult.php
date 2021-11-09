@@ -4,7 +4,7 @@ try {
     #require_once('../startup.php');  
 
 
-    $general = new \Vlsm\Models\General($db);
+    $general = new \Vlsm\Models\General();
     // Define path to guzzle directory
     /** Zend_Application */
     // require_once APPLICATION_PATH.'/includes/Zend/Application.php';

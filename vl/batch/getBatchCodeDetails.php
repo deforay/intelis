@@ -5,7 +5,7 @@
 $tableName = "batch_details";
 $primaryKey = "batch_id";
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 
 

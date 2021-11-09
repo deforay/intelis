@@ -22,7 +22,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $eidResults = $general->getEidResults();
 
 

@@ -27,8 +27,8 @@ session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General($db);
-$userDb = new \Vlsm\Models\Users($db);
+$general = new \Vlsm\Models\General();
+$userDb = new \Vlsm\Models\Users();
 $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['REQUEST_URI'];

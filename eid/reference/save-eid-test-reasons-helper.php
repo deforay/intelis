@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 #require_once('../startup.php');  
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "r_eid_test_reasons";
 $primaryKey = "test_reason_id";
 try {

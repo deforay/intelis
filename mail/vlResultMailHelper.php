@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 require APPLICATION_PATH . '/includes/mail/PHPMailerAutoload.php';
 
-$general=new \Vlsm\Models\General($db);
+$general=new \Vlsm\Models\General();
 $tableName="vl_request_form";
 $configSyncQuery ="SELECT `value` FROM global_config where name='sync_path'";
 $configSyncResult = $db->rawQuery($configSyncQuery);
