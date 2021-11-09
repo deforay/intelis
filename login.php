@@ -160,7 +160,7 @@ function generate_token()
             </div>
             <div style="margin-bottom: 5px;display:none" class="input-group" id="captcha">
             <div>
-                <input type="text" style="height: 70%;" id="challengeResponse" placeholder="Please enter the text from the image" class="form-control" title="Please enter the text from the image." maxlength="40">
+                <input type="text" style="height: 70%;" id="challengeResponse" name="captcha" placeholder="Please enter the text from the image" class="form-control" title="Please enter the text from the image." maxlength="40">
               </div>
               <div>
                 <img id="capChaw" src="/includes/captcha.php/<?php echo rand(); ?>" />
@@ -193,7 +193,6 @@ function generate_token()
                 $.blockUI();
             });
         }
-        var captcha = false;
     function validateNow() {
       flag = deforayValidator.init({
         formId: 'loginForm'
@@ -201,10 +200,8 @@ function generate_token()
 
       if (flag) {
         challenge_field = document.getElementById("challengeResponse").value;
-        if(captcha == false) {
-          document.getElementById('loginForm').submit();
-        }
-                else if (challenge_field != "") {
+        if(captchaflag == true) {
+               if (challenge_field != "") {
                     $.post('/includes/check-captcha-route.php', {
                             challenge_field: challenge_field,
                             format: "html"
@@ -224,6 +221,10 @@ function generate_token()
                     alert("Please enter the text from the image to proceed.");
                     return false;
                 }
+              }
+              else {
+                document.getElementById('loginForm').submit();
+              }
             }
     }
 
@@ -295,9 +296,9 @@ function generate_token()
             format: "html"
           },
           function(data) {
-            console.log(data);
             if(data >=3)
             {
+              captchaflag = true;
               $('#captcha').show();
             }
           });
