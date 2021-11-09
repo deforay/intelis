@@ -72,12 +72,11 @@ try {
 
         $queryParams = array($username, $password, 'active');
         $admin = $db->rawQuery("SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ? AND ud.password = ? AND ud.status = ?", $queryParams);
-        //$attemptCount1 = $db->rawQueryOne("SELECT COUNT(*) as attempt FROM user_login_history as ud WHERE ud.login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 5 minute)");
-        $attemptCount1 = $db->rawQueryOne("SELECT COUNT(*) as attempt FROM user_login_history as ud WHERE ud.login_id = '".$username."' AND ud.login_status='no' AND  ud.login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 5 minute)");
+        $attemptCount1 = $db->rawQueryOne("SELECT COUNT(*) as attempt FROM user_login_history as ud WHERE ud.login_id = '".$username."' AND ud.login_status='failed' AND  ud.login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 15 minute)");
         
         if($attemptCount1['attempt'] < 3) {
             if(count($admin) > 0){
-                $user->userHistoryLog($username,$loginStatus='yes');
+                $user->userHistoryLog($username,$loginStatus='successful');
 
                 //add random key
                 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
@@ -154,13 +153,13 @@ try {
                 // }
                 header("location:" . $redirect);
             }else{
-                $user->userHistoryLog($username,$loginStatus='no');
+                $user->userHistoryLog($username,$loginStatus='failed');
                 $_SESSION['alertMsg'] = "Please check your login credentials";
                 header("location:/login.php");
             }
         }
         else if($attemptCount1['attempt']>=3) {
-            $user->userHistoryLog($username,$loginStatus='no');
+            $user->userHistoryLog($username,$loginStatus='failed');
             $_SESSION['alertMsg'] = "You have exhausted maximum login attempts. Please try to login after sometime.";
             header("location:/login.php");
         }

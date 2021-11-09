@@ -11,7 +11,7 @@ $fnct = $_POST['fnct'];
 $data = 0;
 if ($value != '') {
     if ($fnct == '' || $fnct == 'null') {
-      $attemptCount = $db->rawQueryOne("SELECT COUNT(*) as attempt FROM $tableName as ud WHERE ud.login_id = '".$value."' AND ud.login_status='no' AND  ud.login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 5 minute)");
+      $attemptCount = $db->rawQueryOne("SELECT COUNT(*) as attempt FROM $tableName as ud WHERE ud.login_id = '".$value."' AND ud.login_status='failed' AND  ud.login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 15 minute)");
       $data = $attemptCount['attempt'];
     } 
 }
