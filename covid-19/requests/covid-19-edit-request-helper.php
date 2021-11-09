@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 // echo "<pre>";print_r($_POST);die;
 
@@ -335,7 +335,7 @@ try {
 				'timestamp' => time(),
 				'message' => 'Successfully updated.'
 			);
-			$app = new \Vlsm\Models\App($db);
+			$app = new \Vlsm\Models\App();
 			$trackId = $app->addApiTracking($user['user_id'], $_POST['covid19SampleId'], 'update-record', 'covid19', $requestUrl, $params, 'json');
 			http_response_code(200);
 		} else {

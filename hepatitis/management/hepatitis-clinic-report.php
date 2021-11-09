@@ -8,7 +8,7 @@ $tsResult = $db->rawQuery($tsQuery);
 
 //$arr = $general->getGlobalConfig();
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');

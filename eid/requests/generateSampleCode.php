@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$eidModel = new \Vlsm\Models\Eid($db);
+$eidModel = new \Vlsm\Models\Eid();
 
 
 

@@ -11,7 +11,7 @@ $sResult = $db->rawQuery($sQuery);
 
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');

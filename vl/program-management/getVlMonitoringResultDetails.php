@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 #require_once('../../startup.php');  
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
@@ -18,7 +18,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "vl_request_form";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where

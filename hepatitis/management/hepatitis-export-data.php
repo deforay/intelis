@@ -4,9 +4,9 @@ $title = "Export Data";
 include_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
-$hepatitisDb = new \Vlsm\Models\Hepatitis($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$hepatitisDb = new \Vlsm\Models\Hepatitis();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);

@@ -2,7 +2,7 @@
 
 include_once(APPLICATION_PATH . '/configs/config.interop.php');
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 
 

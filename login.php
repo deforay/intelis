@@ -158,12 +158,12 @@ function generate_token()
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
               <input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="Password" title="Please enter the password">
             </div>
-            <div style="margin-bottom: 5px; display:none" class="input-group" id="captcha">
-              <div class="col-md-4">
-                <img id="capChaw" src="/includes/captcha.php/<?php echo rand(); ?>" />
-              </div>
-              <div class="col-md-8">
+            <div style="margin-bottom: 5px;display:none" class="input-group" id="captcha">
+            <div>
                 <input type="text" style="height: 70%;" id="challengeResponse" placeholder="Please enter the text from the image" class="form-control" title="Please enter the text from the image." maxlength="40">
+              </div>
+              <div>
+                <img id="capChaw" src="/includes/captcha.php/<?php echo rand(); ?>" />
                 <a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa fa-refresh" aria-hidden="true"></i> Get New Image</a>
               </div>
             </div>

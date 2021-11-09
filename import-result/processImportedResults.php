@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 #include_once '../startup.php';
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $module = $_POST['module'];
 

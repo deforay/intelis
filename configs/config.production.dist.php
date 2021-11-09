@@ -13,6 +13,7 @@ $systemConfig['modules']['vl'] = true;
 $systemConfig['modules']['eid'] = true;
 $systemConfig['modules']['covid19'] = false;
 $systemConfig['modules']['hepatitis'] = false;
+$systemConfig['modules']['tb'] = false;
 
 $systemConfig['instanceName'] = '';
 
@@ -23,8 +24,11 @@ $systemConfig['dbUser']     = '';
 $systemConfig['dbPassword'] = '';
 $systemConfig['dbName']     = '';
 $systemConfig['dbPort']     = 3306;
+$systemConfig['dbCharset'] = 'utf8';
+
+
 $systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
-$systemConfig['tryCrypt']= 'XTOTESTTHECRYTPD';
+$systemConfig['tryCrypt'] = 'XTOTESTTHECRYTPD';
 
 
 //Please use only GMAIL ID AND PASSWORD
@@ -61,6 +65,7 @@ $interfaceConfig['dbUser'] = '';
 $interfaceConfig['dbPassword'] = '';
 $interfaceConfig['dbName'] = '';
 $interfaceConfig['dbPort'] = 3306;
+$interfaceConfig['dbCharset'] = 'utf8';
 
 $recencyConfig = array();
 

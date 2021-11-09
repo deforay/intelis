@@ -13,8 +13,8 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 
 $tableName1 = "activity_log";
 $tableName2 = "eid_form";
-$general = new \Vlsm\Models\General($db);
-$users = new \Vlsm\Models\Users($db);
+$general = new \Vlsm\Models\General();
+$users = new \Vlsm\Models\Users();
 
 $configQuery = "SELECT * from global_config";
 $configResult = $db->query($configQuery);

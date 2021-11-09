@@ -29,7 +29,7 @@ include_once(APPLICATION_PATH . '/header.php');
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');

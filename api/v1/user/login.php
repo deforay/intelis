@@ -15,8 +15,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 }
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General($db);
-$app = new \Vlsm\Models\App($db);
+$general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
 
 $input = json_decode(file_get_contents("php://input"), true);
 try {

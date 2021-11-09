@@ -4,7 +4,7 @@ require_once(__DIR__ . "/../startup.php");
 
 //$logpath = APPLICATION_PATH . '/logs/scheduled-jobs.log';
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 $timeZone = $general->getGlobalConfig('default_time_zone');
 $timeZone = !empty($timeZone) ? $timeZone : 'UTC';

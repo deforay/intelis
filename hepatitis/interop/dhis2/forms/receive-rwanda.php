@@ -6,8 +6,8 @@
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 
-$general = new \Vlsm\Models\General($db);
-$hepatitisModel = new \Vlsm\Models\Hepatitis($db);
+$general = new \Vlsm\Models\General();
+$hepatitisModel = new \Vlsm\Models\Hepatitis();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 

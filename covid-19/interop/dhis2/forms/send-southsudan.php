@@ -2,9 +2,9 @@
 
 // this file is included in /covid-19/interop/dhis2/covid-19-send.php
 
-$users = new \Vlsm\Models\Users($db);
+$users = new \Vlsm\Models\Users();
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $programStages = [
   'clinicalExaminationAndDiagnosis' => 'LpWNjNGvCO5',

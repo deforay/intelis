@@ -5,8 +5,8 @@
 
 
 
-$general = new \Vlsm\Models\General($db);
-$vlObj = new \Vlsm\Models\Vl($db);
+$general = new \Vlsm\Models\General();
+$vlObj = new \Vlsm\Models\Vl();
 
 
 $sampleQuery = "SELECT vl_sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM vl_request_form where vl_sample_id IN (" . $_POST['sampleId'].")";

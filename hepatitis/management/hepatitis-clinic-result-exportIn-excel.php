@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 #require_once('../../startup.php');  
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 //system config
 $systemConfigQuery = "SELECT * FROM system_config";

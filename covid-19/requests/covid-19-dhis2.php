@@ -2,8 +2,8 @@
 $title = "Covid-19 | DHIS2 Requests";
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 /* Global config data */
 $arr = $general->getGlobalConfig();

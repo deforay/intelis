@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 #require_once('../startup.php');  
 
 
-$general=new \Vlsm\Models\General($db);
+$general=new \Vlsm\Models\General();
 $configQuery="SELECT `value` FROM global_config where name ='vl_form'";
 $configResult=$db->query($configQuery);
 $tableName="vl_request_form";

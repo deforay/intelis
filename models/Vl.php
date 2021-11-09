@@ -31,7 +31,7 @@ class Vl
 
     public function __construct($db = null)
     {
-        $this->db = $db;
+        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
     public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null)

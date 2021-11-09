@@ -3,7 +3,7 @@ ob_start();
 #require_once('../../startup.php');
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
 //date

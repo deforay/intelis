@@ -20,7 +20,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
@@ -318,7 +318,7 @@ $output = array(
      "iTotalDisplayRecords" => $iFilteredTotal,
      "aaData" => array()
 );
-$hepatitisDb = new \Vlsm\Models\Hepatitis($db);
+$hepatitisDb = new \Vlsm\Models\Hepatitis();
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $row = array();

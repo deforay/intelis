@@ -1,7 +1,7 @@
 <?php
 
 // this file is included in hepatitis/results/generate-result-pdf.php
-$hepatitisDb = new \Vlsm\Models\Hepatitis($db);
+$hepatitisDb = new \Vlsm\Models\Hepatitis();
 //$hepatitisResults = $hepatitisDb->getHepatitisResults();
 
 $resultFilename = '';

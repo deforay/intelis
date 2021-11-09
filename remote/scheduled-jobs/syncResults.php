@@ -2,8 +2,8 @@
 //this fille is get the data from lab db and update in remote db
 
 include(dirname(__FILE__) . "/../../startup.php");
-$general = new \Vlsm\Models\General($db);
-$app = new \Vlsm\Models\App($db);
+$general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
 
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     echo "Please check your remote url";
@@ -219,7 +219,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $forms[] = $row['covid19_id'];
     }
 
-    $covid19Obj = new \Vlsm\Models\Covid19($db);
+    $covid19Obj = new \Vlsm\Models\Covid19();
     $symptoms = $covid19Obj->getCovid19SymptomsByFormId($forms);
     $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($forms);
     $testResults = $covid19Obj->getCovid19TestsByFormId($forms);
@@ -284,7 +284,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     //     $forms[] = $row['hepatitis_id'];
     // }
 
-    // $hepatitisObj = new \Vlsm\Models\Hepatitis($db);
+    // $hepatitisObj = new \Vlsm\Models\Hepatitis();
     // $risks = $hepatitisObj->getRiskFactorsByHepatitisId($forms);
     // $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($forms);
 

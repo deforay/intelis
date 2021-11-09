@@ -4,7 +4,7 @@ $title = "EID | Sample Rejection Report";
 include_once(APPLICATION_PATH . '/header.php');
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');

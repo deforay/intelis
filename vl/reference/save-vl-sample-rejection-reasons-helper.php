@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 // echo "<pre>";print_r($_POST);die;
 #require_once('../startup.php');  
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "r_vl_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
 

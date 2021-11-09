@@ -47,7 +47,7 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new \Vlsm\Models\Hepatitis($db);
+    $vlObj = new \Vlsm\Models\Hepatitis();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = $general->humanDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generatehepatitisSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');

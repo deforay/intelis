@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 include_once(APPLICATION_PATH . '/includes/mail/PHPMailerAutoload.php');
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "form_covid19";
 $configSyncQuery = "SELECT `value` FROM global_config where `name`='sync_path'";
 $configSyncResult = $db->rawQuery($configSyncQuery);

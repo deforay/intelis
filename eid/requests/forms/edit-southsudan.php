@@ -3,7 +3,7 @@
 // imported in eid-edit-request.php based on country in global config
 
 ob_start();
-$eidObj = new \Vlsm\Models\Eid($db);
+$eidObj = new \Vlsm\Models\Eid();
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -53,7 +53,7 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = $_GET['c'];
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new \Vlsm\Models\Eid($db);
+    $vlObj = new \Vlsm\Models\Eid();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = $general->humanDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateEIDSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');

@@ -9,7 +9,7 @@ $tableName2 = "hold_sample_import";
 $fileName = null;
 $importedBy = $_SESSION['userId'];
 
-$covid19Obj = new \Vlsm\Models\Covid19($db);
+$covid19Obj = new \Vlsm\Models\Covid19();
 
 
 

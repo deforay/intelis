@@ -32,10 +32,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <?php
 
 
-// $general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
-$hepatitisDb = new \Vlsm\Models\Hepatitis($db);
-$userDb = new \Vlsm\Models\Users($db);
+// $general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$hepatitisDb = new \Vlsm\Models\Hepatitis();
+$userDb = new \Vlsm\Models\Users();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();

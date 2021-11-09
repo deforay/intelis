@@ -4,7 +4,7 @@ ob_start();
 
 include_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "form_covid19";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE type = 'result'";

@@ -2,7 +2,7 @@
 // imported in covid-19-add-request.php based on country in global config
 
 ob_start();
-$covid19Obj = new \Vlsm\Models\Covid19($db);
+$covid19Obj = new \Vlsm\Models\Covid19();
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -86,7 +86,7 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new \Vlsm\Models\Covid19($db);
+    $vlObj = new \Vlsm\Models\Covid19();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = $general->humanDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');

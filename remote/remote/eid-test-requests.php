@@ -8,10 +8,10 @@ include(dirname(__FILE__) . "/../../startup.php");
 $labId = $data['labName'];
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-$app = new \Vlsm\Models\App($db);
+$app = new \Vlsm\Models\App();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";

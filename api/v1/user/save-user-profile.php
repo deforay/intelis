@@ -3,7 +3,7 @@
 header('Content-Type: application/json');
 
 session_unset(); // no need of session in json response
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 $apiKey = isset($_POST['x-api-key']) && !empty($_POST['x-api-key']) ? $_POST['x-api-key'] : null;
 

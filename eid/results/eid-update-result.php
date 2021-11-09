@@ -7,8 +7,8 @@ include_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
-$usersModel = new \Vlsm\Models\Users($db);
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$usersModel = new \Vlsm\Models\Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
 $userQuery = "SELECT * FROM user_details where status='active'";

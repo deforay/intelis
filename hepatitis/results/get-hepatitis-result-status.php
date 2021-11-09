@@ -22,8 +22,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 
-$general = new \Vlsm\Models\General($db);
-$hepatitisDb = new \Vlsm\Models\Hepatitis($db);
+$general = new \Vlsm\Models\General();
+$hepatitisDb = new \Vlsm\Models\Hepatitis();
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 
 

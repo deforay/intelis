@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 
 // echo "<pre>";
 // var_dump($_POST);
@@ -224,7 +224,7 @@ try {
 	//   if ($_POST['sampleCodeCol'] != '') {
 	//     //$eidData['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : NULL;
 	//   } else {
-	//     $eidModel = new \Vlsm\Models\Eid($db);
+	//     $eidModel = new \Vlsm\Models\Eid();
 
 	//     $sampleCodeKeysJson = $eidModel->generateEIDSampleCode($_POST['provinceCode'], $_POST['sampleCollectionDate']);
 	//     $sampleCodeKeys = json_decode($sampleCodeKeysJson, true);

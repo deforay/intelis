@@ -4,8 +4,8 @@ $title = "Covid-19 | Add Batch";
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

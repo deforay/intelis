@@ -2,7 +2,7 @@
 require_once('../../startup.php');
 
 
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $sampleData = array();
 $sampleQuery = 'SELECT * FROM r_covid19_test_reasons where parent_reason = "'. $_POST['responseParent'].'"';
 $sampleResult = $db->query($sampleQuery);

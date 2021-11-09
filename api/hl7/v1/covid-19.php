@@ -7,7 +7,7 @@ use Aranyasen\HL7\Segments\OBX;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 
-$covid19Model = new \Vlsm\Models\Covid19($db);
+$covid19Model = new \Vlsm\Models\Covid19();
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
 if ($type[1] == 'RES' || $type[1] == 'QRY') {
@@ -133,7 +133,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
     if ($rowData && count($rowData) > 0) {
-        $app = new \Vlsm\Models\App($db);
+        $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], count($rowData), $type[1], 'covid19', $requestUrl, $hl7, 'hl7');
         foreach ($rowData as $row) {
             /* MSH Information */
@@ -240,7 +240,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
         }
         // http_response_code(200);
     } else {
-        $app = new \Vlsm\Models\App($db);
+        $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], 0, $type[1], 'covid19', $requestUrl, $hl7, 'hl7');
         $msh = new MSH();
         $msh->setMessageType(["COVID-19", "RES"]);
@@ -551,7 +551,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $returnString = "";
     // print_r($savedSamples);die;
     if ($id > 0 && isset($covid19Data) && count($covid19Data) > 0) {
-        $app = new \Vlsm\Models\App($db);
+        $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], $_POST['covid19SampleId'], $type[1], 'covid19', $requestUrl, $hl7, 'hl7');
         if ($savedSamples['sample_code'] != '') {
             $sampleCode = $savedSamples['sample_code'];

@@ -84,7 +84,7 @@ if (trim($facilityResult[0]['facility_state']) != '') {
 $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 // if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-//      $vlObj = new \Vlsm\Models\Vl($db);
+//      $vlObj = new \Vlsm\Models\Vl();
 //      $sampleCollectionDate = explode(" ", $sampleCollectionDate);
 //      $sampleCollectionDate = $general->humanDateFormat($sampleCollectionDate[0]);
 //      $sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['province_code'], $sampleCollectionDate);

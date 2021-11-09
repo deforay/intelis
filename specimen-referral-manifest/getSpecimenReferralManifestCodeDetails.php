@@ -5,8 +5,8 @@ if (session_status() == PHP_SESSION_NONE) {
 #require_once('../startup.php');
 
 
-$general = new \Vlsm\Models\General($db);
-$facilitiesDb = new \Vlsm\Models\Facilities($db);
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 //system config
 $sarr = $general->getSystemConfig();
 $facilityMap = null;

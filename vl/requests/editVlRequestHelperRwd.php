@@ -6,7 +6,7 @@ ob_start();
 #require_once('../../startup.php');
 
 //echo "<pre>";var_dump($_POST);die;
-$general = new \Vlsm\Models\General($db);
+$general = new \Vlsm\Models\General();
 $tableName = "vl_request_form";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -318,7 +318,7 @@ try {
     );
     /* Updating the high and low viral load data */
     if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-        $vlDb = new \Vlsm\Models\Vl($db);
+        $vlDb = new \Vlsm\Models\Vl();
         $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
     $lock = $general->getGlobalConfig('lock_approved_vl_samples');

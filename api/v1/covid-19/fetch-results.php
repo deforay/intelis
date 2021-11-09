@@ -27,11 +27,11 @@ session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General($db);
-$userDb = new \Vlsm\Models\Users($db);
-$facilityDb = new \Vlsm\Models\Facilities($db);
-$c19Db = new \Vlsm\Models\Covid19($db);
-$app = new \Vlsm\Models\App($db);
+$general = new \Vlsm\Models\General();
+$userDb = new \Vlsm\Models\Users();
+$facilityDb = new \Vlsm\Models\Facilities();
+$c19Db = new \Vlsm\Models\Covid19();
+$app = new \Vlsm\Models\App();
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);
 /* echo "<pre>";
@@ -174,7 +174,7 @@ try {
 
         );
 
-        $app = new \Vlsm\Models\App($db);
+        $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'covid19', $requestUrl, $params, 'json');
         http_response_code(200);
         echo json_encode($response);
@@ -192,7 +192,7 @@ try {
     // if (isset($user['token_updated']) && $user['token_updated'] == true) {
     //     $payload['token'] = $user['new_token'];
     // }
-    $app = new \Vlsm\Models\App($db);
+    $app = new \Vlsm\Models\App();
     $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'covid19', $requestUrl, $params, 'json');
 
     http_response_code(200);
