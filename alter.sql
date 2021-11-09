@@ -2589,9 +2589,13 @@ CREATE TABLE `user_login_history` (
   `login_id` varchar (1000) DEFAULT NULL,
   `login_attempted_datetime` datetime DEFAULT NULL,
   `login_status` varchar (1000) DEFAULT NULL,
-  `credential` JSON NULL DEFAULT NULL,
   `ip_address` varchar (1000) DEFAULT NULL,
   `browser` varchar (1000),
   `operating_system` varchar (1000) DEFAULT NULL,
    PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+-- Thana 08-Nov-2021
+ALTER TABLE `covid19_tests` ADD `kit_lot_no` VARCHAR(256) NULL DEFAULT NULL AFTER `testing_platform`, ADD `kit_expiry_date` DATE NULL DEFAULT NULL AFTER `kit_lot_no`;

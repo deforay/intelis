@@ -269,16 +269,8 @@ class Users
         return $this->db->rawQueryOne($query, array($userId));
     }
 
-    public function userHistoryLog($loginId,$credentialJson)
-    { 
-        $loginStatus = '';
-        if($loginId !="")
-        {
-            $loginStatus = 'Yes';
-        }
-        else {
-            $loginStatus = 'No';
-        }
+    public function userHistoryLog($userName,$loginStatus)
+    {     
         $general = new \Vlsm\Models\General($this->db);
         $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
@@ -300,16 +292,13 @@ class Users
         }
 
         $data = array(
-            'login_id' => $loginId,
+            'login_id' => $userName,
             'login_attempted_datetime' => $general->getDateTime(),
             'login_status' => $loginStatus,
-            'credential' => $credentialJson,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,
             'operating_system' =>$os
         );
-        // print_r($data);die;
-
         $this->db->insert('user_login_history', $data);
     }
 }
