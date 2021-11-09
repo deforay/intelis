@@ -283,7 +283,6 @@ class Users
         $resultSet = $this->db->rawQuery($query, array($userId));
         foreach ($resultSet as $row) {
 
-
             $response['role']['role-code'] = $row['role_code'];
             $response['role']['access-type'] = $row['access_type'];
 
