@@ -37,7 +37,7 @@ try {
         echo json_encode($response);
         exit(0);
     }
-    $roleUser = $userDb->getRoleDetailsUsingUserId($user['user_id']);
+    $roleUser = $userDb->getUserRole($user['user_id']);
 
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
