@@ -13,6 +13,7 @@ $systemConfig['modules']['vl'] = true;
 $systemConfig['modules']['eid'] = true;
 $systemConfig['modules']['covid19'] = false;
 $systemConfig['modules']['hepatitis'] = false;
+$systemConfig['modules']['tb'] = false;
 
 $systemConfig['instanceName'] = '';
 

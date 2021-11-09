@@ -2594,4 +2594,4 @@ CREATE TABLE `user_login_history` (
   `browser` varchar (1000),
   `operating_system` varchar (1000) DEFAULT NULL,
    PRIMARY KEY (`history_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
