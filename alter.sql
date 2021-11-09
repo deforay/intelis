@@ -2599,3 +2599,8 @@ CREATE TABLE `user_login_history` (
 
 -- Thana 08-Nov-2021
 ALTER TABLE `covid19_tests` ADD `kit_lot_no` VARCHAR(256) NULL DEFAULT NULL AFTER `testing_platform`, ADD `kit_expiry_date` DATE NULL DEFAULT NULL AFTER `kit_lot_no`;
+
+-- Amit 09-Nov-2021
+UPDATE `resources` SET `resource_id` = 'vl-requests' WHERE `resource_id` = 'vl-test-request';
+UPDATE `privileges` SET `resource_id` = 'vl-requests' WHERE `resource_id` = 'vl-test-request';
+

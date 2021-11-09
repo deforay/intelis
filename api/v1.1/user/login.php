@@ -51,7 +51,7 @@ try {
                     $data['form'] = $configFormResult[0]['value'];
                     $data['api_token'] = $randomString;
                     $data['appMenuName'] = $general->getGlobalConfig('app_menu_name');
-                    $data['privileges'] = $users->getUserRolePrivileges($userResult['user_id'], true);
+                    $data['access'] = $users->getUserRolePrivileges($userResult['user_id']);
                     // print_r($data);die;
                     $payload = array(
                         'status' => 1,

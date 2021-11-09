@@ -269,7 +269,7 @@ class Users
         return $this->db->rawQueryOne($query, array($userId));
     }
 
-    public function getUserRolePrivileges($userId, $onlyDisplayName = false)
+    public function getUserRolePrivileges($userId)
     {
         $response = array();
         $query = "SELECT r.role_id, r.role_code, r.access_type, res.module,p.privilege_id,p.resource_id, p.privilege_name, p.display_name
@@ -279,7 +279,7 @@ class Users
                     INNER JOIN resources as res ON res.resource_id=p.resource_id 
                     INNER JOIN user_details as ud ON ud.role_id=r.role_id 
                     WHERE ud.user_id = ?
-                    ORDER by res.module, p.resource_id";
+                    ORDER by res.module, p.resource_id, p.display_name";
         $resultSet = $this->db->rawQuery($query, array($userId));
         foreach ($resultSet as $row) {
 
@@ -287,11 +287,9 @@ class Users
             $response['role']['role-code'] = $row['role_code'];
             $response['role']['access-type'] = $row['access_type'];
 
-            $row['display_name'] = preg_replace("![^a-z0-9]+!i", "-", strtolower($row['display_name']));
-            $response['privileges'][$row['module']][$row['resource_id']]['privilege'][] = $row['display_name'];
-            if ($onlyDisplayName == false) {
-                $response['privileges'][$row['module']][$row['resource_id']]['file'][] = $row['privilege_file'];
-            }
+            $row['display_name'] =  strtolower(trim(preg_replace("![^a-z0-9]+!i", " ",$row['display_name'])));
+            $row['display_name'] =  preg_replace("![^a-z0-9]+!i", "-",$row['display_name']);
+            $response['privileges'][$row['module']][$row['resource_id']][] = $row['display_name'];
         }
         return $response;
     }

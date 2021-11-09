@@ -7,6 +7,11 @@ if (!isset($_SESSION['userId'])) {
 $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
 
+$rp = $usersModel->getUserRolePrivileges($_SESSION['userId']);
+
+echo "<pre>";
+var_dump($rp);die;
+
 $syncLatestTime = $general->getLatestSynDateTime();
 /* Crosss Login Block Start */
 $crossLoginQuery = "SELECT `login_id`,`password`,`user_name` FROM `user_details` WHERE user_id = ?";
