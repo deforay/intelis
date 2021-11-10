@@ -2603,4 +2603,20 @@ ALTER TABLE `covid19_tests` ADD `kit_lot_no` VARCHAR(256) NULL DEFAULT NULL AFTE
 -- Amit 09-Nov-2021
 UPDATE `resources` SET `resource_id` = 'vl-requests' WHERE `resource_id` = 'vl-test-request';
 UPDATE `privileges` SET `resource_id` = 'vl-requests' WHERE `resource_id` = 'vl-test-request';
-
+UPDATE `privileges` SET `display_name` = 'Enter Result Manually' WHERE `privilege_name` = 'vlTestResult.php';
+UPDATE `privileges` SET `display_name` = 'Enter Result Manually' WHERE `privilege_name` = 'eid-manual-results.php';
+DELETE FROM roles_privileges_map where privilege_id in (SELECT privilege_id from privileges WHERE privilege_name like 'viewVlRequest.php');
+DELETE  FROM `privileges` WHERE privilege_name like 'viewVlRequest.php';
+UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'vlRequest.php';
+UPDATE `privileges` SET `display_name` = 'Add' WHERE `privilege_name` = 'eid-add-request.php';
+UPDATE `privileges` SET `display_name` = 'Edit' WHERE `privilege_name` = 'eid-edit-request.php';
+UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'eid-requests.php';
+UPDATE `privileges` SET `display_name` = 'Add' WHERE `privilege_name` = 'covid-19-add-request.php';
+UPDATE `privileges` SET `display_name` = 'Edit' WHERE `privilege_name` = 'covid-19-edit-request.php';
+UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'covid-19-requests.php';
+UPDATE `privileges` SET `display_name` = 'Add' WHERE `privilege_name` = 'hepatitis-add-request.php';
+UPDATE `privileges` SET `display_name` = 'Edit' WHERE `privilege_name` = 'hepatitis-edit-request.php';
+UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'hepatitis-requests.php';
+UPDATE `privileges` SET `display_name` = 'Add' WHERE `privilege_name` = 'tb-add-request.php';
+UPDATE `privileges` SET `display_name` = 'Edit' WHERE `privilege_name` = 'tb-edit-request.php';
+UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'tb-requests.php';

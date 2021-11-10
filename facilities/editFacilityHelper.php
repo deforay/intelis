@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 include_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
 $general = new \Vlsm\Models\General();
-$geolocation = new \Vlsm\Models\Geolocations();
+$geolocation = new \Vlsm\Models\GeoLocations();
 /* For reference we define the table names */
 $tableName = "facility_details";
 $facilityId = base64_decode($_POST['facilityId']);
