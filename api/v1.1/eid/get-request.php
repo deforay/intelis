@@ -151,8 +151,9 @@ try {
         }
     }
     /* To check the sample code filter */
-    $sampleCode = $input['sampleCode'];
-    if (!empty($sampleCode)) {
+    
+    if (!empty($input['sampleCode'])) {
+        $sampleCode = $input['sampleCode'];
         $sampleCode = implode("','", $sampleCode);
 
         if (isset($where) && trim($where) != "") {
@@ -163,18 +164,22 @@ try {
         $where .= " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
     }
     /* To check the facility and date range filter */
-    $from = $input['sampleCollectionDate'][0];
-    $to = $input['sampleCollectionDate'][1];
-    $facilityId = $input['facility'];
-    if (!empty($from) && !empty($to) && !empty($facilityId)) {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
+    if (!empty($input['sampleCollectionDate'])) {
+        $from = $input['sampleCollectionDate'][0];
+        $to = $input['sampleCollectionDate'][1];
+        if (!empty($from) && !empty($to)) {
+            if (isset($where) && trim($where) != "") {
+                $where .= " AND ";
+            } else {
+                $where .= " WHERE ";
+            }
+            $where .= " DATE(sample_collection_date) between '$from' AND '$to' ";
         }
-        $where .= " DATE(sample_collection_date) between '$from' AND '$to' ";
+    }
 
-        $facilityId = implode("','", $facilityId);
+
+    if (!empty($input['facility'])) {
+        $facilityId = implode("','", $input['facility']);
         $where .= " AND vl.facility_id IN ('$facilityId') ";
     }
 
@@ -197,8 +202,9 @@ try {
         $where .= " CONCAT(vl.child_name, ' ', vl.child_surname) like '%" . $input['childName'] . "%'";
     }
 
-    $sampleStatus = $input['sampleStatus'];
-    if (!empty($sampleStatus)) {
+
+    if (!empty($input['sampleStatus'])) {
+        $sampleStatus = $input['sampleStatus'];
         $sampleStatus = implode("','", $sampleStatus);
 
         if (isset($where) && trim($where) != "") {
@@ -210,7 +216,7 @@ try {
     }
 
     // $sQuery .= " ORDER BY sample_collection_date ASC ";
-    $sQuery .= $where . " ORDER BY eid_id DESC limit 100;";
+    $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100;";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 

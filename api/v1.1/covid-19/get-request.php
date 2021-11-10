@@ -185,39 +185,42 @@ try {
         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 
-    $where = "";
+    $where = array();
     if (!empty($user)) {
         $facilityMap = $facilityDb->getFacilityMap($user['user_id'], 1);
         if (!empty($facilityMap)) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " vl.facility_id IN (" . $facilityMap . ")";
+            $where[]= " vl.facility_id IN (" . $facilityMap . ")";
         } else {
-            $where = " WHERE (request_created_by = '" . $user['user_id'] . "' OR vlsm_country_id = '" . $arr['vl_form'] . "')";
+            $where[]= " (request_created_by = '" . $user['user_id'] . "' OR vlsm_country_id = '" . $arr['vl_form'] . "')";
         }
     }
     /* To check the sample code filter */
-    $sampleCode = $input['sampleCode'];
-    if (!empty($sampleCode)) {
-        $sampleCode = implode("','", $sampleCode);
-        $where .= " AND (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
+    if (!empty($input['sampleCode'])) {
+        $sampleCode = $input['sampleCode'];
+        if (!empty($sampleCode)) {
+            $sampleCode = implode("','", $sampleCode);
+            $where[]= " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
+        }
     }
-    /* To check the facility and date range filter */
-    $from = $input['sampleCollectionDate'][0];
-    $to = $input['sampleCollectionDate'][1];
-    $facilityId = $input['facility'];
-    if (!empty($from) && !empty($to) && !empty($facilityId)) {
-        $where .= " AND DATE(sample_collection_date) between '$from' AND '$to' ";
 
-        $facilityId = implode("','", $facilityId);
-        $where .= " AND vl.facility_id IN ('$facilityId') ";
+    /* To check the facility and date range filter */
+    if (!empty($input['sampleCollectionDate'])) {
+        $from = $input['sampleCollectionDate'][0];
+        $to = $input['sampleCollectionDate'][1];
+        if (!empty($from) && !empty($to)) {
+            $where[]= " DATE(sample_collection_date) between '$from' AND '$to' ";
+        }
     }
+
+    if (!empty($input['facility'])) {
+        $facilityId = implode("','", $input['facility']);
+        $where[]= " vl.facility_id IN ('$facilityId') ";
+    }
+
+    $where = " WHERE ". implode(" AND ", $where);
 
     // $sQuery .= " ORDER BY sample_collection_date ASC ";
-    $sQuery .= $where . " ORDER BY covid19_id DESC limit 100;";
+    $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100 ";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
     $app = new \Vlsm\Models\App();

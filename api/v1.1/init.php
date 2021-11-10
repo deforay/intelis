@@ -19,7 +19,7 @@ $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 $userDb = new \Vlsm\Models\Users();
 $facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\Geolocations();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
 
 $input = json_decode(file_get_contents("php://input"), true);
 $formId = $general->getGlobalConfig('vl_form');

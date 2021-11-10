@@ -272,7 +272,7 @@ class Users
     public function getUserRolePrivileges($userId)
     {
         $response = array();
-        $query = "SELECT r.role_id, r.role_code, r.access_type, res.module,p.privilege_id,p.resource_id, p.privilege_name, p.display_name
+        $query = "SELECT r.role_id, r.role_code,r.role_name, r.access_type, res.module,p.privilege_id,p.resource_id, p.privilege_name, p.display_name
                     FROM roles as r
                     INNER JOIN roles_privileges_map as rpm ON rpm.role_id=r.role_id 
                     INNER JOIN privileges as p ON rpm.privilege_id=p.privilege_id 
@@ -283,8 +283,9 @@ class Users
         $resultSet = $this->db->rawQuery($query, array($userId));
         foreach ($resultSet as $row) {
 
-            $response['role']['role-code'] = $row['role_code'];
-            $response['role']['access-type'] = $row['access_type'];
+            $response['role']['name'] = $row['role_name'];
+            $response['role']['code'] = $row['role_code'];
+            $response['role']['type'] = $row['access_type'];
 
             $row['display_name'] =  strtolower(trim(preg_replace("![^a-z0-9]+!i", " ",$row['display_name'])));
             $row['display_name'] =  preg_replace("![^a-z0-9]+!i", "-",$row['display_name']);

@@ -23,7 +23,7 @@ $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\Geolocations();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
 
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");

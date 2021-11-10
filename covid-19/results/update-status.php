@@ -12,6 +12,7 @@ try {
         $status = array(
             'result_status'             => $_POST['status'],
             'result_approved_datetime'  =>  $general->getDateTime(),
+            'last_modified_datetime'     =>  $general->getDateTime(),
             'data_sync'                 => 0
         );
         /* Check if already have reviewed and approved by */
