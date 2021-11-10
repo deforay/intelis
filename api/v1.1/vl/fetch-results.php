@@ -159,18 +159,13 @@ try {
         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 
-    $where = "";
+    $where = array();
     if (!empty($user)) {
         $facilityMap = $facilityDb->getFacilityMap($user['user_id'], 1);
         if (!empty($facilityMap)) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " vl.facility_id IN (" . $facilityMap . ")";
+            $where[] = " vl.facility_id IN (" . $facilityMap . ")";
         } else {
-            $where = " WHERE (vl.request_created_by = '" . $user['user_id'] . "' OR vl.vlsm_country_id = '" . $arr['vl_form'] . "')";
+            $where[] = " (vl.request_created_by = '" . $user['user_id'] . "' OR vl.vlsm_country_id = '" . $arr['vl_form'] . "')";
         }
     }
 
@@ -178,75 +173,42 @@ try {
     $uniqueId = $input['uniqueId'];
     if (!empty($uniqueId)) {
         $uniqueId = implode("','", $uniqueId);
-
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " unique_id IN ('$uniqueId')";
+        $where[] = " unique_id IN ('$uniqueId')";
     }
 
     /* To check the sample code filter */
     $sampleCode = $input['sampleCode'];
     if (!empty($sampleCode)) {
         $sampleCode = implode("','", $sampleCode);
-
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') )";
+        $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') )";
     }
     /* To check the facility and date range filter */
     $from = $input['sampleCollectionDate'][0];
     $to = $input['sampleCollectionDate'][1];
     $facilityId = $input['facility'];
     if (!empty($from) && !empty($to) && !empty($facilityId)) {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " DATE(vl.sample_collection_date) between '$from' AND '$to' ";
+        $where[] = " DATE(vl.sample_collection_date) between '$from' AND '$to' ";
 
         $facilityId = implode("','", $facilityId);
-        $where .= " AND vl.facility_id IN ('$facilityId') ";
+        $where[] = " vl.facility_id IN ('$facilityId') ";
     }
 
     if (!empty($input['patientArtNo'])) {
         $patientArtNo = implode("','", $input['patientArtNo']);
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " vl.patient_art_no IN ('" . $patientArtNo . "') ";
+        $where[] = " vl.patient_art_no IN ('" . $patientArtNo . "') ";
     }
 
     if (!empty($input['patientName'])) {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " CONCAT(vl.patient_first_name, ' ', vl.patient_last_name) like '%" . $input['patientName'] . "%'";
+        $where[] = " CONCAT(vl.patient_first_name, ' ', vl.patient_last_name) like '%" . $input['patientName'] . "%'";
     }
 
     $sampleStatus = $input['sampleStatus'];
     if (!empty($sampleStatus)) {
         $sampleStatus = implode("','", $sampleStatus);
-
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " vl.result_status IN ('$sampleStatus') ";
+        $where[] = " vl.result_status IN ('$sampleStatus') ";
     }
 
-    // $sQuery .= " ORDER BY sample_collection_date ASC ";
+    $where = " WHERE " . implode(" AND ", $where);
     $sQuery .= $where . " limit 100;";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);

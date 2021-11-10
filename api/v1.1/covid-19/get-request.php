@@ -189,9 +189,9 @@ try {
     if (!empty($user)) {
         $facilityMap = $facilityDb->getFacilityMap($user['user_id'], 1);
         if (!empty($facilityMap)) {
-            $where[]= " vl.facility_id IN (" . $facilityMap . ")";
+            $where[] = " vl.facility_id IN (" . $facilityMap . ")";
         } else {
-            $where[]= " (request_created_by = '" . $user['user_id'] . "' OR vlsm_country_id = '" . $arr['vl_form'] . "')";
+            $where[] = " (request_created_by = '" . $user['user_id'] . "' OR vlsm_country_id = '" . $arr['vl_form'] . "')";
         }
     }
     /* To check the sample code filter */
@@ -199,7 +199,7 @@ try {
         $sampleCode = $input['sampleCode'];
         if (!empty($sampleCode)) {
             $sampleCode = implode("','", $sampleCode);
-            $where[]= " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
+            $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
         }
     }
 
@@ -208,18 +208,16 @@ try {
         $from = $input['sampleCollectionDate'][0];
         $to = $input['sampleCollectionDate'][1];
         if (!empty($from) && !empty($to)) {
-            $where[]= " DATE(sample_collection_date) between '$from' AND '$to' ";
+            $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
         }
     }
 
     if (!empty($input['facility'])) {
         $facilityId = implode("','", $input['facility']);
-        $where[]= " vl.facility_id IN ('$facilityId') ";
+        $where[] = " vl.facility_id IN ('$facilityId') ";
     }
 
-    $where = " WHERE ". implode(" AND ", $where);
-
-    // $sQuery .= " ORDER BY sample_collection_date ASC ";
+    $where = " WHERE " . implode(" AND ", $where);
     $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100 ";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
