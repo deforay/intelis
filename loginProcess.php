@@ -69,12 +69,31 @@ try {
             $password = sha1($password . $systemConfig['passwordSalt']);
         }
         /* Crosss Login Block End */
-
+        $ipaddress = '';
+        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+          $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+          $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+          $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+          $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+          $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        } else if (isset($_SERVER['REMOTE_ADDR'])) {
+          $ipaddress = $_SERVER['REMOTE_ADDR'];
+        } else {
+          $ipaddress = 'UNKNOWN';
+        }
         $queryParams = array($username, $password, 'active');
         $admin = $db->rawQuery("SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ? AND ud.password = ? AND ud.status = ?", $queryParams);
-        $attemptCount1 = $db->rawQueryOne("SELECT COUNT(*) as attempt FROM user_login_history as ud WHERE ud.login_id = '" . $username . "' AND ud.login_status='failed' AND  ud.login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 15 minute)");
+        $attemptCount1 = $db->rawQueryOne("SELECT 
+        SUM(CASE WHEN login_id = '" . $username . "' THEN 1 ELSE 0 END) AS LoginIdCount,
+        SUM(CASE WHEN ip_address = '" . $ipaddress . "' THEN 1 ELSE 0 END) AS IpCount
+    FROM user_login_history
+    WHERE login_status='failed' AND login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 15 minute)");
 
-        if ($attemptCount1['attempt'] < 3) {
+        if ($attemptCount1['LoginIdCount'] < 3 || $attemptCount1['IpCount'] < 3) {
             if (count($admin) > 0) {
                 $user->userHistoryLog($username, $loginStatus = 'successful');
 
