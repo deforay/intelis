@@ -176,7 +176,7 @@ try {
                 $_SESSION['alertMsg'] = "Please check your login credentials";
                 header("location:/login.php");
             }
-        } else if ($attemptCount1['attempt'] >= 3) {
+        } else if ($attemptCount1['LoginIdCount'] >= 3 || $attemptCount1['IpCount'] >= 3) {
             if ($_POST['captcha'] != '') {
                 if (count($admin) > 0) {
                     $user->userHistoryLog($username, $loginStatus = 'successful');
