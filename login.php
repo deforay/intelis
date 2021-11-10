@@ -97,6 +97,9 @@ function generate_token()
       background-size: cover;
       background-repeat: no-repeat;
     }
+    a {
+        cursor: pointer;
+    }
   </style>
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -163,7 +166,7 @@ function generate_token()
                 <input type="text" style="height: 70%;" id="challengeResponse" name="captcha" placeholder="Please enter the text from the image" class="form-control" title="Please enter the text from the image." maxlength="40">
               </div>
               <div>
-                <img id="capChaw" src="/includes/captcha.php/<?php echo rand(); ?>" />
+                <img id="capChaw" width="254px" height="100px" src="/includes/captcha.php/<?php echo rand(); ?>" />
                 <a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa fa-refresh" aria-hidden="true"></i> Get New Image</a>
               </div>
             </div>
@@ -219,6 +222,7 @@ function generate_token()
                         });
                 } else {
                     alert("Please enter the text from the image to proceed.");
+                    // $('.ppwd').focus();
                     return false;
                 }
               }
@@ -300,6 +304,7 @@ function generate_token()
             {
               captchaflag = true;
               $('#captcha').show();
+              $("#challengeResponse").addClass("isRequired");
             }
           });
       }
