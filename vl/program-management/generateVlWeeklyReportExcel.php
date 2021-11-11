@@ -328,8 +328,8 @@ foreach ($excelResultSet as $vlLab => $labResult) {
             $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
             $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
             $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-            //$sheet->getDefaultRowDimension()->setRowHeight(15);
-            if ($colNo > 5 && $colNo <= 19) {
+            $value = html_entity_decode($value);
+            if (is_numeric($value)) {
                 $cellDataType = \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC;
             } else {
                 $cellDataType = \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING;

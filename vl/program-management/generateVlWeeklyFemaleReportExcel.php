@@ -3,14 +3,13 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-#require_once('../../startup.php');
-
-
 
 $general = new \Vlsm\Models\General();
+
 if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsFemaleQuery']) != "") {
     $filename = '';
     $rResult = $db->rawQuery($_SESSION['vlStatisticsFemaleQuery']);
+
     $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $output = array();
     $sheet = $excel->getActiveSheet();
@@ -62,6 +61,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
     $sheet->getStyle('A3:N3')->applyFromArray($styleArray);
 
     foreach ($rResult as $aRow) {
+
         $row = array();
         $row[] = ucwords($aRow['facility_state']);
         $row[] = ucwords($aRow['facility_district']);
@@ -89,12 +89,13 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
             $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
             $sheet->getDefaultRowDimension()->setRowHeight(18);
             $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-            if ($colNo <= 2) {
-                $cellDataType = \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING;
-            } else {
+            $value = html_entity_decode($value);
+            if (is_numeric($value)) {
                 $cellDataType = \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC;
+            } else {
+                $cellDataType = \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING;
             }
-            $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), $cellDataType);
+            $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit($value, $cellDataType);
             $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
             $colNo++;
         }

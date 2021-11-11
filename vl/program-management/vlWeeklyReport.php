@@ -81,7 +81,6 @@ $facilityResult = $db->rawQuery($facilityQuery);
                             &nbsp;<input type="button" onclick="searchData();" value="Search" class="btn btn-success btn-sm">
                             &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
                             &nbsp;<button class="btn btn-info btn-sm" type="button" onclick="exportVLWeeklyReport()">Excel Export</button>
-                            &nbsp;<button class="btn btn-default btn-sm" type="button" onclick="exportVLWeeklyReportPdf()"><i class="fa fa-file-text"></i> PDF </button>
                           </td>
                         </tr>
                       </table>
@@ -498,27 +497,6 @@ $facilityResult = $db->rawQuery($facilityQuery);
       });
   }
 
-  function exportVLWeeklyReportPdf() {
-    $.blockUI();
-    $.post("/vl/program-management/getVlWeeklyReportPdf.php", {
-        reportedDate: $("#sampleTestDate").val(),
-        lab: ($("#lab").val() == null) ? '' : $("#lab").val().join(','),
-        searchData: $('.dataTables_filter input').val()
-      },
-      function(data) {
-        $.unblockUI();
-        if (data == "" || data == null || data == undefined) {
-          alert('Unable to generate pdf..');
-        } else {
-          $.unblockUI();
-          window.open(
-            '/uploads/' + data,
-            '_blank' // <- This is what makes it open in a new window.
-          );
-
-        }
-      });
-  }
 </script>
 <?php
 include(APPLICATION_PATH . '/footer.php');
