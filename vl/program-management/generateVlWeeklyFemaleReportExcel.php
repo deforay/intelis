@@ -67,7 +67,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
         $row[] = ucwords($aRow['facility_district']);
         $row[] = ucwords($aRow['facility_name']);
         $row[] = $aRow['totalFemale'];
-        $row[] = $aRow['pregsuppressed'];
+        $row[] = $aRow['pregSuppressed'];
         $row[] = $aRow['pregNotSuppressed'];
         $row[] = $aRow['bfsuppressed'];
         $row[] = $aRow['bfNotSuppressed'];

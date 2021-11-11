@@ -212,7 +212,7 @@ if (sizeof($vlLabResult) > 0) {
 		SUM(CASE 
              WHEN ((is_patient_pregnant ='Yes' OR is_patient_pregnant ='YES' OR is_patient_pregnant ='yes' OR is_patient_breastfeeding ='Yes' OR is_patient_breastfeeding ='YES' OR is_patient_breastfeeding ='yes') AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
              ELSE 0
-           END) AS pregsuppressed,	
+           END) AS pregSuppressed,	
 		SUM(CASE 
              WHEN ((is_patient_pregnant ='Yes' OR is_patient_pregnant ='YES' OR is_patient_pregnant ='yes' OR is_patient_breastfeeding ='Yes' OR is_patient_breastfeeding ='YES' OR is_patient_breastfeeding ='yes') AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
              ELSE 0
@@ -220,11 +220,11 @@ if (sizeof($vlLabResult) > 0) {
 		SUM(CASE 
              WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
              ELSE 0
-           END) AS usuppressed, 
+           END) AS genderUnknownSuppressed, 
 		SUM(CASE 
              WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
              ELSE 0
-           END) AS uNotSuppressed,               
+           END) AS genderUnknownNotSuppressed,               
 		SUM(CASE 
              WHEN (((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
              ELSE 0
@@ -297,10 +297,10 @@ if (sizeof($vlLabResult) > 0) {
         $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['gt15NotSuppressedM'] . '</td>';
         $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['gt15suppressedF'] . '</td>';
         $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['gt15NotSuppressedF'] . '</td>';
-        $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['pregsuppressed'] . '</td>';
+        $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['pregSuppressed'] . '</td>';
         $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['pregNotSuppressed'] . '</td>';
-        $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['usuppressed'] . '</td>';
-        $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['uNotSuppressed'] . '</td>';
+        $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['genderUnknownSuppressed'] . '</td>';
+        $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['genderUnknownNotSuppressed'] . '</td>';
         $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['totalLessThan1000'] . '</td>';
         $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['totalGreaterThan1000'] . '</td>';
         $html .= '<td align="center" style="border:1px solid #f4f4f4;">' . $result['total'] . '</td>';

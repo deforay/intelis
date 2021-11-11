@@ -131,7 +131,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 		SUM(CASE 
              WHEN ((is_patient_pregnant ='Yes' OR is_patient_pregnant ='YES' OR is_patient_pregnant ='yes' OR is_patient_breastfeeding ='Yes' OR is_patient_breastfeeding ='YES' OR is_patient_breastfeeding ='yes') AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
              ELSE 0
-           END) AS pregsuppressed,	
+           END) AS pregSuppressed,	
 		SUM(CASE 
              WHEN ((is_patient_pregnant ='Yes' OR is_patient_pregnant ='YES' OR is_patient_pregnant ='yes' OR is_patient_breastfeeding ='Yes' OR is_patient_breastfeeding ='YES' OR is_patient_breastfeeding ='yes') AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
              ELSE 0
@@ -139,11 +139,11 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 		SUM(CASE 
              WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
              ELSE 0
-           END) AS usuppressed, 
+           END) AS genderUnknownSuppressed, 
 		SUM(CASE 
              WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
              ELSE 0
-           END) AS uNotSuppressed,               
+           END) AS genderUnknownNotSuppressed,               
 		SUM(CASE 
              WHEN (((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
              ELSE 0
@@ -167,24 +167,20 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   }
 }
 
-$tWhere = 'where ';
+
 if (isset($sWhere) && trim($sWhere) != '') {
   $sWhere = ' where ' . $sWhere;
   $sWhere = $sWhere . ' AND vl.vlsm_country_id = ' . $country;
-  $tWhere = $tWhere . 'vl.vlsm_country_id = ' . $country;
 } else {
   $sWhere = ' where ' . $sWhere;
   $sWhere = $sWhere . 'vl.vlsm_country_id = ' . $country;
-  $tWhere = $tWhere . 'vl.vlsm_country_id = ' . $country;
 }
 
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   if (trim($start_date) == trim($end_date)) {
     $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
-    $tWhere = $tWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
   } else {
     $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
-    $tWhere = $tWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
   }
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -197,16 +193,13 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
   }
   if (trim($start_date) == trim($end_date)) {
     $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-    $tWhere = $tWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
   } else {
     $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-    $tWhere = $tWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
   }
 }
 
 if (isset($_POST['lab']) && trim($_POST['lab']) != '') {
   $sWhere = $sWhere . " AND vl.lab_id IN (" . $_POST['lab'] . ")";
-  $tWhere = $tWhere . " AND vl.lab_id IN (" . $_POST['lab'] . ")";
 }
 
 if ($sarr['sc_user_type'] == 'remoteuser') {
@@ -215,12 +208,10 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
   $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
   if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
     $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-    $tWhere = $tWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
   }
 } else if ($sarr['sc_user_type'] == 'vluser') {
 
   $sWhere = $sWhere . " AND vl.lab_id = " . $sarr['sc_testing_lab_id'];
-  $tWhere = $tWhere . " AND vl.lab_id = " . $sarr['sc_testing_lab_id'];
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;
@@ -268,10 +259,10 @@ foreach ($sResult as $aRow) {
   $row[] = $aRow['gt15NotSuppressedM'];
   $row[] = $aRow['gt15suppressedF'];
   $row[] = $aRow['gt15NotSuppressedF'];
-  $row[] = $aRow['pregsuppressed'];
+  $row[] = $aRow['pregSuppressed'];
   $row[] = $aRow['pregNotSuppressed'];
-  $row[] = $aRow['usuppressed'];
-  $row[] = $aRow['uNotSuppressed'];
+  $row[] = $aRow['genderUnknownSuppressed'];
+  $row[] = $aRow['genderUnknownNotSuppressed'];
   $row[] = $aRow['totalLessThan1000'];
   $row[] = $aRow['totalGreaterThan1000'];
   $row[] = $aRow['total'];

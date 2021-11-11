@@ -265,7 +265,7 @@ $batResult = $db->rawQuery($batQuery);
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert('Unable to generate excel..');
+          alert('Unable to generate the excel file');
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;

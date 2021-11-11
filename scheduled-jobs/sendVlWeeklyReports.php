@@ -142,7 +142,7 @@ foreach ($vlLabResult as $vlLab) {
 		SUM(CASE 
              WHEN ((is_patient_pregnant ='yes') OR (is_patient_breastfeeding ='yes') AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
              ELSE 0
-           END) AS pregsuppressed,	
+           END) AS pregSuppressed,	
 		SUM(CASE 
              WHEN ((is_patient_pregnant ='yes') OR (is_patient_breastfeeding ='yes') AND result > 1000) THEN 1
              ELSE 0
@@ -150,11 +150,11 @@ foreach ($vlLabResult as $vlLab) {
 		SUM(CASE 
              WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
              ELSE 0
-           END) AS usuppressed, 
+           END) AS genderUnknownSuppressed, 
 		SUM(CASE 
              WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND result > 1000) THEN 1
              ELSE 0
-           END) AS uNotSuppressed,               
+           END) AS genderUnknownNotSuppressed,               
 		SUM(CASE 
              WHEN ((result <= 1000 OR result ='Target Not Detected')) THEN 1
              ELSE 0
@@ -256,10 +256,10 @@ foreach ($vlLabResult as $vlLab) {
       $row[] = $aRow['gt14NotSuppressedM'];
       $row[] = $aRow['gt14suppressedF'];
       $row[] = $aRow['gt14NotSuppressedF'];
-      $row[] = $aRow['pregsuppressed'];
+      $row[] = $aRow['pregSuppressed'];
       $row[] = $aRow['pregNotSuppressed'];
-      $row[] = $aRow['usuppressed'];
-      $row[] = $aRow['uNotSuppressed'];
+      $row[] = $aRow['genderUnknownSuppressed'];
+      $row[] = $aRow['genderUnknownNotSuppressed'];
       $row[] = $aRow['totalLessThan1000'];
       $row[] = $aRow['totalGreaterThan1000'];
       $row[] = $aRow['total'];

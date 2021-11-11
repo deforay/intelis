@@ -11,7 +11,7 @@ function exportInexcel() {
     function(data){
 	  if(data == "" || data == null || data == undefined){
 	  
-	      alert('Unable to generate excel..');
+	      alert('Unable to generate the excel file');
 	  }else{
 		
 	     location.href = '/temporary/'+data;

@@ -428,7 +428,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
       function(data) {
         $.unblockUI();
         if (data === "" || data === null || data === undefined) {
-          alert('Unable to generate excel..');
+          alert('Unable to generate the excel file');
         } else {
           location.href = '/temporary/' + data;
         }

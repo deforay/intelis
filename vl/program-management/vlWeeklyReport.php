@@ -467,7 +467,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
       function(data) {
         $.unblockUI();
         if (data == "" || data == null || data == undefined) {
-          alert('Unable to generate excel..');
+          alert('Unable to generate the excel file');
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;
@@ -490,7 +490,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
       function(data) {
         $.unblockUI();
         if (data == "" || data == null || data == undefined) {
-          alert('Unable to generate excel..');
+          alert('Unable to generate the excel file');
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;

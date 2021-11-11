@@ -36,7 +36,7 @@ $sQuery="SELECT
 	SUM(CASE
 		WHEN ((is_patient_pregnant ='yes') AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
 			ELSE 0
-		END) AS pregsuppressed,
+		END) AS pregSuppressed,
 	SUM(CASE
 		WHEN ((is_patient_pregnant ='yes')  AND result > 1000) THEN 1
 			ELSE 0
@@ -132,7 +132,7 @@ $sQuery="SELECT
 			$row[] = ucwords($aRow['facility_district']);
 			$row[] = ucwords($aRow['facility_name']);
 			$row[] = $aRow['totalFemale'];
-			$row[] = $aRow['pregsuppressed'];
+			$row[] = $aRow['pregSuppressed'];
 			$row[] = $aRow['pregNotSuppressed'];
 			$row[] = $aRow['bfsuppressed'];
 			$row[] = $aRow['bfNotSuppressed'];			
