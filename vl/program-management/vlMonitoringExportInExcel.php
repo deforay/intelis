@@ -12,8 +12,8 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     //get current quarter total samples tested
     $sQuery = "SELECT vl.facility_id,f.facility_name,f.facility_code,f.facility_state,f.facility_district,
 
-        SUM(CASE WHEN (vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS lt1000,
-        SUM(CASE WHEN (vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gt1000,
+        SUM(CASE WHEN (vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS suppressed,
+        SUM(CASE WHEN (vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS NotSuppressed,
         SUM(CASE WHEN (vl_result_category = 'suppressed' AND (patient_gender='male' OR patient_gender='MALE')) THEN 1 ELSE 0 END) AS ltMale1000,
         SUM(CASE WHEN (vl_result_category = 'not suppressed' AND (patient_gender='male' OR patient_gender='MALE')) THEN 1 ELSE 0 END) AS gtMale1000,
         SUM(CASE WHEN (vl_result_category = 'suppressed' AND (patient_gender='female' OR patient_gender='FEMALE')) THEN 1 ELSE 0 END) AS ltFemale1000,
@@ -378,8 +378,8 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     $sheet->setCellValue('G15', html_entity_decode('Suppressed < 1000 copies/mL ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     $sheet->mergeCells('H15:I16');
     $sheet->mergeCells('H17:I17');
-    $sheet->setCellValue('G17', html_entity_decode($sResult[0]['lt1000'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-    $sheet->setCellValue('H17', html_entity_decode($sResult[0]['gt1000'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+    $sheet->setCellValue('G17', html_entity_decode($sResult[0]['suppressed'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+    $sheet->setCellValue('H17', html_entity_decode($sResult[0]['NotSuppressed'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
     $sheet->setCellValue('H15', html_entity_decode('Suppressed Failure >= 1000 copies/mL ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     $sheet->mergeCells('J15:M17');
     $sheet->getStyle('A15')->applyFromArray($questionStyle);

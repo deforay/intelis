@@ -118,43 +118,43 @@ foreach ($vlLabResult as $vlLab) {
 		SUM(CASE 
 			 WHEN (patient_age_in_years <= 14 AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
 		             ELSE 0
-		           END) AS lt14lt1000, 
+		           END) AS lt14suppressed, 
 		SUM(CASE 
              WHEN (patient_age_in_years <= 14 AND result > 1000) THEN 1
              ELSE 0
-           END) AS lt14gt1000,
+           END) AS lt14NotSuppressed,
 		SUM(CASE 
              WHEN (patient_age_in_years > 14 AND (patient_gender != '' AND patient_gender is not NULL AND patient_gender ='male') AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
              ELSE 0
-           END) AS gt14lt1000M,
+           END) AS gt14suppressedM,
 		SUM(CASE 
              WHEN (patient_age_in_years > 14 AND (patient_gender != '' AND patient_gender is not NULL AND patient_gender ='male') AND result > 1000) THEN 1
              ELSE 0
-           END) AS gt14gt1000M,
+           END) AS gt14NotSuppressedM,
 		SUM(CASE 
              WHEN (patient_age_in_years > 14 AND (patient_gender != '' AND patient_gender is not NULL AND patient_gender ='female') AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
              ELSE 0
-           END) AS gt14lt1000F,
+           END) AS gt14suppressedF,
 		SUM(CASE 
              WHEN (patient_age_in_years > 14 AND (patient_gender != '' AND patient_gender is not NULL AND patient_gender ='female') AND result > 1000) THEN 1
              ELSE 0
-           END) AS gt14gt1000F,	
+           END) AS gt14NotSuppressedF,	
 		SUM(CASE 
              WHEN ((is_patient_pregnant ='yes') OR (is_patient_breastfeeding ='yes') AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
              ELSE 0
-           END) AS preglt1000,	
+           END) AS pregsuppressed,	
 		SUM(CASE 
              WHEN ((is_patient_pregnant ='yes') OR (is_patient_breastfeeding ='yes') AND result > 1000) THEN 1
              ELSE 0
-           END) AS preggt1000,           	           	
+           END) AS pregNotSuppressed,           	           	
 		SUM(CASE 
              WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
              ELSE 0
-           END) AS ult1000, 
+           END) AS usuppressed, 
 		SUM(CASE 
              WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND result > 1000) THEN 1
              ELSE 0
-           END) AS ugt1000,               
+           END) AS uNotSuppressed,               
 		SUM(CASE 
              WHEN ((result <= 1000 OR result ='Target Not Detected')) THEN 1
              ELSE 0
@@ -250,16 +250,16 @@ foreach ($vlLabResult as $vlLab) {
       $row[] = ucwords($aRow['facility_name']);
       $row[] = $aRow['facility_code'];
       $row[] = $aRow['rejections'];
-      $row[] = $aRow['lt14lt1000'];
-      $row[] = $aRow['lt14gt1000'];
-      $row[] = $aRow['gt14lt1000M'];
-      $row[] = $aRow['gt14gt1000M'];
-      $row[] = $aRow['gt14lt1000F'];
-      $row[] = $aRow['gt14gt1000F'];
-      $row[] = $aRow['preglt1000'];
-      $row[] = $aRow['preggt1000'];
-      $row[] = $aRow['ult1000'];
-      $row[] = $aRow['ugt1000'];
+      $row[] = $aRow['lt14suppressed'];
+      $row[] = $aRow['lt14NotSuppressed'];
+      $row[] = $aRow['gt14suppressedM'];
+      $row[] = $aRow['gt14NotSuppressedM'];
+      $row[] = $aRow['gt14suppressedF'];
+      $row[] = $aRow['gt14NotSuppressedF'];
+      $row[] = $aRow['pregsuppressed'];
+      $row[] = $aRow['pregNotSuppressed'];
+      $row[] = $aRow['usuppressed'];
+      $row[] = $aRow['uNotSuppressed'];
       $row[] = $aRow['totalLessThan1000'];
       $row[] = $aRow['totalGreaterThan1000'];
       $row[] = $aRow['total'];

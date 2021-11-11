@@ -36,43 +36,43 @@ $sQuery="SELECT
 	SUM(CASE
 		WHEN ((is_patient_pregnant ='yes') AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
 			ELSE 0
-		END) AS preglt1000,
+		END) AS pregsuppressed,
 	SUM(CASE
 		WHEN ((is_patient_pregnant ='yes')  AND result > 1000) THEN 1
 			ELSE 0
-		END) AS preggt1000,
+		END) AS pregNotSuppressed,
 	SUM(CASE
 		WHEN ((is_patient_breastfeeding ='yes') AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
 			ELSE 0
-		END) AS bflt1000,
+		END) AS bfsuppressed,
 	SUM(CASE
 		WHEN ((is_patient_breastfeeding ='yes') AND result > 1000) THEN 1
 			ELSE 0
-		END) AS bfgt1000,
+		END) AS bfNotSuppressed,
 	SUM(CASE
 		WHEN (patient_age_in_years > 15 AND (patient_gender != '' AND patient_gender is not NULL AND patient_gender ='female') AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
 			ELSE 0
-		END) AS gt15lt1000F,
+		END) AS gt15suppressedF,
 	SUM(CASE
 		WHEN (patient_age_in_years > 15 AND (patient_gender != '' AND patient_gender is not NULL AND patient_gender ='female') AND result > 1000) THEN 1
 			ELSE 0
-		END) AS gt15gt1000F,
+		END) AS gt15NotSuppressedF,
 	SUM(CASE
 		WHEN (patient_age_in_years <= 15 AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
 			ELSE 0
-		END) AS lt15lt1000,
+		END) AS lt15suppressed,
 	SUM(CASE
 		WHEN (patient_age_in_years <= 15 AND result > 1000) THEN 1
 			ELSE 0
-		END) AS lt15gt1000,
+		END) AS lt15NotSuppressed,
 	SUM(CASE
 		WHEN ((patient_age_in_years ='' OR patient_age_in_years IS NULL) AND (result <= 1000 OR result ='Target Not Detected')) THEN 1
 			ELSE 0
-		END) AS ltUnKnownAgelt1000,
+		END) AS ltUnKnownAgesuppressed,
 	SUM(CASE
 		WHEN ((patient_age_in_years ='' OR patient_age_in_years IS NULL)  AND result > 1000) THEN 1
 			ELSE 0
-		END) AS ltUnKnownAgegt1000
+		END) AS ltUnKnownAgeNotSuppressed
 	FROM vl_request_form as vl RIGHT JOIN facility_details as f ON f.facility_id=vl.facility_id
 	where vl.patient_gender='female'  AND vl.vlsm_country_id =".$country;
 	
@@ -132,16 +132,16 @@ $sQuery="SELECT
 			$row[] = ucwords($aRow['facility_district']);
 			$row[] = ucwords($aRow['facility_name']);
 			$row[] = $aRow['totalFemale'];
-			$row[] = $aRow['preglt1000'];
-			$row[] = $aRow['preggt1000'];
-			$row[] = $aRow['bflt1000'];
-			$row[] = $aRow['bfgt1000'];			
-			$row[] = $aRow['gt15lt1000F'];
-			$row[] = $aRow['gt15gt1000F'];
-			$row[] = $aRow['ltUnKnownAgelt1000'];
-			$row[] = $aRow['ltUnKnownAgegt1000'];
-			$row[] = $aRow['lt15lt1000'];
-			$row[] = $aRow['lt15gt1000'];
+			$row[] = $aRow['pregsuppressed'];
+			$row[] = $aRow['pregNotSuppressed'];
+			$row[] = $aRow['bfsuppressed'];
+			$row[] = $aRow['bfNotSuppressed'];			
+			$row[] = $aRow['gt15suppressedF'];
+			$row[] = $aRow['gt15NotSuppressedF'];
+			$row[] = $aRow['ltUnKnownAgesuppressed'];
+			$row[] = $aRow['ltUnKnownAgeNotSuppressed'];
+			$row[] = $aRow['lt15suppressed'];
+			$row[] = $aRow['lt15NotSuppressed'];
 			$output[] = $row;
 		}
 

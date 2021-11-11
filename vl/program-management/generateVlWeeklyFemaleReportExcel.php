@@ -67,16 +67,16 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
         $row[] = ucwords($aRow['facility_district']);
         $row[] = ucwords($aRow['facility_name']);
         $row[] = $aRow['totalFemale'];
-        $row[] = $aRow['preglt1000'];
-        $row[] = $aRow['preggt1000'];
-        $row[] = $aRow['bflt1000'];
-        $row[] = $aRow['bfgt1000'];
-        $row[] = $aRow['gt15lt1000F'];
-        $row[] = $aRow['gt15gt1000F'];
-        $row[] = $aRow['ltUnKnownAgelt1000'];
-        $row[] = $aRow['ltUnKnownAgegt1000'];
-        $row[] = $aRow['lt15lt1000'];
-        $row[] = $aRow['lt15gt1000'];
+        $row[] = $aRow['pregsuppressed'];
+        $row[] = $aRow['pregNotSuppressed'];
+        $row[] = $aRow['bfsuppressed'];
+        $row[] = $aRow['bfNotSuppressed'];
+        $row[] = $aRow['gt15suppressedF'];
+        $row[] = $aRow['gt15NotSuppressedF'];
+        $row[] = $aRow['ltUnKnownAgesuppressed'];
+        $row[] = $aRow['ltUnKnownAgeNotSuppressed'];
+        $row[] = $aRow['lt15suppressed'];
+        $row[] = $aRow['lt15NotSuppressed'];
         $output[] = $row;
     }
 
