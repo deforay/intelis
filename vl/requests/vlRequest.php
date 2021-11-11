@@ -59,7 +59,7 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 							<td><b>Sample Type :</b></td>
 							<td>
-								<select style="" class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
+								<select class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
 									<option value=""> -- Select -- </option>
 									<?php
 									foreach ($sResult as $type) {
@@ -78,9 +78,9 @@ $batResult = $db->rawQuery($batQuery);
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<td style=""><b>Province/State&nbsp;:</b></td>
+							<td><b>Province/State&nbsp;:</b></td>
 							<td>
-								<input style="" type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
+								<input type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 							<td><b>District/County :</b></td>
 							<td>
@@ -115,7 +115,7 @@ $batResult = $db->rawQuery($batQuery);
 						</tr>
 					</table>
 					<table id="filter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
-						<tr id="" style="">
+						<tr id="">
 							<td>
 
 								<?php

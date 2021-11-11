@@ -459,6 +459,22 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			}
 		}
 	<?php } ?>
+
+	function exportAllPendingVlRequest() {
+		$.blockUI();
+		var requestSampleType = $('#requestSampleType').val();
+		$.post("generate-pending-covid19-request-excel.php", {
+				reqSampleType: requestSampleType
+			},
+			function(data) {
+				$.unblockUI();
+				if (data === "" || data === null || data === undefined) {
+					alert('Unable to generate the excel file');
+				} else {
+					location.href = '/temporary/' + data;
+				}
+			});
+	}
 </script>
 <?php
 include(APPLICATION_PATH . '/footer.php');

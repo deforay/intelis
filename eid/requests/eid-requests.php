@@ -102,9 +102,8 @@ $batResult = $db->rawQuery($batQuery);
 										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Bulk Import EID Request</a>
 								<?php }
 								} ?>
-
+								&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export Excel</a>
 								&nbsp;
-
 							</td>
 						</tr>
 					</table>
@@ -119,6 +118,7 @@ $batResult = $db->rawQuery($batQuery);
 										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Bulk Import EID Request</a>
 								<?php }
 								} ?>
+								&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export Excel</a>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>Show Advanced Search</span></button>
 							</td>
 						</tr>
@@ -449,6 +449,22 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			}
 		}
 	<?php } ?>
+
+	function exportAllPendingVlRequest() {
+		$.blockUI();
+		var requestSampleType = $('#requestSampleType').val();
+		$.post("generate-pending-eid-request-excel.php", {
+				reqSampleType: requestSampleType
+			},
+			function(data) {
+				$.unblockUI();
+				if (data === "" || data === null || data === undefined) {
+					alert('Unable to generate the excel file');
+				} else {
+					location.href = '/temporary/' + data;
+				}
+			});
+	}
 </script>
 <?php
 include(APPLICATION_PATH . '/footer.php');

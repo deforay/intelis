@@ -118,10 +118,31 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 $aWhere = '';
 
-$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM eid_form as vl 
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$sQuery = "SELECT vl.*, f.*,
+     b.batch_code,
+     ts.status_name,
+     f.facility_name,
+     l_f.facility_name as labName,
+     f.facility_code,
+     f.facility_state,
+     f.facility_district,
+     u_d.user_name as reviewedBy,
+     a_u_d.user_name as approvedBy,
+     rs.rejection_reason_name,
+     r_f_s.funding_source_name,
+     r_i_p.i_partner_name 
+
+     FROM eid_form as vl 
+
+     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
+     INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
+     LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+     LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
+     LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
+     LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
+     LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
+     LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 //echo $sQuery;die;
 $start_date = '';
@@ -345,7 +366,7 @@ foreach ($rResult as $aRow) {
      $actions = "";
      if ($editRequest) {
           $actions .= $edit;
-     } 
+     }
      if ($syncRequest) {
           $actions .= $sync;
      }
