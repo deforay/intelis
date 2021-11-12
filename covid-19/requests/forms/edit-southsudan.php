@@ -460,7 +460,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                             <th class="text-center">Test No.</th>
                                                             <th class="text-center">Test Method</th>
                                                             <th class="text-center">Date of Testing</th>
-                                                            <th class="text-center kit-label">Test Platform</th>
+                                                            <th class="text-center">Test Platform/Test Kit</th>
                                                             <th class="text-center kitlabels" style="display: none;">Kit Lot No</th>
                                                             <th class="text-center kitlabels" style="display: none;">Expiry Date</th>
                                                             <th class="text-center">Test Result</th>
@@ -496,9 +496,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <td><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?php echo ($indexKey + 1); ?>" /></td>
                                                                     <td>
                                                                         <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
-                                                                            <?php $disabled = "disabled";
+                                                                            <?php $display = "display:none;";
                                                                             if ((strpos($covid19TestInfo[$indexKey]['test_name'], 'RDT') !== false)) {
-                                                                                $disabled = "";
+                                                                                $display = "";
                                                                                 $kitShow = true; ?>
                                                                                 <option value="">--Select--</option>
                                                                                 <option value="Abbott Panbio™ COVID-19 Ag Test" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'Abbott Panbio™ COVID-19 Ag Test') ? "selected='selected'" : ""; ?>>Abbott Panbio™ COVID-19 Ag Test</option>
@@ -511,8 +511,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             } ?>
                                                                         </select>
                                                                     </td>
-                                                                    <td class="kitlabels kit-fields<?php echo ($indexKey + 1); ?>" style="display: none;"><input type="text" value="<?php echo $covid19TestInfo[$indexKey]['kit_lot_no']; ?>" name="lotNo[]" id="lotNo<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row 1" <?php echo $disabled; ?> /></td>
-                                                                    <td class="kitlabels kit-fields<?php echo ($indexKey + 1); ?>" style="display: none;"><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row 1" <?php echo $disabled; ?> /></td>
+                                                                    <td class="kitlabels" style="display: none;"><input type="text" value="<?php echo $covid19TestInfo[$indexKey]['kit_lot_no']; ?>" name="lotNo[]" id="lotNo<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input kit-fields<?php echo ($indexKey + 1); ?>" placeholder="Kit lot no" title="Please enter the kit lot no for row 1" style="<?php echo $display; ?>" /></td>
+                                                                    <td class="kitlabels" style="display: none;"><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input date kit-fields<?php echo ($indexKey + 1); ?>" placeholder="Expiry date" title="Please enter the expiry date for row 1" style="<?php echo $display; ?>" /></td>
                                                                     <td><select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?php echo ($indexKey + 1); ?>" title="Please select the result for row <?php echo ($indexKey + 1); ?>">
                                                                             <option value=''> -- Select -- </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
@@ -532,7 +532,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                     < ?php }?> -->
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="<?php echo $span; ?>" class="text-right">Final Result</th>
+                                                            <th colspan="<?php echo $span; ?>" class="text-right final-result-row">Final Result</th>
                                                             <td>
                                                                 <select class="form-control result-focus" name="result" id="result">
                                                                     <option value=''> -- Select -- </option>
@@ -871,7 +871,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         getPatientDistrictDetails('<?php echo $covid19Info['patient_province']; ?>');
 
         <?php if ($kitShow) { ?>
-            $('.kit-label').text('Test Platform/Test Kit');
             $('.kitlabels').show();
         <?php } ?>
     });
@@ -895,8 +894,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             </td>
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
             <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-            <td class="kitlabels kit-fields${testCounter}" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control test-name-table-input" placeholder="Kit lot no" title="Please enter the kit lot no for row ${testCounter}" /></td>
-            <td class="kitlabels kit-fields${testCounter}" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control test-name-table-input date" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" /></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control test-name-table-input kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no for row ${testCounter}" style="display:none;"/></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control test-name-table-input date kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>
@@ -938,6 +937,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             $('.ui-datepicker-calendar').show();
         });
 
+        if ($('.kitlabels').is(':visible') == true) {
+            $('.kitlabels').show();
+        }
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             $(document).on('change', '.test-result, #result', function(e) {
                 checkPostive();
@@ -998,7 +1000,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
     function testMethodChanged(val, id) {
-        rl = document.getElementById("testKitNameTable").rows.length;
         var str = $("#testName" + id + " option:selected").text();
         var selected = $("#testingPlatform" + id + " option:selected").val();
         var show = true;
@@ -1010,24 +1011,17 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             <option value='LumiraDx ™ SARS-CoV-2 Ag Test'>LumiraDx ™ SARS-CoV-2 Ag Test</option>
             <option value='Sure Status® COVID-19 Antigen Card Test'>Sure Status® COVID-19 Antigen Card Test</option>`;
             $("#testingPlatform" + id).html(option);
-            $('.kit-label').text('Test Platform/Test Kit');
             $('.kitlabels,.kit-fields' + id).show();
             $("#testingPlatform" + id).val(selected);
-            $('.span').attr('colspan', 6);
-            $('#expDate' + id + ', #lotNo' + id).prop('disabled', false);
+            $('.final-result-row').attr('colspan', 6);
+            $('#expDate' + id + ', #lotNo' + id).show();
         } else {
-            for (count = 0; count <= rl; count++) {
-                if ($('.kit-fields' + count).is(':visible') == true) {
-                    show = false;
-                }
-            }
-            if (show) {
-                $('.span').attr('colspan', 4);
-                $('.kitlabels').prop('disabled', true);
+            if ($('.kitlabels').is(':visible') == false) {
+                $('.final-result-row').attr('colspan', 4);
             }
             $('.kit-label').text('Test Platform');
             $('#expDate' + id + ', #lotNo' + id).val('');
-            $('#expDate' + id + ', #lotNo' + id).prop('disabled', true);
+            $('#expDate' + id + ', #lotNo' + id).hide();
             $("#testingPlatform" + id).html("<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>");
         }
         if (val == 'other') {

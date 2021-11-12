@@ -27,11 +27,7 @@ include_once(APPLICATION_PATH . '/header.php');
     }
 </style>
 
-
-
 <?php
-
-
 // $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();

@@ -156,6 +156,13 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $typeOfTestReqList[$key]['show'] = $req;
     }
     $data['covid19']['typeOfTestRequestList'] = $typeOfTestReqList;
+    $platformTestKits = array();
+    $platformTestKitsResult = array('Abbott Panbio™ COVID-19 Ag Test', 'STANDARD™ Q COVID-19 Ag Test', 'LumiraDx ™ SARS-CoV-2 Ag Test', 'Sure Status® COVID-19 Antigen Card Test');
+    foreach ($platformTestKitsResult as $key => $req) {
+        $platformTestKits[$key]['value'] = $req;
+        $platformTestKits[$key]['show'] = $req;
+    }
+    $data['covid19']['rdtAntigenOptions'] = $platformTestKits;
 
     $data['covid19']['covid19ReasonsForTestingList'] = $app->generateSelectOptions($covid19Obj->getCovid19ReasonsForTesting());
     $data['covid19']['specimenTypeResultList'] = $app->generateSelectOptions($covid19Obj->getCovid19SampleTypes());
