@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aranyasen/hl7",
-            "version": "2.1.1",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/senaranya/HL7.git",
-                "reference": "d41b4c6f79f507306e432d5ffa64a6c62d52fb79"
+                "reference": "8009c82ca0f60d33cff8abb6f8c6d6cc7097ca2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/senaranya/HL7/zipball/d41b4c6f79f507306e432d5ffa64a6c62d52fb79",
-                "reference": "d41b4c6f79f507306e432d5ffa64a6c62d52fb79",
+                "url": "https://api.github.com/repos/senaranya/HL7/zipball/8009c82ca0f60d33cff8abb6f8c6d6cc7097ca2a",
+                "reference": "8009c82ca0f60d33cff8abb6f8c6d6cc7097ca2a",
                 "shasum": ""
             },
             "require": {
@@ -56,9 +56,9 @@
             "description": "HL7 parser, generator and sender.",
             "support": {
                 "issues": "https://github.com/senaranya/HL7/issues",
-                "source": "https://github.com/senaranya/HL7/tree/2.1.1"
+                "source": "https://github.com/senaranya/HL7/tree/2.1.2"
             },
-            "time": "2021-11-01T06:22:49+00:00"
+            "time": "2021-11-08T11:14:28+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -1346,20 +1346,20 @@
         },
         {
             "name": "psr/container",
-            "version": "1.1.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/container.git",
-                "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf"
+                "reference": "513e0666f7216c7459170d56df27dfcefe1689ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/container/zipball/8622567409010282b7aeebe4bb841fe98b58dcaf",
-                "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/513e0666f7216c7459170d56df27dfcefe1689ea",
+                "reference": "513e0666f7216c7459170d56df27dfcefe1689ea",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.0"
+                "php": ">=7.4.0"
             },
             "type": "library",
             "autoload": {
@@ -1388,9 +1388,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-fig/container/issues",
-                "source": "https://github.com/php-fig/container/tree/1.1.1"
+                "source": "https://github.com/php-fig/container/tree/1.1.2"
             },
-            "time": "2021-03-05T17:36:06+00:00"
+            "time": "2021-11-05T16:50:12+00:00"
         },
         {
             "name": "psr/http-client",
