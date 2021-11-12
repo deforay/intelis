@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+	session_start();
 }
 ob_start();
 #require_once('../../startup.php');
@@ -21,10 +21,10 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
-	if($arr['vl_form'] == 1){
+	if ($arr['vl_form'] == 1) {
 		$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-	} else{
-		$headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date","Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	} else {
+		$headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	}
 
 	$colNo = 1;
@@ -82,7 +82,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$no = 1;
 	foreach ($rResult as $aRow) {
 		$row = array();
-		if($arr['vl_form'] == 1){
+		if ($arr['vl_form'] == 1) {
 			// Get testing platform and test method 
 			$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";
 			$covid19TestInfo = $db->rawQuery($covid19TestQuery);
@@ -91,7 +91,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 				$testMethod = $rows['test_name'];
 			}
 		}
-		
+
 		//date of birth
 		$dob = '';
 		if ($aRow['patient_dob'] != NULL && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
@@ -148,13 +148,13 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$patientLname = '';
 		}
 
-		if(isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others"){
-			$sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']) ;
-		} else{
+		if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
+			$sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']);
+		} else {
 			$sourceOfArtPOE = $aRow['source_of_alert_other'];
 		}
-		
-		if($arr['vl_form'] == 1){
+
+		if ($arr['vl_form'] == 1) {
 
 			$row[] = $no;
 			$row[] = $aRow[$sampleCode];
@@ -186,7 +186,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$row[] = ucwords($testMethod);
 			$row[] = $covid19Results[$aRow['result']];
 			$row[] = $general->humanDateFormat($aRow['result_printed_datetime']);
-		} else{
+		} else {
 
 			$row[] = $no;
 			$row[] = $aRow[$sampleCode];

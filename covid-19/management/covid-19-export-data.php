@@ -136,7 +136,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 						<tr>
 							<th>Testing Lab</th>
 							<td>
-								<select class="filter-input form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
+								<select class="filter-input form-control" id="testingLab" name="testingLab" title="Please select vl lab" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -391,8 +391,8 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 					"value": $("#facilityName").val()
 				});
 				aoData.push({
-					"name": "vlLab",
-					"value": $("#vlLab").val()
+					"name": "testingLab",
+					"value": $("#testingLab").val()
 				});
 				aoData.push({
 					"name": "vLoad",

@@ -78,7 +78,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 							</td>
 							<th>Testing Lab</th>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
+								<select class="form-control" id="testingLab" name="testingLab" title="Please select vl lab" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -389,8 +389,8 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 					"value": $("#facilityName").val()
 				});
 				aoData.push({
-					"name": "vlLab",
-					"value": $("#vlLab").val()
+					"name": "testingLab",
+					"value": $("#testingLab").val()
 				});
 				aoData.push({
 					"name": "hcvVLoad",
