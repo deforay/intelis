@@ -4,8 +4,8 @@
 ob_start();
 
 //Funding source list
-$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-$fundingSourceList = $db->query($fundingSourceQry);
+// $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
+// $fundingSourceList = $db->query($fundingSourceQry);
 /* To get testing platform names */
 $testPlatformResult = $general->getTestingPlatforms('covid19');
 // Nationality
@@ -20,8 +20,8 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
 //Implementing partner list
-$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-$implementingPartnerList = $db->query($implementingPartnerQry);
+// $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
+// $implementingPartnerList = $db->query($implementingPartnerQry);
 
 $pQuery = "SELECT * FROM province_details";
 $pResult = $db->rawQuery($pQuery);
@@ -160,29 +160,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><label for="supportPartner">Implementing Partner </label></td>
-                                        <td>
-                                            <!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
-                                            <select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                <?php
-                                                foreach ($implementingPartnerList as $implementingPartner) {
-                                                ?>
-                                                    <option value="<?php echo ($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>
-                                        <td><label for="fundingSource">Funding Partner</label></td>
-                                        <td>
-                                            <select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source of financement" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                <?php
-                                                foreach ($fundingSourceList as $fundingSource) {
-                                                ?>
-                                                    <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
@@ -196,6 +173,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th></th>
                                             <td></td>
                                         <?php } ?>
+
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 </table>
 

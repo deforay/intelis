@@ -5,8 +5,8 @@
 ob_start();
 
 //Funding source list
-$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-$fundingSourceList = $db->query($fundingSourceQry);
+// $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
+// $fundingSourceList = $db->query($fundingSourceQry);
 
 /* To get testing platform names */
 $testPlatformResult = $general->getTestingPlatforms('covid19');
@@ -22,8 +22,8 @@ foreach ($testPlatformResult as $row) {
 }
 
 //Implementing partner list
-$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-$implementingPartnerList = $db->query($implementingPartnerQry);
+// $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
+// $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 $covid19Obj = new \Vlsm\Models\Covid19();
@@ -180,31 +180,6 @@ $sampleSuggestionDisplay = 'display:none;';
                                         <td>
                                             <select class="form-control select2" name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
                                                 <?php echo $facility; ?>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="supportPartner">Implementing Partner </label></td>
-                                        <td>
-
-                                            <select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                <?php
-                                                foreach ($implementingPartnerList as $implementingPartner) {
-                                                ?>
-                                                    <option value="<?php echo ($implementingPartner['i_partner_id']); ?>" <?php echo ($covid19Info['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>
-                                        <td><label for="fundingSource">Funding Partner</label></td>
-                                        <td>
-                                            <select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose funding source" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                <?php
-                                                foreach ($fundingSourceList as $fundingSource) {
-                                                ?>
-                                                    <option value="<?php echo ($fundingSource['funding_source_id']); ?>" <?php echo ($covid19Info['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
-                                                <?php } ?>
                                             </select>
                                         </td>
                                     </tr>
