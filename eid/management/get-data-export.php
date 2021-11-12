@@ -178,6 +178,15 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
 }
+
+if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+     $sWhere = $sWhere . ' AND vl.facility_id = "' . $_POST['facilityName'] . '"';
+}
+
+if (isset($_POST['testingLab']) && trim($_POST['testingLab']) != '') {
+     $sWhere = $sWhere . ' AND vl.lab_id = "' . $_POST['testingLab'] . '"';
+}
+
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
           $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
@@ -199,9 +208,9 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
           $sWhere = $sWhere . ' AND DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
-if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
+if (isset($_POST['result']) && trim($_POST['result']) != '') {
 
-     $sWhere = $sWhere . ' AND vl.result like "' . $_POST['vLoad'] . '"';
+     $sWhere = $sWhere . ' AND vl.result like "' . $_POST['result'] . '"';
 }
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
      $sWhere = $sWhere . ' AND vl.result_status =' . $_POST['status'];

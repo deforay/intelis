@@ -71,7 +71,7 @@ $eidResults = $general->getEidResults();
 							</td>
 							<th>Testing Lab</th>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
+								<select class="form-control" id="testingLab" name="testingLab" title="Please select Testing Lab" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -84,7 +84,7 @@ $eidResults = $general->getEidResults();
 
 							<th>Result </th>
 							<td>
-								<select class="form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
+								<select class="form-control" id="result" name="result" title="Please select batch code" style="width:220px;">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
 										<option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
@@ -375,21 +375,18 @@ $eidResults = $general->getEidResults();
 					"value": $("#facilityName").val()
 				});
 				aoData.push({
-					"name": "vlLab",
-					"value": $("#vlLab").val()
+					"name": "testingLab",
+					"value": $("#testingLab").val()
 				});
 				aoData.push({
-					"name": "vLoad",
-					"value": $("#vLoad").val()
+					"name": "result",
+					"value": $("#result").val()
 				});
 				aoData.push({
 					"name": "status",
 					"value": $("#status").val()
 				});
-				aoData.push({
-					"name": "showReordSample",
-					"value": $("#showReordSample").val()
-				});
+
 				aoData.push({
 					"name": "fundingSource",
 					"value": $("#fundingSource").val()
