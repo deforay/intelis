@@ -258,7 +258,7 @@ try {
     }
 
     foreach ($rowData as $key => $row) {
-        $rowData[$key]['c19Tests'] = $app->getCovid19TestsCamelCaseByFormId($row['covid19Id']);
+        $rowData[$key]['c19Tests'] = $app->getCovid19TestsByC19Id($row['covid19Id']);
     }
     $payload = array(
         'status' => 'success',

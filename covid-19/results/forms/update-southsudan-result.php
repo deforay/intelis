@@ -434,7 +434,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                             <th class="text-center">Test No.</th>
                                                             <th class="text-center">Test Method</th>
                                                             <th class="text-center">Date of Testing</th>
-                                                            <th class="text-center kit-label">Test Platform</th>
+                                                            <th class="text-center">Test Platform/Test Kit</th>
                                                             <th class="text-center kitlabels" style="display: none;">Kit Lot No</th>
                                                             <th class="text-center kitlabels" style="display: none;">Expiry Date</th>
                                                             <th class="text-center">Test Result</th>
@@ -759,7 +759,6 @@ $sampleSuggestionDisplay = 'display:none;';
         }
         getPatientDistrictDetails('<?php echo (isset($covid19Info['patient_province']) && $covid19Info['patient_province'] != ""); ?>');
         <?php if ($kitShow) { ?>
-            $('.kit-label').text('Test Platform/Test Kit');
             $('.kitlabels').show();
         <?php } ?>
     });
@@ -880,7 +879,6 @@ $sampleSuggestionDisplay = 'display:none;';
             <option value='LumiraDx ™ SARS-CoV-2 Ag Test'>LumiraDx ™ SARS-CoV-2 Ag Test</option>
             <option value='Sure Status® COVID-19 Antigen Card Test'>Sure Status® COVID-19 Antigen Card Test</option>`;
             $("#testingPlatform" + id).html(option);
-            $('.kit-label').text('Test Platform/Test Kit');
             $('.kitlabels,.kit-fields' + id).show();
             $("#testingPlatform" + id).val(selected);
             $('.final-result-row').attr('colspan', 6);

@@ -388,12 +388,12 @@ class App
         return $this->db->rawQueryOne("SELECT * FROM " . $tablename . " WHERE " . $fieldName . " = " . $value);
     }
 
-    public function getCovid19TestsCamelCaseByFormId($c19Id)
+    public function getCovid19TestsByC19Id($c19Id)
     {
         if (empty($c19Id)) {
             return null;
         }
-        return $this->db->rawQuery("SELECT test_id as testId, covid19_id as covid19Id, facility_id as facilityId, test_name as testName, tested_by as testedBy, sample_tested_datetime as testDate, testing_platform as testingPlatform, result as testResult FROM covid19_tests WHERE `covid19_id` = $c19Id ORDER BY test_id ASC");
+        return $this->db->rawQuery("SELECT test_id as testId, covid19_id as covid19Id, facility_id as facilityId, test_name as testName, tested_by as testedBy, sample_tested_datetime as testDate, testing_platform as testingPlatform, kit_lot_no as lotNo, kit_expiry_date as expDate, result as testResult FROM covid19_tests WHERE `covid19_id` = $c19Id ORDER BY test_id ASC");
     }
 
     public function generateSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user, $testType = "")
