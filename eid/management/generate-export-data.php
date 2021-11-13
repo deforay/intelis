@@ -25,7 +25,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 
-	$headings = array("S.No.","Sample Code", "Testing Lab" ,"Health Facility","Health Facility Code","District/County","Province/State", "Testing Lab Name (Hub)","Child ID","Child Name","Mother ID","Child Date of Birth","Child Age","Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date","Is Sample Rejected?","Sample Tested On","Result","Sample Received On","Date Result Dispatched","Comments","Funding Source","Implementing Partner");
+	$headings = array("S.No.","Sample Code", "Health Facility","Health Facility Code","District/County","Province/State", "Testing Lab Name (Hub)","Child ID","Child Name","Mother ID","Child Date of Birth","Child Age","Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date","Is Sample Rejected?","Sample Tested On","Result","Sample Received On","Date Result Dispatched","Comments","Funding Source","Implementing Partner");
 	$colNo = 1;
 
 	$styleArray = array(
@@ -162,12 +162,11 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		
 		$row[] = $no;
 		$row[] = $aRow[$sampleCode];
-		$row[] = ($aRow['lab_name']);
 		$row[] = ($aRow['facility_name']);
 		$row[] = $aRow['facility_code'];
 		$row[] = ucwords($aRow['facility_district']);
 		$row[] = ucwords($aRow['facility_state']);
-		$row[] = ucwords($aRow['labName']);
+		$row[] = ucwords($aRow['lab_name']);
 		$row[] = $aRow['child_id'];
 		$row[] = $aRow['child_name'];
 		$row[] = $aRow['mother_id'];
