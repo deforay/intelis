@@ -343,7 +343,8 @@ foreach ($excelResultSet as $vlLab => $labResult) {
 }
 //Statistics sheet end
 if ($c > 0) {
-    //Super lab performance sheet end
+    
+    $excel->setActiveSheetIndex(0);
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
     $filename = 'VLSM-VL-Lab-Weekly-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
