@@ -49,8 +49,18 @@ if (!empty($interfaceConfig['enabled']) && $interfaceConfig['enabled'] == true) 
 
 
 // DASHBOARD JOBS START
+
+if (!empty($vldashboardUrl)) {
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-reference-tables.php")
+        ->cron("0 */30 * * *")
+        ->timezone($timeZone)
+        ->preventOverlapping()
+        ->description('Syncing VLSM Reference data from local database to Dashboard');
+}
+
+
 if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard-v2/vldashboard-vl.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-vl.php")
         ->cron("0 */30 * * *")
         ->timezone($timeZone)
         ->preventOverlapping()
@@ -58,14 +68,14 @@ if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['vl']) && $system
 }
 
 if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard-v2/vldashboard-eid.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-eid.php")
         ->cron("0 */35 * * *")
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing EID data from local database to Dashboard');
 }
 if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard-v2/vldashboard-covid19.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-covid19.php")
         ->cron("0 */40 * * *")
         ->timezone($timeZone)
         ->preventOverlapping()
