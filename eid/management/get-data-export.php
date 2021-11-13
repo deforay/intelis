@@ -117,7 +117,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     b.batch_code,
                     ts.status_name,
                     f.facility_name,
-                    l_f.facility_name as labName,
+                    l_f.facility_name as lab_name,
                     f.facility_code,
                     f.facility_state,
                     f.facility_district,
@@ -242,7 +242,7 @@ if (isset($sOrder) && $sOrder != "") {
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-$_SESSION['vlResultQuery'] = $sQuery;
+$_SESSION['eidExportResultQuery'] = $sQuery;
 
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;

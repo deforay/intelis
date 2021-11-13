@@ -3,8 +3,6 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 ob_start();
-#require_once('../../startup.php');  
-
 
 
 $general = new \Vlsm\Models\General();
@@ -12,22 +10,22 @@ $general = new \Vlsm\Models\General();
 $eidResults = $general->getEidResults();
 
 //system config
-$systemConfigQuery = "SELECT * from system_config";
+$systemConfigQuery = "SELECT * FROM system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
 $sarr = array();
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "") {
+if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQuery']) != "") {
 
-	$rResult = $db->rawQuery($_SESSION['vlResultQuery']);
+	$rResult = $db->rawQuery($_SESSION['eidExportResultQuery']);
 
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 
-	$headings = array("S.No.","Sample Code","Health Facility Name","Health Facility Code","District/County","Province/State", "Testing Lab Name (Hub)","Child ID","Child Name","Mother ID","Child Date of Birth","Child Age","Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date","Is Sample Rejected?","Sample Tested On","Result","Sample Received On","Date Result Dispatched","Comments","Funding Source","Implementing Partner");
+	$headings = array("S.No.","Sample Code", "Testing Lab" ,"Health Facility","Health Facility Code","District/County","Province/State", "Testing Lab Name (Hub)","Child ID","Child Name","Mother ID","Child Date of Birth","Child Age","Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date","Is Sample Rejected?","Sample Tested On","Result","Sample Received On","Date Result Dispatched","Comments","Funding Source","Implementing Partner");
 	$colNo = 1;
 
 	$styleArray = array(
@@ -164,7 +162,8 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		
 		$row[] = $no;
 		$row[] = $aRow[$sampleCode];
-		$row[] = ucwords($aRow['facility_name']);
+		$row[] = ($aRow['lab_name']);
+		$row[] = ($aRow['facility_name']);
 		$row[] = $aRow['facility_code'];
 		$row[] = ucwords($aRow['facility_district']);
 		$row[] = ucwords($aRow['facility_state']);
@@ -206,7 +205,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		}
 	}
 	$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
-	$filename = 'VLSM-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+	$filename = 'VLSM-EID-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 	echo $filename;
 }

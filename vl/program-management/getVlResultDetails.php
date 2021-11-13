@@ -136,7 +136,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         b.batch_code,
                         ts.status_name,
                         f.facility_name,
-                        testingLab.facility_name as labName,
+                        testingLab.facility_name as lab_name,
                         f.facility_code,
                         f.facility_state,
                         f.facility_district,
