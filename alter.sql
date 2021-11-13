@@ -2620,3 +2620,6 @@ UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'hepati
 UPDATE `privileges` SET `display_name` = 'Add' WHERE `privilege_name` = 'tb-add-request.php';
 UPDATE `privileges` SET `display_name` = 'Edit' WHERE `privilege_name` = 'tb-edit-request.php';
 UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'tb-requests.php';
+
+-- Amit 13 Nov 2021 version 4.4.4
+UPDATE `system_config` SET `value` = '4.4.4' WHERE `system_config`.`name` = 'sc_version';
