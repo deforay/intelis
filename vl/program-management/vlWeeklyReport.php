@@ -78,7 +78,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                         </tr>
                         <tr>
                           <td colspan="6">
-                            &nbsp;<input type="button" onclick="searchData();" value="Search" class="btn btn-success btn-sm">
+                            &nbsp;<input type="button" onclick="searchWeeklyData();" value="Search" class="btn btn-success btn-sm">
                             &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
                             &nbsp;<button class="btn btn-info btn-sm" type="button" onclick="exportVLWeeklyReport()">Excel Export</button>
                           </td>
@@ -155,7 +155,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                         </tr>
                         <tr>
                           <td colspan="6">
-                            &nbsp;<input type="button" onclick="searchData();" value="Search" class="btn btn-success btn-sm">
+                            &nbsp;<input type="button" onclick="searchFemaleData();" value="Search" class="btn btn-success btn-sm">
                             &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
                             &nbsp;<button class="btn btn-info btn-sm" type="button" onclick="exportFemaleVLWeeklyReport()">Excel Export</button>
                           </td>
@@ -244,10 +244,11 @@ $facilityResult = $db->rawQuery($facilityQuery);
         endDate = end.format('YYYY-MM-DD');
       });
     loadDataTable();
-    loadFemaleDataTable();
+    //loadFemaleDataTable();
   });
 
   function loadDataTable() {
+    if(oTable != null) oTable.fnDestroy();
     oTable = $('#vlWeeklyReportDataTable').dataTable({
       "oLanguage": {
         "sLengthMenu": "_MENU_ records per page"
@@ -357,6 +358,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
   }
 
   function loadFemaleDataTable() {
+    if(oTableFemale != null) oTableFemale.fnDestroy();
     oTableFemale = $('#vlWeeklyFemaleReportDataTable').dataTable({
       "oLanguage": {
         "sLengthMenu": "_MENU_ records per page"
@@ -444,19 +446,26 @@ $facilityResult = $db->rawQuery($facilityQuery);
           "url": sSource,
           "data": aoData,
           "success": fnCallback
+        }).done(function(){
+          
         });
       }
     });
   }
 
-  function searchData() {
+  function searchWeeklyData() {
     $.blockUI();
-    oTable.fnDraw();
-    oTableFemale.fnDraw();
+    loadDataTable();
+    $.unblockUI();
+  }
+  function searchFemaleData() {
+    $.blockUI();
+    loadFemaleDataTable();
     $.unblockUI();
   }
 
   function exportVLWeeklyReport() {
+    searchWeeklyData();
     $.blockUI();
     $.post("/vl/program-management/generateVlWeeklyReportExcel.php", {
         reportedDate: $("#sampleTestDate").val(),
@@ -480,6 +489,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
     for (i = 0; i < texts.length; i++) {
       labTexts.push(texts[i].text);
     }
+    searchFemaleData();
     $.blockUI();
     $.post("/vl/program-management/generateVlWeeklyFemaleReportExcel.php", {
         sample_test_date: $("#femaleSampleTestDate").val(),

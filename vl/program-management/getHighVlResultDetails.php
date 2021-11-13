@@ -4,6 +4,10 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $general = new \Vlsm\Models\General();
+
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+
 $tableName = "vl_request_form";
 $primaryKey = "vl_sample_id";
 //config  query
@@ -118,8 +122,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.facility_name, b.batch_code,fd.faci
     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
     INNER JOIN facility_details as fd ON fd.facility_id=vl.lab_id  
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-    WHERE vl.result_status=7 
-    AND vl_result_category like 'not suppressed' ";
+    WHERE vl_result_category like 'not suppressed' AND reason_for_vl_testing != 9999 AND vl.lab_id is NOT NULL ";
 $start_date = '';
 $end_date = '';
 
@@ -162,20 +165,12 @@ if (isset($_POST['hvlPatientPregnant']) && $_POST['hvlPatientPregnant'] != '') {
 if (isset($_POST['hvlPatientBreastfeeding']) && $_POST['hvlPatientBreastfeeding'] != '') {
     $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding = "' . $_POST['hvlPatientBreastfeeding'] . '"';
 }
-$dWhere = '';
+
 if ($sarr['sc_user_type'] == 'remoteuser') {
-    //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
-    //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
-    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-    if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-        $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+    if (!empty($facilityMap)) {
+        $sWhere = $sWhere . " AND vl.facility_id IN (" . $facilityMap . ") ";
     }
 }
-
-$sWhere = $sWhere . ' AND reason_for_vl_testing != 9999';
-
 
 $sQuery = $sQuery . ' ' . $sWhere;
 //$sQuery = $sQuery . ' group by vl.vl_sample_id';
@@ -190,14 +185,6 @@ if (isset($sLimit) && isset($sOffset)) {
 //echo($sQuery);
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
-/* Data set length after filtering */
-
-// $aResultFilterTotal = $db->rawQuery("SELECT vl.*,f.*,s.*,b.*,art.*,fd.facility_name as labName FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id where vl.result_status=7 AND vl.vl_result_category like 'not suppressed' $sWhere group by vl.vl_sample_id order by $sOrder");
-// $iFilteredTotal = count($aResultFilterTotal);
-
-// /* Total data set length */
-// $aResultTotal =  $db->rawQuery("select COUNT(vl_sample_id) as total FROM vl_request_form as vl where result_status=7 AND vl.vl_result_category like 'not suppressed' AND vlsm_country_id='" . $arr['vl_form'] . "' $dWhere");
-// $iTotal = $aResultTotal[0]['total'];
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];

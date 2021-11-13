@@ -194,9 +194,6 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
   if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
     $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
   }
-} else if ($sarr['sc_user_type'] == 'vluser') {
-
-  $sWhere = $sWhere . " AND vl.lab_id = " . $sarr['sc_testing_lab_id'];
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;

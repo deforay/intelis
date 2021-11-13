@@ -10,6 +10,9 @@ $tableName = "vl_request_form";
 $primaryKey = "vl_sample_id";
 $country = $general->getGlobalConfig('vl_form');
 
+$facilitiesDb = new \Vlsm\Models\Facilities();
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+
 $sarr = $general->getSystemConfig();
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
@@ -57,7 +60,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = "";
+$sWhere = " WHERE vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $searchArray = explode(" ", $_POST['sSearch']);
   $sWhereSub = "";
@@ -101,59 +104,61 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 		vl.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
 		
 		SUM(CASE
-			WHEN (reason_for_sample_rejection IS NOT NULL AND reason_for_sample_rejection!= '' AND reason_for_sample_rejection!= 0) THEN 1
-		             ELSE 0
-		           END) AS rejections,
+          WHEN (reason_for_sample_rejection IS NOT NULL AND reason_for_sample_rejection!= '' AND reason_for_sample_rejection!= 0) THEN 1
+          ELSE 0
+          END) AS rejections,
 		SUM(CASE 
-			WHEN ((patient_age_in_years >= 0 AND patient_age_in_years <= 15) AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
-		             ELSE 0
-		           END) AS lt15suppressed, 
+          WHEN (patient_age_in_years >= 0 AND patient_age_in_years <= 15 AND vl.vl_result_category like 'suppressed') THEN 1
+          ELSE 0
+          END) AS lt15suppressed, 
 		SUM(CASE 
-             WHEN ((patient_age_in_years >= 0 AND patient_age_in_years <= 15) AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
-             ELSE 0
-           END) AS lt15NotSuppressed,
+          WHEN (patient_age_in_years >= 0 AND patient_age_in_years <= 15 AND vl.vl_result_category like 'not suppressed' ) THEN 1
+          ELSE 0
+          END) AS lt15NotSuppressed,
 		SUM(CASE 
-             WHEN (patient_age_in_years > 15 AND patient_gender IN ('m','male','M','MALE') AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
-             ELSE 0
-           END) AS gt15suppressedM,
+          WHEN (patient_age_in_years > 15 AND patient_gender IN ('m','male','M','MALE') AND vl.vl_result_category like 'suppressed') THEN 1
+          ELSE 0
+          END) AS gt15suppressedM,
 		SUM(CASE 
-             WHEN (patient_age_in_years > 15 AND patient_gender IN ('m','male','M','MALE') AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
-             ELSE 0
-           END) AS gt15NotSuppressedM,
+          WHEN (patient_age_in_years > 15 AND patient_gender IN ('m','male','M','MALE') AND vl.vl_result_category like 'not suppressed' ) THEN 1
+          ELSE 0
+          END) AS gt15NotSuppressedM,
 		SUM(CASE 
-             WHEN (patient_age_in_years > 15 AND patient_gender IN ('f','female','F','FEMALE') AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
-             ELSE 0
-           END) AS gt15suppressedF,
+          WHEN (patient_age_in_years > 15 AND patient_gender IN ('f','female','F','FEMALE') AND vl.vl_result_category like 'suppressed') THEN 1
+          ELSE 0
+          END) AS gt15suppressedF,
 		SUM(CASE 
-             WHEN (patient_age_in_years > 15 AND patient_gender IN ('f','female','F','FEMALE') AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
-             ELSE 0
-           END) AS gt15NotSuppressedF,	
+          WHEN (patient_age_in_years > 15 AND patient_gender IN ('f','female','F','FEMALE') AND vl.vl_result_category like 'not suppressed' ) THEN 1
+          ELSE 0
+          END) AS gt15NotSuppressedF,	
 		SUM(CASE 
-             WHEN ((is_patient_pregnant ='Yes' OR is_patient_pregnant ='YES' OR is_patient_pregnant ='yes' OR is_patient_breastfeeding ='Yes' OR is_patient_breastfeeding ='YES' OR is_patient_breastfeeding ='yes') AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
-             ELSE 0
-           END) AS pregSuppressed,	
+          WHEN ((is_patient_pregnant like 'yes') AND vl.vl_result_category like 'suppressed') THEN 1
+          ELSE 0
+          END) AS pregSuppressed,	
 		SUM(CASE 
-             WHEN ((is_patient_pregnant ='Yes' OR is_patient_pregnant ='YES' OR is_patient_pregnant ='yes' OR is_patient_breastfeeding ='Yes' OR is_patient_breastfeeding ='YES' OR is_patient_breastfeeding ='yes') AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
-             ELSE 0
-           END) AS pregNotSuppressed,           	           	
+          WHEN ((is_patient_pregnant like 'yes') AND vl.vl_result_category like 'not suppressed' ) THEN 1
+          ELSE 0
+          END) AS pregNotSuppressed,           	           	
 		SUM(CASE 
-             WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
-             ELSE 0
-           END) AS genderUnknownSuppressed, 
+          WHEN (patient_gender = '' OR patient_gender = 'unknown' OR patient_gender = 'unreported' OR patient_gender is NULL AND vl.vl_result_category like 'suppressed') THEN 1
+          ELSE 0
+          END) AS genderUnknownSuppressed, 
 		SUM(CASE 
-             WHEN (((patient_age_in_years = '' OR patient_age_in_years is NULL) OR (patient_gender = '' OR patient_gender is NULL)) AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
-             ELSE 0
-           END) AS genderUnknownNotSuppressed,               
+          WHEN (patient_gender = '' OR patient_gender = 'unknown' OR patient_gender = 'unreported' OR patient_gender is NULL AND vl.vl_result_category like 'not suppressed') THEN 1
+          ELSE 0
+          END) AS genderUnknownNotSuppressed,               
 		SUM(CASE 
-             WHEN (((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
-             ELSE 0
-           END) AS totalLessThan1000,     
+          WHEN (vl.vl_result_category like 'suppressed') THEN 1
+          ELSE 0
+          END) AS totalLessThan1000,     
 		SUM(CASE 
-             WHEN ((vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00')) THEN 1
-             ELSE 0
-           END) AS totalGreaterThan1000,
+          WHEN (vl.vl_result_category like 'not suppressed') THEN 1
+          ELSE 0
+          END) AS totalGreaterThan1000,
 		COUNT(result) as total
-        FROM vl_request_form as vl RIGHT JOIN facility_details as f ON f.facility_id=vl.facility_id";
+        FROM vl_request_form as vl 
+        INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
+        INNER JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id ";
 
 $start_date = '';
 $end_date = '';
@@ -167,15 +172,6 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   }
 }
 
-
-if (isset($sWhere) && trim($sWhere) != '') {
-  $sWhere = ' where ' . $sWhere;
-  $sWhere = $sWhere . ' AND vl.vlsm_country_id = ' . $country;
-} else {
-  $sWhere = ' where ' . $sWhere;
-  $sWhere = $sWhere . 'vl.vlsm_country_id = ' . $country;
-}
-
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   if (trim($start_date) == trim($end_date)) {
     $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
@@ -183,39 +179,20 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
   }
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-  $s_t_date = explode("to", $_POST['sampleCollectionDate']);
-  if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-    $start_date = $general->dateFormat(trim($s_t_date[0]));
-  }
-  if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-    $end_date = $general->dateFormat(trim($s_t_date[1]));
-  }
-  if (trim($start_date) == trim($end_date)) {
-    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-  } else {
-    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-  }
-}
+
 
 if (isset($_POST['lab']) && trim($_POST['lab']) != '') {
   $sWhere = $sWhere . " AND vl.lab_id IN (" . $_POST['lab'] . ")";
 }
 
 if ($sarr['sc_user_type'] == 'remoteuser') {
-
-  $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-  $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-  if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-    $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
+  if (!empty($facilityMap)) {
+    $sWhere = $sWhere . " AND vl.facility_id IN (" . $facilityMap . ")";
   }
-} else if ($sarr['sc_user_type'] == 'vluser') {
-
-  $sWhere = $sWhere . " AND vl.lab_id = " . $sarr['sc_testing_lab_id'];
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;
-$sQuery = $sQuery . ' GROUP BY vl.facility_id';
+$sQuery = $sQuery . ' GROUP BY vl.lab_id, vl.facility_id';
 
 
 if (isset($sOrder) && $sOrder != "") {
