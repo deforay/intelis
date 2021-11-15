@@ -127,37 +127,25 @@ if (isset($_POST['source']) && trim($_POST['source']) != '') {
     }
 }
 
-
+$sWhere = array();
 
 if (isset($_POST['source']) && trim($_POST['source']) == 'dhis2') {
-    if (empty($sWhere) || $sWhere == "") {
-        $sWhere = ' WHERE ' . $sWhere;
-    }
-    $sWhere = $sWhere . ' `source_of_request` like "dhis2%" ';
+    $sWhere[] = ' `source_of_request` like "dhis2%" ';
 }
-
-if ($sWhere != '') {
-    $sWhere = $sWhere . ' AND ' . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} else {
-    $sWhere = $sWhere . ' where ' . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-}
+$sWhere[] = ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
+        $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
         $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 } else {
-    if (isset($sWhere) && trim($sWhere) != "") {
-        $sWhere .= " AND ";
-    } else {
-        $sWhere .= " WHERE ";
-    }
-    $sWhere = $sWhere . 'vl.result_status!=9 ';
+    $sWhere[] = ' vl.result_status!=9 ';
     $sFilter = ' AND result_status!=9';
 }
+$sWhere = " WHERE " . implode(" AND ", $sWhere);
 $sQuery = $sQuery . ' ' . $sWhere;
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
