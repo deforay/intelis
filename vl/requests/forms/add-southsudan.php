@@ -193,7 +193,7 @@ $sFormat = '';
                                              <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                                   <div class="col-md-4 col-md-4">
                                                        <label for="labId">Lab Name </label>
-                                                       <select name="labId" id="labId" class="form-control" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
+                                                       <select name="labId" id="labId" class="select2 form-control" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
                                                             <option value="">-- Select --</option>
                                                             <?php foreach ($lResult as $labName) { ?>
                                                                  <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?php echo ucwords($labName['facility_name']); ?></option>
@@ -736,6 +736,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      provinceName = true;
      facilityName = true;
      $(document).ready(function() {
+          $('#labId').select2({
+               width: '100%',
+               placeholder: "Select Testing Lab"
+          });
+          $('#reviewedBy').select2({
+               width: '100%',
+               placeholder: "Select Reviewed By"
+          });
           $('#testedBy').select2({
                width: '100%',
                placeholder: "Select Tested By"

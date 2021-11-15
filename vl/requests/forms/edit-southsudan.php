@@ -824,6 +824,14 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	facilityName = true;
 	$(document).ready(function() {
 		autoFillFocalDetails();
+		$('#labId').select2({
+			width: '100%',
+			placeholder: "Select Testing Lab"
+		});
+		$('#reviewedBy').select2({
+			width: '100%',
+			placeholder: "Select Reviewed By"
+		});
 		$('#testedBy').select2({
 			width: '100%',
 			placeholder: "Select Tested By"

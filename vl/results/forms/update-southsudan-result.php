@@ -793,11 +793,32 @@ $disable = "disabled = 'disabled'";
 							</form>
 						<?php } ?>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</section>
 </div>
 <script>
 	$(document).ready(function() {
 		autoFillFocalDetails();
+		$('#labId').select2({
+			width: '100%',
+			placeholder: "Select Testing Lab"
+		});
+		$('#reviewedBy').select2({
+			width: '100%',
+			placeholder: "Select Reviewed By"
+		});
+		$('#testedBy').select2({
+			width: '100%',
+			placeholder: "Select Tested By"
+		});
+
+		$('#approvedBy').select2({
+			width: '100%',
+			placeholder: "Select Approved By"
+		});
 		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
 			changeMonth: true,
 			changeYear: true,

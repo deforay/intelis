@@ -145,16 +145,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php } ?>
                                             </select>
                                         </td>
-
-                                        <!-- <tr> -->
-                                        <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
-                                        <td>
-                                            <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
-                                                <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                        <!-- </tr> -->
-
+                                        <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
+                                            <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+                                            <td>
+                                                <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
+                                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                        <?php } ?>
                                     </tr>
                                 </table>
                                 <br>
@@ -651,6 +649,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
+        $('.select2').select2();
+        $('#labId').select2({
+            width: '100%',
+            placeholder: "Select Testing Lab"
+        });
+        $('#reviewedBy').select2({
+            width: '100%',
+            placeholder: "Select Reviewed By"
+        });
         $('#testedBy').select2({
             width: '100%',
             placeholder: "Select Tested By"

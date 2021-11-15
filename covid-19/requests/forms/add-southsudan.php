@@ -970,6 +970,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $(".select2").select2({
             tags: true
         });
+        $('#labId').select2({
+            width: '100%',
+            placeholder: "Select Testing Lab"
+        });
+        $('#reviewedBy').select2({
+            width: '100%',
+            placeholder: "Select Reviewed By"
+        });
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });

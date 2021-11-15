@@ -670,6 +670,22 @@ $sampleSuggestionDisplay = 'display:none;';
 
     $(document).ready(function() {
         $('.select2').select2();
+        $('#labId').select2({
+            width: '100%',
+            placeholder: "Select Testing Lab"
+        });
+        $('#reviewedBy').select2({
+            width: '100%',
+            placeholder: "Select Reviewed By"
+        });
+        $('#testedBy').select2({
+            width: '100%',
+            placeholder: "Select Tested By"
+        });
+        $('#approvedBy').select2({
+            width: '100%',
+            placeholder: "Select Approved By"
+        });
         $('#patientNationality').select2({
             placeholder: "Select Nationality"
         });

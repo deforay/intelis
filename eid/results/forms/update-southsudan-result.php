@@ -146,15 +146,13 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <?php } ?>
                                         </select>
                                     </td>
-                                    <?php if ($usersModel->isAllowed('eid-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
-                                        <!-- <tr> -->
+                                    <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
                                         <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                         <td>
                                             <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
                                                 <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <!-- </tr> -->
                                     <?php } ?>
                                 </tr>
                             </table>
@@ -612,10 +610,23 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
 
     $(document).ready(function() {
-
-
         $('.disabledForm input, .disabledForm select , .disabledForm textarea ').attr('disabled', true);
-
+        $('#labId').select2({
+            width: '100%',
+            placeholder: "Select Testing Lab"
+        });
+        $('#reviewedBy').select2({
+            width: '100%',
+            placeholder: "Select Reviewed By"
+        });
+        $('#testedBy').select2({
+            width: '100%',
+            placeholder: "Select Tested By"
+        });
+        $('#approvedBy').select2({
+            width: '100%',
+            placeholder: "Select Approved By"
+        });
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });

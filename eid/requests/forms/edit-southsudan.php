@@ -157,13 +157,14 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 <?php } ?>
                                             </select>
                                         </td>
-
-                                        <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
-                                        <td>
-                                            <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
-                                                <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
+                                        <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
+                                            <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+                                            <td>
+                                                <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
+                                                    <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                        <?php } ?>
                                     </tr>
                                 </table>
                                 <br>
@@ -648,6 +649,14 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
     $(document).ready(function() {
+        $('#labId').select2({
+            width: '100%',
+            placeholder: "Select Testing Lab"
+        });
+        $('#reviewedBy').select2({
+            width: '100%',
+            placeholder: "Select Reviewed By"
+        });
         $('#testedBy').select2({
             width: '100%',
             placeholder: "Select Tested By"

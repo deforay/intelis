@@ -800,7 +800,14 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $(".select2").select2({
             tags: true
         });
-
+        $('#labId').select2({
+            width: '100%',
+            placeholder: "Select Testing Lab"
+        });
+        $('#reviewedBy').select2({
+            width: '100%',
+            placeholder: "Select Reviewed By"
+        });
         if (testCounter == 0) {
             addTestRow();
         }
