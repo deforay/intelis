@@ -22,7 +22,7 @@ try {
           $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
      }
      $status = 6;
-     if ($_SESSION['instanceType'] == 'remoteuser') {
+     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
           $status = 9;
      }
      //add province

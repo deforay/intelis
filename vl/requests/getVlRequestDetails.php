@@ -241,7 +241,6 @@ if ($sWhere != '') {
 }
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
-
      if (!empty($facilityMap)) {
           $sWhere = $sWhere . " AND vl.facility_id IN (" . $facilityMap . ")  ";
           $sFilter = " AND vl.facility_id IN (" . $facilityMap . ") ";
