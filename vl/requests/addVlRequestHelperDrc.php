@@ -181,7 +181,7 @@ try {
         $_POST['status'] = 6;
         $_POST['rejectionReason'] = NULL;
     }
-    if ($sarr['sc_user_type'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser' {
         $_POST['status'] = 9;
     }
     //Set result prinetd date time
@@ -213,7 +213,7 @@ try {
         $platForm = explode("##", $_POST['testingPlatform']);
         $testingPlatform = $platForm[0];
     }
-    if ($sarr['sc_user_type'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser' {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';
     } else {
@@ -335,7 +335,7 @@ try {
             }
         }
 
-        if ($sarr['sc_user_type'] == 'remoteuser') {
+        if ($_SESSION['instanceType'] == 'remoteuser' {
             $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
             $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
             $vldata['remote_sample'] = 'yes';

@@ -22,7 +22,7 @@ try {
           $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
      }
      $status = 6;
-     if ($sarr['sc_user_type'] == 'remoteuser') {
+     if ($_SESSION['instanceType'] == 'remoteuser' {
           $status = 9;
      }
      //add province
@@ -155,7 +155,7 @@ try {
                $patientGroup['patient_group'] = 'breast_feeding';
           }
      }
-     if ($sarr['sc_user_type'] == 'remoteuser') {
+     if ($_SESSION['instanceType'] == 'remoteuser' {
           $sampleCode = 'remote_sample_code';
           $sampleCodeKey = 'remote_sample_code_key';
      } else {
@@ -300,7 +300,7 @@ try {
           $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
           $id = $db->update($tableName, $vldata);
      } else {
-          if ($sarr['sc_user_type'] == 'remoteuser') {
+          if ($_SESSION['instanceType'] == 'remoteuser' {
                $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
                $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
                $vldata['remote_sample'] = 'yes';

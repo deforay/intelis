@@ -12,7 +12,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 //check remote user
 $rKey = '';
 $pdQuery = "SELECT * FROM province_details";
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser' {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	//check user exist in user_facility_map table
@@ -85,7 +85,7 @@ $sFormat = '';
 								<!--<h4 style="display:none;" id="sampleCodeValue"></h4>-->
 								<table class="table" style="width:100%">
 									<tr>
-										<?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+										<?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
@@ -160,7 +160,7 @@ $sFormat = '';
 												<?php } ?>
 											</select>
 										</td>
-										<?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+										<?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
 											<!-- <tr> -->
 											<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
 											<td>

@@ -17,7 +17,7 @@ $country = $configResult[0]['value'];
 
 // $rpQuery="SELECT GROUP_CONCAT(DISTINCT rp.sample_id SEPARATOR ',') as sampleId FROM r_package_details_map as rp";
 // $rpResult = $db->rawQuery($rpQuery);
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser' {
 	$sCode = 'remote_sample_code';
 	$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 } else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {

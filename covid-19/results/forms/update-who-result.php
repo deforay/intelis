@@ -20,7 +20,7 @@ $covid19Results = $general->getCovid19Results();
 
 $rKey = '';
 $pdQuery = "SELECT * FROM province_details";
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser' {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     //check user exist in user_facility_map table
@@ -80,7 +80,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                             </div>
                             <table class="table" style="width:100%">
                                 <tr>
-                                    <?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+                                    <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
                                         <td><label for="sampleCode">Sample ID </label> </td>
                                         <td colspan="5">
                                             <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : $covid19Info[$sampleCode]; ?></span>
@@ -137,7 +137,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             <?php } ?>
                                         </select>
                                     </td>
-                                    <?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+                                    <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
                                         <!-- <tr> -->
                                         <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                         <td>

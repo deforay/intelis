@@ -163,7 +163,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
     } else if ($aRow['result_value_absolute'] != NULL && trim($aRow['result_value_absolute']) != '' && $aRow['result_value_absolute'] > 0) {
       $logVal = round(log10((float)$aRow['result_value_absolute']), 1);
     }
-    if ($sarr['sc_user_type'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser' {
       $sampleCode = 'remote_sample_code';
     } else {
       $sampleCode = 'sample_code';

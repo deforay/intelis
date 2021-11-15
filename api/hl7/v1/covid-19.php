@@ -450,7 +450,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $testTableName = 'covid19_tests';
         $instanceId = $_POST['instanceId'];
 
-        if ($sarr['sc_user_type'] == 'remoteuser') {
+        if ($_SESSION['instanceType'] == 'remoteuser' {
             $sampleCode = 'remote_sample_code';
             $sampleCodeKey = 'remote_sample_code_key';
         } else {
@@ -458,7 +458,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $sampleCodeKey = 'sample_code_key';
         }
         $status = 6;
-        if ($sarr['sc_user_type'] == 'remoteuser') {
+        if ($_SESSION['instanceType'] == 'remoteuser' {
             $status = 9;
         }
 

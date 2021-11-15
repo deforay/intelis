@@ -186,7 +186,7 @@ if ($sWhere != '') {
      $sWhere = $sWhere . ' where  vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 }
 $dWhere = '';
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser' {
 
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);

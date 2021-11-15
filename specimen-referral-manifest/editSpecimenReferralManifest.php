@@ -14,7 +14,7 @@ $pResult = $db->rawQuery($pQuery);
 if ($pResult[0]['package_status'] == 'dispatch') {
 	header("location:packageList.php");
 }
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser' {
 	$sCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
 	$sCode = 'sample_code';

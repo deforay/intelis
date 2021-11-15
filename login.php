@@ -19,7 +19,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 $shortName = 'Sample Management';
 $systemType = "Lab Sample Management Module";
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser' {
   $shortName = 'Sample Tracking';
   $systemType = "Remote Sample Tracking Module";
   $path = '/assets/img/remote-bg.jpg';
@@ -67,7 +67,7 @@ function generate_token()
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-  <?php if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'remoteuser') { ?>
+  <?php if (!empty($$_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') { ?>
     <link rel="apple-touch-icon" sizes="180x180" href="/vlsts-icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/vlsts-icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/vlsts-icons/favicon-16x16.png">

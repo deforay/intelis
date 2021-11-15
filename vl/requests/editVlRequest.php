@@ -12,7 +12,7 @@ $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
 
 
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser' {
      $labFieldDisabled = 'disabled="disabled"';
 }
 

@@ -87,7 +87,7 @@ try {
 	}
 
 
-	if ($sarr['sc_user_type'] == 'remoteuser') {
+	if ($_SESSION['instanceType'] == 'remoteuser' {
 		$sampleCode = 'remote_sample_code';
 		$sampleCodeKey = 'remote_sample_code_key';
 	} else {
@@ -106,7 +106,7 @@ try {
 
 
 
-	if ($sarr['sc_user_type'] == 'remoteuser') {
+	if ($_SESSION['instanceType'] == 'remoteuser' {
 		$status = 9;
 	}
 
@@ -218,7 +218,7 @@ try {
 		$eidData['last_modified_by'] =  $_SESSION['userId'];
 	}
 	// var_dump($eidData);die;
-	// if ($sarr['sc_user_type'] == 'remoteuser') {
+	// if ($_SESSION['instanceType'] == 'remoteuser' {
 	//   //$eidData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;
 	// } else {
 	//   if ($_POST['sampleCodeCol'] != '') {

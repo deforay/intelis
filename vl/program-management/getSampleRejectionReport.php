@@ -156,7 +156,7 @@ if (isset($_POST['rjtPatientBreastfeeding']) && $_POST['rjtPatientBreastfeeding'
 
 $dWhere = '';
 
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser' {
     if (!empty($facilityMap)) {
         $sWhere = $sWhere . " AND vl.facility_id IN (" . $facilityMap . ") ";
     }
