@@ -30,6 +30,7 @@ $labFieldDisabled = '';
 
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$usersModel = new \Vlsm\Models\Users();
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');

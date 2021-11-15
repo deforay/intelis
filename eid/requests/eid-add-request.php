@@ -3,7 +3,6 @@ ob_start();
 $title = "EID | Add New Request";
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
-
 ?>
 <style>
     .ui_tpicker_second_label,
@@ -22,13 +21,10 @@ include_once(APPLICATION_PATH . '/header.php');
     }
 </style>
 
-
-
 <?php
-
-
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
+
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);

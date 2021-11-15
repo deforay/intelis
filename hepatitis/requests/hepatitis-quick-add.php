@@ -38,8 +38,8 @@ $userDb = new \Vlsm\Models\Users();
 
 // $arr = $general->getGlobalConfig();
 // $sarr = $general->getSystemConfig();
-
-$labTechnicians = $userDb->getActiveUsers();
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$labTechnicians = $userDb->getActiveUsers($facilityMap);
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');

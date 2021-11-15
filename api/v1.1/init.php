@@ -81,7 +81,7 @@ foreach ($commonResult as $key => $result) {
 }
 /* Lab Technician Details */
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
-$userResult = $usersModel->getActiveUsers($facilityMap);
+$userResult = $userDb->getActiveUsers($facilityMap);
 $labTechniciansList = array();
 foreach ($userResult as $user) {
     $labTechniciansList[$user['user_id']] = ucwords($user['user_name']);

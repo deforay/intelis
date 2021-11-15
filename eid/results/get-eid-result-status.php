@@ -186,7 +186,6 @@ if (isset($sWhere) && $sWhere != "") {
         if (isset($setWhr)) {
             $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
         } else {
-            $sWhere = ' where ' . $sWhere;
             $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
         }
     }
@@ -200,9 +199,9 @@ if (isset($sWhere) && $sWhere != "") {
         } else {
             $sWhere = ' where ' . $sWhere;
             if ($_POST['statusFilter'] == 'approvedOrRejected') {
-                $sWhere = $sWhere . ' vl.result_status IN (4,7)';
+                $sWhere = $sWhere . ' AND vl.result_status IN (4,7)';
             } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-                $sWhere = $sWhere . ' vl.result_status NOT IN (4,7)';
+                $sWhere = $sWhere . ' AND vl.result_status NOT IN (4,7)';
             }
         }
     }
@@ -234,7 +233,7 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
+die($sQuery);
 // echo $sQuery;
 $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);

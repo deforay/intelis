@@ -32,11 +32,12 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
 
 /* Get Active users for approved / reviewed / examined by */
-$users = $usersModel->getActiveUsers();
-foreach ($users as $labTech) {
-    $userInfo[$labTech['user_id']] = ucwords($labTech['user_name']);
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$userResult = $usersModel->getActiveUsers($facilityMap);
+$userInfo = array();
+foreach ($userResult as $user) {
+    $userInfo[$user['user_id']] = ucwords($user['user_name']);
 }
-
 /* Health facility list */
 $healthFacilities = $facilitiesDb->getHealthFacilities('tb');
 

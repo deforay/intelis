@@ -7,6 +7,7 @@ include_once(APPLICATION_PATH . '/header.php');
 
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$usersModel = new \Vlsm\Models\Users();
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
