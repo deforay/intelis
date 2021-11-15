@@ -745,8 +745,19 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     $(document).ready(function() {
         $('.result-focus').change(function(e) {
             if ($('#result').val() != '' || $('#sampleRejectionReason').val() != '') {
-                $('.change-reason').show();
-                $('#reasonForChanging').addClass('isRequired');
+                var status = false;
+                $(".result-focus").each(function(index) {
+                    if ($(this).val() != "") {
+                        status = true;
+                    }
+                });
+                if (status) {
+                    $('.change-reason').show();
+                    $('#reasonForChanging').addClass('isRequired');
+                } else {
+                    $('.change-reason').hide();
+                    $('#reasonForChanging').removeClass('isRequired');
+                }
             }
         });
         $('.disabledForm input, .disabledForm select , .disabledForm textarea ').attr('disabled', true);
@@ -760,12 +771,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             placeholder: "Province"
         });
         getfacilityProvinceDetails($("#facilityId").val());
-        <?php if (isset($covid19Info['mother_treatment']) && in_array('Other', $covid19Info['mother_treatment'])) { ?>
-            $('#motherTreatmentOther').prop('disabled', false);
+        <?php if (isset($covid19Info['mother_treatment']) && in_array('Other', $covid19Info['mother_treatment'])) { ?> $('#motherTreatmentOther').prop('disabled', false);
         <?php } ?>
 
-        <?php if (isset($covid19Info['mother_vl_result']) && !empty($covid19Info['mother_vl_result'])) { ?>
-            updateMotherViralLoad();
+        <?php if (isset($covid19Info['mother_vl_result']) && !empty($covid19Info['mother_vl_result'])) { ?> updateMotherViralLoad();
         <?php } ?>
 
         $("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
@@ -779,13 +788,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             checkIsResultAuthorized();
         });
         checkIsResultAuthorized();
-        <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-            $(document).change('.test-result, #result', function(e) {
+        <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?> $(document).change('.test-result, #result', function(e) {
                 checkPostive();
             });
             checkPostive();
-        <?php } else { ?>
-            $('#result').addClass('isRequired');
+        <?php } else { ?> $('#result').addClass('isRequired');
             $('#isResultAuthorized').val('yes');
         <?php } ?>
         if ($('#result').val() != "") {

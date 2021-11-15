@@ -249,8 +249,19 @@ if (file_exists($fileArray[$arr['vl_form']])) {
 		});
 		getMachine($("#hepatitisPlatform").val());
 		$('.result-focus').change(function(e) {
-			$('.change-reason').show();
-			$('#reasonForResultChanges').addClass('isRequired');
+			var status = false;
+			$(".result-focus").each(function(index) {
+				if ($(this).val() != "") {
+					status = true;
+				}
+			});
+			if (status) {
+				$('.change-reason').show();
+				$('#reasonForResultChanges').addClass('isRequired');
+			} else {
+				$('.change-reason').hide();
+				$('#reasonForResultChanges').removeClass('isRequired');
+			}
 		});
 	});
 

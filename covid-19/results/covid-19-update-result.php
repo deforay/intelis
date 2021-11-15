@@ -222,12 +222,23 @@ if ($arr['vl_form'] == 1) {
 
 		//$('.date').mask('99-aaa-9999');
 		//$('.dateTime').mask('99-aaa-9999 99:99');
-		$('.result-focus').change(function(e) {
-			<?php if (isset($covid19Info['result']) && $covid19Info['result'] != "") { ?>
-				$('.change-reason').show();
-				$('#reasonForChanging').addClass('isRequired');
-			<?php } ?>
-		});
+		<?php if (isset($covid19Info['result']) && $covid19Info['result'] != "") { ?>
+			$('.result-focus').change(function(e) {
+				var status = false;
+				$(".result-focus").each(function(index) {
+					if ($(this).val() != "") {
+						status = true;
+					}
+				});
+				if (status) {
+					$('.change-reason').show();
+					$('#reasonForChanging').addClass('isRequired');
+				} else {
+					$('.change-reason').hide();
+					$('#reasonForChanging').removeClass('isRequired');
+				}
+			});
+		<?php } ?>
 	});
 
 	function changeHistory(val) {

@@ -238,8 +238,19 @@ if (file_exists($fileArray[$arr['vl_form']])) {
         changeHistory($('#hasRecentTravelHistory').val());
 
         $('.result-focus').change(function(e) {
-            $('.change-reason').show();
-            $('#reasonForChanging').addClass('isRequired');
+            var status = false;
+            $(".result-focus").each(function(index) {
+                if ($(this).val() != "") {
+                    status = true;
+                }
+            });
+            if (status) {
+                $('.change-reason').show();
+                $('#reasonForChanging').addClass('isRequired');
+            } else {
+                $('.change-reason').hide();
+                $('#reasonForChanging').removeClass('isRequired');
+            }
         });
     });
 

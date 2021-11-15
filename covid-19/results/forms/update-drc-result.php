@@ -1028,8 +1028,19 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     $(document).ready(function() {
         <?php if (count($covid19TestInfo) > 0) { ?>
             $('.result-focus').change(function(e) {
-                $('.change-reason').show();
-                $('#reasonForChanging').addClass('isRequired');
+                var status = false;
+                $(".result-focus").each(function(index) {
+                    if ($(this).val() != "") {
+                        status = true;
+                    }
+                });
+                if (status) {
+                    $('.change-reason').show();
+                    $('#reasonForChanging').addClass('isRequired');
+                } else {
+                    $('.change-reason').hide();
+                    $('#reasonForChanging').removeClass('isRequired');
+                }
             });
         <?php } ?>
 

@@ -276,10 +276,22 @@ include(APPLICATION_PATH . '/footer.php');
 		});
 		$('.date').mask('99-aaa-9999');
 		$('.dateTime').mask('99-aaa-9999 99:99');
+
 		$('.result-focus').change(function(e) {
 			<?php if (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] != "") { ?>
-				$('.change-reason').show();
-				$('#reasonForResultChanges').addClass('isRequired');
+				var status = false;
+				$(".result-focus").each(function(index) {
+					if ($(this).val() != "") {
+						status = true;
+					}
+				});
+				if (status) {
+					$('.change-reason').show();
+					$('#reasonForResultChanges').addClass('isRequired');
+				} else {
+					$('.change-reason').hide();
+					$('#reasonForResultChanges').removeClass('isRequired');
+				}
 			<?php } ?>
 		});
 	});

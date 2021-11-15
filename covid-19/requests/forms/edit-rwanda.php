@@ -754,8 +754,19 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
     $(document).ready(function() {
         $('.result-focus').change(function(e) {
-            $('.change-reason').show();
-            $('#reasonForChanging').addClass('isRequired');
+            var status = false;
+            $(".result-focus").each(function(index) {
+                if ($(this).val() != "") {
+                    status = true;
+                }
+            });
+            if (status) {
+                $('.change-reason').show();
+                $('#reasonForChanging').addClass('isRequired');
+            } else {
+                $('.change-reason').hide();
+                $('#reasonForChanging').removeClass('isRequired');
+            }
         });
 
         $('#facilityId').select2({

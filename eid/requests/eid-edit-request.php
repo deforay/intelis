@@ -348,8 +348,19 @@ require_once($fileArray[$arr['vl_form']]);
         //$('.date').mask('99-aaa-9999');
         //$('.dateTime').mask('99-aaa-9999 99:99');
         $('.result-focus').change(function(e) {
-            $('.change-reason').show();
-            $('#reasonForChanging').addClass('isRequired');
+            var status = false;
+            $(".result-focus").each(function(index) {
+                if ($(this).val() != "") {
+                    status = true;
+                }
+            });
+            if (status) {
+                $('.change-reason').show();
+                $('#reasonForChanging').addClass('isRequired');
+            } else {
+                $('.change-reason').hide();
+                $('#reasonForChanging').removeClass('isRequired');
+            }
         });
     });
 
