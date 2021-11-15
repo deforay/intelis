@@ -31,13 +31,13 @@ $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
      $sampleCodeKey = 'remote_sample_code_key';
      $sampleCode = 'remote_sample_code';
-     //check user exist in user_facility_map table
      $rKey = 'R';
 } else {
      $sampleCodeKey = 'sample_code_key';
      $sampleCode = 'sample_code';
      $rKey = '';
 }
+//check user exist in user_facility_map table
 $chkUserFcMapQry = "Select user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {

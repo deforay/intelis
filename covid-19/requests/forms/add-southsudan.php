@@ -50,17 +50,17 @@ $pdQuery = "SELECT * from province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    //check user exist in user_facility_map table
-    $chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
-    $chkUserFcMapResult = $db->query($chkUserFcMapQry);
-    if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
-    }
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
     $sampleCode = 'sample_code';
     $rKey = '';
+}
+//check user exist in user_facility_map table
+$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+$chkUserFcMapResult = $db->query($chkUserFcMapQry);
+if ($chkUserFcMapResult) {
+    $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
 }
 $pdResult = $db->query($pdQuery);
 $province = "";

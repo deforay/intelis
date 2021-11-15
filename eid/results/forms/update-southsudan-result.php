@@ -27,17 +27,17 @@ $pdQuery = "SELECT * from province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    //check user exist in user_facility_map table
-    $chkUserFcMapQry = "Select user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $chkUserFcMapResult = $db->query($chkUserFcMapQry);
-    if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
-    }
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
     $sampleCode = 'sample_code';
     $rKey = '';
+}
+//check user exist in user_facility_map table
+$chkUserFcMapQry = "Select user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+$chkUserFcMapResult = $db->query($chkUserFcMapQry);
+if ($chkUserFcMapResult) {
+    $pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
 }
 $pdResult = $db->query($pdQuery);
 $province = "";
@@ -417,7 +417,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </tr>
                                     <tr class="show-rejection" style="display:none;">
                                         <th>Rejection Date<span class="mandatory">*</span></th>
-                                        <td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title ="Please enter sample rejection date"/></td>
+                                        <td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please enter sample rejection date" /></td>
                                         <td></td>
                                         <td></td>
                                     </tr>

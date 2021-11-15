@@ -29,14 +29,14 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
-	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
-	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
-	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
-	}
 } else {
 	$sampleCode = 'sample_code';
+}
+//check user exist in user_facility_map table
+$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+$chkUserFcMapResult = $db->query($chkUserFcMapQry);
+if ($chkUserFcMapResult) {
+	$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
 }
 $pdResult = $db->query($pdQuery);
 $province = '';
