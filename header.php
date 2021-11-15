@@ -23,7 +23,7 @@ $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:2
 $smallLogoName = "<img src='/assets/img/flask.png'>";
 $systemType = "Lab Sample Management Module";
 $shortName = "Sample Management";
-if (!empty($$_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
+if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
 	$skin = "skin-red";
 	$systemType = "Remote Sample Tracking Module";
 	$logoName = "<i class='fa fa-medkit'></i> VLSTS";
@@ -160,7 +160,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<meta name="viewport" content="width=1024">
 
-	<?php if (!empty($$_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') { ?>
+	<?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') { ?>
 		<link rel="apple-touch-icon" sizes="180x180" href="/vlsts-icons/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/vlsts-icons/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/vlsts-icons/favicon-16x16.png">
