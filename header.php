@@ -594,7 +594,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/vl/batch/batchcode.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListVLMenu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('vl'); ?>"><i class="fa fa-caret-right"></i> VL Specimen Manifest</a>
 										</li>
