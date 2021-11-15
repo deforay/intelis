@@ -72,7 +72,7 @@ try {
 
 
 
-	if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
+	if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
 		$status = 9;
 	}
 

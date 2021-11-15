@@ -32,7 +32,7 @@ try {
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $status = 4;
     }
-    if ($_SESSION['instanceType'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
         $status = 9;
     }
     //add province

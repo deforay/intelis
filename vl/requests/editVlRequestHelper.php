@@ -30,7 +30,7 @@ try {
      for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
           $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
      }
-     if (($_SESSION['instanceType'] == 'remoteuser' && $_POST['oldStatus'] == 9) {
+     if (($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') && $_POST['oldStatus'] == 9) {
           $_POST['status'] = 9;
      } else if ($_POST['oldStatus'] == 9) {
           $_POST['status'] = 6;

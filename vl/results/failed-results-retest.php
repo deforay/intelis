@@ -7,7 +7,7 @@ try {
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;
-    if ($_SESSION['instanceType'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
         $status = 9;
     }
     $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, vl_sample_id FROM vl_request_form";

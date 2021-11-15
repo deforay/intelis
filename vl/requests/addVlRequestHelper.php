@@ -34,7 +34,7 @@ try {
         $vl_result_category = 'rejected';
         $status = 4;
     }
-    if ($_SESSION['instanceType'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
         $status = 9;
     }
     //add province
