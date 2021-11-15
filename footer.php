@@ -1,7 +1,7 @@
 <footer class="main-footer">
 	<small>This project is supported by the U.S. President’s Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC).</small>
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;<?php echo "v" . VERSION; ?></small>
-	<?php if (isset($_SESSION['userName']) && isset($_SESSION['system']) && ($_SESSION['system'] == 'vluser')) { ?>
+	<?php if (isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 		<div class="pull-right">
 			<small><a href="javascript:forceRemoteSync();">Force Remote Sync</a>&nbsp;&nbsp;</small>
 		</div>
@@ -47,7 +47,7 @@
 			sessionStorage.setItem("crosslogin", "false");
 		}
 	}
-	<?php if (isset($_SESSION['system']) && $_SESSION['system'] == 'vluser') { ?>
+	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 		var remoteSync = true;
 		var remoteUrl = '<?php echo $systemConfig['remoteURL']; ?>';
 
@@ -160,7 +160,7 @@
 	<?php } ?>
 
 	$(document).ready(function() {
-		<?php if (isset($_SESSION['system']) && $_SESSION['system'] == 'vluser') { ?>
+		<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 
 
 			let syncInterval = 60 * 60 * 1000 * 2 // 2 hours in ms
@@ -193,7 +193,7 @@
 		<?php
 		// Every 5 mins check connection if this is a local installation of VLSM and there is a remote server configured
 		$systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-		if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $_SESSION['system'] == 'vluser') { ?>
+		if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $_SESSION['instanceType'] == 'vluser') { ?>
 
 				(function checkNetworkConnection() {
 					$.ajax({

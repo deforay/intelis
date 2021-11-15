@@ -20,7 +20,7 @@ $rKey = '';
 $pdQuery = "SELECT * FROM province_details";
 
 
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     //check user exist in user_facility_map table
@@ -110,7 +110,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        <?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label> </td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : $hepatitisInfo[$sampleCode]; ?></span>
@@ -157,7 +157,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
@@ -294,7 +294,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         </div>
 
 
-                        <?php if ($sarr['sc_user_type'] != 'remoteuser') { ?>
+                        <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

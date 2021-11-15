@@ -32,7 +32,7 @@ try {
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $status = 4;
     }
-    if ($sarr['sc_user_type'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser') {
         $status = 9;
     }
     //add province
@@ -175,7 +175,7 @@ try {
     } else if (isset($_POST['vlLog']) && trim($_POST['vlLog']) != '') {
         $_POST['result'] = $_POST['vlLog'];
     }
-    if ($sarr['sc_user_type'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';
     } else {
@@ -314,7 +314,7 @@ try {
             $_POST['sampleCode'] = $_POST['sampleCodeFormat'] . $maxId;
             $_POST['sampleCodeKey'] = $maxId;
         }
-        if ($sarr['sc_user_type'] == 'remoteuser') {
+        if ($_SESSION['instanceType'] == 'remoteuser') {
             $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
             $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
             $vldata['remote_sample'] = 'yes';

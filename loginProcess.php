@@ -15,13 +15,6 @@ $general = new \Vlsm\Models\General();
 $user = new \Vlsm\Models\Users();
 
 
-$systemInfo = $general->getSystemConfig();
-$systemType = $systemLabId = null;
-if ($systemInfo != false) {
-    $systemType = $systemInfo['sc_user_type'];
-    $systemLabId = $systemInfo['sc_testing_lab_id'];
-}
-
 if ($_POST["csrf_token"] != $_SESSION["csrf_token"]) {
     // Reset token
     unset($_SESSION["csrf_token"]);
@@ -31,6 +24,14 @@ if ($_POST["csrf_token"] != $_SESSION["csrf_token"]) {
 //$dashboardUrl = $general->getGlobalConfig('vldashboard_url');
 /* Crosss Login Block Start */
 $_SESSION['logged'] = false;
+
+
+$systemInfo = $general->getSystemConfig();
+
+$_SESSION['instanceType'] = $systemInfo['sc_user_type'];
+$_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
+
+
 if (isset($_GET['u']) && isset($_GET['t']) && $recencyConfig['crosslogin']) {
 
     $_GET['u'] = filter_var($_GET['u'], FILTER_SANITIZE_STRING);
@@ -71,19 +72,19 @@ try {
         /* Crosss Login Block End */
         $ipaddress = '';
         if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-          $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
         } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-          $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
-          $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
         } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-          $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
         } else if (isset($_SERVER['HTTP_FORWARDED'])) {
-          $ipaddress = $_SERVER['HTTP_FORWARDED'];
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
         } else if (isset($_SERVER['REMOTE_ADDR'])) {
-          $ipaddress = $_SERVER['REMOTE_ADDR'];
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
         } else {
-          $ipaddress = 'UNKNOWN';
+            $ipaddress = 'UNKNOWN';
         }
         $queryParams = array($username, $password, 'active');
         $admin = $db->rawQuery("SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ? AND ud.password = ? AND ud.status = ?", $queryParams);
@@ -159,17 +160,6 @@ try {
                 $_SESSION['privileges'] = $priId;
                 $_SESSION['module']     = $module;
 
-
-                if ($systemType != null && ($systemType == 'vluser' || $systemType == 'remoteuser') && $systemLabId != '' && $systemLabId != null) {
-                    $_SESSION['system'] = $systemType;
-                } else {
-                    $_SESSION['system'] = null;
-                }
-                // if ($dashboardUrl != null && $dashboardUrl != '') {
-                //     $_SESSION['vldashboard_url'] = $dashboardUrl;
-                // } else {
-                //     $_SESSION['vldashboard_url'] = null;
-                // }
                 header("location:" . $redirect);
             } else {
                 $user->userHistoryLog($username, $loginStatus = 'failed');
@@ -180,10 +170,10 @@ try {
             if ($_POST['captcha'] != '') {
                 if (count($admin) > 0) {
                     $user->userHistoryLog($username, $loginStatus = 'successful');
-    
+
                     //add random key
                     $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
-    
+
                     if ($instanceResult) {
                         $_SESSION['instanceId'] = $instanceResult['vlsm_instance_id'];
                         $_SESSION['instanceFacilityName'] = $instanceResult['instance_facility_name'];
@@ -194,7 +184,7 @@ try {
                         $db->insert('s_vlsm_instance', array('vlsm_instance_id' => $id));
                         $_SESSION['instanceId'] = $id;
                         $_SESSION['instanceFacilityName'] = null;
-    
+
                         //Update instance ID in facility and vl_request_form tbl
                         $data = array('vlsm_instance_id' => $id);
                         $db->update('facility_details', $data);
@@ -203,16 +193,16 @@ try {
                     $eventType = 'login';
                     $action = ucwords($admin[0]['user_name']) . ' logged in';
                     $resource = 'user-login';
-    
+
                     $general->activityLog($eventType, $action, $resource);
-    
+
                     $_SESSION['userId'] = $admin[0]['user_id'];
                     $_SESSION['userName'] = ucwords($admin[0]['user_name']);
                     $_SESSION['roleCode'] = $admin[0]['role_code'];
                     $_SESSION['roleId'] = $admin[0]['role_id'];
                     $_SESSION['accessType'] = $admin[0]['access_type'];
                     $_SESSION['email'] = $admin[0]['email'];
-    
+
                     $redirect = '/error/401.php';
                     //set role and privileges
                     $priQuery = "SELECT p.privilege_name, rp.privilege_id, r.module FROM roles_privileges_map as rp INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id INNER JOIN resources as r ON r.resource_id=p.resource_id  where rp.role_id='" . $admin[0]['role_id'] . "'";
@@ -223,7 +213,7 @@ try {
                             $priId[] = $id['privilege_name'];
                             $module[$id['module']] = $id['module'];
                         }
-    
+
                         if ($admin[0]['landing_page'] != '') {
                             $redirect = $admin[0]['landing_page'];
                         } else {
@@ -242,21 +232,10 @@ try {
                     $_SESSION['userType']   = '';
                     $_SESSION['privileges'] = $priId;
                     $_SESSION['module']     = $module;
-    
-    
-                    if ($systemType != null && ($systemType == 'vluser' || $systemType == 'remoteuser') && $systemLabId != '' && $systemLabId != null) {
-                        $_SESSION['system'] = $systemType;
-                    } else {
-                        $_SESSION['system'] = null;
-                    }
-                    // if ($dashboardUrl != null && $dashboardUrl != '') {
-                    //     $_SESSION['vldashboard_url'] = $dashboardUrl;
-                    // } else {
-                    //     $_SESSION['vldashboard_url'] = null;
-                    // }
+                    
+
                     header("location:" . $redirect);
-                }
-                else {
+                } else {
                     $user->userHistoryLog($username, $loginStatus = 'failed');
                     $_SESSION['alertMsg'] = "Please check your login credentials";
                     header("location:/login.php");

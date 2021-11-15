@@ -416,7 +416,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         $("#" + showId).show();
     }
 
-    <?php if (isset($_SESSION['system']) && $_SESSION['system'] == 'vluser') { ?>
+    <?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
         var remoteUrl = '<?php echo $systemConfig['remoteURL']; ?>';
 
         function forceResultSync(sampleCode) {

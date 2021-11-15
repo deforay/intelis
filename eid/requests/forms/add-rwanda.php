@@ -27,7 +27,7 @@ $rKey = '';
 $sKey = '';
 $sFormat = '';
 $pdQuery = "SELECT * from province_details";
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     //check user exist in user_facility_map table
@@ -84,7 +84,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </div>
                                 <table class="table" style="width:100%">
                                     <tr>
-                                        <?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label></td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
@@ -145,7 +145,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>
@@ -343,7 +343,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                             </div>
                         </div>
-                        <?php if ($sarr['sc_user_type'] != 'remoteuser') { ?>
+                        <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

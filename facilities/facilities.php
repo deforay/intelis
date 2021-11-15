@@ -42,7 +42,7 @@ include_once(APPLICATION_PATH . '/header.php');
             </div>
           </span>
           <div class="box-header with-border">
-            <?php if (isset($_SESSION['privileges']) && in_array("addFacility.php", $_SESSION['privileges']) && (($sarr['sc_user_type'] == 'remoteuser') || ($sarr['sc_user_type'] == 'standalone'))) { ?>
+            <?php if (isset($_SESSION['privileges']) && in_array("addFacility.php", $_SESSION['privileges']) && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone'))) { ?>
               <a href="addFacility.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add Facility</a>
               <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa fa-plus"></i> Manage Testing Lab</a>
               <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa fa-plus"></i> Manage Health Facilities</a>
@@ -58,7 +58,7 @@ include_once(APPLICATION_PATH . '/header.php');
                   <th>Facility Name</th>
                   <th>Facility Type</th>
                   <th>Status</th>
-                  <?php if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && (($sarr['sc_user_type'] == 'remoteuser') || ($sarr['sc_user_type'] == 'standalone'))) { ?>
+                  <?php if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone'))) { ?>
                     <th>Action</th>
                   <?php } ?>
                 </tr>
@@ -110,7 +110,7 @@ include_once(APPLICATION_PATH . '/header.php');
         {
           "sClass": "center"
         },
-        <?php if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && (($sarr['sc_user_type'] == 'remoteuser') || ($sarr['sc_user_type'] == 'standalone'))) { ?> {
+        <?php if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone'))) { ?> {
             "sClass": "center",
             "bSortable": false
           },

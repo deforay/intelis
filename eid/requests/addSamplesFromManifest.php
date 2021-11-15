@@ -202,7 +202,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						$('.activateSample').show();
 						$('#sampleId').val(data);
 					} else {
-						<?php if (isset($_SESSION['system']) && $_SESSION['system'] == 'vluser') { ?>
+						<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'eid');
 						<?php } ?>
 					}
@@ -213,7 +213,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	/* Remote Syn only package code matches */
-	<?php if (isset($_SESSION['system']) && $_SESSION['system'] == 'vluser') { ?>
+	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 		var remoteUrl = '<?php echo $systemConfig['remoteURL']; ?>';
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {

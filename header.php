@@ -23,7 +23,7 @@ $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:2
 $smallLogoName = "<img src='/assets/img/flask.png'>";
 $systemType = "Lab Sample Management Module";
 $shortName = "Sample Management";
-if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'remoteuser') {
+if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
 	$skin = "skin-red";
 	$systemType = "Remote Sample Tracking Module";
 	$logoName = "<i class='fa fa-medkit'></i> VLSTS";
@@ -160,7 +160,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<meta name="viewport" content="width=1024">
 
-	<?php if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'remoteuser') { ?>
+	<?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') { ?>
 		<link rel="apple-touch-icon" sizes="180x180" href="/vlsts-icons/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/vlsts-icons/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/vlsts-icons/favicon-16x16.png">
@@ -368,7 +368,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</span>
 							</a>
 							<ul class="treeview-menu">
-								<?php /* if (isset($_SESSION['privileges']) && in_array("facilityMap.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] == 'remoteuser')) { ?>
+								<?php /* if (isset($_SESSION['privileges']) && in_array("facilityMap.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
 									<li class="allMenu facilityMapMenu">
 										<a href="/facilities/facilityMap.php"><i class="fa fa-caret-right"></i>Facility Map</a>
 									</li>
@@ -584,7 +584,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/vl/requests/addVlRequest.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
 										<li class="allMenu addSamplesFromManifestMenu">
 											<a href="/vl/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>
@@ -594,7 +594,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/vl/batch/batchcode.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] == 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListVLMenu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('vl'); ?>"><i class="fa fa-caret-right"></i> VL Specimen Manifest</a>
 										</li>
@@ -702,17 +702,17 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/eid/requests/eid-add-request.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
 										<li class="allMenu addSamplesFromManifestEidMenu">
 											<a href="/eid/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-batches.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("eid-batches.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
 										<li class="allMenu eidBatchCodeMenu">
 											<a href="/eid/batch/eid-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] == 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListEIDMenu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('eid'); ?>"><i class="fa fa-caret-right"></i> EID Specimen Manifest</a>
 										</li>
@@ -799,7 +799,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/covid-19/requests/covid-19-add-request.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
 										<li class="allMenu addSamplesFromManifestCovid19Menu">
 											<a href="/covid-19/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>
@@ -809,7 +809,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/covid-19/batch/covid-19-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] == 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListC19Menu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('covid19'); ?>"><i class="fa fa-caret-right"></i> Covid-19 Specimen Manifest</a>
 										</li>
@@ -837,7 +837,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("covid-19-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu covid19ResultsConfirmationMenu"><a href="/covid-19/results/covid-19-confirmation-manifest.php"><i class="fa fa-caret-right"></i> Confirmation Manifest</a></li>
 									<?php }
-									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("can-record-confirmatory-tests.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("can-record-confirmatory-tests.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
 										<li class="allMenu canRecordConfirmatoryTestsCovid19Menu"><a href="/covid-19/results/can-record-confirmatory-tests.php"><i class="fa fa-caret-right"></i> Record Confirmatory Tests</a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("covid-19-result-status.php", $_SESSION['privileges'])) { ?>
@@ -906,7 +906,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/hepatitis/requests/hepatitis-add-request.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("add-samples-from-manifest.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("add-samples-from-manifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
 										<li class="allMenu addSamplesFromManifestHepatitisMenu">
 											<a href="/hepatitis/requests/add-samples-from-manifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>
@@ -916,7 +916,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/hepatitis/batch/hepatitis-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] == 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListHepMenu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('hepatitis'); ?>"><i class="fa fa-caret-right"></i> Hepatitis Specimen Manifest</a>
 										</li>
@@ -1006,7 +1006,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/tb/requests/tb-add-request.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
 										<li class="allMenu addSamplesFromManifestTbMenu">
 											<a href="/tb/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>
@@ -1016,7 +1016,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/tb/batch/tb-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] == 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListC19Menu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('tb'); ?>"><i class="fa fa-caret-right"></i> Tb Specimen Manifest</a>
 										</li>

@@ -4,7 +4,7 @@ $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
 //check remote user
 $pdQuery = "SELECT * FROM province_details";
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
   $sampleCode = 'remote_sample_code';
   //check user exist in user_facility_map table
   $chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
@@ -504,7 +504,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                     </tr>
                   </table>
                 </div>
-                <div class="box box-primary" style="<?php if ($sarr['sc_user_type'] == 'remoteuser') { ?> pointer-events:none;<?php } ?>">
+                <div class="box box-primary" style="<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?> pointer-events:none;<?php } ?>">
                   <div class="box-header with-border">
                     <h3 class="box-title">Informações laboratoriais</h3>
                   </div>
@@ -636,7 +636,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                         <!-- <label for="status">Status <span class="mandatory">*</span></label> -->
                       </td>
                       <td>
-                        <!-- <select class="form-control labSection <?php echo ($sarr['sc_user_type'] == 'remoteuser') ? '' : 'isRequired'; ?>" id="status" name="status" title="Selecione o estado do teste" style="width: 100%;">
+                        <!-- <select class="form-control labSection <?php echo ($_SESSION['instanceType'] == 'remoteuser' ? '' : 'isRequired'; ?>" id="status" name="status" title="Selecione o estado do teste" style="width: 100%;">
                             <option value="">-- Select --</option>
                             <?php foreach ($statusResult as $status) { ?>
                               <option value="<?php echo $status['status_id']; ?>"<?php echo ($vlQueryInfo['result_status'] == $status['status_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($status['status_name']); ?></option>

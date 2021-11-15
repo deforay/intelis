@@ -23,7 +23,7 @@ $rKey = '';
 $pdQuery = "SELECT * from province_details";
 
 
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     //check user exist in user_facility_map table
@@ -118,7 +118,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        <?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label></td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : $eidInfo[$sampleCode]; ?></span>
@@ -179,7 +179,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <?php if ($sarr['sc_user_type'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>
@@ -377,7 +377,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
 
                             </div>
                         </div>
-                        <?php if ($sarr['sc_user_type'] != 'remoteuser') { ?>
+                        <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

@@ -325,7 +325,7 @@ try {
     if ($_POST['status'] == 7 && $lock == 'yes') {
         $vldata['locked'] = 'yes';
     }
-    if ($sarr['sc_user_type'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser') {
         $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;
     } else {
         if ($_POST['sampleCodeCol'] != '') {

@@ -20,7 +20,7 @@ $primaryKey = "vl_sample_id";
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 $sampleCode = 'sample_code';
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
      $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
@@ -273,7 +273,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
 }
 
 $cWhere = '';
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
      if (!empty($facilityMap)) {
           $sWhere = $sWhere . " AND vl.facility_id IN (" . $facilityMap . ")   ";
           $cWhere = " AND vl.facility_id IN (" . $facilityMap . ")  ";

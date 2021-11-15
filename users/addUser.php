@@ -7,7 +7,7 @@ $result = $db->rawQuery($query);
 
 $fResult = array();
 $display = 'display:none';
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
      //get all facility list with lab,clinic
      $fQuery = "SELECT facility_name,facility_id FROM facility_details";
      $fResult = $db->rawQuery($fQuery);

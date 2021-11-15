@@ -486,7 +486,7 @@ $disable = "disabled = 'disabled'";
 										</tr>
 									</table>
 								</div>
-								<div class="box box-primary" style="<?php if ($sarr['sc_user_type'] == 'remoteuser') { ?> pointer-events:none;<?php } ?>">
+								<div class="box box-primary" style="<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?> pointer-events:none;<?php } ?>">
 									<div class="box-header with-border">
 										<h3 class="box-title">Informações laboratoriais</h3>
 									</div>
@@ -633,7 +633,7 @@ $disable = "disabled = 'disabled'";
 												<label for="status">Status <span class="mandatory">*</span></label>
 											</td>
 											<td>
-												<select class="form-control labSection  <?php echo ($sarr['sc_user_type'] == 'remoteuser') ? '' : 'isRequired'; ?>" id="status" name="status" title="Selecione o estado do teste" style="width: 100%" ;>
+												<select class="form-control labSection  <?php echo ($_SESSION['instanceType'] == 'remoteuser' ? '' : 'isRequired'; ?>" id="status" name="status" title="Selecione o estado do teste" style="width: 100%" ;>
 													<option value="">-- Select --</option>
 													<?php
 													foreach ($statusResult as $status) {

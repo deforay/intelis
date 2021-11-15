@@ -13,7 +13,7 @@ $sampleCodeKey = 'sample_code_key';
 $sampleCode = 'sample_code';
 $prefix = $arr['sample_code_prefix'];
 $pdQuery = "SELECT * FROM province_details";
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rKey = 'R';
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';

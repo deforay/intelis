@@ -6,7 +6,7 @@ $general = new \Vlsm\Models\General();
 $users = new \Vlsm\Models\Users();
 $app = new \Vlsm\Models\App();
 
-$sarr = $general->getSystemConfig();
+$vlsmSystemConfig = $general->getSystemConfig();
 
 $input = json_decode(file_get_contents("php://input"), true);
 try {
@@ -20,7 +20,7 @@ try {
         $userResult = $db->rawQueryOne("SELECT ud.*, r.*, (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ? AND ud.password = ?", $queryParams);
         // print_r($userResult);die;
 
-        if ($sarr['sc_user_type'] == 'remoteuser') {
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $remoteUser = "yes";
         } else {
             $remoteUser = "no";

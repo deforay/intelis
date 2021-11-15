@@ -33,7 +33,7 @@ $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
      $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
@@ -156,7 +156,7 @@ if ($sWhere != '') {
      $sWhere = $sWhere . ' where ' . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 }
 $sFilter = '';
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere.' AND vl.request_created_by="'.$_SESSION['userId'].'"';
      //$sFilter = ' AND request_created_by="'.$_SESSION['userId'].'"';
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
@@ -267,7 +267,7 @@ foreach ($rResult as $aRow) {
      }
 
 
-     if ($syncRequest && $_SESSION['system'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
+     if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
           if ($aRow['data_sync'] == 0) {
                $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Sync this sample" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"><i class="fa fa-refresh"> Sync</i></a>';
           } 

@@ -29,7 +29,7 @@ $primaryKey = "vl_sample_id";
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
      $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
@@ -394,7 +394,7 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      }
      $dWhere = "WHERE vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
 }
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
      $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 
      if (!empty($facilityMap)) {

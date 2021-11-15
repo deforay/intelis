@@ -275,7 +275,7 @@ try {
         $vlDb = new \Vlsm\Models\Vl();
         $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
-    if ($sarr['sc_user_type'] == 'remoteuser') {
+    if ($_SESSION['instanceType'] == 'remoteuser') {
         $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
     } else {
         if ($_POST['sampleCodeCol'] != '') {
