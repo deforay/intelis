@@ -91,6 +91,12 @@ try {
         $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
         $eidData['remote_sample'] = 'yes';
         $eidData['result_status'] = 9;
+        if ($_SESSION['accessType'] == 'testing-lab') {
+            $eidData['sample_code'] = $sampleData['sampleCode'];
+            $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
+            $eidData['result_status'] = 6;
+        }
     } else {
         $eidData['sample_code'] = $sampleData['sampleCode'];
         $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];

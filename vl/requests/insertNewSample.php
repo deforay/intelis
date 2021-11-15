@@ -87,6 +87,13 @@ if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
     $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
     $vlData['remote_sample'] = 'yes';
     $vlData['result_status'] = 9;
+
+    if ($_SESSION['accessType'] == 'testing-lab') {
+        $vlData['sample_code'] = $sampleData['sampleCode'];
+        $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+        $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
+        $vlData['result_status'] = 6;
+    }
 } else {
     $vlData['sample_code'] = $sampleData['sampleCode'];
     $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
