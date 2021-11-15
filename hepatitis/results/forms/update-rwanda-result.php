@@ -262,7 +262,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                 </div>
 
                 <form class="form-horizontal" method="post" name="updateHepatitisRequestForm" id="updateHepatitisRequestForm" autocomplete="off" action="hepatitis-update-result-helper.php">
-                    <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                    <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="box-header with-border">

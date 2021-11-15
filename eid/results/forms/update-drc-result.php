@@ -431,7 +431,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 					</div>
 
 					<form class="form-horizontal" method="post" name="editEIDRequestForm" id="editEIDRequestForm" autocomplete="off" action="eid-update-result-helper.php">
-						<?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+						<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
 
 							<div class="box box-primary">
 								<div class="box-body">

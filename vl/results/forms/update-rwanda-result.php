@@ -706,7 +706,7 @@ $disable = "disabled = 'disabled'";
 											<!-- <div class="col-md-4" style="<?php echo (($_SESSION['instanceType'] == 'remoteuser') ? 'display:none;' : ''; ?>">
                             <label class="col-lg-5 control-label" for="status">Status <span class="mandatory">*</span></label>
                             <div class="col-lg-7">
-                              <select class="form-control labSection  <?php echo (($_SESSION['instanceType'] == 'remoteuser') ? 'isRequired' : ''; ?>" id="status" name="status" title="Please select test status">
+                              <select class="form-control labSection  <?php echo (($_SESSION['instanceType'] != 'remoteuser')) ? 'isRequired' : ''; ?>" id="status" name="status" title="Please select test status">
                                 <option value="">-- Select --</option>
                                 <?php
 								foreach ($statusResult as $status) {

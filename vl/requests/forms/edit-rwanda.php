@@ -607,7 +607,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             </div>
                                                        </div>
                                                   </div>
-                                                  <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                                                  <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
                                                        <div class="box box-primary">
                                                             <div class="box-header with-border">
                                                                  <h3 class="box-title">Laboratory Information</h3>

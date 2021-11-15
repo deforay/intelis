@@ -329,7 +329,7 @@ foreach ($fResult as $fDetails) {
 
                             </div>
                         </div>
-                        <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                        <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
