@@ -31,8 +31,8 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
-$userQuery = "SELECT * FROM user_details where status='active'";
-$userResult = $db->rawQuery($userQuery);
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$userResult = $usersModel->getActiveUsers($facilityMap);
 $userInfo = array();
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ucwords($user['user_name']);

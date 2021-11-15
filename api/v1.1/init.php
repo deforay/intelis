@@ -80,9 +80,11 @@ foreach ($commonResult as $key => $result) {
     $commonResultsList[$key]['show'] = ucwords($result);
 }
 /* Lab Technician Details */
-$labTechnicians = $userDb->getActiveUsers();
-foreach ($labTechnicians as $labTech) {
-    $labTechniciansList[$labTech['user_id']] = ucwords($labTech['user_name']);
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$userResult = $usersModel->getActiveUsers($facilityMap);
+$labTechniciansList = array();
+foreach ($userResult as $user) {
+    $labTechniciansList[$user['user_id']] = ucwords($user['user_name']);
 }
 $activeModule = "";
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
@@ -204,13 +206,6 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     }
     $data['covid19']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
 
-    /* Lab Technician Details */
-    $labTechnicians = $userDb->getActiveUsers();
-    foreach ($labTechnicians as $labTech) {
-        $labTechniciansList[$labTech['user_id']] = ucwords($labTech['user_name']);
-    }
-
-    // $data['covid19']['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
     $data['covid19']['resultsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Results());
     $data['covid19']['symptomsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Symptoms());
     $data['covid19']['comorbiditiesList'] = $app->generateSelectOptions($covid19Obj->getCovid19Comorbidities());
@@ -284,7 +279,6 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     }
     $data['eid']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
 
-    // $data['eid']['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
     $data['eid']['resultsList'] = $app->generateSelectOptions($eidObj->getEidResults());
     // $data['eid']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 

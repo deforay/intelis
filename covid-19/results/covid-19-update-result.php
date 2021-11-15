@@ -9,11 +9,14 @@ include_once(APPLICATION_PATH . '/header.php');
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
 
-$labTechnicians = $usersModel->getActiveUsers();
 $healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
-foreach ($labTechnicians as $labTech) {
-	$labTechniciansResults[$labTech['user_id']] = ucwords($labTech['user_name']);
+
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$userResult = $usersModel->getActiveUsers($facilityMap);
+$labTechniciansResults = array();
+foreach ($userResult as $user) {
+	$labTechniciansResults[$user['user_id']] = ucwords($user['user_name']);
 }
 
 $id = base64_decode($_GET['id']);

@@ -31,11 +31,14 @@ $labFieldDisabled = '';
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
-$labTechnicians = $usersModel->getActiveUsers();
 $healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
-foreach ($labTechnicians as $labTech) {
-    $labTechniciansResults[$labTech['user_id']] = ucwords($labTech['user_name']);
+
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$userResult = $usersModel->getActiveUsers($facilityMap);
+$labTechniciansResults = array();
+foreach ($userResult as $user) {
+    $labTechniciansResults[$user['user_id']] = ucwords($user['user_name']);
 }
 
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status ='active'";

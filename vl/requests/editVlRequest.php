@@ -22,8 +22,8 @@ $id = base64_decode($_GET['id']);
 $importQuery = "SELECT * FROM import_config WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
-$userQuery = "SELECT * FROM user_details where status='active'";
-$userResult = $db->rawQuery($userQuery);
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$userResult = $usersModel->getActiveUsers($facilityMap);
 $userInfo = array();
 foreach ($userResult as $user) {
      $userInfo[$user['user_id']] = ucwords($user['user_name']);

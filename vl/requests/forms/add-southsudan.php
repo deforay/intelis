@@ -518,7 +518,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label for="labId" class="col-lg-5 control-label">Lab Name </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="labId" id="labId" class="form-control" title="Please choose lab" onchange="autoFillFocalDetails();">
+                                                                           <select name="labId" id="labId" class="select2 form-control" title="Please choose lab" onchange="autoFillFocalDetails();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($lResult as $labName) { ?>
                                                                                      <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?php echo ucwords($labName['facility_name']); ?></option>

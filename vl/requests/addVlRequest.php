@@ -16,7 +16,8 @@ $testingLabs = $facilitiesDb->getTestingLabs('vl');
 //get import config
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('import_config', $condition);
-$userResult = $general->fetchDataFromTable('user_details', $condition);
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$userResult = $usersModel->getActiveUsers($facilityMap);
 $userInfo = array();
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ucwords($user['user_name']);

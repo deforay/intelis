@@ -34,9 +34,11 @@ $usersModel = new \Vlsm\Models\Users();
 // $arr = $general->getGlobalConfig();
 // $sarr = $general->getSystemConfig();
 
-$labTechnicians = $usersModel->getActiveUsers();
-foreach ($labTechnicians as $labTech) {
-    $labTechniciansResults[$labTech['user_id']] = ucwords($labTech['user_name']);
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$userResult = $usersModel->getActiveUsers($facilityMap);
+$labTechniciansResults = array();
+foreach ($userResult as $user) {
+    $labTechniciansResults[$user['user_id']] = ucwords($user['user_name']);
 }
 $healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
