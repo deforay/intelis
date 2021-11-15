@@ -584,7 +584,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/vl/requests/addVlRequest.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
 										<li class="allMenu addSamplesFromManifestMenu">
 											<a href="/vl/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>
@@ -702,12 +702,12 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/eid/requests/eid-add-request.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
 										<li class="allMenu addSamplesFromManifestEidMenu">
 											<a href="/eid/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-batches.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("eid-batches.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
 										<li class="allMenu eidBatchCodeMenu">
 											<a href="/eid/batch/eid-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
@@ -799,7 +799,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/covid-19/requests/covid-19-add-request.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($_SESSION['instanceType'] == 'remoteuser') { ?>
 										<li class="allMenu addSamplesFromManifestCovid19Menu">
 											<a href="/covid-19/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>
@@ -837,7 +837,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("covid-19-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu covid19ResultsConfirmationMenu"><a href="/covid-19/results/covid-19-confirmation-manifest.php"><i class="fa fa-caret-right"></i> Confirmation Manifest</a></li>
 									<?php }
-									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("can-record-confirmatory-tests.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("can-record-confirmatory-tests.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
 										<li class="allMenu canRecordConfirmatoryTestsCovid19Menu"><a href="/covid-19/results/can-record-confirmatory-tests.php"><i class="fa fa-caret-right"></i> Record Confirmatory Tests</a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("covid-19-result-status.php", $_SESSION['privileges'])) { ?>
@@ -906,7 +906,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/hepatitis/requests/hepatitis-add-request.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("add-samples-from-manifest.php", $_SESSION['privileges']) && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("add-samples-from-manifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
 										<li class="allMenu addSamplesFromManifestHepatitisMenu">
 											<a href="/hepatitis/requests/add-samples-from-manifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>
@@ -1006,7 +1006,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/tb/requests/tb-add-request.php"><i class="fa fa-caret-right"></i> Add New Request</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($sarr['sc_user_type'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($_SESSION['instanceType'] == 'remoteuser') { ?>
 										<li class="allMenu addSamplesFromManifestTbMenu">
 											<a href="/tb/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> Add Samples from Manifest</a>
 										</li>

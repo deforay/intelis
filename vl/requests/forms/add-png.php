@@ -363,7 +363,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</label>
 										</td>
 									</tr>
-									<?php if ($sarr['sc_user_type'] != 'remoteuser') { ?>
+									<?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
 										<tr>
 											<td colspan="6" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 										</tr>

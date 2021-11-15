@@ -499,7 +499,7 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                              </div>
-                                             <?php if ($sarr['sc_user_type'] != 'remoteuser') { ?>
+                                             <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
                                                             <h3 class="box-title">Laboratory Information</h3>

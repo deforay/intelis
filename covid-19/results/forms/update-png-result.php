@@ -507,7 +507,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                         </div>
                     </div>
                     <form class="form-horizontal" method="post" name="updateCovid19ConfirmatoryRequestForm" id="updateCovid19ConfirmatoryRequestForm" autocomplete="off" action="covid-19-update-result-helper.php">
-                        <?php if ($sarr['sc_user_type'] != 'remoteuser') { ?>
+                        <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
