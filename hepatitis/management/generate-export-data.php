@@ -131,7 +131,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
-		if ($_SESSION['instanceType'] == 'remoteuser' {
+		if ($_SESSION['instanceType'] == 'remoteuser') {
 			$sampleCode = 'remote_sample_code';
 		} else {
 			$sampleCode = 'sample_code';

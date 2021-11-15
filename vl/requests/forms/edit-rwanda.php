@@ -19,7 +19,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 }
 //check remote user
 $pdQuery = "SELECT * from province_details";
-if ($_SESSION['instanceType'] == 'remoteuser' {
+if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
      //check user exist in user_facility_map table
      $chkUserFcMapQry = "Select user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
@@ -171,7 +171,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="">
-                                                            <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                                                            <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                                                  <label for="sampleCode">Sample ID </label><br>
                                                                  <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $vlQueryInfo[$sampleCode]; ?></span>
                                                                  <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
@@ -232,7 +232,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><strong>Clinic Contact Person -</strong></div>
                                                   <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ucwords($facilityResult[0]['contact_person']); ?></div>
                                              </div>
-                                             <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                                             <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                                   <div class="row">
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="">

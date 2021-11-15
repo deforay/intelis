@@ -57,7 +57,7 @@ try {
 	}
 
 
-	if ($_SESSION['instanceType'] == 'remoteuser' {
+	if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sampleCode = 'remote_sample_code';
 		$sampleCodeKey = 'remote_sample_code_key';
 	} else {
@@ -65,7 +65,7 @@ try {
 		$sampleCodeKey = 'sample_code_key';
 	}
 
-	if ($_SESSION['instanceType'] == 'remoteuser' {
+	if ($_SESSION['instanceType'] == 'remoteuser') {
 		$status = 9;
 	}
 

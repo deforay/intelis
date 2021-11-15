@@ -19,7 +19,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 $shortName = 'Sample Management';
 $systemType = "Lab Sample Management Module";
-if ($_SESSION['instanceType'] == 'remoteuser' {
+if ($_SESSION['instanceType'] == 'remoteuser') {
   $shortName = 'Sample Tracking';
   $systemType = "Remote Sample Tracking Module";
   $path = '/assets/img/remote-bg.jpg';

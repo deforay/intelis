@@ -8,7 +8,7 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 //check remote user
 $pdQuery = "SELECT * FROM province_details";
-if ($_SESSION['instanceType'] == 'remoteuser' {
+if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
 	//check user exist in user_facility_map table
 	$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
@@ -121,7 +121,7 @@ $sampleSuggestionDisplay = 'display:none;';
 
 
 									<tr>
-										<?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo (isset($sCode) && $sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?></span>
@@ -208,7 +208,7 @@ $sampleSuggestionDisplay = 'display:none;';
 												<?php } ?>
 											</select>
 										</td>
-										<?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
 											<td>
 												<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">

@@ -541,7 +541,7 @@ $disable = "disabled = 'disabled'";
 									</div>
 								</div>
 								<form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off" action="updateVlRequestHelperRwd.php">
-									<div class="box box-primary" style="<?php if ($_SESSION['instanceType'] == 'remoteuser' { ?> pointer-events:none; <?php } ?>">
+									<div class="box box-primary" style="<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?> pointer-events:none; <?php } ?>">
 										<div class="box-header with-border">
 											<h3 class="box-title">Laboratory Information</h3>
 										</div>

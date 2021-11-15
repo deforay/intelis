@@ -187,7 +187,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 if (isset($_POST['lab']) && trim($_POST['lab']) != '') {
   $sWhere = $sWhere . " AND vl.lab_id IN (" . $_POST['lab'] . ")";
 }
-if ($_SESSION['instanceType'] == 'remoteuser' {
+if ($_SESSION['instanceType'] == 'remoteuser') {
 
   $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
   $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);

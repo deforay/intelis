@@ -84,7 +84,7 @@ try {
                 }
 
                 $status = 6;
-                if ($_SESSION['instanceType'] == 'remoteuser' {
+                if ($_SESSION['instanceType'] == 'remoteuser') {
                     $status = 9;
                 }
 

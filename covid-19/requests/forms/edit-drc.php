@@ -45,7 +45,7 @@ $rKey = '';
 $pdQuery = "SELECT * FROM province_details";
 
 
-if ($_SESSION['instanceType'] == 'remoteuser' {
+if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     //check user exist in user_facility_map table
@@ -137,7 +137,7 @@ $pResult = $db->rawQuery($pQuery);
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Échantillon ID </label> </td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : $covid19Info[$sampleCode]; ?></span>
@@ -186,7 +186,7 @@ $pResult = $db->rawQuery($pQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">LAB ID <span class="mandatory">*</span></label> </td>
                                             <td>

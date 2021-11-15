@@ -26,7 +26,7 @@ $rKey = '';
 $sKey = '';
 $sFormat = '';
 $pdQuery = "SELECT * from province_details";
-if ($_SESSION['instanceType'] == 'remoteuser' {
+if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
     //check user exist in user_facility_map table
@@ -87,7 +87,7 @@ foreach ($fResult as $fDetails) {
                                 </div>
                                 <table class="table" style="width:100%">
                                     <tr>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label></td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
@@ -154,7 +154,7 @@ foreach ($fResult as $fDetails) {
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>

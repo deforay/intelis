@@ -34,7 +34,7 @@ try {
         $vl_result_category = 'rejected';
         $status = 4;
     }
-    if ($_SESSION['instanceType'] == 'remoteuser' {
+    if ($_SESSION['instanceType'] == 'remoteuser') {
         $status = 9;
     }
     //add province
@@ -190,7 +190,7 @@ try {
     } else if ($_POST['vlLog'] != '') {
         $_POST['result'] = $_POST['vlLog'];
     }
-    if ($_SESSION['instanceType'] == 'remoteuser' {
+    if ($_SESSION['instanceType'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';
     } else {
@@ -328,7 +328,7 @@ try {
         }
         // print_r($_POST['sampleCode']);die;
 
-        if ($_SESSION['instanceType'] == 'remoteuser' {
+        if ($_SESSION['instanceType'] == 'remoteuser') {
             $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
             $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
             $vldata['remote_sample'] = 'yes';

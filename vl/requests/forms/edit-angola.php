@@ -4,7 +4,7 @@ $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
 //check remote user
 $pdQuery = "SELECT * FROM province_details";
-if ($_SESSION['instanceType'] == 'remoteuser' {
+if ($_SESSION['instanceType'] == 'remoteuser') {
   $sampleCode = 'remote_sample_code';
   //check user exist in user_facility_map table
   $chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
@@ -504,7 +504,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                     </tr>
                   </table>
                 </div>
-                <div class="box box-primary" style="<?php if ($_SESSION['instanceType'] == 'remoteuser' { ?> pointer-events:none;<?php } ?>">
+                <div class="box box-primary" style="<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?> pointer-events:none;<?php } ?>">
                   <div class="box-header with-border">
                     <h3 class="box-title">Informações laboratoriais</h3>
                   </div>

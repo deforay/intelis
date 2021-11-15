@@ -19,7 +19,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $a
 //check remote user
 $rKey = '';
 $pdQuery = "SELECT * FROM province_details";
-if ($_SESSION['instanceType'] == 'remoteuser' {
+if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCodeKey = 'remote_sample_code_key';
      $sampleCode = 'remote_sample_code';
      //check user exist in user_facility_map table
@@ -98,7 +98,7 @@ $sFormat = '';
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
-                                                       <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                                                       <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                                             <label for="sampleCode">Sample ID </label><br>
                                                             <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
                                                             <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" />
@@ -166,7 +166,7 @@ $sFormat = '';
                                              <div class="col-xs-2 col-md-2 fContactPerson" style="display:none;"><strong>Clinic Contact Person -</strong></div>
                                              <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:none;"></div>
                                         </div>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser' { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="">

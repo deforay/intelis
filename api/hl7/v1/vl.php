@@ -484,7 +484,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             }
             // print_r($_POST['sampleCode']);die;
 
-            if ($_SESSION['instanceType'] == 'remoteuser' {
+            if ($_SESSION['instanceType'] == 'remoteuser') {
                 $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
                 $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
                 $vldata['remote_sample'] = 'yes';
