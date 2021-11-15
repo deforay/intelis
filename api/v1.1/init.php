@@ -342,6 +342,8 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     );
     $status = true;
 }
+
+
 if ($status) {
     $payload = array(
         'status' => 1,
@@ -350,15 +352,19 @@ if ($status) {
         'timestamp' => $general->getDateTime()
     );
 } else {
-    $response = array(
+    $payload = array(
         'status' => 'failed',
         'timestamp' => time(),
         'error' => 'Some test types was inactive from the server.',
         'data' => array()
     );
     http_response_code(401);
-    echo json_encode($response);
+    echo json_encode($payload);
     exit(0);
 }
 
+
+if (isset($user['token-updated']) && $user['token-updated'] == true) {
+    $payload['token'] = $user['newToken'];
+}
 echo json_encode($payload);
