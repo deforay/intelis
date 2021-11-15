@@ -34,7 +34,7 @@ $usersModel = new \Vlsm\Models\Users();
 // $arr = $general->getGlobalConfig();
 // $sarr = $general->getSystemConfig();
 
-$labTechnicians = $usersModel->getActiveUserInfo();
+$labTechnicians = $usersModel->getActiveUsers();
 foreach ($labTechnicians as $labTech) {
     $labTechniciansResults[$labTech['user_id']] = ucwords($labTech['user_name']);
 }

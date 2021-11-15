@@ -80,7 +80,7 @@ foreach ($commonResult as $key => $result) {
     $commonResultsList[$key]['show'] = ucwords($result);
 }
 /* Lab Technician Details */
-$labTechnicians = $userDb->getActiveUserInfo();
+$labTechnicians = $userDb->getActiveUsers();
 foreach ($labTechnicians as $labTech) {
     $labTechniciansList[$labTech['user_id']] = ucwords($labTech['user_name']);
 }
@@ -205,7 +205,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $data['covid19']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
 
     /* Lab Technician Details */
-    $labTechnicians = $userDb->getActiveUserInfo();
+    $labTechnicians = $userDb->getActiveUsers();
     foreach ($labTechnicians as $labTech) {
         $labTechniciansList[$labTech['user_id']] = ucwords($labTech['user_name']);
     }
