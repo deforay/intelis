@@ -32,7 +32,7 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
 
 /* Get Active users for approved / reviewed / examined by */
-$users = $usersModel->getActiveUserInfo();
+$users = $usersModel->getActiveUsers();
 foreach ($users as $labTech) {
     $userInfo[$labTech['user_id']] = ucwords($labTech['user_name']);
 }

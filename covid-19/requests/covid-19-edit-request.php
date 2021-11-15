@@ -31,7 +31,7 @@ $labFieldDisabled = '';
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
-$labTechnicians = $usersModel->getActiveUserInfo();
+$labTechnicians = $usersModel->getActiveUsers();
 $healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
 foreach ($labTechnicians as $labTech) {

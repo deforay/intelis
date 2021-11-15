@@ -190,10 +190,15 @@ class Users
         return $this->db->rawQueryOne($uQuery);
     }
 
-    public function getActiveUserInfo()
+    public function getActiveUsers($facilityMap = null)
     {
-        $uQuery = "SELECT * FROM user_details where status='active'";
-        return $this->db->rawQuery($uQuery);
+        if (!empty($facilityMap)) {
+            $facilityMap = explode(",", $facilityMap);
+            $this->db->join("vl_user_facility_map map", "map.user_id=u.user_id", "INNER");
+            $this->db->where('map.facility_id', $facilityMap, 'IN');
+        }
+        $this->db->where("status='active'");
+        return $this->db->get('user_details u');
     }
 
     public function addUserIfNotExists($name, $status = 'inactive', $role = 4)
@@ -287,8 +292,8 @@ class Users
             $response['role']['code'] = $row['role_code'];
             $response['role']['type'] = $row['access_type'];
 
-            $row['display_name'] =  strtolower(trim(preg_replace("![^a-z0-9]+!i", " ",$row['display_name'])));
-            $row['display_name'] =  preg_replace("![^a-z0-9]+!i", "-",$row['display_name']);
+            $row['display_name'] =  strtolower(trim(preg_replace("![^a-z0-9]+!i", " ", $row['display_name'])));
+            $row['display_name'] =  preg_replace("![^a-z0-9]+!i", "-", $row['display_name']);
             $response['privileges'][$row['module']][$row['resource_id']][] = $row['display_name'];
         }
         return $response;

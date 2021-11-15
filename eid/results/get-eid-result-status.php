@@ -119,7 +119,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * 
             FROM eid_form as vl 
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+            INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
@@ -200,9 +200,9 @@ if (isset($sWhere) && $sWhere != "") {
         } else {
             $sWhere = ' where ' . $sWhere;
             if ($_POST['statusFilter'] == 'approvedOrRejected') {
-                $sWhere = $sWhere . ' vl.result_status IN (4,7)';
+                $sWhere = $sWhere . ' AND vl.result_status IN (4,7)';
             } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-                $sWhere = $sWhere . ' vl.result_status NOT IN (4,7)';
+                $sWhere = $sWhere . ' AND vl.result_status NOT IN (4,7)';
             }
         }
     }

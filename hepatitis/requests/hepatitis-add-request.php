@@ -42,7 +42,7 @@ $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesDb->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 
-$labTechnicians = $userDb->getActiveUserInfo();
+$labTechnicians = $userDb->getActiveUsers();
 foreach ($labTechnicians as $labTech) {
     $labTechniciansResults[$labTech['user_id']] = ucwords($labTech['user_name']);
 }
