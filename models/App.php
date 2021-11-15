@@ -181,7 +181,7 @@ class App
                 } else {
                     $where .= " WHERE ";
                 }
-                $where .= " facility_id IN (" . $facilityMap . ")";
+                $where .= " f.facility_id IN (" . $facilityMap . ")";
             }
         }
 
@@ -251,7 +251,7 @@ class App
                 } else {
                     $where .= " WHERE ";
                 }
-                $where .= " facility_id IN (" . $facilityMap . ")";
+                $where .= " f.facility_id IN (" . $facilityMap . ")";
             }
         }
 
@@ -293,7 +293,7 @@ class App
                 } else {
                     $where .= " WHERE ";
                 }
-                $where .= " facility_id IN (" . $facilityMap . ")";
+                $where .= " f.facility_id IN (" . $facilityMap . ")";
             }
         }
 
