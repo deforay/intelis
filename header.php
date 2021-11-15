@@ -712,7 +712,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/eid/batch/eid-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListEIDMenu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('eid'); ?>"><i class="fa fa-caret-right"></i> EID Specimen Manifest</a>
 										</li>
@@ -809,7 +809,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/covid-19/batch/covid-19-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListC19Menu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('covid19'); ?>"><i class="fa fa-caret-right"></i> Covid-19 Specimen Manifest</a>
 										</li>
@@ -916,7 +916,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/hepatitis/batch/hepatitis-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListHepMenu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('hepatitis'); ?>"><i class="fa fa-caret-right"></i> Hepatitis Specimen Manifest</a>
 										</li>
@@ -1016,7 +1016,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/tb/batch/tb-batches.php"><i class="fa fa-caret-right"></i> Manage Batch</a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenReferralManifestListC19Menu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('tb'); ?>"><i class="fa fa-caret-right"></i> Tb Specimen Manifest</a>
 										</li>
