@@ -91,7 +91,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								<div class="form-group">
 									<label for="facilityType" class="col-lg-4 control-label">Facility Type <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="facilityType" name="facilityType" title="Please select facility type" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser' ? 'getFacilityUser();' : ''; ?>; getTestType(); showSignature(this.value);">
+										<select class="form-control isRequired" id="facilityType" name="facilityType" title="Please select facility type" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?>; getTestType(); showSignature(this.value);">
 											<option value=""> -- Select -- </option>
 											<?php
 											foreach ($fResult as $type) {
