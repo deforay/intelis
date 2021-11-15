@@ -394,7 +394,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $tableName = "eid_form";
         $tableName1 = "activity_log";
         $instanceId = $_POST['instanceId'];
-        if ($_SESSION['instanceType'] == 'remoteuser') {
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $sampleCode = 'remote_sample_code';
             $sampleCodeKey = 'remote_sample_code_key';
         } else {
@@ -402,7 +402,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $sampleCodeKey = 'sample_code_key';
         }
         $status = 6;
-        if ($_SESSION['instanceType'] == 'remoteuser') {
+        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $status = 9;
         }
 
