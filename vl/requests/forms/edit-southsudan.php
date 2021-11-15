@@ -27,7 +27,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 }
 //check remote user
 $pdQuery = "SELECT * FROM province_details";
-if ($_SESSION['accessType'] == 'collection-site') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
 	//check user exist in user_facility_map table
 	$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";

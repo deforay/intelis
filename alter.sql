@@ -2623,3 +2623,9 @@ UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'tb-req
 
 -- Amit 13 Nov 2021 version 4.4.4
 UPDATE `system_config` SET `value` = '4.4.4' WHERE `system_config`.`name` = 'sc_version';
+
+-- Amit 15 Nov 2021
+DELETE FROM `facility_type` WHERE `facility_type`.`facility_type_id` = 3;
+DELETE FROM `facility_type` WHERE `facility_type`.`facility_type_id` = 4;
+UPDATE `facility_type` SET `facility_type_name` = 'Health Facility' WHERE `facility_type_id` = 1;
+UPDATE `facility_type` SET `facility_type_name` = 'Testing Lab' WHERE `facility_type_id` = 2;

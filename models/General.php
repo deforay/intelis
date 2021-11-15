@@ -703,7 +703,7 @@ class General
     }
     public function getLatestSynDateTime()
     {
-        if (isset($_SESSION['system']) && $_SESSION['system'] == 'remoteuser') {
+        if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
             $dateTime = $this->db->rawQueryOne("SELECT requested_on AS dateTime FROM track_api_requests ORDER BY requested_on desc");
         } else {
             $dateTime = $this->db->rawQueryOne("SELECT GREATEST(COALESCE(last_remote_requests_sync, 0), COALESCE(last_remote_results_sync, 0), COALESCE(last_remote_reference_data_sync, 0)) AS dateTime FROM s_vlsm_instance");

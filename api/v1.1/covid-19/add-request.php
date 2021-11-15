@@ -373,8 +373,8 @@ try {
                             'facility_id'            => isset($data['labId']) ? $data['labId'] : null,
                             'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($test['testDate'])),
                             'testing_platform'       => isset($test['testingPlatform']) ? $test['testingPlatform'] : null,
-                            'kit_lot_no'             => (strpos($test['testName'], 'RDT') !== false) ? $test['lotNo'] : null,
-                            'kit_expiry_date'        => (strpos($test['testName'], 'RDT') !== false) ? $general->dateFormat($test['expDate']) : null,
+                            'kit_lot_no'             => (strpos($test['testName'], 'RDT') !== false) ? $test['kitLotNo'] : null,
+                            'kit_expiry_date'        => (strpos($test['testName'], 'RDT') !== false) ? $general->dateFormat($test['kitExpiryDate']) : null,
                             'result'                 => $test['testResult'],
                         );
                         $db->insert($testTableName, $covid19TestData);
