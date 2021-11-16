@@ -15,10 +15,15 @@
 		$syncHistory = "javascript:void(0);";
 	}
 
-	if (!empty($syncLatestTime)) { ?>
-		<br>
-		<div style="font-size:x-small;" class="pull-right"><a href="<?= $syncHistory; ?>" class="text-muted">Last Synced at <span class="sync-time"><?= $syncLatestTime; ?></a></span></div>
-	<?php } ?>
+	if (empty($syncLatestTime)) {
+		$syncHistoryDisplay = "display:none;";
+	} else {
+		$syncHistoryDisplay = "display:inline;";
+	}
+
+	?>
+	<br>
+	<div class="syncHistoryDiv" style="float:right;font-size:x-small;<?= $syncHistoryDisplay ?>" class="pull-right"><a href="<?= $syncHistory; ?>" class="text-muted">Last Synced at <span class="sync-time"><?= $syncLatestTime; ?></a></span></div>
 </footer>
 </div>
 
@@ -174,6 +179,7 @@
 						success: function(lastSyncDateString) {
 							if (lastSyncDateString != null && lastSyncDateString != undefined) {
 								$('.sync-time').html(lastSyncDateString);
+								$('.syncHistoryDiv').show();
 								lastSyncDateString.replace("-", "/"); // We had to do this for Firefox 
 								var lastSyncDate = new Date(lastSyncDateString);
 								if ((currentDateTime - lastSyncDate) > syncInterval) {
