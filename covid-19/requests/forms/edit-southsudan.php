@@ -451,7 +451,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                         <?php $span = 4;
                                                         if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) {
                                                             $kitShow = false;
-                                                            $span = 6;
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
                                                                     <td class="text-center"><?php echo ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>"></td>
@@ -480,6 +479,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             <?php $display = "display:none;";
                                                                             if ((strpos($covid19TestInfo[$indexKey]['test_name'], 'RDT') !== false)) {
                                                                                 $display = "";
+                                                                                $span = 6;
                                                                                 $kitShow = true; ?>
                                                                                 <option value="">--Select--</option>
                                                                                 <option value="Abbott Panbio™ COVID-19 Ag Test" <?php echo (isset($covid19TestInfo[$indexKey]['testing_platform']) && $covid19TestInfo[$indexKey]['testing_platform'] == 'Abbott Panbio™ COVID-19 Ag Test') ? "selected='selected'" : ""; ?>>Abbott Panbio™ COVID-19 Ag Test</option>
@@ -762,7 +762,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
     function validateNow() {
-        if ($('#isResultAuthorized').val() != "yes") {
+        if ($('#isResultAuthorized').val() == "no") {
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
         }
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
