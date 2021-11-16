@@ -185,6 +185,7 @@ if (isset($sWhere) && $sWhere != "") {
             $sWhere = ' where ' . $sWhere;
             $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
         }
+        $and = " AND";
     }
     if (isset($_POST['statusFilter']) && trim($_POST['statusFilter']) != '') {
         if (isset($setWhr)) {
@@ -194,11 +195,13 @@ if (isset($sWhere) && $sWhere != "") {
                 $sWhere = $sWhere . ' AND vl.result_status NOT IN (4,7)';
             }
         } else {
-            $sWhere = ' where ' . $sWhere;
+            if (!isset($_POST['facilityName']) || trim($_POST['facilityName']) == '') {
+                $sWhere = ' where ' . $sWhere;
+            }
             if ($_POST['statusFilter'] == 'approvedOrRejected') {
-                $sWhere = $sWhere . ' vl.result_status IN (4,7)';
+                $sWhere = $sWhere . $and . ' vl.result_status IN (4,7)';
             } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-                $sWhere = $sWhere . ' vl.result_status NOT IN (4,7)';
+                $sWhere = $sWhere . $and . ' vl.result_status NOT IN (4,7)';
             }
         }
     }
@@ -230,7 +233,7 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
+// die($sQuery);
 // echo $sQuery;
 $_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
