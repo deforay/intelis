@@ -1,7 +1,7 @@
 <footer class="main-footer">
 	<small>This project is supported by the U.S. President’s Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC).</small>
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;<?php echo "v" . VERSION; ?></small>
-	<?php if (isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
+	<?php if (!empty($systemConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 		<div class="pull-right">
 			<small><a href="javascript:forceRemoteSync();">Force Remote Sync</a>&nbsp;&nbsp;</small>
 		</div>
@@ -14,10 +14,16 @@
 	} else {
 		$syncHistory = "javascript:void(0);";
 	}
+
+	if (empty($syncLatestTime)) {
+		$syncHistoryDisplay = "display:none;";
+	} else {
+		$syncHistoryDisplay = "display:inline;";
+	}
+
 	?>
 	<br>
-	<div style="font-size:x-small;" class="pull-right"><a href="<?= $syncHistory; ?>" class="text-muted">Last Synced at <span class="sync-time"><?= $syncLatestTime; ?></a></span></div>
-
+	<div class="syncHistoryDiv" style="float:right;font-size:x-small;<?= $syncHistoryDisplay ?>" class="pull-right"><a href="<?= $syncHistory; ?>" class="text-muted">Last Synced at <span class="sync-time"><?= $syncLatestTime; ?></a></span></div>
 </footer>
 </div>
 
@@ -158,46 +164,46 @@
 			}
 		}
 	<?php } ?>
-
+	let syncInterval = 60 * 60 * 1000 * 2 // 2 hours in ms
 	$(document).ready(function() {
-		<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
+		<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser' && !empty($systemConfig['remoteURL'])) { ?>
 
 
-			let syncInterval = 60 * 60 * 1000 * 2 // 2 hours in ms
 
-			(function getLastSyncDateTime() {
-				let currentDateTime = new Date();
-				$.ajax({
-					url: '/remote/scheduled-jobs/getLastSyncTime.php',
-					cache: false,
-					success: function(lastSyncDateString) {
-						if (lastSyncDateString != null && lastSyncDateString != undefined) {
-							$('.sync-time').html(lastSyncDateString);
-							lastSyncDateString.replace("-", "/"); // We had to do this for Firefox 
-							var lastSyncDate = new Date(lastSyncDateString);
-							if ((currentDateTime - lastSyncDate) > syncInterval) {
+
+				(function getLastSyncDateTime() {
+					let currentDateTime = new Date();
+					$.ajax({
+						url: '/remote/scheduled-jobs/getLastSyncTime.php',
+						cache: false,
+						success: function(lastSyncDateString) {
+							if (lastSyncDateString != null && lastSyncDateString != undefined) {
+								$('.sync-time').html(lastSyncDateString);
+								$('.syncHistoryDiv').show();
+								lastSyncDateString.replace("-", "/"); // We had to do this for Firefox 
+								var lastSyncDate = new Date(lastSyncDateString);
+								if ((currentDateTime - lastSyncDate) > syncInterval) {
+									syncCommon();
+								}
+							} else {
 								syncCommon();
 							}
-						} else {
-							syncCommon();
-						}
-					},
-					error: function(data) {}
-				});
-				setTimeout(getLastSyncDateTime, 300000);
-			})();
+						},
+						error: function(data) {}
+					});
+					setTimeout(getLastSyncDateTime, 30000);
+				})();
 		<?php } ?>
 
 
 
 		<?php
 		// Every 5 mins check connection if this is a local installation of VLSM and there is a remote server configured
-		$systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-		if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $_SESSION['instanceType'] == 'vluser') { ?>
+		if (!empty($systemConfig['remoteURL']) && $_SESSION['instanceType'] == 'vluser') { ?>
 
 				(function checkNetworkConnection() {
 					$.ajax({
-						url: '<?php echo $systemConfig['remoteURL']; ?>/vlsts-icons/favicon-16x16.png',
+						url: '<?php echo rtrim($systemConfig['remoteURL'], "/"); ?>/vlsts-icons/favicon-16x16.png',
 						cache: false,
 						success: function(data) {
 							$('.is-remote-server-reachable').css('background-color', '#4dbc3c');
@@ -206,7 +212,7 @@
 							$('.is-remote-server-reachable').css('background-color', 'red');
 						}
 					});
-					setTimeout(checkNetworkConnection, 300000);
+					setTimeout(checkNetworkConnection, 3000);
 				})();
 		<?php } ?>
 
