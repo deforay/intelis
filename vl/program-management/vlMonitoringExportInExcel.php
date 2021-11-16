@@ -57,7 +57,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
             $start_date = trim($s_c_date[0]) . "-01";
         }
         if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-            $end_date = trim($s_c_date[1]) . "-31";
+            $end_date = date("Y-m-t", strtotime(trim($s_c_date[1])));
         }
     }
     $sTestDate = '';

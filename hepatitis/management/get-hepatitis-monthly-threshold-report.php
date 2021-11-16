@@ -101,7 +101,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $start_date = trim($s_c_date[0]) . "-01";
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = trim($s_c_date[1]) . "-31";
+          $end_date = date("Y-m-t", strtotime(trim($s_c_date[1])));
      }
 }
 $sTestDate = '';
@@ -130,15 +130,15 @@ if (isset($sWhere) && $sWhere != "") {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $fac = explode(',', $_POST['facilityName']);
           $out = '';
-          print_r($fac);die;
-          for($s=0; $s < count($fac); $s++)
-          {
-               if($out)
-                    $out = $out.',"'.$fac[$s].'"';
+          print_r($fac);
+          die;
+          for ($s = 0; $s < count($fac); $s++) {
+               if ($out)
+                    $out = $out . ',"' . $fac[$s] . '"';
                else
-                    $out = '("'.$fac[$s].'"';
+                    $out = '("' . $fac[$s] . '"';
           }
-          $out = $out.')';
+          $out = $out . ')';
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out . '';
           } else {
@@ -151,14 +151,13 @@ if (isset($sWhere) && $sWhere != "") {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $fac = explode(',', $_POST['facilityName']);
           $out = '';
-          for($s=0; $s < count($fac); $s++)
-          {
-               if($out)
-                    $out = $out.',"'.$fac[$s].'"';
+          for ($s = 0; $s < count($fac); $s++) {
+               if ($out)
+                    $out = $out . ',"' . $fac[$s] . '"';
                else
-                    $out = '("'.$fac[$s].'"';
+                    $out = '("' . $fac[$s] . '"';
           }
-          $out = $out.')';
+          $out = $out . ')';
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out . '';
           } else {
@@ -167,7 +166,7 @@ if (isset($sWhere) && $sWhere != "") {
                $sWhere = $sWhere . ' vl.lab_id IN ' . $out . '';
           }
      }
-     
+
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
@@ -212,27 +211,24 @@ $output = array(
 );
 
 $cnt = 0;
-foreach($rResult as $rowData)
-{
+foreach ($rResult as $rowData) {
      $targetType1 = false;
      $targetType2 = false;
      $targetType3 = false;
-     if($_POST['targetType'] == 1){
+     if ($_POST['targetType'] == 1) {
 
-          if($rowData['monthly_target'] > $rowData['totalCollected'])
-          { 
+          if ($rowData['monthly_target'] > $rowData['totalCollected']) {
                $targetType1 = true;
           }
-     } else if($_POST['targetType'] == 2){
+     } else if ($_POST['targetType'] == 2) {
 
-          if($rowData['monthly_target'] < $rowData['totalCollected'])
-          { 
+          if ($rowData['monthly_target'] < $rowData['totalCollected']) {
                $targetType2 = true;
           }
-     } else if($_POST['targetType'] == 3){
+     } else if ($_POST['targetType'] == 3) {
           $targetType3 = true;
      }
-     if($targetType1 || $targetType2 || $targetType3){
+     if ($targetType1 || $targetType2 || $targetType3) {
           $cnt++;
           $data = array();
           $data[] = ucwords($rowData['facility_name']);
@@ -243,8 +239,7 @@ foreach($rResult as $rowData)
           $data[] = $rowData['monthly_target'];
           $output['aaData'][] = $data;
      }
-
-}   
+}
 $output['iTotalDisplayRecords'] = $cnt;
 $output['iTotalRecords'] = $cnt;
 echo json_encode($output);

@@ -119,7 +119,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $start_date = trim($s_c_date[0]) . "-01";
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = trim($s_c_date[1]) . "-31";
+          $end_date = date("Y-m-t", strtotime(trim($s_c_date[1])));
      }
 }
 $sTestDate = '';
@@ -144,21 +144,19 @@ if (isset($sWhere) && $sWhere != "") {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           }
      }
-
 } else {
-    
+
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $fac = explode(',', $_POST['facilityName']);
           $out = '';
           // print_r($fac);die;
-          for($s=0; $s < count($fac); $s++)
-          {
-               if($out)
-                    $out = $out.',"'.$fac[$s].'"';
+          for ($s = 0; $s < count($fac); $s++) {
+               if ($out)
+                    $out = $out . ',"' . $fac[$s] . '"';
                else
-                    $out = '("'.$fac[$s].'"';
+                    $out = '("' . $fac[$s] . '"';
           }
-          $out = $out.')';
+          $out = $out . ')';
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out . '';
           } else {
@@ -203,14 +201,13 @@ if ($sWhere != '') {
 $sWhere .= " AND tl.test_type = 'eid'";
 
 
-$sQuery = $sQuery . ' ' . $sWhere .' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
-if($_POST['targetType'] == 1){
+$sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
+if ($_POST['targetType'] == 1) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
-}
-else if($_POST['targetType'] == 2){
+} else if ($_POST['targetType'] == 2) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
-     
+
 $_SESSION['eidMonitoringThresholdReportQuery'] = $sQuery;
 
 // die($sQuery);
@@ -235,8 +232,7 @@ $output = array(
 );
 
 $cnt = 0;
-foreach($rResult as $rowData)
-{
+foreach ($rResult as $rowData) {
      $cnt++;
      $data = array();
      $data[] = ucwords($rowData['facility_name']);
@@ -246,7 +242,7 @@ foreach($rResult as $rowData)
      $data[] = $rowData['totalCollected'];
      $data[] = $rowData['monthly_target'];
      $output['aaData'][] = $data;
-}   
+}
 $output['iTotalDisplayRecords'] = $cnt;
 $output['iTotalRecords'] = $cnt;
 echo json_encode($output);

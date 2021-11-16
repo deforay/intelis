@@ -140,7 +140,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $start_date = trim($s_c_date[0]) . "-01";
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = trim($s_c_date[1]) . "-31";
+          $end_date = date("Y-m-t", strtotime(trim($s_c_date[1])));
      }
 }
 $sTestDate = '';
@@ -205,7 +205,7 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
