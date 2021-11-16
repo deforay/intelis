@@ -2629,3 +2629,7 @@ DELETE FROM `facility_type` WHERE `facility_type`.`facility_type_id` = 3;
 DELETE FROM `facility_type` WHERE `facility_type`.`facility_type_id` = 4;
 UPDATE `facility_type` SET `facility_type_name` = 'Health Facility' WHERE `facility_type_id` = 1;
 UPDATE `facility_type` SET `facility_type_name` = 'Testing Lab' WHERE `facility_type_id` = 2;
+
+
+-- Amit 16 Nov 2021
+UPDATE facility_details set facility_type = 1 WHERE facility_type in (3,4);

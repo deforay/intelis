@@ -668,10 +668,10 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									if (isset($_SESSION['privileges']) && in_array("vlMonitoringReport.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu vlMonitoringReport"><a href="/vl/program-management/vlMonitoringReport.php"><i class="fa fa-caret-right"></i> Sample Monitoring Report</a></li>
 									<?php }
-									if (isset($_SESSION['privileges']) && isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] = 'yes' && in_array("vlMonthlyThresholdReport.php", $_SESSION['privileges'])) { ?>
+									if (isset($_SESSION['privileges']) && isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes' && in_array("vlMonthlyThresholdReport.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu vlMonthlyThresholdReport"><a href="/vl/program-management/vlTestingTargetReport.php"><i class="fa fa-caret-right"></i>VL Testing Target Report</a></li>
 									<?php }
-									if (isset($_SESSION['privileges']) && isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] = 'yes' && in_array("vlSuppressedTargetReport.php", $_SESSION['privileges'])) { ?>
+									if (isset($_SESSION['privileges']) && isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes' && in_array("vlSuppressedTargetReport.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu vlSuppressedMonthlyThresholdReport"><a href="/vl/program-management/vlSuppressedTargetReport.php"><i class="fa fa-caret-right"></i>VL Suppression Target Report</a></li>
 									<?php } ?>
 								</ul>
