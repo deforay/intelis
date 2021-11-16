@@ -265,6 +265,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									<th>Unique ART No</th>
 									<th>Patient's Name</th>
 									<th>Facility Name</th>
+									<th>Lab Name</th>
 									<th>Sample Type</th>
 									<th>Result</th>
 									<th>Status</th>
@@ -275,7 +276,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="12" class="dataTables_empty">Loading data from server</td>
+									<td colspan="13" class="dataTables_empty">Loading data from server</td>
 								</tr>
 							</tbody>
 						</table>
@@ -398,6 +399,9 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 					}, <?php
 					} ?> {
 						"sClass": "center"
+				},
+				{
+					"sClass": "center"
 				},
 				{
 					"sClass": "center"
@@ -578,7 +582,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 	function checkSampleCollectionDate() {
 		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
 			alert("Please select Sample Collection Date Range");
-		}else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
+		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
 			alert("Please select Sample Test Date Range");
 		}
 	}

@@ -138,7 +138,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
                     LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
                     LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
-//echo $sQuery;die;
+/* Sample collection date filter */
 $start_date = '';
 $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -151,6 +151,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $end_date = $general->dateFormat(trim($s_c_date[1]));
      }
 }
+/* Sample test date filter */
 $sTestDate = '';
 $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
@@ -162,6 +163,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           $eTestDate = $general->dateFormat(trim($s_t_date[1]));
      }
 }
+/* Print date filter */
 $sPrintDate = '';
 $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
@@ -173,20 +175,35 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
           $ePrintDate = $general->dateFormat(trim($s_p_date[1]));
      }
 }
-
+/* Facility id filter */
+if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+     $sWhere = $sWhere . ' AND vl.facility_id = "' . $_POST['facilityName'] . '"';
+}
+/* Testing lab filter */
+if (isset($_POST['testingLab']) && trim($_POST['testingLab']) != '') {
+     $sWhere = $sWhere . ' AND vl.lab_id = "' . $_POST['testingLab'] . '"';
+}
+/* Result filter */
+if (isset($_POST['result']) && trim($_POST['result']) != '') {
+     $sWhere = $sWhere . ' AND vl.result like "' . $_POST['result'] . '"';
+}
+/* Status filter */
+if (isset($_POST['status']) && trim($_POST['status']) != '') {
+     $sWhere = $sWhere . ' AND vl.result_status =' . $_POST['status'];
+}
+/* Funding src filter */
+if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+     $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+}
+/* Implementing partner filter */
+if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+     $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+}
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-
-if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-     $sWhere = $sWhere . ' AND vl.facility_id = "' . $_POST['facilityName'] . '"';
-}
-
-if (isset($_POST['testingLab']) && trim($_POST['testingLab']) != '') {
-     $sWhere = $sWhere . ' AND vl.lab_id = "' . $_POST['testingLab'] . '"';
-}
-
+/* Date time filters */
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
           $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
@@ -208,20 +225,6 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
           $sWhere = $sWhere . ' AND DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
-if (isset($_POST['result']) && trim($_POST['result']) != '') {
-
-     $sWhere = $sWhere . ' AND vl.result like "' . $_POST['result'] . '"';
-}
-if (isset($_POST['status']) && trim($_POST['status']) != '') {
-     $sWhere = $sWhere . ' AND vl.result_status =' . $_POST['status'];
-}
-if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-     $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-}
-if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-}
-
 $cWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -279,6 +282,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['child_id'];
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ucwords($aRow['facility_name']);
+     $row[] = ucwords($aRow['lab_name']);
      $row[] = $aRow['mother_id'];
      $row[] = $eidResults[$aRow['result']];
      $row[] = ucwords($aRow['status_name']);

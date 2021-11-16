@@ -81,6 +81,12 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 							</td>
 						</tr>
 						<tr>
+							<th>Testing Lab</th>
+							<td>
+								<select class="filter-input form-control" id="testingLab" name="testingLab" title="Please select vl lab" style="width:220px;">
+									<?= $testingLabsDropdown; ?>
+								</select>
+							</td>
 							<th>Sample Test Date</th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="filter-input form-control" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" />
@@ -88,20 +94,19 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 
 							<th>Result </th>
 							<td>
-								<select class="filter-input form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
+								<select class="filter-input form-control" id="result" name="result" title="Please select batch code" style="width:220px;">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($covid19Results as $covid19ResultKey => $covid19ResultValue) { ?>
 										<option value="<?php echo $covid19ResultKey; ?>"> <?php echo $covid19ResultValue; ?> </option>
 									<?php } ?>
 								</select>
 							</td>
-
+						</tr>
+						<tr>
 							<th>Last Print Date</th>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="filter-input form-control" placeholder="Select Print Date" readonly style="width:220px;background:#fff;" />
 							</td>
-						</tr>
-						<tr>
 							<th>Status</th>
 							<td>
 								<select name="status" id="status" class="form-control" title="Please choose status" onchange="checkSampleCollectionDate();">
@@ -109,7 +114,21 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									<option value="4">Rejected</option>
 								</select>
 							</td>
-
+							<td><b>Batch Code&nbsp;:</b></td>
+							<td>
+								<select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
+									<option value=""> -- Select -- </option>
+									<?php
+									foreach ($batResult as $code) {
+									?>
+										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+						<tr>
 							<th>Funding Sources</th>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
@@ -132,14 +151,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									<?php } ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
-							<th>Testing Lab</th>
-							<td>
-								<select class="filter-input form-control" id="testingLab" name="testingLab" title="Please select vl lab" style="width:220px;">
-									<?= $testingLabsDropdown; ?>
-								</select>
-							</td>
+
 						</tr>
 						<tr>
 							<td colspan="6">
@@ -208,6 +220,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									<th>Patient ID</th>
 									<th>Patient Name</th>
 									<th>Facility Name</th>
+									<th>Lab Name</th>
 									<th>Result</th>
 									<th>Status</th>
 									<th>Funding Source</th>
@@ -221,8 +234,6 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 								</tr>
 							</tbody>
 						</table>
-
-
 					</div>
 					<!-- /.box-body -->
 				</div>
@@ -358,6 +369,9 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 					"sClass": "center"
 				},
 				{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center",
 					"bSortable": false
 				},
@@ -395,8 +409,8 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 					"value": $("#testingLab").val()
 				});
 				aoData.push({
-					"name": "vLoad",
-					"value": $("#vLoad").val()
+					"name": "result",
+					"value": $("#result").val()
 				});
 				aoData.push({
 					"name": "status",
@@ -470,7 +484,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Facility_Name: $("#facilityName  option:selected").text(),
 				sample_Test_Date: $("#sampleTestDate").val(),
-				Viral_Load: $("#vLoad  option:selected").text(),
+				Viral_Load: $("#result  option:selected").text(),
 				Print_Date: $("#printDate").val(),
 				Status: $("#status  option:selected").text(),
 				withAlphaNum: withAlphaNum

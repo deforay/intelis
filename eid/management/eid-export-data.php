@@ -15,7 +15,6 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_eid_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
@@ -105,7 +104,19 @@ $eidResults = $general->getEidResults();
 									<option value="4">Rejected</option>
 								</select>
 							</td>
-
+							<td><b>Batch Code&nbsp;:</b></td>
+							<td>
+								<select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
+									<option value=""> -- Select -- </option>
+									<?php
+									foreach ($batResult as $code) {
+									?>
+										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</td>
 							<th>Funding Sources</th>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
@@ -117,6 +128,8 @@ $eidResults = $general->getEidResults();
 									<?php } ?>
 								</select>
 							</td>
+						</tr>
+						<tr>
 							<th>Implementing Partners</th>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner">
@@ -199,6 +212,7 @@ $eidResults = $general->getEidResults();
 									<th>Child's ID</th>
 									<th>Child's Name</th>
 									<th>Facility Name</th>
+									<th>Lab Name</th>
 									<th>Mother's ID</th>
 									<th>Result</th>
 									<th>Status</th>
@@ -455,10 +469,11 @@ $eidResults = $general->getEidResults();
 				}
 			});
 	}
+
 	function checkSampleCollectionDate() {
 		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
 			alert("Please select Sample Collection Date Range");
-		}else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
+		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
 			alert("Please select Sample Test Date Range");
 		}
 	}

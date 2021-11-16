@@ -352,6 +352,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['patient_art_no'];
      $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ucwords($aRow['facility_name']);
+     $row[] = ucwords($aRow['lab_name']);
      $row[] = ucwords($aRow['sample_name']);
      $row[] = $aRow['result'];
      $row[] = ucwords($aRow['status_name']);
