@@ -3,11 +3,10 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 if (isset($_SESSION['adminUserId'])) {
-    header("location:/edit-config/index.php");
+    header("location:/system-admin/edit-config/index.php");
 }
-#require_once('../../startup.php');  
 
-$path = '..//assets/img/remote-bg.jpg';
+$path = '/assets/img/remote-bg.jpg';
 ?>
 <!DOCTYPE html>
 <html>
@@ -42,7 +41,7 @@ $path = '..//assets/img/remote-bg.jpg';
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-    <script type="text/javascript" src="..//assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 </head>
 
 <body class="">
@@ -50,7 +49,7 @@ $path = '..//assets/img/remote-bg.jpg';
         <div id="loginbox" style="margin-top:20px;margin-bottom:70px;float:right;margin-right:10px;" class="mainbox col-md-3 col-sm-8 ">
             <div class="panel panel-default" style="opacity: 0.93;">
                 <div class="panel-heading">
-                    <div class="panel-title">Viral Load Sample Management</div>
+                    <div class="panel-title">VLSM Admin</div>
                 </div>
 
                 <div style="padding-top:10px;" class="panel-body">
