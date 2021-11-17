@@ -113,6 +113,14 @@ $ftResult = $db->rawQuery($fQuery);
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
+                                             <label for="interfaceUserName" class="col-lg-4 control-label">Interface User Name (from your Molecular testing machine)</label>
+                                             <div class="col-lg-7">
+                                                  <input type="text" class="form-control isRequired" id="interfaceUserName" name="interfaceUserName" placeholder="Interace User Name" title="Please enter interface user name" />
+                                             </div>
+                                        </div>
+                                   </div>
+                                   <div class="col-md-6">
+                                        <div class="form-group">
                                              <label for="appAccessable" class="col-lg-4 control-label">Mobile App Access</label>
                                              <div class="col-lg-7">
                                                   <select class="form-control" name='appAccessable' id='appAccessable' title="Please select the mobile App access or not?">

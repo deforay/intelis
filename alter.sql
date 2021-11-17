@@ -2638,3 +2638,6 @@ UPDATE facility_details set facility_type = 1 WHERE facility_type in (3,4);
 
 RENAME TABLE `user_admin_details` TO `system_admin`;
 ALTER TABLE `system_admin` CHANGE `user_admin_id` `system_admin_id` INT(11) NOT NULL AUTO_INCREMENT, CHANGE `user_admin_name` `system_admin_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `user_admin_login` `system_admin_login` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `user_admin_password` `system_admin_password` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `user_details` ADD `interface_user_name` VARCHAR(1000) NULL DEFAULT NULL AFTER `user_name`, ADD UNIQUE `interface_user_name` (`interface_user_name`);
+ALTER TABLE `user_details` CHANGE `user_name` `user_name` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `user_details` ADD UNIQUE(`user_name`);

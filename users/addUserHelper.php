@@ -36,6 +36,7 @@ try {
             'user_id'       => $general->generateUUID(),
             //'user_alpnum_id'=>$idOne."-".$idTwo."-".$idThree."-".$idFour."-".$idFive,
             'user_name'     => $_POST['userName'],
+            'interface_user_name'     => !empty($_POST['interfaceUserName']) ? $_POST['interfaceUserName'] : null,
             'email'         => $_POST['email'],
             'login_id'      => $_POST['loginId'],
             'phone_number'  => $_POST['phoneNo'],

@@ -227,22 +227,9 @@ try {
                 $data['batch_code'] = $batchCode;
             }
             //get user name
-            if ($d['reviewBy'] != '') {
-                $uQuery = "select user_name,user_id from user_details where user_name='" . $d['reviewBy'] . "'";
-                $uResult = $db->rawQuery($uQuery);
-                if ($uResult) {
-                    $data['sample_review_by'] = $uResult[0]['user_id'];
-                } else {
-                    $userId = $general->generateUUID();
-                    $userdata = array(
-                        'user_id' => $userId,
-                        'user_name' => $d['reviewBy'],
-                        'role_id' => '3',
-                        'status' => 'active'
-                    );
-                    $db->insert('user_details', $userdata);
-                    $data['sample_review_by'] = $userId;
-                }
+            if (!empty($d['reviewBy'])) {
+                $usersModel = new \Vlsm\Models\Users();
+                $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
             $query    = "select facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where sample_code='" . $sampleCode . "'";

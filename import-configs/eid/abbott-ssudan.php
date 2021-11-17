@@ -193,21 +193,8 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $uQuery = "select user_name,user_id from user_details where user_name='" . $d['reviewBy'] . "'";
-                $uResult = $db->rawQuery($uQuery);
-                if ($uResult) {
-                    $data['sample_review_by'] = $uResult[0]['user_id'];
-                } else {
-                    $userId = $general->generateUUID();
-                    $userdata = array(
-                        'user_id' => $userId,
-                        'user_name' => $d['reviewBy'],
-                        'role_id' => '3',
-                        'status' => 'active',
-                    );
-                    $db->insert('user_details', $userdata);
-                    $data['sample_review_by'] = $userId;
-                }
+                $usersModel = new \Vlsm\Models\Users();
+                $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
             $query = "select facility_id,eid_id,result from eid_form where sample_code='" . $sampleCode . "'";
