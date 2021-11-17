@@ -366,5 +366,7 @@ if ($status) {
 
 if (isset($user['token_updated']) && $user['token_updated'] == true) {
     $payload['token'] = $user['new_token'];
+}else{
+    $payload['token'] = null;
 }
 echo json_encode($payload);
