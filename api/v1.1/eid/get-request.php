@@ -207,7 +207,11 @@ try {
         'timestamp' => time(),
         'data' => $rowData
     );
-
+    if (isset($user['token_updated']) && $user['token_updated'] == true) {
+        $payload['token'] = $user['new_token'];
+    } else {
+        $payload['token'] = null;
+    }
     http_response_code(200);
     echo json_encode($payload);
     exit(0);
