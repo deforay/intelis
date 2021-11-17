@@ -636,7 +636,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                         <!-- <label for="status">Status <span class="mandatory">*</span></label> -->
                       </td>
                       <td>
-                        <!-- <select class="form-control labSection <?php echo ($_SESSION['instanceType'] == 'remoteuser' ? '' : 'isRequired'; ?>" id="status" name="status" title="Selecione o estado do teste" style="width: 100%;">
+                        <!-- <select class="form-control labSection <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? '' : 'isRequired'; ?>" id="status" name="status" title="Selecione o estado do teste" style="width: 100%;">
                             <option value="">-- Select --</option>
                             <?php foreach ($statusResult as $status) { ?>
                               <option value="<?php echo $status['status_id']; ?>"<?php echo ($vlQueryInfo['result_status'] == $status['status_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($status['status_name']); ?></option>
