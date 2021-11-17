@@ -184,7 +184,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
               </td>
               <td><b>Lab Name :</b></td>
               <td style="width: 30%;">
-                <select class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple>
+                <select id="facilityName" name="facilityName" title="Please select facility name" multiple>
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>
