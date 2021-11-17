@@ -104,5 +104,5 @@ $fResult=$db->query($fDetails);
   }
 </script>
 <?php
-include('../admin-footer.php');
+include('/system-admin/admin-footer.php');
 ?>

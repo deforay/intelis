@@ -10,17 +10,17 @@
 <!-- jQuery UI 1.11.4 -->
 <!--<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>-->
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script type="text/javascript" src="./assets/js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 
 <script src="/assets/js/select2.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="/assets/js/bootstrap.min.js"></script>
 <!-- DataTables -->
-<script src="./assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="./assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
 <!-- AdminLTE App -->
-<script src="../../dist/js/app.min.js"></script>
+<script src="/assets/js/app.min.js"></script>
 <script src="/assets/js/deforayValidation.js"></script>
 <script src="/assets/js/jquery.maskedinput.js"></script>
 <script src="/assets/js/jquery.blockUI.js"></script>

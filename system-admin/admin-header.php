@@ -35,10 +35,10 @@ if (!isset($_SESSION['adminUserId'])) {
   <!-- DataTables -->
   <link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+  <link rel="stylesheet" href="/assets/css/skins/_all-skins.min.css">
   <!-- iCheck -->
 
   <link href="/assets/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
