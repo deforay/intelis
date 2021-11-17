@@ -22,5 +22,5 @@ if (ini_get("session.use_cookies")) {
 
 // Finally, destroy the session.
 session_destroy();
-header("location:/login.php");
+header("location:/system-admin/login/login.php");
 ?>
