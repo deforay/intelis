@@ -203,6 +203,12 @@ try {
 
         $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'eid', $requestUrl, $params, 'json');
+
+        if (isset($user['token_updated']) && $user['token_updated'] == true) {
+            $payload['token'] = $user['new_token'];
+        } else {
+            $payload['token'] = null;
+        }
         http_response_code(200);
         echo json_encode($response);
         exit(0);
@@ -212,7 +218,11 @@ try {
         'timestamp' => time(),
         'data' => $rowData
     );
-
+    if (isset($user['token_updated']) && $user['token_updated'] == true) {
+        $payload['token'] = $user['new_token'];
+    } else {
+        $payload['token'] = null;
+    }
     http_response_code(200);
     echo json_encode($payload);
     exit(0);
