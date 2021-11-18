@@ -208,22 +208,9 @@ try {
                 $data['batch_code'] = $batchCode;
             }
             //get user name
-            if ($d['reviewBy'] != '') {
-                $uQuery = "SELECT user_name,user_id FROM user_details where user_name='" . $d['reviewBy'] . "'";
-                $uResult = $db->rawQuery($uQuery);
-                if ($uResult) {
-                    $data['sample_review_by'] = $uResult[0]['user_id'];
-                } else {
-                    $userId = $general->generateUUID();
-                    $userdata = array(
-                        'user_id' => $userId,
-                        'user_name' => $d['reviewBy'],
-                        'role_id' => '3',
-                        'status' => 'active'
-                    );
-                    $db->insert('user_details', $userdata);
-                    $data['sample_review_by'] = $userId;
-                }
+            if (!empty($d['reviewBy'])) {
+                $usersModel = new \Vlsm\Models\Users();
+                $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
             $query    = "SELECT facility_id,hepatitis_id,hcv_vl_count,hbv_vl_count,hepatitis_test_type, result_status FROM form_hepatitis WHERE sample_code='" . $sampleCode . "'";

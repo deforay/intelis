@@ -55,8 +55,8 @@ class DRC_PDF extends MYPDF
       }
 
       $this->SetFont('helvetica', '', 12);
-      $this->writeHTMLCell(0, 0, 10, 28, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C', true);
-      $this->writeHTMLCell(0, 0, 15, 36, '<hr>', 0, 0, 0, true, 'C', true);
+      $this->writeHTMLCell(0, 0, 10, 24, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C', true);
+      $this->writeHTMLCell(0, 0, 15, 30, '<hr>', 0, 0, 0, true, 'C', true);
     }
   }
 }
@@ -304,7 +304,7 @@ if (sizeof($requestResult) > 0) {
     if ($result['result_status'] == '4') {
       $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/cross.png" alt="rejected"/>';
     }
-    $html = '';
+    $html = '<br>';
     $html .= '<table style="padding:0px 2px 2px 2px;">';
     $html .= '<tr>';
     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Échantillon id</td>';

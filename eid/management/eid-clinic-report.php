@@ -162,7 +162,7 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td><b>Sample Test Date&nbsp;:</b></td>
 													<td>
-														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<b>Batch Code&nbsp;:</b></td>
 													<td>
@@ -248,7 +248,7 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td><b>Sample Collection Date&nbsp;:</b></td>
 													<td>
-														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate" placeholder="Select Sample Collection Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="Select Sample Collection Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<b>Batch Code&nbsp;:</b></td>
 													<td>

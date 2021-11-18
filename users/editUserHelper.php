@@ -14,6 +14,7 @@ try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '') {
         $data = array(
             'user_name'     => $_POST['userName'],
+            'interface_user_name'     => !empty($_POST['interfaceUserName']) ? $_POST['interfaceUserName'] : null,
             'email'         => $_POST['email'],
             'phone_number'  => $_POST['phoneNo'],
             'login_id'      => $_POST['loginId'],
