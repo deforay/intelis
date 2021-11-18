@@ -3,15 +3,15 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 #require_once('../startup.php');  
-
-$tableName = "track_api_requests";
-$primaryKey = "api_track_id";
+$general = new \Vlsm\Models\General();
+$tableName = "user_login_history";
+$primaryKey = "history_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('requested_on', 'number_of_records','request_type','test_type','api_url','data_format');
+$aColumns = array('login_id', 'login_attempted_datetime','ip_address','browser','operating_system','login_status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -88,13 +88,40 @@ $sTable = $tableName;
          * SQL queries
          * Get data to display
         */
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS ul.history_id,ul.login_id,ul.login_attempted_datetime,ul.login_status,ul.ip_address,ul.browser,ul.operating_system FROM user_login_history as ul";
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS api.api_track_id,api.requested_by,api.requested_on,api.number_of_records,api.request_type,api.test_type,api.api_url,api.api_params,api.facility_id,api.data_format FROM track_api_requests as api";
+$start_date = '';
+$end_date = '';
+$cWhere = array();
 
-if (isset($sWhere) && $sWhere != "") {
-    $sWhere = ' where ' . $sWhere;
-    $sQuery = $sQuery . ' ' . $sWhere;
+if (isset($_POST['userDate']) && trim($_POST['userDate']) != '') {
+     $s_c_date = explode("to", $_POST['userDate']);
+     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+          $start_date = $general->dateFormat(trim($s_c_date[0]));
+     }
+     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+          $end_date = $general->dateFormat(trim($s_c_date[1]));
+     }
 }
+
+if (isset($_POST['userDate']) && trim($_POST['userDate']) != '') {
+    if (trim($start_date) == trim($end_date)) {
+        $cWhere[] = ' DATE(ul.login_attempted_datetime) = "' . $start_date . '"';
+    } else {
+        $cWhere[] = ' DATE(ul.login_attempted_datetime) >= "' . $start_date . '" AND DATE(ul.login_attempted_datetime) <= "' . $end_date . '"';
+    }
+}
+// print_r($cWhere);die;
+
+if (isset($_POST['loginId']) && trim($_POST['loginId']) != '') {
+    $cWhere[] = ' ul.login_id = "' . $_POST['loginId'] . '"';
+}
+
+if ((isset($sWhere) && $sWhere != "") || (count($cWhere) > 0)) {
+    $sWhere = ' where ' . $sWhere;
+    $sQuery = $sQuery . ' ' . $sWhere . implode(" AND ", $cWhere);
+}
+
 
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
@@ -104,7 +131,7 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
+// die($sQuery);
 // echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
@@ -112,6 +139,7 @@ $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
 
 /*
          * Output
@@ -125,12 +153,12 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     $row = array();
-    $row[] = ucwords($aRow['requested_on']);
-    $row[] = ucwords($aRow['number_of_records']);
-    $row[] = ucwords($aRow['request_type']);
-    $row[] = ucwords($aRow['test_type']);
-    $row[] = ucwords($aRow['api_url']);
-    $row[] = ucwords($aRow['data_format']);
+    $row[] = ucwords($aRow['login_id']);
+    $row[] = ucwords($aRow['login_attempted_datetime']);
+    $row[] = ucwords($aRow['ip_address']);
+    $row[] = ucwords($aRow['browser']);
+    $row[] = ucwords($aRow['operating_system']);
+    $row[] = ucwords($aRow['login_status']);
     $output['aaData'][] = $row;
 }
 

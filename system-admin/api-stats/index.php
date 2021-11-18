@@ -24,7 +24,7 @@ include('../admin-header.php');
         <div class="box">
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="roleDataTable" class="table table-bordered table-striped">
+            <table id="apiStatsDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
                   <th>Requested On</th>
@@ -62,7 +62,7 @@ include('../admin-header.php');
   });
   $(document).ready(function() {
     $.blockUI();
-    oTable = $('#roleDataTable').dataTable({
+    oTable = $('#apiStatsDataTable').dataTable({
       "oLanguage": {
         "sLengthMenu": "_MENU_ records per page"
       },
