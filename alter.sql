@@ -2638,3 +2638,11 @@ UPDATE facility_details set facility_type = 1 WHERE facility_type in (3,4);
 
 RENAME TABLE `user_admin_details` TO `system_admin`;
 ALTER TABLE `system_admin` CHANGE `user_admin_id` `system_admin_id` INT(11) NOT NULL AUTO_INCREMENT, CHANGE `user_admin_name` `system_admin_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `user_admin_login` `system_admin_login` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `user_admin_password` `system_admin_password` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+-- Thana 18-Nov-2021
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES 
+('VL Sample Expiry Days', 'vl_sample_expiry_after_days', '5', 'vl', 'yes', NULL, NULL, 'active'),
+('EID Sample Expiry Days', 'eid_sample_expiry_after_days', '5', 'eid', 'yes', NULL, NULL, 'active'),
+('Covid19 Sample Expiry Days', 'covid19_sample_expiry_after_days', '5', 'covid19', 'yes', NULL, NULL, 'active'),
+('Hepatitis Sample Expiry Days', 'hepatitis_sample_expiry_after_days', '5', 'hepatitis', 'yes', NULL, NULL, 'active'),
+('TB Sample Expiry Days', 'tb_sample_expiry_after_days', '5', 'tb', 'yes', NULL, NULL, 'active');
