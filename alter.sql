@@ -2641,3 +2641,11 @@ ALTER TABLE `system_admin` CHANGE `user_admin_id` `system_admin_id` INT(11) NOT 
 ALTER TABLE `user_details` ADD `interface_user_name` VARCHAR(1000) NULL DEFAULT NULL AFTER `user_name`, ADD UNIQUE `interface_user_name` (`interface_user_name`);
 ALTER TABLE `user_details` CHANGE `user_name` `user_name` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `user_details` ADD UNIQUE(`user_name`);
+
+-- Thana 18-Nov-2021
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES 
+('VL Sample Expiry Days', 'vl_sample_expiry_after_days', '5', 'vl', 'yes', NULL, NULL, 'active'),
+('EID Sample Expiry Days', 'eid_sample_expiry_after_days', '5', 'eid', 'yes', NULL, NULL, 'active'),
+('Covid19 Sample Expiry Days', 'covid19_sample_expiry_after_days', '5', 'covid19', 'yes', NULL, NULL, 'active'),
+('Hepatitis Sample Expiry Days', 'hepatitis_sample_expiry_after_days', '5', 'hepatitis', 'yes', NULL, NULL, 'active'),
+('TB Sample Expiry Days', 'tb_sample_expiry_after_days', '5', 'tb', 'yes', NULL, NULL, 'active');
