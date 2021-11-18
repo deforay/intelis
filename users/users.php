@@ -55,8 +55,8 @@ include_once(APPLICATION_PATH . '/header.php');
               <thead>
                 <tr>
                   <th>User Name</th>
+                  <th>Interface User Name</th>
                   <th>Email</th>
-                  <!--<th>Mobile</th>-->
                   <th>Role</th>
                   <th>Status</th>
                   <?php if (isset($_SESSION['privileges']) && in_array("editUser.php", $_SESSION['privileges'])) { ?>
@@ -103,7 +103,7 @@ include_once(APPLICATION_PATH . '/header.php');
       "aoColumns": [{
           "sClass": "center"
         },
-        //{"sClass":"center"},
+        {"sClass":"center"},
         {
           "sClass": "center"
         },

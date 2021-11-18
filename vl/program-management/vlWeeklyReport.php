@@ -133,7 +133,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                         <tr>
                           <td style="width:13%"><b>Sample Test Date Range&nbsp;:</b></td>
                           <td style="width:20% !important;">
-                            <input type="text" id="femaleSampleTestDate" name="femaleSampleTestDate" class="form-control" placeholder="Sample Test Date Range" readonly style="background:#eee;font-size:0.9em" />
+                            <input type="text" id="femaleSampleTestDate" name="femaleSampleTestDate" class="form-control daterange" placeholder="Sample Test Date Range" readonly style="background:#eee;font-size:0.9em" />
                           </td>
                           <!-- <td><b>Sample Collection<br>Date Range&nbsp;:</b></td>
 											<td style="width:20% !important;">
