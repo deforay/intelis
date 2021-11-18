@@ -155,6 +155,11 @@ if (!isset($_SESSION['adminUserId'])) {
                 <a href="/system-admin/instance-overview/index.php"><i class="fa fa-circle-o"></i>Instance Overview</a>
               </li>
             </ul>
+            <ul class="treeview-menu">
+              <li class="allMenu systemConfigmenu">
+                <a href="/system-admin/api-stats/index.php"><i class="fa fa-circle-o"></i>Api-Stats</a>
+              </li>
+            </ul>
           </li>
           <!---->
         </ul>
