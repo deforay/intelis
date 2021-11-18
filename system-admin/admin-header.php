@@ -119,7 +119,7 @@ if (!isset($_SESSION['adminUserId'])) {
               <ul class="dropdown-menu">
                 <!-- Menu Footer-->
                 <li class="user-footer">
-									<a href="/system-admin/edit-config/resetPassword.php" class="">Rest Password</a>
+									<a href="/system-admin/edit-config/resetPassword.php" class="">Change Password</a>
 								</li>
                 <li class="user-footer">
                   <a href="/system-admin/login/logout.php" class="">Sign out</a>
@@ -148,6 +148,11 @@ if (!isset($_SESSION['adminUserId'])) {
             <ul class="treeview-menu">
               <li class="allMenu systemConfigmenu">
                 <a href="/system-admin/edit-config/index.php"><i class="fa fa-circle-o"></i> System Configuration</a>
+              </li>
+            </ul>
+            <ul class="treeview-menu">
+              <li class="allMenu systemConfigmenu">
+                <a href="/system-admin/instance-overview/index.php"><i class="fa fa-circle-o"></i>Instance Overview</a>
               </li>
             </ul>
           </li>
