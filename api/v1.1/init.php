@@ -83,8 +83,8 @@ foreach ($commonResult as $key => $result) {
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 $userResult = $userDb->getActiveUsers($facilityMap);
 $labTechniciansList = array();
-foreach ($userResult as $user) {
-    $labTechniciansList[$user['user_id']] = ucwords($user['user_name']);
+foreach ($userResult as $row) {
+    $labTechniciansList[$row['user_id']] = ucwords($row['user_name']);
 }
 $activeModule = "";
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
@@ -363,10 +363,9 @@ if ($status) {
     exit(0);
 }
 
-
 if (isset($user['token_updated']) && $user['token_updated'] == true) {
     $payload['token'] = $user['new_token'];
-}else{
+} else {
     $payload['token'] = null;
 }
 echo json_encode($payload);

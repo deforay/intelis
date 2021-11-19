@@ -2652,3 +2652,9 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 
 -- Thana 19-Nov-2021
 INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES (10, 'Sample Expired', 'active');
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES 
+('VL Sample Lock Expiry Days', 'vl_sample_lock_after_days', NULL, 'vl', 'yes', NULL, NULL, 'active'),
+('EID Sample Lock Expiry Days', 'eid_sample_lock_after_days', NULL, 'eid', 'yes', NULL, NULL, 'active'),
+('Covid19 Sample Lock Expiry Days', 'covid19_sample_lock_after_days', NULL, 'covid19', 'yes', NULL, NULL, 'active'),
+('Hepatitis Sample Lock Expiry Days', 'hepatitis_sample_lock_after_days', NULL, 'hepatitis', 'yes', NULL, NULL, 'active'),
+('TB Sample Lock Expiry Days', 'tb_sample_lock_after_days', NULL, 'tb', 'yes', NULL, NULL, 'active');
