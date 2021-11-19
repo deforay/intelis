@@ -32,11 +32,17 @@ try {
         }
 
         $password = sha1($_POST['password'] . $systemConfig['passwordSalt']);
+
+        if (!empty($_POST['interfaceUserName'])) {
+            $_POST['interfaceUserName'] = json_encode(array_map('trim', explode(",", $_POST['interfaceUserName'])));
+        } else {
+            $_POST['interfaceUserName'] = null;
+        }
         $data = array(
             'user_id'       => $general->generateUUID(),
             //'user_alpnum_id'=>$idOne."-".$idTwo."-".$idThree."-".$idFour."-".$idFive,
             'user_name'     => $_POST['userName'],
-            'interface_user_name'     => !empty($_POST['interfaceUserName']) ? $_POST['interfaceUserName'] : null,
+            'interface_user_name'     => $_POST['interfaceUserName'],
             'email'         => $_POST['email'],
             'login_id'      => $_POST['loginId'],
             'phone_number'  => $_POST['phoneNo'],

@@ -11,7 +11,7 @@ $primaryKey = "user_id";
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('ud.user_name', 'ud.interface_user_name', 'ud.email', 'r.role_name', 'ud.status');
+$aColumns = array('ud.user_name', 'ud.email', 'r.role_name', 'ud.status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -132,9 +132,13 @@ $output = array(
 
 
 foreach ($rResult as $aRow) {
+
+    if (!empty($aRow['interface_user_name'])) {
+        $interfaceUsers = implode(", ", json_decode($aRow['interface_user_name'], true));
+        $aRow['user_name'] = $aRow['user_name'] . "<br><small>[". $interfaceUsers ."]</small>";
+    }
     $row = array();
-    $row[] = ucwords($aRow['user_name']);
-    $row[] = $aRow['interface_user_name'];
+    $row[] = ($aRow['user_name']);
     $row[] = $aRow['email'];
     $row[] = ucwords($aRow['role_name']);
     $row[] = ucwords($aRow['status']);

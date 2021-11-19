@@ -7,9 +7,10 @@ $db = \MysqliDb::getInstance();
 $usersDb = new \Vlsm\Models\Users();
 
 
-$sql = "SELECT u.user_id , i.user_id as interface_user_id  
+$sql = "SELECT u.user_id, u.user_name, i.user_id as interface_user_id, i.user_name as interface_user_name    
         FROM user_details u 
-        INNER JOIN user_details i ON u.interface_user_name = i.user_name ";
+        INNER JOIN user_details i ON JSON_CONTAINS(u.interface_user_name, JSON_QUOTE(i.user_name), '$')";
+        
 
 $result = $db->rawQuery($sql);
 

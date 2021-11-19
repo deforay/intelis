@@ -12,9 +12,18 @@ $userId = base64_decode($_POST['userId']);
 
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '') {
+
+
+        if (!empty($_POST['interfaceUserName'])) {
+            
+            $_POST['interfaceUserName'] = json_encode(array_map('trim', explode(",", $_POST['interfaceUserName'])));
+        } else {
+            $_POST['interfaceUserName'] = null;
+        }
+
         $data = array(
             'user_name'     => $_POST['userName'],
-            'interface_user_name'     => !empty($_POST['interfaceUserName']) ? $_POST['interfaceUserName'] : null,
+            'interface_user_name'     => $_POST['interfaceUserName'],
             'email'         => $_POST['email'],
             'phone_number'  => $_POST['phoneNo'],
             'login_id'      => $_POST['loginId'],

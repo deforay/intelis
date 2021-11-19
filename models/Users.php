@@ -203,7 +203,8 @@ class Users
 
     public function addUserIfNotExists($name, $status = 'inactive', $role = 4)
     {
-        $uQuery = "SELECT `user_id` FROM $this->table WHERE `user_name` LIKE '$name' OR `interface_user_name` like '$name'";
+        $uQuery = "SELECT `user_id` FROM $this->table WHERE (`user_name` LIKE '$name') OR (JSON_SEARCH(interface_user_name, 'all', '$name') IS NOT NULL)";
+        
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
             $general = new \Vlsm\Models\General($this->db);
