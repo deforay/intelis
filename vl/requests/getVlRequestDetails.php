@@ -116,6 +116,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                          vl.patient_last_name, 
                          vl.result, 
                          vl.result_status, 
+                         vl.locked, 
                          vl.data_sync, 
                          f.facility_name, 
                          f.facility_state, 
