@@ -7,6 +7,11 @@ $id = base64_decode($_GET['id']);
 $userQuery = "SELECT * from user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id where user_id='" . $id . "'";
 $userInfo = $db->query($userQuery);
 
+$interfaceUsers = "";
+if(!empty($userInfo[0]['interface_user_name'])){
+     $interfaceUsers = implode(", " , json_decode($userInfo[0]['interface_user_name'], true));
+}
+
 $query = "SELECT * FROM roles WHERE status='active' GROUP BY role_code";
 $result = $db->rawQuery($query);
 
@@ -128,7 +133,7 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="interfaceUserName" class="col-lg-4 control-label">Interface User Name (from your Molecular testing machine)</label>
                                              <div class="col-lg-7">
-                                                  <input type="text" value="<?php echo $userInfo[0]['interface_user_name']; ?>" class="form-control isRequired" id="interfaceUserName" name="interfaceUserName" placeholder="Interace User Name" title="Please enter interface user name" />
+                                                  <input type="text" value="<?php echo $interfaceUsers ?>" class="form-control isRequired" id="interfaceUserName" name="interfaceUserName" placeholder="Interace User Name" title="Please enter interface user name" />
                                              </div>
                                         </div>
                                    </div>
