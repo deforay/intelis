@@ -44,7 +44,24 @@
     $(".manage").addClass('active');
     $(".allMenu").removeClass('active');
     $(".systemConfigmenu").addClass('active');
-  }else{
+  }
+  else if(splitsUrl=='instanceIndex.php') {
+    $(".manage").addClass('active');
+    $(".allMenu").removeClass('active');
+    $(".instanceOverviewMenu").addClass('active');
+  }
+  else if(splitsUrl=='apiIndex.php') {
+    $(".manage").addClass('active');
+    $(".allMenu").removeClass('active');
+    $(".apiStatsMenu").addClass('active');
+  }
+  else if(splitsUrl=='userLoginIndex.php') {
+    $(".manage").addClass('active');
+    $(".allMenu").removeClass('active');
+    $(".userLoginMenu").addClass('active');
+  }
+  
+  else{
     $(".allMenu").removeClass('active');
     $(".dashboardMenu").addClass('active');
   }
