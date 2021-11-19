@@ -464,6 +464,18 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 												</div>
 											</div>
 										</div>
+									<?php }
+									if (isset($arr['vl_sample_expiry_after_days']) && $arr['vl_sample_expiry_after_days'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="vl_sample_expiry_after_days" class="col-lg-2 control-label">Sample Expiry Days<span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<input value="<?php echo $arr['vl_sample_expiry_after_days']; ?>" type="text" id="vl_sample_expiry_after_days" name="vl_sample_expiry_after_days" placeholder="Enter the sample expiry days" class="form-control readPage" title="Please enter the sample expiry days">
+													</div>
+												</div>
+											</div>
+										</div>
 									<?php } ?>
 								</div>
 							</div>
@@ -584,6 +596,18 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															<option value="yes" <?php echo (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] == 'yes') ? "selected='selected'" : ''; ?>>Yes</option>
 															<option value="no" <?php echo (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] == 'no') ? "selected='selected'" : ''; ?>>No</option>
 														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php }
+									if (isset($arr['eid_sample_expiry_after_days']) && $arr['eid_sample_expiry_after_days'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="eid_sample_expiry_after_days" class="col-lg-2 control-label">Sample Expiry Days<span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<input value="<?php echo $arr['eid_sample_expiry_after_days']; ?>" type="text" id="eid_sample_expiry_after_days" name="eid_sample_expiry_after_days" placeholder="Enter the sample expiry days" class="form-control readPage" title="Please enter the sample expiry days">
 													</div>
 												</div>
 											</div>
@@ -748,6 +772,18 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 												</div>
 											</div>
 										</div>
+									<?php }
+									if (isset($arr['covid19_sample_expiry_after_days']) && $arr['covid19_sample_expiry_after_days'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="covid19_sample_expiry_after_days" class="col-lg-2 control-label">Sample Expiry Days<span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<input value="<?php echo $arr['covid19_sample_expiry_after_days']; ?>" type="text" id="covid19_sample_expiry_after_days" name="covid19_sample_expiry_after_days" placeholder="Enter the sample expiry days" class="form-control readPage" title="Please enter the sample expiry days">
+													</div>
+												</div>
+											</div>
+										</div>
 									<?php } ?>
 								</div>
 							</div>
@@ -818,6 +854,18 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<?php if (isset($arr['hepatitis_sample_expiry_after_days']) && $arr['hepatitis_sample_expiry_after_days'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="hepatitis_sample_expiry_after_days" class="col-lg-2 control-label">Sample Expiry Days<span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<input value="<?php echo $arr['hepatitis_sample_expiry_after_days']; ?>" type="text" id="hepatitis_sample_expiry_after_days" name="hepatitis_sample_expiry_after_days" placeholder="Enter the sample expiry days" class="form-control readPage" title="Please enter the sample expiry days">
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } ?>
 								</div>
 							</div>
 						<?php }
@@ -887,6 +935,18 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<?php if (isset($arr['tb_sample_expiry_after_days']) && $arr['tb_sample_expiry_after_days'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="tb_sample_expiry_after_days" class="col-lg-2 control-label">Sample Expiry Days<span class="mandatory ">*</span></label>
+													<div class="col-lg-4">
+														<input value="<?php echo $arr['tb_sample_expiry_after_days']; ?>" type="text" id="tb_sample_expiry_after_days" name="tb_sample_expiry_after_days" placeholder="Enter the sample expiry days" class="form-control readPage" title="Please enter the sample expiry days">
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } ?>
 								</div>
 							</div>
 						<?php } ?>
