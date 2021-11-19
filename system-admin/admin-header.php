@@ -8,7 +8,7 @@ $smallLogoName = "<img src='/assets/img/flask.png'>";
 $systemType = "Viral Load Sample Management";
 $skin = "skin-blue";
 if (!isset($_SESSION['adminUserId'])) {
-  header("location:/login/login.php");
+  header("location:/system-admin/login/login.php");
 }
 ?>
 <!DOCTYPE html>
@@ -151,18 +151,18 @@ if (!isset($_SESSION['adminUserId'])) {
               </li>
             </ul>
             <ul class="treeview-menu">
-              <li class="allMenu systemConfigmenu">
-                <a href="/system-admin/instance-overview/index.php"><i class="fa fa-circle-o"></i>Instance Overview</a>
+              <li class="allMenu instanceOverviewMenu">
+                <a href="/system-admin/instance-overview/instanceIndex.php"><i class="fa fa-circle-o"></i>Instance Overview</a>
               </li>
             </ul>
             <ul class="treeview-menu">
-              <li class="allMenu systemConfigmenu">
-                <a href="/system-admin/api-stats/index.php"><i class="fa fa-circle-o"></i>Api-Stats</a>
+              <li class="allMenu apiStatsMenu">
+                <a href="/system-admin/api-stats/apiIndex.php"><i class="fa fa-circle-o"></i>Api-Stats</a>
               </li>
             </ul>
             <ul class="treeview-menu">
-              <li class="allMenu systemConfigmenu">
-                <a href="/system-admin/user-login-history/index.php"><i class="fa fa-circle-o"></i>User Login History</a>
+              <li class="allMenu userLoginMenu">
+                <a href="/system-admin/user-login-history/userLoginIndex.php"><i class="fa fa-circle-o"></i>User Login History</a>
               </li>
             </ul>
           </li>
