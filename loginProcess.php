@@ -6,9 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-#require_once('../startup.php');  
-
-
+#require_once('../startup.php');
 $tableName= "user_details";
 $userName = $db->escape($_POST['username']);
 $password = $db->escape($_POST['password']);
@@ -260,12 +258,14 @@ try {
 }
 else {
     $insertData = array(
+        'user_id'       => $general->generateUUID(),
         'login_id'     => $userName,
         'password'     => $userPassword,
         'role_id' => 1,
         'status' => 'active'
     );
     $db->insert($tableName, $insertData);
+    $adminData = $db->rawQuery("SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id");
               $user->userHistoryLog($userName, $loginStatus = 'successful');
                 //add random key
                 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
@@ -287,21 +287,21 @@ else {
                 }
                 //Add event log
                 $eventType = 'login';
-                $action = ucwords($adminCount[0]['user_name']) . ' logged in';
+                $action = ucwords($adminData[0]['user_name']) . ' logged in';
                 $resource = 'user-login';
 
                 $general->activityLog($eventType, $action, $resource);
 
-                $_SESSION['userId'] = $adminCount[0]['user_id'];
-                $_SESSION['userName'] = ucwords($adminCount[0]['user_name']);
-                $_SESSION['roleCode'] = $adminCount[0]['role_code'];
-                $_SESSION['roleId'] = $adminCount[0]['role_id'];
-                $_SESSION['accessType'] = $adminCount[0]['access_type'];
-                $_SESSION['email'] = $adminCount[0]['email'];
+                $_SESSION['userId'] = $adminData[0]['user_id'];
+                $_SESSION['userName'] = ucwords($adminData[0]['user_name']);
+                $_SESSION['roleCode'] = $adminData[0]['role_code'];
+                $_SESSION['roleId'] = $adminData[0]['role_id'];
+                $_SESSION['accessType'] = $adminData[0]['access_type'];
+                $_SESSION['email'] = $adminData[0]['email'];
 
                 $redirect = '/error/401.php';
                 //set role and privileges
-                $priQuery = "SELECT p.privilege_name, rp.privilege_id, r.module FROM roles_privileges_map as rp INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id INNER JOIN resources as r ON r.resource_id=p.resource_id  where rp.role_id='" . $admin[0]['role_id'] . "'";
+                $priQuery = "SELECT p.privilege_name, rp.privilege_id, r.module FROM roles_privileges_map as rp INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id INNER JOIN resources as r ON r.resource_id=p.resource_id  where rp.role_id='" . $adminData[0]['role_id'] . "'";
                 $priInfo = $db->query($priQuery);
                 $priId = array();
                 if ($priInfo) {
@@ -309,10 +309,6 @@ else {
                         $priId[] = $id['privilege_name'];
                         $module[$id['module']] = $id['module'];
                     }
-
-                    if ($adminCount[0]['landing_page'] != '') {
-                        $redirect = $adminCount[0]['landing_page'];
-                    } else {
                         $fileNameList = array('index.php', 'addVlRequest.php', 'vlRequest.php', 'batchcode.php', 'vlRequestMail.php', 'addImportResult.php', 'vlPrintResult.php', 'vlTestResult.php', 'vl-sample-status.php', 'vlResult.php', 'highViralLoad.php', 'roles.php', 'users.php', 'facilities.php', 'globalConfig.php', 'importConfig.php');
                         $fileName = array('dashboard/index.php', '/vl/requests/addVlRequest.php', '/vl/requests/vlRequest.php', '/vl/batch/batchcode.php', 'mail/vlRequestMail.php', 'import-result/addImportResult.php', '/vl/results/vlPrintResult.php', '/vl/results/vlTestResult.php', 'program-management/vl-sample-status.php', 'program-management/vlResult.php', 'program-management/highViralLoad.php', 'roles/roles.php', 'users/users.php', 'facilities/facilities.php', 'global-config/globalConfig.php', 'import-configs/importConfig.php');
                         foreach ($fileNameList as $redirectFile) {
@@ -322,7 +318,6 @@ else {
                                 break;
                             }
                         }
-                    }
                 }
                 //check clinic or lab user
                 $_SESSION['userType']   = '';
