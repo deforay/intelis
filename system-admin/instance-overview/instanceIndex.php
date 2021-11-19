@@ -59,23 +59,22 @@ $data = $db->rawQuery($instanceValues);
         <td><?php echo $project['vlsm_instance_id']; ?></td> </tr>
         <tr>
         <th>Instance Facility Name</th>
-    <td><?php echo $project['instance_facility_name']; ?></td>
-    </tr>
+    <td><span class="editSpan instanceName"><?php echo $project['instance_facility_name']; ?></span>
+        <input class="editInput instanceName form-control input-sm" type="text" name="instance_facility_name" value="<?php echo $project['instance_facility_name']; ?>" style="display: none;">
+        </td></tr>
     <tr>
         <th>Instance Facility Code</th>
-        <td><?php echo $project['instance_facility_code']; ?></td></tr>
+        <td><span class="editSpan instanceCode"><?php echo $project['instance_facility_code']; ?></span>
+        <input class="editInput instanceCode form-control input-sm" type="text" name="instance_facility_code" value="<?php echo $project['instance_facility_code']; ?>" style="display: none;">
+        </td></tr>
         <tr>
         <th>Instance Facility Type</th>
         <td><?php echo $project['instance_facility_type']; ?></td></tr>
         <tr>
         <th>Added On</th>
-        <td><span class="editSpan addedOn"><?php echo date('d-M-Y H:i:s', strtotime($project['instance_added_on'])); ?></span>
-                            <input class="editInput addedOn form-control input-sm date-time" type="" name="instance_added_on" value="<?php echo date('d-M-Y H:i:s', strtotime($project['instance_added_on'])); ?>" readonly style="display: none;background:#fff;">
-                        </td></tr>
+        <td><?php echo date('d-M-Y H:i:s', strtotime($project['instance_added_on'])); ?></td></tr>
                         <th>Updated On</th>
-        <td><span class="editSpan updatedOn"><?php echo date('d-M-Y H:i:s', strtotime($project['instance_update_on'])); ?></span>
-                            <input class="editInput updatedOn form-control input-sm date-time" type="" name="instance_update_on" value="<?php echo date('d-M-Y H:i:s', strtotime($project['instance_update_on'])); ?>" readonly style="display: none;background:#fff;">
-                        </td></tr>
+                        <td><?php echo date('d-M-Y H:i:s', strtotime($project['instance_update_on'])); ?></td></tr>
     <tr>
             <th>Vl Last Sync</th>
             <td><span class="editSpan vlLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?></span>
@@ -187,16 +186,14 @@ $(document).ready(function(){
             data:'action=edit&id='+ID+'&'+inputData,
             success:function(response){
                 if(response.status == 'ok'){
-                    var instance_added_on = moment(response.data.instance_added_on).format('D-MMM-Y HH:mm:ss');  
-                    var instance_update_on = moment(response.data.instance_update_on).format('D-MMM-Y HH:mm:ss');  
                     var vl_last_dash_sync = moment(response.data.vl_last_dash_sync).format('D-MMM-Y HH:mm:ss');  
                     var eid_last_dash_sync = moment(response.data.eid_last_dash_sync).format('D-MMM-Y HH:mm:ss');  
                     var covid19_last_dash_sync = moment(response.data.covid19_last_dash_sync).format('D-MMM-Y HH:mm:ss');  
                     var last_remote_requests_sync = moment(response.data.last_remote_requests_sync).format('D-MMM-Y HH:mm:ss');  
                     var last_remote_results_sync = moment(response.data.last_remote_results_sync).format('D-MMM-Y HH:mm:ss');  
                     var last_remote_reference_data_sync = moment(response.data.last_remote_reference_data_sync).format('D-MMM-Y HH:mm:ss');  
-                    trObj.find(".editSpan.addedOn").text(instance_added_on);
-                    trObj.find(".editSpan.updatedOn").text(instance_update_on);
+                    trObj.find(".editSpan.instanceName").text(response.data.instance_facility_name);
+                    trObj.find(".editSpan.instanceCode").text(response.data.instance_facility_code);
                     trObj.find(".editSpan.vlLastSync").text(vl_last_dash_sync);
                     trObj.find(".editSpan.eidLastSync").text(eid_last_dash_sync);
                     trObj.find(".editSpan.covid19LastSync").text(covid19_last_dash_sync);
@@ -204,8 +201,8 @@ $(document).ready(function(){
                     trObj.find(".editSpan.remoteResultsLastSync").text(last_remote_results_sync);
                     trObj.find(".editSpan.remoteReferenceLastSync").text(last_remote_reference_data_sync);
                     
-                    trObj.find(".editInput.addedOn").text(instance_added_on);
-                    trObj.find(".editInput.updatedOn").text(instance_update_on);
+                    trObj.find(".editInput.instanceName").text(response.data.instance_facility_name);
+                    trObj.find(".editInput.instanceCode").text(response.data.instance_facility_code);
                     trObj.find(".editInput.vlLastSync").text(vl_last_dash_sync);
                     trObj.find(".editInput.eidLastSync").text(eid_last_dash_sync);
                     trObj.find(".editInput.covid19LastSync").text(covid19_last_dash_sync);

@@ -139,30 +139,30 @@
 			}
 		}
 
-		function syncCommon() {
+		// function syncCommon() {
 
-			$.blockUI({
-				message: '<h3>Trying to sync common data<br>Please wait...</h3>'
-			});
+		// 	$.blockUI({
+		// 		message: '<h3>Trying to sync common data<br>Please wait...</h3>'
+		// 	});
 
-			if (remoteSync && remoteUrl != null && remoteUrl != '') {
-				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/syncCommonData.php",
-					})
-					.done(function(data) {
-						//console.log(data);
-						//alert( "success" );
-					})
-					.fail(function() {
-						$.unblockUI();
-						alert("Unable to do VLSTS Remote Sync. Please contact technical team for assistance.");
-					})
-					.always(function() {
-						$.unblockUI();
-						syncRequests()
-					});
-			}
-		}
+		// 	if (remoteSync && remoteUrl != null && remoteUrl != '') {
+		// 		var jqxhr = $.ajax({
+		// 				url: "/remote/scheduled-jobs/syncCommonData.php",
+		// 			})
+		// 			.done(function(data) {
+		// 				//console.log(data);
+		// 				//alert( "success" );
+		// 			})
+		// 			.fail(function() {
+		// 				$.unblockUI();
+		// 				alert("Unable to do VLSTS Remote Sync. Please contact technical team for assistance.");
+		// 			})
+		// 			.always(function() {
+		// 				$.unblockUI();
+		// 				syncRequests()
+		// 			});
+		// 	}
+		// }
 	<?php } ?>
 	let syncInterval = 60 * 60 * 1000 * 2 // 2 hours in ms
 	$(document).ready(function() {
@@ -180,18 +180,18 @@
 							if (lastSyncDateString != null && lastSyncDateString != undefined) {
 								$('.sync-time').html(lastSyncDateString);
 								$('.syncHistoryDiv').show();
-								lastSyncDateString.replace("-", "/"); // We had to do this for Firefox 
-								var lastSyncDate = new Date(lastSyncDateString);
-								if ((currentDateTime - lastSyncDate) > syncInterval) {
-									syncCommon();
-								}
+								// lastSyncDateString.replace("-", "/"); // We had to do this for Firefox 
+								// var lastSyncDate = new Date(lastSyncDateString);
+								// if ((currentDateTime - lastSyncDate) > syncInterval) {
+								// 	syncRemoteData();
+								// }
 							} else {
-								syncCommon();
+								//syncRemoteData();
 							}
 						},
 						error: function(data) {}
 					});
-					setTimeout(getLastSyncDateTime, 30000);
+					setTimeout(getLastSyncDateTime, 15 * 60 * 1000);
 				})();
 		<?php } ?>
 
@@ -212,7 +212,7 @@
 							$('.is-remote-server-reachable').css('background-color', 'red');
 						}
 					});
-					setTimeout(checkNetworkConnection, 3000);
+					setTimeout(checkNetworkConnection, 15 * 60 * 1000);
 				})();
 		<?php } ?>
 

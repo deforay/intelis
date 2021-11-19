@@ -11,53 +11,35 @@ class DRC_PDF extends MYPDF
     //$image_file = K_PATH_IMAGES.'logo_example.jpg';
     //$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
     // Set font
-    if ($this->htitle != '') {
-      if (trim($this->logo) != '') {
-        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-          $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-          $this->Image($image_file, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        }
-      }
-      $this->SetFont('helvetica', 'B', 8);
-      $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C', true);
-      if (trim($this->lab) != '') {
-        $this->SetFont('helvetica', '', 9);
-        $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
-      }
-      $this->SetFont('helvetica', '', 14);
-      $this->writeHTMLCell(0, 0, 10, 30, 'VIRAL LOAD PATIENT REPORT', 0, 0, 0, true, 'C', true);
 
-      $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C', true);
-    } else {
-      if (trim($this->logo) != '') {
-        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
-          $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-          $this->Image($image_file, 16, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        } else if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-          $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-          $this->Image($image_file, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        }
+    if (trim($this->logo) != '') {
+      if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
+        $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
+        $this->Image($image_file, 16, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+      } else if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+        $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+        $this->Image($image_file, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
       }
-      if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
-        $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
-        $this->Image($image_file, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-      }
-
-      $this->SetFont('helvetica', '', 15);
-      $this->writeHTMLCell(0, 0, 14, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C', true);
-
-      $this->SetFont('helvetica', '', 10);
-      $this->writeHTMLCell(0, 0, 10, 17, strtoupper('DÉPARTEMENT DE BIOLOGIE MOLÉCULAIRE'), 0, 0, 0, true, 'C', true);
-
-      if (isset($this->text) && !empty($this->text)) {
-        $this->SetFont('helvetica', '', 10);
-        $this->writeHTMLCell(0, 0, 10, 23, strtoupper($this->text), 0, 0, 0, true, 'C', true);
-      }
-
-      $this->SetFont('helvetica', '', 12);
-      $this->writeHTMLCell(0, 0, 10, 24, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C', true);
-      $this->writeHTMLCell(0, 0, 15, 30, '<hr>', 0, 0, 0, true, 'C', true);
     }
+    if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
+      $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
+      $this->Image($image_file, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+    }
+
+    $this->SetFont('helvetica', '', 15);
+    $this->writeHTMLCell(0, 0, 14, 7, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C', true);
+
+    $this->SetFont('helvetica', '', 10);
+    $this->writeHTMLCell(0, 0, 10, 16, strtoupper('DÉPARTEMENT DE BIOLOGIE MOLÉCULAIRE'), 0, 0, 0, true, 'C', true);
+
+    if (isset($this->text) && !empty($this->text)) {
+      $this->SetFont('helvetica', '', 10);
+      $this->writeHTMLCell(0, 0, 10, 20, strtoupper($this->text), 0, 0, 0, true, 'C', true);
+    }
+
+    $this->SetFont('helvetica', '', 12);
+    $this->writeHTMLCell(0, 0, 10, 25, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C', true);
+    $this->writeHTMLCell(0, 0, 15, 34, '<hr>', 0, 0, 0, true, 'C', true);
   }
 }
 
@@ -239,7 +221,7 @@ if (sizeof($requestResult) > 0) {
     $messageTextSize = '12px';
     if ($result['result'] != NULL && trim($result['result']) != '') {
       $resultType = is_numeric($result['result']);
-      if (in_array(strtolower(trim($result['result'])), array("< 20", "< 40", "< 800", "< 400", "tnd", "target not detected", "not detected" , "below detection level"))) {
+      if (in_array(strtolower(trim($result['result'])), array("< 20", "< 40", "< 800", "< 400", "tnd", "target not detected", "not detected", "below detection level"))) {
         $vlResult = 'TND*';
         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
         $showMessage = ucfirst($arr['l_vl_msg']);

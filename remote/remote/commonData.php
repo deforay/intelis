@@ -8,7 +8,7 @@ $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 
 //system config
-$systemConfigQuery = "SELECT * from system_config";
+$systemConfigQuery = "SELECT * FROM system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
 $sarr = array();
 // now we create an associative array so that we can easily create view variables
@@ -23,7 +23,7 @@ if (trim($sarr['sc_testing_lab_id']) == '') {
 $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
-error_log($jsonData);
+//error_log($jsonData);
 
 if ($data['Key'] == 'vlsm-get-remote') {
 

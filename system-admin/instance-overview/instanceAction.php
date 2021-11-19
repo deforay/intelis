@@ -7,18 +7,16 @@ ob_start();
 $tblName = 's_vlsm_instance';
 $general = new \Vlsm\Models\General();
 
-if (isset($_POST['instance_added_on']) && trim($_POST['instance_added_on']) != "") {
-    $instanceAddedOn = explode(" ", $_POST['instance_added_on']);
-$_POST['instance_added_on'] = $general->dateFormat($instanceAddedOn[0]) . " " . $instanceAddedOn[1];
+if (isset($_POST['instance_facility_name']) && trim($_POST['instance_facility_name']) != "") {
+    $instanceName = $_POST['instance_facility_name'];
 } else {
-    $_POST['instance_added_on'] = NULL;
+    $instanceName = NULL;
 }
 
-if (isset($_POST['instance_update_on']) && trim($_POST['instance_update_on']) != "") {
-    $instanceUpdatedOn = explode(" ", $_POST['instance_update_on']);
-$_POST['instance_update_on'] = $general->dateFormat($instanceUpdatedOn[0]) . " " . $instanceUpdatedOn[1];
+if (isset($_POST['instance_facility_code']) && trim($_POST['instance_facility_code']) != "") {
+    $instanceCode = $_POST['instance_facility_code'];
 } else {
-    $_POST['instance_update_on'] = NULL;
+    $instanceCode = NULL;
 }
 
 if (isset($_POST['vl_last_dash_sync']) && trim($_POST['vl_last_dash_sync']) != "") {
@@ -66,8 +64,8 @@ $_POST['last_remote_reference_data_sync'] = $general->dateFormat($lastRemoteRefe
 if(($_POST['action'] == 'edit') && !empty($_POST['id'])){
     //update data
     $userData = array(
-        'instance_added_on' => $_POST['instance_added_on'],
-        'instance_update_on' => $_POST['instance_update_on'],
+        'instance_facility_name' => $instanceName,
+        'instance_facility_code' => $instanceCode,
         'vl_last_dash_sync' => $_POST['vl_last_dash_sync'],
         'eid_last_dash_sync' => $_POST['eid_last_dash_sync'],
         'covid19_last_dash_sync' => $_POST['covid19_last_dash_sync'],

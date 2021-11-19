@@ -55,7 +55,6 @@ include_once(APPLICATION_PATH . '/header.php');
               <thead>
                 <tr>
                   <th>User Name</th>
-                  <th>Interface User Name</th>
                   <th>Email</th>
                   <th>Role</th>
                   <th>Status</th>
@@ -66,7 +65,7 @@ include_once(APPLICATION_PATH . '/header.php');
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="5" class="dataTables_empty">Loading data from server</td>
                 </tr>
               </tbody>
 
@@ -103,7 +102,6 @@ include_once(APPLICATION_PATH . '/header.php');
       "aoColumns": [{
           "sClass": "center"
         },
-        {"sClass":"center"},
         {
           "sClass": "center"
         },
