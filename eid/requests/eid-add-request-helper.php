@@ -39,13 +39,6 @@ try {
 		$_POST['sampleCollectionDate'] = NULL;
 	}
 
-	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
-		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
-		$_POST['approvedOnDateTime'] = $general->dateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
-	} else {
-		$_POST['approvedOnDateTime'] = NULL;
-	}
-
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
@@ -135,6 +128,13 @@ try {
 		$_POST['reviewedOn'] = NULL;
 	}
 
+	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
+		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
+		$_POST['approvedOnDateTime'] = $general->dateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+	} else {
+		$_POST['approvedOnDateTime'] = NULL;
+	}
+
 	$eidData = array(
 		'vlsm_instance_id' 									=> $instanceId,
 		'vlsm_country_id' 									=> $_POST['formId'],
@@ -191,7 +191,7 @@ try {
 		'result_reviewed_datetime'          				=> (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'tested_by' 										=> (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
 		'result_approved_by' 								=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
-		'result_approved_datetime' 							=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
+		'result_approved_datetime' 							=> (isset($_POST['approvedOnDateTime']) && $_POST['approvedOnDateTime'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
 		'result_status' 									=> $status,
 		'data_sync' 										=> 0,
 		'reason_for_sample_rejection' 						=> isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,

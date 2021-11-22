@@ -585,17 +585,29 @@ $sampleSuggestionDisplay = 'display:none;';
                                 <td></td><td></td>
                             </tr>-->
 										<tr>
+										<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
+											<td style="width:14%;">
+												<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Revu le" title="Please enter the Revu le" />
+											</td>
 											<td style="width:14%;"><label for="reviewedBy"> Revu par </label></td>
 											<td style="width:14%;">
 												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<td style="width:14%;"><label for="reviewedOn"> Révisé le </label></td>
-											<td style="width:14%;">
-												<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Révisé le" title="Please enter the révisé le" />
-											</td>
 										</tr>
+										<tr>
+										<th>Approuvé le</th>
+                                            <td>
+                                                <input type="text" name="approvedOn" id="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                            </td>
+										<th>Approuvé par</th>
+                                            <td>
+                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par">
+                                                    <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                        </tr>
 										<tr>
 											<td class=" reasonForResultChanges" style="visibility:hidden;">
 												<label for="reasonForResultChanges">Razão para as mudanças nos resultados <span class="mandatory">*</span></label>

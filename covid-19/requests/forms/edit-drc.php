@@ -886,15 +886,28 @@ $pResult = $db->rawQuery($pQuery);
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Raison du changement" title="Raison du changement"></textarea></td>
                                         </tr>
                                         <tr>
+                                        <th>Revu le</td>
+                                            <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revu par" title="Please enter the Revu par" /></td>
                                             <th>Revu par</th>
                                             <td>
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revu par" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_reviewed_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th>Revisado Em</td>
-                                            <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
                                         </tr>
+                                        <tr>
+                                        <th>Approuvé le</th>
+                                            <td>
+                                                <input type="text" name="approvedOn" id="approvedOn" value="<?php echo $covid19Info['result_approved_datetime']; ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                            </td>
+                                            <th>Approuvé par</th>
+                                            <td>
+                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_approved_by'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                         <tr>
                                             <th>Le résultat est-il autorisé?</th>
                                             <td>
