@@ -2660,3 +2660,4 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 
 -- Thana 22-Nov-2021
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-requests', 'tb-edit-request.php', 'Edit');
+ALTER TABLE `form_tb` ADD `xpert_mtb_result` TEXT NULL DEFAULT NULL AFTER `result`;
