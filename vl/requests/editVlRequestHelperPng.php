@@ -151,6 +151,12 @@ try {
      } else {
           $_POST['reviewedOn'] = NULL;
      }
+     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
+		$approvedOn = explode(" ", $_POST['approvedOn']);
+		$_POST['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+	} else {
+		$_POST['approvedOn'] = NULL;
+	}
 
      $vldata = array(
           //'sample_code'=>(isset($_POST['sampleCode']) && $_POST['sampleCode']!='') ? $_POST['sampleCode'] :  NULL,
@@ -207,6 +213,8 @@ try {
           'result' => (isset($_POST['finalViralResult']) && trim($_POST['finalViralResult']) != '') ? $_POST['finalViralResult'] : NULL,
           'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
           'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+          'result_approved_by' 	   => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
+		'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  NULL,
           'result_status' => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] : NULL,
           'qc_tech_name' => (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : NULL),
           'qc_tech_sign' => (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : NULL),
