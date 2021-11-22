@@ -26,13 +26,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 $pQuery = "SELECT * FROM province_details";
 $pResult = $db->rawQuery($pQuery);
 
-// $configQuery = "SELECT * from global_config";
-// $configResult = $db->query($configQuery);
-// $arr = array();
-// $prefix = $arr['sample_code_prefix'];
-
 // Getting the list of Provinces, Districts and Facilities
-
 $tbObj = new \Vlsm\Models\Tb();
 
 
@@ -69,7 +63,7 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
-
+$microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
 ?>
 
 <div class="content-wrapper">
@@ -172,10 +166,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										<td>
 											<input type="text" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date of request date" style="width:100%;" />
 										</td>
-										<th><label class="label-control" for="sno">S/No</label></th>
-										<td>
-											<input class="form-control" type="text" name="sno" id="sno" placeholder="Enter serial numner" title="Please enter the serial numner" />
-										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
 											<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" style="width:100%;">
@@ -238,7 +228,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									<tr>
 										<th><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
 										<td>
-											<select class="form-control isRequired" name="typeOfPatient" id="typeOfPatient" title="Please select the type of patient">
+											<select class="select2 form-control isRequired" name="typeOfPatient" id="typeOfPatient" title="Please select the type of patient" multiple>
 												<option value=''> -- Select -- </option>
 												<option value='new'> New </option>
 												<option value='loss-to-follow-up'> Loss to Follow Up </option>
@@ -250,7 +240,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</td>
 										<th><label for="typeOfPatient">Type of Examination <span class="mandatory">*</span> </label></th>
 										<td>
-											<select name="reasonForTbTest" id="reasonForTbTest" class="form-control isRequired" title="Please choose reason for examination" style="width:100%">
+											<select name="reasonForTbTest" id="reasonForTbTest" class="select2 form-control isRequired" title="Please choose reason for examination" style="width:100%" multiple>
 												<?= $general->generateSelectOptions($tbReasonsForTesting, null, '-- Select --'); ?>
 											</select>
 										</td>
@@ -298,7 +288,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</th>
 										<td>
 											<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
-												<option value="">-- Select --</option>
 												<optgroup label="Microscopy">
 													<option value="ZN">ZN</option>
 													<option value="FM">FM</option>
@@ -366,7 +355,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 														<tr>
 															<th style="width: 10%;" class="text-center">No AFB</th>
 															<th style="width: 40%;" class="text-center">Actual No</th>
-															<th style="width: 40%;" class="text-center">Test Result</th>
+															<th style="width: 40%;" class="text-center">Microscopy (Result)</th>
 															<th style="width: 10%;" class="text-center">Action</th>
 														</tr>
 													</thead>
@@ -378,7 +367,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 															</td>
 															<td>
 																<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
-																	<?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?>
+																	<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
 																</select>
 															</td>
 															<td style="vertical-align:middle;text-align: center;width:100px;">
@@ -415,6 +404,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
 										</tr>
 										<tr>
+											<th><label class="label-control" for="approvedBy">Approved By</label></th>
+											<td>
+												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+												</select>
+											</td>
+											<th><label class="label-control" for="approvedOn">Approved on</label></td>
+											<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
+										</tr>
+										<tr>
 											<th><label class="label-control" for="testedBy">Tested By</label></th>
 											<td>
 												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
@@ -436,7 +435,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 						<?php } ?>
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
-						<input type="hidden" name="formId" id="formId" value="<?php echo $arr['vl_form']; ?>" />
+						<input type="hidden" name="formId" id="formId" value="1" />
 						<input type="hidden" name="tbSampleId" id="tbSampleId" value="" />
 						<a href="/tb/requests/tb-requests.php" class="btn btn-default"> Cancel</a>
 					</div>
@@ -668,6 +667,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		$(".select2").select2({
 			tags: true
 		});
+		$('#typeOfPatient').select2({
+			placeholder: "Select Type of Patient"
+		});
+		$('#reasonForTbTest').select2({
+			placeholder: "Select Test Reqest Type"
+		});
+		$('#testTypeRequested').select2({
+			placeholder: "Select Type of Examination"
+		});
+
 		$('#facilityId').select2({
 			placeholder: "Select Clinic/Health Center"
 		});
@@ -711,7 +720,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		let rowString = `<tr>
 			<td class="text-center">${testCounter}</td>
             <td><input type="text" class="form-control" id="actualNo${testCounter}" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" /></td>
-            <td><select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result for row ${testCounter}"><?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?></select></td>
+            <td><select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result for row ${testCounter}"><?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?></select></td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa fa-plus"></i></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>

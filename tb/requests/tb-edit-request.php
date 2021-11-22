@@ -54,6 +54,9 @@ $id = base64_decode($_GET['id']);
 //$id = ($_GET['id']);
 $tbQuery = "SELECT * from form_tb where tb_id=?";
 $tbInfo = $db->rawQueryOne($tbQuery, array($id));
+if (!$tbInfo) {
+    header("location:/tb/requests/tb-requests.php");
+}
 $testRequsted = array();
 if (isset($tbInfo['tests_requested']) && $tbInfo['tests_requested'] != "") {
     $testRequsted = json_decode($tbInfo['tests_requested']);
@@ -119,6 +122,13 @@ if (isset($tbInfo['result_reviewed_datetime']) && trim($tbInfo['result_reviewed_
     $tbInfo['result_reviewed_datetime'] = $general->humanDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 } else {
     $tbInfo['result_reviewed_datetime'] = '';
+}
+
+if (isset($tbInfo['result_approved_datetime']) && trim($tbInfo['result_approved_datetime']) != '' && $tbInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
+    $approvedOn = explode(" ", $tbInfo['result_approved_datetime']);
+    $tbInfo['result_approved_datetime'] = $general->humanDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+} else {
+    $tbInfo['result_approved_datetime'] = '';
 }
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',

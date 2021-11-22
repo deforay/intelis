@@ -116,15 +116,10 @@ try {
     } else {
         $_POST['approvedOn'] = NULL;
     }
-
     if (isset($_POST['province']) && $_POST['province'] != "") {
         $province = explode("##", $_POST['province']);
         $provinceDetails = $geoLocationDb->getByName($province[0]);
-        if (!$provinceDetails) {
-            $_POST['provinceId'] = $geolocation->addGeoLocation($province[0]);
-        } else {
-            $_POST['provinceId'] = $provinceDetails['geo_id'];
-        }
+        $_POST['provinceId'] = $provinceDetails['geo_id'];
     }
 
     $tbData = array(
@@ -163,8 +158,6 @@ try {
         'result_status'                       => $status,
         'data_sync'                           => 0,
         'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-        'request_created_by'                  => $_SESSION['userId'],
-        'request_created_datetime'            => (isset($_POST['requestedDate']) && $_POST['requestedDate'] == 'yes') ? $_POST['requestedDate'] : $general->getDateTime(),
         'sample_registered_at_lab'            => $general->getDateTime(),
         'last_modified_by'                    => $_SESSION['userId'],
         'last_modified_datetime'              => $general->getDateTime(),
@@ -177,9 +170,13 @@ try {
     if ($status == 7 && $lock == 'yes') {
         $tbData['locked'] = 'yes';
     }
+    $id = 0;
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (isset($_POST['testResult']) && count($_POST['testResult']) > 0) {
+            $db = $db->where('tb_id', $_POST['tbSampleId']);
+            $db->delete($testTableName);
+
             foreach ($_POST['testResult'] as $testKey => $testResult) {
                 if (isset($testResult) && !empty($testResult)) {
                     $db->insert($testTableName, array(
@@ -195,24 +192,26 @@ try {
         $db = $db->where('tb_id', $_POST['tbSampleId']);
         $db->delete($testTableName);
     }
+
     if (!empty($_POST['tbSampleId'])) {
         $db = $db->where('tb_id', $_POST['tbSampleId']);
         $id = $db->update($tableName, $tbData);
     }
+
     if ($id > 0) {
-        $_SESSION['alertMsg'] = "TB test request added successfully";
+        $_SESSION['alertMsg'] = "TB test request updated successfully";
         //Add event log
         $eventType = 'tb-add-request';
-        $action = ucwords($_SESSION['userName']) . ' added a new TB request data with the sample id ' . $_POST['tbSampleId'];
+        $action = ucwords($_SESSION['userName']) . ' pdated a TB request data with the sample id ' . $_POST['tbSampleId'];
         $resource = 'tb-add-request';
 
         $general->activityLog($eventType, $action, $resource);
     } else {
-        $_SESSION['alertMsg'] = "Unable to add this TB sample. Please try again later";
+        $_SESSION['alertMsg'] = "Unable to update this TB sample. Please try again later";
     }
 
     if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-        header("location:/tb/requests/tb-add-request.php");
+        header("location:/tb/requests/tb-edit-request.php?id=" . base64_encode($_POST['tbSampleId']));
     } else {
         header("location:/tb/requests/tb-requests.php");
     }
