@@ -666,7 +666,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <td><input type="text" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th>Approved By</th>
                                             <td>
-                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+                                                <select name="approvedBy" id="approvedBy" class=" form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_approved_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -861,7 +861,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $(document).ready(function() {
 
         $('#facilityId').select2({
-            placeholder: "Nom de l'installation"
+            placeholder: "Select Clinic/Health Center"
+        });
+        $('#labId').select2({
+            placeholder: "Select Lab Name"
+        });
+		$('#reviewedBy').select2({
+            placeholder: "Select Reviewed By"
+        });
+		$('#approvedBy').select2({
+            placeholder: "Select Approved By"
         });
         /* $('#investigatorName').select2({
             placeholder: "Investigator"

@@ -652,6 +652,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		}).click(function() {
 			$('.ui-datepicker-calendar').hide();
 		});
+
+		$('#laboratoryId').select2({
+            placeholder: "Select Laboratory Name"
+        });
+		$('#reviewedBy').select2({
+            placeholder: "Select Reviewed By"
+        });
+		$('#approvedBy').select2({
+            placeholder: "Select Approved By"
+        });
 	});
 
 	function validateNow() {

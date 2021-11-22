@@ -902,7 +902,7 @@ $pResult = $db->rawQuery($pQuery);
                                             </td>
                                             <th>Approuvé par</th>
                                             <td>
-                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par">
+                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_approved_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -1333,6 +1333,15 @@ $pResult = $db->rawQuery($pQuery);
         });
         $('#province').select2({
             placeholder: "Province"
+        });
+        $('#labId').select2({
+            placeholder: "Select Nom du laboratoire"
+        });
+		$('#reviewedBy').select2({
+            placeholder: "Select Revu par"
+        });
+		$('#approvedBy').select2({
+            placeholder: "Select Approuvé par"
         });
         getfacilityProvinceDetails($("#facilityId").val());
         <?php if (isset($covid19Info['mother_treatment']) && in_array('Other', $covid19Info['mother_treatment'])) { ?>

@@ -819,6 +819,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 			$('.ui-datepicker-calendar').hide();
 		});
 		getAge();
+
+		$('#laboratoryId').select2({
+            placeholder: "Select Laboratory Name"
+        });
+		$('#reviewedBy').select2({
+            placeholder: "Select Reviewed By"
+        });
+		$('#approvedBy').select2({
+            placeholder: "Select Approved By"
+        });
 	});
 
 	function validateNow() {
