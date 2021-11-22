@@ -898,7 +898,7 @@ $pResult = $db->rawQuery($pQuery);
                                         <tr>
                                         <th>Approuvé le</th>
                                             <td>
-                                                <input type="text" name="approvedOn" id="approvedOn" value="<?php echo $covid19Info['result_approved_datetime']; ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                                <input type="text" name="approvedOn" id="approvedOn" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
                                             </td>
                                             <th>Approuvé par</th>
                                             <td>
