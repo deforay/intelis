@@ -2618,7 +2618,6 @@ UPDATE `privileges` SET `display_name` = 'Add' WHERE `privilege_name` = 'hepatit
 UPDATE `privileges` SET `display_name` = 'Edit' WHERE `privilege_name` = 'hepatitis-edit-request.php';
 UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'hepatitis-requests.php';
 UPDATE `privileges` SET `display_name` = 'Add' WHERE `privilege_name` = 'tb-add-request.php';
-UPDATE `privileges` SET `display_name` = 'Edit' WHERE `privilege_name` = 'tb-edit-request.php';
 UPDATE `privileges` SET `display_name` = 'View' WHERE `privilege_name` = 'tb-requests.php';
 
 -- Amit 13 Nov 2021 version 4.4.4
@@ -2658,3 +2657,6 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 ('Covid19 Sample Lock Expiry Days', 'covid19_sample_lock_after_days', NULL, 'covid19', 'yes', NULL, NULL, 'active'),
 ('Hepatitis Sample Lock Expiry Days', 'hepatitis_sample_lock_after_days', NULL, 'hepatitis', 'yes', NULL, NULL, 'active'),
 ('TB Sample Lock Expiry Days', 'tb_sample_lock_after_days', NULL, 'tb', 'yes', NULL, NULL, 'active');
+
+-- Thana 22-Nov-2021
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-requests', 'tb-edit-request.php', 'Edit');
