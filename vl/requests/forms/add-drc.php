@@ -536,17 +536,30 @@ $sFormat = '';
                                   <td></td><td></td>
                               </tr>-->
 										<tr>
+										<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
+											<td style="width:14%;">
+												<input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Revu le" title="Please enter the Revu le" />
+											</td>
 											<td style="width:14%;"><label for="reviewedBy"> Revu par </label></td>
 											<td style="width:14%;">
 												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<td style="width:14%;"><label for="reviewedOn"> Révisé le </label></td>
-											<td style="width:14%;">
-												<input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Révisé le" title="Please enter the révisé le" />
-											</td>
 										</tr>
+										<tr>
+										<th>Approuvé le</th>
+                                            <td>
+                                                <input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                            </td>
+										<th>Approuvé par</th>
+                                            <td>
+                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par">
+                                                    <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
 									</table>
 								</div>
 							</div>

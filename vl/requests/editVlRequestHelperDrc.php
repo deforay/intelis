@@ -222,6 +222,13 @@ try {
     } else {
         $_POST['reviewedOn'] = NULL;
     }
+
+    if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
+		$approvedOn = explode(" ", $_POST['approvedOn']);
+		$_POST['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+	} else {
+		$_POST['approvedOn'] = NULL;
+	}
     $vldata = array(
         'facility_id' => $_POST['clinicName'],
         'serial_no' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
@@ -255,6 +262,8 @@ try {
         'result_value_text' => $textResult,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+        'result_approved_by' 	   => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
+		'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  NULL,
         'date_test_ordered_by_physician' => $_POST['dateOfDemand'],
         'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : NULL,
         'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : NULL,
