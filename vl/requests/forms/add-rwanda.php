@@ -602,6 +602,12 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
+                                                            <div class="col-md-4">
+                                                                      <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
+                                                                      </div>
+                                                                 </div>
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
                                                                       <div class="col-lg-7">
@@ -611,9 +617,9 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+                                                                      <label class="col-lg-5 control-label" for="approvedOn">Approved On </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
+                                                                           <input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" />
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -704,6 +710,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('#fName').select2({
                placeholder: "Select Clinic/Health Center"
           });
+          $('#labId').select2({
+            placeholder: "Select Lab Name"
+        });
+		$('#reviewedBy').select2({
+            placeholder: "Select Reviewed By"
+        });
+		$('#approvedBy').select2({
+            placeholder: "Select Approved By"
+        });
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {

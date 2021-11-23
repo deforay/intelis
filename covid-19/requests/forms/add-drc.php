@@ -819,7 +819,7 @@ $pResult = $db->rawQuery($pQuery);
                                             </td>
                                         <th>Approuvé par</th>
                                             <td>
-                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par">
+                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -1228,6 +1228,21 @@ $pResult = $db->rawQuery($pQuery);
 
         $('#facilityId').select2({
             placeholder: "Nom de l'installation"
+        });
+        $('#district').select2({
+            placeholder: "District"
+        });
+        $('#province').select2({
+            placeholder: "Province"
+        });
+        $('#labId').select2({
+            placeholder: "Select Nom du laboratoire"
+        });
+		$('#reviewedBy').select2({
+            placeholder: "Select Revu par"
+        });
+		$('#approvedBy').select2({
+            placeholder: "Select Approuvé par"
         });
         // $('#district').select2({
         //     placeholder: "District"

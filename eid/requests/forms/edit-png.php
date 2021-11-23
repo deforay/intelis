@@ -661,6 +661,15 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
         $('#province').select2({
             placeholder: "Province"
         });
+        $('#labId').select2({
+            placeholder: "Select Lab Name"
+        });
+		$('#reviewedBy').select2({
+            placeholder: "Select Reviewed By"
+        });
+		$('#approvedBy').select2({
+            placeholder: "Select Approved By"
+        });
         getfacilityProvinceDetails($("#facilityId").val());
         $("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
             var motherVl = $("#motherViralLoadCopiesPerMl").val();
