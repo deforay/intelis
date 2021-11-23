@@ -710,6 +710,12 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       </div>
                                                                  </div>
                                                                  <div class="row">
+                                                                 <div class="col-md-4">
+                                                                           <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+                                                                           <div class="col-lg-7">
+                                                                                <input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
+                                                                           </div>
+                                                                      </div>
                                                                       <div class="col-md-4">
                                                                            <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
                                                                            <div class="col-lg-7">
@@ -719,11 +725,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            </div>
                                                                       </div>
                                                                       <div class="col-md-4">
-                                                                           <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
-                                                                           <div class="col-lg-7">
-                                                                                <input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
-                                                                           </div>
+                                                                      <label class="col-lg-5 control-label" for="approvedOn">Approved On </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" title="Please enter the Approved on" />
                                                                       </div>
+                                                                 </div>
                                                                  </div>
                                                             </div>
                                                             <div class="row">
@@ -798,6 +804,15 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
           $('#fName').select2({
                placeholder: "Select Clinic/Health Center"
           });
+          $('#labId').select2({
+            placeholder: "Select Lab Name"
+        });
+		$('#reviewedBy').select2({
+            placeholder: "Select Reviewed By"
+        });
+		$('#approvedBy').select2({
+            placeholder: "Select Approved By"
+        });
 
           getfacilityProvinceDetails($("#fName").val());
 

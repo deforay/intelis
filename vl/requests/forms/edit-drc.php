@@ -603,7 +603,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                             </td>
 										<th>Approuvé par</th>
                                             <td>
-                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par">
+                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -900,5 +900,14 @@ $sampleSuggestionDisplay = 'display:none;';
 		$('#province').select2({
 			placeholder: "Province"
 		});
+		$('#labId').select2({
+            placeholder: "Select Nom du laboratoire"
+        });
+		$('#reviewedBy').select2({
+            placeholder: "Select Revu par"
+        });
+		$('#approvedBy').select2({
+            placeholder: "Select Approuvé par"
+        });
 	});
 </script>
