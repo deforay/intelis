@@ -5,6 +5,16 @@ $title = "TB | Edit Request";
 include_once(APPLICATION_PATH . '/header.php');
 ?>
 <style>
+    .disabledForm {
+        background: #efefef;
+    }
+
+    :disabled,
+    .disabledForm .input-group-addon {
+        background: none !important;
+        border: none !important;
+    }
+
     .ui_tpicker_second_label,
     .ui_tpicker_second_slider,
     .ui_tpicker_millisec_label,
@@ -20,15 +30,8 @@ include_once(APPLICATION_PATH . '/header.php');
         width: 100%;
     }
 </style>
-
-
-
 <?php
-
-
 $labFieldDisabled = '';
-
-
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('tb');
@@ -54,7 +57,7 @@ $id = base64_decode($_GET['id']);
 $tbQuery = "SELECT * from form_tb where tb_id=?";
 $tbInfo = $db->rawQueryOne($tbQuery, array($id));
 if (!$tbInfo) {
-    header("location:/tb/requests/tb-requests.php");
+    header("location:/tb/results/tb-manual-results.php");
 }
 $testRequsted = array();
 if (isset($tbInfo['tests_requested']) && $tbInfo['tests_requested'] != "") {
@@ -130,22 +133,14 @@ if (isset($tbInfo['result_approved_datetime']) && trim($tbInfo['result_approved_
     $tbInfo['result_approved_datetime'] = '';
 }
 $fileArray = array(
-    1 => 'forms/edit-southsudan.php',
-    2 => 'forms/edit-zimbabwe.php',
-    3 => 'forms/edit-drc.php',
-    4 => 'forms/edit-zambia.php',
-    5 => 'forms/edit-png.php',
-    6 => 'forms/edit-who.php',
-    7 => 'forms/edit-rwanda.php',
-    8 => 'forms/edit-angola.php',
+    1 => 'forms/update-southsudan.php'
 );
 
 if (file_exists($fileArray[$arr['vl_form']])) {
     require_once($fileArray[$arr['vl_form']]);
 } else {
-    require_once('forms/edit-who.php');
+    require_once('forms/update-who.php');
 }
-
 ?>
 
 <script>

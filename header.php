@@ -146,6 +146,12 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 } else {
 	$tbTestRequestMenuAccess = false;
 }
+
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("tb-manual-results.php", "tb-result-status.php"))) {
+	$tbTestResultMenuAccess = true;
+} else {
+	$tbTestResultMenuAccess = false;
+}
 // TB Menu end
 
 ?>
@@ -1021,6 +1027,31 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('tb'); ?>"><i class="fa fa-caret-right"></i> Tb Specimen Manifest</a>
 										</li>
 									<?php } ?>
+								</ul>
+							</li>
+						<?php }
+						if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && $tbTestResultMenuAccess == true) { ?>
+							<li class="treeview tbResults" style="<?php echo $hideResult; ?>">
+								<a href="#">
+									<i class="fa fa-tasks"></i>
+									<span>Test Result Management</span>
+									<span class="pull-right-container">
+										<i class="fa fa-angle-left pull-right"></i>
+									</span>
+								</a>
+								<ul class="treeview-menu">
+									<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbImportResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('tb'); ?>"><i class="fa fa-caret-right"></i> Import Result From File</a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("tb-manual-results.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbResultsMenu"><a href="/tb/results/tb-manual-results.php"><i class="fa fa-caret-right"></i> Enter Result Manually</a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("tb-result-status.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbResultStatus"><a href="/tb/results/tb-result-status.php"><i class="fa fa-caret-right"></i> Manage Results Status</a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("mail-tb-results.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbResultMailMenu"><a href="/tb/mail/mail-tb-results.php"><i class="fa fa-caret-right"></i> E-mail Test Result</a></li>
+									<?php }  ?>
 								</ul>
 							</li>
 					<?php }
