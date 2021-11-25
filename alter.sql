@@ -2665,3 +2665,11 @@ ALTER TABLE `form_tb` ADD `xpert_mtb_result` TEXT NULL DEFAULT NULL AFTER `resul
 -- Thana 23-Nov-2021
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-results', 'tb', 'TB Result Management');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-manual-results.php', 'Enter Result Manually');
+
+-- Sakthivel 25-Nov-2021
+
+ALTER TABLE `vl_request_form` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `eid_form` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `form_covid19` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `form_tb` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `form_hepatitis` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;

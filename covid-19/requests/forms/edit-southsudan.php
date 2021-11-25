@@ -327,6 +327,12 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <td style="width:35% !important;">
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($covid19Info['sample_collection_date']); ?>" />
                                         </td>
+                                        <th style="width:15% !important">Sample Dispatched On <span class="mandatory">*</span> </th>
+                                        <td style="width:35% !important;">
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_dispatched_datetime'])); ?>" />
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Specimen Type <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
@@ -334,8 +340,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $covid19Info['specimen_type']); ?>
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <th><label for="testNumber">Test Number</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
@@ -796,6 +800,23 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
     $(document).ready(function() {
+        $("#sampleCollectionDate").datetimepicker({
+            dateFormat: "dd-M-yy",
+            onSelect: function (date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 30);
+                //sets dt2 maxDate to the last day of 30 days window
+                dt2.datetimepicker('option', 'maxDate', startDate);
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+            }
+        });
+        $('#sampleDispatchedDate').datetimepicker({
+            dateFormat: "dd-M-yy"
+        });
         $(".select2").select2();
         $(".select2").select2({
             tags: true

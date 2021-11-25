@@ -37,6 +37,13 @@ try {
 		$_POST['sampleCollectionDate'] = NULL;
 	}
 
+	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
+        $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
+        $_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+    } else {
+        $_POST['sampleDispatchedDate'] = NULL;
+    }
+
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
@@ -166,6 +173,7 @@ try {
 		'type_of_test_requested'              => !empty($_POST['testTypeRequested']) ? $_POST['testTypeRequested'] : null,
 		'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
 		'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
+		'sample_dispatched_datetime'          => !empty($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
 		'health_outcome'              		  => !empty($_POST['healthOutcome']) ? $_POST['healthOutcome'] : null,
 		'health_outcome_date'                 => !empty($_POST['outcomeDate']) ? $general->dateFormat($_POST['outcomeDate']) : null,
 		'is_sample_post_mortem'               => !empty($_POST['isSamplePostMortem']) ? $_POST['isSamplePostMortem'] : null,

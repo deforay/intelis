@@ -351,18 +351,24 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
                                         </td>
+                                        <th style="width:15% !important">Sample Dispatched On <span class="mandatory">*</span> </th>
+                                        <td style="width:35% !important;">
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" value="<?php echo date('d-M-Y H:i:s', strtotime($eidInfo['sample_dispatched_datetime'])); ?>" />
+                                        </td>
+                                        </tr>
+                                        <tr>
                                         <th style="width:15% !important">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $eidInfo['specimen_type'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <th>Requesting Officer</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?php echo $eidInfo['sample_requestor_name']; ?>" />
                                         </td>
+                                        </tr>
+                                        <tr>
                                         <th>Sample Requestor Phone</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
@@ -649,6 +655,23 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
     $(document).ready(function() {
+        $("#sampleCollectionDate").datetimepicker({
+            dateFormat: "dd-M-yy",
+            onSelect: function (date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 30);
+                //sets dt2 maxDate to the last day of 30 days window
+                dt2.datetimepicker('option', 'maxDate', startDate);
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+            }
+        });
+        $('#sampleDispatchedDate').datetimepicker({
+            dateFormat: "dd-M-yy"
+        });
         $('#labId').select2({
             width: '100%',
             placeholder: "Select Testing Lab"
