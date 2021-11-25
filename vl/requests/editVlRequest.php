@@ -69,6 +69,13 @@ if (isset($vlQueryInfo['sample_collection_date']) && trim($vlQueryInfo['sample_c
      $vlQueryInfo['sample_collection_date'] = $general->getDateTime();
 }
 
+if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
+	$vlQueryInfo['sample_dispatched_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+} else {
+	$vlQueryInfo['sample_dispatched_datetime'] = '';
+}
+
 if (isset($vlQueryInfo['result_approved_datetime']) && trim($vlQueryInfo['result_approved_datetime']) != '' && $vlQueryInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
      $sampleCollectionDate = $vlQueryInfo['result_approved_datetime'];
      $expStr = explode(" ", $vlQueryInfo['result_approved_datetime']);

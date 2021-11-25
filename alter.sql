@@ -2666,6 +2666,14 @@ ALTER TABLE `form_tb` ADD `xpert_mtb_result` TEXT NULL DEFAULT NULL AFTER `resul
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-results', 'tb', 'TB Result Management');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-manual-results.php', 'Enter Result Manually');
 
+-- Sakthivel 25-Nov-2021
+
+ALTER TABLE `vl_request_form` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `eid_form` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `form_covid19` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `form_tb` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `form_hepatitis` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+
 -- Thana 25-Nov-2021
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-management', 'tb', 'TB Reports');
 UPDATE `privileges` SET `resource_id` = 'covid-19-results' WHERE `privileges`.`privilege_id` = 99;
@@ -2674,3 +2682,4 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 UPDATE `privileges` SET `resource_id` = 'covid-19-results' WHERE `privileges`.`privilege_id` = 98;
 UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privileges`.`privilege_id` = 157;
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-result-status.php', 'Manage Result Status');
+

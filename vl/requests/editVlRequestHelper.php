@@ -147,6 +147,12 @@ try {
      } else {
           $_POST['resultDispatchedOn'] = NULL;
      }
+     if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
+          $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
+          $_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+      } else {
+          $_POST['sampleDispatchedDate'] = NULL;
+      }
 
      if (isset($_POST['newRejectionReason']) && trim($_POST['newRejectionReason']) != "") {
           $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_vl_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . ucfirst(strtolower($_POST['newRejectionReason'])) . "'";
@@ -231,6 +237,7 @@ try {
           //'sample_code'=>(isset($_POST['sampleCode']) && $_POST['sampleCode']!='') ? $_POST['sampleCode'] :  NULL,
           'facility_id' => (isset($_POST['fName']) && $_POST['fName'] != '') ? $_POST['fName'] :  NULL,
           'sample_collection_date' => $_POST['sampleCollectionDate'],
+          'sample_dispatched_datetime' => $_POST['sampleDispatchedDate'],
           'patient_first_name' => (isset($_POST['patientFirstName']) && $_POST['patientFirstName'] != '') ? $_POST['patientFirstName'] :  NULL,
           'patient_gender' => (isset($_POST['gender']) && $_POST['gender'] != '') ? $_POST['gender'] :  NULL,
           'patient_dob' => $_POST['dob'],
