@@ -656,22 +656,31 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
     $(document).ready(function() {
         $("#sampleCollectionDate").datetimepicker({
-            dateFormat: "dd-M-yy",
-            onSelect: function (date) {
-                var dt2 = $('#sampleDispatchedDate');
-                var startDate = $(this).datetimepicker('getDate');
-                var minDate = $(this).datetimepicker('getDate');
-                dt2.datetimepicker('setDate', minDate);
-                startDate.setDate(startDate.getDate() + 30);
-                //sets dt2 maxDate to the last day of 30 days window
-                dt2.datetimepicker('option', 'maxDate', startDate);
-                dt2.datetimepicker('option', 'minDate', minDate);
-                dt2.datetimepicker('option', 'minDateTime', minDate);
-            }
-        });
-        $('#sampleDispatchedDate').datetimepicker({
-            dateFormat: "dd-M-yy"
-        });
+               changeMonth: true,
+               changeYear: true,
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               maxDate: "Today",
+               onSelect: function(date) {
+                    var dt2 = $('#sampleDispatchedDate');
+                    var startDate = $(this).datetimepicker('getDate');
+                    var minDate = $(this).datetimepicker('getDate');
+                    dt2.datetimepicker('setDate', minDate);
+                    startDate.setDate(startDate.getDate() + 1000000);
+                    //sets dt2 maxDate to the last day of 30 days window
+                    dt2.datetimepicker('option', 'maxDate', startDate);
+                    dt2.datetimepicker('option', 'minDate', minDate);
+                    dt2.datetimepicker('option', 'minDateTime', minDate);
+               }
+          });
+          $('#sampleDispatchedDate').datetimepicker({
+               changeMonth: true,
+               changeYear: true,
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               minDate: "Today",
+               yearRange:"-100:+100",
+          });
         $('#labId').select2({
             width: '100%',
             placeholder: "Select Testing Lab"
