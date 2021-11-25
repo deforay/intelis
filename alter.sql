@@ -2665,3 +2665,12 @@ ALTER TABLE `form_tb` ADD `xpert_mtb_result` TEXT NULL DEFAULT NULL AFTER `resul
 -- Thana 23-Nov-2021
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-results', 'tb', 'TB Result Management');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-manual-results.php', 'Enter Result Manually');
+
+-- Thana 25-Nov-2021
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-management', 'tb', 'TB Reports');
+UPDATE `privileges` SET `resource_id` = 'covid-19-results' WHERE `privileges`.`privilege_id` = 99;
+UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privileges`.`privilege_id` = 156;
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-print-results.php', 'Print Results');
+UPDATE `privileges` SET `resource_id` = 'covid-19-results' WHERE `privileges`.`privilege_id` = 98;
+UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privileges`.`privilege_id` = 157;
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-result-status.php', 'Manage Result Status');

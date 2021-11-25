@@ -133,7 +133,14 @@ if (isset($tbInfo['result_approved_datetime']) && trim($tbInfo['result_approved_
     $tbInfo['result_approved_datetime'] = '';
 }
 $fileArray = array(
-    1 => 'forms/update-southsudan.php'
+    1 => 'forms/update-southsudan.php',
+    2 => 'forms/update-zimbabwe.php',
+    3 => 'forms/update-drc.php',
+    4 => 'forms/update-zambia.php',
+    5 => 'forms/update-png.php',
+    6 => 'forms/update-who.php',
+    7 => 'forms/update-rwanda.php',
+    8 => 'forms/update-angola.php',
 );
 
 if (file_exists($fileArray[$arr['vl_form']])) {
