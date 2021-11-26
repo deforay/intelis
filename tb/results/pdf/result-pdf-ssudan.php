@@ -309,9 +309,14 @@ if (sizeof($requestResult) > 0) {
 
         $html .= '<table style="padding:3px;">';
         $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:13px;text-align:left;">HEALTH FACILITY : <span style="font-weight:bold;">' . $result['facility_name'] . '</span></td>';
-        $html .= '<td style="line-height:17px;font-size:13px;text-align:left;">STATE : <span style="font-weight:bold;">' . $fstate . '</span></td>';
-        $html .= '<td style="line-height:17px;font-size:13px;text-align:left;">REGION : <span style="font-weight:bold;">GREATER EQUATORIA</span></td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:40%">HEALTH FACILITY</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">STATE</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">REGION</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;"><span style="font-weight:bold;">' . $result['facility_name'] . '</span></td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;"><span style="font-weight:bold;">' . $fstate . '</span></td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;"><span style="font-weight:bold;">GREATER EQUATORIA</span></td>';
         $html .= '</tr>';
         $html .= '</table>';
 
@@ -436,29 +441,20 @@ if (sizeof($requestResult) > 0) {
         $html .= '<br><br>';
         $html .= '<table>';
         $html .= '<tr>';
-        $html .= '<td colspan="4" style="line-height:17px;font-size:11px;text-align:left;">
-                    <table>
-                        <tr>
-                            <td colspan="3">
-                                <span style="font-weight:bold;">For questions concerning this report, contact the Laboratory at Telephone Number 0925864308 / 0922302801</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><td>
-                            <td><img width="50" src="' . $userApprovedSignaturePath . '"/></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Print Time : ' . $printDate . " " . $printDateTime . '</td>
-                            <td>Result Approved : ' . $resultApprovedBy . '</td>
-                            <td>Date : ' . $approvedOnDate . " " . $approvedOnTime . '</td>
-                        </tr>
-                    </table>
-                </td>';
+        $html .= '<td colspan="3" style="line-height:17px;font-size:11px;font-weight:bold;">For questions concerning this report, contact the Laboratory at Telephone Number 0925864308 / 0922302801</td>';
         $html .= '</tr>';
-
         $html .= '<tr>';
-        $html .= '<td colspan="4" style="line-height:17px;font-size:11px;text-align:justify;border-top:1px solid #67b3ff;">
+        $html .= '<td></td>';
+        $html .= '<td style="line-height:17px;font-size:11px;font-weight:normal;"><img width="50" src="' . $userApprovedSignaturePath . '"/></td>';
+        $html .= '<td></td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td style="line-height:17px;font-size:11px;font-weight:normal;">Print Time : ' . $printDate . " " . $printDateTime . '</td>';
+        $html .= '<td style="line-height:17px;font-size:11px;font-weight:normal;">Result Approved : ' . $resultApprovedBy . '</td>';
+        $html .= '<td style="line-height:17px;font-size:11px;font-weight:normal;">Date : ' . $approvedOnDate . " " . $approvedOnTime . '</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td colspan="3" style="line-height:17px;font-size:11px;text-align:justify;border-top:1px solid #67b3ff;">
                     <br><br>NP = Not Provided, DST = Drug Susceptibility Testing, LJ = Lowenstein-Jensen, MDR = Multi-Drug Restant TB Strain, XDR = Extensively Drug Resistant TB Stain, MGIT = Mycobacterium Growth Index Tube, 
                     NTM = Non-TB Mycobacterium, ZN = Ziehl-Neelsen, 1-100 = Absolute colony counts on solid media, Smear Mircoscopy Grading 1-9/100 fields = absolute number of AFBs seen per 100 fields, 1+= 1-100/100 fields, 2+=1-9 AFBs/field; 
                     3+=10+AFBs/field, FM = Fluorescent Microscopy, Negative = Zero AFBs/1 Length, Scanty = 1-29 AFB/1 Length, 2+=10-100 AFB/1 Field on average, 3+=>100 AFB/1 Field on average, LPA = Line Probe Assay,

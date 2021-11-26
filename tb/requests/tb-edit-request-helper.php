@@ -171,6 +171,7 @@ try {
         $tbData['locked'] = 'yes';
     }
     $id = 0;
+
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (isset($_POST['testResult']) && count($_POST['testResult']) > 0) {
             $db = $db->where('tb_id', $_POST['tbSampleId']);
