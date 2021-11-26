@@ -825,6 +825,7 @@ $sFormat = '';
 
 	function setPatientDetails(pDetails) {
 		patientArray = pDetails.split("##");
+		console.log(patientArray);
 		if ($.trim(patientArray[3]) != '') {
 			$("#dob").val(patientArray[3]);
 			getAge();
@@ -842,6 +843,16 @@ $sFormat = '';
 		}
 		if ($.trim(patientArray[15]) != '') {
 			$("#patientArtNo").val($.trim(patientArray[15]));
+		}
+		if ($.trim(patientArray[11]) != '') {
+			$("#artRegimen").val($.trim(patientArray[11]));
+		}
+		if ($.trim(patientArray[16]) != '') {
+			if (patientArray[16] == 'yes') {
+				$("#isPatientNewYes").prop('checked', true);
+			} else if (patientArray[16] == 'no') {
+				$("#isPatientNewNo").prop('checked', true);
+			}
 		}
 	}
 

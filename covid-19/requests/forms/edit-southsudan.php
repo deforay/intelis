@@ -663,6 +663,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $("#patientAddress").text(patientArray[11]);
         $("#patientNationality").select2('val', patientArray[12]);
         $("#patientCity").val(patientArray[13]);
+        $("#patientZone").val(patientArray[18]);
+        $("#externalSampleCode").val(patientArray[19]);
         // $('#patientProvince').select2('data', {"province-id": patientArray[17], code: patientArray[16], name:patientArray[14]});
 
         setTimeout(function() {

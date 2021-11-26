@@ -231,7 +231,9 @@ $sampleSuggestionDisplay = 'display:none;';
 
 								</table>
 								<div class="box-header with-border">
-									<h3 class="box-title">Information sur le patient </h3>
+									<h3 class="box-title">Information sur le patient </h3>&nbsp;&nbsp;&nbsp;
+									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
+									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
 								</div>
 								<table class="table" style="width:100%">
 									<tr>
@@ -712,7 +714,38 @@ $sampleSuggestionDisplay = 'display:none;';
 		}
 		$.unblockUI();
 	}
-
+	function setPatientDetails(pDetails) {
+		patientArray = pDetails.split("##");
+		console.log(patientArray);
+		if ($.trim(patientArray[3]) != '') {
+			$("#dob").val(patientArray[3]);
+			getAge();
+		} else if ($.trim(patientArray[4]) != '' && $.trim(patientArray[4]) != 0) {
+			$("#ageInYears").val(patientArray[4]);
+		} else if ($.trim(patientArray[5]) != '') {
+			$("#ageInMonths").val(patientArray[5]);
+		}
+		if ($.trim(patientArray[2]) != '') {
+			if (patientArray[2] == 'male') {
+				$("#genderMale").prop('checked', true);
+			} else if (patientArray[2] == 'female') {
+				$("#genderFemale").prop('checked', true);
+			}
+		}
+		if ($.trim(patientArray[15]) != '') {
+			$("#patientArtNo").val($.trim(patientArray[15]));
+		}
+		if ($.trim(patientArray[11]) != '') {
+			$("#artRegimen").val($.trim(patientArray[11]));
+		}
+		if ($.trim(patientArray[16]) != '') {
+			if (patientArray[16] == 'yes') {
+				$("#isPatientNewYes").prop('checked', true);
+			} else if (patientArray[16] == 'no') {
+				$("#isPatientNewNo").prop('checked', true);
+			}
+		}
+	}
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
 		//check facility name

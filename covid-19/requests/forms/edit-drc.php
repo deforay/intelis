@@ -200,7 +200,9 @@ $pResult = $db->rawQuery($pQuery);
                                 </table>
 
                                 <div class="box-header with-border sectionHeader">
-                                    <h3 class="box-title">INFORMATION PATIENT</h3>
+                                <h3 class="box-title">INFORMATION PATIENT</h3>&nbsp;&nbsp;&nbsp;
+                                    <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
+                                    <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
                                 </div>
                                 <table class="table" style="width:100%">
 
@@ -1197,6 +1199,25 @@ $pResult = $db->rawQuery($pQuery);
             $("#district").html("<option value=''> -- Sélectionner -- </option>");
         }
         $.unblockUI();
+    }
+
+    function setPatientDetails(pDetails) {
+        patientArray = pDetails.split("##");
+        //   console.log(patientArray);
+        $("#patientProvince").val(patientArray[14] + '##' + patientArray[16]).trigger('change');
+        $("#firstName").val(patientArray[0]);
+        $("#lastName").val(patientArray[1]);
+        $("#patientPhoneNumber").val(patientArray[8]);
+        $("#patientGender").val(patientArray[2]);
+        $("#patientAge").val(patientArray[4]);
+        $("#patientDob").val(patientArray[3]);
+        $("#patientId").val(patientArray[9]);
+        $("#patientAddress").text(patientArray[11]);
+        $("#patientNationality").val(patientArray[12]);
+        $("#isPatientPregnant").val(patientArray[6]);
+        setTimeout(function() {
+            $("#patientDistrict").val(patientArray[15]).trigger('change');
+        }, 3000);
     }
 
     function sampleCodeGeneration() {
