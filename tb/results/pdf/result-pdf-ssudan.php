@@ -20,15 +20,15 @@ class SouthSudan_PDF extends MYPDF
                     }
                 }
                 $this->SetFont('helvetica', 'B', 15);
-                $this->writeHTMLCell(0, 0, 40, 7, $this->text, 0, 0, 0, true, 'L', true);
+                $this->writeHTMLCell(0, 0, 15, 7, $this->text, 0, 0, 0, true, 'C', true);
                 if (trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
                     // $this->writeHTMLCell(0, 0, 40, 15, strtoupper($this->lab), 0, 0, 0, true, 'L', true);
-                    $this->writeHTMLCell(0, 0, 40, 15, 'Public Health Laboratory', 0, 0, 0, true, 'L', true);
+                    $this->writeHTMLCell(0, 0, 15, 15, 'Public Health Laboratory', 0, 0, 0, true, 'C', true);
                 }
 
                 $this->SetFont('helvetica', '', 9);
-                $this->writeHTMLCell(0, 0, 40, 21, $this->facilityInfo['address'], 0, 0, 0, true, 'L', true);
+                $this->writeHTMLCell(0, 0, 15, 21, $this->facilityInfo['address'], 0, 0, 0, true, 'C', true);
 
                 $this->SetFont('helvetica', '', 9);
 
@@ -39,13 +39,13 @@ class SouthSudan_PDF extends MYPDF
                 } else {
                     $space = "";
                 }
-                $this->writeHTMLCell(0, 0, 40, 26, $emil . $space . $phone, 0, 0, 0, true, 'L', true);
+                $this->writeHTMLCell(0, 0, 15, 26, $emil . $space . $phone, 0, 0, 0, true, 'L', true);
 
 
                 $this->writeHTMLCell(0, 0, 10, 33, '<hr>', 0, 0, 0, true, 'C', true);
                 $this->writeHTMLCell(0, 0, 10, 34, '<hr>', 0, 0, 0, true, 'C', true);
                 $this->SetFont('helvetica', 'B', 12);
-                // $this->writeHTMLCell(0, 0, 20, 35, 'TB Laboratory Report', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 20, 35, 'SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)', 0, 0, 0, true, 'C', true);
 
                 // $this->writeHTMLCell(0, 0, 25, 35, '<hr>', 0, 0, 0, true, 'C', true);
             } else {
@@ -72,10 +72,8 @@ class SouthSudan_PDF extends MYPDF
     }
 }
 
-
-
-
-$tbResults = $general->getTbResults();
+$tbLamResults = $tbObj->getTbResults('lam');
+$tbXPertResults = $tbObj->getTbResults('x-pert');
 
 $countryFormId = $general->getGlobalConfig('vl_form');
 $resultFilename = '';
@@ -123,10 +121,10 @@ if (sizeof($requestResult) > 0) {
         } else {
             $logoPrintInPdf = $arr['logo'];
         }
-        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'TB PATIENT REPORT', $labFacilityId = null, $formId = $arr['vl_form'], $facilityInfo);
+        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)', $labFacilityId = null, $formId = $arr['vl_form'], $facilityInfo);
         // set document information
         $pdf->SetCreator('VLSM');
-        $pdf->SetTitle('TB Patient Report');
+        $pdf->SetTitle('SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)');
         //$pdf->SetSubject('TCPDF Tutorial');
         //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -179,6 +177,7 @@ if (sizeof($requestResult) > 0) {
             $result['labName'] = '';
         }
         //Set Age
+        $ageCalc = 0;
         $age = 'Unknown';
         if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
             $ageCalc = $general->ageInYearMonthDays($result['patient_dob']);
@@ -196,26 +195,38 @@ if (sizeof($requestResult) > 0) {
         }
         $sampleReceivedDate = '';
         $sampleReceivedTime = '';
-        if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-            $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
+        if (isset($result['sample_received_at_lab_datetime']) && trim($result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+            $expStr = explode(" ", $result['sample_received_at_lab_datetime']);
             $sampleReceivedDate = $general->humanDateFormat($expStr[0]);
             $sampleReceivedTime = $expStr[1];
         }
-        $sampleDispatchDate = '';
-        $sampleDispatchTime = '';
+        $resultDispatchedDate = '';
+        $resultDispatchedTime = '';
         if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['result_printed_datetime']);
-            $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
-            $sampleDispatchTime = $expStr[1];
+            $resultDispatchedDate = $general->humanDateFormat($expStr[0]);
+            $resultDispatchedTime = $expStr[1];
         } else {
             $expStr = explode(" ", $currentTime);
-            $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
-            $sampleDispatchTime = $expStr[1];
+            $resultDispatchedDate = $general->humanDateFormat($expStr[0]);
+            $resultDispatchedTime = $expStr[1];
+        }
+
+        $approvedOnDate = '';
+        $approvedOnTime = '';
+        if (isset($result['result_approved_datetime']) && trim($result['result_approved_datetime']) != '' && $result['result_approved_datetime'] != '0000-00-00 00:00:00') {
+            $expStr = explode(" ", $result['result_approved_datetime']);
+            $approvedOnDate = $general->humanDateFormat($expStr[0]);
+            $approvedOnTime = $expStr[1];
+        } else {
+            $expStr = explode(" ", $currentTime);
+            $approvedOnDate = $general->humanDateFormat($expStr[0]);
+            $approvedOnTime = $expStr[1];
         }
 
         $testedBy = '';
         if (isset($result['tested_by']) && !empty($result['tested_by'])) {
-            $testedByRes = $users->getUserInfo($result['tested_by'], 'user_name');
+            $testedByRes = $users->getUserInfo($result['tested_by'], array('user_signature', 'user_name'));
             if ($testedByRes) {
                 $testedBy = $testedByRes['user_name'];
             }
@@ -239,17 +250,29 @@ if (sizeof($requestResult) > 0) {
 
         $userRes = array();
         if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
-            $resultApprovedBy = ucwords($result['authorized_by']);
-            $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
+            $userRes = $users->getUserInfo($result['authorized_by'], array('user_signature', 'user_name'));
+            $resultAuthroizedBy = ucwords($userRes['user_name']);
         } else {
-            $resultApprovedBy  = '';
+            $resultAuthroizedBy  = '';
         }
         $userSignaturePath = null;
 
         if (!empty($userRes['user_signature'])) {
             $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
         }
-        $vlResult = '';
+
+        $userApprovedRes = array();
+        if (isset($result['result_approved_by']) && trim($result['result_approved_by']) != '') {
+            $userApprovedRes = $users->getUserInfo($result['result_approved_by'], array('user_signature', 'user_name'));
+            $resultApprovedBy = ucwords($userApprovedRes['user_name']);
+        } else {
+            $resultApprovedBy  = '';
+        }
+        $userApprovedSignaturePath = null;
+        if (!empty($userApprovedRes['user_signature'])) {
+            $userApprovedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userApprovedRes['user_signature'];
+        }
+        $tbResult = '';
         $smileyContent = '';
         $showMessage = '';
         $tndMessage = '';
@@ -257,13 +280,13 @@ if (sizeof($requestResult) > 0) {
         if ($result['result'] != NULL && trim($result['result']) != '') {
             $resultType = is_numeric($result['result']);
             if ($result['result'] == 'positive') {
-                $vlResult = $result['result'];
+                $tbResult = $result['result'];
                 //$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="smile_face"/>';
             } else if ($result['result'] == 'negative') {
-                $vlResult = $result['result'];
+                $tbResult = $result['result'];
                 $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
             } else if ($result['result'] == 'indeterminate') {
-                $vlResult = $result['result'];
+                $tbResult = $result['result'];
                 $smileyContent = '';
             }
         }
@@ -273,179 +296,130 @@ if (sizeof($requestResult) > 0) {
         if ($result['result_status'] == '4') {
             $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
         }
-        foreach ($tbTestInfo as $indexKey => $rows) {
-            $testPlatform = $rows['testing_platform'];
-            $testMethod = $rows['test_name'];
+        $fstate = "";
+        if (isset($result['facility_state_id']) && $result['facility_state_id'] != "") {
+            $geoResult = $geoObj->getById($result['facility_state_id']);
+            $fstate = (isset($geoResult['geo_name']) && $geoResult['geo_name'] != "") ? $geoResult['geo_name'] : null;
+        }
+        if (isset($result['facility_state']) && $result['facility_state'] != "") {
+            $fstate = $result['facility_state'];
         }
 
-        $html = '<table style="padding:3px;">';
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">REPORT FOR :SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:center;">CONTACT :</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-        $html .= '</tr>';
+        $html = '<br><br>';
 
+        $html .= '<table style="padding:3px;">';
         $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">HEALTH FACILITY :</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:center;">STATE :</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">REGION :</td>';
+        $html .= '<td style="line-height:17px;font-size:13px;text-align:left;">HEALTH FACILITY : <span style="font-weight:bold;">' . $result['facility_name'] . '</span></td>';
+        $html .= '<td style="line-height:17px;font-size:13px;text-align:left;">STATE : <span style="font-weight:bold;">' . $fstate . '</span></td>';
+        $html .= '<td style="line-height:17px;font-size:13px;text-align:left;">REGION : <span style="font-weight:bold;">GREATER EQUATORIA</span></td>';
         $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">PATIENT DETAILS</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:center;"></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;"><b>Facility Patient </b></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;"><b>National ID No:</b>&nbsp;&nbsp;&nbsp;&nbsp;MDR TB No:</td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;"><b>Patient Names: </b></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">Reason for Request:</td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;"><b>Patient Names: </b></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">Reason for Request:</td>';
-        $html .= '</tr>';
-
         $html .= '</table>';
+
         $html .= '<br><br>';
         $html .= '<table style="padding:3px;border:1px solid #67b3ff;">';
-        /*  $html .= '<tr>';
-        $html .= '<td colspan="2" style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff">REPORT FOR : <br>SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:center;border-bottom:1px solid #67b3ff;">CONTACT:</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:center;border-bottom:1px solid #67b3ff;"></td>';
-        $html .= '</tr>'; */
-
         $html .= '<tr>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">FULL NAME </td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $patientFname . ' ' . $patientLname . '</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">LABORATORY NAME</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labName']) . '(' . ($result['facility_code']) . ')</td>';
+        $html .= '<td colspan="4" style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-top:1px solid #67b3ff;border-bottom:1px solid #67b3ff;">PATIENT DETAILS</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">SEX</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">EMAIL</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">PATIENT NAME </td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $patientFname . ' ' . $patientLname . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">NATIONAL ID NO</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['patient_id'] . '</td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">MDR TB NO </td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">REASON FOR REQUEST</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labName']) . '(' . ($result['facility_code']) . ')</td>';
+        $html .= '</tr>';
+        $typeOfPatient = json_decode($result['patient_type']);
+        $html .= '<tr>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">TB PATIENT CATEGORY</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords(str_replace("-", " ", $typeOfPatient)) . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">STATE & REGION</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['labEmail'] . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">AGE</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $ageCalc['year'] . 'Year(s) ' . $ageCalc['months'] . 'Months</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">PHONE</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['labPhone'] . '</td>';
-
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">NATIONALITY</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['nationality'] . '</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">ADDRESS</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">RESIDENCE ADDRESS</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['labAddress'] . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">PASSPORT # / NIN </td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['patient_passport_number'] . '</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">STATE</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords($result['labState']) . '</td>';
-
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">CASE ID</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['patient_id'] . '</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">COUNTY</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords($result['labCounty']) . '</td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">SEX</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;"></td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">TEST PLATFORM</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $testPlatform . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td colspan="4" style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;border-top:1px solid #67b3ff;border-bottom:1px solid #67b3ff;">SPECIMEN INFORMATION</td>';
+        $html .= '<td colspan="4" style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-top:1px solid #67b3ff;border-bottom:1px solid #67b3ff;">SPECIMEN DETAILS</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">LAB SPECIMEN ID</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;font-weight:bold; color:#4ea6ff;">' . $result['sample_code'] . '</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">DATE SPECIMEN COLLECTED</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">SPECIMEN TYPE </td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['sample_name'] . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">COLLECTED</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
+
         $html .= '</tr>';
+
         $html .= '<tr>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">SPECIMEN TYPE</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['sample_name']) . '</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">DATE SPECIMEN RECEIVED</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">APPEARANCE</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['patient_id'] . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">RECEIVED</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
         $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">VOLUME</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">REQUESTED BY</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['requestedBy'] . '</td>';
+        $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;"></td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">DATE SPECIMEN TESTED</td>';
+        $html .= '<td colspan="4" style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-top:1px solid #67b3ff;border-bottom:1px solid #67b3ff;">SUSCEPTIBILITY RESULTS</td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">TESTING LAB</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['labName'] . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">SAMPLE TESTED DATE TIME</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['sample_tested_datetime'] . '</td>';
         $html .= '</tr>';
 
-        $html .= '<tr>';
-        $html .= '<td colspan="4" style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;border-top:1px solid #67b3ff;border-bottom:1px solid #67b3ff;">TB TESTS RESULTS</td>';
-        $html .= '</tr>';
+        if (isset($tbTestInfo) && count($tbTestInfo) > 0) {
+            /* Test Result Section */
+            $html .= '<tr>';
+            $html .= '<td colspan="4" style="border:1px solid #67b3ff;" >';
+            $html .= '<table style="padding:2px;border:1px solid #ddd;">
+                    <tr>
+                        <td align="center" width="10%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">No AFB</td>
+                        <td align="center" width="40%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">Actual No</td>
+                        <td align="center" width="50%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">Microscopy (Result)</td>
+                    </tr>';
 
-        $html .= '<tr>';
-        $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;"><span style="font-weight:bold;">TEST METHOD :</span> ' . $testMethod . '</td>';
-        $html .= '</tr>';
-
-        // if (isset($tbTestInfo) && count($tbTestInfo) > 0 && $arr['tb_tests_table_in_results_pdf'] == 'yes') {
-        //     /* Test Result Section */
-        //     $html .= '<tr>';
-        //     $html .= '<td colspan="4" style="" >';
-        //     $html .= '<table border="1" style="padding:2px;">
-        //                             <tr>
-        //                                 <td align="center" width="10%" style="line-height:20px;font-size:11px;font-weight:bold;">S. No.</td>
-        //                                 <td align="center" width="25%" style="line-height:20px;font-size:11px;font-weight:bold;">Test Method</td>
-        //                                 <td align="center" width="25%" style="line-height:20px;font-size:11px;font-weight:bold;">Test Platform</td>
-        //                                 <td align="center" width="20%" style="line-height:20px;font-size:11px;font-weight:bold;">Date of Testing</td>
-        //                                 <td align="center" width="20%" style="line-height:20px;font-size:11px;font-weight:bold;">Test Result</td>
-        //                             </tr>';
-
-        //     foreach ($tbTestInfo as $indexKey => $rows) {
-        //         $html .= '<tr>
-        //                                 <td align="center" style="line-height:20px;font-size:11px;">' . ($indexKey + 1) . '</td>
-        //                                 <td align="center" style="line-height:20px;font-size:11px;">' . $tbTestInfo[$indexKey]['test_name'] . '</td>
-        //                                 <td align="center" style="line-height:20px;font-size:11px;">' . $tbTestInfo[$indexKey]['testing_platform'] . '</td>
-        //                                 <td align="center" style="line-height:20px;font-size:11px;">' . date("d-M-Y H:i:s", strtotime($tbTestInfo[$indexKey]['sample_tested_datetime'])) . '</td>
-        //                                 <td align="center" style="line-height:20px;font-size:11px;">' . ucwords($tbTestInfo[$indexKey]['result']) . '</td>
-        //                             </tr>';
-        //     }
-        //     $html .= '</table>';
-        //     $html .= '</td>';
-        //     $html .= '</tr>';
-        // }
-        /* Result print here */
-        $resultFlag = "";
-        if (isset($result['result']) && $result['result'] == "negative") {
-            $resultFlag = "(-)";
-        } else if (isset($result['result']) && $result['result'] == "postive") {
-            $resultFlag = "(+)";
+            foreach ($tbTestInfo as $indexKey => $rows) {
+                $html .= '<tr>
+                        <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . ($indexKey + 1) . '</td>
+                        <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $tbTestInfo[$indexKey]['actual_no'] . '</td>
+                        <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $tbTestInfo[$indexKey]['test_result'] . '</td>
+                    </tr>';
+            }
+            $html .= '</table>';
+            $html .= '</td>';
+            $html .= '</tr>';
         }
-
+        /* Result print here */
         $html .= '<tr>';
-        $html .= '<td colspan="4" style="font-size:18px;font-weight:bold;font-weight:normal;"><br>RESULT : ' . $tbResults[$result['result']] . ' ' . $resultFlag . '</td>';
+        $html .= '<td colspan="4" style="font-size:15px;font-weight:normal;font-weight:normal;border:1px solid #67b3ff;"><br><br>X PERT MTB RESULT : <span style="font-weight:bold;">' . $tbXPertResults[$result['xpert_mtb_result']] . '</span></td>';
         $html .= '</tr>';
-
         $html .= '<tr>';
-        $html .= '<td colspan="4" style="line-height:17px;font-size:11px;text-align:left;"><span style="font-weight:bold;">DATE RESULTS RELEASED :</span> ' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
+        $html .= '<td colspan="4" style="font-size:15px;font-weight:normal;font-weight:normal;border:1px solid #67b3ff;">TB LAM RESULT : <span style="font-weight:bold;">' . $tbLamResults[$result['result']] . '</span></td>';
         $html .= '</tr>';
 
         if ($result['reason_for_sample_rejection'] != '') {
@@ -455,84 +429,44 @@ if (sizeof($requestResult) > 0) {
         }
         if (trim($result['approver_comments']) != '') {
             $html .= '<tr>';
-            $html .= '<td colspan="4" style="line-height:17px;font-size:11px;font-weight:bold;">LAB COMMENTS : <span style="font-weight:normal;">' . ucfirst($result['approver_comments']) . '</span></td>';
+            $html .= '<td colspan="4" style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;border-top:1px solid #67b3ff;border-bottom:1px solid #67b3ff;">COMMENTS : <span style="font-weight:normal;">' . ucfirst($result['approver_comments']) . '</span></td>';
             $html .= '</tr>';
         }
         $html .= '</table>';
-
+        $html .= '<br><br>';
         $html .= '<table>';
         $html .= '<tr>';
-        $html .= '<td colspan="2" style="line-height:20px;"></td>';
+        $html .= '<td colspan="4" style="line-height:17px;font-size:11px;text-align:left;">
+                    <table>
+                        <tr>
+                            <td colspan="3">
+                                <span style="font-weight:bold;">For questions concerning this report, contact the Laboratory at Telephone Number 0925864308 / 0922302801</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><td>
+                            <td><img width="50" src="' . $userApprovedSignaturePath . '"/></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Print Time : ' . $printDate . " " . $printDateTime . '</td>
+                            <td>Result Approved : ' . $resultApprovedBy . '</td>
+                            <td>Date : ' . $approvedOnDate . " " . $approvedOnTime . '</td>
+                        </tr>
+                    </table>
+                </td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+        $html .= '<td colspan="4" style="line-height:17px;font-size:11px;text-align:justify;border-top:1px solid #67b3ff;">
+                    <br><br>NP = Not Provided, DST = Drug Susceptibility Testing, LJ = Lowenstein-Jensen, MDR = Multi-Drug Restant TB Strain, XDR = Extensively Drug Resistant TB Stain, MGIT = Mycobacterium Growth Index Tube, 
+                    NTM = Non-TB Mycobacterium, ZN = Ziehl-Neelsen, 1-100 = Absolute colony counts on solid media, Smear Mircoscopy Grading 1-9/100 fields = absolute number of AFBs seen per 100 fields, 1+= 1-100/100 fields, 2+=1-9 AFBs/field; 
+                    3+=10+AFBs/field, FM = Fluorescent Microscopy, Negative = Zero AFBs/1 Length, Scanty = 1-29 AFB/1 Length, 2+=10-100 AFB/1 Field on average, 3+=>100 AFB/1 Field on average, LPA = Line Probe Assay,
+                    FLQ = Fuoroquinolones(Ofloxacin, Moxifloxacin), EMB = Ethambutol, AG/CP = Injectible antibotics(Kanamycin, Amikacin/Capreomycin, Viomycin), PAS = Para-Aminosalicylic Acid
+                </td>';
         $html .= '</tr>';
         $html .= '</table>';
 
-        if (isset($signResults) && !empty($signResults)) {
-            $lh = 20;
-            $html .= '<table align="center" style="min-height:120px">';
-            $html .= '<tr>';
-            $html .= '<td  colspan="4" style="text-align:center;" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-            $html .= '<table style="width:80%;padding:3px;border:1px solid #67b3ff;">';
-            $html .= '<tr>';
-            $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;">AUTHORISED BY</td>';
-            $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">PRINT NAME</td>';
-            $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">SIGNATURE</td>';
-            $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">DATE & TIME</td>';
-            $html .= '</tr>';
-            foreach ($signResults as $key => $row) {
-                $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
-                $html .= '<tr>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">' . $row['designation'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . $row['name_of_signatory'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lmSign . '" style="width:30px;"></td>';
-                $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
-                $html .= '</tr>';
-            }
-            $html .= '</table>';
-        } else {
-            $lh = 0;
-            $html .= '<tr>';
-            $html .= '<td colspan="5" style="line-height:50px;"></td>';
-            $html .= '</tr>';
-        }
-
-        /* 
-        $lqSign = "/uploads/tb/{$countryFormId}/pdf/lq.png";
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Quality Manager</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">Abe Gordon Abias</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lqSign . '" style="width:30px;"></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
-        $html .= '</tr>';
-        
-        $lsSign = "/uploads/tb/{$countryFormId}/pdf/ls.png";
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Supervisor</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">Dr. Simon Deng Nyicar</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lsSign . '" style="width:30px;"></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
-        $html .= '</tr>'; */
-        $html .= '</td>';
-        $html .= '</tr>';
-        $html .= '</table>';
-
-        $html .= '<table>';
-        $html .= '<tr>';
-        $html .= '<td colspan="2" style="line-height:' . $lh . 'px;border-bottom:2px solid #d3d3d3;"></td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
-        $html .= '<td style="font-size:10px;text-align:left;width:60%;"></td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
-        $html .= '</tr>';
-        $html .= '</table>';
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
             $ciphering = "AES-128-CTR";
             $iv_length = openssl_cipher_iv_length($ciphering);
@@ -584,10 +518,10 @@ if (sizeof($requestResult) > 0) {
                 'date_time' => $currentTime
             );
             $db->insert($tableName1, $data);
-            //Update print datetime in VL tbl.
-            $vlQuery = "SELECT result_printed_datetime FROM form_tb as vl WHERE vl.tb_id ='" . $result['tb_id'] . "'";
-            $vlResult = $db->query($vlQuery);
-            if ($vlResult[0]['result_printed_datetime'] == NULL || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+            //Update print datetime in TB tbl.
+            $tbQuery = "SELECT result_printed_datetime FROM form_tb as tb WHERE tb.tb_id ='" . $result['tb_id'] . "'";
+            $tbResult = $db->query($tbQuery);
+            if ($tbResult[0]['result_printed_datetime'] == NULL || trim($tbResult[0]['result_printed_datetime']) == '' || $tbResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                 $db = $db->where('tb_id', $result['tb_id']);
                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
             }
