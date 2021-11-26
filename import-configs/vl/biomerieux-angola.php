@@ -67,7 +67,7 @@ try {
         $testingDateRow = '4';
         $sampleTypeCol = '';
         $lotNumberCol = 'I';
-        
+
 
         foreach ($sheetData as $rowIndex => $row) {
 
@@ -87,7 +87,7 @@ try {
 
             $sampleCode = $row[$sampleIdCol];
 
-            if (strpos(strtolower($sampleCode), 'control') == false && !in_array($sampleCode,array('cn','cp'))) {
+            if (strpos(strtolower($sampleCode), 'control') == false && !in_array($sampleCode, array('cn', 'cp'))) {
                 $sampleType = "S";
             } else {
                 $sampleType = 'Control';
@@ -119,7 +119,7 @@ try {
 
             //var_dump($testingDate);die;
             $testingDate = DateTime::createFromFormat('H:i:s d/m/Y', $testingDate)->format('Y-m-d H:i:s');
-            
+
             if ($sampleCode == "")
                 break;
 
@@ -177,7 +177,7 @@ try {
                 $data['batch_code'] = $batchCode;
             }
 
-            $query    = "select facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where sample_code='" . $sampleCode . "'";
+            $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             if ($vlResult && $sampleCode != '') {
                 if ($vlResult[0]['result_value_log'] != '' || $vlResult[0]['result_value_absolute'] != '' || $vlResult[0]['result_value_text'] != '' || $vlResult[0]['result_value_absolute_decimal'] != '') {
@@ -189,9 +189,9 @@ try {
             } else {
                 $data['sample_details'] = 'New Sample';
             }
-            
+
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
-                
+
                 $data['result_imported_datetime'] = $general->getDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 //echo "<pre>";var_dump($data);echo "</pre>";die;
