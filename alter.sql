@@ -2683,3 +2683,6 @@ UPDATE `privileges` SET `resource_id` = 'covid-19-results' WHERE `privileges`.`p
 UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privileges`.`privilege_id` = 157;
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-result-status.php', 'Manage Result Status');
 
+
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-reference', 'admin', 'TB Reference');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-sample-type.php', 'Manage Reference');

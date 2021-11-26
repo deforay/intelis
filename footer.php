@@ -721,6 +721,11 @@
 		$(".tbProgramMenu").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".tbPrintResults").addClass('active');
+	} else if (splitsUrl == 'tb-sample-type.php') {
+		$(".manage").removeClass('active');
+		$(".tb-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tb-reference").addClass('active');
 	} else {
 		$(".allMenu").removeClass('active');
 		$(".dashboardMenu").addClass('active');

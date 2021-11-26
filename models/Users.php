@@ -167,7 +167,8 @@ class Users
 
         if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
             $sharedHepPrivileges = array(
-                'tb-update-result.php' => 'tb-manual-results.php'
+                'tb-update-result.php' => 'tb-manual-results.php',
+                'tb-sample-rejection-reasons.php'  => 'tb-sample-type.php',
             );
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
         }

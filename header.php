@@ -534,6 +534,22 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
+								if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
+									<li class="treeview tb-reference-manage">
+										<a href="#">
+											TB Config
+											<span class="pull-right-container">
+												<i class="fa fa-angle-left pull-right"></i>
+											</span>
+										</a>
+
+										<ul class="treeview-menu">
+											<li class="allMenu tb-reference">
+												<a href="/tb/reference/tb-sample-type.php"><i class="fa fa-caret-right"></i>Sample Type</a>
+											</li>
+										</ul>
+									</li>
+								<?php }
 								if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview hepatitis-reference-manage">
 										<a href="#"><i class="fa fa-h-square"></i>
