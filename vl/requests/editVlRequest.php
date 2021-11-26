@@ -454,5 +454,20 @@ if ($arr['vl_form'] == 1) {
           format = splitDate[2] + '-' + fMonth + '-' + splitDate[0];
           return format;
      }
+     function showPatientList() {
+        $("#showEmptyResult").hide();
+        if ($.trim($("#artPatientNo").val()) != '') {
+            $.post("/vl/requests/checkPatientExist.php", {
+                    artPatientNo: $("#artPatientNo").val()
+                },
+                function(data) {
+                    if (data >= '1') {
+                        showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+                    } else {
+                        $("#showEmptyResult").show();
+                    }
+                });
+        }
+    }
 </script>
 <?php include(APPLICATION_PATH . '/footer.php'); ?>

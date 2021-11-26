@@ -194,8 +194,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 
 									<tr>
 										<th colspan=8>
-											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant</h5>
-										</th>
+											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant &nbsp;&nbsp;&nbsp;
+									<input style="width:30%;font-weight:500;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
+									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
+									</h5></th>
 									</tr>
 									<tr>
 										<th><label for="childId">Code de l’enfant (Patient) <span class="mandatory">*</span></label></th>
@@ -599,6 +601,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 		}
 		$.unblockUI();
 	}
+
+	function setPatientDetails(pDetails) {
+        patientArray = pDetails.split("##");
+        //   console.log(patientArray);
+        $("#childId").val(patientArray[6]);
+        $("#childName").val(patientArray[0]);
+        $("#childDob").val(patientArray[3]);
+        $("#childGender").val(patientArray[2]);
+        $("#childAge").val(patientArray[4]);
+    }
 
 	function sampleCodeGeneration() {
 		var pName = $("#province").val();

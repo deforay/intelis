@@ -856,7 +856,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     function setPatientDetails(pDetails) {
         patientArray = pDetails.split("##");
-        //   console.log(patientArray);
+          console.log(patientArray);
         $("#patientProvince").val(patientArray[14] + '##' + patientArray[16]).trigger('change');
         $("#firstName").val(patientArray[0]);
         $("#lastName").val(patientArray[1]);
@@ -869,6 +869,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $("#patientAddress").text(patientArray[11]);
         $("#patientNationality").select2('val', patientArray[12]);
         $("#patientCity").val(patientArray[13]);
+        $("#patientZone").val(patientArray[18]);
+        $("#externalSampleCode").val(patientArray[19]);
         // $('#patientProvince').select2('data', {"province-id": patientArray[17], code: patientArray[16], name:patientArray[14]});
 
         setTimeout(function() {
