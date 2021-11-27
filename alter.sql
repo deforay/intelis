@@ -2419,9 +2419,9 @@ ALTER TABLE `move_samples_map` ADD `test_type` VARCHAR(256) NULL DEFAULT NULL AF
 ALTER TABLE `move_samples_map` CHANGE `vl_sample_id` `test_type_sample_id` INT NULL DEFAULT NULL;
 
 -- Thana 01-Nov-2021
-ALTER TABLE `vl_request_form` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
-ALTER TABLE `eid_form` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
-ALTER TABLE `form_covid19` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `eid_form` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-requests', 'tb', 'TB Request Management');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-requests', 'tb-requests.php', 'View Requests'), (NULL, 'tb-requests', 'tb-add-request.php', 'Add Request');
@@ -2661,3 +2661,22 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 -- Thana 22-Nov-2021
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-requests', 'tb-edit-request.php', 'Edit');
 ALTER TABLE `form_tb` ADD `xpert_mtb_result` TEXT NULL DEFAULT NULL AFTER `result`;
+
+
+-- Amit 24-Nov-2021
+
+ALTER TABLE `eid_form` CHANGE `sample_requestor_name` `sample_requestor_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `tested_by` `tested_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `result_reviewed_by` `result_reviewed_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `result_approved_by` `result_approved_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `request_created_by` `request_created_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `last_modified_by` `last_modified_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `sample_package_code` `sample_package_code` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `lot_number` `lot_number` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `source_of_request` `source_of_request` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `source_data_dump` `source_data_dump` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `result_sent_to_source` `result_sent_to_source` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+
+ALTER TABLE `vl_request_form` CHANGE `sample_code` `sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `remote_sample_code` `remote_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `app_sample_code` `app_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `eid_form` CHANGE `sample_code` `sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `eid_form` CHANGE `remote_sample_code` `remote_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `eid_form` CHANGE `app_sample_code` `app_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `sample_code` `sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `remote_sample_code` `remote_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `app_sample_code` `app_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `sample_code` `sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `remote_sample_code` `remote_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `app_sample_code` `app_sample_code` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;

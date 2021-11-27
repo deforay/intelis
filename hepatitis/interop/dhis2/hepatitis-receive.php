@@ -16,6 +16,5 @@ $fileArray = array(
     7 => 'forms/receive-rwanda.php'
 );
 
-if (file_exists($fileArray[$arr['vl_form']])) {
-    require_once($fileArray[$arr['vl_form']]);
-}
+
+require_once($fileArray[$arr['vl_form']]);
