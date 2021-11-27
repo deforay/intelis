@@ -311,14 +311,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:35% !important;">
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
                                         </td>
+                                        <th style="width:15% !important">Sample Dispatched On <span class="mandatory">*</span> </th>
+                                        <td style="width:35% !important;">
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" />
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Specimen Type <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <th><label for="testNumber">Test Number</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
@@ -852,7 +856,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     function setPatientDetails(pDetails) {
         patientArray = pDetails.split("##");
-        //   console.log(patientArray);
+          console.log(patientArray);
         $("#patientProvince").val(patientArray[14] + '##' + patientArray[16]).trigger('change');
         $("#firstName").val(patientArray[0]);
         $("#lastName").val(patientArray[1]);
@@ -865,6 +869,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $("#patientAddress").text(patientArray[11]);
         $("#patientNationality").select2('val', patientArray[12]);
         $("#patientCity").val(patientArray[13]);
+        $("#patientZone").val(patientArray[18]);
+        $("#externalSampleCode").val(patientArray[19]);
         // $('#patientProvince').select2('data', {"province-id": patientArray[17], code: patientArray[16], name:patientArray[14]});
 
         setTimeout(function() {
@@ -966,6 +972,32 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
+        $("#sampleCollectionDate").datetimepicker({
+               changeMonth: true,
+               changeYear: true,
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               maxDate: "Today",
+               onSelect: function(date) {
+                    var dt2 = $('#sampleDispatchedDate');
+                    var startDate = $(this).datetimepicker('getDate');
+                    var minDate = $(this).datetimepicker('getDate');
+                    dt2.datetimepicker('setDate', minDate);
+                    startDate.setDate(startDate.getDate() + 1000000);
+                    //sets dt2 maxDate to the last day of 30 days window
+                    dt2.datetimepicker('option', 'maxDate', startDate);
+                    dt2.datetimepicker('option', 'minDate', minDate);
+                    dt2.datetimepicker('option', 'minDateTime', minDate);
+               }
+          });
+          $('#sampleDispatchedDate').datetimepicker({
+               changeMonth: true,
+               changeYear: true,
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               minDate: "Today",
+               yearRange:"-100:+100",
+          });
         $(".select2").select2();
         $(".select2").select2({
             tags: true

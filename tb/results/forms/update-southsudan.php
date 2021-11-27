@@ -64,7 +64,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility
 
 $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
 
-$typeOfPatient = json_decode($tbInfo['patient_type']);
+$typeOfPatient = json_decode($typeOfPatient);
 $reasonForTbTest = json_decode($tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode($tbInfo['tests_requested']);
 ?>
@@ -87,9 +87,9 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm" autocomplete="off" action="tb-edit-request-helper.php">
+				<form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm" autocomplete="off" action="tb-update-request-helper.php">
 					<div class="box-body">
-						<div class="box box-default">
+						<div class="box box-default disabledForm">
 							<div class="box-body">
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">TESTING LAB INFORMATION</h3>
@@ -106,9 +106,9 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 												<input type="hidden" id="sampleCode" name="sampleCode" />
 											</td>
 										<?php } else { ?>
-											<th style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label><span class="mandatory">*</span></th>
+											<th style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
 											<td style="width: 18%;">
-												<input type="text" value="<?php echo $tbInfo['sample_code']; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample code" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
+												<input type="text" value="<?php echo $tbInfo['sample_code']; ?>" class="form-control" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample code" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
 											</td>
 										<?php } ?>
 										<th></th>
@@ -118,21 +118,21 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 									</tr>
 									<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 										<tr>
-											<td><label class="label-control" for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
+											<td><label class="label-control" for="province">Health Facility/POE State </label></td>
 											<td>
-												<select class="form-control select2 isRequired" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
+												<select class="form-control select2" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
 													<?php echo $province; ?>
 												</select>
 											</td>
-											<td><label class="label-control" for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
+											<td><label class="label-control" for="district">Health Facility/POE County </label></td>
 											<td>
-												<select class="form-control select2 isRequired" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+												<select class="form-control select2" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
 													<?php echo $facility; ?>
 												</select>
 											</td>
-											<td><label class="label-control" for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+											<td><label class="label-control" for="labId">Testing Laboratory </label> </td>
 											<td>
-												<select name="labId" id="labId" class="form-control select2 isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
+												<select name="labId" id="labId" class="form-control select2" title="Please select Testing Testing Laboratory" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
 												</select>
 											</td>
@@ -144,27 +144,27 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 								</div>
 								<table class="table" style="width:100%">
 									<tr>
-										<td><label class="label-control" for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
+										<td><label class="label-control" for="province">Health Facility/POE State </label></td>
 										<td>
-											<select class="form-control select2 isRequired" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
+											<select class="form-control select2" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
 												<?php echo $province; ?>
 											</select>
 										</td>
-										<td><label class="label-control" for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
+										<td><label class="label-control" for="district">Health Facility/POE County </label></td>
 										<td>
-											<select class="form-control select2 isRequired" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+											<select class="form-control select2" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
 												<option value=""> -- Select -- </option>
 											</select>
 										</td>
-										<td><label class="label-control" for="facilityId">Health Facility/POE </label><span class="mandatory">*</span></td>
+										<td><label class="label-control" for="facilityId">Health Facility/POE </label></td>
 										<td>
-											<select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
+											<select class="form-control " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility; ?>
 											</select>
 										</td>
 									</tr>
 									<tr>
-										<th><label for="requestedDate">Date of request <span class="mandatory">*</span></label></th>
+										<th><label for="requestedDate">Date of request </label></th>
 										<td>
 											<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date of request date" style="width:100%;" />
 										</td>
@@ -196,13 +196,13 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 								</div>
 								<table class="table" style="width:100%">
 									<tr>
-										<th><label for="patientId">Unique ART Number <span class="mandatory">*</span> </label></th>
+										<th><label for="patientId">Unique ART Number </label></th>
 										<td>
-											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
+											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
-										<th><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
+										<th><label for="firstName">First Name </label></th>
 										<td>
-											<input type="text" value="<?php echo $tbInfo['patient_name']; ?>" class="form-control isRequired" id="firstName" name="firstName" placeholder="First Name" title="Please enter First name" style="width:100%;" onchange="" />
+											<input type="text" value="<?php echo $tbInfo['patient_name']; ?>" class="form-control" id="firstName" name="firstName" placeholder="First Name" title="Please enter First name" style="width:100%;" onchange="" />
 										</td>
 									</tr>
 									<tr>
@@ -218,9 +218,9 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 									<tr>
 										<th>Age (years)</th>
 										<td><input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
-										<th><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
+										<th><label for="patientGender">Gender </label></th>
 										<td>
-											<select class="form-control isRequired" name="patientGender" id="patientGender" title="Please select the gender">
+											<select class="form-control" name="patientGender" id="patientGender" title="Please select the gender">
 												<option value=''> -- Select -- </option>
 												<option value='male' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'male') ? "selected='selected'" : ""; ?>> Male </option>
 												<option value='female' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'female') ? "selected='selected'" : ""; ?>> Female </option>
@@ -229,21 +229,21 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 										</td>
 									</tr>
 									<tr>
-										<th><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
+										<th><label for="typeOfPatient">Type of patient </label></th>
 										<td>
-											<select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" multiple>
+											<select class="select2 form-control" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" multiple>
 												<option value=''> -- Select -- </option>
-												<option value='new' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'new') ? "selected='selected'" : ""; ?>> New </option>
-												<option value='loss-to-follow-up' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'loss-to-follow-up') ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
-												<option value='treatment-failure' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'treatment-failure') ? "selected='selected'" : ""; ?>> Treatment Failure </option>
-												<option value='relapse' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'relapse') ? "selected='selected'" : ""; ?>> Relapse </option>
-												<option value='other' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'other') ? "selected='selected'" : ""; ?>> Other </option>
+												<option value='new' <?php echo (isset($typeOfPatient) && in_array('new', $typeOfPatient)) ? "selected='selected'" : ""; ?>> New </option>
+												<option value='loss-to-follow-up' <?php echo (isset($typeOfPatient) && in_array('loss-to-follow-up', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
+												<option value='treatment-failure' <?php echo (isset($typeOfPatient) && in_array('treatment-failure', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
+												<option value='relapse' <?php echo (isset($typeOfPatient) && in_array('relapse', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Relapse </option>
+												<option value='other' <?php echo (isset($typeOfPatient) && in_array('other', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option>
 											</select>
 											<input type="text" class="form-control" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
-										<th><label for="reasonForTbTest">Type of Examination <span class="mandatory">*</span> </label></th>
+										<th><label for="reasonForTbTest">Type of Examination </label></th>
 										<td>
-											<select name="reasonForTbTest[]" id="reasonForTbTest" class="select2 form-control isRequired" title="Please choose reason for examination" style="width:100%" multiple>
+											<select name="reasonForTbTest[]" id="reasonForTbTest" class="select2 form-control" title="Please choose reason for examination" style="width:100%" multiple>
 												<option value="">--Seelct--</option>
 												<?php foreach ($tbReasonsForTesting as $key => $val) { ?>
 													<option value="<?php echo $key; ?>" <?php echo (isset($reasonForTbTest) && in_array($key, $reasonForTbTest)) ? "selected='selected'" : ""; ?>><?php echo ucwords($val); ?></option>
@@ -258,19 +258,19 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 								</div>
 								<table class="table">
 									<tr>
-										<th><label class="label-control" for="sampleCollectionDate">Date of Specimen Collected <span class="mandatory">*</span></label></th>
+										<th><label class="label-control" for="sampleCollectionDate">Date of Specimen Collected </label></th>
 										<td>
-											<input class="form-control isRequired" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
+											<input class="form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
 										</td>
-										<th><label class="label-control" for="sampleReceivedDate">Date of Specimen Reception <span class="mandatory">*</span></label></th>
+										<th><label class="label-control" for="sampleReceivedDate">Date of Specimen Reception </label></th>
 										<td>
 											<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
-										<th><label class="label-control" for="specimenType">Specimen Type <span class="mandatory">*</span></label></th>
+										<th><label class="label-control" for="specimenType">Specimen Type </label></th>
 										<td>
-											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
+											<select name="specimenType" id="specimenType" class="form-control" title="Please choose specimen type" style="width:100%">
 												<?php echo $general->generateSelectOptions($specimenTypeResult, $tbInfo['specimen_type'], '-- Select --'); ?>
 												<option value='other'> Other </option>
 											</select>
@@ -320,28 +320,28 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 									</div>
 									<table class="table" style="width:100%">
 										<tr>
-											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
+											<td><label class="label-control" for="labId">Testing Laboratory<span class="mandatory">*</span></label> </td>
 											<td>
-												<select name="labId" id="labId" class="form-control select2" title="Please select Testing Testing Laboratory" style="width:100%;">
+												<select name="labId" id="labId" class="form-control select2 isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
+											<th><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested <span class="mandatory">*</span></label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample tested" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control isRequired" value="<?php echo $tbInfo['sample_collection_date']; ?>" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample tested" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
+											<th><label class="label-control" for="isSampleRejected">Is Sample Rejected? <span class="mandatory">*</span></label></th>
 											<td>
-												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
+												<select class="form-control isRequired" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
 													<option value=''> -- Select -- </option>
 													<option value="yes" <?php echo (isset($tbInfo['is_sample_rejected']) && $tbInfo['is_sample_rejected'] == "yes") ? "selected='selecetd'" : ""; ?>> Yes </option>
 													<option value="no" <?php echo (isset($tbInfo['is_sample_rejected']) && $tbInfo['is_sample_rejected'] == "no") ? "selected='selecetd'" : ""; ?>> No </option>
 												</select>
 											</td>
 
-											<th class="show-rejection" style="display:none;"><label class="label-control" for="sampleRejectionReason">Reason for Rejection<span class="mandatory">*</span></label></th>
+											<th class="show-rejection" style="display:none;"><label class="label-control" for="sampleRejectionReason">Reason for Rejection <span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
 												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
 													<option value="">-- Select --</option>
@@ -386,10 +386,10 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 																<tr>
 																	<td class="text-center"><?php echo ($key + 1); ?></td>
 																	<td>
-																		<input type="text" value="<?php echo $tbRow['actual_no']; ?>" class="form-control" id="actualNo<?php echo ($key + 1); ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
+																		<input type="text" value="<?php echo $tbRow['actual_no']; ?>" class="form-control test-name-table-input isRequired" id="actualNo<?php echo ($key + 1); ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
 																	</td>
 																	<td>
-																		<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo ($key + 1); ?>" title="Please select the result for row <?php echo ($key + 1); ?>">
+																		<select class="form-control test-result test-name-table-input isRequired" name="testResult[]" id="testResult<?php echo ($key + 1); ?>" title="Please select the result for row <?php echo ($key + 1); ?>">
 																			<?= $general->generateSelectOptions($microscope, $tbRow['test_result'], '-- Select --'); ?>
 																		</select>
 																	</td>
@@ -403,10 +403,10 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 															<tr>
 																<td class="text-center">1</td>
 																<td>
-																	<input type="text" class="form-control" id="actualNo1" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
+																	<input type="text" class="form-control test-name-table-input isRequired" id="actualNo1" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
 																</td>
 																<td>
-																	<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
+																	<select class="form-control test-result test-name-table-input isRequired" name="testResult[]" id="testResult1" title="Please select the result for row 1">
 																		<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
 																	</select>
 																</td>
@@ -421,43 +421,43 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="xPertMTMResult">X pert MTB Result</label></th>
+											<th><label class="label-control" for="xPertMTMResult">X pert MTB Result <span class="mandatory">*</span></label></th>
 											<td>
-												<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the X Pert MTM Result">
+												<select class="form-control test-result test-name-table-input isRequired" name="xPertMTMResult" id="xPertMTMResult" title="Please select the X Pert MTM Result">
 													<?= $general->generateSelectOptions($tbXPertResults, $tbInfo['xpert_mtb_result'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="result">TB LAM Result</label></th>
+											<th><label class="label-control" for="result">TB LAM Result <span class="mandatory">*</span></label></th>
 											<td>
-												<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
+												<select class="form-control isRequired" name="result" id="result" title="Please select the TB LAM result">
 													<?= $general->generateSelectOptions($tbLamResults, $tbInfo['result'], '-- Select --'); ?>
 												</select>
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="reviewedBy">Reviewed By</label></th>
+											<th><label class="label-control" for="reviewedBy">Reviewed By <span class="mandatory">*</span></label></th>
 											<td>
-												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+												<select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose reviewed by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="reviewedOn">Reviewed on</label></td>
-											<td><input type="text" value="<?php echo $tbInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the reviewed on" /></td>
+											<th><label class="label-control" for="reviewedOn">Reviewed on <span class="mandatory">*</span></label></td>
+											<td><input type="text" value="<?php echo $tbInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="date-time disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the reviewed on" /></td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="approvedBy">Approved By</label></th>
+											<th><label class="label-control" for="approvedBy">Approved By <span class="mandatory">*</span></label></th>
 											<td>
-												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+												<select name="approvedBy" id="approvedBy" class="select2 form-control isRequired" title="Please choose approved by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['result_approved_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="approvedOn">Approved on</label></td>
-											<td><input type="text" value="<?php echo $tbInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="date-time form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
+											<th><label class="label-control" for="approvedOn">Approved on <span class="mandatory">*</span></label></td>
+											<td><input type="text" value="<?php echo $tbInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="date-time form-control isRequired" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="testedBy">Tested By</label></th>
+											<th><label class="label-control" for="testedBy">Tested By <span class="mandatory">*</span></label></th>
 											<td>
-												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+												<select name="testedBy" id="testedBy" class="select2 form-control isRequired" title="Please choose approved by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
 												</select>
 											</td>
@@ -477,7 +477,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
 						<input type="hidden" name="formId" id="formId" value="1" />
-						<input type="hidden" name="tbSampleId" id="tbSampleId" value="1" />
+						<input type="hidden" name="tbSampleId" id="tbSampleId" value="<?php echo $id; ?>" />
 						<a href="/tb/requests/tb-requests.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -742,6 +742,9 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 			});
 		<?php } ?>
 		getfacilityProvinceDetails($("#facilityId").val());
+
+		$('.disabledForm input, .disabledForm select , .disabledForm textarea').attr('disabled', true);
+		$('.disabledForm input, .disabledForm select , .disabledForm textarea').removeClass("isRequired");
 	});
 
 	let testCounter = 1;
@@ -750,7 +753,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 		testCounter++;
 		let rowString = `<tr>
 			<td class="text-center">${testCounter}</td>
-            <td><input type="text" class="form-control" id="actualNo${testCounter}" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" /></td>
+            <td><input type="text" class="form-control test-name-table-input" id="actualNo${testCounter}" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" /></td>
             <td><select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result for row ${testCounter}"><?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?></select></td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa fa-plus"></i></a>&nbsp;

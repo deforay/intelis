@@ -146,6 +146,18 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 } else {
 	$tbTestRequestMenuAccess = false;
 }
+
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("tb-manual-results.php", "tb-result-status.php"))) {
+	$tbTestResultMenuAccess = true;
+} else {
+	$tbTestResultMenuAccess = false;
+}
+
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("tb-sample-status.php", "tb-export-data.php", "tb-print-results.php", "tb-sample-rejection-report.php", "tb-clinic-report.php"))) {
+	$tbManagementMenuAccess = true;
+} else {
+	$tbManagementMenuAccess = false;
+}
 // TB Menu end
 
 ?>
@@ -518,6 +530,22 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											</li>
 											<li class="allMenu covid19-test-reasons">
 												<a href="/covid-19/reference/covid19-test-reasons.php"><i class="fa fa-caret-right"></i>Test-Reasons</a>
+											</li>
+										</ul>
+									</li>
+								<?php }
+								if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
+									<li class="treeview tb-reference-manage">
+										<a href="#">
+											TB Config
+											<span class="pull-right-container">
+												<i class="fa fa-angle-left pull-right"></i>
+											</span>
+										</a>
+
+										<ul class="treeview-menu">
+											<li class="allMenu tb-reference">
+												<a href="/tb/reference/tb-sample-type.php"><i class="fa fa-caret-right"></i>Sample Type</a>
 											</li>
 										</ul>
 									</li>
@@ -1020,6 +1048,47 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<li class="allMenu specimenReferralManifestListC19Menu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('tb'); ?>"><i class="fa fa-caret-right"></i> Tb Specimen Manifest</a>
 										</li>
+									<?php } ?>
+								</ul>
+							</li>
+						<?php }
+						if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && $tbTestResultMenuAccess == true) { ?>
+							<li class="treeview tbResults" style="<?php echo $hideResult; ?>">
+								<a href="#">
+									<i class="fa fa-tasks"></i>
+									<span>Test Result Management</span>
+									<span class="pull-right-container">
+										<i class="fa fa-angle-left pull-right"></i>
+									</span>
+								</a>
+								<ul class="treeview-menu">
+									<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbImportResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('tb'); ?>"><i class="fa fa-caret-right"></i> Import Result From File</a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("tb-manual-results.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbResultsMenu"><a href="/tb/results/tb-manual-results.php"><i class="fa fa-caret-right"></i> Enter Result Manually</a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("tb-result-status.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbResultStatus"><a href="/tb/results/tb-result-status.php"><i class="fa fa-caret-right"></i> Manage Results Status</a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("mail-tb-results.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbResultMailMenu"><a href="/tb/mail/mail-tb-results.php"><i class="fa fa-caret-right"></i> E-mail Test Result</a></li>
+									<?php }  ?>
+								</ul>
+							</li>
+						<?php }
+						if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && $tbManagementMenuAccess == true) { ?>
+							<li class="treeview tbProgramMenu">
+								<a href="#">
+									<i class="fa fa-book"></i>
+									<span>Management</span>
+									<span class="pull-right-container">
+										<i class="fa fa-angle-left pull-right"></i>
+									</span>
+								</a>
+								<ul class="treeview-menu">
+									<?php if (isset($_SESSION['privileges']) && in_array("tb-print-results.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbPrintResults"><a href="/tb/results/tb-print-results.php"><i class="fa fa-caret-right"></i> Print Result</a></li>
 									<?php } ?>
 								</ul>
 							</li>

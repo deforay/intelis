@@ -52,6 +52,12 @@ try {
     } else {
         $_POST['sampleCollectionDate'] = NULL;
     }
+    if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
+        $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
+        $_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+    } else {
+        $_POST['sampleDispatchedDate'] = NULL;
+    }
     if (isset($_POST['dob']) && trim($_POST['dob']) != "") {
         $_POST['dob'] = $general->dateFormat($_POST['dob']);
     } else {
@@ -229,6 +235,7 @@ try {
         'sample_code_format' => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  NULL,
         'facility_id' => (isset($_POST['fName']) && $_POST['fName'] != '') ? $_POST['fName'] :  NULL,
         'sample_collection_date' => $_POST['sampleCollectionDate'],
+        'sample_dispatched_datetime' => $_POST['sampleDispatchedDate'],
         'patient_gender' => (isset($_POST['gender']) && $_POST['gender'] != '') ? $_POST['gender'] :  NULL,
         'patient_dob' => $_POST['dob'],
         'patient_age_in_years' => (isset($_POST['ageInYears']) && $_POST['ageInYears'] != '') ? $_POST['ageInYears'] :  NULL,

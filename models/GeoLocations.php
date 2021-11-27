@@ -101,4 +101,10 @@ class GeoLocations
         $this->db->where("geo_name", $geoName);
         return $this->db->getOne('geographical_divisions', array("geo_id", "geo_name"));
     }
+
+    public function getById($geoId)
+    {
+        $this->db->where("geo_id", $geoId);
+        return $this->db->getOne('geographical_divisions', array("geo_id", "geo_name"));
+    }
 }

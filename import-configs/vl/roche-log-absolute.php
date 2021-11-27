@@ -14,7 +14,7 @@ try {
         $maxId = 1;
     }
     $_SESSION['controllertrack'] = $maxId;
-    
+
     $allowedExtensions = array(
         'xls',
         'xlsx',
@@ -25,8 +25,8 @@ try {
     $ranNumber         = str_pad(rand(0, pow(10, 6) - 1), 6, '0', STR_PAD_LEFT);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $ranNumber . "." . $extension;
-    
-    
+
+
     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result")) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result");
     }
@@ -36,7 +36,7 @@ try {
 
         $objPHPExcel = \PhpOffice\PhpSpreadsheet\IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData   = $objPHPExcel->getActiveSheet();
-        
+
         $bquery    = "select MAX(batch_code_key) from batch_details";
         $bvlResult = $db->rawQuery($bquery);
         if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != NULL) {
@@ -45,116 +45,116 @@ try {
         } else {
             $maxBatchCodeKey = '001';
         }
-        
-        $newBatchCode = date('Ymd') . $maxBatchCodeKey;
-        
-          $sheetData   = $sheetData->toArray(null, true, true, true);
-          $m           = 0;
-          $skipTillRow = 2;
-        
-          $sampleIdCol='E';
-          $sampleIdRow='2';
-          $logValCol='';
-          $logValRow='';
-          $absValCol='I';
-          $absValRow='2';
-          $txtValCol='';
-          $txtValRow='';
-          $testingDateCol='AC';
-          $testingDateRow='2';
-          $logAndAbsoluteValInSameCol='no';
-          $sampleTypeCol = 'F';
-          $batchCodeCol = 'G';
-          $flagCol = 'K';
-          //$flagRow = '2';
-        
-        foreach ($sheetData as $rowIndex => $row) {
-            
-          if ($rowIndex < $skipTillRow)
-              continue;
-          
-          $sampleCode    = "";
-          $batchCode     = "";
-          $sampleType    = "";
-          $absDecimalVal = "";
-          $absVal        = "";
-          $logVal        = "";
-          $txtVal        = "";
-          $resultFlag    = "";
-          $testingDate   = "";
-           
-         
-          $sampleCode = $row[$sampleIdCol];
-          $sampleType = $row[$sampleTypeCol];
-          
-          $batchCode = $row[$batchCodeCol];
-          $resultFlag = $row[$flagCol];
-        
 
-          // Date time in the provided Roche Sample file is in this format : 9/9/16 12:22
-          //$testingDate = DateTime::createFromFormat('m/d/y h:i:s A', $row[$testingDateCol])->format('Y-m-d H:i');
-          
-          $testingDate = date('Y-m-d H:i', strtotime($row[$testingDateCol]));
-          
-          
-          
-          if(trim($row[$absValCol])!=""){
-              $resVal=(int)$row[$absValCol];
-              if($resVal > 0){
-                  $absDecimalVal = $absVal=trim($row[$absValCol]);
-                  
-                  $logVal=round(log10($absVal),4);
-                  $txtVal="";
-              }else{
-                  $absDecimalVal = $absVal="";
-                  $logVal="";                       
-                  $txtVal=trim($row[$absValCol]);
-              }
-          }
-          
-          if(trim($row[$absValCol])!=""){
-                $resVal=explode("(",$row[$absValCol]);
-                if(count($resVal)==2){
-                    $absVal=trim($resVal[0]);
-                    
-                    $expAbsVal=explode("E",$absVal);
-                    if(count($expAbsVal)==2){
-                         $multipleVal=substr($expAbsVal[1],1);
-                         $absDecimalVal=$expAbsVal[0]*pow(10,$multipleVal);
+        $newBatchCode = date('Ymd') . $maxBatchCodeKey;
+
+        $sheetData   = $sheetData->toArray(null, true, true, true);
+        $m           = 0;
+        $skipTillRow = 2;
+
+        $sampleIdCol = 'E';
+        $sampleIdRow = '2';
+        $logValCol = '';
+        $logValRow = '';
+        $absValCol = 'I';
+        $absValRow = '2';
+        $txtValCol = '';
+        $txtValRow = '';
+        $testingDateCol = 'AC';
+        $testingDateRow = '2';
+        $logAndAbsoluteValInSameCol = 'no';
+        $sampleTypeCol = 'F';
+        $batchCodeCol = 'G';
+        $flagCol = 'K';
+        //$flagRow = '2';
+
+        foreach ($sheetData as $rowIndex => $row) {
+
+            if ($rowIndex < $skipTillRow)
+                continue;
+
+            $sampleCode    = "";
+            $batchCode     = "";
+            $sampleType    = "";
+            $absDecimalVal = "";
+            $absVal        = "";
+            $logVal        = "";
+            $txtVal        = "";
+            $resultFlag    = "";
+            $testingDate   = "";
+
+
+            $sampleCode = $row[$sampleIdCol];
+            $sampleType = $row[$sampleTypeCol];
+
+            $batchCode = $row[$batchCodeCol];
+            $resultFlag = $row[$flagCol];
+
+
+            // Date time in the provided Roche Sample file is in this format : 9/9/16 12:22
+            //$testingDate = DateTime::createFromFormat('m/d/y h:i:s A', $row[$testingDateCol])->format('Y-m-d H:i');
+
+            $testingDate = date('Y-m-d H:i', strtotime($row[$testingDateCol]));
+
+
+
+            if (trim($row[$absValCol]) != "") {
+                $resVal = (int)$row[$absValCol];
+                if ($resVal > 0) {
+                    $absDecimalVal = $absVal = trim($row[$absValCol]);
+
+                    $logVal = round(log10($absVal), 4);
+                    $txtVal = "";
+                } else {
+                    $absDecimalVal = $absVal = "";
+                    $logVal = "";
+                    $txtVal = trim($row[$absValCol]);
+                }
+            }
+
+            if (trim($row[$absValCol]) != "") {
+                $resVal = explode("(", $row[$absValCol]);
+                if (count($resVal) == 2) {
+                    $absVal = trim($resVal[0]);
+
+                    $expAbsVal = explode("E", $absVal);
+                    if (count($expAbsVal) == 2) {
+                        $multipleVal = substr($expAbsVal[1], 1);
+                        $absDecimalVal = $expAbsVal[0] * pow(10, $multipleVal);
                     }
-                    $logVal=substr(trim($resVal[1]),0,-1);
-                }else{
-                    $txtVal=trim($row[$absValCol]);
-                    if($txtVal=='Invalid'){
-                        $resultFlag=trim($txtVal);
+                    $logVal = substr(trim($resVal[1]), 0, -1);
+                } else {
+                    $txtVal = trim($row[$absValCol]);
+                    if ($txtVal == 'Invalid') {
+                        $resultFlag = trim($txtVal);
                     }
                 }
-            }          
-            
-            
-          if ($sampleCode == "")
-              continue;
-            
+            }
 
-          $infoFromFile[$sampleCode] = array(
-              "sampleCode" => $sampleCode,
-              "logVal" => trim($logVal),
-              "absVal" => $absVal,
-              "absDecimalVal" => $absDecimalVal,
-              "txtVal" => $txtVal,
-              "resultFlag" => $resultFlag,
-              "testingDate" => $testingDate,
-              "sampleType" => $sampleType,
-              "batchCode" => $batchCode
-          );
-            
-            
+
+            if ($sampleCode == "")
+                continue;
+
+
+            $infoFromFile[$sampleCode] = array(
+                "sampleCode" => $sampleCode,
+                "logVal" => trim($logVal),
+                "absVal" => $absVal,
+                "absDecimalVal" => $absDecimalVal,
+                "txtVal" => $txtVal,
+                "resultFlag" => $resultFlag,
+                "testingDate" => $testingDate,
+                "sampleType" => $sampleType,
+                "batchCode" => $batchCode
+            );
+
+
             $m++;
         }
-        
-        
+
+
         foreach ($infoFromFile as $sampleCode => $d) {
-            
+
             $data = array(
                 'module' => 'vl',
                 'lab_id' => base64_decode($_POST['labId']),
@@ -171,8 +171,8 @@ try {
                 'import_machine_file_name' => $fileName,
                 'approver_comments' => $d['resultFlag']
             );
-            
-            
+
+
             if ($d['absVal'] != "") {
                 $data['result'] = $d['absVal'];
             } else if ($d['logVal'] != "") {
@@ -182,15 +182,15 @@ try {
             } else {
                 $data['result'] = "";
             }
-            
+
             if ($batchCode == '') {
                 $data['batch_code']     = $newBatchCode;
                 $data['batch_code_key'] = $maxBatchCodeKey;
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            
-            $query    = "select facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where sample_code='" . $sampleCode . "'";
+
+            $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             if ($vlResult && $sampleCode != '') {
                 if ($vlResult[0]['result_value_log'] != '' || $vlResult[0]['result_value_absolute'] != '' || $vlResult[0]['result_value_text'] != '' || $vlResult[0]['result_value_absolute_decimal'] != '') {
@@ -216,8 +216,8 @@ try {
     $eventType            = 'import';
     $action               = ucwords($_SESSION['userName']) . ' imported a new test result with the sample code ' . $sampleCode;
     $resource             = 'import-result';
-    $general->activityLog($eventType,$action,$resource);   
-    
+    $general->activityLog($eventType, $action, $resource);
+
     //new log for update in result
     $data = array(
         'user_id' => $_SESSION['userId'],
@@ -226,11 +226,9 @@ try {
         'updated_on' => $general->getDateTime()
     );
     $db->insert("log_result_updates", $data);
-    
+
     header("location:/import-result/imported-results.php");
-    
-}
-catch (Exception $exc) {
+} catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }

@@ -320,6 +320,12 @@ $disable = "disabled = 'disabled'";
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="">Sample Dispatched On <span class="mandatory">*</span></label>
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" title="Please select sample dispatched on" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" <?php echo $disable; ?>>
+                                                       </div>
+                                                  </div>
+									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="specimenType">Sample Type <span class="mandatory">*</span></label>
 											<select name="specimenType" id="specimenType" class="form-control " title="Please choose sample type" <?php echo $disable; ?>>

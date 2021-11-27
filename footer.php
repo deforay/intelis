@@ -708,10 +708,24 @@
 		$(".allMenu").removeClass('active');
 		$(".tbRequest").addClass('active');
 		$(".tbBatchCodeMenu").addClass('active');
+	} else if (splitsUrl == 'tb-manual-results.php' || splitsUrl == 'tb-update-result.php') {
+		$(".allMenu").removeClass('active');
+		$(".tbResults").addClass('active');
+		$(".tbResultsMenu").addClass('active');
 	} else if (splitsUrl == 'addSamplesFromManifest.php' && splitsUrlCheck[1] == "tb") {
 		$(".allMenu").removeClass('active');
 		$(".tbRequest").addClass('active');
 		$(".addSamplesFromManifestTbMenu").addClass('active');
+	} else if (splitsUrl == 'tb-print-results.php') {
+		$(".manage").removeClass('active');
+		$(".tbProgramMenu").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tbPrintResults").addClass('active');
+	} else if (splitsUrl == 'tb-sample-type.php') {
+		$(".manage").removeClass('active');
+		$(".tb-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tb-reference").addClass('active');
 	} else {
 		$(".allMenu").removeClass('active');
 		$(".dashboardMenu").addClass('active');

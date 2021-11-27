@@ -365,6 +365,16 @@ class General
         return $response;
     }
 
+    public function getTbResults()
+    {
+        $results = $this->db->rawQuery("SELECT * FROM r_tb_results where status='active' ORDER BY result_id DESC");
+        $response = array();
+        foreach ($results as $row) {
+            $response[$row['result_id']] = $row['result'];
+        }
+        return $response;
+    }
+
     public function startsWith($string, $startString)
     {
         $len = strlen($startString);

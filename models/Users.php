@@ -165,6 +165,14 @@ class Users
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
         }
 
+        if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+            $sharedHepPrivileges = array(
+                'tb-update-result.php' => 'tb-manual-results.php',
+                'tb-sample-rejection-reasons.php'  => 'tb-sample-type.php',
+            );
+            $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
+        }
+
         return $sharedPrivileges;
     }
 
@@ -204,7 +212,7 @@ class Users
     public function addUserIfNotExists($name, $status = 'inactive', $role = 4)
     {
         $uQuery = "SELECT `user_id` FROM $this->table WHERE (`user_name` LIKE '$name') OR (JSON_CONTAINS(LOWER(interface_user_name), JSON_QUOTE(LOWER('$name')), '$'))";
-        
+
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
             $general = new \Vlsm\Models\General($this->db);
