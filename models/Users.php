@@ -169,6 +169,8 @@ class Users
             $sharedHepPrivileges = array(
                 'tb-update-result.php' => 'tb-manual-results.php',
                 'tb-sample-rejection-reasons.php'  => 'tb-sample-type.php',
+                'add-tb-sample-type.php'           => 'tb-sample-type.php',
+                'edit-tb-sample-type.php'          => 'tb-sample-type.php',
             );
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
         }
