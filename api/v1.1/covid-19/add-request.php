@@ -42,7 +42,9 @@ try {
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
         $sampleFrom = '';
-        $data['formId'] = $data['countryId'] = $general->getGlobalConfig('vl_form');
+        $formId = $general->getGlobalConfig('vl_form');
+        if ($data['formId'] == $formId) {
+        }
         $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
         $rowData = $db->rawQuery($sQuery);
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
@@ -109,11 +111,11 @@ try {
             $sampleData = json_decode($sampleJson, true);
         }
 
-        if (!isset($data['countryId']) || $data['countryId'] == '') {
-            $data['countryId'] = '';
+        if (!isset($data['formId']) || $data['formId'] == '') {
+            $data['formId'] = '';
         }
         $covid19Data = array(
-            'vlsm_country_id' => $data['countryId'],
+            'vlsm_country_id' => $data['formId'],
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,

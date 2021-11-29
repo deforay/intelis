@@ -11,9 +11,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new \Vlsm\Models\General();
 
-/* echo "<pre>";
+echo "<pre>";
 print_r($_POST);
-die; */
+die;
 
 $tableName = "form_covid19";
 $tableName1 = "activity_log";
@@ -44,11 +44,11 @@ try {
 	}
 
 	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
-        $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
-        $_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
-    } else {
-        $_POST['sampleDispatchedDate'] = NULL;
-    }
+		$sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
+		$_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+	} else {
+		$_POST['sampleDispatchedDate'] = NULL;
+	}
 
 	//Set sample received date
 	if (!empty($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
@@ -190,7 +190,6 @@ try {
 		'travel_return_date'                  => !empty($_POST['returnDate']) ? $general->dateFormat($_POST['returnDate']) : null,
 		'sample_received_at_vl_lab_datetime'  => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
 		'sample_condition'  				  => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : (isset($_POST['specimenQuality']) ? $_POST['specimenQuality'] : null),
-		// 'lab_technician' 					  => (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
 		'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
 		'result'                              => !empty($_POST['result']) ? $_POST['result'] : null,
 		'result_sent_to_source'               => $resultSentToSource,
@@ -208,10 +207,8 @@ try {
 		'result_status'                       => $status,
 		'data_sync'                           => 0,
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-		// 'request_created_by'                  =>,
-		'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['requestedDate']) : $general->getDateTime(),
+		'request_created_datetime'            => $general->getDateTime(),
 		'sample_registered_at_lab'            => $general->getDateTime(),
-		// 'last_modified_by'                    => $_SESSION['userId'],
 		'last_modified_datetime'              => $general->getDateTime(),
 		'request_created_by'              	  => $_SESSION['userId'],
 		'last_modified_by'              	  => $_SESSION['userId'],
