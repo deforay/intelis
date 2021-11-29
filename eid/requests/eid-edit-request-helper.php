@@ -37,11 +37,11 @@ try {
 	}
 
 	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
-        $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
-        $_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
-    } else {
-        $_POST['sampleDispatchedDate'] = NULL;
-    }
+		$sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
+		$_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+	} else {
+		$_POST['sampleDispatchedDate'] = NULL;
+	}
 
 	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
 		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
@@ -49,7 +49,7 @@ try {
 	} else {
 		$_POST['approvedOnDateTime'] = NULL;
 	}
-	
+
 
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
@@ -182,7 +182,7 @@ try {
 		'mother_vl_result' 									=> $motherVlResult,
 		'mother_hiv_status' 								=> isset($_POST['mothersHIVStatus']) ? $_POST['mothersHIVStatus'] : null,
 		'pcr_test_performed_before' 						=> isset($_POST['pcrTestPerformedBefore']) ? $_POST['pcrTestPerformedBefore'] : null,
-		'previous_pcr_result' 									=> isset($_POST['prePcrTestResult']) ? $_POST['prePcrTestResult'] : null,
+		'previous_pcr_result' 								=> isset($_POST['prePcrTestResult']) ? $_POST['prePcrTestResult'] : null,
 		'last_pcr_date' 									=> isset($_POST['previousPCRTestDate']) ? $_POST['previousPCRTestDate'] : null,
 		'reason_for_pcr' 									=> isset($_POST['pcrTestReason']) ? $_POST['pcrTestReason'] : null,
 		'sample_requestor_name' 							=> isset($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
@@ -194,8 +194,6 @@ try {
 		'specimen_type' 									=> isset($_POST['specimenType']) ? $_POST['specimenType'] : null,
 		'sample_collection_date' 							=> isset($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
 		'sample_dispatched_datetime' 						=> isset($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
-		'sample_requestor_phone' 							=> isset($_POST['sampleRequestorPhone']) ? $_POST['sampleRequestorPhone'] : null,
-		'sample_requestor_name' 							=> isset($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
 		'rapid_test_performed' 								=> isset($_POST['rapidTestPerformed']) ? $_POST['rapidTestPerformed'] : null,
 		'rapid_test_date' 									=> isset($_POST['rapidtestDate']) ? $_POST['rapidtestDate'] : null,
 		'rapid_test_result' 								=> isset($_POST['rapidTestResult']) ? $_POST['rapidTestResult'] : null,
