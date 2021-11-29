@@ -505,6 +505,9 @@ class General
         if ($testType == "hepatitis") {
             $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
         }
+        if ($testType == "tb") {
+            $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
+        }
         foreach ($rejArray as $rej) {
             $rejReaons[$rej] = ucwords($rej);
         }

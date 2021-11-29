@@ -544,8 +544,17 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</a>
 
 										<ul class="treeview-menu">
+										<li class="allMenu tb-sample-rejection-reasons">
+												<a href="/tb/reference/tb-sample-rejection-reasons.php"><i class="fa fa-caret-right"></i>Rejection Reasons</a>
+											</li>
 											<li class="allMenu tb-reference">
 												<a href="/tb/reference/tb-sample-type.php"><i class="fa fa-caret-right"></i>Sample Type</a>
+											</li>
+											<li class="allMenu tb-test-reasons">
+												<a href="/tb/reference/tb-test-reasons.php"><i class="fa fa-caret-right"></i>Test-Reasons</a>
+											</li>
+											<li class="allMenu tb-results">
+												<a href="/tb/reference/tb-results.php"><i class="fa fa-caret-right"></i>Results</a>
 											</li>
 										</ul>
 									</li>

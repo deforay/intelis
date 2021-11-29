@@ -28,7 +28,7 @@ try {
         $db->update($tableName, $data);
 
 		$_SESSION['alertMsg'] = "Sample details updated successfully";
-		$general->activityLog('update-sample-type', $_SESSION['userName'] . ' updated new reference sample type' . $_POST['sampleName'], 'reference-covid19-sample type');
+		$general->activityLog('update-sample-type', $_SESSION['userName'] . ' updated new reference sample type' . $_POST['sampleName'], 'reference-tb-sample type');
 	}
 	header("location:tb-sample-type.php");
 } catch (Exception $exc) {
