@@ -536,7 +536,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<?php }
 								if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview tb-reference-manage">
-										<a href="#">
+										<a href="#"><i class="fa fa-heartbeat"></i>
 											TB Config
 											<span class="pull-right-container">
 												<i class="fa fa-angle-left pull-right"></i>
