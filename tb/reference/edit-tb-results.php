@@ -37,6 +37,15 @@ $resultInfo = $db->query($resultQuery);
 										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Result Name" title="Please enter Result name" onblur="checkNameValidation('r_tb_results','result',this,'<?php echo "result_id##" . $id; ?>','The Result name that you entered already exists.Enter another name',null)" />
 										<input type="hidden" class="form-control isRequired" id="resultId" name="resultId" value="<?php echo base64_encode($id); ?>" />
 										<input type="hidden" class="form-control isRequired" id="oldResultName" name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
+										<input type="hidden" class="form-control" id="oldResultType" name="oldResultType" value="<?php echo $resultInfo[0]['result_type']; ?>" />
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="resultType" class="col-lg-4 control-label">Result Type<span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<input type="text" class="form-control isRequired" id="resultType" name="resultType" value="<?php echo $resultInfo[0]['result_type']; ?>" placeholder="Result Type" title="Please enter Result type" onblur="checkNameValidation('r_tb_results','result_type',this,'<?php echo "result_id##" . $id; ?>','The Result type that you entered already exists.Enter another type',null)" />
 									</div>
 								</div>
 							</div>

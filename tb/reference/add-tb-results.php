@@ -38,6 +38,14 @@ include_once(APPLICATION_PATH . '/header.php');
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
+									<label for="resultType" class="col-lg-4 control-label">Result Type<span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<input type="text" class="form-control isRequired" id="resultType" name="resultType" placeholder="Result Type" title="Please enter Result type" onblur="checkNameValidation('r_tb_results','result_type',this,null,'The Result type that you entered already exists.Enter another type',null)" />
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
 									<label for="resultStatus" class="col-lg-4 control-label">Result Status</label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="Result Status" title="Please select Result Status">
