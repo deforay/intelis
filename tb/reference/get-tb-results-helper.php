@@ -18,7 +18,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('result', 'status');
+$aColumns = array('result','result_type', 'status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -139,6 +139,7 @@ $output = array(
 foreach ($rResult as $aRow) {
     $row = array();
     $row[] = ucwords($aRow['result']);
+    $row[] = ucwords($aRow['result_type']);
     $row[] = ucwords($aRow['status']);
     if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
         $row[] = '<a href="edit-tb-results.php?id=' . base64_encode($aRow['result_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';

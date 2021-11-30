@@ -30,6 +30,7 @@ include_once(APPLICATION_PATH . '/header.php');
 							<thead>
 								<tr>
 									<th>Result Name</th>
+									<th>Result Type</th>
 									<th>Status</th>
 									<?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 										<th>Action</th>
@@ -72,6 +73,9 @@ include_once(APPLICATION_PATH . '/header.php');
 			"bStateSave": true,
 			"bRetrieve": true,
 			"aoColumns": [{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{
