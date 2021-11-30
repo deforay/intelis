@@ -26,8 +26,8 @@ $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
 $start_date = date('Y-m-d');
-$end_date = date('Y-m-d');
-$batchQuery = 'SELECT MAX(batch_code_key) FROM batch_details as bd WHERE DATE(bd.request_created_datetime) >= "' . $start_date . '" AND DATE(bd.request_created_datetime) <= "' . $end_date . '"';
+//$end_date = date('Y-m-d');
+$batchQuery = "SELECT MAX(batch_code_key) FROM batch_details as bd WHERE DATE(bd.request_created_datetime) = '$start_date'";
 $batchResult = $db->query($batchQuery);
 
 if ($batchResult[0]['MAX(batch_code_key)'] != '' && $batchResult[0]['MAX(batch_code_key)'] != NULL) {

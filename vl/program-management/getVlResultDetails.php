@@ -211,7 +211,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 }
 /* Viral load filter */
 if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
-     if ($_POST['vLoad'] == '<=1000') {
+     if ($_POST['vLoad'] == 'suppressed') {
           $sWhere = $sWhere .  " AND vl.vl_result_category ='suppressed' AND vl.result_status = 7 ";
      } else {
           $sWhere = $sWhere .  " AND vl.vl_result_category ='not suppressed' AND vl.result_status = 7 ";

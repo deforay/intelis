@@ -85,7 +85,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<td><b>VL Lab :</b></td>
+							<td><b>Testing Lab :</b></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
@@ -101,9 +101,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							<td>
 								<select class="form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
 									<option value=""> -- Select -- </option>
-									<option value="<=<?php echo $arr['viral_load_threshold_limit']; ?>">
+									<option value="suppressed">
 										<= <?php echo $arr['viral_load_threshold_limit']; ?> cp/ml </option>
-									<option value="><?php echo $arr['viral_load_threshold_limit']; ?>">> <?php echo $arr['viral_load_threshold_limit']; ?> cp/ml
+									<option value="not suppressed">
+										> <?php echo $arr['viral_load_threshold_limit']; ?> cp/ml
 									</option>
 								</select>
 							</td>
