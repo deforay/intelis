@@ -33,7 +33,7 @@ include_once(APPLICATION_PATH . '/header.php');
                 <div class="form-group">
                   <label for="sampleName" class="col-lg-4 control-label">Sample Name <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control isRequired" id="sampleName" name="sampleName" placeholder="sample Name" title="Please enter Sample name" onblur="checkNameValidation('r_covid19_sample_type','sample_name',this,null,'The Sample name that you entered already exists.Enter another name',null)" />
+                    <input type="text" class="form-control isRequired" id="sampleName" name="sampleName" placeholder="sample Name" title="Please enter Sample name" onblur="checkNameValidation('r_tb_sample_type','sample_name',this,null,'The Sample name that you entered already exists.Enter another name',null)" />
                   </div>
                 </div>
               </div>

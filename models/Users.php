@@ -171,6 +171,15 @@ class Users
                 'tb-sample-rejection-reasons.php'  => 'tb-sample-type.php',
                 'add-tb-sample-type.php'           => 'tb-sample-type.php',
                 'edit-tb-sample-type.php'          => 'tb-sample-type.php',
+                'tb-sample-rejection-reasons.php'  => 'tb-sample-type.php',
+                'add-tb-sample-rejection-reason.php'  => 'tb-sample-type.php',
+                'edit-tb-sample-rejection-reason.php'  => 'tb-sample-type.php',
+                'tb-test-reasons.php'  => 'tb-sample-type.php',
+                'add-tb-test-reasons.php'  => 'tb-sample-type.php',
+                'edit-tb-test-reasons.php'  => 'tb-sample-type.php',
+                'tb-results.php'  => 'tb-sample-type.php',
+                'add-tb-results.php'  => 'tb-sample-type.php',
+                'edit-tb-results.php'  => 'tb-sample-type.php',
             );
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
         }

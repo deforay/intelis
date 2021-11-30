@@ -721,11 +721,26 @@
 		$(".tbProgramMenu").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".tbPrintResults").addClass('active');
-	} else if (splitsUrl == 'tb-sample-type.php') {
-		$(".manage").removeClass('active');
+	} else if (splitsUrl == 'tb-sample-rejection-reasons.php' || splitsUrl == 'add-tb-sample-rejection-reason.php' || splitsUrl == 'edit-tb-sample-rejection-reason.php') {
+		$(".manage").addClass('active');
+		$(".tb-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tb-sample-rejection-reasons").addClass('active');
+	} else if (splitsUrl == 'tb-sample-type.php' || splitsUrl == 'add-tb-sample-type.php' || splitsUrl == 'edit-tb-sample-type.php') {
+		$(".manage").addClass('active');
 		$(".tb-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".tb-reference").addClass('active');
+	} else if (splitsUrl == 'tb-test-reasons.php' || splitsUrl == 'add-tb-test-reasons.php' || splitsUrl == 'edit-tb-test-reasons.php') {
+		$(".manage").addClass('active');
+		$(".tb-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tb-test-reasons").addClass('active');
+	} else if (splitsUrl == 'tb-results.php' || splitsUrl == 'add-tb-results.php' || splitsUrl == 'edit-tb-results.php') {
+		$(".manage").addClass('active');
+		$(".tb-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tb-results").addClass('active');
 	} else {
 		$(".allMenu").removeClass('active');
 		$(".dashboardMenu").addClass('active');

@@ -1204,7 +1204,7 @@ $pResult = $db->rawQuery($pQuery);
     function setPatientDetails(pDetails) {
         patientArray = pDetails.split("##");
         //   console.log(patientArray);
-        $("#patientProvince").val(patientArray[14] + '##' + patientArray[16]).trigger('change');
+        $("#patientProvince").val(patientArray[14]);
         $("#firstName").val(patientArray[0]);
         $("#lastName").val(patientArray[1]);
         $("#patientPhoneNumber").val(patientArray[8]);

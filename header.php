@@ -536,7 +536,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<?php }
 								if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview tb-reference-manage">
-										<a href="#">
+										<a href="#"><i class="fa fa-heartbeat"></i>
 											TB Config
 											<span class="pull-right-container">
 												<i class="fa fa-angle-left pull-right"></i>
@@ -544,8 +544,17 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</a>
 
 										<ul class="treeview-menu">
+										<li class="allMenu tb-sample-rejection-reasons">
+												<a href="/tb/reference/tb-sample-rejection-reasons.php"><i class="fa fa-caret-right"></i>Rejection Reasons</a>
+											</li>
 											<li class="allMenu tb-reference">
 												<a href="/tb/reference/tb-sample-type.php"><i class="fa fa-caret-right"></i>Sample Type</a>
+											</li>
+											<li class="allMenu tb-test-reasons">
+												<a href="/tb/reference/tb-test-reasons.php"><i class="fa fa-caret-right"></i>Test-Reasons</a>
+											</li>
+											<li class="allMenu tb-results">
+												<a href="/tb/reference/tb-results.php"><i class="fa fa-caret-right"></i>Results</a>
 											</li>
 										</ul>
 									</li>

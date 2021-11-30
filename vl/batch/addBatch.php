@@ -26,23 +26,8 @@ $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
 $start_date = date('Y-m-d');
-//$end_date = date('Y-m-d');
-$batchQuery = "SELECT MAX(batch_code_key) FROM batch_details as bd WHERE DATE(bd.request_created_datetime) = '$start_date'";
-$batchResult = $db->query($batchQuery);
-
-if ($batchResult[0]['MAX(batch_code_key)'] != '' && $batchResult[0]['MAX(batch_code_key)'] != NULL) {
-	$maxId = $batchResult[0]['MAX(batch_code_key)'] + 1;
-	$length = strlen($maxId);
-	if ($length == 1) {
-		$maxId = "00" . $maxId;
-	} else if ($length == 2) {
-		$maxId = "0" . $maxId;
-	} else if ($length == 3) {
-		$maxId = $maxId;
-	}
-} else {
-	$maxId = '001';
-}
+$end_date = date('Y-m-d');
+$maxId = $general->createBatchCode($start_date, $end_date);
 //Set last machine label order
 $machinesLabelOrder = array();
 foreach ($testPlatformResult as $machine) {

@@ -18,22 +18,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 
 $start_date = date('Y-m-d');
 $end_date = date('Y-m-d');
-$batchQuery = 'SELECT MAX(batch_code_key) FROM batch_details as bd where DATE(bd.request_created_datetime) >= "' . $start_date . '" AND DATE(bd.request_created_datetime) <= "' . $end_date . '"';
-$batchResult = $db->query($batchQuery);
-
-if ($batchResult[0]['MAX(batch_code_key)'] != '' && $batchResult[0]['MAX(batch_code_key)'] != NULL) {
-    $maxId = $batchResult[0]['MAX(batch_code_key)'] + 1;
-    $length = strlen($maxId);
-    if ($length == 1) {
-        $maxId = "00" . $maxId;
-    } else if ($length == 2) {
-        $maxId = "0" . $maxId;
-    } else if ($length == 3) {
-        $maxId = $maxId;
-    }
-} else {
-    $maxId = '001';
-}
+$maxId = $general->createBatchCode($start_date, $end_date);
 //Set last machine label order
 $machinesLabelOrder = array();
 foreach ($testPlatformResult as $machine) {
@@ -91,7 +76,6 @@ foreach ($testPlatformResult as $machine) {
 
     <!-- Main content -->
     <section class="content">
-
         <div class="box box-default">
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
