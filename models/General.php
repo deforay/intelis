@@ -723,4 +723,10 @@ class General
         }
         return (isset($dateTime['dateTime']) && $dateTime['dateTime'] != "") ? date('d-M-Y h:i:s a', strtotime($dateTime['dateTime'])) : null;
     }
+
+    public function existBatchCode($code)
+    {
+        $this->db->where("batch_code", $code);
+        return $this->db->getOne("batch_details");
+    }
 }
