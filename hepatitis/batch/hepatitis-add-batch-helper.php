@@ -13,7 +13,7 @@ try {
     $exist = $general->existBatchCode($_POST['batchCode']);
     if ($exist) {
         $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
-        header("location:covid-19-batches.php");
+        header("location:hepatitis-batches.php");
     } else {
 
         if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
