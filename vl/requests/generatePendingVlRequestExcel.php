@@ -1,206 +1,257 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+   session_start();
+}
 ob_start();
-#require_once('../../startup.php');
+#require_once('../../startup.php');  
 
 
 
 $general = new \Vlsm\Models\General();
-//get other config details
-$geQuery = "SELECT * FROM other_config WHERE type = 'request'";
-$geResult = $db->rawQuery($geQuery);
-$mailconf = array();
-foreach ($geResult as $row) {
-   $mailconf[$row['name']] = $row['value'];
+//system config
+$systemConfigQuery = "SELECT * from system_config";
+$systemConfigResult = $db->query($systemConfigQuery);
+$sarr = array();
+// now we create an associative array so that we can easily create view variables
+for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
+   $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
+if (isset($_SESSION['vlRequestSearchResultQuery']) && trim($_SESSION['vlRequestSearchResultQuery']) != "") {
 
-$filedGroup = array();
-// if (isset($mailconf['rq_field']) && trim($mailconf['rq_field']) != '') {
-//Excel code start
-$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-$sheet = $excel->getActiveSheet();
-$styleArray = array(
-   'font' => array(
-      'bold' => true,
-      'size' => '13',
-   ),
-   'alignment' => array(
-      'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-      'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-   ),
-   'borders' => array(
-      'outline' => array(
-         'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-      ),
-   )
-);
-$borderStyle = array(
-   'alignment' => array(
-      'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-   ),
-   'borders' => array(
-      'outline' => array(
-         'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-      ),
-   )
-);
-$headings = array("Sample ID", "Province/State", "District/County", "Clinic Name", "Clinician Name", "Sample Collection Date", "Sample Received Date", "Collected by (Initials)", "Gender", "Date Of Birth", "Age in years", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Patient ID/ART/TRACNET", "Date Of ART Initiation", "ART Regimen", "Date Of Last Viral Load Test", "Result Of Last Viral Load", "Viral Load Log", "Reason For VL Test", "Lab Name", "Specimen type", "Viral Load Result(copiesl/ml)");
-//Set heading row
-$colNo = 1;
-foreach ($headings as $field => $value) {
-   if ($value == 'Province') {
-      $value = 'Province/State';
-   } else if ($value == 'District Name') {
-      $value = 'District/County';
-   }
-   $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-   $cellName = $sheet->getCellByColumnAndRow($colNo, 1)->getColumn();
-   $sheet->getStyle($cellName . '1')->applyFromArray($styleArray);
-   $colNo++;
-}
-//Set query and values
-$sampleResult = $db->rawQuery($_SESSION['vlRequestSearchResultQuery']);
-$output = array();
-foreach ($sampleResult as $sample) {
-   $row = array();
-   for ($f = 0; $f < count($filedGroup); $f++) {
-      $field = '';
-      if ($filedGroup[$f] == "Sample ID") {
-         $field = 'sample_code';
-      } elseif ($filedGroup[$f] == "Urgency") {
-         $field = 'test_urgency';
-      } elseif ($filedGroup[$f] == "Province") {
-         $field = 'facility_state';
-      } elseif ($filedGroup[$f] == "District Name") {
-         $field = 'facility_district';
-      } elseif ($filedGroup[$f] == "Clinic Name") {
-         $field = 'facility_name';
-      } elseif ($filedGroup[$f] == "Clinician Name") {
-         $field = 'lab_contact_person';
-      } elseif ($filedGroup[$f] == "Sample Collection Date") {
-         $field = 'sample_collection_date';
-      } elseif ($filedGroup[$f] == "Sample Received Date") {
-         $field = 'sample_received_at_vl_lab_datetime';
-      } elseif ($filedGroup[$f] == "Collected by (Initials)") {
-         $field = 'sample_collected_by';
-      } elseif ($filedGroup[$f] == "Gender") {
-         $field = 'patient_gender';
-      } elseif ($filedGroup[$f] == "Date Of Birth") {
-         $field = 'patient_dob';
-      } elseif ($filedGroup[$f] == "Age in years") {
-         $field = 'patient_age_in_years';
-      } elseif ($filedGroup[$f] == "Age in months") {
-         $field = 'patient_age_in_months';
-      } elseif ($filedGroup[$f] == "Is Patient Pregnant?") {
-         $field = 'is_patient_pregnant';
-      } elseif ($filedGroup[$f] == "Is Patient Breastfeeding?") {
-         $field = 'is_patient_breastfeeding';
-      } elseif ($filedGroup[$f] == "Patient ID/ART/TRACNET") {
-         $field = 'patient_art_no';
-      } elseif ($filedGroup[$f] == "Date Of ART Initiation") {
-         $field = 'date_of_initiation_of_current_regimen';
-      } elseif ($filedGroup[$f] == "ART Regimen") {
-         $field = 'current_regimen';
-      } elseif ($filedGroup[$f] == "Patient consent to SMS Notification?") {
-         $field = 'consent_to_receive_sms';
-      } elseif ($filedGroup[$f] == "Patient Mobile Number") {
-         $field = 'patient_mobile_number';
-      } elseif ($filedGroup[$f] == "Date Of Last Viral Load Test") {
-         $field = 'last_viral_load_date';
-      } elseif ($filedGroup[$f] == "Result Of Last Viral Load") {
-         $field = 'last_viral_load_result';
-      } elseif ($filedGroup[$f] == "Viral Load Log") {
-         $field = 'last_vl_result_in_log';
-      } elseif ($filedGroup[$f] == "Reason For VL Test") {
-         $field = 'test_reason_name';
-      } elseif ($filedGroup[$f] == "Lab Name") {
-         $field = 'lab_id';
-      } elseif ($filedGroup[$f] == "Lab ID") {
-         $field = 'lab_code';
-      } elseif ($filedGroup[$f] == "VL Testing Platform") {
-         $field = 'vl_test_platform';
-      } elseif ($filedGroup[$f] == "Specimen type") {
-         $field = 'sample_name';
-      } elseif ($filedGroup[$f] == "Sample Testing Date") {
-         $field = 'sample_tested_datetime';
-      } elseif ($filedGroup[$f] == "Viral Load Result(copiesl/ml)") {
-         $field = 'result_value_absolute';
-      } elseif ($filedGroup[$f] == "Log Value") {
-         $field = 'result_value_log';
-      } elseif ($filedGroup[$f] == "Is Sample Rejected") {
-         $field = 'is_sample_rejected';
-      } elseif ($filedGroup[$f] == "Rejection Reason") {
-         $field = 'rejection_reason_name';
-      } elseif ($filedGroup[$f] == "Reviewed By") {
-         $field = 'result_reviewed_by';
-      } elseif ($filedGroup[$f] == "Approved By") {
-         $field = 'result_approved_by';
-      } elseif ($filedGroup[$f] == "Lab Tech. Comments") {
-         $field = 'approver_comments';
-      } elseif ($filedGroup[$f] == "Status") {
-         $field = 'status_name';
-      }
+   $rResult = $db->rawQuery($_SESSION['vlRequestSearchResultQuery']);
 
-      if ($field == '') {
-         continue;
-      }
-      if ($field ==  'result_reviewed_by') {
-         $fValueQuery = "SELECT u.user_name as reviewedBy FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s_type ON s_type.sample_id=vl.sample_type LEFT JOIN r_vl_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_reviewed_by where vl.vl_sample_id = '" . $sample['vl_sample_id'] . "'";
-      } elseif ($field ==  'result_approved_by') {
-         $fValueQuery = "SELECT u.user_name as approvedBy FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s_type ON s_type.sample_id=vl.sample_type LEFT JOIN r_vl_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_approved_by where vl.vl_sample_id = '" . $sample['vl_sample_id'] . "'";
-      } elseif ($field ==  'lab_id') {
-         $fValueQuery = "SELECT f.facility_name as labName FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id where vl.vl_sample_id = '" . $sample['vl_sample_id'] . "'";
-      } elseif ($field ==  'test_reason_name') {
-         $fValueQuery = "SELECT test_reason_name FROM vl_request_form as vl LEFT JOIN r_vl_test_reasons as rvl ON vl.reason_for_vl_testing=rvl.test_reason_id where vl.vl_sample_id = '" . $sample['vl_sample_id'] . "'";
-      } else {
-         $fValueQuery = "SELECT $field FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s_type ON s_type.sample_id=vl.sample_type LEFT JOIN r_vl_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN r_sample_status as t_s ON t_s.status_id=vl.result_status where vl.vl_sample_id = '" . $sample['vl_sample_id'] . "'";
-      }
-      $fValueResult = $db->rawQuery($fValueQuery);
-      $fieldValue = '';
-      if (count($fValueResult) > 0) {
-         if ($field == 'sample_collection_date' || $field == 'sample_received_at_vl_lab_datetime' || $field == 'sample_tested_datetime') {
-            if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00 00:00:00') {
-               $xplodDate = explode(" ", $fValueResult[0][$field]);
-               $fieldValue = $general->humanDateFormat($xplodDate[0]) . " " . $xplodDate[1];
-            }
-         } elseif ($field == 'patient_dob' || $field == 'date_of_initiation_of_current_regimen' || $field == 'last_viral_load_date') {
-            if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00') {
-               $fieldValue = $general->humanDateFormat($fValueResult[0][$field]);
-            }
-         } elseif ($field ==  'vl_test_platform' || $field ==  'patient_gender' || $field == 'is_sample_rejected') {
-            $fieldValue = ucwords(str_replace("_", " ", $fValueResult[0][$field]));
-         } elseif ($field ==  'result_reviewed_by') {
-            $fieldValue = $fValueResult[0]['reviewedBy'];
-         } elseif ($field ==  'result_approved_by') {
-            $fieldValue = $fValueResult[0]['approvedBy'];
-         } elseif ($field ==  'lab_id') {
-            $fieldValue = $fValueResult[0]['labName'];
-         } else {
-            $fieldValue = $fValueResult[0][$field];
-         }
-      }
-      $row[] = $fieldValue;
-   }
-   $output[] = $row;
-}
-$start = (count($output));
-foreach ($output as $rowNo => $rowData) {
+   $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+   $output = array();
+   $sheet = $excel->getActiveSheet();
+
+   // $headings = array("No.", "Sample Code", "Testing Lab" ,"Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+   $headings = array("Sample ID", "Province/State", "District/County", "Clinic Name", "Clinician Name", "Sample Collection Date", "Sample Received Date", "Collected by (Initials)", "Gender", "Date Of Birth", "Age in years", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Patient ID/ART/TRACNET", "Date Of ART Initiation", "ART Regimen", "Date Of Last Viral Load Test", "Result Of Last Viral Load", "Viral Load Log", "Reason For VL Test", "Lab Name", "Specimen type", "Viral Load Result(copiesl/ml)");
    $colNo = 1;
-   foreach ($rowData as $field => $value) {
-      $rRowCount = $rowNo + 2;
-      $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-      $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-      $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-      $sheet->getDefaultRowDimension()->setRowHeight(15);
-      $sheet->getCellByColumnAndRow($colNo, $rowNo + 2)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-      $colNo++;
+
+   $styleArray = array(
+      'font' => array(
+         'bold' => true,
+         'size' => 12,
+      ),
+      'alignment' => array(
+         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+      ),
+      'borders' => array(
+         'outline' => array(
+            'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+         ),
+      )
+   );
+
+   $borderStyle = array(
+      'alignment' => array(
+         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+      ),
+      'borders' => array(
+         'outline' => array(
+            'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+         ),
+      )
+   );
+
+   $sheet->mergeCells('A1:AG1');
+   $nameValue = '';
+   foreach ($_POST as $key => $value) {
+      if (trim($value) != '' && trim($value) != '-- Select --') {
+         $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+      }
    }
+   $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+   if ($_POST['withAlphaNum'] == 'yes') {
+      foreach ($headings as $field => $value) {
+         $string = str_replace(' ', '', $value);
+         $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+         $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+         $colNo++;
+      }
+   } else {
+      foreach ($headings as $field => $value) {
+         $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+         $colNo++;
+      }
+   }
+   $sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
+
+   $no = 1;
+   foreach ($rResult as $aRow) {
+      $row = array();
+      //date of birth
+      $dob = '';
+      if ($aRow['patient_dob'] != NULL && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
+         $dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
+      }
+      //set gender
+      $gender = '';
+      if ($aRow['patient_gender'] == 'male') {
+         $gender = 'M';
+      } else if ($aRow['patient_gender'] == 'female') {
+         $gender = 'F';
+      } else if ($aRow['patient_gender'] == 'not_recorded') {
+         $gender = 'Unreported';
+      }
+      //sample collecion date
+      $sampleCollectionDate = '';
+      if ($aRow['sample_collection_date'] != NULL && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+         $expStr = explode(" ", $aRow['sample_collection_date']);
+         $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
+      }
+      //treatment initiation date
+      $treatmentInitiationDate = '';
+      if ($aRow['treatment_initiated_date'] != NULL && trim($aRow['treatment_initiated_date']) != '' && $aRow['treatment_initiated_date'] != '0000-00-00') {
+         $treatmentInitiationDate =  date("d-m-Y", strtotime($aRow['treatment_initiated_date']));
+      }
+      //date of initiation of current regimen
+      $dateOfInitiationOfCurrentRegimen = '';
+      if ($aRow['date_of_initiation_of_current_regimen'] != NULL && trim($aRow['date_of_initiation_of_current_regimen']) != '' && $aRow['date_of_initiation_of_current_regimen'] != '0000-00-00') {
+         $dateOfInitiationOfCurrentRegimen =  date("d-m-Y", strtotime($aRow['date_of_initiation_of_current_regimen']));
+      }
+      //requested date
+      $requestedDate = '';
+      if ($aRow['test_requested_on'] != NULL && trim($aRow['test_requested_on']) != '' && $aRow['test_requested_on'] != '0000-00-00') {
+         $requestedDate =  date("d-m-Y", strtotime($aRow['test_requested_on']));
+      }
+
+
+      $sampleTestedOn = '';
+      if ($aRow['sample_tested_datetime'] != NULL && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
+         $sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
+      }
+
+      $sampleReceivedOn = '';
+      if ($aRow['sample_received_at_vl_lab_datetime'] != NULL && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00') {
+         $sampleReceivedOn =  date("d-m-Y", strtotime($aRow['sample_received_at_vl_lab_datetime']));
+      }
+
+      //set ARV adherecne
+      $arvAdherence = '';
+      if (trim($aRow['arv_adherance_percentage']) == 'good') {
+         $arvAdherence = 'Good >= 95%';
+      } else if (trim($aRow['arv_adherance_percentage']) == 'fair') {
+         $arvAdherence = 'Fair 85-94%';
+      } else if (trim($aRow['arv_adherance_percentage']) == 'poor') {
+         $arvAdherence = 'Poor <85%';
+      }
+      //set sample rejection
+      $sampleRejection = 'No';
+      if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != NULL && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+         $sampleRejection = 'Yes';
+      }
+      //result dispatched date
+      $lastViralLoadTest = '';
+      if ($aRow['last_viral_load_date'] != NULL && trim($aRow['last_viral_load_date']) != '' && $aRow['last_viral_load_date'] != '0000-00-00 00:00:00') {
+         $expStr = explode(" ", $aRow['last_viral_load_date']);
+         $lastViralLoadTest =  date("d-m-Y", strtotime($expStr[0]));
+      }
+
+      //result dispatched date
+      $resultDispatchedDate = '';
+      if ($aRow['result_printed_datetime'] != NULL && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+         $expStr = explode(" ", $aRow['result_printed_datetime']);
+         $resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
+      }
+      //TAT result dispatched(in days)
+      $tatdays = '';
+      if (trim($sampleCollectionDate) != '' && trim($resultDispatchedDate) != '') {
+         $sample_collection_date = strtotime($sampleCollectionDate);
+         $result_dispatched_date = strtotime($resultDispatchedDate);
+         $dayDiff = $result_dispatched_date - $sample_collection_date;
+         $tatdays = (int)floor($dayDiff / (60 * 60 * 24));
+      }
+      //set result log value
+      $logVal = '';
+      if ($aRow['result_value_log'] != NULL && trim($aRow['result_value_log']) != '') {
+         $logVal = round($aRow['result_value_log'], 1);
+      } else if ($aRow['result_value_absolute'] != NULL && trim($aRow['result_value_absolute']) != '' && $aRow['result_value_absolute'] > 0) {
+         $logVal = round(log10((float)$aRow['result_value_absolute']), 1);
+      }
+      if ($_SESSION['instanceType'] == 'remoteuser') {
+         $sampleCode = 'remote_sample_code';
+      } else {
+         $sampleCode = 'sample_code';
+      }
+
+      if ($aRow['patient_first_name'] != '') {
+         $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+      } else {
+         $patientFname = '';
+      }
+      if ($aRow['patient_middle_name'] != '') {
+         $patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+      } else {
+         $patientMname = '';
+      }
+      if ($aRow['patient_last_name'] != '') {
+         $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+      } else {
+         $patientLname = '';
+      }
+
+      // $row[] = $no;
+      $row[] = $aRow[$sampleCode];
+      $row[] = ($aRow['facility_state']);
+      $row[] = ($aRow['facility_district']);
+      $row[] = $aRow['facility_name'];
+      $row[] = $aRow['lab_contact_person'];
+      $row[] = $sampleCollectionDate;
+      $row[] = $sampleReceivedOn;
+      $row[] = $aRow['sample_collected_by'];
+      $row[] = $gender;
+      $row[] = $dob;
+      $row[] = $aRow['patient_age_in_years'];
+      $row[] = ucfirst($aRow['is_patient_pregnant']);
+      $row[] = ucfirst($aRow['is_patient_breastfeeding']);
+      $row[] = $aRow['patient_art_no'];
+      $row[] = $dateOfInitiationOfCurrentRegimen;
+      $row[] = $aRow['current_regimen'];
+      $row[] = $lastViralLoadTest;
+      $row[] = $aRow['last_vl_result_in_log'];
+      $row[] = ucwords(str_replace("_", " ", $aRow['test_reason_name']));
+      $row[] = $aRow['test_reason_name'];
+      $row[] = $aRow['lab_name'];
+      $row[] = (isset($aRow['sample_name'])) ? ucwords($aRow['sample_name']) : '';
+      $row[] = $aRow['result'];
+      /* 
+    $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+    $row[] = ($aRow['patient_age_in_years'] != NULL && trim($aRow['patient_age_in_years']) != '' && $aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
+    $row[] = $treatmentInitiationDate;
+    $row[] = $arvAdherence;
+    $row[] = ucwords($aRow['request_clinician_name']);
+    $row[] = $requestedDate;
+    $row[] = $sampleRejection;
+    $row[] = $sampleTestedOn;
+    $row[] = $logVal;
+    $row[] = $resultDispatchedDate;
+    //$row[] = $tatdays;
+    $row[] = ucfirst($aRow['approver_comments']);
+    $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
+    $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+     */
+      $output[] = $row;
+      $no++;
+   }
+
+   $start = (count($output)) + 2;
+   foreach ($output as $rowNo => $rowData) {
+      $colNo = 1;
+      foreach ($rowData as $field => $value) {
+         $rRowCount = $rowNo + 4;
+         $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
+         $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
+         $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
+         $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
+         $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+         $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+         $colNo++;
+      }
+   }
+   $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+   $filename = 'VLSM-VIRAL-LOAD-REQUEST-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+   $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+   echo $filename;
 }
-$filename = '';
-$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
-$filename = 'VLSM-Test-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
-$pathFront = realpath(TEMP_PATH);
-$writer->save($pathFront . DIRECTORY_SEPARATOR . $filename);
-echo $filename;
-/* } else {
-   echo $filename = '';
-} */
