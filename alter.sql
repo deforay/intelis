@@ -2686,3 +2686,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 -- Sakthivel 29-Nov-2021
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-reference', 'admin', 'TB Reference');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-reference', 'tb-sample-type.php', 'Manage Reference');
+
+
+-- Amit 1 Dec 2021 version 4.4.5
+UPDATE `system_config` SET `value` = '4.4.5' WHERE `system_config`.`name` = 'sc_version';

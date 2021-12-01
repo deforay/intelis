@@ -25,7 +25,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
   $sheet = $excel->getActiveSheet();
 
   // $headings = array("No.", "Sample Code", "Testing Lab" ,"Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-  $headings = array("Sample ID", "Province/State", "District/County", "Clinic Name", "Clinician Name", "Sample Collection Date", "Sample Received Date", "Collected by (Initials)", "Gender", "Date Of Birth", "Age in years", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Patient ID/ART/TRACNET", "Date Of ART Initiation", "ART Regimen", "Date Of Last Viral Load Test", "Result Of Last Viral Load", "Viral Load Log", "Reason For VL Test", "Lab Name", "Specimen type", "Viral Load Result(copiesl/ml)");
+  $headings = array("Sample ID", "Province/State", "District/County", "Clinic Name", "Clinician Name", "Sample Collection Date", "Sample Received Date", "Collected by (Initials)", "Gender", "Date Of Birth", "Age in years", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Patient ID/ART/TRACNET", "Date Of ART Initiation", "ART Regimen", "Date Of Last Viral Load Test", "Result Of Last Viral Load", "Viral Load Log", "Reason For VL Test", "Lab Name", "Specimen type", "Viral Load Result(copiesl/ml)" ,"Implementing Partner" , "Funding Source");
   $colNo = 1;
 
   $styleArray = array(
@@ -216,6 +216,8 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
     $row[] = $aRow['lab_name'];
     $row[] = (isset($aRow['sample_name'])) ? ucwords($aRow['sample_name']) : '';
     $row[] = $aRow['result'];
+    $row[] = $aRow['i_partner_name'];
+    $row[] = $aRow['funding_source_name'];
     /* 
     $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
     $row[] = ($aRow['patient_age_in_years'] != NULL && trim($aRow['patient_age_in_years']) != '' && $aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
