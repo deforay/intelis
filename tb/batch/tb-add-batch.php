@@ -82,22 +82,35 @@ foreach ($testPlatformResult as $machine) {
             </div>
             <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
                 <tr>
+                    <th>Testing Platform&nbsp;<span class="mandatory">*</span> </th>
+                    <td>
+                        <select name="machine" id="machine" class="form-control isRequired" title="Please choose machine" style="width:280px;">
+                            <option value=""> -- Select -- </option>
+                            <?php
+                            foreach ($testPlatformResult as $machine) {
+                                $labelOrder = $machinesLabelOrder[$machine['config_id']];
+                            ?>
+                                <option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?php echo ($machine['machine_name']); ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
                     <th>Facility</th>
                     <td>
                         <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
                             <?= $facilitiesDropdown; ?>
                         </select>
                     </td>
+                </tr>
+                <tr>
                     <th>Sample Collection Date</th>
                     <td>
                         <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
                     </td>
-                </tr>
-                <tr>
                     <th>Date Sample Receieved at Lab</th>
                     <td>
                         <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
                     </td>
+
                 </tr>
 
                 <tr>
@@ -309,13 +322,14 @@ foreach ($testPlatformResult as $machine) {
 
     function getSampleCodeDetails() {
 
-        var fName = $("#facilityName").val();
-
-        if (fName == null || fName == '') {
+        var machine = $("#machine").val();
+        if (machine == null || machine == '') {
             $.unblockUI();
-            alert('You have to choose a facility name to proceed');
+            alert('You have to choose a testing platform to proceed');
             return false;
         }
+        var fName = $("#facilityName").val();
+
         $.blockUI();
         $.post("/tb/batch/get-tb-samples-batch.php", {
                 sampleCollectionDate: $("#sampleCollectionDate").val(),

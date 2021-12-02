@@ -6,8 +6,6 @@ ob_start();
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
-/* To get testing platform names */
-$testPlatformResult = $general->getTestingPlatforms('tb');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -16,6 +14,8 @@ foreach ($nationalityResult as $nrow) {
 	$nationalityList[$nrow['id']] = ucwords($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
 
+/* To get testing platform names */
+$testPlatformResult = $general->getTestingPlatforms('tb');
 foreach ($testPlatformResult as $row) {
 	$testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
@@ -354,8 +354,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<thead>
 														<tr>
 															<th style="width: 10%;" class="text-center">No AFB</th>
-															<th style="width: 40%;" class="text-center">Actual No</th>
-															<th style="width: 40%;" class="text-center">Microscopy (Result)</th>
+															<th style="width: 20%;" class="text-center">Actual No</th>
+															<th style="width: 20%;" class="text-center">Microscopy (Result)</th>
+															<th style="width: 20%;" class="text-center">Test Platforms</th>
 															<th style="width: 10%;" class="text-center">Action</th>
 														</tr>
 													</thead>
@@ -368,6 +369,11 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 															<td>
 																<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
 																	<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
+																</select>
+															</td>
+															<td>
+																<select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms1" title="Please select the test platform for row 1">
+																	<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
 																</select>
 															</td>
 															<td style="vertical-align:middle;text-align: center;width:100px;">
@@ -721,6 +727,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			<td class="text-center">${testCounter}</td>
             <td><input type="text" class="form-control" id="actualNo${testCounter}" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" /></td>
             <td><select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result for row ${testCounter}"><?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?></select></td>
+            <td><select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms${testCounter}" title="Please select the test platform for row ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa fa-plus"></i></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>

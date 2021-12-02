@@ -373,8 +373,9 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 													<thead>
 														<tr>
 															<th style="width: 10%;" class="text-center">No AFB</th>
-															<th style="width: 40%;" class="text-center">Actual No</th>
-															<th style="width: 40%;" class="text-center">Microscopy (Result)</th>
+															<th style="width: 20%;" class="text-center">Actual No</th>
+															<th style="width: 20%;" class="text-center">Microscopy (Result)</th>
+															<th style="width: 20%;" class="text-center">Test Platforms</th>
 															<th style="width: 10%;" class="text-center">Action</th>
 														</tr>
 													</thead>
@@ -393,6 +394,11 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 																			<?= $general->generateSelectOptions($microscope, $tbRow['test_result'], '-- Select --'); ?>
 																		</select>
 																	</td>
+																	<td>
+																		<select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms<?php echo ($key + 1); ?>" title="Please select the test platform for row 1">
+																			<?= $general->generateSelectOptions($testPlatformList, $tbRow['testing_platform'], '-- Select --'); ?>
+																		</select>
+																	</td>
 																	<td style="vertical-align:middle;text-align: center;width:100px;">
 																		<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa fa-plus"></i></a>&nbsp;
 																		<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
@@ -408,6 +414,11 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 																<td>
 																	<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
 																		<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																	<select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms1" title="Please select the test platform for row 1">
+																		<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
 																	</select>
 																</td>
 																<td style="vertical-align:middle;text-align: center;width:100px;">
@@ -752,6 +763,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 			<td class="text-center">${testCounter}</td>
             <td><input type="text" class="form-control" id="actualNo${testCounter}" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" /></td>
             <td><select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result for row ${testCounter}"><?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?></select></td>
+			<td><select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms${testCounter}" title="Please select the test platform for row ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa fa-plus"></i></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>

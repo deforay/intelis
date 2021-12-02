@@ -2701,3 +2701,5 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
  -- Sakthivel 01-Dec-2021
 ALTER TABLE `r_covid19_results`
   MODIFY `result_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  
+ALTER TABLE `tb_tests` ADD `sample_tested_datetime` DATETIME NULL DEFAULT NULL AFTER `test_result`, ADD `testing_platform` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_tested_datetime`;

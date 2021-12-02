@@ -113,6 +113,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 }
 
 $data = array();
+$data['formId'] = $formId;
 $data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id']);
 $data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations("", "", "no");
 $data['healthFacilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], true, 1, false, $activeModule);

@@ -50,13 +50,21 @@ include_once(APPLICATION_PATH . '/header.php');
 									<label for="supportedTests" class="col-lg-4 control-label">Supported Tests <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
-
-											<option value='vl'>Viral Load</option>
-											<option value='eid'>EID</option>
-											<option value='covid19'>Covid-19</option>
-											<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
+											<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
+												<option value='vl'>Viral Load</option>
+											<?php }
+											if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
+												<option value='eid'>EID</option>
+											<?php }
+											if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
+												<option value='covid19'>Covid-19</option>
+											<?php }
+											if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
 												<option value='hepatitis'>Hepatitis</option>
-											<?php } ?>
+											<?php }
+											if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
+												<option value='tb'>TB</option>
+											<?php } ?> ?>
 										</select>
 									</div>
 								</div>
