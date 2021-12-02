@@ -56,10 +56,9 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
         $query = $query . ' AND DATE(sample_received_at_vl_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_vl_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
     }
 }
-//$query = $query." ORDER BY f.facility_name ASC";
-//$query = $query . " ORDER BY vl.last_modified_datetime ASC";
 $query = $query . " ORDER BY vl.sample_code ASC";
-// echo $query;die;
+echo $query;
+die;
 $result = $db->rawQuery($query);
 ?>
 <div class="col-md-8">
