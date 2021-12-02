@@ -731,6 +731,11 @@
 		$(".tbProgramMenu").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".tbPrintResults").addClass('active');
+	} else if (splitsUrl == 'tb-export-data.php') {
+		$(".manage").removeClass('active');
+		$(".tbProgramMenu").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tbExportResult").addClass('active');
 	} else if (splitsUrl == 'tb-sample-rejection-reasons.php' || splitsUrl == 'add-tb-sample-rejection-reason.php' || splitsUrl == 'edit-tb-sample-rejection-reason.php') {
 		$(".manage").addClass('active');
 		$(".tb-reference-manage").addClass('active');

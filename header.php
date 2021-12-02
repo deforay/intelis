@@ -1105,6 +1105,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<?php if (isset($_SESSION['privileges']) && in_array("tb-print-results.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu tbPrintResults"><a href="/tb/results/tb-print-results.php"><i class="fa fa-caret-right"></i> Print Result</a></li>
 									<?php } ?>
+									<?php if (isset($_SESSION['privileges']) && in_array("tb-export-data.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbExportResult"><a href="/tb/management/tb-export-data.php"><i class="fa fa-caret-right"></i> Export Results</a></li>
+									<?php } ?>
 								</ul>
 							</li>
 					<?php }
