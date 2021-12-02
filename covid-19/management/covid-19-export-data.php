@@ -113,9 +113,9 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									<option value="">All Status</option>
 									<option value="7" selected=selected>Accepted</option>
 									<option value="4">Rejected</option>
-									<option value="8">Awaiting Approval/option>
-									<option value="6">Registered At Testing Lab/option>
-									<option value="10">Expired/option>
+									<option value="8">Awaiting Approval</option>
+									<option value="6">Registered At Testing Lab</option>
+									<option value="10">Expired</option>
 								</select>
 							</td>
 							<td><b>Batch Code&nbsp;:</b></td>

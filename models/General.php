@@ -734,7 +734,7 @@ class General
 
     public function createBatchCode($start, $end)
     {
-        $batchQuery = 'SELECT MAX(batch_code_key) FROM batch_details as bd where DATE(bd.request_created_datetime) >= "' . $start . '" AND DATE(bd.request_created_datetime) <= "' . $end . '"';
+        $batchQuery = 'SELECT MAX(batch_code_key) FROM batch_details as bd WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
         $batchResult = $this->db->query($batchQuery);
 
         if ($batchResult[0]['MAX(batch_code_key)'] != '' && $batchResult[0]['MAX(batch_code_key)'] != NULL) {
@@ -750,20 +750,20 @@ class General
         } else {
             $code = '001';
         }
-        $this->db->where("batch_code LIKE '%" . $code . "%'");
-        $exist = $this->db->getOne("batch_details");
+        // $this->db->where("DATE(request_created_datetime) = CURRENT_DATE AND batch_code_key = $code");
+        // $exist = $this->db->getOne("batch_details");
 
-        if ($exist) {
-            $code = $code + 1;
-            $length = strlen($code);
-            if ($length == 1) {
-                $code = "00" . $code;
-            } else if ($length == 2) {
-                $code = "0" . $code;
-            } else if ($length == 3) {
-                $code = $code;
-            }
-        }
+        // if ($exist) {
+        //     $code = $code + 1;
+        //     $length = strlen($code);
+        //     if ($length == 1) {
+        //         $code = "00" . $code;
+        //     } else if ($length == 2) {
+        //         $code = "0" . $code;
+        //     } else if ($length == 3) {
+        //         $code = $code;
+        //     }
+        // }
         return $code;
     }
 }
