@@ -501,6 +501,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<li class="allMenu eid-test-reasons">
 												<a href="/eid/reference/eid-test-reasons.php"><i class="fa fa-caret-right"></i>Test Reasons</a>
 											</li>
+											<li class="allMenu eid-results">
+												<a href="/eid/reference/eid-results.php"><i class="fa fa-caret-right"></i>Results</a>
+											</li>
 										</ul>
 									</li>
 								<?php }

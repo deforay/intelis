@@ -94,6 +94,9 @@ class Users
                 'eid-test-reasons.php'                  => 'eid-sample-type.php',
                 'add-eid-test-reasons.php'              => 'eid-sample-type.php',
                 'edit-eid-test-reasons.php'             => 'eid-sample-type.php',
+                'eid-results.php'                       => 'eid-sample-type.php',
+                'add-eid-results.php'                   => 'eid-sample-type.php',
+                'edit-eid-results.php'                  => 'eid-sample-type.php',
                 'eidTestingTargetReport.php'            => 'eidMonthlyThresholdReport.php',
                 'eidSuppressedTargetReport.php'         => 'eidMonthlyThresholdReport.php'
             );
