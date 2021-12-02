@@ -2693,3 +2693,7 @@ UPDATE `system_config` SET `value` = '4.4.5' WHERE `system_config`.`name` = 'sc_
 -- Sakthivel 01-Dec-2021
 ALTER TABLE `r_covid19_results`
   MODIFY `result_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+  -- Sakthivel 01-Dec-2021
+ALTER TABLE `r_covid19_results`
+  MODIFY `result_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;

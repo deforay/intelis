@@ -575,6 +575,11 @@
 		$(".eid-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".eid-test-reasons").addClass('active');
+	} else if (splitsUrl == 'eid-results.php' || splitsUrl == 'add-eid-results.php' || splitsUrl == 'edit-eid-results.php') {
+		$(".manage").addClass('active');
+		$(".eid-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".eid-results").addClass('active');
 	} else if (splitsUrl == 'covid19-comorbidities.php' || splitsUrl == 'add-covid19-comorbidities.php' || splitsUrl == 'edit-covid19-comorbidities.php') {
 		$(".manage").addClass('active');
 		$(".covid19-reference-manage").addClass('active');
