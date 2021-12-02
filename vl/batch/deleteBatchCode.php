@@ -21,6 +21,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'vl') {
 } else if (isset($_POST['type']) && $_POST['type'] == 'hepatitis') {
     $tableName2 = "form_hepatitis";
     $table2PrimaryColumn = "hepatitis_id";
+} else if (isset($_POST['type']) && $_POST['type'] == 'tb') {
+    $tableName2 = "form_tb";
+    $table2PrimaryColumn = "tb_id";
 }
 
 
