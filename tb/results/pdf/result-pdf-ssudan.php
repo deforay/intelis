@@ -89,7 +89,7 @@ if (sizeof($requestResult) > 0) {
     $page = 1;
     foreach ($requestResult as $result) {
 
-        $tbTestQuery = "SELECT * from tb_tests where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id ASC";
+        $tbTestQuery = "SELECT * from tb_tests where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id DESC";
         $tbTestInfo = $db->rawQuery($tbTestQuery);
 
         $facilityQuery = "SELECT * from form_tb as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where tb_id= " . $result['tb_id'] . " GROUP BY fd.facility_id LIMIT 1";

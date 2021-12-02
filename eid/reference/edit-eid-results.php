@@ -2,16 +2,18 @@
 ob_start();
 #require_once('../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
-
+$id = base64_decode($_GET['id']);
+$resultQuery = "SELECT * from r_eid_results where result_id = '" . $id . "' ";
+$resultInfo = $db->query($resultQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-heartbeat"></i> Add TB Results</h1>
+		<h1><i class="fa fa-child"></i> Edit EID Results</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">TB Results</li>
+			<li class="active">EID Results</li>
 		</ol>
 	</section>
 
@@ -25,22 +27,16 @@ include_once(APPLICATION_PATH . '/header.php');
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='addResults' id='addResults' autocomplete="off" enctype="multipart/form-data" action="save-tb-results-helper.php">
+				<form class="form-horizontal" method='post' name='editresult' id='editresult' autocomplete="off" enctype="multipart/form-data" action="save-eid-results-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="resultName" class="col-lg-4 control-label">Result Name<span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" placeholder="Result Name" title="Please enter Result name" onblur="checkNameValidation('r_tb_results','result',this,null,'The Result name that you entered already exists.Enter another name',null)" />
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="resultType" class="col-lg-4 control-label">Result Type<span class="mandatory">*</span></label>
-									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultType" name="resultType" placeholder="Result Type" title="Please enter Result type" onblur="checkNameValidation('r_tb_results','result_type',this,null,'The Result type that you entered already exists.Enter another type',null)" />
+										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Result Name" title="Please enter Result name" onblur="checkNameValidation('r_eid_results','result',this,'<?php echo "result_id##" . $id; ?>','The Result name that you entered already exists.Enter another name',null)" />
+										<input type="hidden" class="form-control" id="resultId" name="resultId" value="<?php echo base64_encode($id); ?>" />
+										<input type="hidden" class="form-control" id="oldResultName" name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -49,8 +45,8 @@ include_once(APPLICATION_PATH . '/header.php');
 									<label for="resultStatus" class="col-lg-4 control-label">Result Status</label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="Result Status" title="Please select Result Status">
-											<option value="active">Active</option>
-											<option value="inactive">Inactive</option>
+											<option value="active" <?php echo ($resultInfo[0]['status'] == "active" ? 'selected' : ''); ?>>Active</option>
+											<option value="inactive" <?php echo ($resultInfo[0]['status'] == "inactive" ? 'selected' : ''); ?>>Inactive</option>
 										</select>
 									</div>
 								</div>
@@ -61,7 +57,7 @@ include_once(APPLICATION_PATH . '/header.php');
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-						<a href="tb-results.php" class="btn btn-default"> Cancel</a>
+						<a href="eid-results.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -85,12 +81,12 @@ include_once(APPLICATION_PATH . '/header.php');
 	function validateNow() {
 
 		flag = deforayValidator.init({
-			formId: 'addResults'
+			formId: 'editresult'
 		});
 
 		if (flag) {
 			$.blockUI();
-			document.getElementById('addResults').submit();
+			document.getElementById('editresult').submit();
 		}
 	}
 

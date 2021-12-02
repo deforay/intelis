@@ -1,5 +1,5 @@
 <?php
-$title = "TB Results";
+$title = "EID Results";
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 ?>
@@ -7,10 +7,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-heartbeat"></i> TB Results</h1>
+		<h1><i class="fa fa-child"></i> EID Results</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">TB Results</li>
+			<li class="active">EID Results</li>
 		</ol>
 	</section>
 
@@ -20,8 +20,8 @@ include_once(APPLICATION_PATH . '/header.php');
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-tb-results.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add TB Results</a>
+						<?php if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+							<a href="add-eid-results.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add EID Results</a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,9 +30,8 @@ include_once(APPLICATION_PATH . '/header.php');
 							<thead>
 								<tr>
 									<th>Result Name</th>
-									<th>Result Type</th>
 									<th>Status</th>
-									<?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 										<th>Action</th>
 									<?php } ?>
 								</tr>
@@ -78,10 +77,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				{
 					"sClass": "center"
 				},
-				{
-					"sClass": "center"
-				},
-				<?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?> {
+				<?php if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},
@@ -92,7 +88,7 @@ include_once(APPLICATION_PATH . '/header.php');
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-tb-results-helper.php",
+			"sAjaxSource": "get-eid-results-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',

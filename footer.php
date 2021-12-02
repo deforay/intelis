@@ -575,6 +575,11 @@
 		$(".eid-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".eid-test-reasons").addClass('active');
+	} else if (splitsUrl == 'eid-results.php' || splitsUrl == 'add-eid-results.php' || splitsUrl == 'edit-eid-results.php') {
+		$(".manage").addClass('active');
+		$(".eid-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".eid-results").addClass('active');
 	} else if (splitsUrl == 'covid19-comorbidities.php' || splitsUrl == 'add-covid19-comorbidities.php' || splitsUrl == 'edit-covid19-comorbidities.php') {
 		$(".manage").addClass('active');
 		$(".covid19-reference-manage").addClass('active');
@@ -600,6 +605,11 @@
 		$(".covid19-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".covid19-test-reasons").addClass('active');
+	} else if (splitsUrl == 'covid19-results.php') {
+		$(".manage").addClass('active');
+		$(".covid19-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".covid19-results").addClass('active');
 	} else if (splitsUrl == 'hepatitis-requests.php' || splitsUrl == 'hepatitis-edit-request') {
 		$(".hepatitisRequest").addClass('active');
 		$(".allMenu").removeClass('active');
@@ -721,6 +731,11 @@
 		$(".tbProgramMenu").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".tbPrintResults").addClass('active');
+	} else if (splitsUrl == 'tb-export-data.php') {
+		$(".manage").removeClass('active');
+		$(".tbProgramMenu").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tbExportResult").addClass('active');
 	} else if (splitsUrl == 'tb-sample-rejection-reasons.php' || splitsUrl == 'add-tb-sample-rejection-reason.php' || splitsUrl == 'edit-tb-sample-rejection-reason.php') {
 		$(".manage").addClass('active');
 		$(".tb-reference-manage").addClass('active');

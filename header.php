@@ -501,6 +501,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<li class="allMenu eid-test-reasons">
 												<a href="/eid/reference/eid-test-reasons.php"><i class="fa fa-caret-right"></i>Test Reasons</a>
 											</li>
+											<li class="allMenu eid-results">
+												<a href="/eid/reference/eid-results.php"><i class="fa fa-caret-right"></i>Results</a>
+											</li>
 										</ul>
 									</li>
 								<?php }
@@ -530,6 +533,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											</li>
 											<li class="allMenu covid19-test-reasons">
 												<a href="/covid-19/reference/covid19-test-reasons.php"><i class="fa fa-caret-right"></i>Test-Reasons</a>
+											</li>
+											<li class="allMenu covid19-results">
+												<a href="/covid-19/reference/covid19-results.php"><i class="fa fa-caret-right"></i>Results</a>
 											</li>
 										</ul>
 									</li>
@@ -1098,6 +1104,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<ul class="treeview-menu">
 									<?php if (isset($_SESSION['privileges']) && in_array("tb-print-results.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu tbPrintResults"><a href="/tb/results/tb-print-results.php"><i class="fa fa-caret-right"></i> Print Result</a></li>
+									<?php } ?>
+									<?php if (isset($_SESSION['privileges']) && in_array("tb-export-data.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbExportResult"><a href="/tb/management/tb-export-data.php"><i class="fa fa-caret-right"></i> Export Results</a></li>
 									<?php } ?>
 								</ul>
 							</li>
