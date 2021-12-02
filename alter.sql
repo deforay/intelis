@@ -2686,3 +2686,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 -- Sakthivel 29-Nov-2021
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-reference', 'admin', 'TB Reference');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-reference', 'tb-sample-type.php', 'Manage Reference');
+
+-- Thana 01-Dec-2021
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-batches', 'tb', 'TB Batch Management');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-batches', 'tb-batches.php', 'View Batches'), (NULL, 'tb-batches', 'tb-add-batch.php', 'Add Batch'), (NULL, 'tb-batches', 'tb-edit-batch.php', 'Edit Batch'), (NULL, 'tb-batches', 'tb-add-batch-position.php', 'Add Batch Position'), (NULL, 'tb-batches', 'tb-edit-batch-position.php', 'Edit Batch Position');
