@@ -116,28 +116,6 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 										<th></th>
 										<td></td>
 									</tr>
-									<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-										<tr>
-											<td><label class="label-control" for="province">Health Facility/POE State </label></td>
-											<td>
-												<select class="form-control select2" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
-													<?php echo $province; ?>
-												</select>
-											</td>
-											<td><label class="label-control" for="district">Health Facility/POE County </label></td>
-											<td>
-												<select class="form-control select2" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-													<?php echo $facility; ?>
-												</select>
-											</td>
-											<td><label class="label-control" for="labId">Testing Laboratory </label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control select2" title="Please select Testing Testing Laboratory" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-												</select>
-											</td>
-										</tr>
-									<?php } ?>
 								</table>
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">REFERRING HEALTH FACILITY INFORMATION</h3>
@@ -183,6 +161,14 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 											</select>
 											<input type="text" style="display: none;" name="otherReferringUnit" id="otherReferringUnit" placeholder="Enter other reffering unit" title="Please enter the other referring unit" />
 										</td>
+										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+											<td><label class="label-control" for="labId">Testing Laboratory </label> </td>
+											<td>
+												<select name="labId" id="labId" class="form-control select2" title="Please select Testing Testing Laboratory" style="width:100%;">
+													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
+												</select>
+											</td>
+										<?php } ?>
 									</tr>
 								</table>
 

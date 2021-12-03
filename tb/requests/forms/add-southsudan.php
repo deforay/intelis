@@ -114,28 +114,6 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										<th></th>
 										<td></td>
 									</tr>
-									<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-										<tr>
-											<td><label class="label-control" for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
-											<td>
-												<select class="form-control select2 isRequired" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
-													<?php echo $province; ?>
-												</select>
-											</td>
-											<td><label class="label-control" for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
-											<td>
-												<select class="form-control select2 isRequired" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-													<option value=""> -- Select -- </option>
-												</select>
-											</td>
-											<td><label class="label-control" for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control select2 isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-												</select>
-											</td>
-										</tr>
-									<?php } ?>
 								</table>
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">REFERRING HEALTH FACILITY INFORMATION</h3>
@@ -180,6 +158,14 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<option value="others">Others</option>
 											</select>
 										</td>
+										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+											<td><label class="label-control" for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+											<td>
+												<select name="labId" id="labId" class="form-control select2 isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
+													<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+												</select>
+											</td>
+										<?php } ?>
 									</tr>
 								</table>
 
