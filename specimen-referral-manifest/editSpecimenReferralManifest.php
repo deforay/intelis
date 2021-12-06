@@ -23,14 +23,20 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 if ($module == 'vl') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM vl_request_form as vl where (vl.sample_code IS NOT NULL OR vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") ";
+	$m = ($module == 'vl') ? 'vl' : $module;
 } else if ($module == 'eid') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.sample_package_id FROM eid_form as vl where (vl.sample_code IS NOT NULL OR vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ")";
-} else if ($module == 'hepatitis'){
+	$m = ($module == 'eid') ? 'eid' : $module;
+} else if ($module == 'hepatitis') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.sample_package_id FROM form_hepatitis as vl where (vl.sample_code IS NOT NULL OR vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ")";
-} else {
+	$m = ($module == 'HEP') ? 'hepatitis' : $module;
+} else if ($module == 'covid19') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.sample_package_id FROM form_covid19 as vl where (vl.sample_code IS NOT NULL OR vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ")";
+	$m = ($module == 'C19') ? 'covid19' : $module;
+} else if ($module == 'tb') {
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_package_id FROM form_tb as vl where (vl.sample_code IS NOT NULL OR vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ")";
+	$m = ($module == 'TB') ? 'tb' : $module;
 }
-$m = ($module == 'C19') ? 'covid19' : $module;
 $testingLabs = $facilitiesDb->getTestingLabs($m);
 
 
@@ -161,6 +167,12 @@ $global = $general->getGlobalConfig();
 														$sampleId  = $sample['vl_sample_id'];
 													} else if ($module == 'eid') {
 														$sampleId  = $sample['eid_id'];
+													} else if ($module == 'covid19') {
+														$sampleId  = $sample['covid19_id'];
+													} else if ($module == 'hepatitis') {
+														$sampleId  = $sample['hepatitis_id'];
+													} else if ($module == 'tb') {
+														$sampleId  = $sample['tb_id'];
 													}
 											?>
 													<option value="<?php echo $sampleId; ?>" <?php echo ($sample['sample_package_id'] == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample[$sCode]; ?></option>
