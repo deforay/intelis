@@ -722,6 +722,10 @@
 		$(".allMenu").removeClass('active');
 		$(".tbResults").addClass('active');
 		$(".tbResultsMenu").addClass('active');
+	} else if (splitsUrl == 'tb-failed-results.php') {
+		$(".allMenu").removeClass('active');
+		$(".tbResults").addClass('active');
+		$(".tbFailedResultsMenu").addClass('active');
 	} else if (splitsUrl == 'addSamplesFromManifest.php' && splitsUrlCheck[1] == "tb") {
 		$(".allMenu").removeClass('active');
 		$(".tbRequest").addClass('active');
@@ -731,11 +735,26 @@
 		$(".tbProgramMenu").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".tbPrintResults").addClass('active');
+	} else if (splitsUrl == 'tb-sample-status.php') {
+		$(".manage").removeClass('active');
+		$(".tbProgramMenu").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tbSampleStatus").addClass('active');
 	} else if (splitsUrl == 'tb-export-data.php') {
 		$(".manage").removeClass('active');
 		$(".tbProgramMenu").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".tbExportResult").addClass('active');
+	} else if (splitsUrl == 'tb-sample-rejection-report.php') {
+		$(".manage").removeClass('active');
+		$(".tbProgramMenu").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tbSampleRejectionReport").addClass('active');
+	} else if (splitsUrl == 'tb-clinic-report.php') {
+		$(".manage").removeClass('active');
+		$(".tbProgramMenu").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".tbClinicReport").addClass('active');
 	} else if (splitsUrl == 'tb-sample-rejection-reasons.php' || splitsUrl == 'add-tb-sample-rejection-reason.php' || splitsUrl == 'edit-tb-sample-rejection-reason.php') {
 		$(".manage").addClass('active');
 		$(".tb-reference-manage").addClass('active');

@@ -174,6 +174,7 @@ class Users
         if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
             $sharedHepPrivileges = array(
                 'tb-update-result.php' => 'tb-manual-results.php',
+                'tb-failed-results.php' => 'tb-manual-results.php',
                 'tb-sample-rejection-reasons.php'  => 'tb-sample-type.php',
                 'add-tb-sample-type.php'           => 'tb-sample-type.php',
                 'edit-tb-sample-type.php'          => 'tb-sample-type.php',
