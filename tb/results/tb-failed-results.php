@@ -310,7 +310,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?> {
+                <?php if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges']))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },
@@ -440,7 +440,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         if (id != "") {
             $.blockUI();
             $.post("failed-results-retest.php", {
-                    covid19Id: id,
+                    tbId: id,
                     bulkIds: bulk
                 },
                 function(data) {

@@ -35,6 +35,9 @@ try {
             } else if ($_POST['module'] == 'hepatitis') {
                 $db = $db->where('hepatitis_id', $_POST['sampleCode'][$j]);
                 $db->update('form_hepatitis', $value);
+            } else if ($_POST['module'] == 'tb') {
+                $db = $db->where('tb_id', $_POST['sampleCode'][$j]);
+                $db->update('form_tb', $value);
             }
 
             for ($j = 0; $j < count($_POST['sampleCode']); $j++) {
@@ -55,6 +58,9 @@ try {
                 } else if ($_POST['module'] == 'hepatitis') {
                     $db = $db->where('hepatitis_id', $_POST['sampleCode'][$j]);
                     $db->update('form_hepatitis', $value);
+                } else if ($_POST['module'] == 'tb') {
+                    $db = $db->where('tb_id', $_POST['sampleCode'][$j]);
+                    $db->update('form_tb', $value);
                 }
             }
             $_SESSION['alertMsg'] = "Manifest details updated successfully";

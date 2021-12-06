@@ -1,5 +1,5 @@
 <?php
-$title = "EID | View All Requests";
+$title = "Covid19 | View All Requests";
 #require_once('../../startup.php');
 
 include_once(APPLICATION_PATH . '/header.php');
@@ -7,13 +7,13 @@ include_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
-$healthFacilites = $facilitiesDb->getHealthFacilities('eid');
+$healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 $formId = $general->getGlobalConfig('vl_form');
 
-$batQuery = "SELECT batch_code FROM batch_details where test_type = 'eid' AND batch_status='completed'";
+$batQuery = "SELECT batch_code FROM batch_details where test_type = 'covid19' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 ?>
 <style>
@@ -310,7 +310,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?> {
+                <?php if (isset($_SESSION['privileges']) && (in_array("covid-19-edit-request.php", $_SESSION['privileges']))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },

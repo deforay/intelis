@@ -108,6 +108,9 @@ if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
 } else if ($_POST['module'] == 'hepatitis') {
     $tableName = "form_hepatitis";
     $primaryKey = "hepatitis_id";
+} else if ($_POST['module'] == 'tb') {
+    $tableName = "form_tb";
+    $primaryKey = "tb_id";
 }
 
 $sQuery = "SELECT p.request_created_datetime, p.package_code, p.package_status, p.module, p.package_id,count(vl." . $sCode . ") as sample_code from $tableName vl right join package_details p on vl.sample_package_id = p.package_id";
