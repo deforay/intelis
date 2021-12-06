@@ -161,9 +161,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										<th colspan=8>
 											<h4>1. Données démographiques mère / enfant </h4><br>
 											<h4 class="box-title">Information sur le patient &nbsp;&nbsp;&nbsp;
-									<input style="width:30%;font-size: smaller;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
-									<a style="margin-top:-0.35%;font-weight:500;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
-									</h4></th>
+												<input style="width:30%;font-size: smaller;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
+												<a style="margin-top:-0.35%;font-weight:500;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
+											</h4>
+										</th>
 									</tr>
 									<tr>
 										<th colspan=8>
@@ -197,7 +198,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 
 									<tr>
 										<th colspan=8>
-											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant</h5></th>
+											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant</h5>
+										</th>
 									</tr>
 									<tr>
 										<th><label for="childId">Code de l’enfant (Patient) <span class="mandatory">*</span></label></th>
@@ -291,14 +293,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											</select>
 										</td>
 									</tr>
-
 								</table>
-
-
-
-
-
-
 								<br><br>
 								<table class="table" style="width:70%">
 									<tr>
@@ -321,8 +316,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											<select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="yes"> Oui </option>
-												<option value="no" /> Non </option>
-												<option value="unknown" /> Inconnu </option>
+												<option value="no"> Non </option>
+												<option value="unknown"> Inconnu </option>
 											</select>
 										</td>
 									</tr>
@@ -349,9 +344,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											<select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="Breastfeeding only"> Allaitement seul </option>
-												<option value="Milk substitute" /> Substitut de lait </option>
-												<option value="Combination" /> Mixte </option>
-												<option value="Other" /> Autre </option>
+												<option value="Milk substitute"> Substitut de lait </option>
+												<option value="Combination"> Mixte </option>
+												<option value="Other"> Autre </option>
 											</select>
 										</td>
 									</tr>
@@ -361,19 +356,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											<select class="form-control" name="isCotrimoxazoleBeingAdministered" id="choiceOfFeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="no"> Non </option>
-												<option value="Yes, takes CTX everyday" /> Oui, prend CTX chaque jour </option>
-												<option value="Starting on CTX today" /> Commence CTX aujourd’hui </option>
+												<option value="Yes, takes CTX everyday"> Oui, prend CTX chaque jour </option>
+												<option value="Starting on CTX today"> Commence CTX aujourd’hui </option>
 											</select>
 
 										</td>
 									</tr>
 								</table>
-
-
-
-
-
-
 								<br><br>
 								<table class="table" style="width:70%">
 									<tr>
@@ -423,7 +412,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="yes"> Oui </option>
-												<option value="no" /> Non </option>
+												<option value="no"> Non </option>
 											</select>
 										</td>
 									</tr>
@@ -508,7 +497,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											</td>
 										</tr>
 										<tr>
-										<th>Revu le</td>
+											<th>Revu le</td>
 											<td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revu le" title="Please enter the Revu le" /></td>
 											<th>Revu par</th>
 											<td>
@@ -518,17 +507,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											</td>
 										</tr>
 										<tr>
-										<th>Approuvé le</th>
-                                            <td>
-                                                <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
-                                            </td>
-										<th>Approuvé par</th>
-                                            <td>
-                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
-                                                    <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                        </tr>
+											<th>Approuvé le</th>
+											<td>
+												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											</td>
+											<th>Approuvé par</th>
+											<td>
+												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
 									</table>
 								</div>
 							</div>
@@ -603,18 +592,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 	}
 
 	function setPatientDetails(pDetails) {
-        patientArray = pDetails.split("##");
-        //   console.log(patientArray);
-        $("#childId").val(patientArray[6]);
-        $("#childName").val(patientArray[0]);
-        $("#childDob").val(patientArray[3]);
-        $("#childGender").val(patientArray[2]);
-        $("#childAge").val(patientArray[4]);
-        $("#mothersId").val(patientArray[7]);
-        $("#mothersName").val(patientArray[9]);
-        $("#mothersDob").val(patientArray[10]);
-        $("#mothersMaritalStatus").val(patientArray[11]);
-    }
+		patientArray = pDetails.split("##");
+		//   console.log(patientArray);
+		$("#childId").val(patientArray[6]);
+		$("#childName").val(patientArray[0]);
+		$("#childDob").val(patientArray[3]);
+		$("#childGender").val(patientArray[2]);
+		$("#childAge").val(patientArray[4]);
+		$("#mothersId").val(patientArray[7]);
+		$("#mothersName").val(patientArray[9]);
+		$("#mothersDob").val(patientArray[10]);
+		$("#mothersMaritalStatus").val(patientArray[11]);
+	}
 
 	function sampleCodeGeneration() {
 		var pName = $("#province").val();
@@ -725,14 +714,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 			placeholder: "Province"
 		});
 		$('#labId').select2({
-            placeholder: "Select Nom du laboratoire"
-        });
+			placeholder: "Select Nom du laboratoire"
+		});
 		$('#reviewedBy').select2({
-            placeholder: "Select Revu par"
-        });
+			placeholder: "Select Revu par"
+		});
 		$('#approvedBy').select2({
-            placeholder: "Select Approuvé par"
-        });
+			placeholder: "Select Approuvé par"
+		});
 
 		$("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
 			var motherVl = $("#motherViralLoadCopiesPerMl").val();

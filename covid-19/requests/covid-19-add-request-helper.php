@@ -11,9 +11,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new \Vlsm\Models\General();
 
-echo "<pre>";
+/* echo "<pre>";
 print_r($_POST);
-die;
+die; */
 
 $tableName = "form_covid19";
 $tableName1 = "activity_log";

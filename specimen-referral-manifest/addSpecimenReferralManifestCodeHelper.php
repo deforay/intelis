@@ -40,6 +40,9 @@ try {
                 } else if ($_POST['module'] == 'hepatitis') {
                     $db = $db->where('hepatitis_id', $_POST['sampleCode'][$j]);
                     $db->update('form_hepatitis', $value);
+                } else if ($_POST['module'] == 'tb') {
+                    $db = $db->where('tb_id', $_POST['sampleCode'][$j]);
+                    $db->update('form_tb', $value);
                 }
             }
             $_SESSION['alertMsg'] = "Manifest added successfully";

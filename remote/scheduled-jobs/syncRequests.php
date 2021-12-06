@@ -588,6 +588,112 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     }
 }
 
+/*
+****************************************************************
+* TB TEST REQUESTS
+****************************************************************
+*/
+$request = array();
+//$remoteSampleCodeList = array();
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+    $url = $systemConfig['remoteURL'] . '/remote/remote/tb-test-requests.php';
+    $data = array(
+        'labName' => $sarr['sc_testing_lab_id'],
+        'module' => 'tb',
+        "Key" => "vlsm-lab-data--",
+    );
+    if (isset($forceSyncModule) && trim($forceSyncModule) == "tb" && isset($manifestCode) && trim($manifestCode) != "") {
+        $data['manifestCode'] = $manifestCode;
+    }
+    //open connection
+    $ch = curl_init($url);
+    $json_data = json_encode($data);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt(
+        $ch,
+        CURLOPT_HTTPHEADER,
+        array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($json_data)
+        )
+    );
+
+    $jsonResponse = curl_exec($ch);
+    curl_close($ch);
+    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+        $removeKeys = array(
+            'tb_id',
+            'sample_batch_id',
+            'result',
+            'xpert_mtb_result',
+            'sample_tested_datetime',
+            'sample_received_at_vl_lab_datetime',
+            'result_dispatched_datetime',
+            'is_sample_rejected',
+            'reason_for_sample_rejection',
+            'result_approved_by',
+            'result_approved_datetime',
+            'request_created_by',
+            'last_modified_by',
+            'request_created_datetime',
+            'data_sync'
+        );
+
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_tb'";
+        $allColResult = $db->rawQuery($allColumns);
+        $columnList = array_map('current', $allColResult);
+        $columnList = array_diff($columnList, $removeKeys);
+
+        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+        $counter = 0;
+        foreach ($parsedData as $key => $remoteData) {
+            $request = array();
+            $tbId = $remoteData['tb_id'];
+            foreach ($columnList as $colName) {
+                if (isset($remoteData[$colName])) {
+                    $request[$colName] = $remoteData[$colName];
+                } else {
+                    $request[$colName] = null;
+                }
+            }
+
+            //$remoteSampleCodeList[] = $request['remote_sample_code'];
+            $request['last_modified_datetime'] = $general->getDateTime();
+
+            //check exist remote
+            $exsvlQuery = "SELECT tb_id,sample_code FROM form_tb AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
+
+            $exsvlResult = $db->query($exsvlQuery);
+            if ($exsvlResult) {
+
+                $dataToUpdate = array();
+                $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
+                $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
+
+                $db = $db->where('tb_id', $exsvlResult[0]['tb_id']);
+                $db->update('form_tb', $dataToUpdate);
+                $id = $exsvlResult[0]['tb_id'];
+            } else {
+                if (!empty($request['sample_collection_date'])) {
+                    $request['request_created_by'] = 0;
+                    $request['last_modified_by'] = 0;
+                    $request['request_created_datetime'] = $general->getDateTime();
+                    //$request['result_status'] = 6;
+                    $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $db->insert('form_tb', $request);
+                    $id = $db->getInsertId();
+                }
+            }
+        }
+
+        if ($counter > 0) {
+            $trackId = $app->addApiTracking('', $counter, 'requests', 'tb', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+        }
+    }
+}
+
 /* Get instance id for update last_remote_results_sync */
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 

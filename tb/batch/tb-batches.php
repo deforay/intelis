@@ -111,7 +111,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("editBatch.php", $_SESSION['privileges'])) { ?> {
+				<?php if (isset($_SESSION['privileges']) && in_array("tb-edit-batch.php", $_SESSION['privileges'])) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},

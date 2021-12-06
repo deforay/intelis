@@ -6,8 +6,6 @@ ob_start();
 //Funding source list
 // $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 // $fundingSourceList = $db->query($fundingSourceQry);
-/* To get testing platform names */
-$testPlatformResult = $general->getTestingPlatforms('covid19');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -16,6 +14,8 @@ foreach ($nationalityResult as $nrow) {
     $nationalityList[$nrow['id']] = ucwords($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
 
+/* To get testing platform names */
+$testPlatformResult = $general->getTestingPlatforms('covid19');
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
@@ -856,7 +856,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     function setPatientDetails(pDetails) {
         patientArray = pDetails.split("##");
-          console.log(patientArray);
+        console.log(patientArray);
         $("#patientProvince").val(patientArray[14] + '##' + patientArray[16]).trigger('change');
         $("#firstName").val(patientArray[0]);
         $("#lastName").val(patientArray[1]);
@@ -973,31 +973,31 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     $(document).ready(function() {
         $("#sampleCollectionDate").datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               onSelect: function(date) {
-                    var dt2 = $('#sampleDispatchedDate');
-                    var startDate = $(this).datetimepicker('getDate');
-                    var minDate = $(this).datetimepicker('getDate');
-                    dt2.datetimepicker('setDate', minDate);
-                    startDate.setDate(startDate.getDate() + 1000000);
-                    //sets dt2 maxDate to the last day of 30 days window
-                    dt2.datetimepicker('option', 'maxDate', startDate);
-                    dt2.datetimepicker('option', 'minDate', minDate);
-                    dt2.datetimepicker('option', 'minDateTime', minDate);
-               }
-          });
-          $('#sampleDispatchedDate').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               minDate: "Today",
-               yearRange:"-100:+100",
-          });
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                //sets dt2 maxDate to the last day of 30 days window
+                dt2.datetimepicker('option', 'maxDate', startDate);
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+            }
+        });
+        $('#sampleDispatchedDate').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            minDate: "Today",
+            yearRange: "-100:+100",
+        });
         $(".select2").select2();
         $(".select2").select2({
             tags: true

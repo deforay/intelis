@@ -40,6 +40,9 @@ include_once(APPLICATION_PATH . '/header.php');
 				<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
 					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');">Hepatitis Tests</a></li>
 				<?php } ?>
+				<?php if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
+					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
+				<?php } ?>
 				<?php
 				if (isset($recencyConfig['vlsync']) && $recencyConfig['vlsync'] == true) {  ?>
 					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')">Confirmation Tests for Recency</a></li>

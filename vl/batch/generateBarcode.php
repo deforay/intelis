@@ -23,23 +23,29 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $patientFirstName = 'child_name';
     $patientLastName = 'child_surname';
     $worksheetName = 'EID Test Worksheet';
-}else if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+} else if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
     $refTable = "form_covid19";
     $refPrimaryColumn = "covid19_id";
     $patientIdColumn = 'patient_id';
     $patientFirstName = 'patient_name';
     $patientLastName = 'patient_surname';
     $worksheetName = 'Covid-19 Test Worksheet';
-}else if (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
+} else if (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
     $refTable = "form_hepatitis";
     $refPrimaryColumn = "hepatitis_id";
     $patientIdColumn = 'patient_id';
     $patientFirstName = 'patient_name';
     $patientLastName = 'patient_surname';
     $worksheetName = 'Hepatitis Test Worksheet';
-
     $showPatientName = true;
-
+} else if (isset($_GET['type']) && $_GET['type'] == 'tb') {
+    $refTable = "form_tb";
+    $refPrimaryColumn = "tb_id";
+    $patientIdColumn = 'patient_id';
+    $patientFirstName = 'patient_name';
+    $patientLastName = 'patient_surname';
+    $worksheetName = 'TB Test Worksheet';
+    $showPatientName = true;
 }
 
 
@@ -77,7 +83,7 @@ if ($id > 0) {
         // Extend the TCPDF class to create custom Header and Footer
         class MYPDF extends TCPDF
         {
-            public function setHeading($logo, $text, $batch, $resulted, $reviewed,$worksheetName)
+            public function setHeading($logo, $text, $batch, $resulted, $reviewed, $worksheetName)
             {
                 $this->logo = $logo;
                 $this->text = $text;
@@ -192,7 +198,11 @@ if ($id > 0) {
                 // }
                 $xplodJsonToArray = explode("_", $jsonToArray[$j]);
                 if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-                    $sampleQuery = "SELECT sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                    if (isset($_GET['type']) && $_GET['type'] == 'tb') {
+                        $sampleQuery = "SELECT sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                    } else {
+                        $sampleQuery = "SELECT sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                    }
                     $sampleResult = $db->query($sampleQuery);
 
                     $params = $pdf->serializeTCPDFtagParameters(array($sampleResult[0]['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
@@ -302,8 +312,8 @@ if ($id > 0) {
                 $lotDetails = $sample['lot_number'] . $lotExpirationDate;
 
                 $patientIdentifier = $sample[$patientIdColumn];
-                if($showPatientName){
-                    $patientIdentifier = trim($patientIdentifier . " " .$patientFirstName." ".$patientLastName);
+                if ($showPatientName) {
+                    $patientIdentifier = trim($patientIdentifier . " " . $patientFirstName . " " . $patientLastName);
                 }
 
                 $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';

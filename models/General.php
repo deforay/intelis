@@ -446,7 +446,9 @@ class General
     public function getTestingPlatforms($testType = null)
     {
 
-        if (!empty($testType)) {
+        if (!empty($testType) && $testType == "tb") {
+            $this->db->where("(JSON_SEARCH(supported_tests, 'all', 'tb') IS NOT NULL) AND (supported_tests IS NOT NULL)");
+        } else if (!empty($testType)) {
             $this->db->where("(JSON_SEARCH(supported_tests, 'all', '$testType') IS NOT NULL) OR (supported_tests IS NULL)");
         }
         $this->db->where("status", "active");
