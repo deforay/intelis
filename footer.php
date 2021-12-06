@@ -283,7 +283,7 @@
 		$(".request").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".addVlRequestMenu").addClass('active');
-	} else if (splitsUrl == 'addSamplesFromManifest.php' && splitsUrlCheck[1] != "eid" && splitsUrlCheck[1] != "covid-19") {
+	} else if (splitsUrl == 'addSamplesFromManifest.php' && splitsUrlCheck[1] != "eid" && splitsUrlCheck[1] != "covid-19" && splitsUrlCheck[1] != "tb") {
 		$(".request").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".addSamplesFromManifestMenu").addClass('active');
