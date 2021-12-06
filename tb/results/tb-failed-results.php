@@ -1,5 +1,5 @@
 <?php
-$title = "Covid19 | View All Requests";
+$title = "TB | View All Requests";
 #require_once('../../startup.php');
 
 include_once(APPLICATION_PATH . '/header.php');
@@ -7,13 +7,13 @@ include_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
-$healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
+$healthFacilites = $facilitiesDb->getHealthFacilities('tb');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 $formId = $general->getGlobalConfig('vl_form');
 
-$batQuery = "SELECT batch_code FROM batch_details where test_type = 'covid19' AND batch_status='completed'";
+$batQuery = "SELECT batch_code FROM batch_details where test_type = 'tb' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 ?>
 <style>
@@ -126,7 +126,7 @@ $batResult = $db->rawQuery($batQuery);
                                     <th>Result</th>
                                     <th>Last Modified On</th>
                                     <th>Status</th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("covid19-edit-request.php", $_SESSION['privileges']))) { ?>
+                                    <?php if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges']))) { ?>
                                         <th>Action</th>
                                     <?php } ?>
                                 </tr>
@@ -310,7 +310,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("covid-19-edit-request.php", $_SESSION['privileges']))) { ?> {
+                <?php if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges']))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },
@@ -330,7 +330,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             },
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "/covid-19/results/get-failed-results.php",
+            "sAjaxSource": "/tb/results/get-failed-results.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "batchCode",
@@ -440,7 +440,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         if (id != "") {
             $.blockUI();
             $.post("failed-results-retest.php", {
-                    covid19Id: id,
+                    tbId: id,
                     bulkIds: bulk
                 },
                 function(data) {

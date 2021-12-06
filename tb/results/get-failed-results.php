@@ -21,8 +21,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 $general = new \Vlsm\Models\General();
-$tableName = "form_covid19";
-$primaryKey = "covid19_id";
+$tableName = "form_tb";
+$primaryKey = "tb_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
@@ -117,7 +117,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 $aWhere = '';
 
-$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_covid19 as vl 
+$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_tb as vl 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
@@ -238,18 +238,18 @@ if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-$_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
+$_SESSION['tbRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 // echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT vl.covid19_id FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
+$aResultFilterTotal = $db->rawQuery("SELECT vl.tb_id FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT COUNT(covid19_id) as total FROM form_covid19 as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
+$aResultTotal =  $db->rawQuery("SELECT COUNT(tb_id) as total FROM form_tb as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
 $iTotal = $aResultTotal[0]['total'];
 
 $output = array(
@@ -259,7 +259,7 @@ $output = array(
     "aaData" => array()
 );
 $editRequest = false;
-if (isset($_SESSION['privileges']) && (in_array("covid19-edit-request.php", $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges']))) {
     $editRequest = true;
 }
 
@@ -280,7 +280,7 @@ foreach ($rResult as $aRow) {
 
     $row = array();
 
-    $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['covid19_id'] . '"  value="' . $aRow['covid19_id'] . '" onchange="resetBtnShowHide();" onclick="toggleTest(this);"  />';
+    $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['tb_id'] . '"  value="' . $aRow['tb_id'] . '" onchange="resetBtnShowHide();" onclick="toggleTest(this);"  />';
     $row[] = $aRow['sample_code'];
     if ($sarr['sc_user_type'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
@@ -300,7 +300,7 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['status_name']);
 
     if ($editRequest) {
-        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Failed result retest" onclick="retestSample(\'' . trim(base64_encode($aRow['covid19_id'])) . '\')"><i class="fa fa-refresh"> Retest</i></a>';
+        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Failed result retest" onclick="retestSample(\'' . trim(base64_encode($aRow['tb_id'])) . '\')"><i class="fa fa-refresh"> Retest</i></a>';
     }
     $output['aaData'][] = $row;
 }
