@@ -1082,6 +1082,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("tb-manual-results.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu tbResultsMenu"><a href="/tb/results/tb-manual-results.php"><i class="fa fa-caret-right"></i> Enter Result Manually</a></li>
+										<li class="allMenu tbFailedResultsMenu"><a href="/tb/results/tb-failed-results.php"><i class="fa fa-caret-right"></i> Failed/Hold Samples</a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("tb-result-status.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu tbResultStatus"><a href="/tb/results/tb-result-status.php"><i class="fa fa-caret-right"></i> Manage Results Status</a></li>
@@ -1102,11 +1103,20 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									</span>
 								</a>
 								<ul class="treeview-menu">
+									<?php if (isset($_SESSION['privileges']) && in_array("tb-sample-status.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbSampleStatus"><a href="/tb/management/tb-sample-status.php"><i class="fa fa-caret-right"></i> Sample Status Report</a></li>
+									<?php } ?>
 									<?php if (isset($_SESSION['privileges']) && in_array("tb-print-results.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu tbPrintResults"><a href="/tb/results/tb-print-results.php"><i class="fa fa-caret-right"></i> Print Result</a></li>
 									<?php } ?>
 									<?php if (isset($_SESSION['privileges']) && in_array("tb-export-data.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu tbExportResult"><a href="/tb/management/tb-export-data.php"><i class="fa fa-caret-right"></i> Export Results</a></li>
+									<?php } ?>
+									<?php if (isset($_SESSION['privileges']) && in_array("tb-sample-rejection-report.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbSampleRejectionReport"><a href="/tb/management/tb-sample-rejection-report.php"><i class="fa fa-caret-right"></i> Sample Rejection Report</a></li>
+									<?php } ?>
+									<?php if (isset($_SESSION['privileges']) && in_array("tb-clinic-report.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu tbClinicReport"><a href="/tb/management/tb-clinic-report.php"><i class="fa fa-caret-right"></i> Clinic Report</a></li>
 									<?php } ?>
 								</ul>
 							</li>

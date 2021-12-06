@@ -2704,3 +2704,8 @@ ALTER TABLE `tb_tests` ADD `sample_tested_datetime` DATETIME NULL DEFAULT NULL A
 
 --Sakthivel P 0-Dec-2021
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-requests', 'addSamplesFromManifest.php', 'Add Samples from Manifest');
+
+--Sakthivel P 06-Dec-2021
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-sample-status.php', 'Sample Status Report');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-sample-rejection-report.php', 'Sample Rejection Report');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-clinic-report.php', 'TB Clinic Report');
