@@ -179,11 +179,10 @@ try {
             $db->delete($testTableName);
 
             foreach ($_POST['testResult'] as $testKey => $testResult) {
-                if (isset($testResult) && !empty($testResult)) {
+                if (isset($testResult) && !empty($testResult) && trim($testResult) != "") {
                     $db->insert($testTableName, array(
                         'tb_id'             => $_POST['tbSampleId'],
                         'actual_no'         => isset($_POST['actualNo'][$testKey]) ? $_POST['actualNo'][$testKey] : null,
-                        'testing_platform'  => isset($_POST['testPlatforms'][$testKey]) ? $_POST['testPlatforms'][$testKey] : null,
                         'test_result'       => $testResult,
                         'updated_datetime'  => $general->getDateTime()
                     ));

@@ -356,7 +356,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 										<tr>
 											<td colspan="4">
 												<table class="table table-bordered table-striped">
-												<thead>
+													<thead>
 														<tr>
 															<th colspan="3" style="text-align: center;">Microscopy Test Results</th>
 														</tr>
@@ -368,37 +368,35 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 													</thead>
 													<tbody id="testKitNameTable">
 														<?php
-														if (count($tbTestInfo) > 0) {
-															foreach(range(1,3) as $no) {
-															foreach ($tbTestInfo as $key => $tbRow) {
-																if($no == $tbTestInfo[$no]) {?>
+														$n = count($tbTestInfo);
+														foreach (range(1, 3) as $no) {
+															if ($n >= $no) { ?>
 																<tr>
 																	<td class="text-center"><?php echo $no; ?></td>
 																	<td>
 																		<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo $no; ?>" title="Please select the result for row <?php echo $no; ?>">
-																			<?= $general->generateSelectOptions($microscope, $tbRow['test_result'], '-- Select --'); ?>
+																			<?= $general->generateSelectOptions($microscope, $tbTestInfo[$no - 1]['test_result'], '-- Select --'); ?>
 																		</select>
 																	</td>
 																	<td>
-																		<input type="text" value="<?php echo $tbRow['actual_no']; ?>" class="form-control" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
+																		<input type="text" value="<?php echo $tbTestInfo[$no - 1]['actual_no']; ?>" class="form-control test-name-table-input" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
 																	</td>
 																</tr>
-															<?php } } }
-														} else { ?>
-															<?php foreach (range(1, 3) as $no) { ?>
-															<tr>
-																<td class="text-center"><?php echo $no; ?></td>
-																<td>
-																	<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo $no; ?>" title="Please select the result for row <?php echo $no; ?>">
-																		<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
-																	</select>
-																</td>
-																<td>
-																	<input type="text" class="form-control" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
-																</td>
-															</tr>
-														<?php } ?>
-														<?php } ?>
+															<?php
+															} else { ?>
+																<tr>
+																	<td class="text-center"><?php echo $no; ?></td>
+																	<td>
+																		<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo $no; ?>" title="Please select the result for row <?php echo $no; ?>">
+																			<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
+																		</select>
+																	</td>
+																	<td>
+																		<input type="text" class="form-control test-name-table-input" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
+																	</td>
+																</tr>
+														<?php }
+														} ?>
 													</tbody>
 												</table>
 											</td>
@@ -458,9 +456,8 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 							<input type="hidden" name="saveNext" id="saveNext" />
 						<?php } ?>
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
 						<input type="hidden" name="formId" id="formId" value="1" />
-						<input type="hidden" name="tbSampleId" id="tbSampleId" value="1" />
+						<input type="hidden" name="tbSampleId" id="tbSampleId" value="<?php echo $id; ?>" />
 						<a href="/tb/requests/tb-requests.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -473,12 +470,8 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 	<!-- /.content -->
 </div>
 <script type="text/javascript">
-	changeProvince = true;
-	changeFacility = true;
 	provinceName = true;
 	facilityName = true;
-	machineName = true;
-	tableRowId = 2;
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
@@ -727,36 +720,6 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 		getfacilityProvinceDetails($("#facilityId").val());
 	});
 
-	let testCounter = 1;
-
-	function addTestRow() {
-		testCounter++;
-		let rowString = `<tr>
-			<td class="text-center">${testCounter}</td>
-            <td><input type="text" class="form-control" id="actualNo${testCounter}" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" /></td>
-            <td><select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result for row ${testCounter}"><?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?></select></td>
-			<td><select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms${testCounter}" title="Please select the test platform for row ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-            <td style="vertical-align:middle;text-align: center;width:100px;">
-                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa fa-plus"></i></a>&nbsp;
-                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
-            </td>
-        </tr>`;
-
-		$("#testKitNameTable").append(rowString);
-
-	}
-
-	function removeTestRow(el) {
-		$(el).fadeOut("slow", function() {
-			el.parentNode.removeChild(el);
-			rl = document.getElementById("testKitNameTable").rows.length;
-			if (rl == 0) {
-				testCounter = 0;
-				addTestRow();
-			}
-		});
-	}
-
 	function checkIsResultAuthorized() {
 		if ($('#isResultAuthorized').val() == 'no') {
 			$('#authorizedBy,#authorizedOn').val('');
@@ -767,14 +730,6 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 			$('#authorizedBy,#authorizedOn').prop('disabled', false);
 			$('#authorizedBy,#authorizedOn').removeClass('disabled');
 			$('#authorizedBy,#authorizedOn').addClass('isRequired');
-		}
-	}
-
-	function otherTbTestName(val, id) {
-		if (val == 'other') {
-			$('.testNameOther' + id).show();
-		} else {
-			$('.testNameOther' + id).hide();
 		}
 	}
 </script>

@@ -178,11 +178,10 @@ try {
             $db->delete($testTableName);
 
             foreach ($_POST['testResult'] as $testKey => $testResult) {
-                if (isset($testResult) && !empty($testResult)) {
+                if (isset($testResult) && !empty($testResult) && trim($testResult) != "") {
                     $db->insert($testTableName, array(
                         'tb_id'             => $_POST['tbSampleId'],
                         'actual_no'         => isset($_POST['actualNo'][$testKey]) ? $_POST['actualNo'][$testKey] : null,
-                        'testing_platform'  => isset($_POST['testPlatforms'][$testKey]) ? $_POST['testPlatforms'][$testKey] : null,
                         'test_result'       => $testResult,
                         'updated_datetime'  => $general->getDateTime()
                     ));
@@ -212,9 +211,9 @@ try {
     }
 
     if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-        header("location:/tb/requests/tb-edit-request.php?id=" . base64_encode($_POST['tbSampleId']));
+        header("location:/tb/results/tb-update-result.php?id=" . base64_encode($_POST['tbSampleId']));
     } else {
-        header("location:/tb/requests/tb-requests.php");
+        header("location:/tb/results/tb-manual-results.php");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());
