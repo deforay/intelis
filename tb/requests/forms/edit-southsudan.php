@@ -356,62 +356,48 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 										<tr>
 											<td colspan="4">
 												<table class="table table-bordered table-striped">
-													<thead>
+												<thead>
 														<tr>
-															<th style="width: 10%;" class="text-center">No AFB</th>
-															<th style="width: 20%;" class="text-center">Actual No</th>
-															<th style="width: 20%;" class="text-center">Microscopy (Result)</th>
-															<th style="width: 20%;" class="text-center">Test Platforms</th>
-															<th style="width: 10%;" class="text-center">Action</th>
+															<th colspan="3" style="text-align: center;">Microscopy Test Results</th>
+														</tr>
+														<tr>
+															<th style="width: 10%;" class="text-center">Test #</th>
+															<th style="width: 40%;" class="text-center">Result</th>
+															<th style="width: 40%;" class="text-center">Actual Number</th>
 														</tr>
 													</thead>
 													<tbody id="testKitNameTable">
 														<?php
 														if (count($tbTestInfo) > 0) {
-
-															foreach ($tbTestInfo as $key => $tbRow) { ?>
+															foreach(range(1,3) as $no) {
+															foreach ($tbTestInfo as $key => $tbRow) {
+																if($no == $tbTestInfo[$no]) {?>
 																<tr>
-																	<td class="text-center"><?php echo ($key + 1); ?></td>
+																	<td class="text-center"><?php echo $no; ?></td>
 																	<td>
-																		<input type="text" value="<?php echo $tbRow['actual_no']; ?>" class="form-control" id="actualNo<?php echo ($key + 1); ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
-																	</td>
-																	<td>
-																		<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo ($key + 1); ?>" title="Please select the result for row <?php echo ($key + 1); ?>">
+																		<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo $no; ?>" title="Please select the result for row <?php echo $no; ?>">
 																			<?= $general->generateSelectOptions($microscope, $tbRow['test_result'], '-- Select --'); ?>
 																		</select>
 																	</td>
 																	<td>
-																		<select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms<?php echo ($key + 1); ?>" title="Please select the test platform for row 1">
-																			<?= $general->generateSelectOptions($testPlatformList, $tbRow['testing_platform'], '-- Select --'); ?>
-																		</select>
-																	</td>
-																	<td style="vertical-align:middle;text-align: center;width:100px;">
-																		<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa fa-plus"></i></a>&nbsp;
-																		<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
+																		<input type="text" value="<?php echo $tbRow['actual_no']; ?>" class="form-control" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
 																	</td>
 																</tr>
-															<?php }
+															<?php } } }
 														} else { ?>
+															<?php foreach (range(1, 3) as $no) { ?>
 															<tr>
-																<td class="text-center">1</td>
+																<td class="text-center"><?php echo $no; ?></td>
 																<td>
-																	<input type="text" class="form-control" id="actualNo1" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
-																</td>
-																<td>
-																	<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
+																	<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo $no; ?>" title="Please select the result for row <?php echo $no; ?>">
 																		<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
 																	</select>
 																</td>
 																<td>
-																	<select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms1" title="Please select the test platform for row 1">
-																		<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
-																	</select>
-																</td>
-																<td style="vertical-align:middle;text-align: center;width:100px;">
-																	<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa fa-plus"></i></a>&nbsp;
-																	<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
+																	<input type="text" class="form-control" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
 																</td>
 															</tr>
+														<?php } ?>
 														<?php } ?>
 													</tbody>
 												</table>
