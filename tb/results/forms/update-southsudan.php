@@ -285,7 +285,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 													<option value="ZN" <?php echo (isset($testTypeRequested) && in_array("ZN", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>ZN</option>
 													<option value="FM" <?php echo (isset($testTypeRequested) && in_array("FM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>FM</option>
 												</optgroup>
-												<optgroup label="X pert MTB">
+												<optgroup label="Xpert MTB">
 													<option value="MTB/RIF" <?php echo (isset($testTypeRequested) && in_array("MTB/RIF", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF</option>
 													<option value="MTB/RIF ULTRA" <?php echo (isset($tbInfo['tests_requested']) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
 													<option value="TB LAM" <?php echo (isset($tbInfo['tests_requested']) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
@@ -418,9 +418,9 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="xPertMTMResult">X pert MTB Result <span class="mandatory">*</span></label></th>
+											<th><label class="label-control" for="xPertMTMResult">Xpert MTB Result <span class="mandatory">*</span></label></th>
 											<td>
-												<select class="form-control test-result test-name-table-input isRequired" name="xPertMTMResult" id="xPertMTMResult" title="Please select the X Pert MTM Result">
+												<select class="form-control test-result test-name-table-input isRequired" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
 													<?= $general->generateSelectOptions($tbXPertResults, $tbInfo['xpert_mtb_result'], '-- Select --'); ?>
 												</select>
 											</td>

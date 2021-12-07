@@ -421,7 +421,7 @@ if (sizeof($requestResult) > 0) {
         }
         /* Result print here */
         $html .= '<tr>';
-        $html .= '<td colspan="4" style="font-size:15px;font-weight:normal;font-weight:normal;border:1px solid #67b3ff;"><br><br>X PERT MTB RESULT : <span style="font-weight:bold;">' . $tbXPertResults[$result['xpert_mtb_result']] . '</span></td>';
+        $html .= '<td colspan="4" style="font-size:15px;font-weight:normal;font-weight:normal;border:1px solid #67b3ff;"><br><br>XPERT MTB RESULT : <span style="font-weight:bold;">' . $tbXPertResults[$result['xpert_mtb_result']] . '</span></td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td colspan="4" style="font-size:15px;font-weight:normal;font-weight:normal;border:1px solid #67b3ff;">TB LAM RESULT : <span style="font-weight:bold;">' . $tbLamResults[$result['result']] . '</span></td>';
