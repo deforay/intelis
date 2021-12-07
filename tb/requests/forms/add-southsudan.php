@@ -339,34 +339,28 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<table class="table table-bordered table-striped">
 													<thead>
 														<tr>
-															<th style="width: 10%;" class="text-center">No AFB</th>
-															<th style="width: 20%;" class="text-center">Actual No</th>
-															<th style="width: 20%;" class="text-center">Microscopy (Result)</th>
-															<th style="width: 20%;" class="text-center">Test Platforms</th>
-															<th style="width: 10%;" class="text-center">Action</th>
+															<th colspan="3" style="text-align: center;">Microscopy Test Results</th>
+														</tr>
+														<tr>
+															<th style="width: 10%;" class="text-center">Test #</th>
+															<th style="width: 40%;" class="text-center">Result</th>
+															<th style="width: 40%;" class="text-center">Actual Number</th>
 														</tr>
 													</thead>
 													<tbody id="testKitNameTable">
-														<tr>
-															<td class="text-center">1</td>
-															<td>
-																<input type="text" class="form-control" id="actualNo1" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
-															</td>
-															<td>
-																<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
-																	<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
-																</select>
-															</td>
-															<td>
-																<select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms1" title="Please select the test platform for row 1">
-																	<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
-																</select>
-															</td>
-															<td style="vertical-align:middle;text-align: center;width:100px;">
-																<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa fa-plus"></i></a>&nbsp;
-																<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
-															</td>
-														</tr>
+														<?php foreach (range(1, 3) as $no) { ?>
+															<tr>
+																<td class="text-center"><?php echo $no; ?></td>
+																<td>
+																	<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo $no; ?>" title="Please select the result for row <?php echo $no; ?>">
+																		<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																	<input type="text" class="form-control" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
+																</td>
+															</tr>
+														<?php } ?>
 													</tbody>
 												</table>
 											</td>
@@ -441,12 +435,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 	<!-- /.content -->
 </div>
 <script type="text/javascript">
-	changeProvince = true;
-	changeFacility = true;
 	provinceName = true;
 	facilityName = true;
-	machineName = true;
-	tableRowId = 2;
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
@@ -705,36 +695,6 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 
 	});
 
-	let testCounter = 1;
-
-	function addTestRow() {
-		testCounter++;
-		let rowString = `<tr>
-			<td class="text-center">${testCounter}</td>
-            <td><input type="text" class="form-control" id="actualNo${testCounter}" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" /></td>
-            <td><select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result for row ${testCounter}"><?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?></select></td>
-            <td><select class="form-control test-name-table-input" name="testPlatforms[]" id="testPlatforms${testCounter}" title="Please select the test platform for row ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-            <td style="vertical-align:middle;text-align: center;width:100px;">
-                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa fa-plus"></i></a>&nbsp;
-                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
-            </td>
-        </tr>`;
-
-		$("#testKitNameTable").append(rowString);
-
-	}
-
-	function removeTestRow(el) {
-		$(el).fadeOut("slow", function() {
-			el.parentNode.removeChild(el);
-			rl = document.getElementById("testKitNameTable").rows.length;
-			if (rl == 0) {
-				testCounter = 0;
-				addTestRow();
-			}
-		});
-	}
-
 	function checkIsResultAuthorized() {
 		if ($('#isResultAuthorized').val() == 'no') {
 			$('#authorizedBy,#authorizedOn').val('');
@@ -745,14 +705,6 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			$('#authorizedBy,#authorizedOn').prop('disabled', false);
 			$('#authorizedBy,#authorizedOn').removeClass('disabled');
 			$('#authorizedBy,#authorizedOn').addClass('isRequired');
-		}
-	}
-
-	function otherTbTestName(val, id) {
-		if (val == 'other') {
-			$('.testNameOther' + id).show();
-		} else {
-			$('.testNameOther' + id).hide();
 		}
 	}
 </script>

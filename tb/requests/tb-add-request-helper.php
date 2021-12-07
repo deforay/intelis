@@ -185,9 +185,8 @@ try {
                 if (isset($testResult) && !empty($testResult)) {
                     $db->insert($testTableName, array(
                         'tb_id'             => $_POST['tbSampleId'],
-                        'actual_no'         => isset($_POST['actualNo'][$testKey]) ? $_POST['actualNo'][$testKey] : null,
-                        'testing_platform'  => isset($_POST['testPlatforms'][$testKey]) ? $_POST['testPlatforms'][$testKey] : null,
                         'test_result'       => $testResult,
+                        'actual_no'         => isset($_POST['actualNo'][$testKey]) ? $_POST['actualNo'][$testKey] : null,
                         'updated_datetime'  => $general->getDateTime()
                     ));
                 }
