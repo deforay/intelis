@@ -11,26 +11,9 @@ $healthFacilites = $facilitiesDb->getHealthFacilities('tb');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 
-//Get active machines
-$testPlatformResult = $general->getTestingPlatforms('tb');
-// $query = "SELECT vl.sample_code,vl.tb_id,vl.facility_id,f.facility_name,f.facility_code FROM form_tb as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id where sample_batch_id is NULL OR sample_batch_id='' ORDER BY f.facility_name ASC";
-// $result = $db->rawQuery($query);
-
 $start_date = date('Y-m-d');
 $end_date = date('Y-m-d');
 $maxId = $general->createBatchCode($start_date, $end_date);
-//Set last machine label order
-$machinesLabelOrder = array();
-foreach ($testPlatformResult as $machine) {
-    $lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
-    $lastOrderInfo = $db->query($lastOrderQuery);
-    if (isset($lastOrderInfo[0]['label_order']) && trim($lastOrderInfo[0]['label_order']) != '') {
-        $machinesLabelOrder[$machine['config_id']] = implode(",", json_decode($lastOrderInfo[0]['label_order'], true));
-    } else {
-        $machinesLabelOrder[$machine['config_id']] = '';
-    }
-}
-//print_r($machinesLabelOrder);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -82,37 +65,23 @@ foreach ($testPlatformResult as $machine) {
             </div>
             <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
                 <tr>
-                    <th>Testing Platform&nbsp;<span class="mandatory">*</span> </th>
-                    <td>
-                        <select name="machine" id="machine" class="form-control isRequired" title="Please choose machine" style="width:280px;">
-                            <option value=""> -- Select -- </option>
-                            <?php
-                            foreach ($testPlatformResult as $machine) {
-                                $labelOrder = $machinesLabelOrder[$machine['config_id']];
-                            ?>
-                                <option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?php echo ($machine['machine_name']); ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
                     <th>Facility</th>
                     <td>
                         <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
                             <?= $facilitiesDropdown; ?>
                         </select>
                     </td>
-                </tr>
-                <tr>
                     <th>Sample Collection Date</th>
                     <td>
                         <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
                     </td>
+                </tr>
+                <tr>
                     <th>Date Sample Receieved at Lab</th>
                     <td>
                         <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
                     </td>
-
                 </tr>
-
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="Filter Samples" class="btn btn-success btn-sm">
                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset Filters</span></button>
@@ -155,7 +124,7 @@ foreach ($testPlatformResult as $machine) {
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save and Next</a>
+                        <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;">Save and Next</a>
                         <a href="tb-batches.php" class="btn btn-default"> Cancel</a>
                     </div>
                     <!-- /.box-footer -->
@@ -248,42 +217,8 @@ foreach ($testPlatformResult as $machine) {
                         }
                     });
             },
-            afterSelect: function() {
-                //button disabled/enabled
-                if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-                    alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
-                    $("#batchSubmit").attr("disabled", false);
-                    $("#batchSubmit").css("pointer-events", "auto");
-                } else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-                    $("#batchSubmit").attr("disabled", false);
-                    $("#batchSubmit").css("pointer-events", "auto");
-                } else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-                    alert("You have already selected Maximum no. of sample " + noOfSamples);
-                    $("#batchSubmit").attr("disabled", true);
-                    $("#batchSubmit").css("pointer-events", "none");
-                }
-                this.qs1.cache();
-                this.qs2.cache();
-            },
-            afterDeselect: function() {
-                //button disabled/enabled
-                if (this.qs2.cache().matchedResultsCount == 0) {
-                    $("#batchSubmit").attr("disabled", true);
-                    $("#batchSubmit").css("pointer-events", "none");
-                } else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-                    alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
-                    $("#batchSubmit").attr("disabled", false);
-                    $("#batchSubmit").css("pointer-events", "auto");
-                } else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-                    $("#batchSubmit").attr("disabled", false);
-                    $("#batchSubmit").css("pointer-events", "auto");
-                } else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-                    $("#batchSubmit").attr("disabled", true);
-                    $("#batchSubmit").css("pointer-events", "none");
-                }
-                this.qs1.cache();
-                this.qs2.cache();
-            }
+            afterSelect: function() {},
+            afterDeselect: function() {}
         });
 
         $('#select-all-samplecode').click(function() {
@@ -292,8 +227,6 @@ foreach ($testPlatformResult as $machine) {
         });
         $('#deselect-all-samplecode').click(function() {
             $('#sampleCode').multiSelect('deselect_all');
-            $("#batchSubmit").attr("disabled", true);
-            $("#batchSubmit").css("pointer-events", "none");
             return false;
         });
     });
@@ -322,13 +255,12 @@ foreach ($testPlatformResult as $machine) {
 
     function getSampleCodeDetails() {
 
-        var machine = $("#machine").val();
-        if (machine == null || machine == '') {
+        var fName = $("#facilityName").val();
+        if (fName == null || fName == '') {
             $.unblockUI();
-            alert('You have to choose a testing platform to proceed');
+            alert('You have to choose a facility to proceed');
             return false;
         }
-        var fName = $("#facilityName").val();
 
         $.blockUI();
         $.post("/tb/batch/get-tb-samples-batch.php", {
@@ -339,8 +271,6 @@ foreach ($testPlatformResult as $machine) {
             function(data) {
                 if (data != "") {
                     $("#sampleDetails").html(data);
-                    $("#batchSubmit").attr("disabled", true);
-                    $("#batchSubmit").css("pointer-events", "none");
                 }
             });
         $.unblockUI();
