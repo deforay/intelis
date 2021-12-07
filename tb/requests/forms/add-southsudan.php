@@ -278,7 +278,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<option value="ZN">ZN</option>
 													<option value="FM">FM</option>
 												</optgroup>
-												<optgroup label="X pert MTB">
+												<optgroup label="Xpert MTB">
 													<option value="MTB/RIF">MTB/RIF</option>
 													<option value="MTB/RIF ULTRA">MTB/RIF ULTRA</option>
 													<option value="TB LAM">TB LAM</option>
@@ -372,9 +372,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="xPertMTMResult">X pert MTB Result</label></th>
+											<th><label class="label-control" for="xPertMTMResult">Xpert MTB Result</label></th>
 											<td>
-												<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the X Pert MTM Result">
+												<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
 													<?= $general->generateSelectOptions($tbXPertResults, null, '-- Select --'); ?>
 												</select>
 											</td>
