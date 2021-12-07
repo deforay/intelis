@@ -2709,3 +2709,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-sample-status.php', 'Sample Status Report');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-sample-rejection-report.php', 'Sample Rejection Report');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-clinic-report.php', 'TB Clinic Report');
+
+--Sakthivel P 07-Dec-2021
+UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 197;
+UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 199;
+UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 200;
+UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 201;
