@@ -186,7 +186,7 @@ $batResult = $db->rawQuery($batQuery);
 															<th>Remote Sample <br />Code</th>
 														<?php } ?>
 														<th>Batch Code</th>
-														<th>Unique ART No.</th>
+														<th>Patient ID</th>
 														<th>Patient's Name</th>
 														<th>Facility Name</th>
 														<th>Sample Type</th>
@@ -333,7 +333,7 @@ $batResult = $db->rawQuery($batQuery);
 															<th>Remote Sample <br />Code</th>
 														<?php } ?>
 														<th>Batch Code</th>
-														<th>Unique ART No.</th>
+														<th>Patient ID</th>
 														<th>Patient's Name</th>
 														<th>Facility Name</th>
 														<th>Sample Type</th>
