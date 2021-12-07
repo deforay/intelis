@@ -722,6 +722,10 @@
 		$(".allMenu").removeClass('active');
 		$(".tbResults").addClass('active');
 		$(".tbResultsMenu").addClass('active');
+	} else if (splitsUrl == 'tb-result-status.php') {
+		$(".allMenu").removeClass('active');
+		$(".tbResults").addClass('active');
+		$(".tbResultStatus").addClass('active');
 	} else if (splitsUrl == 'tb-failed-results.php') {
 		$(".allMenu").removeClass('active');
 		$(".tbResults").addClass('active');

@@ -56,7 +56,7 @@ $batResult = $db->rawQuery($batQuery);
 										<li><a href="#incompleteFormReport" data-toggle="tab">Data Quality Check</a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
-										<div class="tab-pane fade in active" id="highTbReportTable">
+										<div class="tab-pane fade in active" >
 											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><b>Sample Test Date&nbsp;:</b></td>

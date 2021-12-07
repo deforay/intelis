@@ -247,6 +247,47 @@ include_once(APPLICATION_PATH . '/header.php');
 				<?php } ?>
 				<!-- COVID-19 END -->
 
+				<!-- TB START-->
+				<?php if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
+
+<div class="tab-pane fade in" id="tbDashboard">
+	<!-- TB content -->
+	<section class="content">
+		<div id="contCovid"> </div>
+		<!-- Small boxes (Stat box) -->
+		<div class="row" style="padding-top:10px;padding-bottom:20px;">
+			<div class="col-lg-7">
+				<form autocomplete="off">
+					<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+						<tr>
+							<td style="vertical-align:middle;"><b>Date Range&nbsp;:</b></td>
+							<td>
+								<input type="text" id="tbSampleCollectionDate" name="tbSampleCollectionDate" class="form-control" placeholder="Select Collection Date" style="width:220px;background:#fff;" />
+							</td>
+							<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('tb')" value="Search" class="searchBtn btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('tb');"><span>Reset</span></button>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+		<div class="row">
+			<div id="tbSampleResultDetails"></div>
+			<div class="box-body" id="tbNoOfSampleCount"></div>
+			<div id="tbPieChartDiv"></div>
+		</div>
+
+		<!-- /.row -->
+		<!-- Main row -->
+		<!-- /.row (main row) -->
+	</section>
+	<!-- /. TB content -->
+</div>
+
+<?php } ?>
+<!-- TB END -->
+
 			</div>
 		</div>
 	</section>
@@ -264,7 +305,7 @@ include_once(APPLICATION_PATH . '/header.php');
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
 
 
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate').daterangepicker({
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate','#tbSampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: 'Clear'
 				},
@@ -306,6 +347,8 @@ include_once(APPLICATION_PATH . '/header.php');
 				getCovid19MonthlyTargetsReport();
 			} else if (requestType == 'hepatitis') {
 				getHepatitisMonthlyTargetsReport();
+			} else if (requestType == 'tb') {
+				getTbMonthlyTargetsReport();
 			}
 		<?php } ?>
 
@@ -362,6 +405,16 @@ include_once(APPLICATION_PATH . '/header.php');
 				function(data) {
 					if (data != '') {
 						$("#hepatitisSampleResultDetails").html(data);
+					}
+				});
+		} else if (requestType == 'tb') {
+			$.post("/dashboard/getSampleResult.php", {
+					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
+					type: 'tb'
+				},
+				function(data) {
+					if (data != '') {
+						$("#tbSampleResultDetails").html(data);
 					}
 				});
 		}
@@ -463,12 +516,26 @@ include_once(APPLICATION_PATH . '/header.php');
 						$(".labAverageTatDiv").css("display", "none");
 					}
 				});
+		} else if (requestType == 'tb') {
+			$.post("/tb/management/getSampleStatus.php", {
+					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
+					batchCode: '',
+					facilityName: '',
+					sampleType: '',
+					type: 'tb'
+				},
+				function(data) {
+					if ($.trim(data) != '') {
+						$("#tbPieChartDiv").html(data);
+						$(".labAverageTatDiv").css("display", "none");
+					}
+				});
 		}
 		$.unblockUI();
 	}
 
 	function resetSearchVlRequestData(requestType) {
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate').daterangepicker({
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate','#tbSampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: 'Clear'
 				},
@@ -602,6 +669,30 @@ include_once(APPLICATION_PATH . '/header.php');
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
 				<span >' + data['aaData'].length + ' Hepatitis testing lab(s) did not meet the monthly test target.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> more </a>\
+				</div>';
+					$("#contCovid").html(div);
+				}
+
+
+
+			});
+		$.unblockUI();
+	}
+
+	function getTbMonthlyTargetsReport() {
+		$.blockUI();
+
+		$.post("/tb/management/get-tb-monthly-threshold-report.php", {
+				targetType: '1',
+				sampleTestDate: $("#tbSampleCollectionDate").val(),
+			},
+			function(data) {
+				var data = JSON.parse(data);
+				// console.log(data['aaData'].length);
+				if (data['aaData'].length > 0) {
+					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
+				<span >' + data['aaData'].length + ' TB testing lab(s) did not meet the monthly test target.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> more </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}

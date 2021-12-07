@@ -188,6 +188,7 @@ if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 // error_log($sQuery);
+
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
@@ -226,9 +227,9 @@ foreach ($rResult as $aRow) {
     } else {
         $decrypt = 'sample_code';
     }
-    $patientFname = $general->crypto('decrypt', $aRow['patient_first_name'], $aRow[$decrypt]);
-    $patientMname = $general->crypto('decrypt', $aRow['patient_middle_name'], $aRow[$decrypt]);
-    $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $aRow[$decrypt]);
+    $patientFname = $general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]);
+    $patientMname = $general->crypto('decrypt', $aRow['patient_surname'], $aRow[$decrypt]);
+    // $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $aRow[$decrypt]);
     $row = array();
     $row[] = $aRow['sample_code'];
     if ($sarr['sc_user_type'] != 'standalone') {
@@ -236,7 +237,7 @@ foreach ($rResult as $aRow) {
     }
     $row[] = ucwords($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
-    $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
+    $row[] = ucwords($patientFname . " " . $patientMname);
     $row[] = $aRow['caretaker_phone_number'];
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['sample_tested_datetime'];
