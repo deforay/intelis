@@ -9,6 +9,9 @@ $end_date = '';
 $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
 $configResult = $db->query($configQuery);
 $country = $configResult[0]['value'];
+if (isset($_POST['batchId']) && trim($_POST['batchId']) != '') {
+    $batchId = $_POST['batchId'];
+}
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
@@ -30,7 +33,7 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
     }
 }
 
-$query = "SELECT vl.sample_code,vl.tb_id,vl.facility_id,vl.result_status,f.facility_name,f.facility_code FROM form_tb as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vlsm_country_id = $country  AND vl.sample_code!=''";
+$query = "SELECT vl.sample_code, vl.tb_id, vl.facility_id, vl.result_status, vl.sample_batch_id, f.facility_name, f.facility_code FROM form_tb as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vlsm_country_id = $country  AND vl.sample_code!=''";
 if (isset($_POST['batchId'])) {
     $query = $query . " AND (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
 } else {
@@ -71,7 +74,7 @@ $result = $db->rawQuery($query);
                     <?php
                     foreach ($result as $sample) {
                     ?>
-                        <option value="<?php echo $sample['tb_id']; ?>"><?php echo ucwords($sample['sample_code']) . " - " . ucwords($sample['facility_name']); ?></option>
+                        <option value="<?php echo $sample['tb_id']; ?>" <?php echo (isset($sample['sample_batch_id']) && $batchId == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($sample['sample_code']) . " - " . ucwords($sample['facility_name']); ?></option>
                     <?php
                     }
                     ?>

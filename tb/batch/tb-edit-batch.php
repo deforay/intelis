@@ -27,11 +27,6 @@ $query = "SELECT vl.sample_code,vl.sample_batch_id,vl.tb_id,vl.facility_id,vl.re
 //error_log($query);die;
 $result = $db->rawQuery($query, array($arr['vl_form']));
 $result = array_merge($batchResultresult, $result);
-
-//Get active machines
-
-$testPlatformResult = $general->getTestingPlatforms('tb');
-// $machinesLabelOrder = array();
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -90,19 +85,16 @@ $testPlatformResult = $general->getTestingPlatforms('tb');
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
-					<th></th>
-					<td></td>
-				</tr>
-				<tr>
 					<th>Sample Collection Date</th>
 					<td>
 						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
 					</td>
+				</tr>
+				<tr>
 					<th>Date Sample Receieved at Lab</th>
 					<td>
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
 					</td>
-
 				</tr>
 
 				<tr>
@@ -122,23 +114,6 @@ $testPlatformResult = $general->getTestingPlatforms('tb');
 									<label for="batchCode" class="col-lg-4 control-label">Batch Code <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="Batch Code" title="Please enter batch code" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','This batch code already exists.Try another code',null)" />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="machine" class="col-lg-4 control-label">Testing Platform <span class="mandatory">*</span></label>
-									<div class="col-lg-7" style="margin-left:3%;">
-										<select name="machine" id="machine" class="form-control isRequired" title="Please choose machine">
-											<option value=""> -- Select -- </option>
-											<?php
-											foreach ($testPlatformResult as $machine) {
-											?>
-												<option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
-											<?php } ?>
-										</select>
 									</div>
 								</div>
 							</div>
@@ -269,45 +244,9 @@ $testPlatformResult = $general->getTestingPlatforms('tb');
 					});
 			},
 			afterSelect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					alert("You have already selected Maximum no. of sample " + noOfSamples);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-				$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
+
 			},
-			afterDeselect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == 0) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-				$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
-			}
+			afterDeselect: function() {}
 		});
 		$('#select-all-samplecode').click(function() {
 			$('#sampleCode').multiSelect('select_all');
@@ -315,18 +254,8 @@ $testPlatformResult = $general->getTestingPlatforms('tb');
 		});
 		$('#deselect-all-samplecode').click(function() {
 			$('#sampleCode').multiSelect('deselect_all');
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
 			return false;
 		});
-
-		if (noOfSamples == 0) {
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-		} else if ($("#sampleCode :selected").length > noOfSamples) {
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-		}
 
 		<?php
 		$r = 1;
@@ -378,13 +307,12 @@ $testPlatformResult = $general->getTestingPlatforms('tb');
 		$.post("/tb/batch/get-tb-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
+				batchId: $("#batchId").val(),
 				fName: fName
 			},
 			function(data) {
 				if (data != "") {
 					$("#sampleDetails").html(data);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
 				}
 			});
 		$.unblockUI();
@@ -400,19 +328,6 @@ $testPlatformResult = $general->getTestingPlatforms('tb');
 			$(".pregnant,.breastfeeding").attr("disabled", true);
 		}
 	}
-
-	$("#machine").change(function() {
-		var self = this.value;
-		if (self != '') {
-			getSampleCodeDetails();
-			var selected = $(this).find('option:selected');
-			noOfSamples = selected.data('no-of-samples');
-			$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
-		} else {
-			$('.ms-list').html('');
-			$('#alertText').html('');
-		}
-	});
 </script>
 
 <?php
