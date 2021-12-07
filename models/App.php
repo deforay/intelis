@@ -525,4 +525,49 @@ class App
 
         return json_encode($sCodeKey);
     }
+
+    public function getCovid19SymptomsByFormId($c19Id, $allData = false)
+    {
+        if (empty($c19Id)) {
+            return null;
+        }
+        if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+            return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+        } else {
+            return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = $c19Id");
+        }
+    }
+
+
+    public function getCovid19ComorbiditiesByFormId($c19Id, $allData = false)
+    {
+        if (empty($c19Id)) {
+            return null;
+        }
+        if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+            return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+        } else {
+            return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` = $c19Id");
+        }
+    }
+
+    public function getCovid19ReasonsForTestingByFormId($c19Id, $allData = false)
+    {
+        if (empty($c19Id)) {
+            return null;
+        }
+        if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+            return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+        } else {
+            return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = $c19Id");
+        }
+    }
+
+    public function getCovid19ReasonsDetailsForTestingByFormId($c19Id)
+    {
+        if (empty($c19Id)) {
+            return null;
+        }
+        return $this->db->rawQueryOne("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ?", array($c19Id));
+    }
 }

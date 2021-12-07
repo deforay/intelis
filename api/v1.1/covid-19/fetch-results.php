@@ -259,6 +259,10 @@ try {
 
     foreach ($rowData as $key => $row) {
         $rowData[$key]['c19Tests'] = $app->getCovid19TestsByC19Id($row['covid19Id']);
+        $rowData[$key]['c19Symptoms'] = $app->getCovid19SymptomsByFormId($row['covid19Id']);
+        $rowData[$key]['c19Comorbidities'] = $app->getCovid19ComorbiditiesByFormId($row['covid19Id']);
+        $rowData[$key]['c19ReasonForTesting'] = $app->getCovid19ReasonsForTestingByFormId($row['covid19Id']);
+        $rowData[$key]['c19ReasonDetails'] = $app->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id']);
     }
     $payload = array(
         'status' => 'success',
