@@ -2715,3 +2715,6 @@ UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 1
 UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 199;
 UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 200;
 UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 201;
+
+--Thana 07-Dec-2021
+ALTER TABLE `form_tb` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
