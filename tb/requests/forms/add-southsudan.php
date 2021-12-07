@@ -311,6 +311,12 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</td>
 										</tr>
 										<tr>
+										<th><label class="label-control" for="testedBy">Tested By</label></th>
+											<td>
+												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+												</select>
+											</td>
 											<th><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
@@ -399,14 +405,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											<th><label class="label-control" for="approvedOn">Approved on</label></td>
 											<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
-										<tr>
-											<th><label class="label-control" for="testedBy">Tested By</label></th>
-											<td>
-												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
-													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-												</select>
-											</td>
-										</tr>
+										
 									</table>
 								</div>
 							</div>

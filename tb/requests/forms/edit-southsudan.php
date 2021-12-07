@@ -248,7 +248,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 										<td>
 											<input class="form-control isRequired" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
 										</td>
-										<th><label class="label-control" for="sampleReceivedDate">Date of Specimen Reception <span class="mandatory">*</span></label></th>
+										<th><label class="label-control" for="sampleReceivedDate">Lab Section <span class="mandatory">*</span></label></th>
 										<td>
 											<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
 										</td>
@@ -318,6 +318,12 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 											</td>
 										</tr>
 										<tr>
+										<th><label class="label-control" for="testedBy">Tested By</label></th>
+											<td>
+												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
+												</select>
+											</td>
 											<th><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
@@ -435,14 +441,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 											<th><label class="label-control" for="approvedOn">Approved on</label></td>
 											<td><input type="text" value="<?php echo $tbInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="date-time form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
-										<tr>
-											<th><label class="label-control" for="testedBy">Tested By</label></th>
-											<td>
-												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
-													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
-												</select>
-											</td>
-										</tr>
+
 									</table>
 								</div>
 							</div>
