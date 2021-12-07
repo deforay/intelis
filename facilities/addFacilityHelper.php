@@ -114,6 +114,7 @@ try {
 					$db->insert($testingLabsTable, array(
 						'test_type' => $testType,
 						'facility_id' => $lastId,
+						'available_platforms' => !empty($_POST['availablePlatforms']) ? json_encode($_POST['availablePlatforms']) : null,
 						'updated_datetime' => $general->getDateTime()
 					));
 				}
