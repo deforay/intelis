@@ -102,7 +102,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 //$sQuery="SELECT vl.vl_sample_id,vl.facility_id,vl.patient_name,f.facility_name,f.facility_code,art.art_code,s.sample_name FROM vl_request_form as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id INNER JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type";
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS 
-                         vl.vl_sample_id,
+                        vl.vl_sample_id,
                         vl.sample_code,
                         vl.remote_sample_code,
                         vl.patient_art_no,
@@ -132,7 +132,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.sample_received_at_vl_lab_datetime,							
                         vl.result_dispatched_datetime,	
                         vl.result_printed_datetime,	
-                        vl.last_modified_datetime,	
+                        vl.last_modified_datetime,
+                        vl.result_status,
                         s.sample_name,
                         b.batch_code,
                         ts.status_name,
