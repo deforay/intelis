@@ -136,6 +136,7 @@ try {
         'lab_id'                              => !empty($_POST['labId']) ? $_POST['labId'] : null,
         'implementing_partner'                => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
         'funding_source'                      => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
+        'referring_unit'                      => !empty($_POST['referringUnit']) ? $_POST['referringUnit'] : null,
         'patient_id'                          => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
         'patient_type'                        => !empty($_POST['typeOfPatient']) ? json_encode($_POST['typeOfPatient']) : null,
         'patient_name'                        => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
