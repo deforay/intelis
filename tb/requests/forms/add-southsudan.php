@@ -159,8 +159,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</select>
 										</td>
 										<td>
-										<input type="text" class="form-control typeOfReferringUnit" id="typeOfReferringUnit" name="typeOfReferringUnit" placeholder="Enter other of referring unit if others" title="Please enter other of referring unit if others" style="display: none;" />
-									</td>
+											<input type="text" class="form-control typeOfReferringUnit" id="typeOfReferringUnit" name="typeOfReferringUnit" placeholder="Enter other of referring unit if others" title="Please enter other of referring unit if others" style="display: none;" />
+										</td>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 											<td><label class="label-control" for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
 											<td>
@@ -300,7 +300,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</select>
 										</td>
 										<td>
-											<input type="text" class ="form-control specimenTypeOther" id="specimenTypeOther" name="specimenTypeOther" placeholder="Enter specimen type of others" title="Please enter the specimen type if others" style="display: none;" />
+											<input type="text" class="form-control specimenTypeOther" id="specimenTypeOther" name="specimenTypeOther" placeholder="Enter specimen type of others" title="Please enter the specimen type if others" style="display: none;" />
 										</td>
 									</tr>
 									<tr>
@@ -758,34 +758,34 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			$('#authorizedBy,#authorizedOn').addClass('isRequired');
 		}
 	}
+
 	function getReferringUnit() {
 		var referringUnit = $("#referringUnit").val();
-		if(referringUnit == 'others') {
+		if (referringUnit == 'others') {
 			$('.typeOfReferringUnit').show();
-		}
-		else {
+		} else {
 			$('.typeOfReferringUnit').hide();
 		}
 	}
+
 	function getSpecimenType() {
 		var specimenType = $("#specimenType").val();
-		if(specimenType == 'other') {
+		if (specimenType == 'other') {
 			$('.specimenTypeOther').show();
-		}
-		else {
+		} else {
 			$('.specimenTypeOther').hide();
 		}
 	}
+
 	function getPatientType() {
 		var typeOfPatient = $("#typeOfPatient").val();
-		if(typeOfPatient == 'other') {
+		if (typeOfPatient == 'other') {
 			$('.typeOfPatientOther').show();
-		}
-		else {
+		} else {
 			$('.typeOfPatientOther').hide();
 		}
 	}
-	
+
 	function checkSubReason(obj, show) {
 		$('.reason-checkbox').prop("checked", false);
 		if ($(obj).prop("checked", true)) {
