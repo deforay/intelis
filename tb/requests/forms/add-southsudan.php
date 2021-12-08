@@ -159,8 +159,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</select>
 										</td>
 										<td>
-										<input type="text" class="form-control typeOfReferringUnit" id="typeOfReferringUnit" name="typeOfReferringUnit" placeholder="Enter other of referring unit if others" title="Please enter other of referring unit if others" style="display: none;" />
-									</td>
+											<input type="text" class="form-control typeOfReferringUnit" id="typeOfReferringUnit" name="typeOfReferringUnit" placeholder="Enter other of referring unit if others" title="Please enter other of referring unit if others" style="display: none;" />
+										</td>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 											<td><label class="label-control" for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
 											<td>
@@ -756,7 +756,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			$('.'+othersId).hide();
 		}
 	}
-	function checkSubReason(obj, show) {
+	
+function checkSubReason(obj, show) {
 		$('.reason-checkbox').prop("checked", false);
 		if ($(obj).prop("checked", true)) {
 			$('.' + show).show(300);
@@ -764,5 +765,5 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			$('.hide-reasons').hide(300);
 			$('.' + show).addClass('hide-reasons');
 		}
-	}
+	}	
 </script>
