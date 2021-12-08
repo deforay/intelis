@@ -146,7 +146,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
-											<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" style="width:100%;">
+											<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" onchange="getReferringUnit();" style="width:100%;">
 												<option value="">-- Select --</option>
 												<option value="art">ART</option>
 												<option value="opd">OPD</option>
@@ -158,6 +158,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<option value="others">Others</option>
 											</select>
 										</td>
+										<td>
+										<input type="text" class="form-control typeOfReferringUnit" id="typeOfReferringUnit" name="typeOfReferringUnit" placeholder="Enter other of referring unit if others" title="Please enter other of referring unit if others" style="display: none;" />
+									</td>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 											<td><label class="label-control" for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
 											<td>
@@ -214,7 +217,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<tr>
 										<th><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
 										<td>
-											<select class="select2 form-control isRequired" name="typeOfPatient" id="typeOfPatient" title="Please select the type of patient" multiple>
+											<select class="select2 form-control isRequired" name="typeOfPatient" id="typeOfPatient" title="Please select the type of patient" onchange="getPatientType();" multiple>
 												<option value=''> -- Select -- </option>
 												<option value='new'> New </option>
 												<option value='loss-to-follow-up'> Loss to Follow Up </option>
@@ -222,7 +225,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<option value='relapse'> Relapse </option>
 												<option value='other'> Other </option>
 											</select>
-											<input type="text" class="form-control" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
+											<input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
 										<th><label for="typeOfPatient">Reason for Examination <span class="mandatory">*</span> </label></th>
 										<td>
@@ -244,11 +247,13 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<th><label class="label-control" for="specimenType">Specimen Type <span class="mandatory">*</span></label></th>
 										<td>
-											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
+											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%" onchange="getSpecimenType();">
 												<?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
 												<option value='other'> Other </option>
 											</select>
-											<input type="text" id="sampleTypeOther" name="sampleTypeOther" placeholder="Enter sample type of others" title="Please enter the sample type if others" style="display: none;" />
+										</td>
+										<td>
+											<input type="text" class ="form-control specimenTypeOther" id="specimenTypeOther" name="specimenTypeOther" placeholder="Enter specimen type of others" title="Please enter the specimen type if others" style="display: none;" />
 										</td>
 									</tr>
 									<tr>
@@ -704,6 +709,33 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			$('#authorizedBy,#authorizedOn').prop('disabled', false);
 			$('#authorizedBy,#authorizedOn').removeClass('disabled');
 			$('#authorizedBy,#authorizedOn').addClass('isRequired');
+		}
+	}
+	function getReferringUnit() {
+		var referringUnit = $("#referringUnit").val();
+		if(referringUnit == 'others') {
+			$('.typeOfReferringUnit').show();
+		}
+		else {
+			$('.typeOfReferringUnit').hide();
+		}
+	}
+	function getSpecimenType() {
+		var specimenType = $("#specimenType").val();
+		if(specimenType == 'other') {
+			$('.specimenTypeOther').show();
+		}
+		else {
+			$('.specimenTypeOther').hide();
+		}
+	}
+	function getPatientType() {
+		var typeOfPatient = $("#typeOfPatient").val();
+		if(typeOfPatient == 'other') {
+			$('.typeOfPatientOther').show();
+		}
+		else {
+			$('.typeOfPatientOther').hide();
 		}
 	}
 </script>
