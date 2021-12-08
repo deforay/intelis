@@ -227,7 +227,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 											</select>
 											<input type="text" class="form-control" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
-										<th><label for="reasonForTbTest">Type of Examination <span class="mandatory">*</span> </label></th>
+										<th><label for="reasonForTbTest">Reason for Examination <span class="mandatory">*</span> </label></th>
 										<td>
 											<select name="reasonForTbTest[]" id="reasonForTbTest" class="select2 form-control isRequired" title="Please choose reason for examination" style="width:100%" multiple>
 												<option value="">--Seelct--</option>
