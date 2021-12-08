@@ -148,7 +148,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
-											<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" style="width:100%;" onchange="getReferringUnit();">
+											<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" style="width:100%;" onchange="showOther(this.value, 'typeOfReferringUnit');">
 												<option value="">-- Select --</option>
 												<option value="art" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'art') ? "selected='selected'" : ""; ?>>ART</option>
 												<option value="opd" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'opd') ? "selected='selected'" : ""; ?>>OPD</option>
@@ -157,11 +157,11 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 												<option value="medical" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'medical') ? "selected='selected'" : ""; ?>>Medical</option>
 												<option value="paediatric" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'paediatric') ? "selected='selected'" : ""; ?>>Paediatric</option>
 												<option value="nutrition" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'nutrition') ? "selected='selected'" : ""; ?>>Nutrition</option>
-												<option value="others" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'others') ? "selected='selected'" : ""; ?>>Others</option>
+												<option value="other" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'others') ? "selected='selected'" : ""; ?>>Others</option>
 											</select>
 										</td>
 										<td>
-											<input type="text" class="form-control otherReferringUnit" style="display: none;" name="typeOfReferringUnit" id="typeOfReferringUnit" value="<?php echo $tbInfo['other_referring_unit']; ?>" placeholder="Enter other reffering unit" title="Please enter the other referring unit" />
+											<input type="text" class="form-control typeOfReferringUnit" style="display: none;" name="typeOfReferringUnit" id="typeOfReferringUnit" value="<?php echo $tbInfo['other_referring_unit']; ?>" placeholder="Enter other reffering unit" title="Please enter the other referring unit" />
 										</td>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 											<td><label class="label-control" for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
@@ -179,7 +179,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 									<h3 class="box-title">PATIENT INFORMATION</h3>
 								</div>
 								<div class="box-header with-border">
-									<input style="width:30%;" type="text" name="patientNoSearch" id="patientNoSearch" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
+									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
 								</div>
 								<table class="table" style="width:100%">
@@ -219,7 +219,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 									<tr>
 										<th><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
 										<td>
-											<select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" onchange="getPatientType();" multiple>
+											<select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" multiple>
 												<option value=''> -- Select -- </option>
 												<option value='new' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'new') ? "selected='selected'" : ""; ?>> New </option>
 												<option value='loss-to-follow-up' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'loss-to-follow-up') ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
@@ -252,7 +252,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 										</td>
 										<th><label class="label-control" for="specimenType">Specimen Type <span class="mandatory">*</span></label></th>
 										<td>
-											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%" onchange="getSpecimenType();">
+											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%" onchange="showOther(this.value,'specimenTypeOther')">
 												<?php echo $general->generateSelectOptions($specimenTypeResult, $tbInfo['specimen_type'], '-- Select --'); ?>
 												<option value='other' <?php echo ($tbInfo['specimen_type'] == 'other') ? "selected='selected'" : ""; ?>> Other </option>
 											</select>
@@ -571,22 +571,12 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 
 	function setPatientDetails(pDetails) {
 		patientArray = pDetails.split("##");
-		$("#patientProvince").val(patientArray[14] + '##' + patientArray[16]).trigger('change');
 		$("#firstName").val(patientArray[0]);
 		$("#lastName").val(patientArray[1]);
-		$("#patientPhoneNumber").val(patientArray[8]);
 		$("#patientGender").val(patientArray[2]);
 		$("#patientAge").val(patientArray[4]);
 		$("#patientDob").val(patientArray[3]);
-		$("#patientId").val(patientArray[9]);
-		$("#patientPassportNumber").val(patientArray[10]);
-		$("#patientAddress").text(patientArray[11]);
-		$("#patientNationality").select2('val', patientArray[12]);
-		$("#patientCity").val(patientArray[13]);
-
-		setTimeout(function() {
-			$("#patientDistrict").val(patientArray[15]).trigger('change');
-		}, 3000);
+		$("#patientId").val(patientArray[5]);
 	}
 
 	function sampleCodeGeneration() {
@@ -673,9 +663,9 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 	}
 
 	$(document).ready(function() {
-		getReferringUnit();
-		getPatientType();
-		getSpecimenType();
+		showOther($("#referringUnit").val(),'typeOfReferringUnit');
+		showOther($("#typeOfPatient").val(),'typeOfPatientOther');
+		showOther($("#specimenType").val(),'specimenTypeOther');
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -737,31 +727,12 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 			$('#authorizedBy,#authorizedOn').addClass('isRequired');
 		}
 	}
-	function getReferringUnit() {
-		var referringUnit = $("#referringUnit").val();
-		if(referringUnit == 'others') {
-			$('.otherReferringUnit').show();
+	function showOther(obj,othersId) {
+		if(obj == 'other') {
+			$('.'+othersId).show();
 		}
 		else {
-			$('.otherReferringUnit').hide();
-		}
-	}
-	function getSpecimenType() {
-		var specimenType = $("#specimenType").val();
-		if(specimenType == 'other') {
-			$('.specimenTypeOther').show();
-		}
-		else {
-			$('.specimenTypeOther').hide();
-		}
-	}
-	function getPatientType() {
-		var typeOfPatient = $("#typeOfPatient").val();
-		if(typeOfPatient == 'other') {
-			$('.typeOfPatientOther').show();
-		}
-		else {
-			$('.typeOfPatientOther').hide();
+			$('.'+othersId).hide();
 		}
 	}
 </script>

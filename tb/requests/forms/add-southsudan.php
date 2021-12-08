@@ -146,7 +146,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
-											<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" onchange="getReferringUnit();" style="width:100%;">
+											<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" onchange="showOther(this.value, 'typeOfReferringUnit');" style="width:100%;">
 												<option value="">-- Select --</option>
 												<option value="art">ART</option>
 												<option value="opd">OPD</option>
@@ -155,7 +155,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<option value="medical">Medical</option>
 												<option value="paediatric">Paediatric</option>
 												<option value="nutrition">Nutrition</option>
-												<option value="others">Others</option>
+												<option value="other">Others</option>
 											</select>
 										</td>
 										<td>
@@ -177,7 +177,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<h3 class="box-title">PATIENT INFORMATION</h3>
 								</div>
 								<div class="box-header with-border">
-									<input style="width:30%;" type="text" name="patientNoSearch" id="patientNoSearch" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
+									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
 								</div>
 								<table class="table" style="width:100%">
@@ -217,7 +217,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<tr>
 										<th><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
 										<td>
-											<select class="select2 form-control isRequired" name="typeOfPatient" id="typeOfPatient" title="Please select the type of patient" onchange="getPatientType();" multiple>
+											<select class="select2 form-control isRequired" name="typeOfPatient" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" multiple>
 												<option value=''> -- Select -- </option>
 												<option value='new'> New </option>
 												<option value='loss-to-follow-up'> Loss to Follow Up </option>
@@ -225,7 +225,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<option value='relapse'> Relapse </option>
 												<option value='other'> Other </option>
 											</select>
-											<input type="text" class="form-control" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
+											<input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
 										<!-- <th><label for="typeOfPatient">Reason for Examination <span class="mandatory">*</span> </label></th>
 										<td>
@@ -294,7 +294,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<th><label class="label-control" for="specimenType">Specimen Type <span class="mandatory">*</span></label></th>
 										<td>
-											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%" onchange="getSpecimenType();">
+											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%" onchange="showOther(this.value,'specimenTypeOther')">
 												<?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
 												<option value='other'> Other </option>
 											</select>
@@ -585,22 +585,12 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 
 	function setPatientDetails(pDetails) {
 		patientArray = pDetails.split("##");
-		$("#patientProvince").val(patientArray[14] + '##' + patientArray[16]).trigger('change');
 		$("#firstName").val(patientArray[0]);
 		$("#lastName").val(patientArray[1]);
-		$("#patientPhoneNumber").val(patientArray[8]);
 		$("#patientGender").val(patientArray[2]);
 		$("#patientAge").val(patientArray[4]);
 		$("#patientDob").val(patientArray[3]);
-		$("#patientId").val(patientArray[9]);
-		$("#patientPassportNumber").val(patientArray[10]);
-		$("#patientAddress").text(patientArray[11]);
-		$("#patientNationality").select2('val', patientArray[12]);
-		$("#patientCity").val(patientArray[13]);
-
-		setTimeout(function() {
-			$("#patientDistrict").val(patientArray[15]).trigger('change');
-		}, 3000);
+		$("#patientId").val(patientArray[5]);
 	}
 
 	function sampleCodeGeneration() {
@@ -758,34 +748,14 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			$('#authorizedBy,#authorizedOn').addClass('isRequired');
 		}
 	}
-	function getReferringUnit() {
-		var referringUnit = $("#referringUnit").val();
-		if(referringUnit == 'others') {
-			$('.typeOfReferringUnit').show();
+	function showOther(obj,othersId) {
+		if(obj == 'other') {
+			$('.'+othersId).show();
 		}
 		else {
-			$('.typeOfReferringUnit').hide();
+			$('.'+othersId).hide();
 		}
 	}
-	function getSpecimenType() {
-		var specimenType = $("#specimenType").val();
-		if(specimenType == 'other') {
-			$('.specimenTypeOther').show();
-		}
-		else {
-			$('.specimenTypeOther').hide();
-		}
-	}
-	function getPatientType() {
-		var typeOfPatient = $("#typeOfPatient").val();
-		if(typeOfPatient == 'other') {
-			$('.typeOfPatientOther').show();
-		}
-		else {
-			$('.typeOfPatientOther').hide();
-		}
-	}
-	
 	function checkSubReason(obj, show) {
 		$('.reason-checkbox').prop("checked", false);
 		if ($(obj).prop("checked", true)) {
