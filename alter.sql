@@ -2702,21 +2702,21 @@ INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-ba
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-batches', 'tb-batches.php', 'View Batches'), (NULL, 'tb-batches', 'tb-add-batch.php', 'Add Batch'), (NULL, 'tb-batches', 'tb-edit-batch.php', 'Edit Batch'), (NULL, 'tb-batches', 'tb-add-batch-position.php', 'Add Batch Position'), (NULL, 'tb-batches', 'tb-edit-batch-position.php', 'Edit Batch Position'); 
 ALTER TABLE `tb_tests` ADD `sample_tested_datetime` DATETIME NULL DEFAULT NULL AFTER `test_result`, ADD `testing_platform` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_tested_datetime`;
 
---Sakthivel P 03-Dec-2021
+-- Sakthivel P 03-Dec-2021
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-requests', 'addSamplesFromManifest.php', 'Add Samples from Manifest');
 
---Sakthivel P 06-Dec-2021
+-- Sakthivel P 06-Dec-2021
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-sample-status.php', 'Sample Status Report');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-sample-rejection-report.php', 'Sample Rejection Report');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-clinic-report.php', 'TB Clinic Report');
 
---Sakthivel P 07-Dec-2021
+-- Sakthivel P 07-Dec-2021
 UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 197;
 UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 199;
 UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 200;
 UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 201;
 
---Thana 07-Dec-2021
+-- Thana 07-Dec-2021
 ALTER TABLE `form_tb` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 ALTER TABLE `form_tb` ADD `referring_unit` VARCHAR(256) NULL DEFAULT NULL AFTER `province_id`;
 ALTER TABLE `tb_tests` DROP `sample_tested_datetime`, DROP `testing_platform`;
