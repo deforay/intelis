@@ -402,17 +402,18 @@ if (sizeof($requestResult) > 0) {
             $html .= '<tr>';
             $html .= '<td colspan="4" style="border:1px solid #67b3ff;" >';
             $html .= '<table style="padding:2px;border:1px solid #ddd;">
+                    <tr><th colspan="3" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;text-align:center;">Microscopy Test Results</th></tr>
                     <tr>
                         <td align="center" width="10%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">No AFB</td>
+                        <td align="center" width="50%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">Result</td>
                         <td align="center" width="40%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">Actual No</td>
-                        <td align="center" width="50%" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:bold;">Microscopy (Result)</td>
                     </tr>';
 
             foreach ($tbTestInfo as $indexKey => $rows) {
                 $html .= '<tr>
                         <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . ($indexKey + 1) . '</td>
-                        <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $tbTestInfo[$indexKey]['actual_no'] . '</td>
                         <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $tbTestInfo[$indexKey]['test_result'] . '</td>
+                        <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $tbTestInfo[$indexKey]['actual_no'] . '</td>
                     </tr>';
             }
             $html .= '</table>';

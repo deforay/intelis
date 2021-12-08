@@ -2720,3 +2720,6 @@ UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_id` = 2
 ALTER TABLE `form_tb` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 ALTER TABLE `form_tb` ADD `referring_unit` VARCHAR(256) NULL DEFAULT NULL AFTER `province_id`;
 ALTER TABLE `tb_tests` DROP `sample_tested_datetime`, DROP `testing_platform`;
+
+-- Sakthivel P 07-Dec-2021
+ALTER TABLE `testing_labs` ADD `available_platforms` JSON NULL DEFAULT NULL AFTER `facility_id`;

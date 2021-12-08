@@ -343,6 +343,21 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								</div>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-md-6 availablePlatforms" style="display:none;">
+								<div class="form-group">
+									<label for="availablePlatforms" class="col-lg-4 control-label">Available Platforms</label>
+									<div class="col-lg-7">
+										<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="Choose one Available Platforms" multiple>
+											<option value="microscopy" <?php echo (preg_match("/microscopy/i", $testTypeInfo[0]['available_platforms'])) ? "selected='selected'" : '';  ?>>Microscopy</option>
+											<option value="xpert" <?php echo (preg_match("/xpert/i", $testTypeInfo[0]['available_platforms'])) ? "selected='selected'" : '';  ?>>Xpert</option>
+											<option value="lam" <?php echo (preg_match("/lam/i", $testTypeInfo[0]['available_platforms'])) ? "selected='selected'" : '';  ?>>Lam</option>
+
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="row labDiv" style="display:<?php echo $labDiv; ?>;">
 						<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
@@ -626,6 +641,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 <script type="text/javascript">
 	var deletedRowVar = [];
 	$(document).ready(function() {
+		getTestType();
 		$("#testType").multipleSelect({
 			placeholder: 'Select Test Type',
 			width: '100%'
@@ -633,6 +649,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 		$(".select2").multipleSelect({
 			placeholder: 'Select Test Type',
 			width: '150px'
+		});
+		$("#availablePlatforms").multipleSelect({
+			placeholder: 'Select Available Platforms',
+			width: '100%'
 		});
 
 		$("#stateId").change(function() {
@@ -797,6 +817,11 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 		if (first == 1) {
 			var facility = $("#facilityType").val();
 			var testType = $("#testType").val();
+			if (testType == 'tb') {
+				$('.availablePlatforms').show();
+			} else {
+				$('.availablePlatforms').hide();
+			}
 			if (facility && (testType.length > 0) && facility == '2') {
 				var div = '<table class="table table-bordered table-striped"><thead><th> Test Type</th> <th> Monthly Target <span class="mandatory">*</span></th><th>Suppressed Monthly Target <span class="mandatory">*</span></th> </thead><tbody>';
 				for (var i = 0; i < testType.length; i++) {
