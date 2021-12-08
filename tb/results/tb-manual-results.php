@@ -51,7 +51,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
         <h1><i class="fa fa-edit"></i> Enter TB Result Manually</h1>
         <ol class="breadcrumb">
             <li><a href="/dashboard/index.php"><i class="fa fa-dashboard"></i> Home </a></li>
-            <li class="active">Enter Tb Result Manually</li>
+            <li class="active">Enter TB Result Manually</li>
         </ol>
     </section>
     <!-- Main content -->
