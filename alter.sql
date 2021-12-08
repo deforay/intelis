@@ -2727,3 +2727,4 @@ ALTER TABLE `testing_labs` ADD `available_platforms` JSON NULL DEFAULT NULL AFTE
 -- Sakthivel P 08-Dec-2021
 ALTER TABLE `form_tb` ADD `other_specimen_type` TEXT NULL DEFAULT NULL AFTER `specimen_type`;
 ALTER TABLE `form_tb` ADD `other_referring_unit` TEXT NULL DEFAULT NULL AFTER `referring_unit`;
+ALTER TABLE `form_tb` ADD `other_patient_type` TEXT NULL DEFAULT NULL AFTER `patient_type`;
