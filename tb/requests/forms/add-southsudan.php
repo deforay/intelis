@@ -224,11 +224,58 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</select>
 											<input type="text" class="form-control" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
-										<th><label for="typeOfPatient">Reason for Examination <span class="mandatory">*</span> </label></th>
+										<!-- <th><label for="typeOfPatient">Reason for Examination <span class="mandatory">*</span> </label></th>
 										<td>
 											<select name="reasonForTbTest" id="reasonForTbTest" class="select2 form-control isRequired" title="Please choose reason for examination" style="width:100%" multiple>
 												<?= $general->generateSelectOptions($tbReasonsForTesting, null, '-- Select --'); ?>
 											</select>
+										</td> -->
+									</tr>
+									<tr>
+										<th colspan="4">Reason for Examination</th>
+									</tr>
+									<tr style=" border: 1px solid #8080804f; ">
+										<td>
+											<label class="radio-inline" style="margin-left:0;">
+												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest" value="diagnosis" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis');">
+												<strong>Diagnosis</strong>
+											</label>
+										</td>
+										<td style="float: left;text-align: center;">
+											<div class="diagnosis hide-reasons" style="display: none;">
+												<ul style=" display: inline-flex; list-style: none; padding: 0px; ">
+													<li>
+														<label class="radio-inline" style="width:4%;margin-left:0;">
+															<input type="checkbox" class="reason-checkbox" id="presumptiveTb" name="reasonDetails[]" value="Presumptive TB">
+														</label>
+														<label class="radio-inline" for="presumptiveTb" style="padding-left:17px !important;margin-left:0;">Presumptive TB</label>
+													</li>
+													<li>
+														<label class="radio-inline" style="width:4%;margin-left:0;">
+															<input type="checkbox" class="reason-checkbox" id="rifampicinResistantTb" name="reasonDetails[]" value="Rifampicin-resistant TB">
+														</label>
+														<label class="radio-inline" for="rifampicinResistantTb" style="padding-left:17px !important;margin-left:0;">Rifampicin-resistant TB</label>
+													</li>
+													<li>
+														<label class="radio-inline" style="width:4%;margin-left:0;">
+															<input type="checkbox" class="reason-checkbox" id="mdrtb" name="reasonDetails[]" value="MDR-TB">
+														</label>
+														<label class="radio-inline" for="mdrtb" style="padding-left:17px !important;margin-left:0;">MDR-TB</label>
+													</li>
+												</ul>
+											</div>
+										</td>
+										<td>
+											<label class="radio-inline" style="margin-left:0;">
+												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest" value="follow-up" title="Select reason for examination" onchange="checkSubReason(this,'follow-up');">
+												<strong>Follow Up</strong>
+											</label>
+										</td>
+										<td style="float: left;text-align: center;">
+											<div class="follow-up hide-reasons" style="display: none;">
+												<label class="radio-inline" for="follow-up" style="padding-left:17px !important;margin-left:0;"></label>
+												<input type="text" class="form-control reason-checkbox" id="followUp" name="reasonDetails[]" placeholder="Enter the follow up" title="Please enter the follow up">
+											</div>
 										</td>
 									</tr>
 								</table>
@@ -300,16 +347,16 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												</select>
 											</td>
 											<th><label class="label-control" for="sampleReceivedDate">Date of Reception </label></th>
-										<td>
-											<input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
-										</td>
+											<td>
+												<input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
+											</td>
 										</tr>
 										<tr>
 											<th><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
 											<td>
 												<input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample tested" style="width:100%;" />
 											</td>
-										<th><label class="label-control" for="testedBy">Tested By</label></th>
+											<th><label class="label-control" for="testedBy">Tested By</label></th>
 											<td>
 												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
@@ -405,7 +452,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											<th><label class="label-control" for="approvedOn">Approved on</label></td>
 											<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
-										
+
 									</table>
 								</div>
 							</div>
@@ -704,6 +751,16 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			$('#authorizedBy,#authorizedOn').prop('disabled', false);
 			$('#authorizedBy,#authorizedOn').removeClass('disabled');
 			$('#authorizedBy,#authorizedOn').addClass('isRequired');
+		}
+	}
+
+	function checkSubReason(obj, show) {
+		$('.reason-checkbox').prop("checked", false);
+		if ($(obj).prop("checked", true)) {
+			$('.' + show).show(300);
+			$('.' + show).removeClass('hide-reasons');
+			$('.hide-reasons').hide(300);
+			$('.' + show).addClass('hide-reasons');
 		}
 	}
 </script>
