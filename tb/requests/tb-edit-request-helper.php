@@ -12,7 +12,9 @@ $geoLocationDb = new \Vlsm\Models\GeoLocations();
 $tableName = "form_tb";
 $tableName1 = "activity_log";
 $testTableName = 'tb_tests';
-
+/* echo "<pre>";
+print_r($_POST);
+die; */
 try {
     //system config
     $systemConfigQuery = "SELECT * FROM system_config";

@@ -28,7 +28,7 @@ $tbXPertResults = $tbObj->getTbResults('x-pert');
 $tbLamResults = $tbObj->getTbResults('lam');
 $specimenTypeResult = $tbObj->getTbSampleTypes();
 $tbReasonsForTesting = $tbObj->getTbReasonsForTesting();
-
+// To get the reason details value
 
 $rKey = '';
 $sKey = '';
@@ -67,6 +67,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 $typeOfPatient = json_decode($tbInfo['patient_type']);
 $reasonForTbTest = json_decode($tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode($tbInfo['tests_requested']);
+$diagnosis = (array)$reasonForTbTest->elaboration->diagnosis;
+$followup = (array)$reasonForTbTest->elaboration->followup;
 ?>
 
 <div class="content-wrapper">
@@ -80,6 +82,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 	</section>
 	<!-- Main content -->
 	<section class="content">
+		<pre><?php print_r($followup); ?></pre>
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -231,14 +234,51 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 										<td>
 											<input type="text" class="form-control typeOfPatientOther" value="<?php echo $tbInfo['other_patient_type']; ?>" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
-										<th><label for="reasonForTbTest">Reason for Examination <span class="mandatory">*</span> </label></th>
+									</tr>
+									<tr>
+										<th colspan="4">Reason for Examination</th>
+									</tr>
+									<tr style=" border: 1px solid #8080804f; ">
 										<td>
-											<select name="reasonForTbTest[]" id="reasonForTbTest" class="select2 form-control isRequired" title="Please choose reason for examination" style="width:100%" multiple>
-												<option value="">--Seelct--</option>
-												<?php foreach ($tbReasonsForTesting as $key => $val) { ?>
-													<option value="<?php echo $key; ?>" <?php echo (isset($reasonForTbTest) && in_array($key, $reasonForTbTest)) ? "selected='selected'" : ""; ?>><?php echo ucwords($val); ?></option>
-												<?php } ?>
-											</select>
+											<label class="radio-inline" style="margin-left:0;">
+												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest[reason][diagnosis]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis');" <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "checked" : ""; ?>>
+												<strong>Diagnosis</strong>
+											</label>
+										</td>
+										<td style="float: left;text-align: center;">
+											<div class="diagnosis hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "block" : "none"; ?>;">
+												<ul style=" display: inline-flex; list-style: none; padding: 0px; ">
+													<li>
+														<label class="radio-inline" style="width:4%;margin-left:0;">
+															<input type="checkbox" class="reason-checkbox" id="presumptiveTb" name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]" value="yes" <?php echo (isset($diagnosis['Presumptive TB']) && $diagnosis['Presumptive TB'] == "yes") ? "checked" : ""; ?>>
+														</label>
+														<label class="radio-inline" for="presumptiveTb" style="padding-left:17px !important;margin-left:0;">Presumptive TB</label>
+													</li>
+													<li>
+														<label class="radio-inline" style="width:4%;margin-left:0;">
+															<input type="checkbox" class="reason-checkbox" id="rifampicinResistantTb" name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]" value="yes" <?php echo (isset($diagnosis['Rifampicin-resistant TB']) && $diagnosis['Rifampicin-resistant TB'] == "yes") ? "checked" : ""; ?>>
+														</label>
+														<label class="radio-inline" for="rifampicinResistantTb" style="padding-left:17px !important;margin-left:0;">Rifampicin-resistant TB</label>
+													</li>
+													<li>
+														<label class="radio-inline" style="width:4%;margin-left:0;">
+															<input type="checkbox" class="reason-checkbox" id="mdrtb" name="reasonForTbTest[elaboration][diagnosis][MDR-TB]" value="yes" <?php echo (isset($diagnosis['MDR-TB']) && $diagnosis['MDR-TB'] == "yes") ? "checked" : ""; ?>>
+														</label>
+														<label class="radio-inline" for="mdrtb" style="padding-left:17px !important;margin-left:0;">MDR-TB</label>
+													</li>
+												</ul>
+											</div>
+										</td>
+										<td>
+											<label class="radio-inline" style="margin-left:0;">
+												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest[reason][followup]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'follow-up');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
+												<strong>Follow Up</strong>
+											</label>
+										</td>
+										<td style="float: left;text-align: center;">
+											<div class="follow-up hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "block" : "none"; ?>;">
+												<input type="text" value=" <?php echo (isset($followup['value']) && $followup['value'] != "") ? $followup['value'] : ""; ?>" class="form-control reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][followup][value]" placeholder="Enter the follow up" title="Please enter the follow up">
+											</div>
 										</td>
 									</tr>
 								</table>
@@ -258,7 +298,8 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 												<?php echo $general->generateSelectOptions($specimenTypeResult, $tbInfo['specimen_type'], '-- Select --'); ?>
 												<option value='other' <?php echo ($tbInfo['specimen_type'] == 'other') ? "selected='selected'" : ""; ?>> Other </option>
 											</select>
-										</td><td>
+										</td>
+										<td>
 											<input class="form-control specimenTypeOther" type="text" id="specimenTypeOther" value="<?php echo $tbInfo['other_specimen_type']; ?>" name="specimenTypeOther" placeholder="Enter sample type of others" title="Please enter the sample type if others" style="display: none;" />
 										</td>
 									</tr>
@@ -312,16 +353,16 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 												</select>
 											</td>
 											<th><label class="label-control" for="sampleReceivedDate">Date of Reception </label></th>
-										<td>
-											<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
-										</td>
+											<td>
+												<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
+											</td>
 										</tr>
 										<tr>
 											<th><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
 											<td>
 												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample tested" style="width:100%;" />
 											</td>
-										<th><label class="label-control" for="testedBy">Tested By</label></th>
+											<th><label class="label-control" for="testedBy">Tested By</label></th>
 											<td>
 												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
@@ -352,7 +393,7 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 															} ?>
 														</optgroup>
 													<?php }
-													if ($covid19Info['reason_for_sample_rejection'] == 9999) {
+													if ($tbInfo['reason_for_sample_rejection'] == 9999) {
 														echo '<option value="9999" selected="selected">Unspecified</option>';
 													} ?>
 												</select>
@@ -665,9 +706,9 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 	}
 
 	$(document).ready(function() {
-		showOther($("#referringUnit").val(),'typeOfReferringUnit');
-		showOther($("#typeOfPatient").val(),'typeOfPatientOther');
-		showOther($("#specimenType").val(),'specimenTypeOther');
+		showOther($("#referringUnit").val(), 'typeOfReferringUnit');
+		showOther($("#typeOfPatient").val(), 'typeOfPatientOther');
+		showOther($("#specimenType").val(), 'specimenTypeOther');
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -729,12 +770,22 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 			$('#authorizedBy,#authorizedOn').addClass('isRequired');
 		}
 	}
-	function showOther(obj,othersId) {
-		if(obj == 'other') {
-			$('.'+othersId).show();
+
+	function showOther(obj, othersId) {
+		if (obj == 'other') {
+			$('.' + othersId).show();
+		} else {
+			$('.' + othersId).hide();
 		}
-		else {
-			$('.'+othersId).hide();
+	}
+
+	function checkSubReason(obj, show) {
+		$('.reason-checkbox').prop("checked", false);
+		if ($(obj).prop("checked", true)) {
+			$('.' + show).show(300);
+			$('.' + show).removeClass('hide-reasons');
+			$('.hide-reasons').hide(300);
+			$('.' + show).addClass('hide-reasons');
 		}
 	}
 </script>
