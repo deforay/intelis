@@ -233,7 +233,7 @@ $followup = (array)$reasonForTbTest->elaboration->followup;
 									<tr style=" border: 1px solid #8080804f; ">
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest[reason][diagnosis]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis');" <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "checked" : ""; ?>>
+												<input type="radio" class="diagnosis-check" id="reasonForTbTest1" name="reasonForTbTest[reason][diagnosis]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis', 'followup-uncheck');" <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "checked" : ""; ?>>
 												<strong>Diagnosis</strong>
 											</label>
 										</td>
@@ -242,19 +242,19 @@ $followup = (array)$reasonForTbTest->elaboration->followup;
 												<ul style=" display: inline-flex; list-style: none; padding: 0px; ">
 													<li>
 														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox" class="reason-checkbox" id="presumptiveTb" name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]" value="yes" <?php echo (isset($diagnosis['Presumptive TB']) && $diagnosis['Presumptive TB'] == "yes") ? "checked" : ""; ?>>
+															<input type="checkbox" class="diagnosis-check reason-checkbox" id="presumptiveTb" name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]" value="yes" <?php echo (isset($diagnosis['Presumptive TB']) && $diagnosis['Presumptive TB'] == "yes") ? "checked" : ""; ?>>
 														</label>
 														<label class="radio-inline" for="presumptiveTb" style="padding-left:17px !important;margin-left:0;">Presumptive TB</label>
 													</li>
 													<li>
 														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox" class="reason-checkbox" id="rifampicinResistantTb" name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]" value="yes" <?php echo (isset($diagnosis['Rifampicin-resistant TB']) && $diagnosis['Rifampicin-resistant TB'] == "yes") ? "checked" : ""; ?>>
+															<input type="checkbox" class="diagnosis-check reason-checkbox" id="rifampicinResistantTb" name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]" value="yes" <?php echo (isset($diagnosis['Rifampicin-resistant TB']) && $diagnosis['Rifampicin-resistant TB'] == "yes") ? "checked" : ""; ?>>
 														</label>
 														<label class="radio-inline" for="rifampicinResistantTb" style="padding-left:17px !important;margin-left:0;">Rifampicin-resistant TB</label>
 													</li>
 													<li>
 														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox" class="reason-checkbox" id="mdrtb" name="reasonForTbTest[elaboration][diagnosis][MDR-TB]" value="yes" <?php echo (isset($diagnosis['MDR-TB']) && $diagnosis['MDR-TB'] == "yes") ? "checked" : ""; ?>>
+															<input type="checkbox" class="diagnosis-check reason-checkbox" id="mdrtb" name="reasonForTbTest[elaboration][diagnosis][MDR-TB]" value="yes" <?php echo (isset($diagnosis['MDR-TB']) && $diagnosis['MDR-TB'] == "yes") ? "checked" : ""; ?>>
 														</label>
 														<label class="radio-inline" for="mdrtb" style="padding-left:17px !important;margin-left:0;">MDR-TB</label>
 													</li>
@@ -263,13 +263,13 @@ $followup = (array)$reasonForTbTest->elaboration->followup;
 										</td>
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest[reason][followup]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'follow-up');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
+												<input type="radio" class="followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason][followup]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
 												<strong>Follow Up</strong>
 											</label>
 										</td>
 										<td style="float: left;text-align: center;">
 											<div class="follow-up hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "block" : "none"; ?>;">
-												<input type="text" value=" <?php echo (isset($followup['value']) && $followup['value'] != "") ? $followup['value'] : ""; ?>" class="form-control reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][followup][value]" placeholder="Enter the follow up" title="Please enter the follow up">
+												<input type="text" value=" <?php echo (isset($followup['value']) && $followup['value'] != "" && trim($followup['value']) != "") ? $followup['value'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][followup][value]" placeholder="Enter the follow up" title="Please enter the follow up">
 											</div>
 										</td>
 									</tr>
@@ -772,8 +772,12 @@ $followup = (array)$reasonForTbTest->elaboration->followup;
 		}
 	}
 
-	function checkSubReason(obj, show) {
+	function checkSubReason(obj, show, opUncheck) {
 		$('.reason-checkbox').prop("checked", false);
+		if (opUncheck == "followup-uncheck") {
+			$('#followUp').val("");
+		}
+		$('.' + opUncheck).prop("checked", false);
 		if ($(obj).prop("checked", true)) {
 			$('.' + show).show(300);
 			$('.' + show).removeClass('hide-reasons');
