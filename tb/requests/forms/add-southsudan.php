@@ -225,6 +225,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<option value='relapse'> Relapse </option>
 												<option value='other'> Other </option>
 											</select>
+										</td>
+										<td>
 											<input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
 										<!-- <th><label for="typeOfPatient">Reason for Examination <span class="mandatory">*</span> </label></th>

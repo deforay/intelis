@@ -221,12 +221,14 @@ $testTypeRequested = json_decode($tbInfo['tests_requested']);
 										<td>
 											<select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" multiple>
 												<option value=''> -- Select -- </option>
-												<option value='new' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'new') ? "selected='selected'" : ""; ?>> New </option>
-												<option value='loss-to-follow-up' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'loss-to-follow-up') ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
-												<option value='treatment-failure' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'treatment-failure') ? "selected='selected'" : ""; ?>> Treatment Failure </option>
-												<option value='relapse' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'relapse') ? "selected='selected'" : ""; ?>> Relapse </option>
-												<option value='other' <?php echo (isset($typeOfPatient) && $typeOfPatient == 'other') ? "selected='selected'" : ""; ?>> Other </option>
+												<option value='new' <?php echo (isset($typeOfPatient) && in_array("new", $typeOfPatient)) ? "selected='selected'" : ""; ?>> New </option>
+												<option value='loss-to-follow-up' <?php echo (isset($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
+												<option value='treatment-failure' <?php echo (isset($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
+												<option value='relapse' <?php echo (isset($typeOfPatient) && in_array("relapse", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Relapse </option>
+												<option value='other' <?php echo (isset($typeOfPatient) && in_array("other", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option>
 											</select>
+										</td>
+										<td>
 											<input type="text" class="form-control typeOfPatientOther" value="<?php echo $tbInfo['other_patient_type']; ?>" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
 										<th><label for="reasonForTbTest">Reason for Examination <span class="mandatory">*</span> </label></th>
