@@ -787,6 +787,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 	}
 
 	function checkSubReason(obj, show) {
+		console.log(show);
 		$('.reason-checkbox').prop("checked", false);
 		if ($(obj).prop("checked", true)) {
 			$('.' + show).show(300);
