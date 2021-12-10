@@ -245,7 +245,12 @@ try {
         } else {
             $motherVlResult = null;
         }
-
+        if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
+            $reviewedOn = explode(" ", $data['reviewedOn']);
+            $data['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        } else {
+            $data['reviewedOn'] = NULL;
+        }
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
             $revisedOn = explode(" ", $data['revisedOn']);
             $data['revisedOn'] = $general->dateFormat($revisedOn[0]) . " " . $revisedOn[1];
@@ -307,7 +312,9 @@ try {
             'result'                                            => isset($data['result']) ? $data['result'] : null,
             'tested_by'                                         => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  $user['user_id'],
             'result_approved_by'                                => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
-            'result_approved_datetime'                          => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedOnDateTime'] :  NULL,
+            'result_approved_datetime'                          => (isset($data['approvedOnDateTime']) && $data['approvedOnDateTime'] != '') ? $data['approvedOnDateTime'] :  NULL,
+            'result_reviewed_by'                				=> (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : null,
+            'result_reviewed_datetime'          				=> (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'revised_by'                                        => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
             'revised_on'                                        => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
             'reason_for_changing'                               => (!empty($_POST['reasonForEidResultChanges']) && !empty($_POST['reasonForEidResultChanges'])) ? $_POST['reasonForEidResultChanges'] : null,

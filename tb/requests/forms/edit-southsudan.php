@@ -791,4 +791,13 @@ $followup = (array)$reasonForTbTest->elaboration->followup;
 			$('.' + show).addClass('hide-reasons');
 		}
 	}
+	function checkSubReason(obj, show) {
+		$('.reason-checkbox').prop("checked", false);
+		if ($(obj).prop("checked", true)) {
+			$('.' + show).show(300);
+			$('.' + show).removeClass('hide-reasons');
+			$('.hide-reasons').hide(300);
+			$('.' + show).addClass('hide-reasons');
+		}
+	}
 </script>
