@@ -412,16 +412,21 @@ class App
                 $confSampleCodePrefix = 'covid19_sample_code_prefix';
                 $table = "form_covid19";
                 $shortCode = 'c19';
-            } elseif ($testType == "eid") {
+            } else if ($testType == "eid") {
                 $confSampleCode = 'eid_sample_code';
                 $confSampleCodePrefix = 'eid_sample_code_prefix';
                 $table = "eid_form";
                 $shortCode = 'EID';
-            } elseif ($testType == "vl") {
+            } else if ($testType == "vl") {
                 $confSampleCode = 'sample_code';
                 $confSampleCodePrefix = 'sample_code_prefix';
                 $table = "vl_request_form";
                 $shortCode = 'VL';
+            } else if ($testType == "tb") {
+                $confSampleCode = 'sample_code';
+                $confSampleCodePrefix = 'tb_sample_code_prefix';
+                $table = "form_tb";
+                $shortCode = 'TB';
             }
         }
         $remotePrefix = '';

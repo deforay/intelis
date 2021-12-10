@@ -247,15 +247,15 @@ class Tb
 
         // Using this in sync requests/results
         if (isset($tbId) && is_array($tbId) && count($tbId) > 0) {
-            $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . implode(",", $tbId) . ") ORDER BY test_id ASC");
+            $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . implode(",", $tbId) . ") ORDER BY tb_test_id ASC");
 
             foreach ($results as $row) {
-                $response[$row['tb_id']][$row['test_id']] = $row;
+                $response[$row['tb_id']][$row['tb_test_id']] = $row;
             }
         } else if (isset($tbId) && $tbId != "" && !is_array($tbId)) {
-            $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbId ORDER BY test_id ASC");
+            $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbId ORDER BY tb_test_id ASC");
         } else if (!is_array($tbId)) {
-            $response = $this->db->rawQuery("SELECT * FROM tb_tests ORDER BY test_id ASC");
+            $response = $this->db->rawQuery("SELECT * FROM tb_tests ORDER BY tb_test_id ASC");
         }
 
         return $response;

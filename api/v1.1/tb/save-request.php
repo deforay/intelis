@@ -7,7 +7,7 @@ try {
     $general = new \Vlsm\Models\General();
     $userDb = new \Vlsm\Models\Users();
     $app = new \Vlsm\Models\App();
-    $tbModel = new \Vlsm\Models\tb();
+    $tbModel = new \Vlsm\Models\Tb();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -62,17 +62,6 @@ try {
         }
         if (!is_numeric($data['fundingSource'])) {
             $data['fundingSource'] = $general->getValueByName($data['fundingSource'], 'funding_source_name', 'r_funding_sources', 'funding_source_id');
-        }
-        if (!is_numeric($data['patientNationality'])) {
-            $iso = explode("(", $data['patientNationality']);
-            if (isset($iso) && count($iso) > 0) {
-                $data['patientNationality'] = trim($iso[0]);
-            }
-            $data['patientNationality'] = $general->getValueByName($data['patientNationality'], 'iso_name', 'r_countries', 'id');
-        }
-        $pprovince = explode("##", $data['patientProvince']);
-        if (isset($pprovince) && count($pprovince) > 0) {
-            $data['patientProvince'] = $pprovince[0];
         }
 
         $data['api'] = "yes";
@@ -231,7 +220,7 @@ try {
         $tbData = array(
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $data['formId'],
-            'unique_id'                           => isset($data['uniqueId']) ? $data['uniqueId'] : null,
+            'unique_id'                           => isset($data['uniqueId']) ? $data['uniqueId'] : $general->generateRandomString(32),
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_reordered'                    => !empty($data['sampleReordered']) ? $data['sampleReordered'] : null,
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,
@@ -240,7 +229,6 @@ try {
             'sample_requestor_name'               => !empty($data['sampleRequestorName']) ? $data['sampleRequestorName'] : null,
             'sample_requestor_phone'              => !empty($data['sampleRequestorPhone']) ? $data['sampleRequestorPhone'] : null,
             'specimen_quality'                    => !empty($data['specimenQuality']) ? $data['specimenQuality'] : null,
-            'referring_unit'                      => !empty($data['referringUnit']) ? $data['referringUnit'] : null,
             'other_referring_unit'                => !empty($data['otherReferringUnit']) ? $data['otherReferringUnit'] : null,
             'lab_id'                              => !empty($data['labId']) ? $data['labId'] : null,
             'implementing_partner'                => !empty($data['implementingPartner']) ? $data['implementingPartner'] : null,
@@ -251,9 +239,8 @@ try {
             'patient_dob'                         => !empty($data['patientDob']) ? $general->dateFormat($data['patientDob']) : null,
             'patient_gender'                      => !empty($data['patientGender']) ? $data['patientGender'] : null,
             'patient_age'                         => !empty($data['patientAge']) ? $data['patientAge'] : null,
-            'patient_phone_number'                => !empty($data['patientPhoneNumber']) ? $data['patientPhoneNumber'] : null,
             'patient_address'                     => !empty($data['patientAddress']) ? $data['patientAddress'] : null,
-            'patient_type'                        => !empty($data['patientType']) ? json_encode($data['patientZone']) : null,
+            'patient_type'                        => !empty($data['patientType']) ? json_encode($data['patientType']) : null,
             'other_patient_type'                  => !empty($data['otherPatientType']) ? $data['otherPatientType'] : null,
             'hiv_status'                          => !empty($data['hivStatus']) ? $data['hivStatus'] : null,
             'reason_for_tb_test'                  => !empty($data['reasonFortbTest']) ? json_encode($data['reasonFortbTest']) : null,
@@ -271,7 +258,6 @@ try {
             'result'                              => !empty($data['result']) ? $data['result'] : null,
             'xpert_mtb_result'                    => !empty($data['xpertMtbResult']) ? $data['xpertMtbResult'] : null,
             'tested_by'                           => !empty($data['testedBy']) ? $data['testedBy'] : null,
-            'is_result_authorised'                => !empty($data['isResultAuthorized']) ? $data['isResultAuthorized'] : null,
             'result_reviewed_by'                  => !empty($data['reviewedBy']) ? $data['reviewedBy'] : null,
             'result_reviewed_datetime'            => !empty($data['reviewedOn']) ? $general->dateFormat($data['reviewedOn']) : null,
             'result_approved_by'                  => !empty($data['approvedBy']) ? $data['approvedBy'] : null,
@@ -326,20 +312,23 @@ try {
             $db = $db->where('tb_id', $data['tbSampleId']);
             $id = $db->update($tableName, $tbData);
         }
+        /* echo "<pre>";
+        print_r($id);
+        die; */
         if ($id > 0) {
-            $c19Data = $app->getTableDataUsingId('form_tb', 'tb_id', $data['tbSampleId']);
-            $c19SampleCode = (isset($c19Data['sample_code']) && $c19Data['sample_code']) ? $c19Data['sample_code'] : $c19Data['remote_sample_code'];
+            $tbData = $app->getTableDataUsingId('form_tb', 'tb_id', $data['tbSampleId']);
+            $c19SampleCode = (isset($tbData['sample_code']) && $tbData['sample_code']) ? $tbData['sample_code'] : $tbData['remote_sample_code'];
             if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $c19SampleCode,
-                    'appSampleCode' => $c19Data['app_sample_code'],
+                    'appSampleCode' => $tbData['app_sample_code'],
                 );
             } else {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $c19SampleCode,
-                    'appSampleCode' => $c19Data['app_sample_code'],
+                    'appSampleCode' => $tbData['app_sample_code'],
                 );
             }
             http_response_code(200);
