@@ -180,11 +180,12 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 								<table class="table" style="width:100%">
 									<tr>
 										<th colspan=8>
-										<h4>1. Données démographiques mère / enfant </h4><br>
+											<h4>1. Données démographiques mère / enfant </h4><br>
 											<h4 class="box-title">Information sur le patient &nbsp;&nbsp;&nbsp;
-									<input style="width:30%;font-size: smaller;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
-									<a style="margin-top:-0.35%;font-weight:500;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
-									</h4></th>
+												<input style="width:30%;font-size: smaller;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
+												<a style="margin-top:-0.35%;font-weight:500;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
+											</h4>
+										</th>
 									</tr>
 									<tr>
 										<th colspan=8>
@@ -217,8 +218,9 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									</tr>
 
 									<tr>
-									<th colspan=8>
-											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant </h5></th>
+										<th colspan=8>
+											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant </h5>
+										</th>
 									</tr>
 									<tr>
 										<th><label for="childId">Code de l’enfant (Patient) <span class="mandatory">*</span></label></th>
@@ -412,7 +414,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									<tr>
 										<th>Raison de la PCR (cocher une):</th>
 										<td>
-											<select class="form-control" name="reasonForPCR" id="reasonForPCR">
+											<select class="form-control" name="pcrTestReason" id="pcrTestReason">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="Nothing" <?php echo ($eidInfo['reason_for_pcr'] == 'Nothing') ? "selected='selected'" : ""; ?>> Rien</option>
 												<option value="First Test for exposed baby" <?php echo ($eidInfo['reason_for_pcr'] == 'First Test for exposed baby') ? "selected='selected'" : ""; ?>> 1st test pour bébé exposé</option>
@@ -524,7 +526,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											</td>
 										</tr>
 										<tr>
-										<th>Revu le</td>
+											<th>Revu le</td>
 											<td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revu le" title="Please enter the Revu le" /></td>
 											<th>Revu par</th>
 											<td>
@@ -534,17 +536,17 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											</td>
 										</tr>
 										<tr>
-										<th>Approuvé le</th>
-                                            <td>
-                                                <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
-                                            </td>
-										<th>Approuvé par</th>
-                                            <td>
-                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
-                                                    <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                        </tr>
+											<th>Approuvé le</th>
+											<td>
+												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											</td>
+											<th>Approuvé par</th>
+											<td>
+												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
 										<tr class="change-reason">
 											<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></td>
 											<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Entrez la raison du changement" title="Veuillez saisir la raison du changement"></textarea></td>
@@ -621,19 +623,21 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 		}
 		$.unblockUI();
 	}
+
 	function setPatientDetails(pDetails) {
-        patientArray = pDetails.split("##");
-        //   console.log(patientArray);
-        $("#childId").val(patientArray[6]);
-        $("#childName").val(patientArray[0]);
-        $("#childDob").val(patientArray[3]);
-        $("#childGender").val(patientArray[2]);
-        $("#childAge").val(patientArray[4]);
+		patientArray = pDetails.split("##");
+		//   console.log(patientArray);
+		$("#childId").val(patientArray[6]);
+		$("#childName").val(patientArray[0]);
+		$("#childDob").val(patientArray[3]);
+		$("#childGender").val(patientArray[2]);
+		$("#childAge").val(patientArray[4]);
 		$("#mothersId").val(patientArray[7]);
-        $("#mothersName").val(patientArray[9]);
-        $("#mothersDob").val(patientArray[10]);
-        $("#mothersMaritalStatus").val(patientArray[11]);
-    }
+		$("#mothersName").val(patientArray[9]);
+		$("#mothersDob").val(patientArray[10]);
+		$("#mothersMaritalStatus").val(patientArray[11]);
+	}
+
 	function getfacilityDistrictwise(obj) {
 		$.blockUI();
 		var dName = $("#district").val();
@@ -720,14 +724,14 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 			placeholder: "Province"
 		});
 		$('#labId').select2({
-            placeholder: "Select Nom du laboratoire"
-        });
+			placeholder: "Select Nom du laboratoire"
+		});
 		$('#reviewedBy').select2({
-            placeholder: "Select Revu par"
-        });
+			placeholder: "Select Revu par"
+		});
 		$('#approvedBy').select2({
-            placeholder: "Select Approuvé par"
-        });
+			placeholder: "Select Approuvé par"
+		});
 		getfacilityProvinceDetails($("#facilityId").val());
 		<?php
 		if (isset($eidInfo['mother_treatment']) && in_array('Other', $eidInfo['mother_treatment'])) {

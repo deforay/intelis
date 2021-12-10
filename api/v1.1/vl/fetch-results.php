@@ -139,6 +139,17 @@ try {
         vl.revised_by                                        as revisedBy,
         r_r_b.user_name                                      as revisedByName,
         vl.revised_on                                        as revisedOn,
+        vl.serial_no                                         as serialNo,
+        vl.is_patient_new                                    as isPatientNew,
+        vl.has_patient_changed_regimen                       as hasChangedRegimen,
+        vl.date_dispatched_from_clinic_to_lab                as dateDispatchedFromClinicToLab,
+        vl.vl_test_number                                    as viralLoadNo,
+        vl.last_viral_load_result                            as lastViralLoadResult,
+        vl.last_viral_load_date                              as lastViralLoadTestDate,
+        vl.facility_support_partner                          as implementingPartner,
+        vl.date_test_ordered_by_physician                    as dateOfDemand,
+        vl.result_reviewed_by                                as reviewedBy,
+        vl.result_reviewed_datetime                          as reviewedOn,
         vl.reason_for_vl_result_changes                      as reasonForVlResultChanges
         
         FROM vl_request_form as vl 
