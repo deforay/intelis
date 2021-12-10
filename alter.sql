@@ -2728,3 +2728,7 @@ ALTER TABLE `testing_labs` ADD `available_platforms` JSON NULL DEFAULT NULL AFTE
 ALTER TABLE `form_tb` ADD `other_specimen_type` TEXT NULL DEFAULT NULL AFTER `specimen_type`;
 ALTER TABLE `form_tb` ADD `other_referring_unit` TEXT NULL DEFAULT NULL AFTER `referring_unit`;
 ALTER TABLE `form_tb` ADD `other_patient_type` TEXT NULL DEFAULT NULL AFTER `patient_type`;
+-- Thana 10-Dec-2021
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+VALUES 
+('Lock Approved TB Samples', 'lock_approved_tb_samples', 'no', 'tb', 'yes', NULL, NULL, 'active');
