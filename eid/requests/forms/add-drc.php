@@ -392,7 +392,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									<tr>
 										<th>Raison de la PCR (cocher une):</th>
 										<td>
-											<select class="form-control" name="reasonForPCR" id="reasonForPCR">
+											<select class="form-control" name="pcrTestReason" id="pcrTestReason">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="Nothing"> Rien</option>
 												<option value="First Test for exposed baby"> 1st test pour bébé exposé</option>

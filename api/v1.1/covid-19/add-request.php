@@ -216,6 +216,20 @@ try {
             $data['revisedOn'] = NULL;
         }
 
+        if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
+            $approvedOn = explode(" ", $data['approvedOn']);
+            $data['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+        } else {
+            $data['approvedOn'] = NULL;
+        }
+
+        if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
+            $reviewedOn = explode(" ", $data['reviewedOn']);
+            $data['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        } else {
+            $data['reviewedOn'] = NULL;
+        }
+
         $covid19Data = array(
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $data['formId'],
@@ -267,7 +281,7 @@ try {
             'sample_collection_date'              => !empty($data['sampleCollectionDate']) ? $data['sampleCollectionDate'] : null,
             'health_outcome'                      => !empty($data['healthOutcome']) ? $data['healthOutcome'] : null,
             'health_outcome_date'                 => !empty($data['outcomeDate']) ? $general->dateFormat($data['outcomeDate']) : null,
-            'is_sample_post_mortem'               => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,
+            'is_sampledata_mortem'               => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,
             'priority_status'                     => !empty($data['priorityStatus']) ? $data['priorityStatus'] : null,
             'number_of_days_sick'                 => !empty($data['numberOfDaysSick']) ? $data['numberOfDaysSick'] : null,
             'suspected_case'                      => !empty($data['suspectedCase']) ? $data['suspectedCase'] : null,
@@ -288,6 +302,7 @@ try {
             'travel_return_date'                  => !empty($data['returnDate']) ? $general->dateFormat($data['returnDate']) : null,
             'sample_received_at_vl_lab_datetime'  => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
             'sample_condition'                    => !empty($data['sampleCondition']) ? $data['sampleCondition'] : (isset($data['specimenQuality']) ? $data['specimenQuality'] : null),
+            'asymptomatic'                 	  	  => !empty($data['asymptomatic']) ? $data['asymptomatic'] : null,
             'lab_technician'                      => (!empty($data['labTechnician']) && $data['labTechnician'] != '') ? $data['labTechnician'] :  $user['user_id'],
             'is_sample_rejected'                  => !empty($data['isSampleRejected']) ? $data['isSampleRejected'] : null,
             'result'                              => !empty($data['result']) ? $data['result'] : null,
@@ -299,6 +314,10 @@ try {
             'authorized_on'                       => !empty($data['authorizedOn']) ? $general->dateFormat($data['authorizedOn']) : null,
             'revised_by'                          => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
             'revised_on'                          => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
+		    'result_reviewed_by' 				  => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
+            'result_reviewed_datetime' 			  => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
+            'result_approved_by' 				  => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
+            'result_approved_datetime' 			  => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  NULL,
             'reason_for_changing'                 => (!empty($_POST['reasonForCovid19ResultChanges']) && !empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
             'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->dateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
@@ -320,7 +339,7 @@ try {
         }
         $covid19Data['request_created_by'] =  $user['user_id'];
         $covid19Data['last_modified_by'] =  $user['user_id'];
-
+        if (isset($data['asymptomatic']) && $data['asymptomatic'] != "yes") {
         $db = $db->where('covid19_id', $data['covid19SampleId']);
         $db->delete("covid19_patient_symptoms");
         if (isset($data['symptomDetected']) && !empty($data['symptomDetected']) || (isset($data['symptom']) && !empty($data['symptom']))) {
@@ -334,6 +353,7 @@ try {
                 $db->insert("covid19_patient_symptoms", $symptomData);
             }
         }
+    }
 
         $db = $db->where('covid19_id', $data['covid19SampleId']);
         $db->delete("covid19_reasons_for_testing");

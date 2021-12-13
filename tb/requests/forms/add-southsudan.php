@@ -225,6 +225,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<option value='relapse'> Relapse </option>
 												<option value='other'> Other </option>
 											</select>
+										</td>
+										<td>
 											<input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
 										<!-- <th><label for="typeOfPatient">Reason for Examination <span class="mandatory">*</span> </label></th>
@@ -240,7 +242,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<tr style=" border: 1px solid #8080804f; ">
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest" value="diagnosis" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis');">
+												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest[reason][diagnosis]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis');">
 												<strong>Diagnosis</strong>
 											</label>
 										</td>
@@ -249,19 +251,19 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<ul style=" display: inline-flex; list-style: none; padding: 0px; ">
 													<li>
 														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox" class="reason-checkbox" id="presumptiveTb" name="reasonDetails[]" value="Presumptive TB">
+															<input type="checkbox" class="reason-checkbox" id="presumptiveTb" name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]" value="yes">
 														</label>
 														<label class="radio-inline" for="presumptiveTb" style="padding-left:17px !important;margin-left:0;">Presumptive TB</label>
 													</li>
 													<li>
 														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox" class="reason-checkbox" id="rifampicinResistantTb" name="reasonDetails[]" value="Rifampicin-resistant TB">
+															<input type="checkbox" class="reason-checkbox" id="rifampicinResistantTb" name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]" value="yes">
 														</label>
 														<label class="radio-inline" for="rifampicinResistantTb" style="padding-left:17px !important;margin-left:0;">Rifampicin-resistant TB</label>
 													</li>
 													<li>
 														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox" class="reason-checkbox" id="mdrtb" name="reasonDetails[]" value="MDR-TB">
+															<input type="checkbox" class="reason-checkbox" id="mdrtb" name="reasonForTbTest[elaboration][diagnosis][MDR-TB]" value="yes">
 														</label>
 														<label class="radio-inline" for="mdrtb" style="padding-left:17px !important;margin-left:0;">MDR-TB</label>
 													</li>
@@ -270,14 +272,13 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest" value="follow-up" title="Select reason for examination" onchange="checkSubReason(this,'follow-up');">
+												<input type="radio" class="" id="reasonForTbTest1" name="reasonForTbTest[reason][follow-up]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'follow-up');">
 												<strong>Follow Up</strong>
 											</label>
 										</td>
 										<td style="float: left;text-align: center;">
 											<div class="follow-up hide-reasons" style="display: none;">
-												<label class="radio-inline" for="follow-up" style="padding-left:17px !important;margin-left:0;"></label>
-												<input type="text" class="form-control reason-checkbox" id="followUp" name="reasonDetails[]" placeholder="Enter the follow up" title="Please enter the follow up">
+												<input type="text" class="form-control reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][value]" placeholder="Enter the follow up" title="Please enter the follow up">
 											</div>
 										</td>
 									</tr>
@@ -300,7 +301,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</select>
 										</td>
 										<td>
-											<input type="text" class ="form-control specimenTypeOther" id="specimenTypeOther" name="specimenTypeOther" placeholder="Enter specimen type of others" title="Please enter the specimen type if others" style="display: none;" />
+											<input type="text" class="form-control specimenTypeOther" id="specimenTypeOther" name="specimenTypeOther" placeholder="Enter specimen type of others" title="Please enter the specimen type if others" style="display: none;" />
 										</td>
 									</tr>
 									<tr>
@@ -748,16 +749,16 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			$('#authorizedBy,#authorizedOn').addClass('isRequired');
 		}
 	}
-	function showOther(obj,othersId) {
-		if(obj == 'other') {
-			$('.'+othersId).show();
-		}
-		else {
-			$('.'+othersId).hide();
+
+	function showOther(obj, othersId) {
+		if (obj == 'other') {
+			$('.' + othersId).show();
+		} else {
+			$('.' + othersId).hide();
 		}
 	}
-	
-function checkSubReason(obj, show) {
+
+	function checkSubReason(obj, show) {
 		$('.reason-checkbox').prop("checked", false);
 		if ($(obj).prop("checked", true)) {
 			$('.' + show).show(300);
@@ -765,5 +766,5 @@ function checkSubReason(obj, show) {
 			$('.hide-reasons').hide(300);
 			$('.' + show).addClass('hide-reasons');
 		}
-	}	
+	}
 </script>

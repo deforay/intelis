@@ -247,112 +247,18 @@ class Tb
 
         // Using this in sync requests/results
         if (isset($tbId) && is_array($tbId) && count($tbId) > 0) {
-            $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . implode(",", $tbId) . ") ORDER BY test_id ASC");
+            $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . implode(",", $tbId) . ") ORDER BY tb_test_id ASC");
 
             foreach ($results as $row) {
-                $response[$row['tb_id']][$row['test_id']] = $row;
+                $response[$row['tb_id']][$row['tb_test_id']] = $row;
             }
         } else if (isset($tbId) && $tbId != "" && !is_array($tbId)) {
-            $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbId ORDER BY test_id ASC");
+            $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbId ORDER BY tb_test_id ASC");
         } else if (!is_array($tbId)) {
-            $response = $this->db->rawQuery("SELECT * FROM tb_tests ORDER BY test_id ASC");
+            $response = $this->db->rawQuery("SELECT * FROM tb_tests ORDER BY tb_test_id ASC");
         }
 
         return $response;
-    }
-    public function getTbSymptomsByFormId($tbId, $allData = false)
-    {
-        if (empty($tbId)) {
-            return null;
-        }
-
-        $response = array();
-
-        // Using this in sync requests/results
-        if (isset($tbId) && is_array($tbId) && count($tbId) > 0) {
-            $results = $this->db->rawQuery("SELECT * FROM tb_patient_symptoms WHERE `tb_id` IN (" . implode(",", $tbId) . ")");
-
-
-            if ($allData) return $results;
-
-            foreach ($results as $row) {
-                $response[$row['tb_id']][$row['symptom_id']] = $row['symptom_detected'];
-            }
-        } else {
-            $results = $this->db->rawQuery("SELECT * FROM tb_patient_symptoms WHERE `tb_id` = $tbId");
-
-            if ($allData) return $results;
-
-            foreach ($results as $row) {
-                $response[$row['symptom_id']] = $row['symptom_detected'];
-            }
-        }
-
-        return $response;
-    }
-
-
-    public function getTbComorbiditiesByFormId($tbId, $allData = false)
-    {
-        if (empty($tbId)) {
-            return null;
-        }
-
-        $response = array();
-
-        // Using this in sync requests/results
-        if (isset($tbId) && is_array($tbId) && count($tbId) > 0) {
-
-            $results = $this->db->rawQuery("SELECT * FROM tb_patient_comorbidities WHERE `tb_id` IN (" . implode(",", $tbId) . ")");
-            if ($allData) return $results;
-            foreach ($results as $row) {
-                $response[$row['tb_id']][$row['comorbidity_id']] = $row['comorbidity_detected'];
-            }
-        } else {
-
-            $results = $this->db->rawQuery("SELECT * FROM tb_patient_comorbidities WHERE `tb_id` = $tbId");
-            if ($allData) return $results;
-            foreach ($results as $row) {
-                $response[$row['comorbidity_id']] = $row['comorbidity_detected'];
-            }
-        }
-
-
-        return $response;
-    }
-
-    public function getTbReasonsForTestingByFormId($tbId, $allData = false)
-    {
-        if (empty($tbId)) {
-            return null;
-        }
-
-        $response = array();
-
-        // Using this in sync requests/results
-        if (isset($tbId) && is_array($tbId) && count($tbId) > 0) {
-            $results = $this->db->rawQuery("SELECT * FROM tb_reasons_for_testing WHERE `tb_id` IN (" . implode(",", $tbId) . ")");
-            if ($allData) return $results;
-            foreach ($results as $row) {
-                $response[$row['tb_id']][$row['reasons_id']] = $row['reasons_detected'];
-            }
-        } else {
-            $results = $this->db->rawQuery("SELECT * FROM tb_reasons_for_testing WHERE `tb_id` = $tbId");
-            if ($allData) return $results;
-            foreach ($results as $row) {
-                $response[$row['reasons_id']] = $row['reasons_detected'];
-            }
-        }
-
-        return $response;
-    }
-
-    public function getTbReasonsDetailsForTestingByFormId($tbId)
-    {
-        if (empty($tbId)) {
-            return null;
-        }
-        return $this->db->rawQueryOne("SELECT * FROM tb_reasons_for_testing WHERE `tb_id` = ?", array($tbId));
     }
 
     public function fetchAllDetailsBySampleCode($sampleCode)

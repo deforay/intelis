@@ -112,6 +112,14 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     }
 }
 
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+    if ($activeModule != "") {
+        $activeModule .= ', "tb"';
+    } else {
+        $activeModule .= '"tb"';
+    }
+}
+
 $data = array();
 $data['formId'] = $formId;
 $data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id']);
@@ -344,6 +352,76 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     $status = true;
 }
 
+// Check if tb module active/inactive
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+    $tbObj = new \Vlsm\Models\Tb();
+    /* SITE INFORMATION SECTION */
+    /* Province Details */
+    $data['tb']['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
+    /* District Details */
+    $data['tb']['districtList'] = $app->getDistrictDetails($user['user_id'], true);
+    /* Health Facility Details */
+    $data['tb']['healthFacilitiesList'] = $app->getAppHealthFacilities('tb', $user['user_id'], true, 1, true);
+    $data['tb']['implementingPartnerList'] = $implementingPartnerList;
+    $data['tb']['fundingSourceList'] = $app->generateSelectOptions($fundingSourceList);
+    $data['tb']['nationalityList'] = $nationalityList;
+    // $data['eid']['testingLabsList'] = $app->getTestingLabs('eid', null, true);
+
+    /* Infant and Mother's Health Information Section */
+    // $data['eid']['mothersHIVStatus'] = $commonResultsList;
+
+    // $motherTreatmentList = array();
+    // $motherTreatmentArray = array('No ART given', 'Pregnancy', 'Labour/Delivery', 'Postnatal', 'Unknown');
+    // foreach ($motherTreatmentArray as $key => $treatment) {
+    //     $motherTreatmentList[$key]['value'] = $treatment;
+    //     $motherTreatmentList[$key]['show'] = $treatment;
+    // }
+    // $data['eid']['motherTreatment'] = $motherTreatmentList;
+    $data['tb']['rapidTestResult'] = $app->generateSelectOptions($tbObj->getTbResults());
+    // $data['eid']['prePcrTestResult'] = $commonResultsList;
+
+    // $pcrTestReasonList = array();
+    // $pcrTestReasonArray = array('Confirmation of positive first EID PCR test result', 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months', 'Positive HIV rapid test result at 9 months or later', 'Other');
+    // foreach ($pcrTestReasonArray as $key => $reason) {
+    //     $pcrTestReasonList[$key]['value'] = $reason;
+    //     $pcrTestReasonList[$key]['show'] = $reason;
+    // }
+    // $data['eid']['pcrTestReason'] = $pcrTestReasonList;
+    $data['tb']['specimenTypeList'] = $app->generateSelectOptions($tbObj->getTbSampleTypes());
+
+    /* Rejected Reason*/
+    $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_tb_sample_rejection_reasons WHERE rejection_reason_status ='active' GROUP BY rejection_type";
+    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+    $rejectionReason = array();
+    foreach ($rejectionTypeResult as $key => $type) {
+        $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
+        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_tb_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
+        $rejectionResult = $db->rawQuery($rejectionQuery);
+        foreach ($rejectionResult as $subKey => $reject) {
+            $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
+            $rejectionReason[$key]['reasons'][$subKey]['show'] = ucwords($reject['rejection_reason_name']);
+        }
+    }
+    $data['tb']['rejectedReasonList'] = $rejectionReason;
+
+    /* Testing Platform Details */
+    $testPlatformList = array();
+    $testPlatformResult = $general->getTestingPlatforms('tb');
+    foreach ($testPlatformResult as $row) {
+        $testPlatformList[$row['machine_name']] = $row['machine_name'];
+    }
+    $data['tb']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
+
+    $data['tb']['resultsList'] = $app->generateSelectOptions($tbObj->getTbResults());
+    // $data['eid']['sampleStatusList'] = $app->generateSelectOptions($statusList);
+
+    $data['tb']['statusFilterList'] = array(
+        array('value' => '7', 'show' => 'Approved'),
+        array('value' => '1', 'show' => 'Pending'),
+        array('value' => '4', 'show' => 'Rejected')
+    );
+    $status = true;
+}
 
 if ($status) {
     $payload = array(

@@ -193,6 +193,13 @@ try {
             $data['approvedOnDateTime'] = NULL;
         }
 
+        if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
+            $reviewedOn = explode(" ", $data['reviewedOn']);
+            $data['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        } else {
+            $data['reviewedOn'] = NULL;
+        }
+
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
             $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
             $data['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
@@ -249,6 +256,14 @@ try {
             $data['regimenInitiatedOn'] = NULL;
         }
 
+        //Set Dispatched From Clinic To Lab Date
+        if (isset($_POST['dateDispatchedFromClinicToLab']) && trim($_POST['dateDispatchedFromClinicToLab']) != "") {
+            $dispatchedFromClinicToLabDate = explode(" ", $_POST['dateDispatchedFromClinicToLab']);
+            $_POST['dateDispatchedFromClinicToLab'] = $general->dateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
+        } else {
+            $_POST['dateDispatchedFromClinicToLab'] = NULL;
+        }
+
         if (isset($data['patientGender']) && trim($data['patientGender']) == 'male') {
             $data['patientPregnant'] = '';
             $data['breastfeeding'] = '';
@@ -281,7 +296,7 @@ try {
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],
             'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : null,
-            'app_sample_code'                 => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
+            'app_sample_code'                       => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_code_title'                     => (isset($data['sampleCodeTitle']) && $data['sampleCodeTitle'] != '') ? $data['sampleCodeTitle'] :  'auto',
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] != '') ? $data['sampleReordered'] :  'no',
             'sample_code_format'                    => (isset($data['sampleCodeFormat']) && $data['sampleCodeFormat'] != '') ? $data['sampleCodeFormat'] :  NULL,
@@ -340,6 +355,19 @@ try {
             'last_modified_datetime'                => $general->getDateTime(),
             'manual_result_entry'                   => 'yes',
             'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
+
+            'serial_no'                             => isset($data['serialNo']) ? $data['serialNo'] : null,
+            'is_patient_new'                        => (isset($data['isPatientNew']) && $data['isPatientNew'] != '') ? $data['isPatientNew'] :  NULL,
+            'has_patient_changed_regimen'           => (isset($data['hasChangedRegimen']) && $data['hasChangedRegimen'] != '') ? $data['hasChangedRegimen'] :  NULL,
+            'date_dispatched_from_clinic_to_lab'    => (isset($data['dateDispatchedFromClinicToLab']) && $data['dateDispatchedFromClinicToLab'] != '') ? $data['specimenType'] :  NULL,
+            'vl_test_number'                        => (isset($data['viralLoadNo'])) ? $data['viralLoadNo'] : NULL,
+            'last_viral_load_result'                => (isset($data['lastViralLoadResult'])) ? $data['lastViralLoadResult'] : NULL,
+            'last_viral_load_date'                  => (isset($data['lastViralLoadTestDate'])) ? $data['lastViralLoadTestDate'] : NULL,
+            'facility_support_partner'              => (isset($data['implementingPartner']) && $data['implementingPartner'] != '') ? $data['implementingPartner'] :  NULL,
+            'date_test_ordered_by_physician'        => (isset($data['dateOfDemand']) && $data['dateOfDemand'] != '') ? $data['dateOfDemand'] :  NULL,
+            'result_reviewed_by'                    => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+            'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+
             'source_of_request'                     => "api"
         );
         if (isset($data['patientFullName']) && $data['patientFullName'] != "") {
