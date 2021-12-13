@@ -34,12 +34,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuse
 if (isset($systemConfig['instanceName']) && !empty($systemConfig['instanceName'])) {
 	$systemType = $systemConfig['instanceName'];
 }
-// print_r($systemConfig);die;
-if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
-	date_default_timezone_set($arr['default_time_zone']);
-} else {
-	date_default_timezone_set(!empty(date_default_timezone_get()) ?  date_default_timezone_get() : "UTC");
-}
+
 $hideResult = '';
 $hideRequest = '';
 if (isset($arr['instance_type']) && $arr['instance_type'] != '') {

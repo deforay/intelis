@@ -6,10 +6,8 @@ require_once(__DIR__ . "/../startup.php");
 
 $general = new \Vlsm\Models\General();
 $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
-$timeZone = $general->getGlobalConfig('default_time_zone');
-$timeZone = !empty($timeZone) ? $timeZone : 'UTC';
 
-date_default_timezone_set($timeZone);
+$timeZone = $_SESSION['APP_TIMEZONE'];
 
 $schedule = new \Crunz\Schedule();
 

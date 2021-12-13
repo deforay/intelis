@@ -24,7 +24,7 @@ $systemConfig['dbUser']     = '';
 $systemConfig['dbPassword'] = '';
 $systemConfig['dbName']     = '';
 $systemConfig['dbPort']     = 3306;
-$systemConfig['dbCharset'] = 'utf8';
+$systemConfig['dbCharset'] = 'utf8mb4';
 
 
 $systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
@@ -65,7 +65,7 @@ $interfaceConfig['dbUser'] = '';
 $interfaceConfig['dbPassword'] = '';
 $interfaceConfig['dbName'] = '';
 $interfaceConfig['dbPort'] = 3306;
-$interfaceConfig['dbCharset'] = 'utf8';
+$interfaceConfig['dbCharset'] = 'utf8mb4';
 
 $recencyConfig = array();
 

@@ -25,7 +25,7 @@ $db->addConnection('interface', array(
     'password' => $interfaceConfig['dbPassword'],
     'db' =>  $interfaceConfig['dbName'],
     'port' => (!empty($interfaceConfig['dbPort']) ? $interfaceConfig['dbPort'] : 3306),
-    'charset' => (!empty($interfaceConfig['dbCharset']) ? $interfaceConfig['dbCharset'] : 'utf8')
+    'charset' => (!empty($interfaceConfig['dbCharset']) ? $interfaceConfig['dbCharset'] : 'utf8mb4')
 ));
 
 

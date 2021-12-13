@@ -79,5 +79,13 @@ $db = new MysqliDb(array(
     'password' => $systemConfig['dbPassword'],
     'db' =>  $systemConfig['dbName'],
     'port' => (!empty($systemConfig['dbPort']) ? $systemConfig['dbPort'] : 3306),
-    'charset' => (!empty($systemConfig['dbCharset']) ? $systemConfig['dbCharset'] : 'utf8')
+    'charset' => (!empty($systemConfig['dbCharset']) ? $systemConfig['dbCharset'] : 'utf8mb4')
 ));
+
+if (empty($_SESSION['APP_TIMEZONE'])) {
+    $general = new \Vlsm\Models\General();
+    $_SESSION['APP_TIMEZONE'] = $general->getGlobalConfig('default_time_zone');
+    $_SESSION['APP_TIMEZONE'] = !empty($_SESSION['APP_TIMEZONE']) ? $_SESSION['APP_TIMEZONE'] : 'UTC';
+}
+
+date_default_timezone_set($_SESSION['APP_TIMEZONE']);
