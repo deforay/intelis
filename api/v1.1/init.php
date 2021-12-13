@@ -356,16 +356,6 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
     $tbObj = new \Vlsm\Models\Tb();
     /* SITE INFORMATION SECTION */
-    /* Province Details */
-    $data['tb']['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
-    /* District Details */
-    $data['tb']['districtList'] = $app->getDistrictDetails($user['user_id'], true);
-    /* Health Facility Details */
-    $data['tb']['healthFacilitiesList'] = $app->getAppHealthFacilities('tb', $user['user_id'], true, 1, true);
-    $data['tb']['implementingPartnerList'] = $implementingPartnerList;
-    $data['tb']['fundingSourceList'] = $app->generateSelectOptions($fundingSourceList);
-    $data['tb']['nationalityList'] = $nationalityList;
-    // $data['eid']['testingLabsList'] = $app->getTestingLabs('eid', null, true);
 
     /* Infant and Mother's Health Information Section */
     // $data['eid']['mothersHIVStatus'] = $commonResultsList;

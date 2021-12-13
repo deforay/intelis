@@ -126,14 +126,15 @@ if ($start_date == '' && $end_date == '') {
     $end_date = date('Y-m-d');
 }
 $tatSampleQuery = "SELECT 
-    count(*) as 'totalSamples',
+   'vl.result_status', count(*) as 'totalSamples',
     DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
     ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) as daydiff,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_vl_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
-    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
+    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted,
+    CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_dispatched_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgDispatchResult
 
     FROM form_covid19 as vl 
     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -160,8 +161,6 @@ $tatSampleQuery .= " GROUP BY monthDate";
 $tatSampleQuery .= " HAVING daydiff < 120";
 $tatSampleQuery .= " ORDER BY sample_tested_datetime";
 
-//echo $tatSampleQuery;
-
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;
 foreach ($tatResult as $sRow) {
@@ -175,6 +174,7 @@ foreach ($tatResult as $sRow) {
     $result['sampleReceivedDiff'][$j] = (isset($sRow["AvgReceivedDiff"]) && $sRow["AvgReceivedDiff"] > 0 && $sRow["AvgReceivedDiff"] != null) ? round($sRow["AvgReceivedDiff"], 2) : 'null';
     $result['sampleReceivedTested'][$j] = (isset($sRow["AvgReceivedTested"]) && $sRow["AvgReceivedTested"] > 0 && $sRow["AvgReceivedTested"] != null) ? round($sRow["AvgReceivedTested"], 2) : 'null';
     $result['sampleReceivedPrinted'][$j] = (isset($sRow["AvgReceivedPrinted"]) && $sRow["AvgReceivedPrinted"] > 0 && $sRow["AvgReceivedPrinted"] != null) ? round($sRow["AvgReceivedPrinted"], 2) : 'null';
+    $result['sampleDispatchResult'][$j] = (isset($sRow["AvgDispatchResult"]) && $sRow["AvgDispatchResult"] > 0 && $sRow["AvgDispatchResult"] != null) ? round($sRow["AvgDispatchResult"], 2) : 'null';
     $result['date'][$j] = $sRow["monthDate"];
     $j++;
 }
@@ -481,6 +481,16 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     },
                 <?php
                 }
+                if (isset($result['sampleDispatchResult'])) {
+                    ?> {
+                            connectNulls: false,
+                            showInLegend: true,
+                            name: 'Collected - Dispatched',
+                            data: [<?php echo implode(",", $result['sampleDispatchResult']); ?>],
+                            color: '#ed7c7f',
+                        },
+                    <?php
+                    }
                 ?>
             ],
         });
