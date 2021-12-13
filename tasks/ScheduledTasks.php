@@ -13,6 +13,25 @@ date_default_timezone_set($timeZone);
 
 $schedule = new \Crunz\Schedule();
 
+// Expiring/Locking Samples
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/update-sample-status.php")
+    ->everySixHours()
+    ->timezone($timeZone)
+    ->preventOverlapping()
+    ->description('Updating sample status to Expired or Locking samples');
+
+
+
+// MACHINE INTERFACING
+if (!empty($interfaceConfig['enabled']) && $interfaceConfig['enabled'] == true) {
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/interface.php")
+        ->everyMinute()
+        ->timezone($timeZone)
+        ->preventOverlapping()
+        ->description('Importing data from interface db into local db');
+}
+
+
 
 // REMOTE SYNC JOBS START
 if (!empty($systemConfig['remoteURL'])) {
@@ -37,16 +56,6 @@ if (!empty($systemConfig['remoteURL'])) {
 // REMOTE SYNC JOBS END
 
 
-// MACHINE INTERFACING JOBS START
-if (!empty($interfaceConfig['enabled']) && $interfaceConfig['enabled'] == true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/interface.php")
-        ->everyMinute()
-        ->timezone($timeZone)
-        ->preventOverlapping()
-        ->description('Importing data from interface db into local db');
-}
-// MACHINE INTERFACING JOBS END
-
 
 // DASHBOARD JOBS START
 
@@ -61,7 +70,7 @@ if (!empty($vldashboardUrl)) {
 
 if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-vl.php")
-        ->cron("0 */30 * * *")
+        ->cron("0 */35 * * *")
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing VL data from local database to Dashboard');
@@ -69,14 +78,14 @@ if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['vl']) && $system
 
 if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-eid.php")
-        ->cron("0 */35 * * *")
+        ->cron("0 */40 * * *")
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing EID data from local database to Dashboard');
 }
 if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-covid19.php")
-        ->cron("0 */40 * * *")
+        ->cron("0 */45 * * *")
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing Covid-19 data from local database to Dashboard');
