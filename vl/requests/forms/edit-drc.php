@@ -332,9 +332,9 @@ $sampleSuggestionDisplay = 'display:none;';
 										<td></td>
 									</tr>
 									<tr>
-										<td><label for="reasonForRequest">Motif de la demande </label></td>
+										<td><label for="reasonForRequest">Motif de la demande  <span class="mandatory">*</span></label></td>
 										<td colspan="3">
-											<select name="vlTestReason" id="vlTestReason" class="form-control" title="Please choose motif de la demande" onchange="checkVLTestReason();">
+											<select name="vlTestReason" id="vlTestReason" class="form-control isRequired" title="Please choose motif de la demande" onchange="checkVLTestReason();">
 												<option value=""> -- Sélectionner -- </option>
 												<?php foreach ($vlTestReasonResult as $tReason) { ?>
 													<option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($tReason['test_reason_name']); ?></option>

@@ -288,7 +288,7 @@ $disable = "disabled = 'disabled'";
 										<td></td>
 									</tr>
 									<tr>
-										<td><label for="reasonForRequest">Motif de la demande </label></td>
+										<td><label for="reasonForRequest">Motif de la demande  <span class="mandatory">*</span></label></td>
 										<td colspan="2">
 											<select name="vlTestReason" id="vlTestReason" class="form-control" title="Please choose motif de la demande" <?php echo $disable; ?>>
 												<option value=""> -- Sélectionner -- </option>
