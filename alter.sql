@@ -2732,3 +2732,7 @@ ALTER TABLE `form_tb` ADD `other_patient_type` TEXT NULL DEFAULT NULL AFTER `pat
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
 VALUES 
 ('Lock Approved TB Samples', 'lock_approved_tb_samples', 'no', 'tb', 'yes', NULL, NULL, 'active');
+
+-- Sakthivel 13-Dec-2021
+ALTER TABLE `r_covid19_results` MODIFY `result_id` varchar(255) NOT NULL;
+ALTER TABLE `r_tb_results` MODIFY `result_id` varchar(255) NOT NULL;

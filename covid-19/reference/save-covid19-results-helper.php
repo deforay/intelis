@@ -11,6 +11,7 @@ $primaryKey = "result_id";
 try {
 	if (isset($_POST['resultName']) && trim($_POST['resultName']) != "") {
 		$data = array(
+			'result_id'     => $_POST['resultName'],
 			'result' 		=> ucfirst($_POST['resultName']),
 			'status' 	    => $_POST['resultStatus'],
 			'updated_datetime' 	=> $general->getDateTime(),
@@ -19,8 +20,7 @@ try {
 			$db = $db->where($primaryKey, base64_decode($_POST['resultId']))->where('result', $_POST['oldResultName']);
         	$lastId = $db->update($tableName, $data);
 		} else{
-			$db->insert($tableName, $data);
-			$lastId = $db->getInsertId();
+			$lastId = $db->insert($tableName, $data);
 		}
 
 		if($lastId > 0){
