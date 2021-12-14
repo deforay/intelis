@@ -198,7 +198,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
     }
     $response['facilities'] = $general->fetchDataFromTable('facility_details', $condition);
     $response['labReportSignatories'] = $general->fetchDataFromTable('lab_report_signatories', $signatureCondition);
-    
+
 
     $condition = null;
     if (isset($data['healthFacilityLastModified']) && !empty($data['healthFacilityLastModified'])) {
