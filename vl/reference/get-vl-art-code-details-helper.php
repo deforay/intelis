@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\elementType;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -144,10 +147,12 @@ foreach ($rResult as $aRow) {
     $row = array();
     $row[] = $aRow['art_code'];
     $row[] = ucwords($aRow['headings']);
-    $row[] = $status;
-    // if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
-    //     $row[] = '<a href="edit-vl-art-code-details.php?id=' . base64_encode($aRow['art_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
-    // }
+    if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
+        $row[] = $status;
+    }
+    else {
+        $row[] = ucwords($aRow['art_status']);
+    }
     $output['aaData'][] = $row;
 }
 
