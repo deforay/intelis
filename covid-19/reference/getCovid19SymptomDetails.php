@@ -137,11 +137,17 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['symptom_id'] . '" title="Please select status" onchange="updateStatus(this,\'' . $aRow['symptom_status'] . '\')">
+               <option value="active" ' . ($aRow['symptom_status'] == "active" ? "selected=selected" : "") . '>Active</option>
+               <option value="inactive" ' . ($aRow['symptom_status'] == "inactive"  ? "selected=selected" : "") . '>Inactive</option>
+               </select><br><br>';
     $row = array();
     $row[] = ucwords($aRow['symptom_name']);
-    $row[] = ucwords($aRow['symptom_status']);
     if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
-        $row[] = '<a href="edit-covid19-symptoms.php?id=' . base64_encode($aRow['symptom_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
+        $row[] = $status;
+    }
+    else {
+        $row[] = ucwords($aRow['symptom_status']);
     }
     $output['aaData'][] = $row;
 }
