@@ -6,7 +6,8 @@ ob_start();
 
 use setasign\Fpdi\Tcpdf\Fpdi;
 
-#require_once('../../startup.php');
+ini_set('memory_limit', -1);
+ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_tb";
