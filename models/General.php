@@ -222,6 +222,9 @@ class General
         } else {
             $configQuery = "SELECT $fieldName from $tableName WHERE $condition";
         }
+        if ($tableName == "testing_labs") {
+            $configQuery = "SELECT test_type, facility_id, updated_datetime, monthly_target, suppressed_monthly_target from $tableName WHERE $condition";
+        }
         return $this->db->query($configQuery);
     }
 

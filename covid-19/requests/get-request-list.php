@@ -270,7 +270,7 @@ foreach ($rResult as $aRow) {
      if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
           if ($aRow['data_sync'] == 0) {
                $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Sync this sample" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"><i class="fa fa-refresh"> Sync</i></a>';
-          } 
+          }
      } else {
           $sync = "";
      }
@@ -282,7 +282,7 @@ foreach ($rResult as $aRow) {
      $actions = "";
      if ($editRequest) {
           $actions .= $edit;
-     }  
+     }
      if ($syncRequest) {
           $actions .= $sync;
      }
