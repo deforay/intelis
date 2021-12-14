@@ -137,11 +137,17 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['test_reason_id'] . '" title="Please select status" onchange="updateStatus(this,\'' . $aRow['test_reason_status'] . '\')">
+               <option value="active" ' . ($aRow['test_reason_status'] == "active" ? "selected=selected" : "") . '>Active</option>
+               <option value="inactive" ' . ($aRow['test_reason_status'] == "inactive"  ? "selected=selected" : "") . '>Inactive</option>
+               </select><br><br>';
     $row = array();
     $row[] = ucwords($aRow['test_reason_name']);
-    $row[] = ucwords($aRow['test_reason_status']);
     if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
-        $row[] = '<a href="edit-tb-test-reasons.php?id=' . base64_encode($aRow['test_reason_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
+        $row[] = $status;
+    }
+    else {
+        $row[] = ucwords($aRow['test_reason_status']);
     }
     $output['aaData'][] = $row;
 }

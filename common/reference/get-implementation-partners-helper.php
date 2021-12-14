@@ -137,11 +137,17 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['i_partner_id'] . '" title="Please select status" onchange="updateStatus(this,\'' . $aRow['i_partner_status'] . '\')">
+               <option value="active" ' . ($aRow['i_partner_status'] == "active" ? "selected=selected" : "") . '>Active</option>
+               <option value="inactive" ' . ($aRow['i_partner_status'] == "inactive"  ? "selected=selected" : "") . '>Inactive</option>
+               </select><br><br>';
     $row = array();
     $row[] = ucwords($aRow['i_partner_name']);
-    $row[] = ucwords($aRow['i_partner_status']);
     if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
-        $row[] = '<a href="edit-implementation-partners.php?id=' . base64_encode($aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
+        $row[] = $status;
+    }
+    else {
+        $row[] = ucwords($aRow['i_partner_status']);
     }
     $output['aaData'][] = $row;
 }

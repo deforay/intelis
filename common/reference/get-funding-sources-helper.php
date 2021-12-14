@@ -137,11 +137,17 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['funding_source_id'] . '" title="Please select status" onchange="updateStatus(this,\'' . $aRow['funding_source_status'] . '\')">
+               <option value="active" ' . ($aRow['funding_source_status'] == "active" ? "selected=selected" : "") . '>Active</option>
+               <option value="inactive" ' . ($aRow['funding_source_status'] == "inactive"  ? "selected=selected" : "") . '>Inactive</option>
+               </select><br><br>';
     $row = array();
     $row[] = ucwords($aRow['funding_source_name']);
-    $row[] = ucwords($aRow['funding_source_status']);
     if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
-        $row[] = '<a href="edit-funding-sources.php?id=' . base64_encode($aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
+        $row[] = $status;
+    }
+    else {
+        $row[] = ucwords($aRow['funding_source_status']);
     }
     $output['aaData'][] = $row;
 }
