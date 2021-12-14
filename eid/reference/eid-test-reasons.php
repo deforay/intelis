@@ -33,7 +33,7 @@ include_once(APPLICATION_PATH . '/header.php');
 									<th>Test Reason</th>
 									<th>Status</th>
 									<?php if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<th>Action</th>
+										<!-- <th>Action</th> -->
 									<?php } ?>
 								</tr>
 							</thead>
@@ -78,11 +78,6 @@ include_once(APPLICATION_PATH . '/header.php');
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?> {
-						"sClass": "center",
-						"bSortable": false
-					},
-				<?php } ?>
 			],
 			"aaSorting": [
 				[0, "asc"]
@@ -102,6 +97,27 @@ include_once(APPLICATION_PATH . '/header.php');
 		});
 		$.unblockUI();
 	});
+	function updateStatus(obj, optVal) {
+    if (obj.value != '') {
+      conf = confirm("Are you sure you want to change the status?");
+      if (conf) {
+        $.post("update-eid-test-reason-status.php", {
+            status: obj.value,
+            id: obj.id
+          },
+          function(data) {
+			  console.log(data);
+            if (data != "") {
+              oTable.fnDraw();
+              alert('Updated successfully.');
+            }
+          });
+      }
+	  else {
+		window.top.location = window.top.location;
+	  }
+    }
+  }
 </script>
 <?php
 include(APPLICATION_PATH . '/footer.php');
