@@ -393,7 +393,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											<td></td>
 											<td></td>
 										</tr>
-										<tr>
+										<tr class="platform microscopy">
 											<td colspan="4">
 												<table class="table table-bordered table-striped">
 													<thead>
@@ -425,14 +425,14 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="xPertMTMResult">Xpert MTB Result</label></th>
-											<td>
+											<th class="platform xpert"><label class="label-control" for="xPertMTMResult">Xpert MTB Result</label></th>
+											<td class="platform xpert">
 												<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
 													<?= $general->generateSelectOptions($tbXPertResults, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="result">TB LAM Result</label></th>
-											<td>
+											<th class="platform lam"><label class="label-control" for="result">TB LAM Result</label></th>
+											<td class="platform lam">
 												<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
 													<?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?>
 												</select>
@@ -734,7 +734,23 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 				checkPostive();
 			});
 		<?php } ?>
-
+		$("#labId").change(function(e) {
+			if ($(this).val() != "") {
+				$.post("/tb/requests/get-attributes-data.php", {
+						id: this.value,
+					},
+					function(data) {
+						console.log(data);
+						if (data != "" && data != false) {
+							_data = jQuery.parseJSON(data);
+							$(".platform").hide();
+							$.each(_data, function(index, value) {
+								$("." + value).show();
+							});
+						}
+					});
+			}
+		});
 	});
 
 	function checkIsResultAuthorized() {

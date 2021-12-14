@@ -349,9 +349,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									<label for="availablePlatforms" class="col-lg-4 control-label">Available Platforms</label>
 									<div class="col-lg-7">
 										<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="Choose one Available Platforms" multiple>
-											<option value="microscopy" <?php echo (preg_match("/microscopy/i", $testTypeInfo[0]['available_platforms'])) ? "selected='selected'" : '';  ?>>Microscopy</option>
-											<option value="xpert" <?php echo (preg_match("/xpert/i", $testTypeInfo[0]['available_platforms'])) ? "selected='selected'" : '';  ?>>Xpert</option>
-											<option value="lam" <?php echo (preg_match("/lam/i", $testTypeInfo[0]['available_platforms'])) ? "selected='selected'" : '';  ?>>Lam</option>
+											<option value="microscopy" <?php echo (preg_match("/microscopy/i", $testTypeInfo[0]['attributes'])) ? "selected='selected'" : '';  ?>>Microscopy</option>
+											<option value="xpert" <?php echo (preg_match("/xpert/i", $testTypeInfo[0]['attributes'])) ? "selected='selected'" : '';  ?>>Xpert</option>
+											<option value="lam" <?php echo (preg_match("/lam/i", $testTypeInfo[0]['attributes'])) ? "selected='selected'" : '';  ?>>Lam</option>
 
 										</select>
 									</div>

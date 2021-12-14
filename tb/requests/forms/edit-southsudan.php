@@ -69,6 +69,16 @@ $reasonForTbTest = json_decode($tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode($tbInfo['tests_requested']);
 $diagnosis = (array)$reasonForTbTest->elaboration->diagnosis;
 $followup = (array)$reasonForTbTest->elaboration->followup;
+$attributes = null;
+if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
+	$db->where("f.facility_id", $tbInfo['lab_id']);
+	$db->join("testing_labs as l", "l.facility_id=f.facility_id", "INNER");
+	$results = $db->getOne("facility_details as f", null, "*");
+	if (isset($results['attributes']) && $results['attributes'] != "") {
+		$attributes = json_decode($results['attributes'], true);
+	}
+}
+
 ?>
 
 <div class="content-wrapper">
@@ -404,7 +414,7 @@ $followup = (array)$reasonForTbTest->elaboration->followup;
 											<td></td>
 											<td></td>
 										</tr>
-										<tr>
+										<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
 											<td colspan="4">
 												<table class="table table-bordered table-striped">
 													<thead>
@@ -453,14 +463,14 @@ $followup = (array)$reasonForTbTest->elaboration->followup;
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="xPertMTMResult">Xpert MTB Result</label></th>
-											<td>
+											<th class="platform xpert" <?php echo (isset($attributes) && $attributes != "" && in_array("xpert", $attributes)) ? 'style="display:none;"' : ''; ?>><label class="label-control" for="xPertMTMResult">Xpert MTB Result</label></th>
+											<td class="platform xpert" <?php echo (isset($attributes) && $attributes != "" && in_array("xpert", $attributes)) ? 'style="display:none;"' : ''; ?>>
 												<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
 													<?= $general->generateSelectOptions($tbXPertResults, $tbInfo['xpert_mtb_result'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="result">TB LAM Result</label></th>
-											<td>
+											<th class="platform lam" <?php echo (isset($attributes) && $attributes != "" && in_array("lam", $attributes)) ? 'style="display:none;"' : ''; ?>><label class="label-control" for="result">TB LAM Result</label></th>
+											<td class="platform lam" <?php echo (isset($attributes) && $attributes != "" && in_array("lam", $attributes)) ? 'style="display:none;"' : ''; ?>>
 												<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
 													<?= $general->generateSelectOptions($tbLamResults, $tbInfo['result'], '-- Select --'); ?>
 												</select>
@@ -755,6 +765,23 @@ $followup = (array)$reasonForTbTest->elaboration->followup;
 			});
 		<?php } ?>
 		getfacilityProvinceDetails($("#facilityId").val());
+		$("#labId").change(function(e) {
+			if ($(this).val() != "") {
+				$.post("/tb/requests/get-attributes-data.php", {
+						id: this.value,
+					},
+					function(data) {
+						console.log(data);
+						if (data != "" && data != false) {
+							_data = jQuery.parseJSON(data);
+							$(".platform").hide();
+							$.each(_data, function(index, value) {
+								$("." + value).show();
+							});
+						}
+					});
+			}
+		});
 	});
 
 	function checkIsResultAuthorized() {
