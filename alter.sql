@@ -2736,3 +2736,6 @@ VALUES
 -- Sakthivel 13-Dec-2021
 ALTER TABLE `r_covid19_results` MODIFY `result_id` varchar(255) NOT NULL;
 ALTER TABLE `r_tb_results` MODIFY `result_id` varchar(255) NOT NULL;
+
+-- Sakthivel 14-Dec-2021
+ALTER TABLE `testing_labs` CHANGE `attributes` `attributes` JSON NULL DEFAULT NULL;

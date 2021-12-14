@@ -151,12 +151,15 @@ try {
 						));
 						// Mapping facility as a Testing Lab
 					} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
-						$tid = $db->insert($testingLabsTable, array(
+						$data = array(
 							'test_type' => $testType,
 							'facility_id' => $facilityId,
-						    'available_platforms' => !empty($_POST['availablePlatforms']) ? json_encode($_POST['availablePlatforms']) : null,
 							'updated_datetime' => $general->getDateTime()
-						));
+						);
+						if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
+							$data['attributes'] = json_encode($_POST['availablePlatforms']);
+						}
+						$tid = $db->insert($testingLabsTable, $data);
 					}
 				}
 			}

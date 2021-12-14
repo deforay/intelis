@@ -254,16 +254,15 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								</div>
 							</div>
 						</div>
-							<div class ="row">
+						<div class="row">
 							<div class="col-md-6 availablePlatforms" style="display:none;">
 								<div class="form-group">
 									<label for="availablePlatforms" class="col-lg-4 control-label">Available Platforms</label>
 									<div class="col-lg-7">
 										<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="Choose one Available Platforms" multiple>
-												<option value="microscopy">Microscopy</option>
-												<option value="xpert">Xpert</option>
-												<option value="lam">Lam</option>
-											
+											<option value="microscopy">Microscopy</option>
+											<option value="xpert">Xpert</option>
+											<option value="lam">Lam</option>
 										</select>
 									</div>
 								</div>
@@ -597,10 +596,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 	function getTestType() {
 		var facility = $("#facilityType").val();
 		var testType = $("#testType").val();
-		if(testType == 'tb') {
+		if (testType == 'tb') {
 			$('.availablePlatforms').show();
-		}
-		else {
+		} else {
 			$('.availablePlatforms').hide();
 		}
 		if (facility && (testType.length > 0) && facility == '2') {
