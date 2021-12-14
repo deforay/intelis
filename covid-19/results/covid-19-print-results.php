@@ -657,13 +657,13 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
             var totalCount = $("#totalSamplesPrintedList").val();
             var checkedRow = $("#checkedPrintedRows").val();
         }
-        if (rowsLength != 0 && rowsLength > 20) {
+        if (rowsLength != 0 && rowsLength > 100) {
             $.unblockUI();
-            alert("You have selected " + rowsLength + " Sample out of the maximum allowed 20 samples");
+            alert("You have selected " + rowsLength + " results out of the maximum allowed 100 at a time");
             return false;
-        } else if (totalCount != 0 && totalCount > 20 && rowsLength == 0) {
+        } else if (totalCount != 0 && totalCount > 100 && rowsLength == 0) {
             $.unblockUI();
-            alert("Maximum allowed 20 samples to print.");
+            alert("Maximum 100 results allowed to print at a time");
             return false;
         } else {
             id = checkedRow;
