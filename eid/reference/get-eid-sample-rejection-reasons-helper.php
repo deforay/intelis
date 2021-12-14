@@ -145,7 +145,12 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['rejection_reason_name']);
     $row[] = ucwords($aRow['rejection_type']);
     $row[] = ucwords($aRow['rejection_reason_code']);
+    if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
     $row[] = $status;
+    }
+    else {
+         $row[] = ucwords($aRow['rejection_reason_status']);
+   }
     $output['aaData'][] = $row;
 }
 

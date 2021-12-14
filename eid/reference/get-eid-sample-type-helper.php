@@ -143,7 +143,12 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = array();
     $row[] = ucwords($aRow['sample_name']);
-    $row[] = $status;
+    if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
+         $row[] = $status;
+    }
+    else {
+         $row[] = ucwords($aRow['status']);
+    }
     $output['aaData'][] = $row;
 }
 
