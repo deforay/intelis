@@ -113,70 +113,52 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 $aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS 
-                        vl.tb_id,
-                        vl.sample_code,
-                        vl.remote_sample_code,
-                        vl.patient_id,
-                        vl.patient_name,
-                        vl.patient_surname,
-                        vl.patient_dob,
-                        vl.patient_gender,
-                        vl.patient_age,
-                        vl.patient_province,
-                        vl.patient_district,
-                        vl.patient_nationality,
-                        vl.patient_city,
-                        vl.sample_collection_date,
-                        vl.type_of_test_requested,
-                        vl.date_of_symptom_onset,
-                        vl.sample_condition,
-                        vl.contact_with_confirmed_case,
-                        vl.has_recent_travel_history,
-                        vl.travel_country_names,
-                        vl.travel_return_date,
-                        vl.sample_tested_datetime,
-                        vl.sample_received_at_vl_lab_datetime,
-                        vl.is_sample_rejected,
-                        vl.result,
-                        vl.is_result_authorised,
-                        vl.approver_comments,
-                        vl.request_created_datetime,
-                        vl.result_printed_datetime,
-                        vl.testing_point,
-                        vl.source_of_alert,
-                        vl.source_of_alert_other,
-                        rtr.test_reason_name,
-                        b.batch_code,
-                        ts.status_name,
-                        rst.sample_name,
-                        f.facility_name,
-                        l_f.facility_name as lab_name,
-                        f.facility_code,
-                        f.facility_state,
-                        f.facility_district,
-                        u_d.user_name as reviewedBy,
-                        a_u_d.user_name as approvedBy,
-                        lt_u_d.user_name as labTechnician,
-                        rs.rejection_reason_name,
-                        r_f_s.funding_source_name,
-                        c.iso_name as nationality,
-                        r_i_p.i_partner_name 
-                        
-                        FROM form_tb as vl 
-                        
-                        LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
-                        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                        LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
-                        LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                        LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-                        LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
-                        LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician 
-                        LEFT JOIN r_tb_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_tb_test 
-                        LEFT JOIN r_tb_sample_type as rst ON rst.sample_id=vl.specimen_type 
-                        LEFT JOIN r_tb_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-                        LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
-                        LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
+vl.tb_id,
+vl.sample_code,
+vl.remote_sample_code,
+vl.patient_id,
+vl.patient_name,
+vl.patient_surname,
+vl.patient_dob,
+vl.patient_gender,
+vl.patient_age,
+vl.sample_collection_date,
+vl.sample_tested_datetime,
+vl.sample_received_at_lab_datetime,
+vl.is_sample_rejected,
+vl.result,
+vl.approver_comments,
+vl.request_created_datetime,
+vl.result_printed_datetime,
+rtr.test_reason_name,
+b.batch_code,
+ts.status_name,
+rst.sample_name,
+f.facility_name,
+l_f.facility_name as lab_name,
+f.facility_code,
+f.facility_state,
+f.facility_district,
+u_d.user_name as reviewedBy,
+a_u_d.user_name as approvedBy,
+lt_u_d.user_name as labTechnician,
+rs.rejection_reason_name,
+r_f_s.funding_source_name,
+r_i_p.i_partner_name 
+
+FROM form_tb as vl 
+LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
+LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
+LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
+LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician 
+LEFT JOIN r_tb_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_tb_test 
+LEFT JOIN r_tb_sample_type as rst ON rst.sample_id=vl.specimen_type 
+LEFT JOIN r_tb_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
+LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
+LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 /* Sample collection date filter */
 $start_date = '';
 $end_date = '';
@@ -307,7 +289,7 @@ $_SESSION['tbResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-die($sQuery);
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
