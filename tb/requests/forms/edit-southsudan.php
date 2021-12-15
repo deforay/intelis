@@ -169,7 +169,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<option value="medical" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'medical') ? "selected='selected'" : ""; ?>>Medical</option>
 												<option value="paediatric" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'paediatric') ? "selected='selected'" : ""; ?>>Paediatric</option>
 												<option value="nutrition" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'nutrition') ? "selected='selected'" : ""; ?>>Nutrition</option>
-												<option value="other" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'others') ? "selected='selected'" : ""; ?>>Others</option>
+												<option value="other" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'other') ? "selected='selected'" : ""; ?>>Others</option>
 											</select>
 										</td>
 										<td>
