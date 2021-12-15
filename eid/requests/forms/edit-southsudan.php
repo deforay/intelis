@@ -25,6 +25,11 @@ $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
+    if(!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes'){
+		$sampleCode = 'remote_sample_code';
+	}else{
+		$sampleCode = 'sample_code';
+	}
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
@@ -32,7 +37,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
     $rKey = '';
 }
 //check user exist in user_facility_map table
-$chkUserFcMapQry = "Select user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+$chkUserFcMapQry = "SELECT user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
     $pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";

@@ -47,6 +47,11 @@ $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
+    if(!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes'){
+		$sampleCode = 'remote_sample_code';
+	}else{
+		$sampleCode = 'sample_code';
+	}
     //check user exist in user_facility_map table
     $chkUserFcMapQry = "SELECT user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);

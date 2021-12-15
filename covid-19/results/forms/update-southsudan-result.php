@@ -50,6 +50,11 @@ $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
+    if(!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes'){
+		$sampleCode = 'remote_sample_code';
+	}else{
+		$sampleCode = 'sample_code';
+	}
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
