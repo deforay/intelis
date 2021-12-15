@@ -17,12 +17,13 @@ $sarr = $general->getSystemConfig();
 if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "") {
 
 	$rResult = $db->rawQuery($_SESSION['tbResultQuery']);
+// echo "<pre>";print_r($rResult);die;
 
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 
-	$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+	$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
 
 
 	$colNo = 1;
@@ -82,8 +83,9 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 		$row = array();
 		if ($arr['vl_form'] == 1) {
 			// Get testing platform and test method 
-			$tbTestQuery = "SELECT * from tb_tests where tb_id= " . $aRow['tb_id'] . " ORDER BY test_id ASC";
+			$tbTestQuery = "SELECT * from tb_tests where tb_id= " . $aRow['tb_id'] . " ORDER BY tb_test_id ASC";
 			$tbTestInfo = $db->rawQuery($tbTestQuery);
+
 			foreach ($tbTestInfo as $indexKey => $rows) {
 				$testPlatform = $rows['testing_platform'];
 				$testMethod = $rows['test_name'];
@@ -140,26 +142,24 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 		} else {
 			$patientFname = '';
 		}
-		if ($aRow['patient_last_name'] != '') {
+		if ($aRow['patient_surname'] != '') {
 			$patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';
 		}
 
-		if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
-			$sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']);
-		} else {
-			$sourceOfArtPOE = $aRow['source_of_alert_other'];
-		}
+		// if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
+		// 	$sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']);
+		// } else {
+		// 	$sourceOfArtPOE = $aRow['source_of_alert_other'];
+		// }
 
 
 
 		$row[] = $no;
 		$row[] = $aRow[$sampleCode];
 		$row[] = ucwords($aRow['lab_name']);
-		$row[] = ucwords($aRow['testing_point']);
 		$row[] = ucwords($aRow['labTechnician']);
-		$row[] = ucwords($sourceOfArtPOE);
 		$row[] = ucwords($aRow['facility_district']);
 		$row[] = ucwords($aRow['facility_state']);
 		$row[] = ucwords($aRow['facility_name']);
@@ -168,15 +168,10 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 		$row[] = $general->humanDateFormat($aRow['patient_dob']);
 		$row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = ucwords($aRow['patient_gender']);
-		$row[] = ucwords($aRow['nationality']);
-		$row[] = ucwords($aRow['patient_province']);
-		$row[] = ucwords($aRow['patient_district']);
-		$row[] = ucwords($aRow['patient_city']);
 		$row[] = $general->humanDateFormat($aRow['sample_collection_date']);
 		$row[] = ucwords($aRow['test_reason_name']);
-		$row[] = $general->humanDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = $general->humanDateFormat($aRow['sample_received_at_lab_datetime']);
 		$row[] = $general->humanDateFormat($aRow['request_created_datetime']);
-		$row[] = ucwords($aRow['sample_condition']);
 		$row[] = ucwords($aRow['status_name']);
 		$row[] = ucwords($aRow['sample_name']);
 		$row[] = $general->humanDateFormat($aRow['sample_tested_datetime']);
@@ -204,7 +199,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 		}
 	}
 	$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
-	$filename = 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+	$filename = 'TB-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 	echo $filename;
 }
