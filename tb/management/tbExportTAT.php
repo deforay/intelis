@@ -70,7 +70,7 @@ if (isset($_SESSION['tbTATQuery']) && trim($_SESSION['tbTATQuery']) != "") {
     $sampleCollectionDate = '';
     if ($aRow['sample_collection_date'] != NULL && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
       $expStr = explode(" ", $aRow['sample_collection_date']);
-      $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
+      $sampleCollectionDate =  $general->humanDateFormat($expStr[0]);
     }
     if (isset($aRow['sample_received_at_lab_datetime']) && trim($aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
       $xplodDate = explode(" ", $aRow['sample_received_at_lab_datetime']);
