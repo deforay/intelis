@@ -6,6 +6,11 @@ $artRegimenResult = $db->rawQuery($artRegimenQuery);
 $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
   $sampleCode = 'remote_sample_code';
+  if(!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes'){
+		$sampleCode = 'remote_sample_code';
+	}else{
+		$sampleCode = 'sample_code';
+	}
   //check user exist in user_facility_map table
   $chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
   $chkUserFcMapResult = $db->query($chkUserFcMapQry);

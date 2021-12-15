@@ -9,7 +9,12 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 //check remote user
 $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
-	$sampleCode = 'remote_sample_code';
+	
+	if(!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes'){
+		$sampleCode = 'remote_sample_code';
+	}else{
+		$sampleCode = 'sample_code';
+	}
 	//check user exist in user_facility_map table
 	$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
@@ -116,7 +121,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<?php } ?>
 								</div>
 
-								<!--<h4 id="sampleCodeValue">exemple de code:< ?php echo ($sCode!='') ? $sCode : $vlQueryInfo[$sampleCode]; ?></h4>-->
+								
 								<table class="table" style="width:100%">
 
 
@@ -124,13 +129,13 @@ $sampleSuggestionDisplay = 'display:none;';
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
-												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo (isset($sCode) && $sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?></span>
-												<input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo (isset($sCode) && $sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" />
+												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $vlQueryInfo[$sampleCode]; ?></span>
+												<input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
 											</td>
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 											<td>
-												<input type="text" class="form-control isRequired" readonly id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" value="<?php echo (isset($sCode) && $sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The échantillon id that you entered already exists. Please try another échantillon id',null)" />
+												<input type="text" class="form-control isRequired" readonly id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The échantillon id that you entered already exists. Please try another échantillon id',null)" />
 											</td>
 										<?php } ?>
 

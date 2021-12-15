@@ -2722,7 +2722,7 @@ ALTER TABLE `form_tb` ADD `referring_unit` VARCHAR(256) NULL DEFAULT NULL AFTER 
 ALTER TABLE `tb_tests` DROP `sample_tested_datetime`, DROP `testing_platform`;
 
 -- Sakthivel P 07-Dec-2021
-ALTER TABLE `testing_labs` ADD `available_platforms` JSON NULL DEFAULT NULL AFTER `facility_id`;
+ALTER TABLE `testing_labs` ADD `attributes` JSON NULL DEFAULT NULL AFTER `facility_id`;
 
 -- Sakthivel P 08-Dec-2021
 ALTER TABLE `form_tb` ADD `other_specimen_type` TEXT NULL DEFAULT NULL AFTER `specimen_type`;
