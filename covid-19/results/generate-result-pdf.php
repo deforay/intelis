@@ -338,8 +338,8 @@ if (sizeof($requestResult) > 0) {
 				break;
 			}
 		}
-		if (isset($result['report_format']) && $result['report_format'] != "") {
-			$formats = json_decode($result['report_format'], true);
+		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
+			$formats = json_decode($result['reportFormat'], true);
 			if (file_exists($formats['covid19'])) {
 				/* New format selection */
 				include($formats['covid19']);
