@@ -49,6 +49,7 @@ try {
 	} else {
 		$_POST['approvedOnDateTime'] = NULL;
 	}
+	
 
 
 	//Set sample received date
@@ -147,13 +148,6 @@ try {
 		$_POST['status']  = $_POST['oldStatus'];
 	}
 
-	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
-		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
-		$_POST['approvedOnDateTime'] = $general->dateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
-	} else {
-		$_POST['approvedOnDateTime'] = NULL;
-	}
-
 
 	$eidData = array(
 		'facility_id' 										=> isset($_POST['facilityId']) ? $_POST['facilityId'] : null,
@@ -231,7 +225,6 @@ try {
 		$eidData['request_created_by'] =  $_SESSION['userId'];
 		$eidData['last_modified_by'] =  $_SESSION['userId'];
 	}
-	// var_dump($eidData);die;
 	// if ($_SESSION['instanceType'] == 'remoteuser') {
 	//   //$eidData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;
 	// } else {
