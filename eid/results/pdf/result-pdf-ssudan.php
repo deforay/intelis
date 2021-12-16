@@ -137,6 +137,10 @@ if (sizeof($requestResult) > 0) {
             }
         }
 
+        $checkDateIsset = strpos($result['result_approved_datetime'], "0000-00-00");
+        if ($checkDateIsset !== false) {
+            $result['result_approved_datetime'] = null;
+        }
         if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
             $resultApprovedBy = ucwords($result['approvedBy']);
         } else {
@@ -211,7 +215,7 @@ if (sizeof($requestResult) > 0) {
             $smileyContent = '';
         }
         if ($result['result_status'] == '4') {
-            $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
+            $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" style="width:25px;" alt="rejected"/>';
         }
         $html = '';
         $html .= '<table style="padding:0px 2px 2px 2px;">';
@@ -337,30 +341,37 @@ if (sizeof($requestResult) > 0) {
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['sample_name']) . '</td>';
-        $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+        $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (!empty($result['sample_tested_datetime']) ? $result['sample_tested_datetime'] : '-') . '</td>';
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
         $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td colspan="3" style="line-height:5px;"></td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
-        $html .= '</tr>';
+
         // $html .= '<tr>';
-        // $html .= '<td colspan="3" style="line-height:10px;"></td>';
+        // $html .= '<td colspan="3" style="line-height:5px;"></td>';
         // $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['is_sample_rejected']) . '</td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td colspan="3" style="line-height:5px;"></td>';
-        $html .= '</tr>';
+        // $html .= '<tr>';
+        // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
+        // $html .= '</tr>';
+        // // $html .= '<tr>';
+        // // $html .= '<td colspan="3" style="line-height:10px;"></td>';
+        // // $html .= '</tr>';
+        // $html .= '<tr>';
+        // $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ((!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected') . '</td>';
+        // $html .= '</tr>';
+        // $html .= '<tr>';
+        // $html .= '<td colspan="3" style="line-height:5px;"></td>';
+        // $html .= '</tr>';
 
         $html .= '<tr>';
         $html .= '<td colspan="3">';
-        $html .= '<table style="padding:4px 2px 2px 2px;">';
+        $html .= '<br><br><table style="padding:4px 2px 2px 2px;">';
 
-        $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $eidResults[$result['result']] . '</td><td style="">' . $smileyContent . '</td></tr>';
+        if(!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes'){
+            $finalResult = 'Rejected';
+        }else{
+            $finalResult = $eidResults[$result['result']];
+        }
+        
+        $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $finalResult . '</td><td style="">' . $smileyContent . '</td></tr>';
         //$html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:70px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ucfirst($result['result']) . '</td><td style="">' . $smileyContent . '</td></tr>';
         if ($result['reason_for_sample_rejection'] != '') {
             $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
@@ -388,7 +399,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td colspan="3" style="line-height:22px;"></td>';
         $html .= '</tr>';
 
-        if (!empty($testedBy)) {
+        if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
@@ -428,7 +439,7 @@ if (sizeof($requestResult) > 0) {
         }
 
 
-        if (!empty($resultApprovedBy)) {
+        if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
             $html .= '<tr>';
             $html .= '<td colspan="3" style="line-height:22px;"></td>';
             $html .= '</tr>';
@@ -446,7 +457,7 @@ if (sizeof($requestResult) > 0) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
             }
 
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['result_approved_datetime'])) . '</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_approved_datetime']) ? date('d/M/Y', strtotime($result['result_approved_datetime'])) : '') . '</td>';
             $html .= '</tr>';
         }
 
