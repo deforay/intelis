@@ -457,7 +457,7 @@ if (sizeof($requestResult) > 0) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
             }
 
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['result_approved_datetime'])) . '</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_approved_datetime']) ? date('d/M/Y', strtotime($result['result_approved_datetime'])) : '') . '</td>';
             $html .= '</tr>';
         }
 
