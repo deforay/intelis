@@ -385,6 +385,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td colspan="3" style="line-height:22px;"></td>';
         $html .= '</tr>';
 
+        if ($result['is_sample_rejected'] == 'no') {
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
@@ -396,6 +397,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         $html .= '</tr>';
+        }
 
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:8px;"></td>';

@@ -479,6 +479,7 @@ if (sizeof($requestResult) > 0) {
           // $html .= '<tr>';
           // $html .= '<td colspan="3" style="line-height:8px;"></td>';
           // $html .= '</tr>';
+        if ($result['is_sample_rejected'] == 'no') {
           if (!empty($testedBy)) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
@@ -496,6 +497,7 @@ if (sizeof($requestResult) > 0) {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
                $html .= '</tr>';
           }
+     }
           if (!empty($reviewedBy)) {
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:8px;"></td>';
