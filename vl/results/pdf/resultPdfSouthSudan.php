@@ -65,6 +65,7 @@ if (sizeof($requestResult) > 0) {
                     $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $resultApprovedByRes['user_signature'];
                }
           }
+          
           if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
                $resultApprovedBy = ucwords($result['approvedBy']);
                $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
@@ -380,7 +381,7 @@ if (sizeof($requestResult) > 0) {
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">RESULT RELEASE DATE</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['is_sample_rejected']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected' . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
           $html .= '</tr>';
@@ -479,7 +480,7 @@ if (sizeof($requestResult) > 0) {
           // $html .= '<tr>';
           // $html .= '<td colspan="3" style="line-height:8px;"></td>';
           // $html .= '</tr>';
-          if (!empty($testedBy)) {
+          if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
@@ -540,7 +541,7 @@ if (sizeof($requestResult) > 0) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:8px;"></td>';
           $html .= '</tr>';
-          if (!empty($resultApprovedBy)) {
+          if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
