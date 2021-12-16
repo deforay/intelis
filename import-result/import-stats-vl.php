@@ -115,7 +115,7 @@ unset($_SESSION['controllertrack']);
                 } else {
                     $.unblockUI();
                     window.open('/uploads/' + data, '_blank');
-                    window.location.href = "/vl/results/vlPrintResult.php";
+                    // window.location.href = "/vl/results/vlPrintResult.php";
                 }
 
             });
