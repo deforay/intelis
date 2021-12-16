@@ -181,11 +181,11 @@ try {
             $data['sampleCollectionDate'] = NULL;
         }
 
-        if (isset($data['approvedOnDateTime']) && trim($data['approvedOnDateTime']) != "") {
-            $approvedOnDateTime = explode(" ", $data['approvedOnDateTime']);
-            $data['approvedOnDateTime'] = $general->dateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+        if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
+            $approvedOn = explode(" ", $data['approvedOn']);
+            $data['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
         } else {
-            $data['approvedOnDateTime'] = NULL;
+            $data['approvedOn'] = NULL;
         }
 
         //Set sample received date
@@ -312,9 +312,9 @@ try {
             'result'                                            => isset($data['result']) ? $data['result'] : null,
             'tested_by'                                         => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  $user['user_id'],
             'result_approved_by'                                => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
-            'result_approved_datetime'                          => (isset($data['approvedOnDateTime']) && $data['approvedOnDateTime'] != '') ? $data['approvedOnDateTime'] :  NULL,
-            'result_reviewed_by'                				=> (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : null,
-            'result_reviewed_datetime'          				=> (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
+            'result_approved_datetime'                          => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  NULL,
+            'result_reviewed_by'                                => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : null,
+            'result_reviewed_datetime'                          => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'revised_by'                                        => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
             'revised_on'                                        => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
             'reason_for_changing'                               => (!empty($_POST['reasonForEidResultChanges']) && !empty($_POST['reasonForEidResultChanges'])) ? $_POST['reasonForEidResultChanges'] : null,

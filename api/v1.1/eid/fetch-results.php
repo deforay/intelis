@@ -98,7 +98,7 @@ try {
         COALESCE(vl.result,null)                             as result,
         vl.tested_by                                         as testedBy,
         vl.result_approved_by                                as approvedBy,
-        vl.result_approved_datetime                          as approvedBy,
+        vl.result_approved_datetime                          as approvedOn,
         vl.result_status                                     as status,
         l_f.facility_name                                    as labName,
         f.facility_district                                  as district,
@@ -106,8 +106,8 @@ try {
         u_d.user_name                                        as reviewedBy,
         lt_u_d.user_name                                     as labTechnicianName,
         t_b.user_name                                        as testedByName,
-        rs.rejection_reason_name                             as rejectionReason,
-        vl.reason_for_sample_rejection                       as rejectionReasonId,
+        rs.rejection_reason_name                             as sampleRejectionReason,
+        vl.reason_for_sample_rejection                       as sampleRejectionReasonId,
         vl.rejection_on                                      as rejectionDate,
         p.province_name                                      as provinceName,
         r_f_s.funding_source_name                            as fundingSourceName,
@@ -187,7 +187,7 @@ try {
     }
 
     $where = " WHERE " . implode(" AND ", $where);
-    $sQuery .= $where . " limit 100;";
+    $sQuery .= $where . " GROUP BY eid_id ORDER BY last_modified_datetime DESC limit 100;";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 

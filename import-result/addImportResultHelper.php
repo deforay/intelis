@@ -16,8 +16,9 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 
 $general = new \Vlsm\Models\General();
 
-
-
+/* echo "<pre>";
+print_r($confFileName);
+die; */
 
 $type = $_POST['type'];
 
