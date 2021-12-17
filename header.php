@@ -977,6 +977,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("hepatitis-manual-results.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu hepatitisResultsMenu"><a href="/hepatitis/results/hepatitis-manual-results.php"><i class="fa fa-caret-right"></i> Enter Result Manually</a></li>
+										<li class="allMenu hepatitisFailedResultsMenu"><a href="/hepatitis/results/hepatitis-failed-results.php"><i class="fa fa-caret-right"></i> Failed/Hold Samples</a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("hepatitis-result-status.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu hepatitisResultStatus"><a href="/hepatitis/results/hepatitis-result-status.php"><i class="fa fa-caret-right"></i> Manage Results Status</a></li>

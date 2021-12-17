@@ -5,6 +5,14 @@ include_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $geolocation = new \Vlsm\Models\GeoLocations();
 
+$usersModel = new \Vlsm\Models\Users();
+$userResult = $usersModel->getActiveUsers();
+
+$userInfo = array();
+foreach ($userResult as $user) {
+    $userInfo[$user['user_id']] = ucwords($user['user_name']);
+}
+
 $id = base64_decode($_GET['id']);
 $facilityQuery = "SELECT * from facility_details where facility_id=$id";
 $facilityInfo = $db->query($facilityQuery);
@@ -204,9 +212,11 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="contactPerson" class="col-lg-4 control-label">Contact Person</label>
+									<label for="Lab Manager" class="col-lg-4 control-label">Lab Manager</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="contactPerson" name="contactPerson" placeholder="Contact Person" value="<?php echo $facilityInfo[0]['contact_person']; ?>" />
+									<select name="contactPerson" id="contactPerson" class="form-control" title="Please choose Lab Manager" style="width: 100%;">
+									<?= $general->generateSelectOptions($userInfo, $facilityInfo[0]['contact_person'], '-- Select --'); ?>
+									</select>
 									</div>
 								</div>
 							</div>
