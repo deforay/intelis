@@ -212,9 +212,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="contactPerson" class="col-lg-4 control-label">Contact Person</label>
+									<label for="Lab Manager" class="col-lg-4 control-label">Lab Manager</label>
 									<div class="col-lg-7">
-									<select name="contactPerson" id="contactPerson" class="form-control" title="Please choose Contact Person" style="width: 100%;">
+									<select name="contactPerson" id="contactPerson" class="form-control" title="Please choose Lab Manager" style="width: 100%;">
 									<?= $general->generateSelectOptions($userInfo, $facilityInfo[0]['contact_person'], '-- Select --'); ?>
 									</select>
 									</div>
