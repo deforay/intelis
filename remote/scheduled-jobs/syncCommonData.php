@@ -250,7 +250,21 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $id = $db->delete('testing_labs');
             }
 
-            foreach ($dataValues as $tableData) {
+            foreach ($dataValues as $tableDataValues) {
+
+                $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
+                $columnList = array_map('current', $db->rawQuery($tableColumns));
+
+                $tableData = array();
+                $updateColumns = array();
+                foreach ($columnList as $colName) {
+                    if (isset($tableDataValues[$colName])) {
+                        $tableData[$colName] = $tableDataValues[$colName];
+                    } else {
+                        $tableData[$colName] = null;
+                    }
+                }
+
                 // getting column names using array_key
                 // we will update all columns ON DUPLICATE
                 $updateColumns = array_keys($tableData);
