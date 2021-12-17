@@ -9,6 +9,13 @@ $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pQuery = "SELECT * FROM province_details";
 $pResult = $db->rawQuery($pQuery);
+$usersModel = new \Vlsm\Models\Users();
+$userResult = $usersModel->getActiveUsers();
+
+$userInfo = array();
+foreach ($userResult as $user) {
+    $userInfo[$user['user_id']] = ucwords($user['user_name']);
+}
 
 $cntId = $general->reportPdfNames();
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
@@ -138,7 +145,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								<div class="form-group">
 									<label for="contactPerson" class="col-lg-4 control-label">Contact Person</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="contactPerson" name="contactPerson" placeholder="Contact Person" />
+									<select name="contactPerson" id="contactPerson" class="form-control" title="Please choose the Contact Person" style="width: 100%;">
+                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                  </select>
 									</div>
 								</div>
 							</div>
