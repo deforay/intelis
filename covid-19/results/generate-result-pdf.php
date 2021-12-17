@@ -298,6 +298,7 @@ class Pdf_concat extends FPDI
 		}
 	}
 }
+
 $resultFilename = '';
 if (sizeof($requestResult) > 0) {
 	$_SESSION['rVal'] = $general->generateRandomString(6);
@@ -315,6 +316,9 @@ if (sizeof($requestResult) > 0) {
 
 		$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
 		$covid19TestInfo = $db->rawQuery($covid19TestQuery);
+		// Lab Details
+		$labQuery = "SELECT * from facility_details where facility_id= " . $result['lab_id'] . " LIMIT 1";
+		$labInfo = $db->rawQueryOne($labQuery);
 
 		$facilityQuery = "SELECT * from form_covid19 as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where covid19_id= " . $result['covid19_id'] . " GROUP BY fd.facility_id LIMIT 1";
 		$facilityInfo = $db->rawQueryOne($facilityQuery);
@@ -338,8 +342,8 @@ if (sizeof($requestResult) > 0) {
 				break;
 			}
 		}
-		if (isset($result['report_format']) && $result['report_format'] != "") {
-			$formats = json_decode($result['report_format'], true);
+		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
+			$formats = json_decode($result['reportFormat'], true);
 			if (file_exists($formats['covid19'])) {
 				/* New format selection */
 				include($formats['covid19']);
