@@ -363,7 +363,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 						<div class="row logoImage" style="display:none;">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="" class="col-lg-4 control-label">Logo Image </label>
+									<label for="labLogo" class="col-lg-4 control-label">Logo Image </label>
 									<div class="col-lg-8">
 										<div class="fileinput fileinput-new labLogo" data-provides="fileinput">
 											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
@@ -372,6 +372,27 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 											<div>
 												<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
 													<input type="file" id="labLogo" name="labLogo" title="Please select logo image">
+												</span>
+												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+											</div>
+										</div>
+										<div class="box-body">
+											Please make sure logo image size of: <code>80x80</code>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="stampLogo" class="col-lg-4 control-label">Stamp Image </label>
+									<div class="col-lg-8">
+										<div class="fileinput fileinput-new stampLogo" data-provides="fileinput">
+											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
+												<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+											</div>
+											<div>
+												<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
+													<input type="file" id="stampLogo" name="stampLogo" title="Please select stamp image">
 												</span>
 												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
 											</div>

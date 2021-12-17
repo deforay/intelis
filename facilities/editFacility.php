@@ -487,6 +487,39 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
+								<label for="stampLogo" class="col-lg-4 control-label">Logo Image </label>
+								<div class="col-lg-8">
+									<div class="fileinput fileinput-new stampLogo" data-provides="fileinput">
+										<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
+											<?php
+
+											if (isset($facilityInfo[0]['facility_logo']) && trim($facilityInfo[0]['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo[0]['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo[0]['facility_logo'])) {
+											?>
+												<img src=".././uploads/facility-logo/<?php echo $facilityInfo[0]['facility_id']; ?>/<?php echo $facilityInfo[0]['facility_logo']; ?>" alt="Logo image">
+											<?php } else { ?>
+												<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+											<?php } ?>
+										</div>
+										<div>
+											<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
+												<input type="file" id="stampLogo" name="stampLogo" title="Please select logo image" onchange="getNewLabImage('<?php echo $facilityInfo[0]['facility_logo']; ?>');">
+											</span>
+											<?php
+											if (isset($facilityInfo[0]['facility_logo']) && trim($facilityInfo[0]['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo[0]['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo[0]['facility_logo'])) {
+											?>
+												<a id="clearLabImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearLabImage('<?php echo $facilityInfo[0]['facility_logo']; ?>')">Clear</a>
+											<?php } ?>
+											<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+										</div>
+									</div>
+									<div class="box-body">
+										Please make sure logo image size of: <code>80x80</code>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
 								<label for="" class="col-lg-4 control-label">Header Text</label>
 								<div class="col-lg-7">
 									<input type="text" class="form-control " id="headerText" name="headerText" placeholder="Header Text" title="Please enter header text" value="<?php echo $facilityInfo[0]['header_text']; ?>" />

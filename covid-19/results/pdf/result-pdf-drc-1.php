@@ -50,6 +50,31 @@ class DRC_PDF extends MYPDF
 
             $this->writeHTMLCell(0, 0, 10, 49, '<hr>', 0, 0, 0, true, 'C', true);
             $this->writeHTMLCell(0, 0, 10, 50, '<hr>', 0, 0, 0, true, 'C', true);
+
+            // Define the path to the image that you want to use as watermark.
+            $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo;
+            if (file_exists($img_file)) {
+            } else if (UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo) {
+                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                }
+            } else {
+                $img_file = "";
+            }
+            // Render the image
+            if ($img_file != "") {
+                $this->SetAlpha(0.1);
+                $this->Image($img_file, 20, 25, 150, null, '', '', '', false, 300, 'M', false, false, 0);
+            }
+            $stamp = "";
+            if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png')) {
+                $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png';
+            }
+            if ($stamp != "") {
+                $this->SetAlpha(0.6);
+                $this->Image($stamp, 40, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
+                $this->Image($stamp, 120, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
+            }
         }
     }
 }
@@ -256,7 +281,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Commune</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;"></td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . $result['facility_district'] . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
@@ -311,27 +336,15 @@ $html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:cen
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td colspan="3">';
-if (isset($signResults) && !empty($signResults)) {
-    $html .= '<table style="width:100%;padding:3px;border:1px solid gray;">';
-    $html .= '<tr>';
-    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;">AUTORISÉ PAR</td>';
-    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">IMPRIMER LE NOM</td>';
-    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">SIGNATURE</td>';
-    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">DATE & HEURE</td>';
-    $html .= '</tr>';
-    foreach ($signResults as $key => $row) {
-        $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid gray;">' . $row['designation'] . '</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . $row['name_of_signatory'] . '</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;"><img src="' . $lmSign . '" style="width:30px;"></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid gray;border-left:1px solid gray;">' . date('d-M-Y H:i:s a') . '</td>';
-        $html .= '</tr>';
-    }
-    $html .= '</table>';
-}
-$html .= '</td>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:11px;text-align:center;">Fait à Kinshasa, le :</td>';
+$html .= '</tr>';
+
+$html .= '<tr>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;font-weight:bold;">' . ucwords($result['lab_manager']) . '</td>';
+$html .= '</tr>';
+
+$html .= '<tr>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:11px;text-align:center;">Chef de I&lsquo;unité Virus Respiratories</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';

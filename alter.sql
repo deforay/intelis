@@ -2847,3 +2847,6 @@ ALTER TABLE `vl_facility_map`  COLLATE utf8mb4_general_ci;
 ALTER TABLE `vl_imported_controls`  COLLATE utf8mb4_general_ci;
 ALTER TABLE `vl_request_form`  COLLATE utf8mb4_general_ci;
 ALTER TABLE `vl_user_facility_map`  COLLATE utf8mb4_general_ci;
+
+-- Thana 17-Dec-2021
+ALTER TABLE `form_covid19` ADD `lab_manager` TEXT NULL DEFAULT NULL AFTER `lab_id`;

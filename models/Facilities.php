@@ -58,6 +58,14 @@ class Facilities
         return $this->db->get("facility_details f");
     }
 
+    public function getFacilityById($facilityId)
+    {
+        if (!empty($facilityId)) {
+            $this->db->where("facility_id", $facilityId);
+        }
+        return $this->db->getOne("facility_details");
+    }
+
     public function getTestingPoints($facilityId)
     {
 

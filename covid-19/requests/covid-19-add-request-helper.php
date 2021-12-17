@@ -10,6 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $general = new \Vlsm\Models\General();
+$facilityDb = new \Vlsm\Models\Facilities();
 
 /* echo "<pre>";
 print_r($_POST);
@@ -215,6 +216,13 @@ try {
 		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
 		'source_of_request'                   => "web"
 	);
+
+	if (!empty($_POST['labId'])) {
+		$facility = $facilityDb->getFacilityById($_POST['labId']);
+		if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
+			$covid19Data['lab_manager'] = $facility['contact_person'];
+		}
+	}
 	$lock = $general->getGlobalConfig('lock_approved_covid19_samples');
 	if ($status == 7 && $lock == 'yes') {
 		$covid19Data['locked'] = 'yes';

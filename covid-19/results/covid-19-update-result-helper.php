@@ -7,6 +7,8 @@ require_once('../../startup.php');
 
 
 $general = new \Vlsm\Models\General();
+$facilityDb = new \Vlsm\Models\Facilities();
+
 $tableName = "form_covid19";
 $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";
@@ -75,7 +77,12 @@ try {
 		'last_modified_datetime'               => $general->getDateTime()
 	);
 
-	// echo "<pre>";print_r($covid19Data);die;
+	if (!empty($_POST['labId'])) {
+		$facility = $facilityDb->getFacilityById($_POST['labId']);
+		if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
+			$covid19Data['lab_manager'] = $facility['contact_person'];
+		}
+	}
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$covid19Data['result'] = null;
 		$covid19Data['result_status'] = 4;

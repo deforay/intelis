@@ -9,6 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $general = new \Vlsm\Models\General();
+$facilityDb = new \Vlsm\Models\Facilities();
 
 // echo "<pre>";print_r($_POST);die;
 
@@ -38,11 +39,11 @@ try {
 	}
 
 	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
-        $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
-        $_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
-    } else {
-        $_POST['sampleDispatchedDate'] = NULL;
-    }
+		$sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
+		$_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+	} else {
+		$_POST['sampleDispatchedDate'] = NULL;
+	}
 
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
@@ -126,7 +127,7 @@ try {
 	} else {
 		$_POST['approvedOn'] = NULL;
 	}
-	
+
 
 	$covid19Data = array(
 		'external_sample_code'                => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
@@ -223,6 +224,13 @@ try {
 		'last_modified_by'                    => $_SESSION['userId'],
 		'last_modified_datetime'              => $general->getDateTime()
 	);
+
+	if (!empty($_POST['labId'])) {
+		$facility = $facilityDb->getFacilityById($_POST['labId']);
+		if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
+			$covid19Data['lab_manager'] = $facility['contact_person'];
+		}
+	}
 	$lock = $general->getGlobalConfig('lock_approved_covid19_samples');
 	if ($status == 7 && $lock == 'yes') {
 		$covid19Data['locked'] = 'yes';

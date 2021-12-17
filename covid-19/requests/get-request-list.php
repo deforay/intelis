@@ -122,7 +122,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT vl.*, f.*,  ts.status_name, b.batch_code FROM form_covid19 as vl 
+$sQuery = "SELECT vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTxt FROM form_covid19 as vl 
+          LEFT JOIN r_covid19_results as r ON vl.result=r.result_id 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
@@ -251,7 +252,7 @@ foreach ($rResult as $aRow) {
 
      $row[] = ucwords($aRow['facility_state']);
      $row[] = ucwords($aRow['facility_district']);
-     $row[] = ucwords($aRow['result']);
+     $row[] = (is_numeric($aRow['result'])) ? ucwords($aRow['resultTxt']) : ucwords($aRow['result']);
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ucwords($aRow['status_name']);
      //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['covid19_id']).'\');"><i class="fa fa-barcode"> Print Barcode</i></a>';
