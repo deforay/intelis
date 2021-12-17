@@ -144,6 +144,7 @@ class Users
         if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
             $sharedHepPrivileges = array(
                 'hepatitis-update-result.php'                   => 'hepatitis-manual-results.php',
+                'hepatitis-failed-results.php'                  => 'hepatitis-manual-results.php',
                 'mail-hepatitis-results.php'                    => 'hepatitis-print-results.php',
                 'hepatitis-result-mail-confirm.php'             => 'hepatitis-print-results.php',
                 'hepatitis-sample-rejection-reasons.php'        => 'hepatitis-sample-type.php',
