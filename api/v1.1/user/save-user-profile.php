@@ -19,11 +19,8 @@ if (!$_POST['post']) {
 } else {
     $post = json_decode($_POST['post']);
 }
-$userId = base64_decode($post->userId);
-/* echo "<pre>";
-print_r($post->userId);
-print_r($_FILES['sign']);
-die; */
+$userId = !empty($post->userId) ? base64_decode($post->userId) : null;
+
 if (!$apiKey) {
     $response = array(
         'status' => 'failed',
@@ -35,8 +32,16 @@ if (!$apiKey) {
 }
 
 try {
-    $userQuery = "SELECT * from user_details where (user_id='" . $userId . "' OR email = '" . $post->email . "')";
-    $aRow = $db->rawQuery($userQuery);
+    $aRow = null;
+    if (!empty($userId) || !empty($post->email)) {
+        if (!empty($userId)) {
+            $db->where("user_id", $userId);
+        }
+        if (!empty($post->loginId)) {
+            $db->where("login_id", $post->loginId);
+        }
+        $aRow = $db->getOne("user_details");
+    }
 
     if (isset($_FILES['sign']['name']) && $_FILES['sign']['name'] != "") {
         if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
@@ -55,25 +60,32 @@ try {
         }
     }
 
-    $password = sha1($post->password . $systemConfig['passwordSalt']);
+
     $data = array(
-        'user_id' => $general->generateUUID(),
+        'user_id' => !empty($userId) ? $userId : $general->generateUUID(),
         'user_name' => $post->userName,
         'email' => $post->email,
         'login_id' => $post->loginId,
         'phone_number' => $post->phoneNo,
-        'password' => $password,
-        'role_id' => $post->role,
-        'status' => (empty($post->role) ? $post->role : 'active'),
         'user_signature' => $imageName
     );
 
-    if ((!isset($userId) || $userId == '') || $aRow) {
+    if (!empty($post->status)) {
+        $data['status'] = $post->status;
+    }
+    if (!empty($post->role)) {
+        $data['role_id'] = $post->role;
+    }
+    if (!empty($post->password)) {
+        $data['password'] = sha1($post->password . $systemConfig['passwordSalt']);
+    }
+
+    if (empty($userId) || empty($aRow) || $aRow == false) {
         $id = $db->insert("user_details", $data);
     } else {
-        $userId = $aRow['user_id'];
+        $userId = $data['user_id'] = $aRow['user_id'];
         $db->update("user_details", $data);
-        $db = $db->where('user_id', $userId);
+        $db = $db->where('user_id', $data['user_id']);
         $delId = $db->delete("vl_user_facility_map");
     }
     if ($id > 0 && trim($post->selectedFacility) != '') {
