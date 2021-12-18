@@ -35,8 +35,6 @@ if (!$apiKey) {
 }
 
 try {
-    $tableName = "user_details";
-    $tableName2 = "vl_user_facility_map";
     $userQuery = "SELECT * from user_details where (user_id='" . $userId . "' OR email = '" . $post->email . "')";
     $aRow = $db->rawQuery($userQuery);
 
@@ -66,17 +64,17 @@ try {
         'phone_number' => $post->phoneNo,
         'password' => $password,
         'role_id' => $post->role,
-        'status' => 'active',
+        'status' => (empty($post->role) ? $post->role : 'active'),
         'user_signature' => $imageName
     );
 
     if ((!isset($userId) || $userId == '') || $aRow) {
-        $id = $db->insert($tableName, $data);
+        $id = $db->insert("user_details", $data);
     } else {
         $userId = $aRow['user_id'];
-        $db->update($tableName, $data);
+        $db->update("user_details", $data);
         $db = $db->where('user_id', $userId);
-        $delId = $db->delete($tableName2);
+        $delId = $db->delete("vl_user_facility_map");
     }
     if ($id > 0 && trim($post->selectedFacility) != '') {
         if ($id > 0 && trim($post->selectedFacility) != '') {
@@ -88,7 +86,7 @@ try {
                         'facility_id' => $selectedFacility[$j],
                         'user_id' => $data['user_id'],
                     );
-                    $db->insert($tableName2, $data);
+                    $db->insert("vl_user_facility_map", $data);
                 }
             }
         }

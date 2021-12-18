@@ -97,10 +97,14 @@ try {
                 }
             }
         }
-        $_SESSION['alertMsg'] = "User details saved";
+        $_SESSION['alertMsg'] = "User saved successfully!";
 
         $userType = $general->getSystemConfig('sc_user_type');
         if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $userType == 'vluser') {
+            // We don't want to end up creating admin users on VLSTS
+            $_POST['role'] = ($_POST['role'] == 1 ) ? 2 : $_POST['role']; 
+            $_POST['password'] = sha1($general->generateRandomString() . $systemConfig['passwordSalt']);
+            $_POST['status'] = 'inactive';
             $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array('post' => json_encode($_POST), 'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18));
 
