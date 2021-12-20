@@ -501,7 +501,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <th>Authorized By</th>
-                                            <td><input type="text" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Authorized By" /></td>
+                                            <td><select name="authorizedBy" id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
+                                                </select></td>
                                         </tr>
                                         <tr>
                                             <th>Authorized on</td>
@@ -1023,6 +1025,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
         $('#patientProvince').select2({
             placeholder: "Select Case State"
+        });
+        $('#authorizedBy').select2({
+            width: '100%',
+            placeholder: "Select Authorized By"
         });
 
         $('#isResultAuthorized').change(function(e) {
