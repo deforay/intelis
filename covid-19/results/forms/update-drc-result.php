@@ -47,11 +47,11 @@ $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     //check user exist in user_facility_map table
     $chkUserFcMapQry = "SELECT user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
@@ -860,6 +860,18 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                         <th>Revisado Em</td>
                                         <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Approuvé le</th>
+                                        <td>
+                                            <input type="text" name="approvedOn" id="approvedOn" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                        </td>
+                                        <th>Approuvé par</th>
+                                        <td>
+                                            <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+                                                <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_approved_by'], '-- Select --'); ?>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Le résultat est-il autorisé?</th>

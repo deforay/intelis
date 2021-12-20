@@ -48,11 +48,11 @@ $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     //check user exist in user_facility_map table
     $chkUserFcMapQry = "SELECT user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
@@ -205,7 +205,7 @@ $pResult = $db->rawQuery($pQuery);
                                 </table>
 
                                 <div class="box-header with-border sectionHeader">
-                                <h3 class="box-title">INFORMATION PATIENT</h3>&nbsp;&nbsp;&nbsp;
+                                    <h3 class="box-title">INFORMATION PATIENT</h3>&nbsp;&nbsp;&nbsp;
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
                                 </div>
@@ -893,7 +893,7 @@ $pResult = $db->rawQuery($pQuery);
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Raison du changement" title="Raison du changement"></textarea></td>
                                         </tr>
                                         <tr>
-                                        <th>Revu le</td>
+                                            <th>Revu le</td>
                                             <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revu par" title="Please enter the Revu par" /></td>
                                             <th>Revu par</th>
                                             <td>
@@ -903,7 +903,7 @@ $pResult = $db->rawQuery($pQuery);
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th>Approuvé le</th>
+                                            <th>Approuvé le</th>
                                             <td>
                                                 <input type="text" name="approvedOn" id="approvedOn" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
                                             </td>
@@ -1363,10 +1363,10 @@ $pResult = $db->rawQuery($pQuery);
         $('#labId').select2({
             placeholder: "Select Nom du laboratoire"
         });
-		$('#reviewedBy').select2({
+        $('#reviewedBy').select2({
             placeholder: "Select Revu par"
         });
-		$('#approvedBy').select2({
+        $('#approvedBy').select2({
             placeholder: "Select Approuvé par"
         });
         getfacilityProvinceDetails($("#facilityId").val());
