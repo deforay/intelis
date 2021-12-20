@@ -214,7 +214,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="Lab Manager" class="col-lg-4 control-label">Lab Manager</label>
 									<div class="col-lg-7">
-									<select name="contactPerson" id="contactPerson" class="form-control" title="Please choose Lab Manager" style="width: 100%;">
+									<select name="contactPerson" id="contactPerson" class="select2 form-control" title="Please choose Lab Manager" style="width: 100%;">
 									<?= $general->generateSelectOptions($userInfo, $facilityInfo[0]['contact_person'], '-- Select --'); ?>
 									</select>
 									</div>
@@ -689,8 +689,8 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			placeholder: 'Select Test Type',
 			width: '100%'
 		});
-		$(".select2").multipleSelect({
-			placeholder: 'Select Test Type',
+		$(".select2").select2({
+			placeholder: 'Select Lab Manager',
 			width: '150px'
 		});
 		$("#availablePlatforms").multipleSelect({
