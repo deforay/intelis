@@ -240,19 +240,19 @@ $html .= '<table style="padding:10px;">';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Labid</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ucwords($result['labName']) . '</td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ($result['sample_code']) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Province</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ucwords($result['facility_state']) . '</td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ($result['facility_state']) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Zone de santé</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ucwords($result['facility_district']) . '</td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ($result['facility_district']) . '</td>';
 $html .= '</tr>';
 
 $patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
