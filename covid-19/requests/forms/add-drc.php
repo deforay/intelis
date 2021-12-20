@@ -836,17 +836,8 @@ $pResult = $db->rawQuery($pQuery);
                                                     <option value='no'> Non </option>
                                                 </select>
                                             </td>
-                                            <th>Autorisé par</th>
-                                            <td><input type="text" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Autorisé par" title="Autorisé par" /></td>
-
-                                        </tr>
-                                        <tr>
-
-                                            <th>Autorisé le</td>
-                                            <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Autorisé le" title="Autorisé le" /></td>
                                             <th></th>
                                             <td></td>
-
                                         </tr>
                                     </table>
                                 </div>
