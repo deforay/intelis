@@ -305,7 +305,7 @@ include_once(APPLICATION_PATH . '/header.php');
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
 
 
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate','#tbSampleCollectionDate').daterangepicker({
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: 'Clear'
 				},
