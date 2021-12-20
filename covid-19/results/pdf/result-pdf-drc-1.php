@@ -73,8 +73,8 @@ class DRC_PDF extends MYPDF
             }
             if ($stamp != "") {
                 $this->SetAlpha(0.6);
-                $this->Image($stamp, 40, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
-                $this->Image($stamp, 120, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
+                $this->Image($stamp, 50, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
+                $this->Image($stamp, 140, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
             }
         }
     }
@@ -83,15 +83,10 @@ class DRC_PDF extends MYPDF
     public function Footer()
     {
         $this->writeHTML("<hr>");
-        $real = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
-        $french = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche");
-        $resultPrintedDate = date('l d F Y', strtotime($this->resultPrintedDate));
         // Set font
         $this->SetFont('helvetica', 'I', 8);
-        setlocale(LC_TIME, "fr_FR");
-        // $this->Cell(0, 10, str_replace($real, $french, $resultPrintedDate), 0, false, 'L', 0, '', 0, false, 'C', 'M');
-        // $this->Cell(0, 10, "Department de virologie", 0, false, 'C', 0, '', 0, false, 'C', 'M');
-        $this->writeHTML(str_replace($real, $french, $resultPrintedDate) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de virologie");
+        setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
+        $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de virologie");
 
         // Page number
         $this->SetFont('helvetica', '', 8);
