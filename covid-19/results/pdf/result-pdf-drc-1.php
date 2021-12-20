@@ -39,18 +39,17 @@ class DRC_PDF extends MYPDF
                 $this->writeHTMLCell(0, 0, 0, 15, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
             }
             $this->SetFont('helvetica', '', 10);
-            $this->SetTextColor(0, 0, 250);
-            $this->writeHTMLCell(0, 0, 0, 20, '<i>Département de virologie</i>', 0, 0, 0, true, 'C', true);
-            $this->SetTextColor(0, 0, 0);
+            $this->writeHTMLCell(0, 0, 0, 20, 'Département de virologie', 0, 0, 0, true, 'C', true);
             $this->SetFont('helvetica', 'U', 11);
             $this->writeHTMLCell(0, 0, 0, 28, 'Laboratoire National de Référence Pour la Grippe et les virus respiratoires', 0, 0, 0, true, 'C', true);
 
-            $this->SetFont('helvetica', 'B', 12);
+            $this->SetFont('helvetica', 'B,U', 12);
             $this->writeHTMLCell(0, 0, 0, 36, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C', true);
-            $this->SetFont('helvetica', 'U', 12);
+            $this->SetFont('helvetica', '', 12);
             $this->writeHTMLCell(0, 0, 0, 44, 'TESTES AU nCOV-19 PAR RT-PCR en temps réel n°...', 0, 0, 0, true, 'C', true);
 
-            $this->writeHTMLCell(0, 0, 10, 52, '<hr>', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 10, 49, '<hr>', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 10, 50, '<hr>', 0, 0, 0, true, 'C', true);
 
             // Define the path to the image that you want to use as watermark.
             $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-" . $this->logo;
@@ -78,26 +77,9 @@ class DRC_PDF extends MYPDF
             }
         }
     }
-
-    // Page footer
-    public function Footer()
-    {
-        $this->writeHTML("<hr>");
-        $real = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
-        $french = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche");
-        $resultPrintedDate = date('l d F Y', strtotime($this->resultPrintedDate));
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        setlocale(LC_TIME, "fr_FR");
-        // $this->Cell(0, 10, str_replace($real, $french, $resultPrintedDate), 0, false, 'L', 0, '', 0, false, 'C', 'M');
-        // $this->Cell(0, 10, "Department de virologie", 0, false, 'C', 0, '', 0, false, 'C', 'M');
-        $this->writeHTML(str_replace($real, $french, $resultPrintedDate) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de virologie");
-
-        // Page number
-        $this->SetFont('helvetica', '', 8);
-        $this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
-    }
 }
+
+
 $users = new \Vlsm\Models\Users();
 
 // create new PDF document
@@ -108,18 +90,7 @@ if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_
     $logoPrintInPdf = $arr['logo'];
 }
 
-$resultPrintedDate = '';
-$resultPrintedTime = '';
-if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-    $expStr = explode(" ", $result['result_printed_datetime']);
-    $resultPrintedDate = $general->humanDateFormat($expStr[0]);
-    $resultPrintedTime = $expStr[1];
-} else {
-    $expStr = explode(" ", $currentTime);
-    $resultPrintedDate = $general->humanDateFormat($expStr[0]);
-    $resultPrintedTime = $expStr[1];
-}
-$pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $resultPrintedDate);
+$pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo);
 // set document information
 $pdf->SetCreator('VLSM');
 $pdf->SetTitle('Covid-19 Rapport du patient');
@@ -139,7 +110,7 @@ $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 // set margins
 $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 24, PDF_MARGIN_RIGHT);
 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin("20");
+$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 // set auto page breaks
 $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
@@ -200,6 +171,17 @@ if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample
     $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
     $sampleReceivedDate = $general->humanDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
+}
+$sampleDispatchDate = '';
+$sampleDispatchTime = '';
+if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+    $expStr = explode(" ", $result['result_printed_datetime']);
+    $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
+    $sampleDispatchTime = $expStr[1];
+} else {
+    $expStr = explode(" ", $currentTime);
+    $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
+    $sampleDispatchTime = $expStr[1];
 }
 
 if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
@@ -373,13 +355,13 @@ $html .= '<tr>';
 $html .= '<td colspan="3" style="line-height:14px;font-size:11px;text-align:center;">Chef de l&lsquo;unité Virus Respiratories</td>';
 $html .= '</tr>';
 
-/* $html .= '<tr>';
+$html .= '<tr>';
 $html .= '<td width="100%" style="line-height:20px;border-bottom:2px solid #d3d3d3;" colspan="3"></td>';
 $html .= '</tr>';
-$html .= '<tr>';
-$html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:left;color:#545252;" colspan="3"><br><br>' . str_replace($real, $french, $resultPrintedDate) . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Department de virologie</i></td>';
-$html .= '</tr>'; */
 
+$html .= '<tr>';
+$html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:left;color:#545252;" colspan="3">' . $sampleDispatchDate . ' ' . $sampleDispatchTime . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Department de virologie</td>';
+$html .= '</tr>';
 $html .= '</table>';
 $html .= '</td></tr></table>';
 
