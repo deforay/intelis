@@ -33,24 +33,24 @@ class DRC_PDF extends MYPDF
             $this->SetFont('helvetica', 'B', 12);
             $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C', true);
             $this->SetFont('helvetica', 'B', 10);
-            $this->writeHTMLCell(0, 0, 0, 10, $this->text, 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C', true);
             if (trim($this->lab) != '') {
                 $this->SetFont('helvetica', 'B', 11);
-                $this->writeHTMLCell(0, 0, 0, 15, ($this->lab), 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 16, ($this->lab), 0, 0, 0, true, 'C', true);
             }
             $this->SetFont('helvetica', '', 10);
             $this->SetTextColor(0, 0, 250);
-            $this->writeHTMLCell(0, 0, 0, 20, '<i>Département de virologie</i>', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 0, 22, '<i>Département de Virologie</i>', 0, 0, 0, true, 'C', true);
             $this->SetTextColor(0, 0, 0);
             $this->SetFont('helvetica', 'U', 11);
-            $this->writeHTMLCell(0, 0, 0, 28, 'Laboratoire National de Référence Pour la Grippe et les virus respiratoires', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 0, 27, 'Laboratoire National de Référence Pour la Grippe et les virus respiratoires', 0, 0, 0, true, 'C', true);
 
-            $this->SetFont('helvetica', 'B', 12);
+            $this->SetFont('helvetica', 'B', 10);
             $this->writeHTMLCell(0, 0, 0, 36, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C', true);
-            $this->SetFont('helvetica', 'U', 12);
-            $this->writeHTMLCell(0, 0, 0, 44, 'TESTES AU nCOV-19 PAR RT-PCR en temps réel n°...', 0, 0, 0, true, 'C', true);
+            $this->SetFont('helvetica', 'U', 10);
+            $this->writeHTMLCell(0, 0, 0, 42, 'TESTES AU nCOV-19 PAR RT-PCR en temps réel n°........', 0, 0, 0, true, 'C', true);
 
-            $this->writeHTMLCell(0, 0, 10, 52, '<hr>', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 10, 48, '<hr>', 0, 0, 0, true, 'C', true);
 
             // Define the path to the image that you want to use as watermark.
             $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-" . $this->logo;
@@ -65,7 +65,7 @@ class DRC_PDF extends MYPDF
             // Render the image
             if ($img_file != "") {
                 $this->SetAlpha(0.1);
-                $this->Image($img_file, 20, 25, 150, null, '', '', '', false, 300, 'M', false, false, 0);
+                $this->Image($img_file, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);
             }
             $stamp = "";
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png')) {
@@ -86,7 +86,7 @@ class DRC_PDF extends MYPDF
         // Set font
         $this->SetFont('helvetica', 'I', 8);
         setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
-        $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de virologie");
+        $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de Virologie");
 
         // Page number
         $this->SetFont('helvetica', '', 8);
