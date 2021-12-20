@@ -873,24 +873,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </select>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th>Le résultat est-il autorisé?</th>
-                                        <td>
-                                            <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control isRequired" title="Le résultat est-il autorisé?" style="width:100%">
-                                                <option value="">-- Sélectionner --</option>
-                                                <option value='yes' <?php echo ($covid19Info['is_result_authorised'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
-                                                <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
-                                            </select>
-                                        </td>
-                                        <th>Autorisé par</th>
-                                        <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control isRequired" placeholder="Autorisé par" title="Autorisé par" /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Autorisé le</td>
-                                        <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control isRequired date" placeholder="Autorisé le" title="Autorisé le" /></td>
-                                        <th></th>
-                                        <td></td>
-                                    </tr>
                                 </table>
                             </div>
                         </div>
