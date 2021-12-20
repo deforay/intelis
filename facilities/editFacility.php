@@ -495,7 +495,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								</div>
 							</div>
 						</div>
-						<div class="col-md-6">
+						<!-- <div class="col-md-6">
 							<div class="form-group">
 								<label for="stampLogo" class="col-lg-4 control-label">Logo Image </label>
 								<div class="col-lg-8">
@@ -527,7 +527,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> -->
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="" class="col-lg-4 control-label">Header Text</label>
