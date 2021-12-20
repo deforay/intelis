@@ -15,7 +15,7 @@ $receivedCounter = 0;
 $processedCounter = 0;
 
 $data = array();
-$data[] = "lastUpdatedDuration=30m";
+$data[] = "lastUpdatedDuration=90m";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=LEhPhsbgfFB";
@@ -152,7 +152,9 @@ foreach ($trackedEntityInstances as $tracker) {
             $lab = $db->getOne("facility_details");
             // echo "<pre>";var_dump($formData['lab_id']);echo "</pre>";
             // echo "<pre>";var_dump($lab);echo "</pre>";
-            $formData['lab_id'] = $lab['facility_id'];
+            if (!empty($lab)) {
+                $formData['lab_id'] = $lab['facility_id'];
+            }
         } else {
             $formData['lab_id'] = null;
         }
