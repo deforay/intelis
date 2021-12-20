@@ -805,7 +805,7 @@ $pResult = $db->rawQuery($pQuery);
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th>Revu le</td>
+                                            <th>Revu le</td>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revu le" title="Please enter the Revu le" /></td>
                                             <th>Revu par</th>
                                             <td>
@@ -815,11 +815,11 @@ $pResult = $db->rawQuery($pQuery);
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th>Approuvé le</th>
+                                            <th>Approuvé le</th>
                                             <td>
                                                 <input type="text" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
                                             </td>
-                                        <th>Approuvé par</th>
+                                            <th>Approuvé par</th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
@@ -1118,6 +1118,7 @@ $pResult = $db->rawQuery($pQuery);
         }
         $.unblockUI();
     }
+
     function setPatientDetails(pDetails) {
         patientArray = pDetails.split("##");
         //   console.log(patientArray);
@@ -1136,6 +1137,7 @@ $pResult = $db->rawQuery($pQuery);
             $("#patientDistrict").val(patientArray[15]).trigger('change');
         }, 3000);
     }
+
     function sampleCodeGeneration() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
@@ -1257,10 +1259,10 @@ $pResult = $db->rawQuery($pQuery);
         $('#labId').select2({
             placeholder: "Select Nom du laboratoire"
         });
-		$('#reviewedBy').select2({
+        $('#reviewedBy').select2({
             placeholder: "Select Revu par"
         });
-		$('#approvedBy').select2({
+        $('#approvedBy').select2({
             placeholder: "Select Approuvé par"
         });
         // $('#district').select2({

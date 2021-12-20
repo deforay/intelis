@@ -391,7 +391,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
+							<!-- <div class="col-md-6">
 								<div class="form-group">
 									<label for="stampLogo" class="col-lg-4 control-label">Stamp Image </label>
 									<div class="col-lg-8">
@@ -411,7 +411,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="" class="col-lg-4 control-label">Header Text</label>
