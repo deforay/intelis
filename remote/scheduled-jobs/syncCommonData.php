@@ -284,6 +284,10 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                     }
                     if (!empty($tableData['facility_logo'])) {
                         mkdir($labLogoFolder, 0777, true);
+                        $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" .$tableData['facility_logo'];
+                        $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
+                        file_put_contents($localFileLocation, file_get_contents($remoteFileUrl));
+
                         $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
                         $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
                         file_put_contents($localFileLocation, file_get_contents($remoteFileUrl));

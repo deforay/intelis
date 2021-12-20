@@ -53,7 +53,7 @@ class DRC_PDF extends MYPDF
             $this->writeHTMLCell(0, 0, 10, 52, '<hr>', 0, 0, 0, true, 'C', true);
 
             // Define the path to the image that you want to use as watermark.
-            $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo;
+            $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-" . $this->logo;
             if (!empty($this->logo) && file_exists($img_file)) {
             } else if (!empty($this->logo) && UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo) {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -258,19 +258,19 @@ $html .= '<table style="padding:10px;">';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Labid</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ucwords($result['labName']) . '</td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ($result['sample_code']) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Province</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ucwords($result['facility_state']) . '</td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ($result['facility_state']) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Zone de santé</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ucwords($result['facility_district']) . '</td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . ($result['facility_district']) . '</td>';
 $html .= '</tr>';
 
 $patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
