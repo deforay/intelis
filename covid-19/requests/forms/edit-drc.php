@@ -903,9 +903,13 @@ $pResult = $db->rawQuery($pQuery);
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Approuvé le</th>
+                                            <th>Le résultat est-il autorisé?</th>
                                             <td>
-                                                <input type="text" name="approvedOn" id="approvedOn" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                                <select name="isResultAuthorized" id="isResultAuthorized" class="form-control" title="Le résultat est-il autorisé?" style="width:100%">
+                                                    <option value="">-- Sélectionner --</option>
+                                                    <option value='yes' <?php echo ($covid19Info['is_result_authorised'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
+                                                    <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
+                                                </select>
                                             </td>
                                             <th>Approuvé par</th>
                                             <td>
@@ -913,6 +917,14 @@ $pResult = $db->rawQuery($pQuery);
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_approved_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Approuvé le</th>
+                                            <td>
+                                                <input type="text" name="approvedOn" id="approvedOn" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                            </td>
+                                            <th></th>
+                                            <td></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -1282,7 +1294,7 @@ $pResult = $db->rawQuery($pQuery);
             return false;
         }
         if ($('#isResultAuthorized').val() != "yes") {
-            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
+            $('#approvedBy,#approvedOn').removeClass('isRequired');
         }
         /* if ($('#medicalHistory').val() == "yes") {
             if ($('.comorbidity-select :selected').length > 0) {
@@ -1516,14 +1528,14 @@ $pResult = $db->rawQuery($pQuery);
 
     function checkIsResultAuthorized() {
         if ($('#isResultAuthorized').val() == 'yes') {
-            $('#authorizedBy,#authorizedOn').prop('disabled', false);
-            $('#authorizedBy,#authorizedOn').removeClass('disabled');
-            $('#authorizedBy,#authorizedOn').addClass('isRequired');
+            $('#approvedBy,#approvedOn').prop('disabled', false);
+            $('#approvedBy,#approvedOn').removeClass('disabled');
+            $('#approvedBy,#approvedOn').addClass('isRequired');
         } else {
-            $('#authorizedBy,#authorizedOn').val('');
-            $('#authorizedBy,#authorizedOn').prop('disabled', true);
-            $('#authorizedBy,#authorizedOn').addClass('disabled');
-            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
+            $('#approvedBy,#approvedOn').val('');
+            $('#approvedBy,#approvedOn').prop('disabled', true);
+            $('#approvedBy,#approvedOn').addClass('disabled');
+            $('#approvedBy,#approvedOn').removeClass('isRequired');
         }
     }
 

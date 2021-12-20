@@ -858,13 +858,17 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_reviewed_by'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th>Revu le</td>
+                                        <th>Revisado Em</td>
                                         <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
                                     </tr>
                                     <tr>
-                                        <th>Approuvé le</th>
+                                        <th>Le résultat est-il autorisé?</th>
                                         <td>
-                                            <input type="text" name="approvedOn" id="approvedOn" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                            <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control isRequired" title="Le résultat est-il autorisé?" style="width:100%">
+                                                <option value="">-- Sélectionner --</option>
+                                                <option value='yes' <?php echo ($covid19Info['is_result_authorised'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
+                                                <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
+                                            </select>
                                         </td>
                                         <th>Approuvé par</th>
                                         <td>
@@ -872,6 +876,14 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_approved_by'], '-- Select --'); ?>
                                             </select>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Approuvé le</th>
+                                        <td>
+                                            <input type="text" name="approvedOn" id="approvedOn" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                        </td>
+                                        <th></th>
+                                        <td></td>
                                     </tr>
                                 </table>
                             </div>
@@ -999,10 +1011,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
     function validateNow() {
         if ($('#isResultAuthorized').val() != "yes" && $('#result').val() == "") {
-            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
+            $('#approvedBy,#approvedOn').removeClass('isRequired');
         } else {
             $('#isResultAuthorized').val('yes');
-            $('#authorizedBy,#authorizedOn').addClass('isRequired');
+            $('#approvedBy,#approvedOn').addClass('isRequired');
         }
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
@@ -1248,14 +1260,14 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
     function checkIsResultAuthorized() {
         if ($('#isResultAuthorized').val() == 'yes') {
-            $('#authorizedBy,#authorizedOn').prop('disabled', false);
-            $('#authorizedBy,#authorizedOn').removeClass('disabled');
-            $('#authorizedBy,#authorizedOn').addClass('isRequired');
+            $('#approvedBy,#approvedOn').prop('disabled', false);
+            $('#approvedBy,#approvedOn').removeClass('disabled');
+            $('#approvedBy,#approvedOn').addClass('isRequired');
         } else {
-            $('#authorizedBy,#authorizedOn').val('');
-            $('#authorizedBy,#authorizedOn').prop('disabled', true);
-            $('#authorizedBy,#authorizedOn').addClass('disabled');
-            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
+            $('#approvedBy,#approvedOn').val('');
+            $('#approvedBy,#approvedOn').prop('disabled', true);
+            $('#approvedBy,#approvedOn').addClass('disabled');
+            $('#approvedBy,#approvedOn').removeClass('isRequired');
         }
     }
 

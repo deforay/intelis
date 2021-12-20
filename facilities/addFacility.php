@@ -14,7 +14,7 @@ $userResult = $usersModel->getActiveUsers();
 
 $userInfo = array();
 foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ucwords($user['user_name']);
+	$userInfo[$user['user_id']] = ucwords($user['user_name']);
 }
 
 $cntId = $general->reportPdfNames();
@@ -145,9 +145,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								<div class="form-group">
 									<label for="Lab Manager" class="col-lg-4 control-label">Lab Manager</label>
 									<div class="col-lg-7">
-									<select name="contactPerson" id="contactPerson" class="select2 form-control" title="Please choose the Lab Manager" style="width: 100%;">
-                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-                                  </select>
+										<select name="contactPerson" id="contactPerson" class="select2 form-control" title="Please choose the Lab Manager" style="width: 100%;">
+											<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+										</select>
 									</div>
 								</div>
 							</div>
@@ -391,7 +391,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
+							<!-- <div class="col-md-6">
 								<div class="form-group">
 									<label for="stampLogo" class="col-lg-4 control-label">Stamp Image </label>
 									<div class="col-lg-8">
@@ -411,7 +411,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="" class="col-lg-4 control-label">Header Text</label>
