@@ -17,6 +17,10 @@ $initOptionSets = array(
     'testingLabs' => 'qrroYEzTQd3',
 );
 
+$_SESSION['DHIS2_HEP_PROVINCES'] = array();
+$_SESSION['DHIS2_HEP_DISTRICTS'] = array();
+$_SESSION['DHIS2_VL_TEST_REASONS'] = array();
+
 foreach ($initOptionSets as $t => $id) {
     $data = array();
     $data[] = "fields=options[:all]";
@@ -28,20 +32,20 @@ foreach ($initOptionSets as $t => $id) {
 
     $response = json_decode($response, true);
     if (!empty($response) && $t == 'province') {
-        $_SESSION['DHIS2_HEP_PROVINCES'] = array();
+        
 
         foreach ($response['options'] as $province) {
             $_SESSION['DHIS2_HEP_PROVINCES'][$province['code']] = $province['name'];
         }
     } else if (!empty($response) && $t == 'district') {
 
-        $_SESSION['DHIS2_HEP_DISTRICTS'] = array();
+        
         foreach ($response['options'] as $district) {
             $_SESSION['DHIS2_HEP_DISTRICTS'][$district['code']] = $district['name'];
         }
     } else if (!empty($response) && $t == 'vlTestReasons') {
 
-        $_SESSION['DHIS2_VL_TEST_REASONS'] = array();
+        
         foreach ($response['options'] as $vlTestReasons) {
             $_SESSION['DHIS2_VL_TEST_REASONS'][$vlTestReasons['code']] = $vlTestReasons['name'];
         }

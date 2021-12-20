@@ -79,6 +79,9 @@ class DRC_PDF extends MYPDF
     }
 }
 
+
+$users = new \Vlsm\Models\Users();
+
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
@@ -335,16 +338,21 @@ $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:center;" colspan="3"><b>Fait a Kinshasa, le :</b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
 $html .= '</tr>';
 
+
+
+$labManagerRes = $users->getUserInfo($result['lab_manager'], 'user_name');
+if ($labManagerRes) {
+    $labManager = $labManagerRes['user_name'];
+} else {
+    $labManager = "";
+}
+
 $html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:11px;text-align:center;">Fait à Kinshasa, le :</td>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;font-weight:bold;"><br>' . $labManager . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;font-weight:bold;">' . ucwords($result['lab_manager']) . '</td>';
-$html .= '</tr>';
-
-$html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:11px;text-align:center;">Chef de I&lsquo;unité Virus Respiratories</td>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:11px;text-align:center;">Chef de l&lsquo;unité Virus Respiratories</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
