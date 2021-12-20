@@ -36,7 +36,7 @@ class DRC_PDF extends MYPDF
             $this->writeHTMLCell(0, 0, 0, 10, $this->text, 0, 0, 0, true, 'C', true);
             if (trim($this->lab) != '') {
                 $this->SetFont('helvetica', 'B', 11);
-                $this->writeHTMLCell(0, 0, 0, 15, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 15, ($this->lab), 0, 0, 0, true, 'C', true);
             }
             $this->SetFont('helvetica', '', 10);
             $this->SetTextColor(0, 0, 250);
@@ -73,8 +73,8 @@ class DRC_PDF extends MYPDF
             }
             if ($stamp != "") {
                 $this->SetAlpha(0.6);
-                $this->Image($stamp, 40, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
-                $this->Image($stamp, 120, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
+                $this->Image($stamp, 40, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
+                $this->Image($stamp, 145, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
             }
         }
     }
@@ -83,15 +83,10 @@ class DRC_PDF extends MYPDF
     public function Footer()
     {
         $this->writeHTML("<hr>");
-        $real = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
-        $french = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche");
-        $resultPrintedDate = date('l d F Y', strtotime($this->resultPrintedDate));
         // Set font
         $this->SetFont('helvetica', 'I', 8);
-        setlocale(LC_TIME, "fr_FR");
-        // $this->Cell(0, 10, str_replace($real, $french, $resultPrintedDate), 0, false, 'L', 0, '', 0, false, 'C', 'M');
-        // $this->Cell(0, 10, "Department de virologie", 0, false, 'C', 0, '', 0, false, 'C', 'M');
-        $this->writeHTML(str_replace($real, $french, $resultPrintedDate) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de virologie");
+        setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
+        $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de virologie");
 
         // Page number
         $this->SetFont('helvetica', '', 8);
@@ -249,7 +244,7 @@ if ($result['result_status'] == '4') {
 if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
     $smileyContent = '';
 }
-$html = '';
+$html = '<br><br><br>';
 $html .= '<table style="padding:0px 2px 2px 2px;">';
 $html .= '<tr>';
 $html .= '<td>';
@@ -353,7 +348,10 @@ if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_test
     }
 }
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:center;" colspan="3"><b>Fait a Kinshasa, le :</b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
+$html .= '<td style="line-height:20px;"></td>';
+$html .= '</tr>';
+$html .= '<tr>';
+$html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:center;" colspan="3"><br><br><b>Fait a Kinshasa, le :</b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
 $html .= '</tr>';
 
 
@@ -366,12 +364,9 @@ if ($labManagerRes) {
 }
 
 $html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;font-weight:bold;"><br>' . $labManager . '</td>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;"><br><br><strong>' . $labManager . '</strong><br>Chef de l&lsquo;unité Virus Respiratories</td>';
 $html .= '</tr>';
 
-$html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:11px;text-align:center;">Chef de l&lsquo;unité Virus Respiratories</td>';
-$html .= '</tr>';
 
 /* $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:20px;border-bottom:2px solid #d3d3d3;" colspan="3"></td>';
