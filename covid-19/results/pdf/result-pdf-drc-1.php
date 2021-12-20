@@ -73,8 +73,8 @@ class DRC_PDF extends MYPDF
             }
             if ($stamp != "") {
                 $this->SetAlpha(0.6);
-                $this->Image($stamp, 50, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
-                $this->Image($stamp, 140, 125, 50, null, '', '', '', false, 300, '', false, false, 0);
+                $this->Image($stamp, 30, 150, 50, null, '', '', '', false, 300, '', false, false, 0);
+                $this->Image($stamp, 115, 150, 50, null, '', '', '', false, 300, '', false, false, 0);
             }
         }
     }
@@ -347,6 +347,9 @@ if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_test
         $html .= '</tr>';
     }
 }
+$html .= '<tr>';
+$html .= '<td style="line-height:20px;"></td>';
+$html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:center;" colspan="3"><b>Fait a Kinshasa, le :</b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
 $html .= '</tr>';
