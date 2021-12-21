@@ -66,12 +66,9 @@ class DRC_PDF extends MYPDF
         $this->writeHTML("<hr>");
         // Set font
         $this->SetFont('helvetica', 'I', 8);
-        setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
-        $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de virologie");
-
-        // Page number
-        $this->SetFont('helvetica', '', 8);
-        $this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
+        $this->writeHTMLCell(0, 0, 10, 280, 'N 29 Av des Orchidees O. le volcan C. de Goma Tel: +243 817933409 +234 993549796', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 10, 285, 'E-mail : info@inrbgoma.com, inrbgoma@gmail.com', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 10, 290, 'inrbgoma.com', 0, 0, false, true, 'C', true);
     }
 }
 
@@ -100,7 +97,7 @@ $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 // set margins
 $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 15, PDF_MARGIN_RIGHT);
 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+$pdf->SetFooterMargin(20);
 
 // set auto page breaks
 $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
@@ -227,7 +224,7 @@ $html .= '<tr>';
 $html .= '<td style="line-height:14px;font-size:12px;text-align:center;font-weight:bold;color:red;">SERVICE COVID-VOYAGE</td>';
 $html .= '</tr>';
 $html .= '<tr>';
-$html .= '<td style="line-height:14px;font-size:12px;text-align:center;font-weight:bold;">A lentree du pays, le test Covid-19 est obligatoire et fixe a 45$. Morci de ne pas oublier<br> When entering the country, the Covid-19 test is mandatory and costs 45$. Please do not forget</td>';
+$html .= '<td style="line-height:14px;font-size:12px;text-align:center;font-weight:bold;">A l&lsquo;entrée du pays, le test Covid-19 est obligatoire et fixé à 45$. Morci de ne pas oublier<br> When entering the country, the Covid-19 test is mandatory and costs 45$. Please do not forget</td>';
 $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td>';
@@ -235,76 +232,73 @@ $html .= '<table style="padding:10px;">';
 
 $html .= '<tr>';
 $html .= '<td colspan="2" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">INFORMATION SUR LE VOYAGEUR<br><span style="font-size:10px;font-weight:normal;">TRAVELLERS INFORMATION</span></td>';
-$html .= '<td style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">ID LABO : ' . ucwords($result['labName']) . ' /21<br><span style="font-size:10px;font-weight:normal;">LAB ID</span></td>';
-$html .= '</tr>';
-
-$html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Noms<br><span style="font-size:10px;font-weight:normal;">Full Name</span></td>';
-$html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;">' . $patientFname . ' ' . $patientLname . '</td>';
-$html .= '</tr>';
-
-$html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Age<br><span style="font-size:10px;font-weight:normal;">Age</span></td>';
-$html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;">' . $general->humanDateFormat($result['patient_dob']) . '/' . $age . ucwords($result['facility_state']) . '</td>';
-$html .= '</tr>';
-
-$html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Sexe<br><span style="font-size:10px;font-weight:normal;">Gender</span></td>';
-$html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . ucwords($result['facility_district']) . '</td>';
+$html .= '<td style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">ID LABO : <u>' . ucwords($result['labName']) . '</u> /21<br><span style="font-size:10px;font-weight:normal;">LAB ID</span></td>';
 $html .= '</tr>';
 
 $patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
 $patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
 $html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Pays<br><span style="font-size:10px;font-weight:normal;">Country</span></td>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Noms<br><span style="font-size:10px;font-weight:normal;">Full Name</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;"></td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $patientFname . ' ' . $patientLname . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Ville<br><span style="font-size:10px;font-weight:normal;">City</span></td>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Age<br><span style="font-size:10px;font-weight:normal;">Age</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $age . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Adresse<br><span style="font-size:10px;font-weight:normal;">Address</span></td>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Sexe<br><span style="font-size:10px;font-weight:normal;">Gender</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['patient_address'] . '</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">N Passeport<br><span style="font-size:10px;font-weight:normal;">Passport N</span></td>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Pays<br><span style="font-size:10px;font-weight:normal;">Country</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['facility_district'] . '</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['patient_nationality'] . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Date & Heure de Prelevement<br><span style="font-size:10px;font-weight:normal;">Sample collection date & time</span></td>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Ville<br><span style="font-size:10px;font-weight:normal;">City</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['patient_phone_number'] . '</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . ucwords($result['patient_city']) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Date & Heure d analyse<br><span style="font-size:10px;font-weight:normal;">Sample Testing date & time</span></td>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Adresse<br><span style="font-size:10px;font-weight:normal;">Address</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['reasonForTesting'] . '</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['patient_address'] . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="45%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Resultats RT-PCR SARS CoV-2<br><span style="font-size:10px;font-weight:normal;">Results of RT-PCR SARS Cov-2</span></td>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">N Passeport<br><span style="font-size:10px;font-weight:normal;">Passport N</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;">' . ucwords($result['facility_name']) . '</td>';
+$html .= '<td width="20%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['patient_passport_number'] . '</td>';
+$html .= '<td width="20%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Telephone<br><span style="font-size:10px;font-weight:normal;">Telephone Number</span></td>';
+$html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
+$html .= '<td width="15%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['patient_phone_number'] . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;" colspan="2"><b>Resultats SARS-CoV-2 &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $covid19Results[$result['result']] . '</td>';
-// $html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Date & Heure de Prélevement<br><span style="font-size:10px;font-weight:normal;">Sample collection date & time</span></td>';
+$html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['sample_collection_date'] . $sampleCollectionTime . '</td>';
 $html .= '</tr>';
 
+$html .= '<tr>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Date & Heure d analyse<br><span style="font-size:10px;font-weight:normal;">Sample Testing date & time</span></td>';
+$html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+$html .= '</tr>';
+
+$html .= '<tr>';
+$html .= '<td width="40%" style="line-height:14px;font-size:15px;text-align:left;font-weight:bold;">Résultats RT-PCR SARS CoV-2<br><span style="font-size:10px;font-weight:normal;">Results of RT-PCR SARS Cov-2</span></td>';
+$html .= '<td width="5%" style="line-height:14px;font-size:15px;text-align:center;">:</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:15px;text-align:left;">' . $covid19Results[$result['result']] . '</td>';
+$html .= '</tr>';
 if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
     $html .= '<tr>';
     $html .= '<td style="line-height:14px;font-size:12px;text-align:left;" colspan="3"><b>Tests de Controle :</b></td>';
@@ -312,13 +306,13 @@ if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_test
 
     foreach ($covid19TestInfo as $indexKey => $rows) {
         $html .= '<tr>';
-        $html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;" colspan="2"><b>Resultats ' . ($indexKey + 1) . 'éme Prélévement &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords($covid19TestInfo[$indexKey]['result']) . '</td>';
-        $html .= '<td width="50%" style="line-height:14px;font-size:12px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $general->humanDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']) . '</td>';
+        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;" colspan="2"><b>Resultats ' . ($indexKey + 1) . 'éme Prélévement &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords($covid19TestInfo[$indexKey]['result']) . '</td>';
+        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $general->humanDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']) . '</td>';
         $html .= '</tr>';
     }
 }
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:14px;font-size:12px;text-align:center;" colspan="3"><b>Fait a Kinshasa, le :</b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
+$html .= '<td width="100%" style="line-height:14px;font-size:12px;text-align:center;" colspan="3"><b>Fait à Goma, le :</b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
 $html .= '</tr>';
 
 
@@ -335,11 +329,11 @@ $html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:cent
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;">Chef de l&lsquo;unité Virus Respiratories</td>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;">Médecin Virologue<br><span style="font-size:10px;font-weight:normal;">Medical Virologist</span></td>';
 $html .= '</tr>';
-
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:20px;border-bottom:2px solid #d3d3d3;" colspan="3"></td>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;"><br><br><br><br><br><br>
+Validité: 14 jours en DRC, 3 jours à l&lsquo;étranger<br><span style="font-size:10px;font-weight:normal;">Validity: 14 days inside DRC, 3 days abroad<br>Réf: Arrété Min. N 1250/CAB/MIN/SPHP/32/DC/GSK/2021 du 26 Aout 2021</span></td>';
 $html .= '</tr>';
 $html .= '</table>';
 $html .= '</td></tr></table>';
@@ -361,7 +355,8 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $pdf->writeHTML($html);
     $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
-        $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 20, 220, 30, 30, $style, 'N');
+        $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 20, 235, 30, 30, $style, 'N');
+        $pdf->writeHTML('<span style="font-size:12px;font-weight:normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scan me</span>');
     }
     $pdf->lastPage();
     $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
