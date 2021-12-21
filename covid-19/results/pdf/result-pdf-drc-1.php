@@ -48,7 +48,7 @@ class DRC_PDF extends MYPDF
             $this->SetFont('helvetica', 'B', 10);
             $this->writeHTMLCell(0, 0, 0, 36, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C', true);
             $this->SetFont('helvetica', 'U', 10);
-            $this->writeHTMLCell(0, 0, 0, 42, 'TESTES AU nCOV-19 PAR RT-PCR en temps réel n°........', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 0, 42, 'TESTES AU nCOV-19 PAR RT-PCR en temps réel', 0, 0, 0, true, 'C', true);
 
             $this->writeHTMLCell(0, 0, 10, 48, '<hr>', 0, 0, 0, true, 'C', true);
 
@@ -279,7 +279,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Age</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' .  $age . '</td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' .  (!empty($age) ? $age. ' ans' : '') . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
