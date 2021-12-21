@@ -33,24 +33,24 @@ class DRC_PDF extends MYPDF
             $this->SetFont('helvetica', 'B', 12);
             $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C', true);
             $this->SetFont('helvetica', 'B', 10);
-            $this->writeHTMLCell(0, 0, 0, 10, $this->text, 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C', true);
             if (trim($this->lab) != '') {
                 $this->SetFont('helvetica', 'B', 11);
-                $this->writeHTMLCell(0, 0, 0, 15, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 16, ($this->lab), 0, 0, 0, true, 'C', true);
             }
             $this->SetFont('helvetica', '', 10);
             $this->SetTextColor(0, 0, 250);
-            $this->writeHTMLCell(0, 0, 0, 20, '<i>Département de virologie</i>', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 0, 22, '<i>Département de Virologie</i>', 0, 0, 0, true, 'C', true);
             $this->SetTextColor(0, 0, 0);
             $this->SetFont('helvetica', 'U', 11);
-            $this->writeHTMLCell(0, 0, 0, 28, 'Laboratoire National de Référence Pour la Grippe et les virus respiratoires', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 0, 27, 'Laboratoire National de Référence Pour la Grippe et les virus respiratoires', 0, 0, 0, true, 'C', true);
 
-            $this->SetFont('helvetica', 'B', 12);
+            $this->SetFont('helvetica', 'B', 10);
             $this->writeHTMLCell(0, 0, 0, 36, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C', true);
-            $this->SetFont('helvetica', 'U', 12);
-            $this->writeHTMLCell(0, 0, 0, 44, 'TESTES AU nCOV-19 PAR RT-PCR en temps réel n°...', 0, 0, 0, true, 'C', true);
+            $this->SetFont('helvetica', 'U', 10);
+            $this->writeHTMLCell(0, 0, 0, 42, 'TESTES AU nCOV-19 PAR RT-PCR en temps réel n°........', 0, 0, 0, true, 'C', true);
 
-            $this->writeHTMLCell(0, 0, 10, 52, '<hr>', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 10, 48, '<hr>', 0, 0, 0, true, 'C', true);
 
             // Define the path to the image that you want to use as watermark.
             $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-" . $this->logo;
@@ -65,7 +65,7 @@ class DRC_PDF extends MYPDF
             // Render the image
             if ($img_file != "") {
                 $this->SetAlpha(0.1);
-                $this->Image($img_file, 20, 25, 150, null, '', '', '', false, 300, 'M', false, false, 0);
+                $this->Image($img_file, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);
             }
             $stamp = "";
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png')) {
@@ -73,8 +73,8 @@ class DRC_PDF extends MYPDF
             }
             if ($stamp != "") {
                 $this->SetAlpha(0.6);
-                $this->Image($stamp, 30, 150, 50, null, '', '', '', false, 300, '', false, false, 0);
-                $this->Image($stamp, 115, 150, 50, null, '', '', '', false, 300, '', false, false, 0);
+                $this->Image($stamp, 40, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
+                $this->Image($stamp, 145, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
             }
         }
     }
@@ -86,7 +86,7 @@ class DRC_PDF extends MYPDF
         // Set font
         $this->SetFont('helvetica', 'I', 8);
         setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
-        $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de virologie");
+        $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de Virologie");
 
         // Page number
         $this->SetFont('helvetica', '', 8);
@@ -244,7 +244,7 @@ if ($result['result_status'] == '4') {
 if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
     $smileyContent = '';
 }
-$html = '';
+$html = '<br><br><br>';
 $html .= '<table style="padding:0px 2px 2px 2px;">';
 $html .= '<tr>';
 $html .= '<td>';
@@ -351,7 +351,7 @@ $html .= '<tr>';
 $html .= '<td style="line-height:20px;"></td>';
 $html .= '</tr>';
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:center;" colspan="3"><b>Fait a Kinshasa, le :</b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
+$html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:center;" colspan="3"><br><br><b>Fait a Kinshasa, le :</b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
 $html .= '</tr>';
 
 
@@ -364,12 +364,9 @@ if ($labManagerRes) {
 }
 
 $html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;font-weight:bold;"><br>' . $labManager . '</td>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;"><br><br><strong>' . $labManager . '</strong><br>Chef de l&lsquo;unité Virus Respiratories</td>';
 $html .= '</tr>';
 
-$html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:11px;text-align:center;">Chef de l&lsquo;unité Virus Respiratories</td>';
-$html .= '</tr>';
 
 /* $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:20px;border-bottom:2px solid #d3d3d3;" colspan="3"></td>';

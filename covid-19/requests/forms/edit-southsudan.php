@@ -569,7 +569,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             $disapled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
                                             ?>
                                             <th>Authorized By</th>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Authorized By" /></td>
+                                            <td>
+                                            <select name="authorizedBy" <?php echo $disapled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['authorized_by'], '-- Select --'); ?>
+                                                </select>
+                                                </td>
                                         </tr>
                                         <tr>
                                             <th>Authorized on</td>
@@ -858,6 +862,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
         $('#labTechnician').select2({
             placeholder: "Select Lab Technician"
+        });
+        $('#authorizedBy').select2({
+            width: '100%',
+            placeholder: "Select Authorized By"
         });
         getfacilityProvinceDetails($("#facilityId").val());
         getTestingPoints();

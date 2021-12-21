@@ -250,10 +250,10 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $id = $db->delete('testing_labs');
             }
 
+            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
+            $columnList = array_map('current', $db->rawQuery($tableColumns));
+            
             foreach ($dataValues as $tableDataValues) {
-
-                $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
-                $columnList = array_map('current', $db->rawQuery($tableColumns));
 
                 $tableData = array();
                 $updateColumns = array();
@@ -283,14 +283,16 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                         }
                     }
                     if (!empty($tableData['facility_logo'])) {
-                        mkdir($labLogoFolder, 0777, true);
-                        $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" .$tableData['facility_logo'];
-                        $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
-                        file_put_contents($localFileLocation, file_get_contents($remoteFileUrl));
+                        if (!file_exists($labLogoFolder)) {
+                            mkdir($labLogoFolder, 0777, true);
+                        }
+                        $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
+                        $localFilePath = $labLogoFolder . "/" . "actual-" . $tableData['facility_logo'];
+                        file_put_contents($localFilePath, file_get_contents($remoteFileUrl));
 
                         $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
                         $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
-                        file_put_contents($localFileLocation, file_get_contents($remoteFileUrl));
+                        file_put_contents($localFilePath, file_get_contents($remoteFileUrl));
                     }
                 }
             }
