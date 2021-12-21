@@ -9,8 +9,8 @@ class DRC_PDF extends MYPDF
 
             if (trim($this->logo) != '') {
                 // Check facility have the logo
-                if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo)) {
-                    $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo;
+                if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                    $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                     $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 } else {
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -20,8 +20,8 @@ class DRC_PDF extends MYPDF
                 }
             }
             if (trim($this->logo) != '') {
-                if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo)) {
-                    $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo;
+                if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                    $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                     $this->Image($image_file, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 } else {
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -279,7 +279,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Age</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . $general->humanDateFormat($result['patient_dob']) . '/' . $age . '</td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' .  $age . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
