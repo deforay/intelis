@@ -216,8 +216,8 @@ $pResult = $db->rawQuery($pQuery);
                                         <th>Province du patient</th>
                                         <td><input type="text" class="form-control " id="patientProvince" name="patientProvince" placeholder="Province du patient" title="Province du patient" style="width:100%;" /></td>
 
-                                        <th>District des patients</th>
-                                        <td><input class="form-control" id="patientDistrict" name="patientDistrict" placeholder="District des patients" title="District des patients" style="width:100%;"></td>
+                                        <th>commune</th>
+                                        <td><input class="form-control" id="patientDistrict" name="patientDistrict" placeholder="commune" title="commune" style="width:100%;"></td>
                                     </tr>
 
                                     <tr>
