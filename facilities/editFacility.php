@@ -10,7 +10,7 @@ $userResult = $usersModel->getActiveUsers();
 
 $userInfo = array();
 foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ucwords($user['user_name']);
+	$userInfo[$user['user_id']] = ucwords($user['user_name']);
 }
 
 $id = base64_decode($_GET['id']);
@@ -214,9 +214,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="Lab Manager" class="col-lg-4 control-label">Lab Manager</label>
 									<div class="col-lg-7">
-									<select name="contactPerson" id="contactPerson" class="select2 form-control" title="Please choose Lab Manager" style="width: 100%;">
-									<?= $general->generateSelectOptions($userInfo, $facilityInfo[0]['contact_person'], '-- Select --'); ?>
-									</select>
+										<select name="contactPerson" id="contactPerson" class="select2 form-control" title="Please choose Lab Manager" style="width: 100%;">
+											<?= $general->generateSelectOptions($userInfo, $facilityInfo[0]['contact_person'], '-- Select --'); ?>
+										</select>
 									</div>
 								</div>
 							</div>
