@@ -9,7 +9,15 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
+//Funding source list
+$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
+$fundingSourceList = $db->query($fundingSourceQry);
+//Implementing partner list
+$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
+$implementingPartnerList = $db->query($implementingPartnerQry);
 
 $sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
@@ -88,9 +96,77 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
+						<td><b>Testing Lab :</b></td>
+							<td>
+								<select class="form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
+									<?= $testingLabsDropdown; ?>
+								</select>
+							</td>
+							<td><b>Gender&nbsp;:</b></td>
+							<td>
+								<select name="gender" id="gender" class="form-control" title="Please choose gender" style="width:220px;" onchange="hideFemaleDetails(this.value)">
+									<option value=""> -- Select -- </option>
+									<option value="male">Male</option>
+									<option value="female">Female</option>
+									<option value="not_recorded">Not Recorded</option>
+								</select>
+							</td>
+							<td><b>Show only Reordered Samples&nbsp;:</b></td>
+							<td>
+								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
+									<option value=""> -- Select -- </option>
+									<option value="yes">Yes</option>
+									<option value="no" selected="selected">No</option>
+								</select>
+							</td>
+							</tr>
+							<tr>
+							<td colspan="2">
+								<div class="col-md-12">
+									<div class="col-md-6">
+										<b>Pregnant&nbsp;:</b>
+										<select name="patientPregnant" id="patientPregnant" class="form-control" title="Please choose pregnant option">
+											<option value=""> -- Select -- </option>
+											<option value="yes">Yes</option>
+											<option value="no">No</option>
+										</select>
+									</div>
+									<div class="col-md-6">
+										<b>Breastfeeding&nbsp;:</b>
+										<select name="breastFeeding" id="breastFeeding" class="form-control" title="Please choose pregnant option">
+											<option value=""> -- Select -- </option>
+											<option value="yes">Yes</option>
+											<option value="no">No</option>
+										</select>
+									</div>
+								</div>
+							</td>
+							<td><b>Funding Sources&nbsp;:</b></td>
+							<td>
+								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
+									<option value=""> -- Select -- </option>
+									<?php
+									foreach ($fundingSourceList as $fundingSource) {
+									?>
+										<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
+									<?php } ?>
+								</select>
+							</td>
+							<td><b>Implementing Partners&nbsp;:</b></td>
+							<td>
+								<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner">
+									<option value=""> -- Select -- </option>
+									<?php
+									foreach ($implementingPartnerList as $implementingPartner) {
+									?>
+										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
+									<?php } ?>
+								</select>
+							</td></tr>
+							<tr>
 							<td><b>Req. Sample Type :</b></td>
-							<td colspan="5">
-								<select class="form-control" id="requestSampleType" name="requestSampleType" title="Please select request sample type" style="width:23%;">
+							<td>
+								<select class="form-control" id="requestSampleType" name="requestSampleType" title="Please select request sample type">
 									<option value="">All</option>
 									<option value="result">Sample With Result</option>
 									<option value="noresult">Sample Without Result</option>
@@ -283,6 +359,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
+		$("#vlLab").select2({
+			placeholder: "Select Vl Lab"
+		});
+		$("#batchCode").select2({
+			placeholder: "Select Batch Code"
+		});
 		loadVlRequestData();
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
@@ -436,6 +518,34 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "district",
 					"value": $("#district").val()
+				});
+				aoData.push({
+					"name": "vlLab",
+					"value": $("#vlLab").val()
+				});
+				aoData.push({
+					"name": "gender",
+					"value": $("#gender").val()
+				});
+				aoData.push({
+					"name": "showReordSample",
+					"value": $("#showReordSample").val()
+				});
+				aoData.push({
+					"name": "patientPregnant",
+					"value": $("#patientPregnant").val()
+				});
+				aoData.push({
+					"name": "breastFeeding",
+					"value": $("#breastFeeding").val()
+				});
+				aoData.push({
+					"name": "fundingSource",
+					"value": $("#fundingSource").val()
+				});
+				aoData.push({
+					"name": "implementingPartner",
+					"value": $("#implementingPartner").val()
 				});
 				aoData.push({
 					"name": "state",
