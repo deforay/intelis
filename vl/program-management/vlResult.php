@@ -315,6 +315,12 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
+		$("#vlLab").select2({
+			placeholder: "Select Vl Lab"
+		});
+		$("#batchCode").select2({
+			placeholder: "Select Batch Code"
+		});
 		$('.daterangefield').daterangepicker({
 				locale: {
 					cancelLabel: 'Clear'
