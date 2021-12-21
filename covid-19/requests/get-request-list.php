@@ -122,7 +122,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTxt FROM form_covid19 as vl 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTxt FROM form_covid19 as vl 
           LEFT JOIN r_covid19_results as r ON vl.result=r.result_id 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -131,7 +131,7 @@ $sQuery = "SELECT vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTx
 //echo $sQuery;die;
 $start_date = '';
 $end_date = '';
-if (isset($_POST['source']) && trim($_POST['source']) != '') {
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
           $start_date = $general->dateFormat(trim($s_c_date[0]));
@@ -141,20 +141,174 @@ if (isset($_POST['source']) && trim($_POST['source']) != '') {
      }
 }
 
-
-
-if (isset($_POST['source']) && trim($_POST['source']) == 'dhis2') {
-
-     if (empty($sWhere) || $sWhere == "") {
-          $sWhere = ' WHERE ' . $sWhere;
+if (isset($sWhere) && $sWhere != "") {
+     $sWhere = ' where ' . $sWhere;
+     //$sQuery = $sQuery.' '.$sWhere;
+     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+          $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
      }
-     $sWhere = $sWhere . ' `source_of_request` like "dhis2%" ';
+     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+          if (trim($start_date) == trim($end_date)) {
+               $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+          } else {
+               $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+          }
+     }
+     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
+          $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
+     }
+     if (isset($_POST['district']) && trim($_POST['district']) != '') {
+          $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+     }
+     if (isset($_POST['state']) && trim($_POST['state']) != '') {
+          $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+     }
+          /* VL lab id filter */
+if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+     $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
-
-if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND ' . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+/* Gender filter */
+if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
+     if (trim($_POST['gender']) == "not_recorded") {
+          $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+     } else {
+          $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
+     }
+}
+/* Show only recorded sample filter */
+if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
+     $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
+}
+/* Funding src filter */
+if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+     $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+}
+/* Implemening partner filter */
+if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+     $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+}
 } else {
-     $sWhere = $sWhere . ' where ' . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+          $setWhr = 'where';
+          $sWhere = ' where ' . $sWhere;
+          $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
+     }
+     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+          if (isset($setWhr)) {
+               if (trim($start_date) == trim($end_date)) {
+                    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+                         $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+                    } else {
+                         $sWhere = ' where ' . $sWhere;
+                         $sWhere = $sWhere . ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+                    }
+               }
+          } else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+          }
+     }
+
+     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+          } else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+          }
+     }
+     if (isset($_POST['district']) && trim($_POST['district']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+          } else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+          }
+     }
+     if (isset($_POST['state']) && trim($_POST['state']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+          } else {
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+          }
+     }
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          if (isset($setWhr)) {
+          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          }
+     }
+     if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
+     if (trim($_POST['gender']) == "not_recorded") {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
+          }
+     }
+     else {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.patient_gender IN ("' . $_POST['gender'] . '")';
+          } else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
+          }
+     }
+}
+     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
+          }
+     }
+     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
+          }
+     }
+     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
+          }
+     }
+
+}
+$whereResult = '';
+if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
+     $whereResult = 'vl.result != "" AND ';
+} else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
+     $whereResult = '(vl.result IS NULL OR vl.result = "") AND ';
+}
+if ($sWhere != '') {
+     $sWhere = $sWhere . ' AND ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+} else {
+     $sWhere = $sWhere . ' where ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 }
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -176,7 +330,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sFilter = ' AND result_status!=9';
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-//error_log($sQuery);
+// error_log($sQuery);
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -188,14 +342,8 @@ if (isset($sLimit) && isset($sOffset)) {
 // echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT vl.covid19_id FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(covid19_id) as total FROM form_covid19 as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = $aResultTotal[0]['total'];
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
           * Output

@@ -17,6 +17,14 @@ $arr = $general->getGlobalConfig();
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $formId = $general->getGlobalConfig('vl_form');
+$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
+//Funding source list
+$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
+$fundingSourceList = $db->query($fundingSourceQry);
+//Implementing partner list
+$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
+$implementingPartnerList = $db->query($implementingPartnerQry);
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='tb' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
@@ -92,7 +100,53 @@ $batResult = $db->rawQuery($batQuery);
                             </td>
                         </tr>
                         <tr>
-
+                        <td><b>Testing Lab :</b></td>
+							<td>
+								<select class="form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
+									<?= $testingLabsDropdown; ?>
+								</select>
+							</td>
+							<td><b>Gender&nbsp;:</b></td>
+							<td>
+								<select name="gender" id="gender" class="form-control" title="Please choose gender" style="width:220px;" onchange="hideFemaleDetails(this.value)">
+									<option value=""> -- Select -- </option>
+									<option value="male">Male</option>
+									<option value="female">Female</option>
+									<option value="not_recorded">Not Recorded</option>
+								</select>
+							</td>
+							<td><b>Show only Reordered Samples&nbsp;:</b></td>
+							<td>
+								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
+									<option value=""> -- Select -- </option>
+									<option value="yes">Yes</option>
+									<option value="no" selected="selected">No</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+						<td><b>Funding Sources&nbsp;:</b></td>
+							<td>
+								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
+									<option value=""> -- Select -- </option>
+									<?php
+									foreach ($fundingSourceList as $fundingSource) {
+									?>
+										<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
+									<?php } ?>
+								</select>
+							</td>
+							<td><b>Implementing Partners&nbsp;:</b></td>
+							<td>
+								<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner">
+									<option value=""> -- Select -- </option>
+									<?php
+									foreach ($implementingPartnerList as $implementingPartner) {
+									?>
+										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
+									<?php } ?>
+								</select>
+							</td>
                         </tr>
                         <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-default btn-sm">
@@ -227,6 +281,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         $("#facilityName").select2({
             placeholder: "Select Facilities"
         });
+        $("#vlLab").select2({
+			placeholder: "Select Vl Lab"
+		});
+		$("#batchCode").select2({
+			placeholder: "Select Batch Code"
+		});
         loadVlRequestData();
         $('#sampleCollectionDate').daterangepicker({
                 locale: {
@@ -362,6 +422,26 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     "name": "reqSampleType",
                     "value": $("#requestSampleType").val()
                 });
+                aoData.push({
+					"name": "vlLab",
+					"value": $("#vlLab").val()
+				});
+				aoData.push({
+					"name": "gender",
+					"value": $("#gender").val()
+				});
+				aoData.push({
+					"name": "showReordSample",
+					"value": $("#showReordSample").val()
+				});
+				aoData.push({
+					"name": "fundingSource",
+					"value": $("#fundingSource").val()
+				});
+				aoData.push({
+					"name": "implementingPartner",
+					"value": $("#implementingPartner").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",

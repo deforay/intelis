@@ -118,7 +118,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 $aWhere = '';
 
-$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM $tableName as vl 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, ts.status_name, b.batch_code FROM $tableName as vl 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
@@ -159,6 +159,30 @@ if (isset($sWhere) && $sWhere != "") {
      if (isset($_POST['state']) && trim($_POST['state']) != '') {
           $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
      }
+     /* VL lab id filter */
+if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+     $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+}
+/* Gender filter */
+if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
+     if (trim($_POST['gender']) == "not_recorded") {
+          $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+     } else {
+          $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
+     }
+}
+/* Show only recorded sample filter */
+if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
+     $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
+}
+/* Funding src filter */
+if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+     $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+}
+/* Implemening partner filter */
+if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+     $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+}
 } else {
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $setWhr = 'where';
@@ -206,6 +230,67 @@ if (isset($sWhere) && $sWhere != "") {
           } else {
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+          }
+     }
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          if (isset($setWhr)) {
+          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          }
+     }
+     if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
+     if (trim($_POST['gender']) == "not_recorded") {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
+          }
+     }
+     else {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.patient_gender IN ("' . $_POST['gender'] . '")';
+          } else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
+          }
+     }
+}
+     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
+          }
+     }
+     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
+          }
+     }
+     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
+          }
+          else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
           }
      }
 }
@@ -257,14 +342,8 @@ if (isset($sLimit) && isset($sOffset)) {
 //echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT vl.$primaryKey FROM $tableName as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT COUNT($primaryKey) as total FROM $tableName as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = $aResultTotal[0]['total'];
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
           * Output
