@@ -2850,3 +2850,6 @@ ALTER TABLE `vl_user_facility_map`  COLLATE utf8mb4_general_ci;
 
 -- Thana 17-Dec-2021
 ALTER TABLE `form_covid19` ADD `lab_manager` TEXT NULL DEFAULT NULL AFTER `lab_id`;
+
+-- Amit 21 Dec 2021 version 4.4.6
+UPDATE `system_config` SET `value` = '4.4.6' WHERE `system_config`.`name` = 'sc_version';
