@@ -2854,5 +2854,8 @@ ALTER TABLE `form_covid19` ADD `lab_manager` TEXT NULL DEFAULT NULL AFTER `lab_i
 -- Amit 21 Dec 2021 version 4.4.6
 UPDATE `system_config` SET `value` = '4.4.6' WHERE `system_config`.`name` = 'sc_version';
 
+-- Thana 22-Dec-2021
+INSERT INTO `facility_type` (`facility_type_id`, `facility_type_name`) VALUES ('3', 'Collection Site');
+
 --Sakthivel 22 Dec 2021
 ALTER TABLE `system_admin` ADD `system_admin_email` VARCHAR(255) NULL DEFAULT NULL AFTER `system_admin_name`;
