@@ -18,22 +18,22 @@ class DRC_PDF extends MYPDF
             }
         }
         $this->SetFont('helvetica', 'B', 12);
-        $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C', true);
         $this->SetFont('helvetica', 'B', 10);
-        $this->writeHTMLCell(0, 0, 0, 10, $this->text, 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 10, $this->text, 0, 0, false, true, 'C', true);
         if (trim($this->lab) != '') {
             $this->SetFont('helvetica', 'B', 11);
-            $this->writeHTMLCell(0, 0, 0, 15, strtoupper($this->lab), 0, 0, false, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 12, 15, strtoupper($this->lab), 0, 0, false, true, 'C', true);
         }
         $this->SetFont('helvetica', 'B', 11);
-        $this->writeHTMLCell(0, 0, 0, 20, 'Province du Nord-Kivu', 0, 0, false, true, 'C', true);
-        $this->writeHTMLCell(0, 0, 0, 25, 'Laboratoire P3/P2/P2 Rodolphe Merleux INRB-COMA', 0, 0, false, true, 'C', true);
-        $this->writeHTMLCell(0, 0, 0, 30, 'Laboratoire Réglonal de Santé Publique', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 20, 'Province du Nord-Kivu', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 25, 'Laboratoire P3/P2/P2 Rodolphe Merleux INRB-COMA', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 30, 'Laboratoire Réglonal de Santé Publique', 0, 0, false, true, 'C', true);
         $this->SetTextColor(255, 0, 0);
-        $this->writeHTMLCell(0, 0, 0, 35, 'Membre du réseau GABRIEL', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 35, 'Membre du réseau GABRIEL', 0, 0, false, true, 'C', true);
         $this->SetTextColor(0, 0, 0);
-        $this->writeHTMLCell(0, 0, 10, 40, '<hr>', 0, 0, false, true, 'C', true);
-        $this->writeHTMLCell(0, 0, 10, 41, '<hr>', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 40, '<hr>', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 41, '<hr>', 0, 0, false, true, 'C', true);
 
         // Define the path to the image that you want to use as watermark.
         $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo;
@@ -71,7 +71,6 @@ class DRC_PDF extends MYPDF
         $this->writeHTMLCell(0, 0, 10, 290, 'inrbgoma.com', 0, 0, false, true, 'C', true);
     }
 }
-
 
 $users = new \Vlsm\Models\Users();
 
@@ -277,7 +276,7 @@ $html .= '<tr>';
 $html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">N Passeport<br><span style="font-size:10px;font-weight:normal;">Passport N</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
 $html .= '<td width="20%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['patient_passport_number'] . '</td>';
-$html .= '<td width="20%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Telephone<br><span style="font-size:10px;font-weight:normal;">Telephone Number</span></td>';
+$html .= '<td width="20%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Téléphone<br><span style="font-size:10px;font-weight:normal;">Telephone Number</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
 $html .= '<td width="15%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['patient_phone_number'] . '</td>';
 $html .= '</tr>';
@@ -285,7 +284,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Date & Heure de Prélevement<br><span style="font-size:10px;font-weight:normal;">Sample collection date & time</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['sample_collection_date'] . $sampleCollectionTime . '</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $result['sample_collection_date'] . ' ' . $sampleCollectionTime . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
@@ -325,11 +324,7 @@ if ($labManagerRes) {
 }
 
 $html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;font-weight:bold;"><br>' . $labManager . '</td>';
-$html .= '</tr>';
-
-$html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;">Médecin Virologue<br><span style="font-size:10px;font-weight:normal;">Medical Virologist</span></td>';
+$html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;"><br><br><strong>' . $labManager . '</strong><br>Médecin Virologue<br><span style="font-size:10px;font-weight:normal;">Medical Virologist</span></td>';
 $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;"><br><br><br><br><br><br>
