@@ -18,9 +18,9 @@ try {
 
 		$data = array(
 			'rejection_reason_name' => $_POST['rejectionReasonName'],
-            'rejection_type' => $_POST['rejectionType'],
-            'rejection_reason_status' => $_POST['rejectionReasonCode'],
-            'rejection_reason_code' => $_POST['rejectionReasonStatus'],
+			'rejection_type' => $_POST['rejectionType'],
+			'rejection_reason_status' => $_POST['rejectionReasonStatus'],
+			'rejection_reason_code' => $_POST['rejectionReasonCode'],
 			'updated_datetime' => $general->getDateTime(),
 		);
 
