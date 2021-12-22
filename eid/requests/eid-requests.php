@@ -14,7 +14,7 @@ $usersModel = new \Vlsm\Models\Users();
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabs = $facilitiesDb->getTestingLabs('eid');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 $formId = $general->getGlobalConfig('vl_form');
 //Funding source list

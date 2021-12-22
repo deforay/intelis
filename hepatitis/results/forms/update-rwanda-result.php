@@ -3,7 +3,10 @@
 // imported in /hepatitis/results/hepatitis-update-result.php based on country in global config
 
 ob_start();
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
+$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabsDropdown = $general->generateSelectOptions($testingLabs, $hepatitisInfo['vl_testing_site'], "-- Select --");
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -288,7 +291,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                         </td>
                                         <th><label for="vlTestingSite">VL Testing Site</label></th>
                                         <td>
-                                            <input value="<?php echo $hepatitisInfo['vl_testing_site']; ?>" type="text" class="form-control" id="vlTestingSite" name="vlTestingSite" placeholder="Testing Site" title="Please enter testing site" style="width:100%;" />
+                                        <select class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" title="Please select testing site" style="width:100%;">
+									<?= $testingLabsDropdown; ?>
                                         </td>
                                     </tr>
                                     <tr>
@@ -528,6 +532,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
         $('#labId').select2({
             placeholder: "Lab Name"
         });
+        $("#vlTestingSite").select2({
+			placeholder: "Select Vl Testing Site"
+		});
         getfacilityProvinceDetails($("#facilityId"));
         $('#isResultAuthorized').change(function(e) {
             checkIsResultAuthorized();

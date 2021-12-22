@@ -17,7 +17,7 @@ $arr = $general->getGlobalConfig();
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $formId = $general->getGlobalConfig('vl_form');
-$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabs = $facilitiesDb->getTestingLabs('tb');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";

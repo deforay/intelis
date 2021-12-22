@@ -16,7 +16,7 @@ $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 $arr = $general->getGlobalConfig();
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabs = $facilitiesDb->getTestingLabs('covid19');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 $formId = $general->getGlobalConfig('vl_form');
 //Funding source list

@@ -4,7 +4,10 @@
 
 ob_start();
 
+$facilitiesDb = new \Vlsm\Models\Facilities();
 
+$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabsDropdown = $general->generateSelectOptions($testingLabs, $hepatitisInfo['vl_testing_site'], "-- Select --");
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -320,8 +323,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                             <th><label for="vlTestingSite">VL Testing Site</label></th>
                                             <td>
-                                                <input value="<?php echo $hepatitisInfo['vl_testing_site']; ?>" type="text" class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" placeholder="Testing Site" title="Please enter testing site" style="width:100%;" />
-                                            </td>
+                                            <select class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" title="Please select testing site" style="width:100%;">
+									<?= $testingLabsDropdown; ?>
+								</select></td>
                                         </tr>
                                         <tr>
                                             <th><label for="reasonVlTest">VL test purpose</label></th>
@@ -575,6 +579,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $('#labId').select2({
             placeholder: "Lab Name"
         });
+        $("#vlTestingSite").select2({
+			placeholder: "Select Vl Testing Site"
+		});
 
         getfacilityProvinceDetails($("#facilityId"));
         checkIsResultAuthorized();
