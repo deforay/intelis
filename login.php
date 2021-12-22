@@ -5,6 +5,10 @@ if (session_status() == PHP_SESSION_NONE) {
 if (isset($_SESSION['userId'])) {
   header("location:dashboard/index.php");
 }
+$adminCount = $db->rawQuery("SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id");
+    if(count($adminCount) == 0) {
+        header("location:/setup/index.php");
+    }
 #require_once('../startup.php');
 
 $globalConfigQuery = "SELECT * from global_config where name='logo'";

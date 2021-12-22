@@ -27,17 +27,6 @@ try {
         header("location:/system-admin/login/login.php");
     }
 }
-else {
-    $data = array(
-        'system_admin_name'     => $adminUsername,
-        'system_admin_login'     => $adminUsername,
-        'system_admin_password'     => $password
-    );
-    $db->insert($tableName, $data);
-    $_SESSION['adminUserId']=$adminCount[0]['system_admin_id'];
-    $_SESSION['adminUserName']=ucwords($adminCount[0]['system_admin_name']);
-    header("location:/system-admin/edit-config/index.php");
-}
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

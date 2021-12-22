@@ -5,7 +5,10 @@ if (session_status() == PHP_SESSION_NONE) {
 if (isset($_SESSION['adminUserId'])) {
     header("location:/system-admin/edit-config/index.php");
 }
-
+$adminCount = $db->rawQuery("SELECT * FROM system_admin as ud");
+    if(count($adminCount) == 0) {
+        header("location:/system-admin/setup/index.php");
+    }
 $path = '/assets/img/remote-bg.jpg';
 ?>
 <!DOCTYPE html>
