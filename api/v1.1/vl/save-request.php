@@ -310,6 +310,8 @@ try {
             'is_patient_breastfeeding'              => (isset($data['breastfeeding']) && $data['breastfeeding'] != '') ? $data['breastfeeding'] :  NULL,
             'patient_art_no'                        => (isset($data['patientArtNo']) && $data['patientArtNo'] != '') ? $data['patientArtNo'] :  NULL,
             'treatment_initiated_date'              => $data['dateOfArtInitiation'],
+            'reason_for_regimen_change'             => $data['reasonForArvRegimenChange'],
+            'regimen_change_date'                   => $general->dateFormat($data['dateOfArvRegimenChange']),
             'current_regimen'                       => (isset($data['artRegimen']) && $data['artRegimen'] != '') ? $data['artRegimen'] :  NULL,
             'date_of_initiation_of_current_regimen' => $data['regimenInitiatedOn'],
             'patient_mobile_number'                 => (isset($data['patientPhoneNumber']) && $data['patientPhoneNumber'] != '') ? $data['patientPhoneNumber'] :  NULL,
