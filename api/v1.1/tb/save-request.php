@@ -322,12 +322,14 @@ try {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $c19SampleCode,
+                    'uniqueId' => $c19Data['unique_id'],
                     'appSampleCode' => $tbData['app_sample_code'],
                 );
             } else {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $c19SampleCode,
+                    'uniqueId' => $c19Data['unique_id'],
                     'appSampleCode' => $tbData['app_sample_code'],
                 );
             }

@@ -354,11 +354,13 @@ try {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $eidSampleCode,
+                    'uniqueId' => $c19Data['unique_id'],
                     'appSampleCode' => $eidData['app_sample_code'],
                 );
             } else {
                 $responseData[$rootKey] = array(
                     'sampleCode' => $eidSampleCode,
+                    'uniqueId' => $c19Data['unique_id'],
                     'appSampleCode' => $eidData['app_sample_code'],
                 );
             }

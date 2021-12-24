@@ -2859,3 +2859,6 @@ INSERT INTO `facility_type` (`facility_type_id`, `facility_type_name`) VALUES ('
 
 --Sakthivel 22 Dec 2021
 ALTER TABLE `system_admin` ADD `system_admin_email` VARCHAR(255) NULL DEFAULT NULL AFTER `system_admin_name`;
+
+--Thana 24-Dec-2021
+ALTER TABLE `user_details` ADD `data_sync` INT(11) NULL DEFAULT '0' AFTER `app_access`;

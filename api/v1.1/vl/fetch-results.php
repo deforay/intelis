@@ -82,6 +82,8 @@ try {
         vl.is_patient_breastfeeding                          as breastfeeding,
         vl.patient_art_no                                    as artNo,
         vl.treatment_initiated_date                          as dateOfArtInitiation,
+        vl.regimen_change_date                               as dateOfArvRegimenChange,
+        vl.reason_for_regimen_change                         as reasonForArvRegimenChange,
         vl.current_regimen                                   as artRegimen,
         vl.date_of_initiation_of_current_regimen             as regimenInitiatedOn,
         vl.patient_mobile_number                             as patientPhoneNumber,

@@ -302,7 +302,7 @@ try {
             'travel_return_date'                  => !empty($data['returnDate']) ? $general->dateFormat($data['returnDate']) : null,
             'sample_received_at_vl_lab_datetime'  => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
             'sample_condition'                    => !empty($data['sampleCondition']) ? $data['sampleCondition'] : (isset($data['specimenQuality']) ? $data['specimenQuality'] : null),
-            'asymptomatic'                 	  	  => !empty($data['asymptomatic']) ? $data['asymptomatic'] : null,
+            'asymptomatic'                             => !empty($data['asymptomatic']) ? $data['asymptomatic'] : null,
             'lab_technician'                      => (!empty($data['labTechnician']) && $data['labTechnician'] != '') ? $data['labTechnician'] :  $user['user_id'],
             'is_sample_rejected'                  => !empty($data['isSampleRejected']) ? $data['isSampleRejected'] : null,
             'result'                              => !empty($data['result']) ? $data['result'] : null,
@@ -314,10 +314,10 @@ try {
             'authorized_on'                       => !empty($data['authorizedOn']) ? $general->dateFormat($data['authorizedOn']) : null,
             'revised_by'                          => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
             'revised_on'                          => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
-		    'result_reviewed_by' 				  => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
-            'result_reviewed_datetime' 			  => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
-            'result_approved_by' 				  => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
-            'result_approved_datetime' 			  => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  NULL,
+            'result_reviewed_by'                   => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
+            'result_reviewed_datetime'               => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
+            'result_approved_by'                   => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
+            'result_approved_datetime'               => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  NULL,
             'reason_for_changing'                 => (!empty($_POST['reasonForCovid19ResultChanges']) && !empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
             'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->dateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
@@ -340,20 +340,20 @@ try {
         $covid19Data['request_created_by'] =  $user['user_id'];
         $covid19Data['last_modified_by'] =  $user['user_id'];
         if (isset($data['asymptomatic']) && $data['asymptomatic'] != "yes") {
-        $db = $db->where('covid19_id', $data['covid19SampleId']);
-        $db->delete("covid19_patient_symptoms");
-        if (isset($data['symptomDetected']) && !empty($data['symptomDetected']) || (isset($data['symptom']) && !empty($data['symptom']))) {
-            for ($i = 0; $i < count($data['symptomDetected']); $i++) {
-                $symptomData = array();
-                $symptomData["covid19_id"] = $data['covid19SampleId'];
-                $symptomData["symptom_id"] = $data['symptomId'][$i];
-                $symptomData["symptom_detected"] = $data['symptomDetected'][$i];
-                $symptomData["symptom_details"]     = (isset($data['symptomDetails'][$data['symptomId'][$i]]) && count($data['symptomDetails'][$data['symptomId'][$i]]) > 0) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
-                //var_dump($symptomData);
-                $db->insert("covid19_patient_symptoms", $symptomData);
+            $db = $db->where('covid19_id', $data['covid19SampleId']);
+            $db->delete("covid19_patient_symptoms");
+            if (isset($data['symptomDetected']) && !empty($data['symptomDetected']) || (isset($data['symptom']) && !empty($data['symptom']))) {
+                for ($i = 0; $i < count($data['symptomDetected']); $i++) {
+                    $symptomData = array();
+                    $symptomData["covid19_id"] = $data['covid19SampleId'];
+                    $symptomData["symptom_id"] = $data['symptomId'][$i];
+                    $symptomData["symptom_detected"] = $data['symptomDetected'][$i];
+                    $symptomData["symptom_details"]     = (isset($data['symptomDetails'][$data['symptomId'][$i]]) && count($data['symptomDetails'][$data['symptomId'][$i]]) > 0) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
+                    //var_dump($symptomData);
+                    $db->insert("covid19_patient_symptoms", $symptomData);
+                }
             }
         }
-    }
 
         $db = $db->where('covid19_id', $data['covid19SampleId']);
         $db->delete("covid19_reasons_for_testing");
@@ -421,12 +421,14 @@ try {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $c19SampleCode,
+                    'uniqueId' => $c19Data['unique_id'],
                     'appSampleCode' => $c19Data['app_sample_code'],
                 );
             } else {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $c19SampleCode,
+                    'uniqueId' => $c19Data['unique_id'],
                     'appSampleCode' => $c19Data['app_sample_code'],
                 );
             }

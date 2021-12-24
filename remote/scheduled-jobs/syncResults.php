@@ -327,6 +327,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 /* Get instance id for update last_remote_results_sync */
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
+/* Get un synced user details */
+$instanceResult = $db->rawQuery("SELECT * FROM `user_details` WHERE data_sync = 0");
+
 /* Update last_remote_results_sync in s_vlsm_instance */
 $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
 $id = $db->update('s_vlsm_instance', array('last_remote_results_sync' => $general->getDateTime()));
