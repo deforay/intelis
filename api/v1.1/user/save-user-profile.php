@@ -93,9 +93,12 @@ try {
             exit(0);
         }
         $aRow = null;
-        if (!empty($userId) || !empty($post->loginId)) {
-            if (!empty($userId)) {
+        if (!empty($userId) || !empty($post->loginId) || !empty($post->email)) {
+            /* if (!empty($userId)) {
                 $db->where("user_id", $userId);
+            } */
+            if (!empty($post->email)) {
+                $db->where("email", $post->email);
             }
             if (!empty($post->loginId)) {
                 $db->where("login_id", $post->loginId);
@@ -119,11 +122,8 @@ try {
                 $data['user_signature'] = $imageName;
             }
         }
-        /* echo "<pre>";
-        print_r($post);
-        die; */
         $data = array(
-            'user_id' => !empty($userId) ? $userId : $general->generateUUID(),
+            'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
             'user_name' => $post->userName,
             'email' => $post->email,
             'interface_user_name' => $post->interfaceUserName,
@@ -142,12 +142,11 @@ try {
             $data['password'] = sha1($post->password . $systemConfig['passwordSalt']);
         }
         $id = 0;
-        if (empty($userId) || empty($aRow) || $aRow == false) {
-            $id = $db->insert("user_details", $data);
-        } else {
-            $userId = $data['user_id'] = $aRow['user_id'];
-            $db = $db->where('user_id', $data['user_id']);
+        if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
+            $db = $db->where('user_id', $aRow['user_id']);
             $db->update("user_details", $data);
+        } else {
+            $id = $db->insert("user_details", $data);
         }
         if ($id > 0 && trim($post->selectedFacility) != '') {
             if ($id > 0 && trim($post->selectedFacility) != '') {
