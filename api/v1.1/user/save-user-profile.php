@@ -9,6 +9,7 @@ $jsonResponse = file_get_contents('php://input');
 try {
     if (isset($jsonResponse) && $jsonResponse != "") {
         $decode = json_decode($jsonResponse, true);
+        $_POST = $decode;
     }
 
     if (isset($decode['api-type']) && $decode['api-type'] == "sync") {
@@ -66,6 +67,7 @@ try {
             }
         }
     } else {
+
         $apiKey = isset($_POST['x-api-key']) && !empty($_POST['x-api-key']) ? $_POST['x-api-key'] : null;
 
         if (!$_POST['post']) {
@@ -76,6 +78,8 @@ try {
             );
             echo json_encode($response);
             exit(0);
+        } else {
+            $post = json_decode($_POST['post']);
         }
         $userId = !empty($post->userId) ? base64_decode($post->userId) : null;
 
@@ -89,7 +93,7 @@ try {
             exit(0);
         }
         $aRow = null;
-        if (!empty($userId) || !empty($post->email)) {
+        if (!empty($userId) || !empty($post->loginId)) {
             if (!empty($userId)) {
                 $db->where("user_id", $userId);
             }
@@ -115,12 +119,14 @@ try {
                 $data['user_signature'] = $imageName;
             }
         }
-
-
+        /* echo "<pre>";
+        print_r($post);
+        die; */
         $data = array(
             'user_id' => !empty($userId) ? $userId : $general->generateUUID(),
             'user_name' => $post->userName,
             'email' => $post->email,
+            'interface_user_name' => $post->interfaceUserName,
             'login_id' => $post->loginId,
             'phone_number' => $post->phoneNo,
             'user_signature' => $imageName
@@ -135,17 +141,18 @@ try {
         if (!empty($post->password)) {
             $data['password'] = sha1($post->password . $systemConfig['passwordSalt']);
         }
-
+        $id = 0;
         if (empty($userId) || empty($aRow) || $aRow == false) {
             $id = $db->insert("user_details", $data);
         } else {
             $userId = $data['user_id'] = $aRow['user_id'];
-            $db->update("user_details", $data);
             $db = $db->where('user_id', $data['user_id']);
-            $delId = $db->delete("vl_user_facility_map");
+            $db->update("user_details", $data);
         }
         if ($id > 0 && trim($post->selectedFacility) != '') {
             if ($id > 0 && trim($post->selectedFacility) != '') {
+                $db = $db->where('user_id', $data['user_id']);
+                $delId = $db->delete("vl_user_facility_map");
                 $selectedFacility = explode(",", $post->selectedFacility);
                 $uniqueFacilityId = array_unique($selectedFacility);
                 for ($j = 0; $j <= count($selectedFacility); $j++) {
