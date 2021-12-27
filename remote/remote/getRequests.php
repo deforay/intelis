@@ -55,6 +55,6 @@ if (!empty($data['manifestCode'])) {
 
 $vlRemoteResult = $db->rawQuery($vlQuery);
 if ($db->count > 0) {
-  $trackId = $app->addApiTracking('', $db->count, 'requests', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
+  $trackId = $app->addApiTracking(null, $db->count, 'requests', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
 }
 echo json_encode($vlRemoteResult);

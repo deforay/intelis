@@ -110,7 +110,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         }
     }
     if ($counter > 0) {
-        $app->addApiTracking('', $counter, 'results', 'eid', null, $sarr['sc_testing_lab_id'], 'sync-api');
+        $app->addApiTracking(null, $counter, 'results', 'eid', null, $sarr['sc_testing_lab_id'], 'sync-api');
     }
 }
 

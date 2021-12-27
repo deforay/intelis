@@ -10,10 +10,52 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     exit();
 }
 
+/* Get un synced user details */
+$userResult = $db->rawQuery("SELECT *, 'yes' as sync FROM `user_details` WHERE data_sync = 0 GROUP BY `user_id`");
+foreach ($userResult as $key => $user) {
+    $mapF = $db->rawQuery("SELECT facility_id FROM vl_user_facility_map WHERE user_id = " . $user['user_id']);
+    foreach ($mapF as $m) {
+        $map[] = $m['facility_id'];
+    }
+    $userResult[$key]['selectedFacility'] = implode(",", $map);
+}
+$url = $systemConfig['remoteURL'] . '/api/v1.1/user/save-user-profile.php';
+$data = array(
+    "result" => $userResult,
+    "api-type" => "sync",
+    "Key" => "vlsm-lab-data--",
+);
+//open connection
+$ch = curl_init($url);
+$json_data = json_encode($data);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt(
+    $ch,
+    CURLOPT_HTTPHEADER,
+    array(
+        'Content-Type: application/json',
+        'Content-Length: ' . strlen($json_data)
+    )
+);
+// execute post
+$curl_response = curl_exec($ch);
+//close connection
+echo $curl_response;
+die;
+curl_close($ch);
+$result = json_decode($curl_response, true);
+
+/* if (!empty($result) && count($result) > 0) {
+    $db = $db->where('user_id', $result, 'IN');
+    $id = $db->update('user_details', array('data_sync' => 1));
+}*/
+if (count($userResult) > 0) {
+    $trackId = $app->addApiTracking(null, count($userResult), 'common-data', 'user', $url, null, 'sync-api');
+}
 $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-
 $headers = @get_headers($systemConfig['remoteURL'] . '/vlsts-icons/favicon-16x16.png');
-
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
     return false;
@@ -87,17 +129,15 @@ if (!empty($forceSyncModule)) {
 
 // VIRAL LOAD TEST RESULTS
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
-
-
     $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
             FROM `vl_request_form` AS vl 
             LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
             WHERE result_status NOT IN (9) 
             AND (facility_id != '' AND facility_id is not null) 
             AND (sample_code !='' AND sample_code is not null) 
-            AND data_sync=0";
+            AND vl.data_sync = 0";
     // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
-    //echo $vlQuery;die;
+    // echo $vlQuery;die;
 
     if (!empty($forceSyncModule) && trim($forceSyncModule) == "vl" && !empty($sampleCode) && trim($sampleCode) != "") {
         $vlQuery .= " AND sample_code like '$sampleCode'";
@@ -130,7 +170,6 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     // execute post
     $curl_response = curl_exec($ch);
     //close connection
-    curl_close($ch);
     $result = json_decode($curl_response, true);
 
     if (!empty($result) && count($result) > 0) {
@@ -138,7 +177,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
         $id = $db->update('vl_request_form', array('data_sync' => 1));
     }
     if (count($vlLabResult) > 0) {
-        $trackId = $app->addApiTracking('', count($vlLabResult), 'results', 'vl', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+        $trackId = $app->addApiTracking(null, count($vlLabResult), 'results', 'vl', $url, $sarr['sc_testing_lab_id'], 'sync-api');
     }
 }
 
@@ -146,8 +185,6 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 // EID TEST RESULTS
 
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
-
-
     $eidQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
                     FROM `eid_form` AS vl 
                     LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
@@ -190,8 +227,8 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $db = $db->where('sample_code', $result, 'IN');
         $id = $db->update('eid_form', array('data_sync' => 1));
     }
-    if (count($vlLabResult) > 0) {
-        $trackId = $app->addApiTracking('', count($eidLabResult), 'results', 'eid', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+    if (count($eidLabResult) > 0) {
+        $trackId = $app->addApiTracking(null, count($eidLabResult), 'results', 'eid', $url, $sarr['sc_testing_lab_id'], 'sync-api');
     }
 }
 
@@ -258,8 +295,8 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $id = $db->update('form_covid19', array('data_sync' => 1));
         //}
     }
-    if (count($vlLabResult) > 0) {
-        $trackId = $app->addApiTracking('', count($c19LabResult), 'results', 'covid19', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+    if (count($c19LabResult) > 0) {
+        $trackId = $app->addApiTracking(null, count($c19LabResult), 'results', 'covid19', $url, $sarr['sc_testing_lab_id'], 'sync-api');
     }
 }
 
@@ -320,15 +357,12 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         $id = $db->update('form_hepatitis', array('data_sync' => 1));
         //}
     }
-    if (count($vlLabResult) > 0) {
-        $trackId = $app->addApiTracking('', count($vlLabResult), 'common-data', 'vl', $url, null, 'sync-api');
+    if (count($hepLabResult) > 0) {
+        $trackId = $app->addApiTracking(null, count($hepLabResult), 'common-data', 'hepatitis', $url, null, 'sync-api');
     }
 }
 /* Get instance id for update last_remote_results_sync */
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
-
-/* Get un synced user details */
-$instanceResult = $db->rawQuery("SELECT * FROM `user_details` WHERE data_sync = 0");
 
 /* Update last_remote_results_sync in s_vlsm_instance */
 $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);

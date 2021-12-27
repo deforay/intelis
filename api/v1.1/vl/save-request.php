@@ -412,13 +412,13 @@ try {
                 $responseData[$rootKey] = array(
                     'status' => 'success',
                     'sampleCode' => $vlSampleCode,
-                    'uniqueId' => $c19Data['unique_id'],
+                    'uniqueId' => $vlFulldata['unique_id'],
                     'appSampleCode' => $vlFulldata['app_sample_code'],
                 );
             } else {
                 $responseData[$rootKey] = array(
                     'sampleCode' => $vlSampleCode,
-                    'uniqueId' => $c19Data['unique_id'],
+                    'uniqueId' => $vlFulldata['unique_id'],
                     'appSampleCode' => $vlFulldata['app_sample_code'],
                 );
             }

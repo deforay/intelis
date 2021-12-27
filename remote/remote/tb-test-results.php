@@ -28,7 +28,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $counter = 0;
 
     if ($counter > 0) {
-        $trackId = $app->addApiTracking('', $counter, 'results', 'tb', null, $sarr['sc_testing_lab_id'], 'sync-api');
+        $trackId = $app->addApiTracking(null, $counter, 'results', 'tb', null, $sarr['sc_testing_lab_id'], 'sync-api');
     }
 
     $lab = array();

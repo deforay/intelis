@@ -140,7 +140,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
 
     if ($counter > 0) {
-        $trackId = $app->addApiTracking('', $counter, 'results', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
+        $trackId = $app->addApiTracking(null, $counter, 'results', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
     }
 }
 

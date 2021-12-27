@@ -55,7 +55,7 @@ $tbRemoteResult = $db->rawQuery($tbQuery);
 $data = array();
 
 if (!empty($tbRemoteResult) && count($tbRemoteResult) > 0) {
-    $trackId = $app->addApiTracking('', count($tbRemoteResult), 'requests', 'tb', null, $sarr['sc_testing_lab_id'], 'sync-api');
+    $trackId = $app->addApiTracking(null, count($tbRemoteResult), 'requests', 'tb', null, $sarr['sc_testing_lab_id'], 'sync-api');
     $forms = array();
     foreach ($tbRemoteResult as $row) {
         $forms[] = $row['tb_id'];

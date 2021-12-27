@@ -53,7 +53,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
         $count = (count($response['vlRejectionReasons']) + count($response['vlSampleTypes']) + count($response['vlArtCodes']));
         if ($count > 0) {
-            $trackId = $app->addApiTracking('', $count, 'common-data', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $count, 'common-data', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
         }
     }
 
@@ -87,7 +87,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
         $count = (count($response['eidRejectionReasons']) + count($response['eidSampleTypes']) + count($response['eidResults']) + count($response['eidReasonForTesting']));
         if ($count > 0) {
-            $trackId = $app->addApiTracking('', $count, 'common-data', 'eid', null, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $count, 'common-data', 'eid', null, $sarr['sc_testing_lab_id'], 'sync-api');
         }
     }
 
@@ -132,7 +132,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
         $count = (count($response['covid19RejectionReasons']) + count($response['covid19SampleTypes']) + count($response['covid19Comorbidities']) + count($response['covid19Results']) + count($response['covid19Symptoms']) + count($response['covid19ReasonForTesting']));
         if ($count > 0) {
-            $trackId = $app->addApiTracking('', $count, 'common-data', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $count, 'common-data', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
         }
     }
 
@@ -171,7 +171,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
         $count = (count($response['hepatitisRejectionReasons']) + count($response['hepatitisSampleTypes']) + count($response['hepatitisComorbidities']) + count($response['hepatitisResults']) + count($response['hepatitisReasonForTesting']));
         if ($count > 0) {
-            $trackId = $app->addApiTracking('', $count, 'common-data', 'hepatitis', null, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $count, 'common-data', 'hepatitis', null, $sarr['sc_testing_lab_id'], 'sync-api');
         }
     }
 

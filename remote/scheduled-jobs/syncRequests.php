@@ -156,7 +156,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
             //}
         }
         if ($counter > 0) {
-            $trackId = $app->addApiTracking('', $counter, 'requests', 'vl', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $counter, 'requests', 'vl', $url, $sarr['sc_testing_lab_id'], 'sync-api');
         }
     }
 }
@@ -272,7 +272,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             //}
         }
         if ($counter > 0) {
-            $trackId = $app->addApiTracking('', $counter, 'requests', 'eid', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $counter, 'requests', 'eid', $url, $sarr['sc_testing_lab_id'], 'sync-api');
         }
     }
 }
@@ -428,7 +428,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 
         if ($counter > 0) {
-            $trackId = $app->addApiTracking('', $counter, 'requests', 'covid19', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $counter, 'requests', 'covid19', $url, $sarr['sc_testing_lab_id'], 'sync-api');
         }
     }
 }
@@ -583,7 +583,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         }
 
         if ($counter > 0) {
-            $trackId = $app->addApiTracking('', $counter, 'requests', 'hepatitis', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $counter, 'requests', 'hepatitis', $url, $sarr['sc_testing_lab_id'], 'sync-api');
         }
     }
 }
@@ -689,7 +689,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
         }
 
         if ($counter > 0) {
-            $trackId = $app->addApiTracking('', $counter, 'requests', 'tb', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $counter, 'requests', 'tb', $url, $sarr['sc_testing_lab_id'], 'sync-api');
         }
     }
 }

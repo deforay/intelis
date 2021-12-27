@@ -55,7 +55,7 @@ $data = array();
 
 if (!empty($covid19RemoteResult) && count($covid19RemoteResult) > 0) {
 
-  $trackId = $app->addApiTracking('', count($covid19RemoteResult), 'requests', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
+  $trackId = $app->addApiTracking(null, count($covid19RemoteResult), 'requests', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
   $forms = array();
   foreach ($covid19RemoteResult as $row) {
     $forms[] = $row['covid19_id'];

@@ -57,7 +57,7 @@ $hepatitisRemoteResult = $db->rawQuery($hepatitisQuery);
 $data = array();
 
 if (!empty($hepatitisRemoteResult) && count($hepatitisRemoteResult) > 0) {
-    $trackId = $app->addApiTracking('', count($hepatitisRemoteResult), 'requests', 'hepatitis', null, $sarr['sc_testing_lab_id'], 'sync-api');
+    $trackId = $app->addApiTracking(null, count($hepatitisRemoteResult), 'requests', 'hepatitis', null, $sarr['sc_testing_lab_id'], 'sync-api');
     $forms = array();
     foreach ($hepatitisRemoteResult as $row) {
         $forms[] = $row['hepatitis_id'];
