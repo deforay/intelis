@@ -21,8 +21,8 @@ try {
                 if (!empty($userId)) {
                     $db->where("user_id", $userId);
                 }
-                if (!empty($post->loginId)) {
-                    $db->where("login_id", $post->loginId);
+                if (!empty($post->email)) {
+                    $db->where("login_id", $post->email);
                 }
                 $aRow = $db->getOne("user_details");
             }
@@ -41,8 +41,6 @@ try {
             $data['data_sync'] = 1;
             unset($data['sync']);
             unset($data['selectedFacility']);
-            $data['role'] = null;
-            $data['status'] = null;
 
             $id = 0;
             if (empty($userId) || empty($aRow) || $aRow == false) {
@@ -84,7 +82,6 @@ try {
             $post = json_decode($_POST['post']);
         }
         $userId = !empty($post->userId) ? base64_decode($post->userId) : null;
-
         if (!$apiKey) {
             $response = array(
                 'status' => 'failed',
@@ -95,15 +92,12 @@ try {
             exit(0);
         }
         $aRow = null;
-        if (!empty($userId) || !empty($post->loginId) || !empty($post->email)) {
+        if (!empty($userId) || !empty($post->email)) {
             if (!empty($userId)) {
                 $db->where("user_id", $userId);
             }
             if (!empty($post->email)) {
                 $db->where("email", $post->email);
-            }
-            if (!empty($post->loginId)) {
-                $db->where("login_id", $post->loginId);
             }
             $aRow = $db->getOne("user_details");
         }
