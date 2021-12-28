@@ -41,6 +41,8 @@ try {
             $data['data_sync'] = 1;
             unset($data['sync']);
             unset($data['selectedFacility']);
+            $data['role'] = null;
+            $data['status'] = null;
 
             $id = 0;
             if (empty($userId) || empty($aRow) || $aRow == false) {
@@ -94,9 +96,9 @@ try {
         }
         $aRow = null;
         if (!empty($userId) || !empty($post->loginId) || !empty($post->email)) {
-            /* if (!empty($userId)) {
+            if (!empty($userId)) {
                 $db->where("user_id", $userId);
-            } */
+            }
             if (!empty($post->email)) {
                 $db->where("email", $post->email);
             }
@@ -141,10 +143,11 @@ try {
         if (!empty($post->password)) {
             $data['password'] = sha1($post->password . $systemConfig['passwordSalt']);
         }
+
         $id = 0;
         if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
             $db = $db->where('user_id', $aRow['user_id']);
-            $db->update("user_details", $data);
+            $id = $db->update("user_details", $data);
         } else {
             $id = $db->insert("user_details", $data);
         }
