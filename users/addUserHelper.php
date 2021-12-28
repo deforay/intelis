@@ -82,6 +82,7 @@ try {
         $_POST['role'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['password'] = $general->generateRandomString();
         $_POST['status'] = 'inactive';
+        $_POST['userId'] = base64_encode($data['user_id']);
         $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
         $post = array('post' => json_encode($_POST), 'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18));
 
