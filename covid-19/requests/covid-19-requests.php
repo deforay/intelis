@@ -88,7 +88,7 @@ $batResult = $db->rawQuery($batQuery);
 
 						</tr>
 						<tr>
-							<td><b>Facility Name :</b></td>
+							<td><b>Facility Name:</b></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="Please select facility name" style="width:100%;">
 									<?= $facilitiesDropdown; ?>
@@ -104,11 +104,15 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
-						<td><b>Testing Lab :</b></td>
+							<td><b>Testing Lab :</b></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
+							</td>
+							<td><b>Patient ID</b></td>
+							<td>
+								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="Patient ID" title="Please enter the patient ID to search" />
 							</td>
 							<td><b>Gender&nbsp;:</b></td>
 							<td>
@@ -119,6 +123,8 @@ $batResult = $db->rawQuery($batQuery);
 									<option value="not_recorded">Not Recorded</option>
 								</select>
 							</td>
+						</tr>
+						<tr>
 							<td><b>Show only Reordered Samples&nbsp;:</b></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
@@ -127,9 +133,7 @@ $batResult = $db->rawQuery($batQuery);
 									<option value="no" selected="selected">No</option>
 								</select>
 							</td>
-						</tr>
-						<tr>
-						<td><b>Funding Sources&nbsp;:</b></td>
+							<td><b>Funding Sources&nbsp;:</b></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
 									<option value=""> -- Select -- </option>
@@ -150,7 +154,8 @@ $batResult = $db->rawQuery($batQuery);
 										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
 									<?php } ?>
 								</select>
-							</td></tr>
+							</td>
+						</tr>
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
@@ -449,6 +454,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "gender",
 					"value": $("#gender").val()
+				});
+				aoData.push({
+					"name": "patientId",
+					"value": $("#patientId").val()
 				});
 				aoData.push({
 					"name": "showReordSample",
