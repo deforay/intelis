@@ -171,16 +171,16 @@ try {
                 );
                 $id = $db->insert('r_vl_sample_rejection_reasons', $data);
                 $_POST['rejectionReason'] = $id;
-            } else {
-                $_POST['rejectionReason'] = NULL;
-            }
-        } else {
+            } 
+        }
+        else {
             $_POST['rejectionReason'] = NULL;
         }
     } else {
         $_POST['status'] = 6;
         $_POST['rejectionReason'] = NULL;
     }
+
     if ($_SESSION['instanceType'] == 'remoteuser') {
         $_POST['status'] = 9;
     }
