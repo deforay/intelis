@@ -1388,15 +1388,22 @@ $pResult = $db->rawQuery($pQuery);
 
     function checkIsResultAuthorized() {
         if ($('#isResultAuthorized').val() == 'no') {
-            $('#approvedBy,#approvedOn').val('');
+            $('#approvedOn').val('');
+            $('#approvedBy').val(null).trigger('change');
             $('#approvedBy,#approvedOn').prop('disabled', true);
             $('#approvedBy,#approvedOn').addClass('disabled');
             $('#approvedBy,#approvedOn').removeClass('isRequired');
             return false;
-        } else {
+        } else if ($('#isResultAuthorized').val() == 'yes'){
             $('#approvedBy,#approvedOn').prop('disabled', false);
             $('#approvedBy,#approvedOn').removeClass('disabled');
             $('#approvedBy,#approvedOn').addClass('isRequired');
+        }
+        if ($('#isResultAuthorized').val() == '') {
+            $('#approvedOn').val('');
+            $('#approvedBy').val(null).trigger('change');
+            $('#approvedBy,#approvedOn').prop('disabled', false);
+            $('#approvedBy,#approvedOn').removeClass('disabled');
         }
     }
 
