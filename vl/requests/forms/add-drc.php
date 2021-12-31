@@ -756,6 +756,7 @@ $sFormat = '';
 
 		} else {
 			$(".resultSection").show();
+			$("#rejectionReason").val('');
 			$(".rejectionReason").hide();
 			$("#rejectionReason").removeClass('isRequired');
 			$("#vlResult").css('pointer-events', 'auto');

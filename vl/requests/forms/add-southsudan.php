@@ -670,7 +670,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" value="<?php echo $general->humanDateFormat($general->getDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">

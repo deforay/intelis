@@ -418,7 +418,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
                                             <th class="show-rejection" style="display:none;">Reason for Rejection</th>
                                             <td class="show-rejection" style="display:none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the Reason for Rejection">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
                                                         <optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
@@ -438,7 +438,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
                                             <th>Rejection Date<span class="mandatory">*</span></th>
-                                            <td><input value="<?php echo $general->humanDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td><input value="<?php echo $general->humanDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date" /></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
@@ -577,7 +577,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </tr>
                                         <tr>
                                             <th>Authorized on</td>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" /></td>
+                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On"/></td>
                                             <th></th>
                                             <td></td>
                                         </tr>
@@ -777,7 +777,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
     function validateNow() {
-        if ($('#isResultAuthorized').val() == "no") {
+        if ($('#isResultAuthorized').val() == "no" || $('#isResultAuthorized').val() == '') {
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
         }
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
@@ -1024,11 +1024,18 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             $('#authorizedBy,#authorizedOn').prop('disabled', false);
             $('#authorizedBy,#authorizedOn').removeClass('disabled');
             $('#authorizedBy,#authorizedOn').addClass('isRequired');
-        } else {
-            $('#authorizedBy,#authorizedOn').val('');
+        } else if ($('#isResultAuthorized').val() == 'no') {
+            $('#authorizedBy').val(null).trigger('change');
+            $('#authorizedOn').val('');
             $('#authorizedBy,#authorizedOn').prop('disabled', true);
             $('#authorizedBy,#authorizedOn').addClass('disabled');
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
+        }
+        if ($('#isResultAuthorized').val() == '') {
+            $('#authorizedBy').val(null).trigger('change');
+            $('#authorizedOn').val('');
+            $('#authorizedBy,#authorizedOn').prop('disabled', false);
+            $('#authorizedBy,#authorizedOn').removeClass('disabled');
         }
     }
 

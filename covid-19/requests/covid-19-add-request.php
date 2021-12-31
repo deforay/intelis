@@ -205,8 +205,10 @@ if (file_exists($fileArray[$arr['vl_form']])) {
                 $('#sampleTestedDateTime,#result,.test-name-table-input').removeClass('isRequired');
                 $('#result').prop('disabled', true);
                 $('#sampleRejectionReason').prop('disabled', false);
+                $('#sampleTestedDateTime,#result,.test-name-table-input').val('');
                 // }else if(this.value == 'no'){
-            } else {
+            } else if(this.value == 'no') {
+                $('#sampleRejectionReason').val('');
                 $('#rejectionDate').val('');
                 $('.show-rejection').hide();
                 $('.test-name-table-input').prop('disabled', false);
@@ -217,6 +219,15 @@ if (file_exists($fileArray[$arr['vl_form']])) {
                 $('#sampleRejectionReason').prop('disabled', true);
                 checkPostive();
             }
+            if (this.value == '') {
+            $('#sampleRejectionReason').val('');
+            $('#rejectionDate').val('');
+            $('.show-rejection').hide();
+            $('#sampleRejectionReason,#rejectionDate').removeClass('isRequired');
+            $('#sampleTestedDateTime,#result,.test-name-table-input').removeClass('isRequired');
+            $('#sampleRejectionReason').prop('disabled', true);
+            $('#sampleTestedDateTime,#result,.test-name-table-input').val('');
+        }
         });
         $('#hasRecentTravelHistory').change(function(e) {
             if (this.value == 'no' || this.value == 'unknown') {

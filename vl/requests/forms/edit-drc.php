@@ -842,6 +842,7 @@ $sampleSuggestionDisplay = 'display:none;';
 			//$("#vlResult").removeClass('isRequired');
 		} else {
 			$(".rejectionReason").hide();
+			$("#rejectionReason").val('');
 			$("#rejectionReason").removeClass('isRequired');
 			$("#vlResult").css('pointer-events', 'auto');
 			$("#vlLog").css('pointer-events', 'auto');

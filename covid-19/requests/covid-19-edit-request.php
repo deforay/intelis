@@ -292,15 +292,26 @@ if (file_exists($fileArray[$arr['vl_form']])) {
             $('#sampleTestedDateTime,#result,.test-name-table-input').removeClass('isRequired');
             $('#result').prop('disabled', true);
             $('#sampleRejectionReason').prop('disabled', false);
+            $('#sampleTestedDateTime,#result,.test-name-table-input').val('');
         } else if (val == 'no') {
+            $('#sampleRejectionReason').val('');
             $('#rejectionDate').val('');
             $('.show-rejection').hide();
             $('.test-name-table-input').prop('disabled', false);
             $('.test-name-table').removeClass('disabled');
             $('#sampleRejectionReason,#rejectionDate').removeClass('isRequired');
-            // $('#sampleTestedDateTime,#result,.test-name-table-input').addClass('isRequired');
+            $('#sampleTestedDateTime,#result,.test-name-table-input').addClass('isRequired');
             $('#result').prop('disabled', false);
             $('#sampleRejectionReason').prop('disabled', true);
+        }
+        if (val == '') {
+            $('#sampleRejectionReason').val('');
+            $('#rejectionDate').val('');
+            $('.show-rejection').hide();
+            $('#sampleRejectionReason,#rejectionDate').removeClass('isRequired');
+            $('#sampleTestedDateTime,#result,.test-name-table-input').removeClass('isRequired');
+            $('#sampleRejectionReason').prop('disabled', true);
+            $('#sampleTestedDateTime,#result,.test-name-table-input').val('');
         }
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             checkPostive();
