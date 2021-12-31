@@ -82,7 +82,7 @@ if (isset($vlQueryInfo['result_approved_datetime']) && trim($vlQueryInfo['result
      $vlQueryInfo['result_approved_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
      $sampleCollectionDate = '';
-     $vlQueryInfo['result_approved_datetime'] = $general->humanDateFormat($general->getDateTime());
+     $vlQueryInfo['result_approved_datetime'] = '';
 }
 
 if (isset($vlQueryInfo['treatment_initiated_date']) && trim($vlQueryInfo['treatment_initiated_date']) != '' && $vlQueryInfo['treatment_initiated_date'] != '0000-00-00') {

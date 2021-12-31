@@ -113,7 +113,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
     $expStr = explode(" ", $eidInfo['result_approved_datetime']);
     $eidInfo['result_approved_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-    $eidInfo['result_approved_datetime'] = $general->humanDateFormat($general->getDateTime());
+    $eidInfo['result_approved_datetime'] = '';
 }
 
 if (isset($eidInfo['result_reviewed_datetime']) && trim($eidInfo['result_reviewed_datetime']) != '' && $eidInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
