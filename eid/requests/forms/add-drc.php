@@ -469,13 +469,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 
 											<th class="rejected" style="display: none;">Reason for Rejection</th>
 											<td class="rejected" style="display: none;">
-												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
-													<option value=''> -- Sélectionner -- </option>
-													<option value="Technical Problem"> Problème technique </option>
-													<option value="Poor numbering" /> Mauvaise numérotation </option>
-													<option value="Insufficient sample" /> Echantillon insuffisant </option>
-													<option value="Degraded sample or clot" /> Echantillon dégradé ou caillot </option>
-													<option value="Poor packaging" /> Mauvais empaquetage </option>
+
+												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?> onchange="">
+													<option value="">-- Sélectionner --</option>
+													<?php foreach ($rejectionTypeResult as $type) { ?>
+														<optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
+															<?php
+															foreach ($rejectionResult as $reject) {
+																if ($type['rejection_type'] == $reject['rejection_type']) { ?>
+																	<option value="<?php echo $reject['rejection_reason_id']; ?>" ><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+															<?php }
+															} ?>
+														</optgroup>
+													<?php }  ?>
 												</select>
 											</td>
 										</tr>

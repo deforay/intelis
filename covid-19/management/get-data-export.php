@@ -72,16 +72,12 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = " WHERE result_status is NOT NULL ";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
-               $sWhereSub .= "(";
-          } else {
-               $sWhereSub .= " AND (";
-          }
+          $sWhereSub .= "(";
           $colSize = count($aColumns);
 
           for ($i = 0; $i < $colSize; $i++) {
@@ -93,17 +89,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere .= $sWhereSub;
+     $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          if ($sWhere == "") {
-               $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          } else {
-               $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          }
+          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -229,60 +221,60 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 }
 /* Facility Id filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-     $sWhere = $sWhere . ' AND vl.facility_id = "' . $_POST['facilityName'] . '"';
+     $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';
 }
 /* Testing lab filter */
 if (isset($_POST['testingLab']) && trim($_POST['testingLab']) != '') {
-     $sWhere = $sWhere . ' AND vl.lab_id = "' . $_POST['testingLab'] . '"';
+     $sWhere[] = ' vl.lab_id = "' . $_POST['testingLab'] . '"';
 }
 /* Result filter */
 if (isset($_POST['result']) && trim($_POST['result']) != '') {
-     $sWhere = $sWhere . ' AND vl.result like "' . $_POST['result'] . '"';
+     $sWhere[] = ' vl.result like "' . $_POST['result'] . '"';
 }
 /* Status filter */
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
-     $sWhere = $sWhere . ' AND vl.result_status =' . $_POST['status'];
+     $sWhere[] = ' vl.result_status =' . $_POST['status'];
 }
 /* Funding src filter */
 if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-     $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+     $sWhere[] = ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
 }
 /* Implementing partner filter */
 if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+     $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
 }
 /* Batch code filter */
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-     $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
+     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 
 /* Date time filtering */
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
 if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
      if (trim($rstart_date) == trim($rend_date)) {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_registered_at_lab) = "' . $rstart_date . '"';
+          $sWhere[] = ' DATE(vl.sample_registered_at_lab) = "' . $rstart_date . '"';
      } else {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_registered_at_lab) >= "' . $rstart_date . '" AND DATE(vl.sample_registered_at_lab) <= "' . $rend_date . '"';
+          $sWhere[] = ' DATE(vl.sample_registered_at_lab) >= "' . $rstart_date . '" AND DATE(vl.sample_registered_at_lab) <= "' . $rend_date . '"';
      }
 }
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '' && $_POST['status'] == 7) {
      if (trim($sTestDate) == trim($eTestDate)) {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
      } else {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (trim($sPrintDate) == trim($eTestDate)) {
-          $sWhere = $sWhere . ' AND DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+          $sWhere[] = ' DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
      } else {
-          $sWhere = $sWhere . ' AND DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
+          $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
 
@@ -293,11 +285,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
      if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
+          $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
           $cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
 }
-$sQuery = $sQuery . ' ' . $sWhere;
+$sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
 //echo $sQuery;die;
 
 
@@ -319,8 +311,8 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
-          * Output
-          */
+* Output
+*/
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,

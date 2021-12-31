@@ -9,6 +9,7 @@ $jsonResponse = file_get_contents('php://input');
 try {
     if (isset($jsonResponse) && $jsonResponse != "") {
         $decode = json_decode($jsonResponse, true);
+        $_POST = $decode;
     }
 
     if (isset($decode['api-type']) && $decode['api-type'] == "sync") {
@@ -20,8 +21,8 @@ try {
                 if (!empty($userId)) {
                     $db->where("user_id", $userId);
                 }
-                if (!empty($post->loginId)) {
-                    $db->where("login_id", $post->loginId);
+                if (!empty($post->email)) {
+                    $db->where("login_id", $post->email);
                 }
                 $aRow = $db->getOne("user_details");
             }
@@ -66,6 +67,7 @@ try {
             }
         }
     } else {
+
         $apiKey = isset($_POST['x-api-key']) && !empty($_POST['x-api-key']) ? $_POST['x-api-key'] : null;
 
         if (!$_POST['post']) {
@@ -76,9 +78,10 @@ try {
             );
             echo json_encode($response);
             exit(0);
+        } else {
+            $post = json_decode($_POST['post']);
         }
         $userId = !empty($post->userId) ? base64_decode($post->userId) : null;
-
         if (!$apiKey) {
             $response = array(
                 'status' => 'failed',
@@ -93,8 +96,8 @@ try {
             if (!empty($userId)) {
                 $db->where("user_id", $userId);
             }
-            if (!empty($post->loginId)) {
-                $db->where("login_id", $post->loginId);
+            if (!empty($post->email)) {
+                $db->where("email", $post->email);
             }
             $aRow = $db->getOne("user_details");
         }
@@ -115,12 +118,11 @@ try {
                 $data['user_signature'] = $imageName;
             }
         }
-
-
         $data = array(
-            'user_id' => !empty($userId) ? $userId : $general->generateUUID(),
+            'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
             'user_name' => $post->userName,
             'email' => $post->email,
+            'interface_user_name' => $post->interfaceUserName,
             'login_id' => $post->loginId,
             'phone_number' => $post->phoneNo,
             'user_signature' => $imageName
@@ -136,16 +138,17 @@ try {
             $data['password'] = sha1($post->password . $systemConfig['passwordSalt']);
         }
 
-        if (empty($userId) || empty($aRow) || $aRow == false) {
-            $id = $db->insert("user_details", $data);
+        $id = 0;
+        if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
+            $db = $db->where('user_id', $aRow['user_id']);
+            $id = $db->update("user_details", $data);
         } else {
-            $userId = $data['user_id'] = $aRow['user_id'];
-            $db->update("user_details", $data);
-            $db = $db->where('user_id', $data['user_id']);
-            $delId = $db->delete("vl_user_facility_map");
+            $id = $db->insert("user_details", $data);
         }
         if ($id > 0 && trim($post->selectedFacility) != '') {
             if ($id > 0 && trim($post->selectedFacility) != '') {
+                $db = $db->where('user_id', $data['user_id']);
+                $delId = $db->delete("vl_user_facility_map");
                 $selectedFacility = explode(",", $post->selectedFacility);
                 $uniqueFacilityId = array_unique($selectedFacility);
                 for ($j = 0; $j <= count($selectedFacility); $j++) {

@@ -79,11 +79,10 @@ try {
     }
     $userType = $general->getSystemConfig('sc_user_type');
     if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $userType == 'vluser') {
-        
         $_POST['role'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['password'] = $general->generateRandomString();
         $_POST['status'] = 'inactive';
-        $_POST['userId'] = $data['user_id'];
+        $_POST['userId'] = base64_encode($data['user_id']);
         $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
         $post = array('post' => json_encode($_POST), 'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18));
 
@@ -97,7 +96,6 @@ try {
         $deResult = json_decode($result, true);
         // echo "<pre>";print_r($deResult);die;
     }
-
     //Add event log
     $eventType = 'user-add';
     $action = ucwords($_SESSION['userName']) . ' added user ' . $_POST['userName'];

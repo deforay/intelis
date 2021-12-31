@@ -1531,11 +1531,18 @@ $pResult = $db->rawQuery($pQuery);
             $('#approvedBy,#approvedOn').prop('disabled', false);
             $('#approvedBy,#approvedOn').removeClass('disabled');
             $('#approvedBy,#approvedOn').addClass('isRequired');
-        } else {
-            $('#approvedBy,#approvedOn').val('');
+        } else if ($('#isResultAuthorized').val() == 'no') {
+            $('#approvedOn').val('');
+            $('#approvedBy').val(null).trigger('change');
             $('#approvedBy,#approvedOn').prop('disabled', true);
             $('#approvedBy,#approvedOn').addClass('disabled');
             $('#approvedBy,#approvedOn').removeClass('isRequired');
+        }
+        if ($('#isResultAuthorized').val() == '') {
+            $('#approvedOn').val('');
+            $('#approvedBy').val(null).trigger('change');
+            $('#approvedBy,#approvedOn').prop('disabled', false);
+            $('#approvedBy,#approvedOn').removeClass('disabled');
         }
     }
 
