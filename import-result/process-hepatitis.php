@@ -1,6 +1,6 @@
 <?php
 
-// this file is included in /import-result/procesImportedResults.php
+// this file is included in /import-result/processImportedResults.php
 
 $fileName = null;
 $importedBy = $_SESSION['userId'];

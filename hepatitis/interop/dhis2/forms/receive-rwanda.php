@@ -30,7 +30,7 @@ if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('N
 
 $trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
 
-$dhis2GenderOptions = array('Male' => 'male', 'Female' => 'female');
+$dhis2GenderOptions = array('Male' => 'male', '1' => 'male', 'Female' => 'female', '2' => 'female');
 $dhis2SocialCategoryOptions = array('1' => 'A', '2' => 'B', '3' => 'C', '4' => 'D');
 //$dhis2VlTestReasonOptions = array('I_VL001' => 'Initial HBV VL', 'HBV_F0012' => 'Follow up HBV VL', 'SVR12_HCV01' => 'SVR12 HCV VL');
 
@@ -49,7 +49,7 @@ $attributesDataElementMapping = [
     'p2e195R27TO' => 'patient_name',
     'mtRPhPyLDsv' => 'patient_dob',
     'DP8JyLEof33' => 'social_category',
-    'Rq4qM2wKYFL' => 'patient_gender',
+    'IeduuuWaWa4' => 'patient_gender',
     //'' => 'patient_nationality'
 ];
 
@@ -124,7 +124,32 @@ foreach ($trackedEntityInstances as $tracker) {
         $facility = $tracker['orgUnit'];
 
 
+        if (!empty($formData['anti_hcv_result'])) {
+            if ($formData['anti_hcv_result'] == 'Reactive') {
+                $formData['anti_hcv_result'] = 'positive';
+            } else if ($formData['anti_hcv_result'] == 'NonReactive') {
+                $formData['anti_hcv_result'] = 'negative';
+            } else if ($formData['anti_hcv_result'] == 'Indeterminate') {
+                $formData['anti_hcv_result'] = 'indeterminate';
+            }
+        } else {
+            $formData['anti_hcv_result'] = null;
+        }
 
+        if (!empty($formData['hbsag_result'])) {
+            if ($formData['hbsag_result'] == 'Reactive') {
+                $formData['hbsag_result'] = 'positive';
+            } else if ($formData['hbsag_result'] == 'NonReactive') {
+                $formData['hbsag_result'] = 'negative';
+            } else if ($formData['hbsag_result'] == 'Indeterminate') {
+                $formData['hbsag_result'] = 'indeterminate';
+            }
+        } else {
+            $formData['hbsag_result'] = null;
+        }
+        if ($formData['hbsag_result'] == null && $formData['anti_hcv_result'] == null) {
+            continue;
+        }
 
 
         //$formData['patient_province'] = $_SESSION['DHIS2_HEP_PROVINCES'][$formData['patient_province']];
@@ -136,6 +161,12 @@ foreach ($trackedEntityInstances as $tracker) {
             $db->where("test_reason_name", $formData['reason_for_hepatitis_test']);
             $reason = $db->getOne("r_hepatitis_test_reasons");
             $formData['reason_for_hepatitis_test'] = $reason['test_reason_id'];
+        } else {
+            $formData['reason_for_hepatitis_test'] = null;
+        }
+
+        if ($formData['reason_for_hepatitis_test'] == null) {
+            //continue;
         }
 
 
@@ -183,6 +214,8 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $formData['reason_for_vl_test'] = (!empty($formData['reason_for_vl_test']) ?  $dhis2VlTestReasonOptions[$_SESSION['DHIS2_VL_TEST_REASONS'][$formData['reason_for_vl_test']]] : null);
 
+
+
         $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ?  $formData['sample_collection_date'] : $enrollmentDate);
         $formData['reason_for_hepatitis_test'] = (!empty($formData['reason_for_hepatitis_test']) ?  $formData['reason_for_hepatitis_test'] : "Suspect");
         if (isset($formData['hepatitis_test_type']) && stripos($formData['hepatitis_test_type'], "hbv") === FALSE) {
@@ -190,6 +223,8 @@ foreach ($trackedEntityInstances as $tracker) {
         } else {
             $formData['hepatitis_test_type'] = "HCV";
         }
+
+
 
 
         // echo "<pre>";

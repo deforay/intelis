@@ -265,7 +265,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                 </div>
 
                 <form class="form-horizontal" method="post" name="updateHepatitisRequestForm" id="updateHepatitisRequestForm" autocomplete="off" action="hepatitis-update-result-helper.php">
-                    <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+                <?php if ($usersModel->isAllowed('covid-19-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>                        
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="box-header with-border">
@@ -326,7 +326,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                         <th>Rejection Date<span class="mandatory">*</span></th>
                                         <td><input value="<?php echo $general->humanDateFormat($hepatitisInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <th class="hcvFields"><label for="hcv">HCV VL Result</label></th>
                                         <td class="hcvFields">
                                             <select class="hcvFields result-focus form-control rejected-input" name="hcv" id="hcv">
@@ -339,7 +339,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                                 <?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hbv_vl_result'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <th class="hcvFields"><label for="hcvCount">HCV VL Count</label></th>
                                         <td class="hcvFields">

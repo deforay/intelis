@@ -30,7 +30,7 @@ $primaryKey = "hepatitis_id";
 */
 $sampleCode = 'sample_code';
 
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$aColumns = array('vl.sample_code','vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -388,7 +388,7 @@ foreach ($rResult as $aRow) {
      $row = array();
 
      //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow[$primaryKey] . '"  value="' . $aRow[$primaryKey] . '" onclick="toggleTest(this);"  />';
-     $row[] = $aRow['sample_code'];
+     $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
      if ($sarr['sc_user_type'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }

@@ -122,7 +122,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                    <?php if ($_SESSION['instanceType'] == 'remoteuser'  && $_SESSION['accessType'] == 'collection-site') { ?>
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
@@ -291,10 +291,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                             <th><label for="vlTestingSite">VL Testing Site</label></th>
                                             <td>
-                                            <select class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" title="Please select testing site" style="width:100%;">
-									<?= $testingLabsDropdown; ?>
-								</select>
-                            </td>
+                                                <select class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" title="Please select testing site" style="width:100%;">
+                                                    <?= $testingLabsDropdown; ?>
+                                                </select>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th><label for="reasonVlTest">VL test purpose</label></th>
@@ -616,8 +616,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             placeholder: "Lab Name"
         });
         $("#vlTestingSite").select2({
-			placeholder: "Select Vl Testing Site"
-		});
+            placeholder: "Select Vl Testing Site"
+        });
+        $("#labId").select2({
+            placeholder: "Select Testing Lab"
+        });
 
         $('#isResultAuthorized').change(function(e) {
             checkIsResultAuthorized();

@@ -5,8 +5,9 @@
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 //$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_sent_to_source LIKE 'pending'";
-$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7 AND result_sent_to_source NOT LIKE 'sent'";
+$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7" ;// AND result_sent_to_source NOT LIKE 'sent'";
 $formResults = $db->rawQuery($query);
+//var_dump($formResults);die;
 $counter = 0;
 foreach ($formResults as $row) {
 
@@ -44,7 +45,7 @@ foreach ($formResults as $row) {
 
 
   if (!empty($row['facility_id'])) {
-    $facQuery = "SELECT facility_id, facility_name, other_id from facility_details where facility_id = " . $row['facility_id'];
+    $facQuery = "SELECT facility_id, facility_name, other_id FROM facility_details where facility_id = " . $row['facility_id'];
     $facResult = $db->rawQueryOne($facQuery);
     $orgUnitId = $facResult['other_id'];
   } else {

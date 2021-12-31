@@ -6,6 +6,7 @@ include_once(APPLICATION_PATH . '/header.php');
 
 
 
+$general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $userDb = new \Vlsm\Models\Users();
 $hepatitisDb = new \Vlsm\Models\Hepatitis();
@@ -75,6 +76,14 @@ foreach ($specimenTypeResult as $name) {
 	$specimenResult[$name['sample_id']] = ucwords($name['sample_name']);
 }
 $disable = "disabled = 'disabled'";
+
+
+// Import machine config
+$testPlatformResult = $general->getTestingPlatforms('hepatitis');
+foreach ($testPlatformResult as $row) {
+	$testPlatformList[$row['machine_name']] = $row['machine_name'];
+}
+
 ?>
 <style>
 	.disabledForm {
@@ -125,27 +134,12 @@ $disable = "disabled = 'disabled'";
 </style>
 <?php
 
-// Import machine config
-$testPlatformResult = $general->getTestingPlatforms('hepatitis');
-foreach ($testPlatformResult as $row) {
-	$testPlatformList[$row['machine_name']] = $row['machine_name'];
-}
 $fileArray = array(
-	1 => 'forms/update-southsudan-result.php',
-	2 => 'forms/update-zimbabwe-result.php',
-	3 => 'forms/update-drc-result.php',
-	4 => 'forms/update-zambia-result.php',
-	5 => 'forms/update-png-result.php',
-	6 => 'forms/update-who-result.php',
-	7 => 'forms/update-rwanda-result.php',
-	8 => 'forms/update-angola-result.php',
+	7 => 'forms/update-rwanda-result.php'
 );
 
-if (file_exists($fileArray[$arr['vl_form']])) {
-	require_once($fileArray[$arr['vl_form']]);
-} else {
-	require_once('forms/update-who-result.php');
-}
+require_once($fileArray[$arr['vl_form']]);
+
 ?>
 
 <script>

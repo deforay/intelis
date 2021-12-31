@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 #require_once('../../startup.php');
 
@@ -29,7 +29,7 @@ $primaryKey = "hepatitis_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name',  'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
@@ -118,7 +118,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT vl.*,b.*,ts.*,f.facility_name,
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,f.facility_name,
           l_f.facility_name as labName,
           l_f.facility_logo as facilityLogo,
           l_f.header_text as headerText,
@@ -302,12 +302,8 @@ if (isset($sLimit) && isset($sOffset)) {
 // echo ($sQuery);die();
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
-
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT * FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere order by $sOrder");
-$iTotal = count($aResultTotal);
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
           * Output
@@ -323,15 +319,15 @@ $hepatitisResults = $hepatitisDb->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $row = array();
      $print = '<a href="hepatitis-update-result.php?id=' . base64_encode($aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><i class="fa fa-pencil-square-o"></i> Enter Result</a>';
-     if($aRow['result_status'] == 7 && $aRow['locked'] == 'yes'){
-          if( isset($_SESSION['privileges']) && !in_array("edit-locked-hepatitis-samples", $_SESSION['privileges'])){
+     if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
+          if (isset($_SESSION['privileges']) && !in_array("edit-locked-hepatitis-samples", $_SESSION['privileges'])) {
                $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="Locked" disabled><i class="fa fa-lock"> Locked</i></a>';
           }
      }
 
 
 
-     $row[] = $aRow['sample_code'];
+     $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
      if ($sarr['sc_user_type'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }

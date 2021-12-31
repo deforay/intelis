@@ -108,32 +108,42 @@ try {
             }
 
             if (trim($row[$absValCol]) != "") {
-                $resVal = explode("(", $row[$absValCol]);
+                $resVal = explode("(", trim($row[$absValCol]));
                 if (count($resVal) == 2) {
+                    $resultValue = trim($resVal[0]);
+                    $resultLogValue = trim($resVal[1]);
+                } else {
+                    $resultValue = trim($row[$absValCol]);
+                    $resultLogValue = null;
+                }
 
-                    if (strpos($resVal[0], "<") !== false) {
-                        $resVal[0] = str_replace("<", "", $resVal[0]);
-                        $absDecimalVal = (float) trim($resVal[0]);
-                        $absVal = "< " . (float) trim($resVal[0]);
-                    } else if (strpos($resVal[0], ">") !== false) {
-                        $resVal[0] = str_replace(">", "", $resVal[0]);
-                        $absDecimalVal = (float) trim($resVal[0]);
-                        $absVal = "> " . (float) trim($resVal[0]);
-                    } else {
-                        $absVal = (float) trim($resVal[0]);
-                        $absDecimalVal = (float) trim($resVal[0]);
-                    }
 
-                    $logVal = substr(trim($resVal[1]), 0, -1);
+                if (is_numeric($resultValue)) {
+                    $absVal = (float) ($resultValue);
+                    $absDecimalVal = (float) ($resultValue);
+                } else if (strpos($resultValue, "<") !== false) {
+                    $resultValue = str_replace("<", "", $resultValue);
+                    $absDecimalVal = (float) ($resultValue);
+                    $absVal = "< " . (float) ($resultValue);
+                } else if (strpos($resultValue, ">") !== false) {
+                    $resultValue = str_replace(">", "", $resultValue);
+                    $absDecimalVal = (float) ($resultValue);
+                    $absVal = "> " . (float) ($resultValue);
+                } else {
+                    $txtVal = $resultValue;
+                }
+
+                if (!empty($resultLogValue)) {
+                    $logVal = substr(trim($resultLogValue), 0, -1);
                     if ($logVal == "1.30" || $logVal == "1.3") {
                         $absDecimalVal = 20;
                         $absVal = "< 20";
                     }
-                } else {
-                    $txtVal = trim($row[$absValCol]);
-                    if ($txtVal == 'Invalid') {
-                        $resultFlag = trim($txtVal);
-                    }
+                }
+
+                //$txtVal = trim($row[$absValCol]);
+                if ($resultValue == 'Invalid') {
+                    $resultFlag = 'Invalid';
                 }
             }
 
@@ -177,7 +187,7 @@ try {
         $refno = 0;
         foreach ($infoFromFile as $sampleCode => $d) {
 
-            
+
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
                 $d['sampleCode'] = '';
             }

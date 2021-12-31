@@ -290,9 +290,9 @@ foreach ($rejectionTypeResult as $type) {
 				},
 				//{"sClass":"center","bSortable":false},
 			],
-			/* "aaSorting": [
+			"aaSorting": [
 				[colmun, "desc"]
-			], */
+			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;

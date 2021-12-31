@@ -34,7 +34,7 @@ $primaryKey = "hepatitis_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)',  'f.facility_name', 'f.facility_code', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)',  'f.facility_name', 'f.facility_code', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_code',  'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
@@ -118,7 +118,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 $aWhere = '';
-$sQuery = "SELECT * FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 //echo $sQuery;die;
 $start_date = '';
@@ -238,11 +238,8 @@ $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id  $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
-
-$aResultTotal = $db->rawQuery("SELECT * FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iTotal = count($aResultTotal);
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
           * Output
@@ -283,7 +280,7 @@ foreach ($rResult as $aRow) {
 
     $row = array();
     $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['hepatitis_id'] . '"  value="' . $aRow['hepatitis_id'] . '" onclick="toggleTest(this);"  />';
-    $row[] = $aRow['sample_code'];
+    $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
     if ($sarr['sc_user_type'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
@@ -293,7 +290,7 @@ foreach ($rResult as $aRow) {
     $row[] = $patientFname . " " . $patientLname;
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['hcv_vl_count'];
-	$row[] = $aRow['hbv_vl_count'];
+    $row[] = $aRow['hbv_vl_count'];
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['last_modified_datetime']);
         $aRow['last_modified_datetime'] = $general->humanDateFormat($xplodDate[0]) . " " . $xplodDate[1];

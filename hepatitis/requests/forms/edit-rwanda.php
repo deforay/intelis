@@ -160,7 +160,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser'  && $_SESSION['accessType'] == 'collection-site') { ?>
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
@@ -297,7 +297,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         </div>
 
 
-                        <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+                        <?php if ($usersModel->isAllowed('hepatitis-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -341,7 +341,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th>Is Sample Rejected ?</th>
                                             <td>
                                                 <select class="labSecInput form-control result-focus" name="isSampleRejected" id="isSampleRejected">
-                                                    <option value=''> -- Select -- </option>
+                                                    <option value=""> -- Select -- </option>
                                                     <option value="yes" <?php echo ($hepatitisInfo['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                     <option value="no" <?php echo ($hepatitisInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
@@ -375,11 +375,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th class="hcvFields"><label for="hcvCount">HCV VL Count</label></th>
                                             <td class="hcvFields">
-                                                <input value="<?php echo $hepatitisInfo['hcv_vl_count']; ?>" type="text" class="hcvFields labSecInput form-control rejected-input" placeholder="Enter HCV Count" title="Please enter HCV Count" name="hcvCount" id="hcvCount">
+                                                <input value="<?php echo $hepatitisInfo['hcv_vl_count']; ?>" data-val="" type="text" class="hcvFields  result-focus labSecInput form-control rejected-input" placeholder="Enter HCV Count" title="Please enter HCV Count" name="hcvCount" id="hcvCount">
                                             </td>
                                             <th class="hbvFields"><label for="hbvCount">HBV VL Count</label></th>
                                             <td class="hbvFields">
-                                                <input value="<?php echo $hepatitisInfo['hbv_vl_count']; ?>" type="text" class="hbvFields labSecInput form-control rejected-input" placeholder="Enter HBV Count" title="Please enter HBV Count" name="hbvCount" id="hbvCount">
+                                                <input value="<?php echo $hepatitisInfo['hbv_vl_count']; ?>" data-val="" type="text" class="hbvFields result-focus labSecInput form-control rejected-input" placeholder="Enter HBV Count" title="Please enter HBV Count" name="hbvCount" id="hbvCount">
                                             </td>
                                         </tr>
                                         <tr>
@@ -576,8 +576,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $('#province').select2({
             placeholder: "Province"
         });
-        $('#labId').select2({
-            placeholder: "Lab Name"
+        
+        $("#labId").select2({
+            placeholder: "Select Testing Lab"
         });
         $("#vlTestingSite").select2({
 			placeholder: "Select Vl Testing Site"

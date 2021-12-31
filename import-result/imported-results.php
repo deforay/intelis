@@ -133,15 +133,6 @@ foreach ($rejectionTypeResult as $type) {
 				<div class="box">
 					<div class="box-header with-border">
 						<div class="box-header with-border">
-							<!--<div class="col-md-4 col-sm-4">
-				<select style="" class="form-control" id="status" name="status" title="Please select test status" >
-				  <option value="">-- Select --</option>
-				  <option value="7">Accepted</option>
-				  <option value="1">Hold</option>
-				  <option value="4">Rejected</option>
-				</select>
-				</div>
-			  <div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="Update" class="btn btn-success btn-sm"></div>-->
 							<ul style="list-style: none;float: right;">
 								<li><i class="fa fa-square" aria-hidden="true" style="color:#e8000b;"></i> - Unknown Sample</li>
 								<li><i class="fa fa-square" aria-hidden="true" style="color:#86c0c8;"></i> - Existing Result</li>
@@ -158,7 +149,7 @@ foreach ($rejectionTypeResult as $type) {
 							<thead>
 								<tr>
 									<!--<th style="width: 1%;"><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
-									<th style="width: 23%;">Form Serial No.</th>
+									<th style="width: 23%;">Sample Code/ID</th>
 									<th style="width: 11%;">Sample Collection Date</th>
 									<th style="width: 10%;">Sample Test Date</th>
 									<th style="width: 10%;">Clinic Name</th>
@@ -208,7 +199,7 @@ foreach ($rejectionTypeResult as $type) {
 									foreach ($userResult as $uName) {
 									?>
 										<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $reviewBy) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
-										<?php
+									<?php
 									}
 									?>
 								</select>
@@ -254,17 +245,17 @@ foreach ($rejectionTypeResult as $type) {
 	var selectedTestsIdValue = [];
 	$(document).ready(function() {
 		$('#testedBy').select2({
-			width : '100%',
-            placeholder: "Select Tested By"
-        });
+			width: '100%',
+			placeholder: "Select Tested By"
+		});
 		$('#reviewedBy').select2({
-			width : '100%',
-            placeholder: "Select Reviewed By"
-        });
+			width: '100%',
+			placeholder: "Select Reviewed By"
+		});
 		$('#approvedBy').select2({
-			width : '100%',
-            placeholder: "Select Approved By"
-        });
+			width: '100%',
+			placeholder: "Select Approved By"
+		});
 		loadVlRequestData();
 	});
 
@@ -661,7 +652,7 @@ foreach ($rejectionTypeResult as $type) {
 					oTable.fnDraw();
 					$.unblockUI();
 				});
-			
+
 		} else {
 			oTable.fnDraw();
 		}

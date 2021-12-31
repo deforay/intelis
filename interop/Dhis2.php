@@ -251,6 +251,10 @@ class Dhis2
 		$return = curl_exec($ch);
 		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
+
+		return $return;
+
+		
 		if ($httpStatus === 200 && !empty($return)) {
 			return $return;
 		} else {
