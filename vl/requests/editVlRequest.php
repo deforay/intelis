@@ -70,10 +70,10 @@ if (isset($vlQueryInfo['sample_collection_date']) && trim($vlQueryInfo['sample_c
 }
 
 if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
-	$vlQueryInfo['sample_dispatched_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+     $expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
+     $vlQueryInfo['sample_dispatched_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-	$vlQueryInfo['sample_dispatched_datetime'] = '';
+     $vlQueryInfo['sample_dispatched_datetime'] = '';
 }
 
 if (isset($vlQueryInfo['result_approved_datetime']) && trim($vlQueryInfo['result_approved_datetime']) != '' && $vlQueryInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
@@ -454,20 +454,21 @@ if ($arr['vl_form'] == 1) {
           format = splitDate[2] + '-' + fMonth + '-' + splitDate[0];
           return format;
      }
+
      function showPatientList() {
-        $("#showEmptyResult").hide();
-        if ($.trim($("#artPatientNo").val()) != '') {
-            $.post("/vl/requests/checkPatientExist.php", {
-                    artPatientNo: $("#artPatientNo").val()
-                },
-                function(data) {
-                    if (data >= '1') {
-                        showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
-                    } else {
-                        $("#showEmptyResult").show();
-                    }
-                });
-        }
-    }
+          $("#showEmptyResult").hide();
+          if ($.trim($("#artPatientNo").val()) != '') {
+               $.post("/vl/requests/checkPatientExist.php", {
+                         artPatientNo: $("#artPatientNo").val()
+                    },
+                    function(data) {
+                         if (data >= '1') {
+                              showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+                         } else {
+                              $("#showEmptyResult").show();
+                         }
+                    });
+          }
+     }
 </script>
 <?php include(APPLICATION_PATH . '/footer.php'); ?>

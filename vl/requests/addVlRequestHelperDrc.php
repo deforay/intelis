@@ -171,9 +171,8 @@ try {
                 );
                 $id = $db->insert('r_vl_sample_rejection_reasons', $data);
                 $_POST['rejectionReason'] = $id;
-            } 
-        }
-        else {
+            }
+        } else {
             $_POST['rejectionReason'] = NULL;
         }
     } else {
@@ -323,6 +322,7 @@ try {
         $vlDb = new \Vlsm\Models\Vl();
         $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
+    // echo "<pre>";print_r($vldata);die;
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $vldata);

@@ -9,10 +9,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 //check remote user
 $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
-	
-	if(!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes'){
+
+	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
-	}else{
+	} else {
 		$sampleCode = 'sample_code';
 	}
 	//check user exist in user_facility_map table
@@ -121,7 +121,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<?php } ?>
 								</div>
 
-								
+
 								<table class="table" style="width:100%">
 
 
@@ -161,7 +161,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										</td>
 										<td><label for="district">Zone de santé </label><span class="mandatory">*</span></td>
 										<td>
-											<select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+											<select class="form-control isRequired" name="district" id="district" title="Veuillez choisir le quartier" style="width:100%;" onchange="getfacilityDistrictwise(this);">
 												<option value=""> -- Sélectionner -- </option>
 												<?php foreach ($districtResult as $districtName) { ?>
 													<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($stateResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ucwords($districtName['facility_district']); ?></option>
@@ -170,7 +170,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										</td>
 										<td><label for="clinicName">Nom de l'installation </label><span class="mandatory">*</span></td>
 										<td>
-											<select class="form-control isRequired" name="clinicName" id="clinicName" title="Please choose service provider" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
+											<select class="form-control isRequired" name="clinicName" id="clinicName" title="Veuillez choisir le nom de l'installation" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
 												<?= $facility; ?>
 											</select>
 										</td>
@@ -178,11 +178,11 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td><label for="clinicianName">Demandeur </label></td>
 										<td>
-											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="Please enter demandeur" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" style="width:100%;" />
+											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="Veuillez saisir le demandeur" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="clinicanTelephone">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control checkNum" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="Please enter téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control checkNum" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="supportPartner">Partenaire dappui </label></td>
 										<td>
@@ -337,7 +337,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<td></td>
 									</tr>
 									<tr>
-										<td><label for="reasonForRequest">Motif de la demande  <span class="mandatory">*</span></label></td>
+										<td><label for="reasonForRequest">Motif de la demande <span class="mandatory">*</span></label></td>
 										<td colspan="3">
 											<select name="vlTestReason" id="vlTestReason" class="form-control isRequired" title="Please choose motif de la demande" onchange="checkVLTestReason();">
 												<option value=""> -- Sélectionner -- </option>
@@ -367,7 +367,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr id="femaleElements">
 										<td><strong>Si Femme : </strong></td>
 										<td colspan="2">
-											<label for="breastfeeding">allaitante ?</label>
+											<label for="breastfeeding">allaitante?</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" <?php echo (trim($vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'checked="checked"' : ''; ?> value="yes" title="Please check Si allaitante">
@@ -592,7 +592,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                 <td></td><td></td>
                             </tr>-->
 										<tr>
-										<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
+											<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
 											<td style="width:14%;">
 												<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Revu le" title="Please enter the Revu le" />
 											</td>
@@ -604,17 +604,17 @@ $sampleSuggestionDisplay = 'display:none;';
 											</td>
 										</tr>
 										<tr>
-										<th>Approuvé le</th>
-                                            <td>
-                                                <input type="text" name="approvedOn" id="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
-                                            </td>
-										<th>Approuvé par</th>
-                                            <td>
-                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
-                                                    <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                        </tr>
+											<th>Approuvé le</th>
+											<td>
+												<input type="text" name="approvedOn" id="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											</td>
+											<th>Approuvé par</th>
+											<td>
+												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
 										<tr>
 											<td class=" reasonForResultChanges" style="visibility:hidden;">
 												<label for="reasonForResultChanges">Razão para as mudanças nos resultados <span class="mandatory">*</span></label>
@@ -719,6 +719,7 @@ $sampleSuggestionDisplay = 'display:none;';
 		}
 		$.unblockUI();
 	}
+
 	function setPatientDetails(pDetails) {
 		patientArray = pDetails.split("##");
 		console.log(patientArray);
@@ -751,6 +752,7 @@ $sampleSuggestionDisplay = 'display:none;';
 			}
 		}
 	}
+
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
 		//check facility name
@@ -939,13 +941,13 @@ $sampleSuggestionDisplay = 'display:none;';
 			placeholder: "Province"
 		});
 		$('#labId').select2({
-            placeholder: "Select Nom du laboratoire"
-        });
+			placeholder: "Select Nom du laboratoire"
+		});
 		$('#reviewedBy').select2({
-            placeholder: "Select Revu par"
-        });
+			placeholder: "Select Revu par"
+		});
 		$('#approvedBy').select2({
-            placeholder: "Select Approuvé par"
-        });
+			placeholder: "Select Approuvé par"
+		});
 	});
 </script>
