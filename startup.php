@@ -82,6 +82,17 @@ $db = new MysqliDb(array(
     'charset' => (!empty($systemConfig['dbCharset']) ? $systemConfig['dbCharset'] : 'utf8mb4')
 ));
 
+
+$locale = !empty($systemConfig['locale']) ? $systemConfig['locale'] : 'en_US';
+// I18N support information here
+putenv('LC_ALL=' . $locale);
+putenv('LANGUAGE=' . $locale);
+setlocale(LC_ALL,  $locale);
+$domain = "messages";
+bindtextdomain($domain, APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locale');
+bind_textdomain_codeset($domain, 'UTF-8');
+textdomain($domain);
+
 if (empty($_SESSION['APP_TIMEZONE'])) {
     $general = new \Vlsm\Models\General();
     $_SESSION['APP_TIMEZONE'] = $general->getGlobalConfig('default_time_zone');
