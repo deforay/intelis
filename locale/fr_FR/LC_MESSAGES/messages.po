@@ -1,0 +1,315 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2022-01-04 12:47+0530\n"
+"PO-Revision-Date: 2022-01-04 13:03+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.3\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: header.php:24 login.php:25
+msgid "Lab Sample Management Module"
+msgstr "Module de gestion des échantillons de laboratoire"
+
+#: header.php:25 login.php:24
+msgid "Sample Management"
+msgstr "Gestion des échantillons"
+
+#: header.php:28
+msgid "Remote Sample Tracking Module"
+msgstr "Module de suivi des échantillons à distance"
+
+#: header.php:31
+msgid "Sample Tracking"
+msgstr "Suivi des échantillons"
+
+#: header.php:335
+msgid "Edit Profile"
+msgstr "Editer le profil"
+
+#: header.php:338
+msgid "Sign out"
+msgstr "Déconnexion"
+
+#: header.php:364
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: header.php:372
+msgid "Admin"
+msgstr "Administratrice"
+
+#: header.php:392
+msgid "Access Control"
+msgstr "Contrôle d'accès"
+
+#: header.php:400
+msgid "Roles"
+msgstr "Les rôles"
+
+#: header.php:405
+msgid "Users"
+msgstr "Utilisatrices"
+
+#: header.php:414
+msgid "Facilities"
+msgstr "Installations"
+
+#: header.php:421
+msgid "System Configuration"
+msgstr "Configuration du système"
+
+#: header.php:429
+msgid "General Configuration"
+msgstr "Configuration générale"
+
+#: header.php:434
+msgid "Instruments"
+msgstr "Instruments"
+
+#: header.php:439
+msgid "Geographical Divisions"
+msgstr "Divisions géographiques"
+
+#: header.php:444
+msgid "Test Result Email Config"
+msgstr "Tester la configuration de l'e-mail des résultats"
+
+#: header.php:449
+msgid "Implementation Partners"
+msgstr "Partenaires de mise en œuvre"
+
+#: header.php:452
+msgid "Funding Sources"
+msgstr "Sources de financement"
+
+#: header.php:459
+msgid "VL Config"
+msgstr "Configuration LV"
+
+#: header.php:467
+msgid "ART Regimen"
+msgstr "Régime de TAR"
+
+#: header.php:470 header.php:491 header.php:521 header.php:555 header.php:580
+msgid "Rejection Reasons"
+msgstr "Motifs de rejet"
+
+#: header.php:473 header.php:494 header.php:524 header.php:558 header.php:583
+msgid "Sample Type"
+msgstr "Échantillon type"
+
+#: header.php:476 header.php:497
+msgid "Test Reasons"
+msgstr "Motifs du test"
+
+#: header.php:483
+msgid "EID Config"
+msgstr "Configuration EID"
+
+#: header.php:500 header.php:533 header.php:561 header.php:589
+msgid "Results"
+msgstr "Résultats"
+
+#: header.php:510
+msgid "Covid-19 Config"
+msgstr "Configuration Covid-19"
+
+#: header.php:518 header.php:549
+msgid "Co-morbidities"
+msgstr "Co-morbidités"
+
+#: header.php:527
+msgid "Symptom"
+msgstr "Symptôme"
+
+#: header.php:530 header.php:564 header.php:586
+msgid "Test-Reasons"
+msgstr "Test-Raisons"
+
+#: header.php:541
+msgid "Hepatitis Config"
+msgstr "Configuration de l'hépatite"
+
+#: header.php:552
+msgid "Risk Factors"
+msgstr "Facteurs de risque"
+
+#: header.php:572
+msgid "TB Config"
+msgstr "Configuration du TB"
+
+#: header.php:596
+msgid "Move Samples"
+msgstr "Déplacer les échantillons"
+
+#: header.php:603
+msgid "VIRAL LOAD"
+msgstr "CHARGE VIRALE"
+
+#: header.php:608 header.php:727 header.php:824 header.php:931 header.php:1032
+msgid "Request Management"
+msgstr "Gestion des demandes"
+
+#: header.php:617 header.php:735 header.php:832 header.php:939 header.php:1040
+msgid "View Test Requests"
+msgstr "Afficher les demandes de test"
+
+#: header.php:622 header.php:740 header.php:837 header.php:944 header.php:1045
+msgid "Add New Request"
+msgstr "Ajouter une nouvelle demande"
+
+#: header.php:627 header.php:745 header.php:842 header.php:949 header.php:1050
+msgid "Add Samples from Manifest"
+msgstr "Ajouter des échantillons à partir du manifeste"
+
+#: header.php:632 header.php:750 header.php:847 header.php:954 header.php:1055
+msgid "Manage Batch"
+msgstr "Gérer le lot"
+
+#: header.php:637
+msgid "Specimen Manifest"
+msgstr "Manifeste des spécimens"
+
+#: header.php:648 header.php:765 header.php:862 header.php:969 header.php:1070
+msgid "Test Result Management"
+msgstr "Gestion des résultats des tests"
+
+#: header.php:655 header.php:772 header.php:869 header.php:976 header.php:1077
+msgid "Import Result From File"
+msgstr "Importer le résultat du fichier"
+
+#: header.php:658 header.php:775 header.php:872 header.php:979 header.php:1080
+msgid "Enter Result Manually"
+msgstr "Saisir le résultat manuellement"
+
+#: header.php:659 header.php:776 header.php:873 header.php:980 header.php:1081
+msgid "Failed/Hold Samples"
+msgstr "Échec/Echantillons en attente"
+
+#: header.php:662
+msgid "Approve Results"
+msgstr "Approuver les résultats"
+
+#: header.php:665 header.php:885 header.php:986 header.php:1087
+msgid "E-mail Test Result"
+msgstr "Résultat du test de courrier électronique"
+
+#: header.php:674 header.php:788 header.php:894 header.php:995 header.php:1096
+msgid "Management"
+msgstr "Gestion"
+
+#: header.php:681 header.php:795 header.php:901 header.php:1002 header.php:1103
+msgid "Sample Status Report"
+msgstr "Exemple de rapport d'état"
+
+#: header.php:684
+msgid "Control Report"
+msgstr "Rapport de contrôle"
+
+#: header.php:689 header.php:798 header.php:904 header.php:1005 header.php:1109
+msgid "Export Results"
+msgstr "Exporter les résultats"
+
+#: header.php:692 header.php:801 header.php:907 header.php:1008 header.php:1106
+msgid "Print Result"
+msgstr "Imprimer le résultat"
+
+#: header.php:695
+msgid "Clinic Reports"
+msgstr "Rapports cliniques"
+
+#: header.php:698
+msgid "Export Patient List"
+msgstr "Exporter la liste des patients"
+
+#: header.php:701
+msgid "VL Lab Weekly Report"
+msgstr "Rapport hebdomadaire du laboratoire VL"
+
+#: header.php:704
+msgid "Report"
+msgstr "Reportage"
+
+#: header.php:707
+msgid "Sample Monitoring Report"
+msgstr "Exemple de rapport de surveillance"
+
+#: header.php:710
+msgid "VL Testing Target Report"
+msgstr "Rapport cible de test de CV"
+
+#: header.php:713
+msgid "VL Suppression Target Report"
+msgstr "Rapport cible de suppression de la CV"
+
+#: header.php:722
+msgid "EARLY INFANT DIAGNOSIS (EID)"
+msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
+
+#: header.php:755
+msgid "EID Specimen Manifest"
+msgstr "Manifeste d'échantillon EID"
+
+#: header.php:779 header.php:882 header.php:983 header.php:1084
+msgid "Manage Results Status"
+msgstr "Gérer l'état des résultats"
+
+#: header.php:804 header.php:910 header.php:1011 header.php:1112
+msgid "Sample Rejection Report"
+msgstr "Exemple de rapport de rejet"
+
+#: header.php:807 header.php:913 header.php:1014 header.php:1115
+msgid "Clinic Report"
+msgstr "Rapport de la clinique"
+
+#: header.php:810
+msgid "EID Testing Target Report"
+msgstr "Rapport cible de test EID"
+
+#: header.php:819
+msgid "COVID-19"
+msgstr "COVID-19"
+
+#: header.php:852
+msgid "Covid-19 Specimen Manifest"
+msgstr "Manifeste des spécimens de Covid-19"
+
+#: header.php:876
+msgid "Confirmation Manifest"
+msgstr "Manifeste de confirmation"
+
+#: header.php:879
+msgid "Record Confirmatory Tests"
+msgstr "Enregistrer les tests de confirmation"
+
+#: header.php:916
+msgid "COVID-19 Testing Target Report"
+msgstr "Rapport cible de test COVID-19"
+
+#: header.php:926
+msgid "Hepatitis"
+msgstr "Hépatite"
+
+#: header.php:959
+msgid "Hepatitis Specimen Manifest"
+msgstr "Manifeste d'échantillon d'hépatite"
+
+#: header.php:1017
+msgid "Hepatitis Testing Target Report"
+msgstr "Rapport cible de dépistage de l'hépatite"
+
+#: header.php:1027
+msgid "TB"
+msgstr ""
+
+#: header.php:1060
+msgid "TB Specimen Manifest"
+msgstr "Manifeste des spécimens de tuberculose"

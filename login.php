@@ -6,9 +6,9 @@ if (isset($_SESSION['userId'])) {
   header("location:dashboard/index.php");
 }
 $adminCount = $db->rawQuery("SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id");
-    if(count($adminCount) == 0) {
-        header("location:/setup/index.php");
-    }
+if (count($adminCount) == 0) {
+  header("location:/setup/index.php");
+}
 #require_once('../startup.php');
 
 $globalConfigQuery = "SELECT * from global_config where name='logo'";
@@ -21,8 +21,8 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
   $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$shortName = 'Sample Management';
-$systemType = "Lab Sample Management Module";
+$shortName = _('Sample Management');
+$systemType = _("Lab Sample Management Module");
 if ($_SESSION['instanceType'] == 'remoteuser') {
   $shortName = 'Sample Tracking';
   $systemType = "Remote Sample Tracking Module";
@@ -101,8 +101,9 @@ function generate_token()
       background-size: cover;
       background-repeat: no-repeat;
     }
+
     a {
-        cursor: pointer;
+      cursor: pointer;
     }
   </style>
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -166,7 +167,7 @@ function generate_token()
               <input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="Password" title="Please enter the password">
             </div>
             <div style="margin-bottom: 5px;display:none" class="input-group" id="captcha">
-            <div>
+              <div>
                 <input type="text" style="height: 70%;" id="challengeResponse" name="captcha" placeholder="Please enter the text from the image" class="form-control" title="Please enter the text from the image." maxlength="40">
               </div>
               <div>
@@ -193,13 +194,14 @@ function generate_token()
   <script src="/assets/js/jquery.blockUI.js"></script>
   <script type="text/javascript">
     function getCaptcha(captchaDivId) {
-            var d = new Date();
-            var randstr = d.getFullYear() + d.getSeconds() + d.getMilliseconds() + Math.random();
-            $("#" + captchaDivId).attr("src", '/includes/captcha.php/' + randstr);
-            $("#" + captchaDivId).load(function() {
-                $.blockUI();
-            });
-        }
+      var d = new Date();
+      var randstr = d.getFullYear() + d.getSeconds() + d.getMilliseconds() + Math.random();
+      $("#" + captchaDivId).attr("src", '/includes/captcha.php/' + randstr);
+      $("#" + captchaDivId).load(function() {
+        $.blockUI();
+      });
+    }
+
     function validateNow() {
       flag = deforayValidator.init({
         formId: 'loginForm'
@@ -207,33 +209,32 @@ function generate_token()
 
       if (flag) {
         challenge_field = document.getElementById("challengeResponse").value;
-        if(captchaflag == true) {
-               if (challenge_field != "") {
-                    $.post('/includes/check-captcha-route.php', {
-                            challenge_field: challenge_field,
-                            format: "html"
-                        },
-                        function(data) {
-                            if (data == 'fail') {
-                                alert("Text you entered from the image is incorrect. Please try again");
-                                getCaptcha('capChaw');
-                                document.getElementById("challengeResponse").value = "";
-                                return false;
-                            } else {
-                                $.blockUI();
-                                document.getElementById('loginForm').submit();
-                            }
-                        });
+        if (captchaflag == true) {
+          if (challenge_field != "") {
+            $.post('/includes/check-captcha-route.php', {
+                challenge_field: challenge_field,
+                format: "html"
+              },
+              function(data) {
+                if (data == 'fail') {
+                  alert("Text you entered from the image is incorrect. Please try again");
+                  getCaptcha('capChaw');
+                  document.getElementById("challengeResponse").value = "";
+                  return false;
                 } else {
-                    alert("Please enter the text from the image to proceed.");
-                    // $('.ppwd').focus();
-                    return false;
+                  $.blockUI();
+                  document.getElementById('loginForm').submit();
                 }
-              }
-              else {
-                document.getElementById('loginForm').submit();
-              }
-            }
+              });
+          } else {
+            alert("Please enter the text from the image to proceed.");
+            // $('.ppwd').focus();
+            return false;
+          }
+        } else {
+          document.getElementById('loginForm').submit();
+        }
+      }
     }
 
     $(document).ready(function() {
@@ -304,8 +305,7 @@ function generate_token()
             format: "html"
           },
           function(data) {
-            if(data >=3)
-            {
+            if (data >= 3) {
               captchaflag = true;
               $('#captcha').show();
               $("#challengeResponse").addClass("isRequired");
