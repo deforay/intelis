@@ -22,7 +22,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 $eidResults = $general->getEidResults();
 
 $labFieldDisabled = '';
-$rejectionReason = '';
+// $rejectionReason = '';
 $rKey = '';
 $sKey = '';
 $sFormat = '';
@@ -373,7 +373,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                             <th class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
                                                     <option value=''> -- Select -- </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>

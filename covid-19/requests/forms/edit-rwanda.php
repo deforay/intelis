@@ -467,7 +467,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
                                             <th class="show-rejection" style="display:none;">Reason for Rejection</th>
                                             <td class="show-rejection" style="display:none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
                                                         <optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
@@ -484,7 +484,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
                                             <th>Rejection Date<span class="mandatory">*</span></th>
-                                            <td><input value="<?php echo $general->humanDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td><input value="<?php echo $general->humanDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date"/></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
@@ -589,12 +589,19 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
+                                            <?php
+                                            $disapled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
+                                            ?>
                                             <th>Authorized By</th>
-                                            <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Authorized By" /></td>
+                                            <td>
+                                            <select name="authorizedBy" <?php echo $disapled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['authorized_by'], '-- Select --'); ?>
+                                                </select>
+                                                </td>
                                         </tr>
                                         <tr>
                                             <th>Authorized on</td>
-                                            <td><input type="text" value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" /></td>
+                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On"/></td>
                                             <th></th>
                                             <td></td>
                                         </tr>
@@ -802,6 +809,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		$('#approvedBy').select2({
             placeholder: "Select Approved By"
         });
+        $('#authorizedBy').select2({
+            placeholder: "Select Authorized By"
+        });
         getfacilityProvinceDetails($("#facilityId").val());
         <?php if (isset($covid19Info['mother_treatment']) && in_array('Other', $covid19Info['mother_treatment'])) { ?>
             $('#motherTreatmentOther').prop('disabled', false);
@@ -911,16 +921,22 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     }
 
     function checkIsResultAuthorized() {
-        if ($('#isResultAuthorized').val() == 'no') {
-            $('#authorizedBy,#authorizedOn').val('');
-            $('#authorizedBy,#authorizedOn').prop('disabled', true);
-            $('#authorizedBy,#authorizedOn').addClass('disabled');
-            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
-            return false;
-        } else {
+        if ($('#isResultAuthorized').val() == 'yes') {
             $('#authorizedBy,#authorizedOn').prop('disabled', false);
             $('#authorizedBy,#authorizedOn').removeClass('disabled');
             $('#authorizedBy,#authorizedOn').addClass('isRequired');
+        } else if ($('#isResultAuthorized').val() == 'no') {
+            $('#authorizedBy').val(null).trigger('change');
+            $('#authorizedOn').val('');
+            $('#authorizedBy,#authorizedOn').prop('disabled', true);
+            $('#authorizedBy,#authorizedOn').addClass('disabled');
+            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
+        }
+        if ($('#isResultAuthorized').val() == '') {
+            $('#authorizedBy').val(null).trigger('change');
+            $('#authorizedOn').val('');
+            $('#authorizedBy,#authorizedOn').prop('disabled', false);
+            $('#authorizedBy,#authorizedOn').removeClass('disabled');
         }
     }
 </script>
