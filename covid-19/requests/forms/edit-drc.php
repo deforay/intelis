@@ -834,7 +834,7 @@ $pResult = $db->rawQuery($pQuery);
                                                                         <option value="RdRp-SARS Cov-2">RdRp-SARS Cov-2</option>
                                                                         <option value="other">Others</option>
                                                                     </select>
-                                                                    <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testInputOther1 test-name-table-input" title="Veuillez saisir le nom du test pour les lignes 1" placeholder="Entrez le nom du test 1" style="display: none;margin-top: 10px;" />
+                                                                    <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testInputOther1" title="Veuillez saisir le nom du test pour les lignes 1" placeholder="Entrez le nom du test 1" style="display: none;margin-top: 10px;" />
                                                                 </td>
                                                                 <!-- <td><input type="text" name="testName[]" id="testName1" class="form-control test-name-table-input" placeholder="Nom du test" title="Veuillez saisir le nom du test pour les lignes 1" /></td> -->
                                                                 <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Testé sur" title="Veuillez saisir le test pour la ligne 1" /></td>
