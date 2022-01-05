@@ -128,7 +128,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                                                 <option value=""> -- Sélectionner -- </option>
                                             </select>
                                         </td>
-                                        <td><label for="facilityId">Nom de l'installation </label><span class="mandatory">*</span></td>
+                                        <td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Nom de Structure" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
                                                 <?php echo $facility; ?>
@@ -1234,7 +1234,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
     $(document).ready(function() {
 
         $('#facilityId').select2({
-            placeholder: "Nom de l'installation"
+            placeholder: "POINT DE COLLECT"
         });
         $('#district').select2({
             placeholder: "District"

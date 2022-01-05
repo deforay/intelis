@@ -115,7 +115,7 @@ $sFormat = '';
 												<option value=""> -- Sélectionner -- </option>
 											</select>
 										</td>
-										<td><label for="clinicName">Nom de l'installation </label><span class="mandatory">*</span></td>
+										<td><label for="clinicName">POINT DE COLLECT </label><span class="mandatory">*</span></td>
 										<td>
 											<select class="form-control isRequired " name="clinicName" id="clinicName" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility;  ?>
@@ -287,7 +287,7 @@ $sFormat = '';
 										<td></td>
 									</tr>
 									<tr>
-										<td><label for="reasonForRequest">Motif de la demande  <span class="mandatory">*</span></label></td>
+										<td><label for="reasonForRequest">Motif de la demande <span class="mandatory">*</span></label></td>
 										<td colspan="3">
 											<select name="vlTestReason" id="vlTestReason" class="form-control isRequired" title="Please choose motif de la demande" onchange="checkVLTestReason();">
 												<option value=""> -- Sélectionner -- </option>
@@ -536,7 +536,7 @@ $sFormat = '';
                                   <td></td><td></td>
                               </tr>-->
 										<tr>
-										<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
+											<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
 											<td style="width:14%;">
 												<input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Revu le" title="Please enter the Revu le" />
 											</td>
@@ -548,18 +548,18 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-										<th>Approuvé le</th>
-                                            <td>
-                                                <input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
-                                            </td>
-										<th>Approuvé par</th>
-                                            <td>
-                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
-                                                    <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
+											<th>Approuvé le</th>
+											<td>
+												<input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											</td>
+											<th>Approuvé par</th>
+											<td>
+												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
+										<tr>
 									</table>
 								</div>
 							</div>
@@ -891,13 +891,13 @@ $sFormat = '';
 			placeholder: "Province"
 		});
 		$('#labId').select2({
-            placeholder: "Select Nom du laboratoire"
-        });
+			placeholder: "Select Nom du laboratoire"
+		});
 		$('#reviewedBy').select2({
-            placeholder: "Select Revu par"
-        });
+			placeholder: "Select Revu par"
+		});
 		$('#approvedBy').select2({
-            placeholder: "Select Approuvé par"
-        });
+			placeholder: "Select Approuvé par"
+		});
 	});
 </script>

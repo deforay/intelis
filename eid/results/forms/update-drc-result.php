@@ -18,9 +18,9 @@ $pdQuery = "SELECT * from province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
-	if(!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes'){
+	if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
-	}else{
+	} else {
 		$sampleCode = 'sample_code';
 	}
 	//check user exist in user_facility_map table
@@ -110,7 +110,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 											<option value=""> -- Sélectionner -- </option>
 										</select>
 									</td>
-									<td><label for="facilityId">Nom de l'installation </label><span class="mandatory">*</span></td>
+									<td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
 									<td>
 										<select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 											<?php echo $facility; ?>

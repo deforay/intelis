@@ -168,9 +168,9 @@ $sampleSuggestionDisplay = 'display:none;';
 												<?php } ?>
 											</select>
 										</td>
-										<td><label for="clinicName">Nom de l'installation </label><span class="mandatory">*</span></td>
+										<td><label for="clinicName">POINT DE COLLECT </label><span class="mandatory">*</span></td>
 										<td>
-											<select class="form-control isRequired" name="clinicName" id="clinicName" title="Veuillez choisir le nom de l'installation" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
+											<select class="form-control isRequired" name="clinicName" id="clinicName" title="Veuillez choisir le POINT DE COLLECT" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
 												<?= $facility; ?>
 											</select>
 										</td>

@@ -47,11 +47,11 @@ $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     //check user exist in user_facility_map table
     $chkUserFcMapQry = "SELECT user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
@@ -855,7 +855,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $(document).ready(function() {
 
         $('#facilityId').select2({
-            placeholder: "Nom de l'installation"
+            placeholder: "POINT DE COLLECT"
         });
         /* $('#investigatorName').select2({
             placeholder: "Investigator"

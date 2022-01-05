@@ -180,9 +180,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                                                 <option value=""> -- Sélectionner -- </option>
                                             </select>
                                         </td>
-                                        <td><label for="facilityId">Nom de l'installation </label><span class="mandatory">*</span></td>
+                                        <td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Nom de l'installation" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
+                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="POINT DE COLLECT" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
                                                 <?php echo $facility; ?>
                                             </select>
                                         </td>

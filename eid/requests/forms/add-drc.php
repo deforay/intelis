@@ -112,7 +112,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 												<option value=""> -- Sélectionner -- </option>
 											</select>
 										</td>
-										<td><label for="facilityId">Nom de l'installation </label><span class="mandatory">*</span></td>
+										<td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
 										<td>
 											<select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility; ?>
@@ -477,7 +477,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 															<?php
 															foreach ($rejectionResult as $reject) {
 																if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-																	<option value="<?php echo $reject['rejection_reason_id']; ?>" ><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+																	<option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ucwords($reject['rejection_reason_name']); ?></option>
 															<?php }
 															} ?>
 														</optgroup>

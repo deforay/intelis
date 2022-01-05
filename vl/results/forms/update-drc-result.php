@@ -126,7 +126,7 @@ $disable = "disabled = 'disabled'";
 												?>
 											</select>
 										</td>
-										<td><label for="clinicName">Nom de l'installation </label></td>
+										<td><label for="clinicName">POINT DE COLLECT </label></td>
 										<td>
 											<select class="form-control" name="clinicName" id="clinicName" title="Please choose service provider" <?php echo $disable; ?> style="width:100%;">
 												<?= $facility; ?>
@@ -288,7 +288,7 @@ $disable = "disabled = 'disabled'";
 										<td></td>
 									</tr>
 									<tr>
-										<td><label for="reasonForRequest">Motif de la demande  <span class="mandatory">*</span></label></td>
+										<td><label for="reasonForRequest">Motif de la demande <span class="mandatory">*</span></label></td>
 										<td colspan="2">
 											<select name="vlTestReason" id="vlTestReason" class="form-control" title="Please choose motif de la demande" <?php echo $disable; ?>>
 												<option value=""> -- Sélectionner -- </option>

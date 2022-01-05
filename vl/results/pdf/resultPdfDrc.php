@@ -349,7 +349,7 @@ if (sizeof($requestResult) > 0) {
     $html .= '<td colspan="3" style="line-height:10px;"></td>';
     $html .= '</tr>';
     $html .= '<tr>';
-    $healthCenter = "Nom de l'installation";
+    $healthCenter = "POINT DE COLLECT";
     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $healthCenter . '</td>';
     $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Nom clinicien</td>';
     $html .= '</tr>';
