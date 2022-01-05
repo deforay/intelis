@@ -133,7 +133,7 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="interfaceUserName" class="col-lg-4 control-label">Interface User Name (from your Molecular testing machine)</label>
                                              <div class="col-lg-7">
-                                                  <input type="text" value="<?php echo $interfaceUsers ?>" class="form-control isRequired" id="interfaceUserName" name="interfaceUserName" placeholder="Interface User Name" title="Please enter interface user name" />
+                                                  <input type="text" value="<?php echo $interfaceUsers ?>" class="form-control" id="interfaceUserName" name="interfaceUserName" placeholder="Interface User Name" title="Please enter interface user name" />
                                              </div>
                                         </div>
                                    </div>
