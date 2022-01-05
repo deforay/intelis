@@ -412,7 +412,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
 
                                             <th class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
                                                         <optgroup label="<?php echo ucwords($type['rejection_type']); ?>">

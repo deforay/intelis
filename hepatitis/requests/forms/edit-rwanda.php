@@ -288,7 +288,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <th><label for="labTechnician">Lab Technician </label></th>
                                     <td>
                                         <select name="labTechnician" id="labTechnician" class="form-control" title="Please select a Lab Technician" style="width:100%;">
-                                            <option value="">--Select--</option>
                                             <?= $general->generateSelectOptions($labTechniciansResults, (isset($hepatitisInfo['lab_technician']) && $hepatitisInfo['lab_technician'] != '') ? $hepatitisInfo['lab_technician'] : $_SESSION['userId'], '-- Select --'); ?>
                                         </select>
                                     </td>
@@ -403,12 +402,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value='no' <?php echo ($hepatitisInfo['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
+                                            <?php
+                                            $disapled = (isset($hepatitisInfo['is_result_authorised']) && $hepatitisInfo['is_result_authorised'] == 'no') ? "disabled" : "";
+                                            ?>
                                             <th>Authorized By</th>
-                                            <td><input value="<?php echo $hepatitisInfo['authorized_by']; ?>" type="text" name="authorizedBy" id="authorizedBy" class="labSecInput disabled-field form-control rejected-input" placeholder="Authorized By" /></td>
+                                            <td>
+                                            <select name="authorizedBy" <?php echo $disapled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $hepatitisInfo['authorized_by'], '-- Select --'); ?>
+                                                </select>
+                                                </td>
                                         </tr>
                                         <tr>
                                             <th>Authorized on</td>
-                                            <td><input value="<?php echo $general->humanDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field rejected-input form-control date" placeholder="Authorized on" /></td>
+                                            <td><input value="<?php echo $general->humanDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" <?php echo $disapled; ?> name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field rejected-input form-control date" placeholder="Authorized on" title="Please select the authorized on"/></td>
                                             <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
@@ -583,22 +589,34 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $("#vlTestingSite").select2({
 			placeholder: "Select Vl Testing Site"
 		});
+        $('#authorizedBy').select2({
+            placeholder: "Select Authorized By"
+        });
 
         getfacilityProvinceDetails($("#facilityId"));
+        $('#isResultAuthorized').change(function(e) {
+            checkIsResultAuthorized();
+        });
         checkIsResultAuthorized();
     });
 
     function checkIsResultAuthorized() {
-        if ($('#isResultAuthorized').val() == 'no') {
-            $('#authorizedBy,#authorizedOn').val('');
-            $('#authorizedBy,#authorizedOn').prop('disabled', true);
-            $('#authorizedBy,#authorizedOn').addClass('disabled');
-            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
-            return false;
-        } else {
+        if ($('#isResultAuthorized').val() == 'yes') {
             $('#authorizedBy,#authorizedOn').prop('disabled', false);
             $('#authorizedBy,#authorizedOn').removeClass('disabled');
             $('#authorizedBy,#authorizedOn').addClass('isRequired');
+        } else if ($('#isResultAuthorized').val() == 'no') {
+            $('#authorizedBy').val(null).trigger('change');
+            $('#authorizedOn').val('');
+            $('#authorizedBy,#authorizedOn').prop('disabled', true);
+            $('#authorizedBy,#authorizedOn').addClass('disabled');
+            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
+        }
+        if ($('#isResultAuthorized').val() == '') {
+            $('#authorizedBy').val(null).trigger('change');
+            $('#authorizedOn').val('');
+            $('#authorizedBy,#authorizedOn').prop('disabled', false);
+            $('#authorizedBy,#authorizedOn').removeClass('disabled');
         }
     }
 

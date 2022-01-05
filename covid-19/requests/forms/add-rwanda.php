@@ -435,7 +435,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                             <th class="show-rejection" style="display:none;">Reason for Rejection</th>
                                             <td class="show-rejection" style="display:none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
                                                     <option value=''> -- Select -- </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
@@ -443,7 +443,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
                                             <th>Rejection Date<span class="mandatory">*</span></th>
-                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date"/></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
@@ -523,13 +523,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <th>Authorized By</th>
-                                            <td><input type="text" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Authorized By" /></td>
+                                            <td><select name="authorizedBy" id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
+                                                </select></td>
 
                                         </tr>
                                         <tr>
 
                                             <th>Authorized on</td>
-                                            <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" /></td>
+                                            <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On"/></td>
                                             <th></th>
                                             <td></td>
 
@@ -728,6 +730,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		$('#approvedBy').select2({
             placeholder: "Select Approved By"
         });
+        $('#authorizedBy').select2({
+            placeholder: "Select Authorized By"
+        });
         // $('#district').select2({
         //     placeholder: "District"
         // });
@@ -821,15 +826,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     function checkIsResultAuthorized() {
         if ($('#isResultAuthorized').val() == 'no') {
-            $('#authorizedBy,#authorizedOn').val('');
+            $('#authorizedBy').val(null).trigger('change');
+            $('#authorizedOn').val('');
             $('#authorizedBy,#authorizedOn').prop('disabled', true);
             $('#authorizedBy,#authorizedOn').addClass('disabled');
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
-            return false;
-        } else {
+        } else if ($('#isResultAuthorized').val() == 'yes') {
             $('#authorizedBy,#authorizedOn').prop('disabled', false);
             $('#authorizedBy,#authorizedOn').removeClass('disabled');
             $('#authorizedBy,#authorizedOn').addClass('isRequired');
+        }
+        if ($('#isResultAuthorized').val() == '') {
+            $('#authorizedBy').val(null).trigger('change');
+            $('#authorizedOn').val('');
+            $('#authorizedBy,#authorizedOn').prop('disabled', false);
+            $('#authorizedBy,#authorizedOn').removeClass('disabled');
         }
     }
 </script>

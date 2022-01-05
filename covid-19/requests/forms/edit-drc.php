@@ -222,9 +222,9 @@ $pResult = $db->rawQuery($pQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important"><label for="patientId">N&deg; EPID <span class="mandatory">*</span> </label></th>
+                                        <th style="width:15% !important"><label for="patientId">N&deg; EPID </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
+                                            <input type="text" class="form-control" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
                                         </td>
                                         <th><label for="patientDob">Date de naissance</label></th>
                                         <td>
@@ -480,9 +480,9 @@ $pResult = $db->rawQuery($pQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Date d'apparition des symptômes <span class="mandatory symptomMandatoryLabel">*</span> </th>
+                                        <th style="width:15% !important">Date d'apparition des symptômes </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control date isRequired symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo $general->humanDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
+                                            <input class="form-control date symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo $general->humanDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
                                         </td>
                                         <th style="width:15% !important">Date de la consultation initiale</th>
                                         <td style="width:35% !important;">

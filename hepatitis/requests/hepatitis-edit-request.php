@@ -37,6 +37,12 @@ $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesDb->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
+$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$userResult = $userDb->getActiveUsers($facilityMap);
+$labTechniciansResults = array();
+foreach ($userResult as $user) {
+    $labTechniciansResults[$user['user_id']] = ucwords($user['user_name']);
+}
 
 // Comorbidity
 $comorbidityData = array();
