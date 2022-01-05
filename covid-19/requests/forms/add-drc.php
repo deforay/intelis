@@ -56,8 +56,8 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
-$pQuery = "SELECT * FROM province_details";
-$pResult = $db->rawQuery($pQuery);
+$geolocation = new \Vlsm\Models\GeoLocations();
+$geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 ?>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -947,14 +947,7 @@ $pResult = $db->rawQuery($pQuery);
                                     <label for="state" class="col-lg-4 control-label">Province/State <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <select name="state" id="state" class="form-control isRequired" title="Please choose province/state">
-                                            <option value=""> -- Select -- </option>
-                                            <?php
-                                            foreach ($pResult as $province) {
-                                            ?>
-                                                <option value="<?php echo $province['province_name']; ?>"><?php echo $province['province_name']; ?></option>
-                                            <?php
-                                            }
-                                            ?>
+                                            <?= $general->generateSelectOptions($geoLocationParentArray, null, '-- Select --'); ?>
                                             <option value="other">Other</option>
                                         </select>
                                         <input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="Enter Province/State" title="Please enter province/state" style="margin-top:4px;display:none;" />
@@ -981,9 +974,12 @@ $pResult = $db->rawQuery($pQuery);
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="district" class="col-lg-4 control-label">District/County <span class="mandatory">*</span></label>
+                                    <label for="districtFacility" class="col-lg-4 control-label">District/County <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="district" name="district" placeholder="District/County" title="Please enter district/county" />
+                                        <select name="district" id="districtFacility" class="form-control isRequired" title="Please choose District/County">
+                                            <option value="">-- Select --</option>
+                                            <option value="other">Other</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1310,6 +1306,24 @@ $pResult = $db->rawQuery($pQuery);
                 checkPostive();
             });
         <?php } ?>
+
+        $("#state").change(function() {
+            $.blockUI();
+            var pName = $(this).val();
+            if ($.trim(pName) != '') {
+                $.post("/includes/siteInformationDropdownOptions.php", {
+                        pName: pName,
+                    },
+                    function(data) {
+                        if (data != "") {
+                            details = data.split("###");
+                            $("#districtFacility").html(details[1]);
+                            $("#districtFacility").append('<option value="other">Other</option>');
+                        }
+                    });
+            }
+            $.unblockUI();
+        });
     });
 
     function insRow() {
