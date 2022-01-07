@@ -22,9 +22,6 @@ $apiData = json_decode($jsonData, true);
 if (isset($apiData['result']) && count($apiData['result']) > 0) {
 	$_POST = $apiData['result'];
 }
-echo "<pre>";
-print_r($_POST);
-die;
 try {
 
 	//Province Table
