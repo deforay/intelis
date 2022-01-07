@@ -2857,8 +2857,8 @@ UPDATE `system_config` SET `value` = '4.4.6' WHERE `system_config`.`name` = 'sc_
 -- Thana 22-Dec-2021
 INSERT INTO `facility_type` (`facility_type_id`, `facility_type_name`) VALUES ('3', 'Collection Site');
 
---Sakthivel 22 Dec 2021
+-- Sakthivel 22 Dec 2021
 ALTER TABLE `system_admin` ADD `system_admin_email` VARCHAR(255) NULL DEFAULT NULL AFTER `system_admin_name`;
 
---Thana 24-Dec-2021
+-- Thana 24-Dec-2021
 ALTER TABLE `user_details` ADD `data_sync` INT(11) NULL DEFAULT '0' AFTER `app_access`;

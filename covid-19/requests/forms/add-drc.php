@@ -135,7 +135,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                                             </select>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addFacility">Add Facility</button>
+                                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addFacility">Add Facility</button> -->
                                         </td>
                                     </tr>
                                     <tr>
