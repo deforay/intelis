@@ -45,8 +45,6 @@ curl_setopt(
 // execute post
 $curl_response = curl_exec($ch);
 //close connection
-echo $curl_response;
-die;
 curl_close($ch);
 $result = json_decode($curl_response, true);
 
