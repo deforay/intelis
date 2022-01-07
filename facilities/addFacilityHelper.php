@@ -16,6 +16,15 @@ $vlUserFacilityMapTable = "vl_user_facility_map";
 $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
 $labSignTable = "lab_report_signatories";
+
+$jsonData = file_get_contents('php://input');
+$apiData = json_decode($jsonData, true);
+if (isset($apiData['result']) && count($apiData['result']) > 0) {
+	$_POST = $apiData['result'];
+}
+echo "<pre>";
+print_r($_POST);
+die;
 try {
 
 	//Province Table
@@ -41,6 +50,7 @@ try {
 		$instanceId = '';
 		if (isset($_SESSION['instanceId'])) {
 			$instanceId = $_SESSION['instanceId'];
+			$_POST['instanceId'] = $instanceId;
 		}
 		$email = '';
 		if (isset($_POST['reportEmail']) && trim($_POST['reportEmail']) != '') {
@@ -96,6 +106,37 @@ try {
 			'updated_datetime' => $general->getDateTime(),
 			'status' => 'active'
 		);
+		if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $_POST['fromAPI'] == "yes") {
+			/* Facility sync to remote */
+			$url = $systemConfig['remoteURL'] . '/facilities/addFacilityHelper.php';
+			$apiData = array(
+				"result" => $_POST,
+				"api-type" => "sync",
+				"Key" => "vlsm-lab-data-",
+			);
+			//open connection
+			$ch = curl_init($url);
+			$json_data = json_encode($apiData);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt(
+				$ch,
+				CURLOPT_HTTPHEADER,
+				array(
+					'Content-Type: application/json',
+					'Content-Length: ' . strlen($json_data)
+				)
+			);
+			// execute post
+			$curl_response = curl_exec($ch);
+			$facilityId = $curl_response;
+			if (isset($facilityId) && $facilityId > 0) {
+				$data['facility_id'] = $facilityId;
+			}
+			//close connection
+			curl_close($ch);
+		}
 
 		$db->insert($facilityTable, $data);
 		$lastId = $db->getInsertId();
@@ -213,6 +254,11 @@ try {
 
 		$general->activityLog('add-facility', $_SESSION['userName'] . ' added new facility ' . $_POST['facilityName'], 'facility');
 	}
+	if (isset($apiData['api-type']) && $apiData['api-type'] == "sync" && !isset($_POST['fromAPI'])) {
+		echo $lastId;
+		exit;
+	}
+
 	if (isset($_POST['reqForm']) && $_POST['reqForm'] != '') {
 		$currentDateTime = $general->getDateTime();
 		$data = array(

@@ -403,7 +403,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
                                             <th>Rejection Date<span class="mandatory">*</span></th>
-                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date"/></td>
+                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date" /></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
@@ -700,8 +700,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <input type="text" class="form-control checkNum" id="longitude" name="longitude" placeholder="Longitude" title="Please enter longitude" />
                                         <input type="hidden" name="reqForm" id="reqForm" value="1" />
                                         <input type="hidden" name="headerText" id="headerText" />
-                                        <input type="hidden" name="testType[]" id="testType" value="" />
+                                        <input type="hidden" name="testType[]" id="testType" value="covid19" />
                                         <input type="hidden" name="selectedUser[]" id="selectedUser" />
+                                        <input type="hidden" name="fromAPI" id="fromAPI" value="yes" />
                                     </div>
                                 </div>
                             </div>
