@@ -1,7 +1,6 @@
 <?php
 
 session_unset(); // no need of session in json response
-
 try {
     ini_set('memory_limit', -1);
     header('Content-Type: application/json');
@@ -98,9 +97,15 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
             if ($rowData) {
                 $update = "yes";
-                $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
-                $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
-                $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
+                if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+                    $sampleData['sampleCode'] = (!empty($rowData['remote_sample_code'])) ? $rowData['remote_sample_code'] : null;
+                    $sampleData['sampleCodeFormat'] = (!empty($rowData['remote_sample_code_format'])) ? $rowData['remote_sample_code_format'] : null;
+                    $sampleData['sampleCodeKey'] = (!empty($rowData['remote_sample_code_key'])) ? $rowData['remote_sample_code_key'] : null;
+                } else {
+                    $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : null;
+                    $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : null;
+                    $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : null;
+                }
             } else {
                 $sampleJson = $app->generateSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user, 'eid');
                 $sampleData = json_decode($sampleJson, true);
@@ -131,9 +136,9 @@ try {
             $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $eidData['remote_sample'] = 'yes';
             $eidData['result_status'] = 9;
-            if ($roleUser['access_type'] == 'testing-lab') {
+            /* if ($roleUser['access_type'] == 'testing-lab') {
                 $eidData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
-            }
+            } */
         } else {
             $eidData['sample_code'] = $sampleData['sampleCode'];
             $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
@@ -262,7 +267,7 @@ try {
             'vlsm_instance_id'                                  => $instanceId,
             'vlsm_country_id'                                   => $data['formId'],
             'unique_id'                                         => isset($data['uniqueId']) ? $data['uniqueId'] : null,
-            'app_sample_code'                             => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
+            'app_sample_code'                                   => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'facility_id'                                       => isset($data['facilityId']) ? $data['facilityId'] : null,
             'province_id'                                       => isset($data['provinceId']) ? $data['provinceId'] : null,
             'lab_id'                                            => isset($data['labId']) ? $data['labId'] : null,
@@ -339,9 +344,9 @@ try {
         $eidData['request_created_by'] =  $user['user_id'];
         $eidData['last_modified_by'] =  $user['user_id'];
 
-        // echo "<pre>";
-        // print_r($eidData);
-        // die;
+        /* echo "<pre>";
+        print_r($eidData);
+        die; */
         $id = 0;
         if (!empty($data['eidSampleId'])) {
             $db = $db->where('eid_id', $data['eidSampleId']);
