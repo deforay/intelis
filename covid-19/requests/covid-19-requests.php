@@ -46,10 +46,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> Covid-19 Test Requests</h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("Covid-19 Test Requests"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Test Request</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Test Request"); ?></li>
 		</ol>
 	</section>
 
@@ -60,11 +60,11 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<table id="advanceFilter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
-							<td><b>Sample Collection Date :</b></td>
+							<td><b><?php echo _("Sample Collection Date");?> :</b></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="background:#fff;" />
 							</td>
-							<td><b>Batch Code :</b></td>
+							<td><b><?php echo _("Batch Code"); ?> :</b></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="Please select batch code">
 									<option value=""> -- Select -- </option>
@@ -77,7 +77,7 @@ $batResult = $db->rawQuery($batQuery);
 									?>
 								</select>
 							</td>
-							<td><b>Req. Sample Type :</b></td>
+							<td><b><?php echo _("Req. Sample Type");?> :</b></td>
 							<td>
 								<select class="form-control" id="requestSampleType" name="requestSampleType" title="Please select request sample type">
 									<option value="">All</option>
@@ -88,33 +88,33 @@ $batResult = $db->rawQuery($batQuery);
 
 						</tr>
 						<tr>
-							<td><b>Facility Name:</b></td>
+							<td><b><?php echo _("Facility Name");?>:</b></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="Please select facility name" style="width:100%;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<td><b>Province/State&nbsp;:</b></td>
+							<td><b><?php echo _("Province/State");?>&nbsp;:</b></td>
 							<td>
 								<input type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
-							<td><b>District/County :</b></td>
+							<td><b><?php echo _("District/County");?> :</b></td>
 							<td>
 								<input type="text" id="district" name="district" class="form-control" placeholder="Enter District/County" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 						</tr>
 						<tr>
-							<td><b>Testing Lab :</b></td>
+							<td><b><?php echo _("Testing Lab");?> :</b></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<td><b>Patient ID</b></td>
+							<td><b><?php echo _("Patient ID");?></b></td>
 							<td>
 								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="Patient ID" title="Please enter the patient ID to search" />
 							</td>
-							<td><b>Gender&nbsp;:</b></td>
+							<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="Please choose gender" style="width:220px;" onchange="hideFemaleDetails(this.value)">
 									<option value=""> -- Select -- </option>
@@ -125,7 +125,7 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
-							<td><b>Show only Reordered Samples&nbsp;:</b></td>
+							<td><b><?php echo _("Show only Reordered Samples");?>&nbsp;:</b></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
 									<option value=""> -- Select -- </option>
@@ -133,7 +133,7 @@ $batResult = $db->rawQuery($batQuery);
 									<option value="no" selected="selected">No</option>
 								</select>
 							</td>
-							<td><b>Funding Sources&nbsp;:</b></td>
+							<td><b><?php echo _("Funding Sources");?>&nbsp;:</b></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
 									<option value=""> -- Select -- </option>
@@ -144,7 +144,7 @@ $batResult = $db->rawQuery($batQuery);
 									<?php } ?>
 								</select>
 							</td>
-							<td><b>Implementing Partners&nbsp;:</b></td>
+							<td><b><?php echo _("Implementing Partners");?>&nbsp;:</b></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner">
 									<option value=""> -- Select -- </option>
@@ -157,18 +157,18 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-default btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>Hide Advanced Search</span></button>
+							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value=<?php echo _("Search");?> class="btn btn-default btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search");?></span></button>
 							</td>
 							<td colspan="4">
 								<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Add new Covid-19 Request</a>
+									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new Covid-19 Request");?></a>
 									<?php if ($arr['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Bulk Import Covid-19 Request</a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Bulk Import Covid-19 Request");?></a>
 									<?php }
 									if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Quick Add Covid-19 Request</a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Quick Add Covid-19 Request");?></a>
 								<?php }
 								} ?>
 							</td>
@@ -200,32 +200,32 @@ $batResult = $db->rawQuery($batQuery);
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
-									<th>Sample Code</th>
+									<th><?php echo _("Sample Code"); ?></th>
 									<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-										<th>Remote Sample <br />Code</th>
+										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 									<?php } ?>
-									<th>Sample Collection<br /> Date</th>
-									<th>Batch Code</th>
-									<th>Facility Name</th>
+									<th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
+									<th><?php echo _("Batch Code"); ?></th>
+									<th><?php echo _("Facility Name"); ?></th>
 									<?php if ($formId == 1) { ?>
-										<th>Case ID</th>
+										<th><?php echo _("Case ID"); ?></th>
 									<?php } else { ?>
-										<th>Patient ID</th>
+										<th><?php echo _("Patient ID"); ?></th>
 									<?php } ?>
-									<th>Patient Name</th>
-									<th>Province/State</th>
-									<th>District/County</th>
-									<th>Result</th>
-									<th>Last Modified On</th>
-									<th>Status</th>
+									<th><?php echo _("Patient Name"); ?></th>
+									<th><?php echo _("Province/State"); ?></th>
+									<th><?php echo _("District/County"); ?></th>
+									<th><?php echo _("Result"); ?></th>
+									<th><?php echo _("Last Modified On"); ?></th>
+									<th><?php echo _("Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && (in_array("covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) { ?>
-										<th>Action</th>
+										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="15" class="dataTables_empty">Loading data from server</td>
+									<td colspan="15" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>

@@ -1,4 +1,8 @@
 <footer class="main-footer">
+	<small class="pull-right" style="font-weight:bold;"><a onclick="takeShot()">
+			Take Screenshot
+		</a></small><br>
+
 	<small>This project is supported by the U.S. President’s Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC).</small>
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;<?php echo "v" . VERSION; ?></small>
 	<?php if (!empty($systemConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
@@ -43,6 +47,10 @@
 <script src="/assets/js/jquery.maskedinput.js"></script>
 <script src="/assets/js/jquery.blockUI.js"></script>
 <script src="/assets/js/moment.min.js"></script>
+
+<!-- HTML2CANVAS -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js">
+</script>
 
 <script type="text/javascript">
 	function setCrossLogin() {
@@ -814,6 +822,23 @@
 			e.preventDefault();
 		}
 	});
+
+	function takeShot() {
+		conf = confirm("Do you wish to take a screenshot?");
+		if (conf) {
+			html2canvas(document.body).then(function(canvas) {
+				var image = canvas.toDataURL("image/jpeg");
+				$.post("/save.php", {
+						base64data: image
+					},
+					function(data) {
+						console.log(data);
+						showModal('/support/index.php', 900, 520);
+					});
+
+			})
+		}
+	}
 </script>
 </body>
 

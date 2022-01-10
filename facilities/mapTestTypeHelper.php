@@ -32,6 +32,17 @@ try {
             );
         }
         $db->insertMulti($tableName, $data);
+
+        // Issue : When one test type was updated, the other test types for those same facilities don't get updated
+        // To overcome this, we update the datetime of all test types for those facilities
+        $data = array(
+            'updated_datetime'  => $currentDateTime
+        );
+
+        $db->where('facility_id', $_POST['mappedFacilities'], 'IN');
+        $db->update($tableName, $data);
+
+
         $_SESSION['alertMsg'] = "Facility Mapped to Selected Test Type successfully";
     }
     header("location:facilities.php");
