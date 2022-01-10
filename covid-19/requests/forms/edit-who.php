@@ -73,13 +73,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> WHO COVID-19 VIRUS LABORATORY TEST REQUEST FORM</h1>
+        <h1><i class="fa fa-edit"></i> <?php echo _("WHO COVID-19 VIRUS LABORATORY TEST REQUEST FORM");?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
             <?php if (isset($covid19Info['result']) && $covid19Info['result'] != "") { ?>
-                <li class="active">View Request</li>
+                <li class="active"><?php echo _("View Request");?></li>
             <?php } else { ?>
-                <li class="active">Update Request</li>
+                <li class="active"><?php echo _("Update Request");?></li>
             <?php } ?>
         </ol>
     </section>
