@@ -32,12 +32,12 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-book"></i> Hepatitis Sample Status Report</h1>
+    <h1><i class="fa fa-book"></i> <?php echo _("Hepatitis Sample Status Report");?></h1>
     <ol class="breadcrumb">
       <!-- <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li> -->
-      <li><i class="fa fa-book"></i> Hepatitis</li>
-      <li>Management</li>
-      <li class="active">Hepatitis Sample Status</li>
+      <li><i class="fa fa-book"></i> <?php echo _("Hepatitis");?></li>
+      <li><?php echo _("Management");?></li>
+      <li class="active"><?php echo _("Hepatitis Sample Status");?></li>
     </ol>
   </section>
 
@@ -48,11 +48,11 @@ $batResult = $db->rawQuery($batQuery);
         <div class="box">
           <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b>Sample Collection Date&nbsp;:</b></td>
+              <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
               <td>
                 <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
               </td>
-              <td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+              <td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
               <td>
                 <select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
                   <option value=""> -- Select -- </option>
@@ -69,7 +69,7 @@ $batResult = $db->rawQuery($batQuery);
             <tr>
 
 
-            <td>&nbsp;<b>Testing Lab &nbsp;:</b></td>
+            <td>&nbsp;<b><?php echo _("Testing Lab");?> &nbsp;:</b></td>
               <td>
                 <select class="form-control" id="labName" name="labName" title="Please select facility name">
                   <?= $testingLabsDropdown; ?>
@@ -82,8 +82,8 @@ $batResult = $db->rawQuery($batQuery);
 
             </tr>
             <tr>
-              <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="Search" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+              <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
               </td>
             </tr>
 
@@ -102,17 +102,17 @@ $batResult = $db->rawQuery($batQuery);
             <table id="hepatitisRequestDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Hepatitis Sample ID</th>
-                  <th>Sample Collection Date</th>
-                  <th>Sample Received Date in Lab</th>
-                  <th>Sample Test Date</th>
-                  <th>Sample Print Date</th>
-                  <th>Sample Email Date</th>
+                  <th><?php echo _("Hepatitis Sample ID");?></th>
+                  <th><?php echo _("Sample Collection Date");?></th>
+                  <th><?php echo _("Sample Received Date in Lab");?></th>
+                  <th><?php echo _("Sample Test Date");?></th>
+                  <th><?php echo _("Sample Print Date");?></th>
+                  <th><?php echo _("Sample Email Date");?></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
             </table>

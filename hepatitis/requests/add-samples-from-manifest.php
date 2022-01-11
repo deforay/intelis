@@ -14,10 +14,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-plus"></i> Add Samples from Manifest</h1>
+		<h1><i class="fa fa-plus"></i> <?php echo _("Add Samples from Manifest");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">hepatitis Test Request</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li class="active"><?php echo _("Hepatitis Test Request");?></li>
 		</ol>
 	</section>
 
@@ -28,18 +28,18 @@ include_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
-							<td style="width:20%;vertical-align:middle;"><b>Enter Sample Manifest Code :</b></td>
+							<td style="width:20%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code");?> :</b></td>
 							<td>
 								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="Sample manifest code" title="Please enter the sample manifest code" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td>
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span>Submit</span></button>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span><?php echo _("Submit");?></span></button>
 							</td>
 						</tr>
 						<tr>
 							<td style="width:100%;" colspan="3">
-								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa fa-fw fa-check-square-o" aria-hidden="true"></i> Activate Samples</a>
+								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa fa-fw fa-check-square-o" aria-hidden="true"></i> <?php echo _("Activate Samples");?></a>
 							</td>
 						</tr>
 					</table>
@@ -48,26 +48,26 @@ include_once(APPLICATION_PATH . '/header.php');
 						<table id="hepatitisManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
-									<th>Sample Code</th>
+									<th><?php echo _("Sample Code");?></th>
 									<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-										<th>Remote Sample <br />Code</th>
+										<th><?php echo _("Remote Sample")?> <br /><?php echo _("Code");?></th>
 									<?php } ?>
-									<th>Sample Collection<br /> Date</th>
-									<th>Batch Code</th>
-									<th>Facility Name</th>
-									<th>Patient ID</th>
-									<th>Patient Name</th>
-									<th>Province/State</th>
-									<th>District/County</th>
-									<th>HCV VL Result</th>
-									<th>HBV VL Result</th>
-									<th>Last Modified On</th>
-									<th>Status</th>
+									<th><?php echo _("Sample Collection");?><br /> <?php echo _("Date");?></th>
+									<th><?php echo _("Batch Code");?></th>
+									<th><?php echo _("Facility Name");?></th>
+									<th><?php echo _("Patient ID");?></th>
+									<th><?php echo _("Patient Name");?></th>
+									<th><?php echo _("Province/State");?></th>
+									<th><?php echo _("District/County");?></th>
+									<th><?php echo _("HCV VL Result");?></th>
+									<th><?php echo _("HBV VL Result");?></th>
+									<th><?php echo _("Last Modified On");?></th>
+									<th><?php echo _("Status");?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="14" class="dataTables_empty" style="text-align:center;">Please enter the manifest code then submit!</td>
+									<td colspan="14" class="dataTables_empty" style="text-align:center;"><?php echo _("Please enter the manifest code then submit");?>!</td>
 								</tr>
 							</tbody>
 						</table>
