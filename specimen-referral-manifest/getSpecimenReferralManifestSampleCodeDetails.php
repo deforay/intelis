@@ -9,7 +9,6 @@ $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 
 $sarr = $general->getSystemConfig();
-
 //global config
 $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
 $configResult = $db->query($configQuery);
@@ -28,15 +27,15 @@ $module = $_POST['module'];
 
 $query = "";
 if ($module == 'vl') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM vl_request_form as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes')";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM vl_request_form as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 } else if ($module == 'eid') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id FROM eid_form as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id FROM eid_form as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 } else if ($module == 'covid19') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 } else if ($module == 'hepatitis') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM form_hepatitis as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM form_hepatitis as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 } else if ($module == 'tb') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id FROM form_tb as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id FROM form_tb as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 }
 
 if (!empty($facilityMap)) {

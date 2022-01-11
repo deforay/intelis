@@ -34,7 +34,7 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> Viral Load Test Requests</h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("Viral Load Test Requests"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
 			<li class="active">Test Request</li>
@@ -96,7 +96,7 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
-						<td><b>Testing Lab :</b></td>
+							<td><b>Testing Lab :</b></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
@@ -119,8 +119,8 @@ $batResult = $db->rawQuery($batQuery);
 									<option value="no" selected="selected">No</option>
 								</select>
 							</td>
-							</tr>
-							<tr>
+						</tr>
+						<tr>
 							<td colspan="2">
 								<div class="col-md-12">
 									<div class="col-md-6">
@@ -162,8 +162,9 @@ $batResult = $db->rawQuery($batQuery);
 										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
 									<?php } ?>
 								</select>
-							</td></tr>
-							<tr>
+							</td>
+						</tr>
+						<tr>
 							<td><b>Req. Sample Type :</b></td>
 							<td>
 								<select class="form-control" id="requestSampleType" name="requestSampleType" title="Please select request sample type">

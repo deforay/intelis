@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-01-04 12:47+0530\n"
-"PO-Revision-Date: 2022-01-04 13:03+0530\n"
+"POT-Creation-Date: 2022-01-11 11:31+0530\n"
+"PO-Revision-Date: 2022-01-11 11:47+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -13,6 +13,879 @@ msgstr ""
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: .\n"
+
+#: covid-19/batch/covid-19-batches.php:14
+#: covid-19/batch/covid-19-batches.php:17
+#, fuzzy
+#| msgid "Manage Batch"
+msgid "Manage Batches"
+msgstr "Gérer le lot"
+
+#: covid-19/batch/covid-19-batches.php:16
+#: covid-19/management/covid-19-clinic-report.php:38
+#: covid-19/management/covid-19-sample-rejection-report.php:30
+#: covid-19/management/covid-19-sample-status.php:36
+#: covid-19/requests/addSamplesFromManifest.php:19
+#: covid-19/requests/covid-19-bulk-import-request.php:16
+#: covid-19/requests/covid-19-requests.php:51
+#: covid-19/requests/forms/add-rwanda.php:67
+#: covid-19/requests/forms/add-southsudan.php:81
+#: covid-19/requests/forms/add-who.php:63
+#: covid-19/requests/forms/edit-southsudan.php:96
+#: covid-19/requests/forms/edit-who.php:78
+#: covid-19/requests/forms/quick-add-southsudan.php:71
+#: covid-19/results/covid-19-failed-results.php:30
+#: covid-19/results/covid-19-manual-results.php:48
+#: covid-19/results/covid-19-print-results.php:41
+#: covid-19/results/covid-19-result-status.php:65
+#: import-result/addImportResult.php:29
+msgid "Home"
+msgstr ""
+
+#: covid-19/batch/covid-19-batches.php:29
+#: covid-19/batch/covid-19-batches.php:55
+#: covid-19/management/covid-19-clinic-report.php:66
+#: covid-19/management/covid-19-clinic-report.php:165
+#: covid-19/management/covid-19-clinic-report.php:251
+#: covid-19/management/covid-19-clinic-report.php:370
+#: covid-19/management/covid-19-export-data.php:121
+#: covid-19/management/covid-19-export-data.php:187
+#: covid-19/management/covid-19-export-data.php:223
+#: covid-19/management/covid-19-sample-status.php:52
+#: covid-19/requests/addSamplesFromManifest.php:56
+#: covid-19/requests/covid-19-requests.php:67
+#: covid-19/requests/covid-19-requests.php:208
+#: covid-19/results/covid-19-failed-results.php:46
+#: covid-19/results/covid-19-failed-results.php:118
+#: covid-19/results/covid-19-manual-results.php:63
+#: covid-19/results/covid-19-manual-results.php:116
+#: covid-19/results/covid-19-manual-results.php:163
+#: covid-19/results/covid-19-print-results.php:67
+#: covid-19/results/covid-19-print-results.php:122
+#: covid-19/results/covid-19-print-results.php:158
+#: covid-19/results/covid-19-print-results.php:184
+#: covid-19/results/covid-19-print-results.php:239
+#: covid-19/results/covid-19-print-results.php:274
+#: covid-19/results/covid-19-result-status.php:93
+#: covid-19/results/covid-19-result-status.php:167
+msgid "Batch Code"
+msgstr ""
+
+#: covid-19/batch/covid-19-batches.php:32
+#, fuzzy
+#| msgid "Move Samples"
+msgid "No. Of Samples"
+msgstr "Déplacer les échantillons"
+
+#: covid-19/batch/covid-19-batches.php:35
+#: covid-19/batch/covid-19-batches.php:59
+msgid "Created On"
+msgstr ""
+
+#: covid-19/batch/covid-19-batches.php:38
+#: covid-19/management/covid-19-clinic-report.php:148
+#: covid-19/management/covid-19-clinic-report.php:377
+#: covid-19/management/covid-19-export-data.php:110
+#: covid-19/management/covid-19-export-data.php:202
+#: covid-19/management/covid-19-export-data.php:229
+#: covid-19/requests/addSamplesFromManifest.php:64
+#: covid-19/requests/covid-19-requests.php:220
+#: covid-19/results/covid-19-failed-results.php:128
+#: covid-19/results/covid-19-manual-results.php:137
+#: covid-19/results/covid-19-manual-results.php:169
+#: covid-19/results/covid-19-print-results.php:143
+#: covid-19/results/covid-19-print-results.php:164
+#: covid-19/results/covid-19-print-results.php:260
+#: covid-19/results/covid-19-print-results.php:280
+#: covid-19/results/covid-19-result-status.php:173
+msgid "Status"
+msgstr ""
+
+#: covid-19/batch/covid-19-batches.php:46
+msgid "Create New Batch"
+msgstr ""
+
+#: covid-19/batch/covid-19-batches.php:56
+#: covid-19/management/get-rejected-samples.php:80
+#, fuzzy
+#| msgid "Move Samples"
+msgid "No. of Samples"
+msgstr "Déplacer les échantillons"
+
+#: covid-19/batch/covid-19-batches.php:57
+msgid "No. of Samples Tested"
+msgstr ""
+
+#: covid-19/batch/covid-19-batches.php:58
+msgid "Last Tested Date"
+msgstr ""
+
+#: covid-19/batch/covid-19-batches.php:61
+#: covid-19/management/covid-19-export-data.php:232
+#: covid-19/requests/covid-19-requests.php:222
+#: covid-19/results/covid-19-failed-results.php:130
+#: covid-19/results/covid-19-manual-results.php:170
+#: covid-19/results/covid-19-print-results.php:165
+#: covid-19/results/covid-19-print-results.php:281
+msgid "Action"
+msgstr ""
+
+#: covid-19/batch/covid-19-batches.php:67
+#: covid-19/management/covid-19-clinic-report.php:153
+#: covid-19/management/covid-19-clinic-report.php:239
+#: covid-19/management/covid-19-clinic-report.php:324
+#: covid-19/management/covid-19-clinic-report.php:382
+#: covid-19/management/covid-19-export-data.php:237
+#: covid-19/management/covid-19-sample-status.php:112
+#: covid-19/management/covid19TestingTargetReport.php:227
+#: covid-19/requests/covid-19-requests.php:228
+#: covid-19/results/covid-19-failed-results.php:136
+#: covid-19/results/covid-19-manual-results.php:175
+#: covid-19/results/covid-19-print-results.php:170
+#: covid-19/results/covid-19-print-results.php:286
+#: covid-19/results/covid-19-result-status.php:181
+msgid "Loading data from server"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:36
+#: covid-19/management/covid-19-clinic-report.php:39 header.php:695
+msgid "Clinic Reports"
+msgstr "Rapports cliniques"
+
+#: covid-19/management/covid-19-clinic-report.php:53
+#, fuzzy
+#| msgid "Clinic Report"
+msgid "Positivity Report"
+msgstr "Rapport de la clinique"
+
+#: covid-19/management/covid-19-clinic-report.php:54
+#: covid-19/management/covid-19-sample-rejection-report.php:28 header.php:804
+#: header.php:910 header.php:1011 header.php:1112
+msgid "Sample Rejection Report"
+msgstr "Exemple de rapport de rejet"
+
+#: covid-19/management/covid-19-clinic-report.php:55
+msgid "Results Not Available Report"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:56
+msgid "Data Quality Check"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:62
+#: covid-19/management/covid-19-clinic-report.php:161
+#: covid-19/management/covid-19-export-data.php:90
+#: covid-19/management/covid-19-sample-status.php:105
+#: covid-19/management/covid19TestingTargetReport.php:181
+#: covid-19/results/covid-19-print-results.php:81
+#: covid-19/results/covid-19-print-results.php:198
+#, fuzzy
+#| msgid "Sample Type"
+msgid "Sample Test Date"
+msgstr "Échantillon type"
+
+#: covid-19/management/covid-19-clinic-report.php:79
+#: covid-19/management/covid-19-clinic-report.php:178
+#: covid-19/management/covid-19-clinic-report.php:264
+#: covid-19/management/covid-19-clinic-report.php:375
+#: covid-19/results/covid-19-manual-results.php:128
+#: covid-19/results/covid-19-print-results.php:134
+#: covid-19/results/covid-19-print-results.php:251 header.php:473
+#: header.php:494 header.php:524 header.php:558 header.php:583
+msgid "Sample Type"
+msgstr "Échantillon type"
+
+#: covid-19/management/covid-19-clinic-report.php:94
+#: covid-19/management/covid-19-clinic-report.php:193
+#: covid-19/management/covid-19-clinic-report.php:279
+#: covid-19/results/covid-19-result-status.php:109
+msgid "Facility Name & Code"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:100
+msgid "Contact Status"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:109
+#: covid-19/management/covid-19-clinic-report.php:199
+#: covid-19/management/covid-19-clinic-report.php:285
+#: covid-19/requests/covid-19-requests.php:117
+msgid "Gender"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:126
+#: covid-19/management/covid-19-clinic-report.php:216
+#: covid-19/management/covid-19-clinic-report.php:302
+#: covid-19/management/covid-19-clinic-report.php:356
+#: covid-19/management/covid-19-export-data.php:162
+#: covid-19/management/covid-19-sample-rejection-report.php:66
+#: covid-19/management/covid-19-sample-status.php:82
+#: covid-19/management/covid19TestingTargetReport.php:204
+#: covid-19/requests/covid-19-requests.php:160
+#: covid-19/results/covid-19-failed-results.php:89
+#: covid-19/results/covid-19-manual-results.php:96
+#: covid-19/results/covid-19-print-results.php:100
+#: covid-19/results/covid-19-print-results.php:217
+#: covid-19/results/covid-19-result-status.php:131
+msgid "Search"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:127
+#: covid-19/management/covid-19-clinic-report.php:217
+#: covid-19/management/covid-19-clinic-report.php:303
+#: covid-19/management/covid-19-clinic-report.php:357
+#: covid-19/management/covid-19-sample-rejection-report.php:67
+#: covid-19/management/covid-19-sample-status.php:83
+#: covid-19/management/covid19TestingTargetReport.php:205
+#: covid-19/requests/covid-19-requests.php:161
+#: covid-19/results/covid-19-failed-results.php:90
+#: covid-19/results/covid-19-manual-results.php:97
+#: covid-19/results/covid-19-print-results.php:101
+#: covid-19/results/covid-19-print-results.php:218
+#: covid-19/results/covid-19-result-status.php:132
+msgid "Reset"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:128
+#: covid-19/management/covid-19-clinic-report.php:218
+#: covid-19/management/covid-19-clinic-report.php:304
+#: covid-19/management/covid-19-clinic-report.php:358
+#: covid-19/management/covid-19-sample-status.php:98
+#: covid-19/management/covid19TestingTargetReport.php:207
+#, fuzzy
+#| msgid "Export Results"
+msgid "Export to excel"
+msgstr "Exporter les résultats"
+
+#: covid-19/management/covid-19-clinic-report.php:136
+#: covid-19/management/covid-19-clinic-report.php:225
+#: covid-19/management/covid-19-clinic-report.php:311
+#: covid-19/management/covid-19-clinic-report.php:365
+#: covid-19/management/covid-19-export-data.php:177
+#: covid-19/management/covid-19-export-data.php:219
+#: covid-19/requests/addSamplesFromManifest.php:51
+#: covid-19/requests/covid-19-requests.php:203
+#: covid-19/results/covid-19-failed-results.php:113
+#: covid-19/results/covid-19-manual-results.php:106
+#: covid-19/results/covid-19-manual-results.php:159
+#: covid-19/results/covid-19-print-results.php:112
+#: covid-19/results/covid-19-print-results.php:154
+#: covid-19/results/covid-19-print-results.php:229
+#: covid-19/results/covid-19-print-results.php:270
+#: covid-19/results/covid-19-result-status.php:162
+#, fuzzy
+#| msgid "Sample Type"
+msgid "Sample Code"
+msgstr "Échantillon type"
+
+#: covid-19/management/covid-19-clinic-report.php:138
+#: covid-19/management/covid-19-clinic-report.php:227
+#: covid-19/management/covid-19-clinic-report.php:313
+#: covid-19/management/covid-19-clinic-report.php:367
+#: covid-19/management/covid-19-export-data.php:221
+#: covid-19/requests/addSamplesFromManifest.php:53
+#: covid-19/requests/covid-19-requests.php:205
+#: covid-19/results/covid-19-failed-results.php:115
+#: covid-19/results/covid-19-manual-results.php:161
+#: covid-19/results/covid-19-print-results.php:156
+#: covid-19/results/covid-19-print-results.php:272
+#: covid-19/results/covid-19-result-status.php:164
+#, fuzzy
+#| msgid "Move Samples"
+msgid "Remote Sample"
+msgstr "Déplacer les échantillons"
+
+#: covid-19/management/covid-19-clinic-report.php:138
+#: covid-19/management/covid-19-clinic-report.php:227
+#: covid-19/management/covid-19-clinic-report.php:313
+#: covid-19/management/covid-19-clinic-report.php:367
+#: covid-19/management/covid-19-export-data.php:221
+#: covid-19/requests/addSamplesFromManifest.php:53
+#: covid-19/requests/covid-19-requests.php:205
+#: covid-19/results/covid-19-failed-results.php:115
+#: covid-19/results/covid-19-manual-results.php:161
+#: covid-19/results/covid-19-print-results.php:156
+#: covid-19/results/covid-19-print-results.php:272
+#: covid-19/results/covid-19-result-status.php:164
+msgid "Code"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:140
+#: covid-19/management/covid-19-clinic-report.php:229
+#: covid-19/management/covid-19-clinic-report.php:315
+#: covid-19/management/covid-19-clinic-report.php:372
+#: covid-19/management/covid-19-export-data.php:76
+#: covid-19/management/covid-19-export-data.php:196
+#: covid-19/management/covid-19-export-data.php:226
+#: covid-19/management/covid19TestingTargetReport.php:216
+#: covid-19/management/get-rejected-samples.php:77
+#: covid-19/requests/addSamplesFromManifest.php:57
+#: covid-19/requests/covid-19-requests.php:91
+#: covid-19/requests/covid-19-requests.php:209
+#: covid-19/results/covid-19-failed-results.php:70
+#: covid-19/results/covid-19-failed-results.php:119
+#: covid-19/results/covid-19-manual-results.php:78
+#: covid-19/results/covid-19-manual-results.php:125
+#: covid-19/results/covid-19-manual-results.php:164
+#: covid-19/results/covid-19-print-results.php:87
+#: covid-19/results/covid-19-print-results.php:131
+#: covid-19/results/covid-19-print-results.php:161
+#: covid-19/results/covid-19-print-results.php:204
+#: covid-19/results/covid-19-print-results.php:248
+#: covid-19/results/covid-19-print-results.php:277
+#: covid-19/results/covid-19-result-status.php:170
+#, fuzzy
+#| msgid "Facilities"
+msgid "Facility Name"
+msgstr "Installations"
+
+#: covid-19/management/covid-19-clinic-report.php:141
+#: covid-19/management/covid-19-clinic-report.php:230
+#: covid-19/management/covid-19-clinic-report.php:316
+msgid "Patient's ID"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:142
+#: covid-19/management/covid-19-clinic-report.php:231
+#: covid-19/management/covid-19-clinic-report.php:317
+#: covid-19/management/covid-19-clinic-report.php:371
+#: covid-19/results/covid-19-manual-results.php:122
+#: covid-19/results/covid-19-print-results.php:128
+#: covid-19/results/covid-19-print-results.php:245
+msgid "Patient's Name"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:143
+msgid "Caretaker Phone No."
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:144
+#: covid-19/management/covid-19-clinic-report.php:232
+#: covid-19/management/covid-19-clinic-report.php:247
+#: covid-19/management/covid-19-clinic-report.php:318
+#: covid-19/management/covid-19-clinic-report.php:332
+#: covid-19/management/covid-19-clinic-report.php:369
+#: covid-19/management/covid-19-export-data.php:68
+#: covid-19/management/covid-19-sample-rejection-report.php:42
+#: covid-19/management/covid-19-sample-status.php:48
+#: covid-19/management/covid-19-sample-status.php:103
+#: covid-19/requests/covid-19-requests.php:63
+#: covid-19/results/covid-19-failed-results.php:42
+#: covid-19/results/covid-19-manual-results.php:59
+#: covid-19/results/covid-19-print-results.php:63
+#: covid-19/results/covid-19-print-results.php:180
+#: covid-19/results/covid-19-result-status.php:89
+#: covid-19/results/covid-19-result-status.php:166
+#, fuzzy
+#| msgid "Sample Rejection Report"
+msgid "Sample Collection Date"
+msgstr "Exemple de rapport de rejet"
+
+#: covid-19/management/covid-19-clinic-report.php:145
+#, fuzzy
+#| msgid "Sample Type"
+msgid "Sample Tested Date"
+msgstr "Échantillon type"
+
+#: covid-19/management/covid-19-clinic-report.php:146
+#: covid-19/management/covid-19-export-data.php:84
+#: covid-19/management/covid-19-sample-status.php:69
+#: covid-19/requests/covid-19-requests.php:107
+msgid "Testing Lab"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:147
+#: covid-19/management/covid-19-clinic-report.php:376
+#: covid-19/management/covid-19-export-data.php:95
+#: covid-19/management/covid-19-export-data.php:199
+#: covid-19/management/covid-19-export-data.php:228
+#: covid-19/requests/addSamplesFromManifest.php:62
+#: covid-19/requests/covid-19-requests.php:218
+#: covid-19/results/covid-19-failed-results.php:126
+#: covid-19/results/covid-19-manual-results.php:131
+#: covid-19/results/covid-19-manual-results.php:167
+#: covid-19/results/covid-19-print-results.php:137
+#: covid-19/results/covid-19-print-results.php:162
+#: covid-19/results/covid-19-print-results.php:254
+#: covid-19/results/covid-19-print-results.php:278
+#: covid-19/results/covid-19-result-status.php:171
+#, fuzzy
+#| msgid "Results"
+msgid "Result"
+msgstr "Résultats"
+
+#: covid-19/management/covid-19-clinic-report.php:233
+#: covid-19/management/covid-19-clinic-report.php:319
+msgid "VL Lab Name"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:234
+#: covid-19/management/get-rejected-samples.php:78
+#, fuzzy
+#| msgid "Rejection Reasons"
+msgid "Rejection Reason"
+msgstr "Motifs de rejet"
+
+#: covid-19/management/covid-19-clinic-report.php:336
+msgid "Fields"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:373
+#: covid-19/requests/addSamplesFromManifest.php:60
+#: covid-19/requests/covid-19-requests.php:97
+#: covid-19/requests/covid-19-requests.php:216
+#: covid-19/results/covid-19-failed-results.php:76
+#: covid-19/results/covid-19-failed-results.php:124
+msgid "Province/State"
+msgstr ""
+
+#: covid-19/management/covid-19-clinic-report.php:374
+#: covid-19/requests/addSamplesFromManifest.php:61
+#: covid-19/requests/covid-19-requests.php:101
+#: covid-19/requests/covid-19-requests.php:217
+#: covid-19/results/covid-19-failed-results.php:80
+#: covid-19/results/covid-19-failed-results.php:125
+msgid "District/County"
+msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:52
+#, fuzzy
+#| msgid "Export Results"
+msgid "Export Data"
+msgstr "Exporter les résultats"
+
+#: covid-19/management/covid-19-export-data.php:72
+msgid "Sample Received At Lab"
+msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:106
+msgid "Last Print Date"
+msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:136
+#: covid-19/requests/covid-19-requests.php:136 header.php:452
+msgid "Funding Sources"
+msgstr "Sources de financement"
+
+#: covid-19/management/covid-19-export-data.php:147
+#: covid-19/requests/covid-19-requests.php:147
+#, fuzzy
+#| msgid "Implementation Partners"
+msgid "Implementing Partners"
+msgstr "Partenaires de mise en œuvre"
+
+#: covid-19/management/covid-19-export-data.php:164
+msgid "Clear Search"
+msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:166
+msgid "Download"
+msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:168
+#: covid-19/results/covid-19-manual-results.php:98
+#: covid-19/results/covid-19-print-results.php:103
+#: covid-19/results/covid-19-print-results.php:220
+#, fuzzy
+#| msgid "Management"
+msgid "Manage Columns"
+msgstr "Gestion"
+
+#: covid-19/management/covid-19-export-data.php:183
+#: covid-19/results/covid-19-manual-results.php:112
+#: covid-19/results/covid-19-print-results.php:118
+#: covid-19/results/covid-19-print-results.php:235
+#, fuzzy
+#| msgid "Remote Sample Tracking Module"
+msgid "Remote Sample Code"
+msgstr "Module de suivi des échantillons à distance"
+
+#: covid-19/management/covid-19-export-data.php:190
+#: covid-19/management/covid-19-export-data.php:224
+#: covid-19/requests/addSamplesFromManifest.php:58
+#: covid-19/requests/covid-19-requests.php:113
+#: covid-19/requests/covid-19-requests.php:213
+#: covid-19/results/covid-19-manual-results.php:165
+#: covid-19/results/covid-19-print-results.php:159
+#: covid-19/results/covid-19-print-results.php:275
+#: covid-19/results/covid-19-result-status.php:168
+msgid "Patient ID"
+msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:193
+#: covid-19/management/covid-19-export-data.php:225
+#: covid-19/requests/addSamplesFromManifest.php:59
+#: covid-19/requests/covid-19-requests.php:215
+#: covid-19/results/covid-19-manual-results.php:166
+#: covid-19/results/covid-19-print-results.php:160
+#: covid-19/results/covid-19-print-results.php:276
+msgid "Patient Name"
+msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:205
+#: covid-19/management/covid-19-export-data.php:230
+#, fuzzy
+#| msgid "Funding Sources"
+msgid "Funding Source"
+msgstr "Sources de financement"
+
+#: covid-19/management/covid-19-export-data.php:208
+#: covid-19/management/covid-19-export-data.php:231
+#, fuzzy
+#| msgid "Implementation Partners"
+msgid "Implementing Partner"
+msgstr "Partenaires de mise en œuvre"
+
+#: covid-19/management/covid-19-export-data.php:227
+#: covid-19/management/covid19TestingTargetReport.php:185
+#: covid-19/management/get-rejected-samples.php:76
+msgid "Lab Name"
+msgstr ""
+
+#: covid-19/management/covid-19-sample-rejection-report.php:31
+#, fuzzy
+#| msgid "Rejection Reasons"
+msgid "Rejection Result"
+msgstr "Motifs de rejet"
+
+#: covid-19/management/covid-19-sample-rejection-report.php:46
+msgid "Lab"
+msgstr ""
+
+#: covid-19/management/covid-19-sample-rejection-report.php:55
+#, fuzzy
+#| msgid "Clinic Report"
+msgid "Clinic Name"
+msgstr "Rapport de la clinique"
+
+#: covid-19/management/covid-19-sample-status.php:34
+#, fuzzy
+#| msgid "Sample Status Report"
+msgid "Covid-19 Sample Status Report"
+msgstr "Exemple de rapport d'état"
+
+#: covid-19/management/covid-19-sample-status.php:37
+#, fuzzy
+#| msgid "Covid-19 Specimen Manifest"
+msgid "Covid-19 Sample Status"
+msgstr "Manifeste des spécimens de Covid-19"
+
+#: covid-19/management/covid-19-sample-status.php:102
+#, fuzzy
+#| msgid "Move Samples"
+msgid "Covid-19 Sample ID"
+msgstr "Déplacer les échantillons"
+
+#: covid-19/management/covid-19-sample-status.php:104
+msgid "Sample Received Date in Lab"
+msgstr ""
+
+#: covid-19/management/covid-19-sample-status.php:106
+#, fuzzy
+#| msgid "Sample Tracking"
+msgid "Sample Print Date"
+msgstr "Suivi des échantillons"
+
+#: covid-19/management/covid-19-sample-status.php:107
+msgid "Sample Email Date"
+msgstr ""
+
+#: covid-19/management/covid19TestingTargetReport.php:166 header.php:916
+msgid "COVID-19 Testing Target Report"
+msgstr "Rapport cible de test COVID-19"
+
+#: covid-19/management/covid19TestingTargetReport.php:194
+#, fuzzy
+#| msgid "Sample Type"
+msgid "Target Type"
+msgstr "Échantillon type"
+
+#: covid-19/management/covid19TestingTargetReport.php:217
+msgid "Month"
+msgstr ""
+
+#: covid-19/management/covid19TestingTargetReport.php:218
+msgid "Number of Samples Received"
+msgstr ""
+
+#: covid-19/management/covid19TestingTargetReport.php:219
+msgid "Number of Samples Rejected"
+msgstr ""
+
+#: covid-19/management/covid19TestingTargetReport.php:220
+msgid "Number of Samples Tested"
+msgstr ""
+
+#: covid-19/management/covid19TestingTargetReport.php:221
+msgid "Monthly Test Target"
+msgstr ""
+
+#: covid-19/management/get-rejected-samples.php:70
+#, fuzzy
+#| msgid "Export Results"
+msgid "Export Excel"
+msgstr "Exporter les résultats"
+
+#: covid-19/management/get-rejected-samples.php:79
+msgid "Reason Category"
+msgstr ""
+
+#: covid-19/requests/addSamplesFromManifest.php:17 header.php:627
+#: header.php:745 header.php:842 header.php:949 header.php:1050
+msgid "Add Samples from Manifest"
+msgstr "Ajouter des échantillons à partir du manifeste"
+
+#: covid-19/requests/addSamplesFromManifest.php:20
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "Covid-19 Test Request"
+msgstr "Afficher les demandes de test"
+
+#: covid-19/requests/addSamplesFromManifest.php:37
+msgid "Submit"
+msgstr ""
+
+#: covid-19/requests/addSamplesFromManifest.php:42
+#, fuzzy
+#| msgid "Move Samples"
+msgid "Activate Samples"
+msgstr "Déplacer les échantillons"
+
+#: covid-19/requests/addSamplesFromManifest.php:55
+#: covid-19/requests/covid-19-requests.php:207
+#: covid-19/results/covid-19-failed-results.php:117
+#, fuzzy
+#| msgid "Sample Rejection Report"
+msgid "Sample Collection"
+msgstr "Exemple de rapport de rejet"
+
+#: covid-19/requests/addSamplesFromManifest.php:55
+#: covid-19/requests/covid-19-requests.php:207
+#: covid-19/results/covid-19-failed-results.php:117
+msgid "Date"
+msgstr ""
+
+#: covid-19/requests/addSamplesFromManifest.php:63
+#: covid-19/requests/covid-19-requests.php:219
+#: covid-19/results/covid-19-failed-results.php:127
+#: covid-19/results/covid-19-print-results.php:140
+#: covid-19/results/covid-19-print-results.php:163
+#: covid-19/results/covid-19-print-results.php:257
+#: covid-19/results/covid-19-print-results.php:279
+msgid "Last Modified On"
+msgstr ""
+
+#: covid-19/requests/addSamplesFromManifest.php:69
+msgid "Please enter the manifest code then submit!"
+msgstr ""
+
+#: covid-19/requests/covid-19-bulk-import-request.php:14
+#: covid-19/requests/covid-19-bulk-import-request.php:17
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "Import Test Requests In Bulk"
+msgstr "Afficher les demandes de test"
+
+#: covid-19/requests/covid-19-requests.php:49
+msgid "Covid-19 Test Requests"
+msgstr "Afficher les demandes de test"
+
+#: covid-19/requests/covid-19-requests.php:52
+#: covid-19/results/covid-19-failed-results.php:31
+#: covid-19/results/covid-19-result-status.php:66
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "Test Request"
+msgstr "Afficher les demandes de test"
+
+#: covid-19/requests/covid-19-requests.php:80
+#: covid-19/results/covid-19-failed-results.php:59
+#, fuzzy
+#| msgid "Sample Type"
+msgid "Req. Sample Type"
+msgstr "Échantillon type"
+
+#: covid-19/requests/covid-19-requests.php:128
+msgid "Show only Reordered Samples"
+msgstr ""
+
+#: covid-19/requests/covid-19-requests.php:162
+#: covid-19/results/covid-19-failed-results.php:91
+msgid "Hide Advanced Search"
+msgstr ""
+
+#: covid-19/requests/covid-19-requests.php:166
+#, fuzzy
+#| msgid "Add New Request"
+msgid "Add new Covid-19 Request"
+msgstr "Ajouter une nouvelle demande"
+
+#: covid-19/requests/covid-19-requests.php:168
+msgid "Bulk Import Covid-19 Request"
+msgstr ""
+
+#: covid-19/requests/covid-19-requests.php:171
+msgid "Quick Add Covid-19 Request"
+msgstr ""
+
+#: covid-19/requests/covid-19-requests.php:211
+msgid "Case ID"
+msgstr ""
+
+#: covid-19/requests/forms/add-rwanda.php:65
+#: covid-19/requests/forms/add-southsudan.php:79
+#: covid-19/requests/forms/edit-rwanda.php:88
+#: covid-19/requests/forms/edit-southsudan.php:94
+#: covid-19/requests/forms/quick-add-southsudan.php:69
+msgid "COVID-19 VIRUS LABORATORY TEST REQUEST FORM"
+msgstr ""
+
+#: covid-19/requests/forms/add-rwanda.php:68
+#: covid-19/requests/forms/add-southsudan.php:82
+#: covid-19/requests/forms/add-who.php:64
+#: covid-19/requests/forms/quick-add-southsudan.php:72 header.php:622
+#: header.php:740 header.php:837 header.php:944 header.php:1045
+msgid "Add New Request"
+msgstr "Ajouter une nouvelle demande"
+
+#: covid-19/requests/forms/add-who.php:61
+#: covid-19/requests/forms/edit-who.php:76
+msgid "WHO COVID-19 VIRUS LABORATORY TEST REQUEST FORM"
+msgstr ""
+
+#: covid-19/requests/forms/edit-southsudan.php:97
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "Edit Request"
+msgstr "Afficher les demandes de test"
+
+#: covid-19/requests/forms/edit-who.php:80
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "View Request"
+msgstr "Afficher les demandes de test"
+
+#: covid-19/requests/forms/edit-who.php:82
+#, fuzzy
+#| msgid "Add New Request"
+msgid "Update Request"
+msgstr "Ajouter une nouvelle demande"
+
+#: covid-19/results/covid-19-failed-results.php:28 header.php:659
+#: header.php:776 header.php:873 header.php:980 header.php:1081
+msgid "Failed/Hold Samples"
+msgstr "Échec/Echantillons en attente"
+
+#: covid-19/results/covid-19-failed-results.php:94
+#: covid-19/results/covid-19-failed-results.php:101
+msgid "Retest the selected samples"
+msgstr ""
+
+#: covid-19/results/covid-19-failed-results.php:120
+msgid "Child's ID"
+msgstr ""
+
+#: covid-19/results/covid-19-failed-results.php:121
+msgid "Child's Name"
+msgstr ""
+
+#: covid-19/results/covid-19-failed-results.php:122
+msgid "Mother's ID"
+msgstr ""
+
+#: covid-19/results/covid-19-failed-results.php:123
+msgid "Mother's Name"
+msgstr ""
+
+#: covid-19/results/covid-19-failed-results.php:142
+msgid "Loading Printer Details"
+msgstr ""
+
+#: covid-19/results/covid-19-failed-results.php:149
+msgid "No printer selected"
+msgstr ""
+
+#: covid-19/results/covid-19-failed-results.php:150
+msgid "Change/Retry"
+msgstr ""
+
+#: covid-19/results/covid-19-failed-results.php:153
+msgid "Zebra Printer Options"
+msgstr ""
+
+#: covid-19/results/covid-19-failed-results.php:154
+#, fuzzy
+#| msgid "Print Result"
+msgid "Printer"
+msgstr "Imprimer le résultat"
+
+#: covid-19/results/covid-19-manual-results.php:46
+#: covid-19/results/covid-19-manual-results.php:49
+#, fuzzy
+#| msgid "Enter Result Manually"
+msgid "Enter Covid-19 Result Manually"
+msgstr "Saisir le résultat manuellement"
+
+#: covid-19/results/covid-19-manual-results.php:119
+#: covid-19/results/covid-19-print-results.php:125
+#: covid-19/results/covid-19-print-results.php:242
+msgid "Art No"
+msgstr ""
+
+#: covid-19/results/covid-19-manual-results.php:134
+#: covid-19/results/covid-19-manual-results.php:168
+msgid "Modified On"
+msgstr ""
+
+#: covid-19/results/covid-19-print-results.php:39
+#: covid-19/results/covid-19-print-results.php:42
+#, fuzzy
+#| msgid "Print Result"
+msgid "Print Covid-19 Results"
+msgstr "Imprimer le résultat"
+
+#: covid-19/results/covid-19-print-results.php:56
+msgid "Results not yet Printed"
+msgstr ""
+
+#: covid-19/results/covid-19-print-results.php:57
+msgid "Results already Printed"
+msgstr ""
+
+#: covid-19/results/covid-19-print-results.php:102
+#: covid-19/results/covid-19-print-results.php:219
+#, fuzzy
+#| msgid "Results"
+msgid "Result PDF"
+msgstr "Résultats"
+
+#: covid-19/results/covid-19-result-status.php:63
+#, fuzzy
+#| msgid "Results"
+msgid "Results Approval"
+msgstr "Résultats"
+
+#: covid-19/results/covid-19-result-status.php:75
+#, fuzzy
+#| msgid "Rejection Reasons"
+msgid "Choose Rejection Reason"
+msgstr "Motifs de rejet"
+
+#: covid-19/results/covid-19-result-status.php:122
+msgid "Show Samples that are"
+msgstr ""
+
+#: covid-19/results/covid-19-result-status.php:154
+msgid "Apply"
+msgstr ""
+
+#: covid-19/results/covid-19-result-status.php:169
+msgid "Paitent Name"
+msgstr ""
+
+#: covid-19/results/covid-19-result-status.php:172
+msgid "Last Modified on"
+msgstr ""
 
 #: header.php:24 login.php:25
 msgid "Lab Sample Management Module"
@@ -86,10 +959,6 @@ msgstr "Tester la configuration de l'e-mail des résultats"
 msgid "Implementation Partners"
 msgstr "Partenaires de mise en œuvre"
 
-#: header.php:452
-msgid "Funding Sources"
-msgstr "Sources de financement"
-
 #: header.php:459
 msgid "VL Config"
 msgstr "Configuration LV"
@@ -101,10 +970,6 @@ msgstr "Régime de TAR"
 #: header.php:470 header.php:491 header.php:521 header.php:555 header.php:580
 msgid "Rejection Reasons"
 msgstr "Motifs de rejet"
-
-#: header.php:473 header.php:494 header.php:524 header.php:558 header.php:583
-msgid "Sample Type"
-msgstr "Échantillon type"
 
 #: header.php:476 header.php:497
 msgid "Test Reasons"
@@ -162,14 +1027,6 @@ msgstr "Gestion des demandes"
 msgid "View Test Requests"
 msgstr "Afficher les demandes de test"
 
-#: header.php:622 header.php:740 header.php:837 header.php:944 header.php:1045
-msgid "Add New Request"
-msgstr "Ajouter une nouvelle demande"
-
-#: header.php:627 header.php:745 header.php:842 header.php:949 header.php:1050
-msgid "Add Samples from Manifest"
-msgstr "Ajouter des échantillons à partir du manifeste"
-
 #: header.php:632 header.php:750 header.php:847 header.php:954 header.php:1055
 msgid "Manage Batch"
 msgstr "Gérer le lot"
@@ -189,10 +1046,6 @@ msgstr "Importer le résultat du fichier"
 #: header.php:658 header.php:775 header.php:872 header.php:979 header.php:1080
 msgid "Enter Result Manually"
 msgstr "Saisir le résultat manuellement"
-
-#: header.php:659 header.php:776 header.php:873 header.php:980 header.php:1081
-msgid "Failed/Hold Samples"
-msgstr "Échec/Echantillons en attente"
 
 #: header.php:662
 msgid "Approve Results"
@@ -221,10 +1074,6 @@ msgstr "Exporter les résultats"
 #: header.php:692 header.php:801 header.php:907 header.php:1008 header.php:1106
 msgid "Print Result"
 msgstr "Imprimer le résultat"
-
-#: header.php:695
-msgid "Clinic Reports"
-msgstr "Rapports cliniques"
 
 #: header.php:698
 msgid "Export Patient List"
@@ -262,10 +1111,6 @@ msgstr "Manifeste d'échantillon EID"
 msgid "Manage Results Status"
 msgstr "Gérer l'état des résultats"
 
-#: header.php:804 header.php:910 header.php:1011 header.php:1112
-msgid "Sample Rejection Report"
-msgstr "Exemple de rapport de rejet"
-
 #: header.php:807 header.php:913 header.php:1014 header.php:1115
 msgid "Clinic Report"
 msgstr "Rapport de la clinique"
@@ -290,10 +1135,6 @@ msgstr "Manifeste de confirmation"
 msgid "Record Confirmatory Tests"
 msgstr "Enregistrer les tests de confirmation"
 
-#: header.php:916
-msgid "COVID-19 Testing Target Report"
-msgstr "Rapport cible de test COVID-19"
-
 #: header.php:926
 msgid "Hepatitis"
 msgstr "Hépatite"
@@ -313,3 +1154,21 @@ msgstr ""
 #: header.php:1060
 msgid "TB Specimen Manifest"
 msgstr "Manifeste des spécimens de tuberculose"
+
+#: import-result/addImportResult.php:27
+#, fuzzy
+#| msgid "Report"
+msgid "Import"
+msgstr "Reportage"
+
+#: import-result/addImportResult.php:27
+#, fuzzy
+#| msgid "Import Result From File"
+msgid "Test Results From File"
+msgstr "Importer le résultat du fichier"
+
+#: import-result/addImportResult.php:30
+#, fuzzy
+#| msgid "Export Results"
+msgid "Import Result"
+msgstr "Exporter les résultats"
