@@ -20,10 +20,10 @@ try {
                 'machine' => $_POST['platform'],
                 'batch_code' => $_POST['batchCode'],
                 'batch_code_key' => $_POST['batchCodeKey'],
+                'position_type' => $_POST['positions'],
                 'test_type' => 'vl',
                 'request_created_datetime' => $general->getDateTime()
             );
-
             $db->insert($tableName1, $data);
             $lastId = $db->getInsertId();
 
@@ -34,7 +34,7 @@ try {
                     $db = $db->where('vl_sample_id', $vlSampleId);
                     $db->update($tableName2, $value);
                 }
-                header("location:/vl/batch/addBatchControlsPosition.php?id=" . base64_encode($lastId));
+                header("location:/vl/batch/addBatchControlsPosition.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
             }
         } else {
             header("location:/vl/batch/batchcode.php");
