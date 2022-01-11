@@ -33,10 +33,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1> <i class="fa fa-book"></i> Clinic Reports</h1>
+		<h1> <i class="fa fa-book"></i> <?php echo _("Clinic Reports");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Clinic Reports</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li class="active"><?php echo _("Clinic Reports");?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -50,20 +50,20 @@ $batResult = $db->rawQuery($batQuery);
 							<div class="widget-content">
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-										<li class="active"><a href="#highViralLoadReport" data-toggle="tab">Positivity Report</a></li>
-										<li><a href="#sampleRjtReport" data-toggle="tab">Sample Rejection Report</a></li>
-										<li><a href="#notAvailReport" data-toggle="tab">Results Not Available Report</a></li>
-										<li><a href="#incompleteFormReport" data-toggle="tab">Data Quality Check</a></li>
+										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _("Positivity Report");?></a></li>
+										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _("Sample Rejection Report");?></a></li>
+										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _("Results Not Available Report");?></a></li>
+										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _("Data Quality Check");?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
 											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b>Sample Test Date&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
 													<td>
 														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="Please select batch code" style="width:220px;">
 															<option value=""> -- Select -- </option>
@@ -76,7 +76,7 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
 													<td>
 														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="Please select sample type">
 															<option value=""> -- Select -- </option>
@@ -91,13 +91,13 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td>&nbsp;<b>Facility Name & Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td>&nbsp;<b>Contact Status&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Contact Status");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="Please select contact status" style="width:220px;">
 															<option value=""> -- Select -- </option>
@@ -106,7 +106,7 @@ $batResult = $db->rawQuery($batQuery);
 															<option value="all" selected="selected">All</option>
 														</select>
 													</td>
-													<td><b>Gender&nbsp;:</b></td>
+													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
 														<select name="hvlGender" id="hvlGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="">
 															<option value=""> -- Select -- </option>
@@ -123,9 +123,9 @@ $batResult = $db->rawQuery($batQuery);
 													<td></td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export to excel</button>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
@@ -133,24 +133,24 @@ $batResult = $db->rawQuery($batQuery);
 											<table id="highViralLoadReportTable" class="table table-bordered table-striped">
 												<thead>
 													<tr>
-														<th>Sample Code</th>
+														<th><?php echo _("Sample Code");?></th>
 														<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-															<th>Remote Sample <br />Code</th>
+															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 														<?php } ?>
-														<th>Facility Name</th>
-														<th>Patient's ID</th>
-														<th>Patient's Name</th>
-														<th>Caretaker Phone No.</th>
-														<th>Sample Collection Date</th>
-														<th>Sample Tested Date</th>
-														<th>Testing Lab</th>
-														<th>Result</th>
-														<th>Status</th>
+														<th><?php echo _("Facility Name");?></th>
+														<th><?php echo _("Patient's ID");?></th>
+														<th><?php echo _("Patient's Name");?></th>
+														<th><?php echo _("Caretaker Phone No.");?></th>
+														<th><?php echo _("Sample Collection Date");?></th>
+														<th><?php echo _("Sample Tested Date");?></th>
+														<th><?php echo _("Testing Lab");?></th>
+														<th><?php echo _("Result");?></th>
+														<th><?php echo _("Status");?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="7" class="dataTables_empty">Loading data from server</td>
+														<td colspan="7" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -158,11 +158,11 @@ $batResult = $db->rawQuery($batQuery);
 										<div class="tab-pane fade" id="sampleRjtReport">
 											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b>Sample Test Date&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
 													<td>
 														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="Please select batch code" style="width:220px;">
 															<option value=""> -- Select -- </option>
@@ -175,7 +175,7 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
 													<td>
 														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="Please select sample type">
 															<option value=""> -- Select -- </option>
@@ -190,13 +190,13 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td>&nbsp;<b>Facility Name & Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="rjtFacilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td><b>Gender&nbsp;:</b></td>
+													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
 														<select name="rjtGender" id="rjtGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="">
 															<option value=""> -- Select -- </option>
@@ -213,30 +213,30 @@ $batResult = $db->rawQuery($batQuery);
 													<td></td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export to excel</button>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
 											<table id="sampleRjtReportTable" class="table table-bordered table-striped">
 												<thead>
 													<tr>
-														<th>Sample Code</th>
+														<th><?php echo _("Sample Code");?></th>
 														<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-															<th>Remote Sample <br />Code</th>
+															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 														<?php } ?>
-														<th>Facility Name</th>
-														<th>Patient's ID</th>
-														<th>Patient's Name</th>
-														<th>Sample Collection Date</th>
-														<th>VL Lab Name</th>
-														<th>Rejection Reason</th>
+														<th><?php echo _("Facility Name");?></th>
+														<th><?php echo _("Patient's ID");?></th>
+														<th><?php echo _("Patient's Name");?></th>
+														<th><?php echo _("Sample Collection Date");?></th>
+														<th><?php echo _("VL Lab Name");?></th>
+														<th><?php echo _("Rejection Reason");?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="6" class="dataTables_empty">Loading data from server</td>
+														<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -244,11 +244,11 @@ $batResult = $db->rawQuery($batQuery);
 										<div class="tab-pane fade" id="notAvailReport">
 											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b>Sample Collection Date&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
 													<td>
 														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="Select Sample Collection Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="Please select batch code" style="width:220px;">
 															<option value=""> -- Select -- </option>
@@ -261,7 +261,7 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
 													<td>
 														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="Please select sample type">
 															<option value=""> -- Select -- </option>
@@ -276,13 +276,13 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td>&nbsp;<b>Facility Name & Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="noResultFacilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td><b>Gender&nbsp;:</b></td>
+													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
 														<select name="noResultGender" id="noResultGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="">
 															<option value=""> -- Select -- </option>
@@ -299,29 +299,29 @@ $batResult = $db->rawQuery($batQuery);
 													<td></td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export to excel</button>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
 											<table id="notAvailReportTable" class="table table-bordered table-striped">
 												<thead>
 													<tr>
-														<th>Sample Code</th>
+														<th><?php echo _("Sample Code");?></th>
 														<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-															<th>Remote Sample <br />Code</th>
+															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 														<?php } ?>
-														<th>Facility Name</th>
-														<th>Patient's ID</th>
-														<th>Patient's Name</th>
-														<th>Sample Collection Date</th>
-														<th>VL Lab Name</th>
+														<th><?php echo _("Facility Name");?></th>
+														<th><?php echo _("Patient's ID");?></th>
+														<th><?php echo _("Patient's Name");?></th>
+														<th><?php echo _("Sample Collection Date");?></th>
+														<th><?php echo _("VL Lab Name");?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="4" class="dataTables_empty">Loading data from server</td>
+														<td colspan="4" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -329,11 +329,11 @@ $batResult = $db->rawQuery($batQuery);
 										<div class="tab-pane fade" id="incompleteFormReport">
 											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b>Sample Collection Date&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
 													<td>
 														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Sample Collection Date" readonly style="width:220px;background:#fff;" />
 													</td>
-													<td>&nbsp;<b>Fields&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Fields");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="formField" name="formField" multiple="multiple" title="Please fields" style="width:220px;">
 															<option value=""> -- Select -- </option>
@@ -353,33 +353,33 @@ $batResult = $db->rawQuery($batQuery);
 												</tr>
 
 												<tr>
-													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export to excel</button>
+													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
 											<table id="incompleteReport" class="table table-bordered table-striped">
 												<thead>
 													<tr>
-														<th>Sample Code</th>
+														<th><?php echo _("Sample Code");?></th>
 														<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-															<th>Remote Sample <br />Code</th>
+															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 														<?php } ?>
-														<th>Sample Collection Date</th>
-														<th>Batch Code</th>
-														<th>Patient's Name</th>
-														<th>Facility Name</th>
-														<th>Province/State</th>
-														<th>District/County</th>
-														<th>Sample Type</th>
-														<th>Result</th>
-														<th>Status</th>
+														<th><?php echo _("Sample Collection Date");?></th>
+														<th><?php echo _("Batch Code");?></th>
+														<th><?php echo _("Patient's Name");?></th>
+														<th><?php echo _("Facility Name");?></th>
+														<th><?php echo _("Province/State");?></th>
+														<th><?php echo _("District/County");?></th>
+														<th><?php echo _("Sample Type");?></th>
+														<th><?php echo _("Result");?></th>
+														<th><?php echo _("Status");?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="12" class="dataTables_empty">Loading data from server</td>
+														<td colspan="12" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 													</tr>
 												</tbody>
 											</table>

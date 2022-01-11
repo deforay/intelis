@@ -163,7 +163,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-book"></i> COVID-19 Testing Target Report
+    <h1><i class="fa fa-book"></i> <?php echo _("COVID-19 Testing Target Report");?>
       <!--<ol class="breadcrumb">-->
       <!--  <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->
@@ -178,11 +178,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         <div class="box">
           <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b>Sample Test Date&nbsp;:</b></td>
+              <td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
               <td>
                 <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="background:#fff;" />
               </td>
-              <td><b>Lab Name :</b></td>
+              <td><b><?php echo _("Lab Name");?> :</b></td>
               <td style="width: 30%;">
                 <select id="facilityName" name="facilityName" title="Please select facility name" multiple>
                   <?= $testingLabsDropdown; ?>
@@ -191,7 +191,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
             </tr>
             <tr>
-              <td><b>Target Type&nbsp;:</b></td>
+              <td><b><?php echo _("Target Type");?>&nbsp;:</b></td>
               <td>
                 <select class="form-control" id="targetType" name="targetType" title="Please select Target Type">
                   <option value="1">Monthly Targets not met</option>
@@ -201,10 +201,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
               </td>
             </tr>
             <tr>
-              <td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+              <td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
 
-                &nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()">Export to excel</button>
+                &nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()"><?php echo _("Export to excel");?></button>
               </td>
             </tr>
           </table>
@@ -213,18 +213,18 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             <table id="vlMonitoringTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Facility Name</th>
-                  <th>Month </th>
-                  <th> Number of Samples Received </th>
-                  <th> Number of Samples Rejected </th>
-                  <th>Number of Samples Tested</th>
-                  <th>Monthly Test Target</th>
+                  <th><?php echo _("Facility Name");?></th>
+                  <th><?php echo _("Month");?> </th>
+                  <th> <?php echo _("Number of Samples Received");?> </th>
+                  <th> <?php echo _("Number of Samples Rejected");?> </th>
+                  <th><?php echo _("Number of Samples Tested");?></th>
+                  <th><?php echo _("Monthly Test Target");?></th>
 
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
             </table>
