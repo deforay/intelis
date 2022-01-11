@@ -23,10 +23,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-book"></i> Sample Rejection Report</h1>
+    <h1><i class="fa fa-book"></i> <?php echo _("Sample Rejection Report");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Rejection Result</li>
+      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("Rejection Result");?></li>
     </ol>
   </section>
 
@@ -37,11 +37,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         <div class="box">
           <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b>Sample Collection Date&nbsp;:</b></td>
+              <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
               <td>
                 <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
               </td>
-              <td>&nbsp;<b>Lab &nbsp;:</b></td>
+              <td>&nbsp;<b><?php echo _("Lab");?> &nbsp;:</b></td>
               <td>
                 <select class="form-control" id="labName" name="labName" title="Please select lab name" style="width:220px;">
                   <?= $testingLabsDropdown; ?>
@@ -50,7 +50,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             </tr>
             <tr>
 
-              <td>&nbsp;<b>Clinic Name &nbsp;:</b></td>
+              <td>&nbsp;<b><?php echo _("Clinic Name");?> &nbsp;:</b></td>
               <td>
                 <select class="form-control" id="clinicName" name="clinicName" title="Please select clinic name" multiple="multiple" style="width:220px;">
                   <?= $facilitiesDropdown; ?>
@@ -61,8 +61,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
             </tr>
             <tr>
-              <td colspan="4">&nbsp;<input type="button" onclick="searchResultData();" value="Search" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+              <td colspan="4">&nbsp;<input type="button" onclick="searchResultData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
               </td>
             </tr>
 

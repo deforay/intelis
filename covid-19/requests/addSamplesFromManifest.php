@@ -28,7 +28,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
-							<td style="width:20%;vertical-align:middle;"><b>Enter Sample Manifest Code :</b></td>
+							<td style="width:20%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code");?> :</b></td>
 							<td>
 								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="Sample manifest code" title="Please enter the sample manifest code" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
