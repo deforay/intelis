@@ -80,9 +80,9 @@ $batResult = $db->rawQuery($batQuery);
 							<td><b><?php echo _("Req. Sample Type");?> :</b></td>
 							<td>
 								<select class="form-control" id="requestSampleType" name="requestSampleType" title="Please select request sample type">
-									<option value="">All</option>
-									<option value="result">Sample With Result</option>
-									<option value="noresult">Sample Without Result</option>
+									<option value=""><?php echo _("All");?></option>
+									<option value="result"><?php echo _("Sample With Result");?></option>
+									<option value="noresult"><?php echo _("Sample Without Result");?></option>
 								</select>
 							</td>
 
@@ -117,10 +117,10 @@ $batResult = $db->rawQuery($batQuery);
 							<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="Please choose gender" style="width:220px;" onchange="hideFemaleDetails(this.value)">
-									<option value=""> -- Select -- </option>
-									<option value="male">Male</option>
-									<option value="female">Female</option>
-									<option value="not_recorded">Not Recorded</option>
+									<option value=""> <?php echo _("-- Select --");?> </option>
+									<option value="male"><?php echo _("Male");?></option>
+									<option value="female"><?php echo _("Female");?></option>
+									<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 								</select>
 							</td>
 						</tr>
@@ -128,9 +128,9 @@ $batResult = $db->rawQuery($batQuery);
 							<td><b><?php echo _("Show only Reordered Samples");?>&nbsp;:</b></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
-									<option value=""> -- Select -- </option>
-									<option value="yes">Yes</option>
-									<option value="no" selected="selected">No</option>
+									<option value=""> <?php echo _("-- Select --");?> </option>
+									<option value="yes"><?php echo _("Yes");?></option>
+									<option value="no" selected="selected"><?php echo _("No");?></option>
 								</select>
 							</td>
 							<td><b><?php echo _("Funding Sources");?>&nbsp;:</b></td>

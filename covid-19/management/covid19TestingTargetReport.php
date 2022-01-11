@@ -194,9 +194,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
               <td><b><?php echo _("Target Type");?>&nbsp;:</b></td>
               <td>
                 <select class="form-control" id="targetType" name="targetType" title="Please select Target Type">
-                  <option value="1">Monthly Targets not met</option>
-                  <option value="2">Monthly Targets met</option>
-                  <option value="3">Show all</option>
+                  <option value="1"><?php echo _("Monthly Targets not met");?></option>
+                  <option value="2"><?php echo _("Monthly Targets met");?></option>
+                  <option value="3"><?php echo _("Show all");?></option>
                 </select>
               </td>
             </tr>

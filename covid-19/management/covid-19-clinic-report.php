@@ -100,19 +100,19 @@ $batResult = $db->rawQuery($batQuery);
 													<td>&nbsp;<b><?php echo _("Contact Status");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="Please select contact status" style="width:220px;">
-															<option value=""> -- Select -- </option>
-															<option value="yes">Completed</option>
-															<option value="no">Not Completed</option>
-															<option value="all" selected="selected">All</option>
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="yes"><?php echo _("Completed");?></option>
+															<option value="no"><?php echo _("Not Completed");?></option>
+															<option value="all" selected="selected"><?php echo _("All");?></option>
 														</select>
 													</td>
 													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
 														<select name="hvlGender" id="hvlGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="">
-															<option value=""> -- Select -- </option>
-															<option value="male">Male</option>
-															<option value="female">Female</option>
-															<option value="not_recorded">Not Recorded</option>
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="male"><?php echo _("Male");?></option>
+															<option value="female"><?php echo _("Female");?></option>
+															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 														</select>
 													</td>
 												</tr>
@@ -199,10 +199,10 @@ $batResult = $db->rawQuery($batQuery);
 													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
 														<select name="rjtGender" id="rjtGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="">
-															<option value=""> -- Select -- </option>
-															<option value="male">Male</option>
-															<option value="female">Female</option>
-															<option value="not_recorded">Not Recorded</option>
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="male"><?php echo _("Male");?></option>
+															<option value="female"><?php echo _("Female");?></option>
+															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 														</select>
 													</td>
 													<td></td>
@@ -285,10 +285,10 @@ $batResult = $db->rawQuery($batQuery);
 													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
 														<select name="noResultGender" id="noResultGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="">
-															<option value=""> -- Select -- </option>
-															<option value="male">Male</option>
-															<option value="female">Female</option>
-															<option value="not_recorded">Not Recorded</option>
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="male"><?php echo _("Male");?></option>
+															<option value="female"><?php echo _("Female");?></option>
+															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 														</select>
 													</td>
 													<td></td>
@@ -336,18 +336,18 @@ $batResult = $db->rawQuery($batQuery);
 													<td>&nbsp;<b><?php echo _("Fields");?>&nbsp;:</b></td>
 													<td>
 														<select class="form-control" id="formField" name="formField" multiple="multiple" title="Please fields" style="width:220px;">
-															<option value=""> -- Select -- </option>
-															<option value="sample_code">Sample Code</option>
-															<option value="sample_collection_date">Sample Collection Date</option>
-															<option value="sample_batch_id">Batch Code</option>
-															<option value="patient_art_no">Patient ID</option>
-															<option value="patient_first_name">Patient's Name</option>
-															<option value="facility_id">Facility Name</option>
-															<option value="facility_state">Province</option>
-															<option value="facility_district">County</option>
-															<option value="sample_type">Sample Type</option>
-															<option value="result">Result</option>
-															<option value="result_status">Status</option>
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="sample_code"><?php echo _("Sample Code");?></option>
+															<option value="sample_collection_date"><?php echo _("Sample Collection Date");?></option>
+															<option value="sample_batch_id"><?php echo _("Batch Code");?></option>
+															<option value="patient_art_no"><?php echo _("Patient ID");?></option>
+															<option value="patient_first_name"><?php echo _("Patient's Name");?></option>
+															<option value="facility_id"><?php echo _("Facility Name");?></option>
+															<option value="facility_state"><?php echo _("Province");?></option>
+															<option value="facility_district"><?php echo _("County");?></option>
+															<option value="sample_type"><?php echo _("Sample Type");?></option>
+															<option value="result"><?php echo _("Result")?></option>
+															<option value="result_status"><?php echo _("Status");?></option>
 														</select>
 													</td>
 												</tr>
