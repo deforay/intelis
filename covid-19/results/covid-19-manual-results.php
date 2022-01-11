@@ -144,10 +144,10 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 					<div class="box-body">
 						<div class="">
 							<select name="status" id="status" class="form-control" title="Please choose result status" style="width:220px;margin-top:30px;" onchange="searchVlRequestData();">
-								<option value=""> -- Select -- </option>
-								<option value="no_result" <?php echo ($status == 'no_result') ? "selected='selected'" : "" ?>>Results Not Recorded</option>
-								<option value="result" <?php echo ($status == 'result') ? "selected='selected'" : "" ?>>Results Recorded</option>
-								<option value="reject" <?php echo ($status == 'reject') ? "selected='selected'" : "" ?>>Rejected Samples</option>
+								<option value=""> <?php echo _("-- Select --");?> </option>
+								<option value="no_result" <?php echo ($status == 'no_result') ? "selected='selected'" : "" ?>><?php echo _("Results Not Recorded");?></option>
+								<option value="result" <?php echo ($status == 'result') ? "selected='selected'" : "" ?>><?php echo _("Results Recorded");?></option>
+								<option value="reject" <?php echo ($status == 'reject') ? "selected='selected'" : "" ?>><?php echo _("Rejected Samples");?></option>
 							</select>
 						</div>
 

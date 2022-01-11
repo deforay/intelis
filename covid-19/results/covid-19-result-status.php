@@ -122,8 +122,8 @@ foreach ($rejectionTypeResult as $type) {
               <td>&nbsp;<b><?php echo _("Show Samples that are");?> &nbsp;:</b></td>
               <td>
                 <select class="form-control" id="statusFilter" name="statusFilter" title="Please choose a status" style="width:220px;">
-                  <option value="notApprovedOrRejected"> Not Approved/Rejected </option>
-                  <option value="approvedOrRejected"> Already Approved/Rejected </option>
+                  <option value="notApprovedOrRejected"> <?php echo _("Not Approved/Rejected");?> </option>
+                  <option value="approvedOrRejected"> <?php echo _("Already Approved/Rejected");?> </option>
                 </select>
               </td>
             </tr>
@@ -139,10 +139,10 @@ foreach ($rejectionTypeResult as $type) {
             <div class="col-md-5 col-sm-5">
               <input type="hidden" name="checkedTests" id="checkedTests" />
               <select style="" class="form-control" id="status" name="status" title="Please select test status" disabled="disabled" onchange="showSampleRejectionReason()">
-                <option value="">-- Select at least one sample to apply bulk action --</option>
-                <option value="7">Accepted</option>
-                <option value="4">Rejected</option>
-                <option value="2">Lost</option>
+                <option value=""><?php echo _("-- Select at least one sample to apply bulk action --");?></option>
+                <option value="7"><?php echo _("Accepted");?></option>
+                <option value="4"><?php echo _("Rejected");?></option>
+                <option value="2"><?php echo _("Lost");?></option>
               </select>
             </div>
             <div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
