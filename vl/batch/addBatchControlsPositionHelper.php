@@ -22,6 +22,9 @@ try {
                 $orderArray[$o] = $xplodSortOrders[$o];
             }
         }
+        /* echo "<pre>";
+        print_r($orderArray);
+        die; */
         $labelOrder = json_encode($orderArray, JSON_FORCE_OBJECT);
         $data = array('label_order' => $labelOrder);
         $db = $db->where('batch_id', $_POST['batchId']);
