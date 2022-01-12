@@ -745,7 +745,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/eid/requests/addSamplesFromManifest.php"><i class="fa fa-caret-right"></i> <?php echo _("Add Samples from Manifest"); ?></a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-batches.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("eid-batches.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu eidBatchCodeMenu">
 											<a href="/eid/batch/eid-batches.php"><i class="fa fa-caret-right"></i> <?php echo _("Manage Batch"); ?></a>
 										</li>

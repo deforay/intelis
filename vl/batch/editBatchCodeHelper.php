@@ -44,6 +44,14 @@ try {
             $batchQuery = "SELECT * from batch_details as b_d INNER JOIN import_config as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
             $batchInfo = $db->query($batchQuery);
             if (isset($batchInfo) && count($batchInfo) > 0) {
+
+                if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
+                    foreach ($general->excelColumnRange('A', 'H') as $value) {
+                        foreach (range(1, 12) as $no) {
+                            $alphaNumeric[] = $value . $no;
+                        }
+                    }
+                }
                 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
                     //Get display sample only
                     $samplesQuery = "SELECT vl_sample_id,sample_code from vl_request_form where sample_batch_id=$id ORDER BY sample_code ASC";
@@ -54,15 +62,29 @@ try {
                     //Set label order
                     $jsonToArray = json_decode($batchInfo[0]['label_order'], true);
                     $displaySampleArray = array();
-                    for ($j = 0; $j < count($jsonToArray); $j++) {
-                        $xplodJsonToArray = explode("_", $jsonToArray[$j]);
-                        if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-                            if (in_array($xplodJsonToArray[1], $displaySampleOrderArray)) {
-                                $displayOrder[] = $jsonToArray[$j];
-                                $displaySampleArray[] = $xplodJsonToArray[1];
+                    if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
+                        for ($j = 0; $j < count($jsonToArray); $j++) {
+                            $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
+                            if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+                                if (in_array($xplodJsonToArray[1], $displaySampleOrderArray)) {
+                                    $displayOrder[] = $jsonToArray[$alphaNumeric[$j]];
+                                    $displaySampleArray[] = $xplodJsonToArray[1];
+                                }
+                            } else {
+                                $displayOrder[] = $jsonToArray[$alphaNumeric[$j]];
                             }
-                        } else {
-                            $displayOrder[] = $jsonToArray[$j];
+                        }
+                    } else {
+                        for ($j = 0; $j < count($jsonToArray); $j++) {
+                            $xplodJsonToArray = explode("_", $jsonToArray[$j]);
+                            if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+                                if (in_array($xplodJsonToArray[1], $displaySampleOrderArray)) {
+                                    $displayOrder[] = $jsonToArray[$j];
+                                    $displaySampleArray[] = $xplodJsonToArray[1];
+                                }
+                            } else {
+                                $displayOrder[] = $jsonToArray[$j];
+                            }
                         }
                     }
                     $remainSampleNewArray = array_values(array_diff($displaySampleOrderArray, $displaySampleArray));
@@ -72,11 +94,6 @@ try {
                     }
                     $orderArray = array();
                     if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
-                        foreach ($general->excelColumnRange('A', 'H') as $value) {
-                            foreach (range(1, 12) as $no) {
-                                $alphaNumeric[] = $value . $no;
-                            }
-                        }
                         for ($o = 0; $o < count($displayOrder); $o++) {
                             $orderArray[$alphaNumeric[$o]] = $displayOrder[$o];
                         }

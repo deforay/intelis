@@ -1,10 +1,7 @@
 <?php
 ob_start();
 #require_once('../../startup.php');  
-
-
 $general = new \Vlsm\Models\General();
-
 
 $tableName1 = "batch_details";
 $tableName2 = "eid_form";
@@ -20,6 +17,7 @@ try {
                 'machine' => $_POST['platform'],
                 'batch_code' => $_POST['batchCode'],
                 'batch_code_key' => $_POST['batchCodeKey'],
+                'position_type' => $_POST['positions'],
                 'test_type' => 'eid',
                 'request_created_datetime' => $general->getDateTime()
             );
@@ -34,7 +32,7 @@ try {
                     $db = $db->where('eid_id', $vlSampleId);
                     $db->update($tableName2, $value);
                 }
-                header("location:eid-add-batch-position.php?id=" . base64_encode($lastId));
+                header("location:eid-add-batch-position.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
             }
         } else {
             header("location:eid-batches.php");

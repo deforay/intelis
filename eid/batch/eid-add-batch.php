@@ -4,7 +4,6 @@ $title = "EID | Add Batch";
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 
-
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
@@ -113,9 +112,18 @@ foreach ($testPlatformResult as $machine) {
                     <td>
                         <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
                     </td>
-
                 </tr>
-
+                <tr>
+                    <th><?php echo _("Positions"); ?></th>
+                    <td>
+                        <select id="positions-type" class="form-control" title="Please select the postion">
+                            <option value="numeric"><?php echo _("Numeric"); ?></option>
+                            <option value="alpha-numeric"><?php echo _("Alpha Numeric"); ?></option>
+                        </select>
+                    </td>
+                    <th></th>
+                    <td></td>
+                </tr>
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="Filter Samples" class="btn btn-success btn-sm">
                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset Filters</span></button>
@@ -135,6 +143,7 @@ foreach ($testPlatformResult as $machine) {
                                         <input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="Batch Code" title="Please enter batch code" value="<?php echo date('Ymd') . $maxId; ?>" onblur="checkNameValidation('batch_details','batch_code',this,null,'This batch code already exists.Try another batch code',null)" />
                                         <input type="hidden" name="batchCodeKey" id="batchCodeKey" value="<?php echo $maxId; ?>" />
                                         <input type="hidden" name="platform" id="platform" value="" />
+                                        <input type="hidden" name="positions" id="positions" value="" />
                                     </div>
                                 </div>
                             </div>
@@ -218,6 +227,7 @@ foreach ($testPlatformResult as $machine) {
         });
 
         if (flag) {
+            $("#positions").val($('#positions-type').val());
             $.blockUI();
             document.getElementById('addBatchForm').submit();
         }
