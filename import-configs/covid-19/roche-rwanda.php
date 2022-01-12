@@ -7,7 +7,7 @@ try {
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
-    $cQuery = "select MAX(import_batch_tracking) FROM hold_sample_import";
+    $cQuery = "SELECT MAX(import_batch_tracking) FROM hold_sample_import";
     $cResult = $db->query($cQuery);
     if ($cResult[0]['MAX(import_batch_tracking)'] != '') {
         $maxId = $cResult[0]['MAX(import_batch_tracking)'] + 1;
@@ -218,7 +218,7 @@ try {
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
-            $query = "select facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where sample_code='" . $sampleCode . "'";
+            $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             //insert sample controls
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
@@ -264,7 +264,7 @@ try {
         );
         $db->insert("log_result_updates", $data);
     }
-    //header("location:/import-result/imported-results.php");
+    header("location:/import-result/imported-results.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

@@ -192,7 +192,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     WHERE result_status NOT IN (9) 
                     AND sample_code !='' 
                     AND sample_code is not null 
-                    AND data_sync=0"; // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
+                    AND vl.data_sync=0"; // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
 
     if (!empty($forceSyncModule) && trim($forceSyncModule) == "eid" && !empty($sampleCode) && trim($sampleCode) != "") {
         $eidQuery .= " AND sample_code like '$sampleCode'";
@@ -245,7 +245,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     WHERE result_status NOT IN (9) 
                     AND sample_code !='' 
                     AND sample_code is not null 
-                    AND data_sync=0"; // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
+                    AND c19.data_sync=0"; // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
 
     if (!empty($forceSyncModule) && trim($forceSyncModule) == "covid19" && !empty($sampleCode) && trim($sampleCode) != "") {
         $covid19Query .= " AND sample_code like '$sampleCode'";
@@ -311,7 +311,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     WHERE result_status NOT IN (9) 
                     AND sample_code !='' 
                     AND sample_code is not null 
-                    AND data_sync=0"; // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
+                    AND hep.data_sync=0"; // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
     if (!empty($forceSyncModule) && trim($forceSyncModule) == "hepatitis" && !empty($sampleCode) && trim($sampleCode) != "") {
         $hepQuery .= " AND sample_code like '$sampleCode'";
     }
