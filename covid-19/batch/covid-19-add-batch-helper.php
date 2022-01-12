@@ -20,6 +20,7 @@ try {
                 'machine' => $_POST['platform'],
                 'batch_code' => $_POST['batchCode'],
                 'batch_code_key' => $_POST['batchCodeKey'],
+                'position_type' => $_POST['positions'],
                 'test_type' => 'covid19',
                 'request_created_datetime' => $general->getDateTime()
             );
@@ -34,7 +35,7 @@ try {
                     $db = $db->where('covid19_id', $vlSampleId);
                     $db->update($tableName2, $value);
                 }
-                header("location:covid-19-add-batch-position.php?id=" . base64_encode($lastId));
+                header("location:covid-19-add-batch-position.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
             }
         } else {
             header("location:covid-19-batches.php");

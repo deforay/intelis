@@ -769,4 +769,12 @@ class General
         // }
         return $code;
     }
+
+    function excelColumnRange($lower, $upper)
+    {
+        ++$upper;
+        for ($i = $lower; $i !== $upper; ++$i) {
+            yield $i;
+        }
+    }
 }

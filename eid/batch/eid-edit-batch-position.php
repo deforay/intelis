@@ -5,6 +5,7 @@ $title = "Edit Batch Position";
 
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
+$general = new \Vlsm\Models\General();
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
 	header("location:eid-batches.php");
@@ -14,11 +15,11 @@ $displayOrder = array();
 $batchQuery = "SELECT * from batch_details as b_d INNER JOIN import_config as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 $batchInfo = $db->query($batchQuery);
 // Config control
-$configControlQuery = "SELECT * from import_config_controls where config_id=".$batchInfo[0]['config_id'];
+$configControlQuery = "SELECT * from import_config_controls where config_id=" . $batchInfo[0]['config_id'];
 $configControlInfo = $db->query($configControlQuery);
 $configControl = array();
-foreach($configControlInfo as $info){
-	if($info['test_type'] == 'eid'){
+foreach ($configControlInfo as $info) {
+	if ($info['test_type'] == 'eid') {
 		$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
 		$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];
 		$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
@@ -99,8 +100,8 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 
 	<!-- Main content -->
 	<section class="content">
-		<!-- <pre><?php print_r($configControl);?></pre> -->
-		
+		<!-- <pre><?php print_r($configControl); ?></pre> -->
+
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<h4><strong>Batch Code : <?php echo (isset($batchInfo[0]['batch_code'])) ? $batchInfo[0]['batch_code'] : ''; ?></strong></h4>

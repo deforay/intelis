@@ -192,55 +192,112 @@ if ($id > 0) {
         if (isset($bResult[0]['label_order']) && trim($bResult[0]['label_order']) != '') {
             $jsonToArray = json_decode($bResult[0]['label_order'], true);
             $sampleCounter = 1;
+            if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
+                foreach ($general->excelColumnRange('A', 'H') as $value) {
+                    foreach (range(1, 12) as $no) {
+                        $alphaNumeric[] = $value . $no;
+                    }
+                }
+                $sampleCounter = $alphaNumeric[0];
+            }
             for ($j = 0; $j < count($jsonToArray); $j++) {
                 // if($pdf->getY()>=250){
                 //     $pdf->AddPage();
                 // }
-                $xplodJsonToArray = explode("_", $jsonToArray[$j]);
-                if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-                    if (isset($_GET['type']) && $_GET['type'] == 'tb') {
-                        $sampleQuery = "SELECT sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
-                    } else {
-                        $sampleQuery = "SELECT sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
-                    }
-                    $sampleResult = $db->query($sampleQuery);
-
-                    $params = $pdf->serializeTCPDFtagParameters(array($sampleResult[0]['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
-                    $lotDetails = '';
-                    $lotExpirationDate = '';
-                    if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != NULL && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
-                        if (trim($sampleResult[0]['lot_number']) != '') {
-                            $lotExpirationDate .= '<br>';
+                if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
+                    $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
+                    if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+                        if (isset($_GET['type']) && $_GET['type'] == 'tb') {
+                            $sampleQuery = "SELECT sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                        } else {
+                            $sampleQuery = "SELECT sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
                         }
-                        $lotExpirationDate .= $general->humanDateFormat($sampleResult[0]['lot_expiration_date']);
+                        $sampleResult = $db->query($sampleQuery);
+
+                        $params = $pdf->serializeTCPDFtagParameters(array($sampleResult[0]['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
+                        $lotDetails = '';
+                        $lotExpirationDate = '';
+                        if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != NULL && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
+                            if (trim($sampleResult[0]['lot_number']) != '') {
+                                $lotExpirationDate .= '<br>';
+                            }
+                            $lotExpirationDate .= $general->humanDateFormat($sampleResult[0]['lot_expiration_date']);
+                        }
+                        $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
+                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
+                        $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
+                        $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                        $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
+                        $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
+                        $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                        $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
+                        $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        $tbl .= '</tr>';
+                        $tbl .= '</table>';
+                    } else {
+                        $label = str_replace("_", " ", $jsonToArray[$alphaNumeric[$j]]);
+                        $label = str_replace("in house", "In-House", $label);
+                        $label = ucwords(str_replace("no of ", " ", $label));
+                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
+                        $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
+                        $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                        $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $label . '</td>';
+                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '</tr>';
+                        $tbl .= '</table>';
                     }
-                    $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
-                    $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                    $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
-                    $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                    $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                    $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
-                    $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                    $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
-                    $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
-                    $tbl .= '</tr>';
-                    $tbl .= '</table>';
+                    $sampleCounter = $alphaNumeric[($j + 1)];
                 } else {
-                    $label = str_replace("_", " ", $jsonToArray[$j]);
-                    $label = str_replace("in house", "In-House", $label);
-                    $label = ucwords(str_replace("no of ", " ", $label));
-                    $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                    $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
-                    $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                    $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $label . '</td>';
-                    $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                    $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                    $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                    $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                    $tbl .= '</tr>';
-                    $tbl .= '</table>';
+
+                    $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
+                    if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+                        if (isset($_GET['type']) && $_GET['type'] == 'tb') {
+                            $sampleQuery = "SELECT sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                        } else {
+                            $sampleQuery = "SELECT sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                        }
+                        $sampleResult = $db->query($sampleQuery);
+
+                        $params = $pdf->serializeTCPDFtagParameters(array($sampleResult[0]['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
+                        $lotDetails = '';
+                        $lotExpirationDate = '';
+                        if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != NULL && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
+                            if (trim($sampleResult[0]['lot_number']) != '') {
+                                $lotExpirationDate .= '<br>';
+                            }
+                            $lotExpirationDate .= $general->humanDateFormat($sampleResult[0]['lot_expiration_date']);
+                        }
+                        $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
+                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
+                        $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
+                        $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                        $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
+                        $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
+                        $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                        $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
+                        $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        $tbl .= '</tr>';
+                        $tbl .= '</table>';
+                    } else {
+                        $label = str_replace("_", " ", $jsonToArray[$alphaNumeric[$j]]);
+                        $label = str_replace("in house", "In-House", $label);
+                        $label = ucwords(str_replace("no of ", " ", $label));
+                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
+                        $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
+                        $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                        $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $label . '</td>';
+                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '</tr>';
+                        $tbl .= '</table>';
+                    }
+                    $sampleCounter++;
                 }
-                $sampleCounter++;
             }
         } else {
             $noOfInHouseControls = 0;

@@ -2,7 +2,7 @@
 ob_start();
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
-
+$general = new \Vlsm\Models\General();
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
 	header("location:eid-batches.php");
@@ -169,7 +169,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	<!-- Main content -->
 	<section class="content">
 		<!-- <pre><?php print_r($configControl); ?></pre> -->
-		
+
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<h4><strong>Batch Code : <?php echo $batchInfo[0]['batch_code']; ?></strong></h4>
@@ -193,6 +193,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 					<div class="box-footer">
 						<input type="hidden" name="sortOrders" id="sortOrders" value="<?php echo implode(",", $displayOrder); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $id; ?>" />
+						<input type="hidden" name="positions" id="positions" value="<?php echo $_GET['position']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="eid-batches.php" class="btn btn-default"> Cancel</a>
 					</div>

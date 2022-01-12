@@ -14,11 +14,11 @@ $displayOrder = array();
 $batchQuery = "SELECT * from batch_details as b_d INNER JOIN import_config as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 $batchInfo = $db->query($batchQuery);
 // Config control
-$configControlQuery = "SELECT * from import_config_controls where config_id=".$batchInfo[0]['config_id'];
+$configControlQuery = "SELECT * from import_config_controls where config_id=" . $batchInfo[0]['config_id'];
 $configControlInfo = $db->query($configControlQuery);
 $configControl = array();
-foreach($configControlInfo as $info){
-	if($info['test_type'] == 'vl'){
+foreach ($configControlInfo as $info) {
+	if ($info['test_type'] == 'vl') {
 		$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
 		$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];
 		$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
@@ -29,35 +29,59 @@ if (!isset($batchInfo) || count($batchInfo) == 0) {
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
 	$jsonToArray = json_decode($batchInfo[0]['label_order'], true);
-	for ($j = 0; $j < count($jsonToArray); $j++) {
-		$displayOrder[] = $jsonToArray[$j];
-		$xplodJsonToArray = explode("_", $jsonToArray[$j]);
-		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-			$sampleQuery = "SELECT sample_code from vl_request_form where vl_sample_id=$xplodJsonToArray[1]";
-			$sampleResult = $db->query($sampleQuery);
-			$label = $sampleResult[0]['sample_code'];
-		} else {
-			$label = str_replace("_", " ", $jsonToArray[$j]);
-			$label = str_replace("in house", "In-House", $label);
-			$label = ucwords(str_replace("no of ", " ", $label));
+	if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
+		foreach ($general->excelColumnRange('A', 'H') as $value) {
+			foreach (range(1, 12) as $no) {
+				$alphaNumeric[] = $value . $no;
+			}
 		}
-		$content .= '<li class="ui-state-default" id="' . $jsonToArray[$j] . '">' . $label . '</li>';
+		for ($j = 0; $j < count($jsonToArray); $j++) {
+			$displayOrder[] = $jsonToArray[$alphaNumeric[$j]];
+			$xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
+			if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+				$sampleQuery = "SELECT sample_code from vl_request_form where vl_sample_id=$xplodJsonToArray[1]";
+				$sampleResult = $db->query($sampleQuery);
+				$label = $sampleResult[0]['sample_code'];
+			} else {
+				$label = str_replace("_", " ", $jsonToArray[$alphaNumeric[$j]]);
+				$label = str_replace("in house", "In-House", $label);
+				$label = ucwords(str_replace("no of ", " ", $label));
+			}
+			$content .= '<li class="ui-state-default" id="' . $jsonToArray[$alphaNumeric[$j]] . '">' . $label . '</li>';
+		}
+	} else {
+		for ($j = 0; $j < count($jsonToArray); $j++) {
+			$displayOrder[] = $jsonToArray[$j];
+			$xplodJsonToArray = explode("_", $jsonToArray[$j]);
+			if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+				$sampleQuery = "SELECT sample_code from vl_request_form where vl_sample_id=$xplodJsonToArray[1]";
+				$sampleResult = $db->query($sampleQuery);
+				$label = $sampleResult[0]['sample_code'];
+			} else {
+				$label = str_replace("_", " ", $jsonToArray[$j]);
+				$label = str_replace("in house", "In-House", $label);
+				$label = ucwords(str_replace("no of ", " ", $label));
+			}
+			$content .= '<li class="ui-state-default" id="' . $jsonToArray[$j] . '">' . $label . '</li>';
+		}
 	}
 } else {
-	if(isset($configControl['vl']['noHouseCtrl']) && trim($configControl['vl']['noHouseCtrl'])!='' && $configControl['vl']['noHouseCtrl']>0){
-		foreach(range(1,$configControl['vl']['noHouseCtrl']) as $h){
-			$displayOrder[] = "no_of_in_house_controls_".$h;
-			$content.='<li class="ui-state-default" id="no_of_in_house_controls_'.$h.'">In-House Controls '.$h.'</li>';
+	if (isset($configControl['vl']['noHouseCtrl']) && trim($configControl['vl']['noHouseCtrl']) != '' && $configControl['vl']['noHouseCtrl'] > 0) {
+		foreach (range(1, $configControl['vl']['noHouseCtrl']) as $h) {
+			$displayOrder[] = "no_of_in_house_controls_" . $h;
+			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
 		}
-	}if(isset($configControl['vl']['noManufacturerCtrl']) && trim($configControl['vl']['noManufacturerCtrl'])!='' && $configControl['vl']['noManufacturerCtrl']>0){
-		foreach(range(1,$configControl['vl']['noManufacturerCtrl']) as $m){
-			$displayOrder[] = "no_of_manufacturer_controls_".$m;
-		   	$content.='<li class="ui-state-default" id="no_of_manufacturer_controls_'.$m.'">Manufacturer Controls '.$m.'</li>';	
+	}
+	if (isset($configControl['vl']['noManufacturerCtrl']) && trim($configControl['vl']['noManufacturerCtrl']) != '' && $configControl['vl']['noManufacturerCtrl'] > 0) {
+		foreach (range(1, $configControl['vl']['noManufacturerCtrl']) as $m) {
+			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
+			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Controls ' . $m . '</li>';
 		}
-	}if(isset($configControl['vl']['noCalibrators']) && trim($configControl['vl']['noCalibrators'])!='' && $configControl['vl']['noCalibrators']>0){
-		foreach(range(1,$configControl['vl']['noCalibrators']) as $c){
-			$displayOrder[] = "no_of_calibrators_".$c;	 	
-		   	$content.='<li class="ui-state-default" id="no_of_calibrators_'.$c.'">Calibrators '.$c.'</li>';
+	}
+	if (isset($configControl['vl']['noCalibrators']) && trim($configControl['vl']['noCalibrators']) != '' && $configControl['vl']['noCalibrators'] > 0) {
+		foreach (range(1, $configControl['vl']['noCalibrators']) as $c) {
+			$displayOrder[] = "no_of_calibrators_" . $c;
+			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
 	$samplesQuery = "SELECT vl_sample_id,sample_code from vl_request_form where sample_batch_id=$id ORDER BY sample_code ASC";
@@ -97,7 +121,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 
 	<!-- Main content -->
 	<section class="content">
-		
+
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<h4><strong>Batch Code : <?php echo (isset($batchInfo[0]['batch_code'])) ? $batchInfo[0]['batch_code'] : ''; ?></strong></h4>

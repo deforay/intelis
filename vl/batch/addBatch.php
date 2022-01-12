@@ -124,14 +124,11 @@ foreach ($testPlatformResult as $machine) {
 						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
 					</td>
 					<th>Facility</th>
-
 					<td>
 						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
-
 					</td>
-
 				</tr>
 				<tr>
 					<th>Date Sample Receieved at Lab</th>
@@ -147,6 +144,17 @@ foreach ($testPlatformResult as $machine) {
 							<option value="not_recorded">Not Recorded</option>
 						</select>
 					</td>
+				</tr>
+				<tr>
+					<th><?php echo _("Positions"); ?></th>
+					<td>
+						<select id="positions-type" class="form-control" title="Please select the postion">
+							<option value="numeric"><?php echo _("Numeric"); ?></option>
+							<option value="alpha-numeric"><?php echo _("Alpha Numeric"); ?></option>
+						</select>
+					</td>
+					<th></th>
+					<td></td>
 				</tr>
 				<tr class="showFemaleSection">
 					<td><b>Is Patient Pregnant&nbsp;:</b></td>
@@ -179,6 +187,7 @@ foreach ($testPlatformResult as $machine) {
 										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="Batch Code" title="Please enter batch code" value="<?php echo date('Ymd') . $maxId; ?>" onblur="checkNameValidation('batch_details','batch_code',this,null,'This batch code already exists.Try another batch code',null)" />
 										<input type="hidden" name="batchCodeKey" id="batchCodeKey" value="<?php echo $maxId; ?>" />
 										<input type="hidden" name="platform" id="platform" value="" />
+										<input type="hidden" name="positions" id="positions" value="" />
 									</div>
 								</div>
 							</div>
@@ -266,6 +275,7 @@ foreach ($testPlatformResult as $machine) {
 		});
 
 		if (flag) {
+			$("#positions").val($('#positions-type').val());
 			$.blockUI();
 			document.getElementById('addBatchForm').submit();
 		}

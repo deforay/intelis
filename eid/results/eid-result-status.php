@@ -61,10 +61,10 @@ foreach ($rejectionTypeResult as $type) {
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-edit"></i> Results Approval</h1>
+    <h1><i class="fa fa-edit"></i> <?php echo _("Results Approval");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Test Request</li>
+      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("Test Request");?></li>
     </ol>
   </section>
 
@@ -73,7 +73,7 @@ foreach ($rejectionTypeResult as $type) {
     <a href="javascript:void(0)" style="float:right;color:red;" onclick="hideReasonDiv('rejectReasonDiv')"><i class="fa fa-close"></i></a>
     <div class="arrow-right"></div>
     <input type="hidden" name="statusDropDownId" id="statusDropDownId" />
-    <h3 style="color:red;">Choose Rejection Reason</h3>
+    <h3 style="color:red;"><?php echo _("Choose Rejection Reason");?></h3>
     <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="updateRejectionReasonStatus(this);">
       <option value=''> -- Select -- </option>
       <?php echo $rejectionReason; ?>
@@ -87,11 +87,11 @@ foreach ($rejectionTypeResult as $type) {
         <div class="box">
           <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;">
             <tr>
-              <td style=""><b>Sample Collection Date&nbsp;:</b></td>
+              <td style=""><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
               <td>
                 <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
               </td>
-              <td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+              <td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
               <td>
                 <select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
                   <option value=""> -- Select -- </option>
@@ -107,23 +107,23 @@ foreach ($rejectionTypeResult as $type) {
             </tr>
             <tr>
 
-              <td>&nbsp;<b>Facility Name &nbsp;:</b></td>
+              <td>&nbsp;<b><?php echo _("Facility Name");?> &nbsp;:</b></td>
               <td>
                 <select class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
                   <?= $facilitiesDropdown; ?>
                 </select>
               </td>
-              <td>&nbsp;<b>Show Samples that are &nbsp;:</b></td>
+              <td>&nbsp;<b><?php echo _("Show Samples that are");?> &nbsp;:</b></td>
               <td>
                 <select class="form-control" id="statusFilter" name="statusFilter" title="Please choose a status" style="width:220px;">
-                  <option value="notApprovedOrRejected"> Not Approved/Rejected </option>
-                  <option value="approvedOrRejected"> Already Approved/Rejected </option>
+                  <option value="notApprovedOrRejected"> <?php echo _("Not Approved/Rejected");?> </option>
+                  <option value="approvedOrRejected"> <?php echo _("Already Approved/Rejected");?> </option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+              <td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
 
               </td>
             </tr>
@@ -133,10 +133,10 @@ foreach ($rejectionTypeResult as $type) {
             <div class="col-md-5 col-sm-5">
               <input type="hidden" name="checkedTests" id="checkedTests" />
               <select style="" class="form-control" id="status" name="status" title="Please select test status" disabled="disabled" onchange="showSampleRejectionReason()">
-                <option value="">-- Select at least one sample to apply bulk action --</option>
-                <option value="7">Accepted</option>
-                <option value="4">Rejected</option>
-                <option value="2">Lost</option>
+                <option value=""><?php echo _("-- Select at least one sample to apply bulk action --");?></option>
+                <option value="7"><?php echo _("Accepted");?></option>
+                <option value="4"><?php echo _("Rejected");?></option>
+                <option value="2"><?php echo _("Lost");?></option>
               </select>
             </div>
             <div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
@@ -145,7 +145,7 @@ foreach ($rejectionTypeResult as $type) {
                 <?php echo $rejectionReason; ?>
               </select>
             </div>
-            <div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="Apply" class="btn btn-success btn-sm"></div>
+            <div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="<?php echo _("Apply");?>" class="btn btn-success btn-sm"></div>
           </div>
           <!-- /.box-header -->
           <div class="box-body">
@@ -153,20 +153,20 @@ foreach ($rejectionTypeResult as $type) {
               <thead>
                 <tr>
                   <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
-                  <th>Sample Code</th>
+                  <th><?php echo _("Sample Code");?></th>
                   <?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-                    <th>Remote Sample <br />Code</th>
+                    <th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
                   <?php } ?>
-                  <th>Sample Collection Date</th>
-                  <th>Batch Code</th>
-                  <th>Child's ID</th>
-                  <th>Child's Name</th>
-                  <th>Mother's ID</th>
-                  <th>Mother's Name</th>
-                  <th>Facility Name</th>
-                  <th>Result</th>
-                  <th>Last Modified on</th>
-                  <th>Status</th>
+                  <th><?php echo _("Sample Collection Date");?></th>
+                  <th><?php echo _("Batch Code");?></th>
+                  <th><?php echo _("Child's ID");?></th>
+                  <th><?php echo _("Child's Name");?></th>
+                  <th><?php echo _("Mother's ID");?></th>
+                  <th><?php echo _("Mother's Name");?></th>
+                  <th><?php echo _("Facility Name");?></th>
+                  <th><?php echo _("Result");?></th>
+                  <th><?php echo _("Last Modified on")?></th>
+                  <th><?php echo _("Status");?></th>
                   <?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?>
                     <!--<th>Action</th>-->
                   <?php } ?>
@@ -174,7 +174,7 @@ foreach ($rejectionTypeResult as $type) {
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="13" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="13" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
             </table>

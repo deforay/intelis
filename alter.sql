@@ -2865,3 +2865,6 @@ ALTER TABLE `user_details` ADD `data_sync` INT(11) NULL DEFAULT '0' AFTER `app_a
 
 -- Amit 11-Jan-2021
 ALTER TABLE `batch_details` CHANGE `batch_code_key` `batch_code_key` INT NULL DEFAULT NULL; 
+
+-- Thana 11-Jan-2022
+ALTER TABLE `batch_details` ADD `position_type` VARCHAR(256) NULL DEFAULT NULL AFTER `sent_mail`;

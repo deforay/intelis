@@ -43,7 +43,7 @@ $eidResults = $general->getEidResults();
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-book"></i> Export Data
+		<h1><i class="fa fa-book"></i> <?php echo _("Export Data");?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -58,17 +58,17 @@ $eidResults = $general->getEidResults();
 				<div class="box">
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<th>Sample Collection Date</th>
+							<th><?php echo _("Sample Collection Date");?></th>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
 							</td>
-							<th>Facility Name</th>
+							<th><?php echo _("Facility Name");?></th>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<th>Testing Lab</th>
+							<th><?php echo _("Testing Lab");?></th>
 							<td>
 								<select class="form-control" id="testingLab" name="testingLab" title="Please select Testing Lab" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
@@ -76,12 +76,12 @@ $eidResults = $general->getEidResults();
 							</td>
 						</tr>
 						<tr>
-							<th>Sample Test Date</th>
+							<th><?php echo _("Sample Test Date");?></th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" />
 							</td>
 
-							<th>Result </th>
+							<th><?php echo _("Result");?> </th>
 							<td>
 								<select class="form-control" id="result" name="result" title="Please select batch code" style="width:220px;">
 									<option value=""> -- Select -- </option>
@@ -91,24 +91,24 @@ $eidResults = $general->getEidResults();
 								</select>
 							</td>
 
-							<th>Last Print Date</th>
+							<th><?php echo _("Last Print Date");?></th>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="Select Print Date" readonly style="width:220px;background:#fff;" />
 							</td>
 						</tr>
 						<tr>
-							<th>Status</th>
+							<th><?php echo _("Status");?></th>
 							<td>
 								<select name="status" id="status" class="form-control" title="Please choose status" onchange="checkSampleCollectionDate();">
-									<option value="">All Status</option>
-									<option value="7" selected=selected>Accepted</option>
-									<option value="4">Rejected</option>
-									<option value="8">Awaiting Approval</option>
-									<option value="6">Registered At Testing Lab</option>
-									<option value="10">Expired</option>
+									<option value=""><?php echo _("All Status");?></option>
+									<option value="7" selected=selected><?php echo _("Accepted");?></option>
+									<option value="4"><?php echo _("Rejected");?></option>
+									<option value="8"><?php echo _("Awaiting Approval");?></option>
+									<option value="6"><?php echo _("Registered At Testing Lab");?></option>
+									<option value="10"><?php echo _("Expired");?></option>
 								</select>
 							</td>
-							<td><b>Batch Code&nbsp;:</b></td>
+							<td><b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
 									<option value=""> -- Select -- </option>
@@ -121,7 +121,7 @@ $eidResults = $general->getEidResults();
 									?>
 								</select>
 							</td>
-							<th>Funding Sources</th>
+							<th><?php echo _("Funding Sources");?></th>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
 									<option value=""> -- Select -- </option>
@@ -133,8 +133,8 @@ $eidResults = $general->getEidResults();
 								</select>
 							</td>
 						</tr>
-						<tr>
-							<th>Implementing Partners</th>
+						<tr>"
+							<th><?php echo _("Implementing Partners");?></th>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner">
 									<option value=""> -- Select -- </option>
@@ -148,13 +148,13 @@ $eidResults = $general->getEidResults();
 						</tr>
 						<tr>
 							<td colspan="6">
-								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span>Search</span></button>
+								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search");?></span></button>
 
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Clear Search</span></button>
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search");?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('generate-export-data.php')"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download</button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('generate-export-data.php')"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Download");?></button>
 
-								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>
+								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns");?></span></button>
 							</td>
 						</tr>
 
@@ -163,41 +163,41 @@ $eidResults = $general->getEidResults();
 						<div class="row" style="background:#e0e0e0;padding: 15px;margin-top: -25px;">
 							<div class="col-md-12">
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0">Sample Code</label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Sample Code");?></label>
 								</div>
 								<?php $i = 0;
 								if ($sarr['sc_user_type'] != 'standalone') {
 									$i = 1; ?>
 									<div class="col-md-3">
-										<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Remote Sample Code</label>
+										<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code");?></label>
 									</div>
 								<?php } ?>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Batch Code</label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Batch Code");?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="child_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Child's ID</label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="child_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Child's ID");?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="child_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Child's Name</label> <br>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="child_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Child's Name");?></label> <br>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Facility Name</label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name");?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Mother's ID</label> <br>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Mother's ID");?></label> <br>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Result</label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result");?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Status</label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Status");?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="funding_source" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Funding Source</label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="funding_source" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Funding Source");?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="implementing_partner" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Implementing Partner</label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="implementing_partner" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Implementing Partner");?></label>
 								</div>
 							</div>
 						</div>
@@ -208,26 +208,26 @@ $eidResults = $general->getEidResults();
 						<table id="vlRequestDataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th>Sample Code</th>
+									<th><?php echo _("Sample Code");?></th>
 									<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-										<th>Remote Sample <br />Code</th>
+										<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 									<?php } ?>
-									<th>Batch Code</th>
-									<th>Child's ID</th>
-									<th>Child's Name</th>
-									<th>Facility Name</th>
-									<th>Lab Name</th>
-									<th>Mother's ID</th>
-									<th>Result</th>
-									<th>Status</th>
-									<th>Funding Source</th>
-									<th>Implementing Partner</th>
-									<th>Action</th>
+									<th><?php echo _("Batch Code");?></th>
+									<th><?php echo _("Child's ID");?></th>
+									<th><?php echo _("Child's Name");?></th>
+									<th><?php echo _("Facility Name");?></th>
+									<th><?php echo _("Lab Name");?></th>
+									<th><?php echo _("Mother's ID");?></th>
+									<th><?php echo _("Result");?></th>
+									<th><?php echo _("Status");?></th>
+									<th><?php echo _("Funding Source");?></th>
+									<th><?php echo _("Implementing Partner");?></th>
+									<th><?php echo _("Action");?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="12" class="dataTables_empty">Loading data from server</td>
+									<td colspan="12" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 								</tr>
 							</tbody>
 						</table>

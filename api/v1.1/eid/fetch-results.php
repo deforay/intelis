@@ -42,7 +42,7 @@ if (empty($user) || empty($user['user_id'])) {
 try {
 
     $sQuery = "SELECT 
-        vl.app_sample_code                             as appSampleCode,
+        vl.app_sample_code                                   as appSampleCode,
         vl.unique_id                                         as uniqueId,
         vl.eid_id                                            as eidId,
         vl.sample_code                                       as sampleCode,
@@ -102,12 +102,14 @@ try {
         vl.result_status                                     as status,
         l_f.facility_name                                    as labName,
         f.facility_district                                  as district,
+        f.facility_district_id                               as districtId,
         f.facility_name                                      as facilityName,
         u_d.user_name                                        as reviewedBy,
+        vl.result_reviewed_datetime                          as resultReviewedDatetime,
         lt_u_d.user_name                                     as labTechnicianName,
         t_b.user_name                                        as testedByName,
-        rs.rejection_reason_name                             as sampleRejectionReason,
-        vl.reason_for_sample_rejection                       as sampleRejectionReasonId,
+        vl.reason_for_sample_rejection                       as sampleRejectionReason,
+        vl.request_created_datetime                          as requestCreatedDatetime,
         vl.rejection_on                                      as rejectionDate,
         p.province_name                                      as provinceName,
         r_f_s.funding_source_name                            as fundingSourceName,
