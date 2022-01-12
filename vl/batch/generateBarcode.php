@@ -192,17 +192,19 @@ if ($id > 0) {
         if (isset($bResult[0]['label_order']) && trim($bResult[0]['label_order']) != '') {
             $jsonToArray = json_decode($bResult[0]['label_order'], true);
             $sampleCounter = 1;
+            if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
+                foreach ($general->excelColumnRange('A', 'H') as $value) {
+                    foreach (range(1, 12) as $no) {
+                        $alphaNumeric[] = $value . $no;
+                    }
+                }
+                $sampleCounter = $alphaNumeric[0];
+            }
             for ($j = 0; $j < count($jsonToArray); $j++) {
                 // if($pdf->getY()>=250){
                 //     $pdf->AddPage();
                 // }
                 if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
-                    foreach ($general->excelColumnRange('A', 'H') as $value) {
-                        foreach (range(1, 12) as $no) {
-                            $alphaNumeric[] = $value . $no;
-                        }
-                    }
-                    $sampleCounter = $alphaNumeric[0];
                     $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
@@ -247,7 +249,7 @@ if ($id > 0) {
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     }
-                    $sampleCounter = $alphaNumeric[$j + 1];
+                    $sampleCounter = $alphaNumeric[($j + 1)];
                 } else {
 
                     $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
