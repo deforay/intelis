@@ -374,7 +374,7 @@ class App
             'request_type'          => $type,
             'test_type'             => $testType,
             'api_url'               => $url,
-            'api_params'            => (isset($params) && count($params) > 0) ? json_encode($params) : null,
+            'api_params'            => (isset($params) && sizeof($params) > 0) ? json_encode($params) : null,
             'data_format'           => $format
         );
         if ($format == 'sync-api') {

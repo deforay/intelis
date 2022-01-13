@@ -49,7 +49,7 @@ try {
 	} else {
 		$_POST['approvedOnDateTime'] = NULL;
 	}
-	
+
 
 
 	//Set sample received date
@@ -209,6 +209,7 @@ try {
 		'result_status' 									=> $status,
 		'data_sync' 										=> 0,
 		'reason_for_sample_rejection' 						=> isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,
+		'rejection_on' 						                => isset($_POST['rejectionDate']) ? $general->dateFormat($_POST['rejectionDate']) : null,
 		// 'request_created_by'								=> $_SESSION['userId'],
 		'request_created_datetime' 							=> $general->getDateTime(),
 		'sample_registered_at_lab' 							=> $general->getDateTime(),

@@ -52,10 +52,10 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM");?></h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Edit EID Request");?></li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Edit EID Request"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -377,6 +377,16 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 										<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
 									</td>
 								</tr>
+								<tr>
+									<th style="width:14%;"> Type d'échantillon</th>
+									<td style="width:35%;">
+										<select name="specimenType" id="specimenType" class="form-control" title="Veuillez choisir le type d'échantillon" style="width:100%">
+											<option value="">-- Selecione --</option>
+											<?php foreach ($sampleResult as $name) { ?>
+												<option value="<?php echo $name['sample_id']; ?>" <?php echo ($eidInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($name['sample_name']); ?></option>
+											<?php } ?>
+										</select>
+									</td>
 								</tr>
 								<tr>
 									<th>Nom du demandeur</th>
@@ -477,9 +487,9 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 												</select>
 											</td>
 										</tr>
-										<tr class="show-rejection" style="display:none;">
+										<tr class="rejected" style="display:none;">
 											<th>Date de rejet<span class="mandatory">*</span></th>
-											<td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date date de rejet" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+											<td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
 											<td></td>
 											<td></td>
 										</tr>

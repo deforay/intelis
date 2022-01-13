@@ -63,10 +63,10 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM");?></h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Edit EID Request");?></li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Edit EID Request"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -200,15 +200,15 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									<tr>
 										<th><label for="mothersId">Code (si applicable) </label></th>
 										<td>
-											<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?php echo $eidInfo['mother_id'] ?>" onchange="" />
+											<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?php echo $eidInfo['mother_id'] ?>" />
 										</td>
 										<th><label for="mothersName">Nom </label></th>
 										<td>
-											<input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Nom du mère" title="Please enter nom du mère" style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" onchange="" />
+											<input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Nom du mère" title="Please enter nom du mère" style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" />
 										</td>
 										<th><label for="mothersDob">Date de naissance </label></th>
 										<td>
-											<input type="text" class="form-control date" id="mothersDob" name="mothersDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo $general->humanDateFormat($eidInfo['mother_dob']); ?>" onchange="" />
+											<input type="text" class="form-control date" id="mothersDob" name="mothersDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo $general->humanDateFormat($eidInfo['mother_dob']); ?>" />
 										</td>
 										<th><label for="mothersMaritalStatus">Etat civil </label></th>
 										<td>
@@ -230,11 +230,11 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									<tr>
 										<th><label for="childId">Code de l’enfant (Patient) <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Code (Patient)" title="Please enter code du enfant" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" onchange="" />
+											<input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Code (Patient)" title="Please enter code du enfant" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" />
 										</td>
 										<th><label for="childName">Nom </label></th>
 										<td>
-											<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?php echo $eidInfo['child_name']; ?>" onchange="" />
+											<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?php echo $eidInfo['child_name']; ?>" />
 										</td>
 										<th><label for="childDob">Date de naissance </label></th>
 										<td>
@@ -292,14 +292,14 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<th style="vertical-align:middle;">CD4</th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="text" class="form-control" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" onchange="" value="<?php echo $eidInfo['mother_cd4']; ?>" />
+												<input type="text" class="form-control" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" value="<?php echo $eidInfo['mother_cd4']; ?>" />
 												<div class="input-group-addon">/mm3</div>
 											</div>
 										</td>
 										<th style="vertical-align:middle;">Viral Load</th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="number" class="form-control " id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Mother's Viral Load" style="width:100%;" value="<?php echo $eidInfo['mother_vl_result']; ?>" onchange="" />
+												<input type="number" class="form-control " id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Mother's Viral Load" style="width:100%;" value="<?php echo $eidInfo['mother_vl_result']; ?>" />
 												<div class="input-group-addon">copies/mL</div>
 											</div>
 										</td>
@@ -409,6 +409,16 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
 										</td>
 									</tr>
+									<tr>
+										<th style="width:14%;"> Type d'échantillon</th>
+										<td style="width:35%;">
+											<select name="specimenType" id="specimenType" class="form-control" title="Veuillez choisir le type d'échantillon" style="width:100%">
+												<option value="">-- Selecione --</option>
+												<?php foreach ($sampleResult as $name) { ?>
+													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($eidInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($name['sample_name']); ?></option>
+												<?php } ?>
+											</select>
+										</td>
 									</tr>
 									<tr>
 										<th>Nom du demandeur</th>
@@ -476,7 +486,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<tr>
 											<th><label for="">Date de réception de l'échantillon </label></th>
 											<td>
-												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> value="<?php echo $general->humanDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> value="<?php echo $general->humanDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
 											</td>
 											<td><label for="labId">Nom du Laboratoire </label> </td>
 											<td>
@@ -494,11 +504,10 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												</select>
 											</td>
 
-											<th class="rejected" style="display: none;">Reason for Rejection</th>
+											<th class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 
-												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?> onchange="">
-													<option value="">-- Sélectionner --</option>
+												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value="">-- Sélectionner --</option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
 														<optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
 															<?php
@@ -512,10 +521,16 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												</select>
 											</td>
 										</tr>
+										<tr class="rejected" style="display:none;">
+											<th>Date de rejet<span class="mandatory">*</span></th>
+											<td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
+											<td></td>
+											<td></td>
+										</tr>
 										<tr>
 											<td style="width:25%;"><label for="">Test effectué le </label></td>
 											<td style="width:25%;">
-												<input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> value="<?php echo $general->humanDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
 											</td>
 
 

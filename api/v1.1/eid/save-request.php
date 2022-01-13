@@ -61,17 +61,6 @@ try {
         if (!is_numeric($data['fundingSource'])) {
             $data['fundingSource'] = $general->getValueByName($data['fundingSource'], 'funding_source_name', 'r_funding_sources', 'funding_source_id');
         }
-        if (!is_numeric($data['patientNationality'])) {
-            $iso = explode("(", $data['patientNationality']);
-            if (isset($iso) && count($iso) > 0) {
-                $data['patientNationality'] = trim($iso[0]);
-            }
-            $data['patientNationality'] = $general->getValueByName($data['patientNationality'], 'iso_name', 'r_countries', 'id');
-        }
-        $pprovince = explode("##", $data['patientProvince']);
-        if (isset($pprovince) && count($pprovince) > 0) {
-            $data['patientProvince'] = $pprovince[0];
-        }
 
         $data['api'] = "yes";
         // include_once(APPLICATION_PATH . '/eid/requests/insert-sample.php');
@@ -84,16 +73,22 @@ try {
         }
         $update = "no";
         $rowData = false;
+
         if ((isset($data['sampleCode']) && !empty($data['sampleCode'])) || (isset($data['remoteSampleCode']) && !empty($data['uniqueId'])) || (isset($data['uniqueId']) && !empty($data['uniqueId']))) {
             $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM eid_form ";
+            $sWhere = array();
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
-                $sQuery .= "where unique_id like '" . $data['uniqueId'] . "'";
+                $sWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             } else if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
-                $sQuery .= "where sample_code like '" . $data['sampleCode'] . "'";
+                $sWhere[] = " sample_code like '" . $data['sampleCode'] . "'";
             } else if (isset($data['remoteSampleCode']) != "" && !empty($data['remoteSampleCode'])) {
-                $sQuery .= "where remote_sample_code like '" . $data['sampleCode'] . "'";
+                $sWhere[] = " remote_sample_code like '" . $data['sampleCode'] . "'";
             }
-            $sQuery .= "limit 1";
+            if (isset($sWhere) && count($sWhere) > 0) {
+                $sQuery .= " WHERE " . implode(" AND ", $sWhere) . " limit 1";
+            } else {
+                $sQuery .= "limit 1";
+            }
             $rowData = $db->rawQueryOne($sQuery);
             if ($rowData) {
                 $update = "yes";
@@ -117,38 +112,44 @@ try {
         if (!isset($data['countryId']) || $data['countryId'] == '') {
             $data['countryId'] = '';
         }
+        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
+            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
+            $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+        } else {
+            $data['sampleCollectionDate'] = NULL;
+        }
         $eidData = array(
             'vlsm_country_id' => $data['countryId'],
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
-            'request_created_by' => '',
+            'request_created_by' => $user['user_id'],
             'request_created_datetime' => $general->getDateTime(),
-            'last_modified_by' => '',
+            'last_modified_by' => $user['user_id'],
             'last_modified_datetime' => $general->getDateTime()
         );
-        $eidData['remote_sample_code'] = "";
-        $eidData['sample_code'] = "";
 
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
-            $eidData['remote_sample_code'] = $sampleData['sampleCode'];
-            $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+            $eidData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+            $eidData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;;
+            $eidData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;;
             $eidData['remote_sample'] = 'yes';
             $eidData['result_status'] = 9;
             /* if ($roleUser['access_type'] == 'testing-lab') {
                 $eidData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
             } */
         } else {
-            $eidData['sample_code'] = $sampleData['sampleCode'];
-            $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
+            $eidData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+            $eidData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;;
+            $eidData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;;
             $eidData['remote_sample'] = 'no';
             $eidData['result_status'] = 6;
         }
-
+        /* echo "<pre>";
+        print_r($eidData); 
+        die;*/
         $id = 0;
-        if ($rowData) {
+        if (isset($rowData) && $rowData['eid_id'] > 0) {
             $db = $db->where('eid_id', $rowData['eid_id']);
             $id = $db->update("eid_form", $eidData);
             $data['eidSampleId'] = $rowData['eid_id'];
@@ -156,6 +157,8 @@ try {
             $id = $db->insert("eid_form", $eidData);
             $data['eidSampleId'] = $id;
         }
+        /* print_r($db->getLastError());
+        die; */
         // include_once(APPLICATION_PATH . '/eid/requests/eid-add-request-helper.php');
         $tableName = "eid_form";
         $tableName1 = "activity_log";
@@ -177,13 +180,6 @@ try {
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') {
             $data['result'] = null;
             $status = 4;
-        }
-
-        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
-        } else {
-            $data['sampleCollectionDate'] = NULL;
         }
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
@@ -208,30 +204,26 @@ try {
         }
 
         if (isset($data['rapidtestDate']) && trim($data['rapidtestDate']) != "") {
-            $rapidtestDate = explode(" ", $data['rapidtestDate']);
-            $data['rapidtestDate'] = $general->dateFormat($rapidtestDate[0]) . " " . $rapidtestDate[1];
+            $data['rapidtestDate'] = $general->dateFormat($data['rapidtestDate']);
         } else {
             $data['rapidtestDate'] = NULL;
         }
 
         if (isset($data['childDob']) && trim($data['childDob']) != "") {
-            $childDob = explode(" ", $data['childDob']);
-            $data['childDob'] = $general->dateFormat($childDob[0]) . " " . $childDob[1];
+            $data['childDob'] = $general->dateFormat($data['childDob']);
         } else {
             $data['childDob'] = NULL;
         }
 
         if (isset($data['mothersDob']) && trim($data['mothersDob']) != "") {
-            $mothersDob = explode(" ", $data['mothersDob']);
-            $data['mothersDob'] = $general->dateFormat($mothersDob[0]) . " " . $mothersDob[1];
+            $data['mothersDob'] = $general->dateFormat($data['mothersDob']);
         } else {
             $data['mothersDob'] = NULL;
         }
 
 
         if (isset($data['motherTreatmentInitiationDate']) && trim($data['motherTreatmentInitiationDate']) != "") {
-            $motherTreatmentInitiationDate = explode(" ", $data['motherTreatmentInitiationDate']);
-            $data['motherTreatmentInitiationDate'] = $general->dateFormat($motherTreatmentInitiationDate[0]) . " " . $motherTreatmentInitiationDate[1];
+            $data['motherTreatmentInitiationDate'] = $general->dateFormat($data['motherTreatmentInitiationDate']);
         } else {
             $data['motherTreatmentInitiationDate'] = NULL;
         }
@@ -251,14 +243,12 @@ try {
             $motherVlResult = null;
         }
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
-            $reviewedOn = explode(" ", $data['reviewedOn']);
-            $data['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+            $data['reviewedOn'] = $general->dateFormat($data['reviewedOn']);
         } else {
             $data['reviewedOn'] = NULL;
         }
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $revisedOn = explode(" ", $data['revisedOn']);
-            $data['revisedOn'] = $general->dateFormat($revisedOn[0]) . " " . $revisedOn[1];
+            $data['revisedOn'] = $general->dateFormat($data['revisedOn']);
         } else {
             $data['revisedOn'] = NULL;
         }
@@ -320,13 +310,13 @@ try {
             'result_approved_datetime'                          => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  NULL,
             'result_reviewed_by'                                => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : null,
             'result_reviewed_datetime'                          => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
-            'revised_by'                                        => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
-            'revised_on'                                        => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
-            'reason_for_changing'                               => (!empty($_POST['reasonForEidResultChanges']) && !empty($_POST['reasonForEidResultChanges'])) ? $_POST['reasonForEidResultChanges'] : null,
+            'revised_by'                                        => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
+            'revised_on'                                        => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
+            'reason_for_changing'                               => (!empty($data['reasonForEidResultChanges']) && !empty($data['reasonForEidResultChanges'])) ? $data['reasonForEidResultChanges'] : null,
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                       => isset($data['sampleRejectionReason']) ? $data['sampleRejectionReason'] : null,
-            'rejection_on'                                      => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
+            'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->dateFormat($data['rejectionDate']) : null,
             'source_of_request'                                 => "api"
         );
 

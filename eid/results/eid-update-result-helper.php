@@ -62,6 +62,7 @@ try {
     'result_status'                     => 8,
     'data_sync'                         => 0,
     'reason_for_sample_rejection'       => isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,
+    'rejection_on'                      => isset($_POST['rejectionDate']) ? $general->dateFormat($_POST['rejectionDate']) : null,
     'last_modified_by'                  => $_SESSION['userId'],
     'result_printed_datetime'           => NULL,
     'result_dispatched_datetime'        => NULL,

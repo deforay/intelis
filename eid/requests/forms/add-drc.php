@@ -54,10 +54,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM");?></h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Add EID Request");?></li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Add EID Request"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -382,6 +382,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" />
 										</td>
 									</tr>
+									<tr>
+										<th style="width:14%;"> Type d'échantillon</th>
+										<td style="width:35%;">
+											<select name="specimenType" id="specimenType" class="form-control" title="Veuillez choisir le type d'échantillon" style="width:100%">
+												<option value="">-- Selecione --</option>
+												<?php foreach ($sampleResult as $name) { ?>
+													<option value="<?php echo $name['sample_id']; ?>"><?php echo ucwords($name['sample_name']); ?></option>
+												<?php } ?>
+											</select>
+										</td>
 									</tr>
 									<tr>
 										<th>Nom du demandeur</th>
@@ -463,14 +473,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
 													<option value=''> -- Sélectionner -- </option>
 													<option value="yes"> Oui </option>
-													<option value="no" /> Non </option>
+													<option value="no"> Non </option>
 												</select>
 											</td>
 
-											<th class="rejected" style="display: none;">Reason for Rejection</th>
+											<th class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 
-												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?> onchange="">
+												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?>>
 													<option value="">-- Sélectionner --</option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
 														<optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
@@ -484,6 +494,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 													<?php }  ?>
 												</select>
 											</td>
+										</tr>
+										<tr class="rejected" style="display:none;">
+											<th>Date de rejet<span class="mandatory">*</span></th>
+											<td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
+											<td></td>
+											<td></td>
 										</tr>
 										<tr>
 											<td style="width:25%;"><label for="">Test effectué le </label></td>
