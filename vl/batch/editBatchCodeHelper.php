@@ -10,6 +10,7 @@ try {
         $id = intval($_POST['batchId']);
         $data = array(
             'batch_code' => $_POST['batchCode'],
+            'position_type' => $_POST['positions'],
             'machine' => $_POST['machine']
         );
         $db = $db->where('batch_id', $id);

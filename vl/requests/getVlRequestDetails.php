@@ -195,37 +195,37 @@ if (isset($sWhere) && $sWhere != "") {
           $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
      /* VL lab id filter */
-if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
-     $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
-}
-/* Gender filter */
-if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-     if (trim($_POST['gender']) == "not_recorded") {
-          $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-     } else {
-          $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }
-}
-/* Show only recorded sample filter */
-if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
-     $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
-}
-/* Is patient pregnant filter */
-if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
-     $sWhere = $sWhere . ' AND vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
-}
-/* Is patient breast feeding filter */
-if (isset($_POST['breastFeeding']) && trim($_POST['breastFeeding']) != '') {
-     $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
-}
-/* Funding src filter */
-if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-     $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-}
-/* Implemening partner filter */
-if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-}
+     /* Gender filter */
+     if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
+          if (trim($_POST['gender']) == "not_recorded") {
+               $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+          } else {
+               $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
+          }
+     }
+     /* Show only recorded sample filter */
+     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
+          $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
+     }
+     /* Is patient pregnant filter */
+     if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
+          $sWhere = $sWhere . ' AND vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
+     }
+     /* Is patient breast feeding filter */
+     if (isset($_POST['breastFeeding']) && trim($_POST['breastFeeding']) != '') {
+          $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
+     }
+     /* Funding src filter */
+     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+          $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+     }
+     /* Implemening partner filter */
+     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+          $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+     }
      if (isset($_POST['district']) && trim($_POST['district']) != '') {
           $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
      }
@@ -274,40 +274,36 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      }
      if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
           if (isset($setWhr)) {
-          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
-          }
-          else {
+               $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
           }
      }
      if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-     if (trim($_POST['gender']) == "not_recorded") {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-          }
-          else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
-          }
-     }
-     else {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.patient_gender IN ("' . $_POST['gender'] . '")';
+          if (trim($_POST['gender']) == "not_recorded") {
+               if (isset($setWhr)) {
+                    $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+               } else {
+                    $setWhr = 'where';
+                    $sWhere = ' where ' . $sWhere;
+                    $sWhere = $sWhere . ' vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
+               }
           } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
+               if (isset($setWhr)) {
+                    $sWhere = $sWhere . ' AND vl.patient_gender IN ("' . $_POST['gender'] . '")';
+               } else {
+                    $setWhr = 'where';
+                    $sWhere = ' where ' . $sWhere;
+                    $sWhere = $sWhere . ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
+               }
           }
      }
-}
      if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
-          }
-          else {
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
@@ -317,8 +313,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.is_patient_pregnant IN ("' . $_POST['patientPregnant'] . '")';
-          }
-          else {
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.is_patient_pregnant IN ("' . $_POST['patientPregnant'] . '")';
@@ -328,8 +323,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      if (isset($_POST['breastFeeding']) && trim($_POST['breastFeeding']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding IN ("' . $_POST['breastFeeding'] . '")';
-          }
-          else {
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.is_patient_breastfeeding IN ("' . $_POST['breastFeeding'] . '")';
@@ -338,8 +332,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
-          }
-          else {
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
@@ -348,8 +341,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
-          }
-          else {
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
@@ -395,7 +387,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sFilter = ' AND result_status!=9';
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-    //error_log($sQuery);
+//error_log($sQuery);
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;

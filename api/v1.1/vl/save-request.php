@@ -296,7 +296,7 @@ try {
             'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : null,
             'app_sample_code'                       => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_code_title'                     => (isset($data['sampleCodeTitle']) && $data['sampleCodeTitle'] != '') ? $data['sampleCodeTitle'] :  'auto',
-            'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] != '') ? $data['sampleReordered'] :  'no',
+            'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',
             'sample_code_format'                    => (isset($data['sampleCodeFormat']) && $data['sampleCodeFormat'] != '') ? $data['sampleCodeFormat'] :  NULL,
             'facility_id'                           => (isset($data['facilityId']) && $data['facilityId'] != '') ? $data['facilityId'] :  NULL,
             'sample_collection_date'                => $data['sampleCollectionDate'],

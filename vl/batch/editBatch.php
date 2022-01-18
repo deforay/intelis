@@ -122,6 +122,17 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 						</select>
 					</td>
 				</tr>
+				<tr>
+					<th><?php echo _("Positions"); ?></th>
+					<td>
+						<select id="positions-type" class="form-control" title="Please select the postion">
+							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Numeric"); ?></option>
+							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Alpha Numeric"); ?></option>
+						</select>
+					</td>
+					<th></th>
+					<td></td>
+				</tr>
 				<tr class="showFemaleSection">
 					<td><b>Pregnant&nbsp;:</b></td>
 					<td>
@@ -201,6 +212,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 					<div class="box-footer">
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
 						<input type="hidden" name="resultSample" id="resultSample" />
+						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 						<a href="batchcode.php" class="btn btn-default"> Cancel</a>
 					</div>
@@ -229,6 +241,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 		});
 
 		if (flag) {
+			$("#positions").val($('#positions-type').val());
 			$.blockUI();
 			document.getElementById('editBatchForm').submit();
 		}

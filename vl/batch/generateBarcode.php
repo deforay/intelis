@@ -251,8 +251,7 @@ if ($id > 0) {
                     }
                     $sampleCounter = $alphaNumeric[($j + 1)];
                 } else {
-
-                    $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
+                    $xplodJsonToArray = explode("_", $jsonToArray[$j]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
                             $sampleQuery = "SELECT sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
@@ -282,7 +281,7 @@ if ($id > 0) {
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
-                        $label = str_replace("_", " ", $jsonToArray[$alphaNumeric[$j]]);
+                        $label = str_replace("_", " ", $jsonToArray[$j]);
                         $label = str_replace("in house", "In-House", $label);
                         $label = ucwords(str_replace("no of ", " ", $label));
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
