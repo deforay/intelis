@@ -64,6 +64,7 @@ try {
                     $jsonToArray = json_decode($batchInfo[0]['label_order'], true);
                     $displaySampleArray = array();
                     if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
+                        $displayOrder = array();
                         for ($j = 0; $j < count($jsonToArray); $j++) {
                             $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
                             if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
@@ -76,6 +77,7 @@ try {
                             }
                         }
                     } else {
+                        $displayOrder = array();
                         for ($j = 0; $j < count($jsonToArray); $j++) {
                             $xplodJsonToArray = explode("_", $jsonToArray[$j]);
                             if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
@@ -90,6 +92,7 @@ try {
                     }
                     $remainSampleNewArray = array_values(array_diff($displaySampleOrderArray, $displaySampleArray));
                     //For new samples
+                    $displayOrder = array();
                     for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
                         $displayOrder[] = 's_' . $remainSampleNewArray[$ns];
                     }
@@ -103,7 +106,6 @@ try {
                             $orderArray[$o] = $displayOrder[$o];
                         }
                     }
-
                     $labelOrder = json_encode($orderArray, JSON_FORCE_OBJECT);
                     //Update label order
                     $data = array('label_order' => $labelOrder);
