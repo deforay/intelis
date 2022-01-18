@@ -225,7 +225,7 @@ if (!defined('K_THAI_TOPCHARS')) {
 }
 
 if (!defined('K_TCPDF_CALLS_IN_HTML')) {
-	define('K_TCPDF_CALLS_IN_HTML', false);
+	define('K_TCPDF_CALLS_IN_HTML', true);
 }
 
 if (!defined('K_TCPDF_THROW_EXCEPTION_ERROR')) {

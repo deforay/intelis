@@ -31,9 +31,9 @@ final class Lock implements SharedLockInterface, LoggerAwareInterface
 
     private $store;
     private $key;
-    private $ttl;
-    private $autoRelease;
-    private $dirty = false;
+    private ?float $ttl;
+    private bool $autoRelease;
+    private bool $dirty = false;
 
     /**
      * @param float|null $ttl         Maximum expected lock duration in seconds
@@ -49,10 +49,7 @@ final class Lock implements SharedLockInterface, LoggerAwareInterface
         $this->logger = new NullLogger();
     }
 
-    /**
-     * @return array
-     */
-    public function __sleep()
+    public function __sleep(): array
     {
         throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
     }

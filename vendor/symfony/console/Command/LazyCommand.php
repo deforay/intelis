@@ -12,6 +12,8 @@
 namespace Symfony\Component\Console\Command;
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class LazyCommand extends Command
 {
     private $command;
-    private $isEnabled;
+    private ?bool $isEnabled;
 
     public function __construct(string $name, array $aliases, string $description, bool $isHidden, \Closure $commandFactory, ?bool $isEnabled = true)
     {
@@ -69,10 +71,12 @@ final class LazyCommand extends Command
         return $this->getCommand()->run($input, $output);
     }
 
-    /**
-     * @return $this
-     */
-    public function setCode(callable $code): self
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        $this->getCommand()->complete($input, $suggestions);
+    }
+
+    public function setCode(callable $code): static
     {
         $this->getCommand()->setCode($code);
 
@@ -87,10 +91,7 @@ final class LazyCommand extends Command
         $this->getCommand()->mergeApplicationDefinition($mergeArgs);
     }
 
-    /**
-     * @return $this
-     */
-    public function setDefinition($definition): self
+    public function setDefinition(array|InputDefinition $definition): static
     {
         $this->getCommand()->setDefinition($definition);
 
@@ -107,40 +108,28 @@ final class LazyCommand extends Command
         return $this->getCommand()->getNativeDefinition();
     }
 
-    /**
-     * @return $this
-     */
-    public function addArgument(string $name, int $mode = null, string $description = '', $default = null): self
+    public function addArgument(string $name, int $mode = null, string $description = '', mixed $default = null): static
     {
         $this->getCommand()->addArgument($name, $mode, $description, $default);
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function addOption(string $name, $shortcut = null, int $mode = null, string $description = '', $default = null): self
+    public function addOption(string $name, string|array $shortcut = null, int $mode = null, string $description = '', mixed $default = null): static
     {
         $this->getCommand()->addOption($name, $shortcut, $mode, $description, $default);
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setProcessTitle(string $title): self
+    public function setProcessTitle(string $title): static
     {
         $this->getCommand()->setProcessTitle($title);
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setHelp(string $help): self
+    public function setHelp(string $help): static
     {
         $this->getCommand()->setHelp($help);
 
@@ -162,10 +151,7 @@ final class LazyCommand extends Command
         return $this->getCommand()->getSynopsis($short);
     }
 
-    /**
-     * @return $this
-     */
-    public function addUsage(string $usage): self
+    public function addUsage(string $usage): static
     {
         $this->getCommand()->addUsage($usage);
 
@@ -177,10 +163,7 @@ final class LazyCommand extends Command
         return $this->getCommand()->getUsages();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getHelper(string $name)
+    public function getHelper(string $name): mixed
     {
         return $this->getCommand()->getHelper($name);
     }

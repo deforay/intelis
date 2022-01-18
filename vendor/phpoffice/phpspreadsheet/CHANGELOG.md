@@ -5,6 +5,79 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com)
 and this project adheres to [Semantic Versioning](https://semver.org).
 
+## 1.21.0 - 2022-01-06
+
+### Added
+
+- Ability to add a picture to the background of the comment. Supports four image formats: png, jpeg, gif, bmp. New `Comment::setSizeAsBackgroundImage()` to change the size of a comment to the size of a background image. [Issue #1547](https://github.com/PHPOffice/PhpSpreadsheet/issues/1547) [PR #2422](https://github.com/PHPOffice/PhpSpreadsheet/pull/2422)
+- Ability to set default paper size and orientation [PR #2410](https://github.com/PHPOffice/PhpSpreadsheet/pull/2410)
+- Ability to extend AutoFilter to Maximum Row [PR #2414](https://github.com/PHPOffice/PhpSpreadsheet/pull/2414)
+
+### Changed
+
+- Xlsx Writer will evaluate AutoFilter only if it is as yet unevaluated, or has changed since it was last evaluated [PR #2414](https://github.com/PHPOffice/PhpSpreadsheet/pull/2414)
+
+### Deprecated
+
+- Nothing
+
+### Removed
+
+- Nothing
+
+### Fixed
+
+- Rounding in `NumberFormatter` [Issue #2385](https://github.com/PHPOffice/PhpSpreadsheet/issues/2385) [PR #2399](https://github.com/PHPOffice/PhpSpreadsheet/pull/2399)
+- Support for themes [Issue #2075](https://github.com/PHPOffice/PhpSpreadsheet/issues/2075) [Issue #2387](https://github.com/PHPOffice/PhpSpreadsheet/issues/2387) [PR #2403](https://github.com/PHPOffice/PhpSpreadsheet/pull/2403)
+- Read spreadsheet with `#` in name [Issue #2405](https://github.com/PHPOffice/PhpSpreadsheet/issues/2405) [PR #2409](https://github.com/PHPOffice/PhpSpreadsheet/pull/2409)
+- Improve PDF support for page size and orientation [Issue #1691](https://github.com/PHPOffice/PhpSpreadsheet/issues/1691) [PR #2410](https://github.com/PHPOffice/PhpSpreadsheet/pull/2410)
+- Wildcard handling issues in text match [Issue #2430](https://github.com/PHPOffice/PhpSpreadsheet/issues/2430) [PR #2431](https://github.com/PHPOffice/PhpSpreadsheet/pull/2431)
+- Respect DataType in `insertNewBefore` [PR #2433](https://github.com/PHPOffice/PhpSpreadsheet/pull/2433)
+- Handle rows explicitly hidden after AutoFilter [Issue #1641](https://github.com/PHPOffice/PhpSpreadsheet/issues/1641) [PR #2414](https://github.com/PHPOffice/PhpSpreadsheet/pull/2414)
+- Special characters in image file name [Issue #1470](https://github.com/PHPOffice/PhpSpreadsheet/issues/1470) [Issue #2415](https://github.com/PHPOffice/PhpSpreadsheet/issues/2415) [PR #2416](https://github.com/PHPOffice/PhpSpreadsheet/pull/2416)
+- Mpdf with very many styles [Issue #2432](https://github.com/PHPOffice/PhpSpreadsheet/issues/2432) [PR #2434](https://github.com/PHPOffice/PhpSpreadsheet/pull/2434)
+- Name clashes between parsed and unparsed drawings [Issue #1767](https://github.com/PHPOffice/PhpSpreadsheet/issues/1767) [Issue #2396](https://github.com/PHPOffice/PhpSpreadsheet/issues/2396) [PR #2423](https://github.com/PHPOffice/PhpSpreadsheet/pull/2423)
+- Fill pattern start and end colors [Issue #2441](https://github.com/PHPOffice/PhpSpreadsheet/issues/2441) [PR #2444](https://github.com/PHPOffice/PhpSpreadsheet/pull/2444)
+- General style specified in wrong case [Issue #2450](https://github.com/PHPOffice/PhpSpreadsheet/issues/2450) [PR #2451](https://github.com/PHPOffice/PhpSpreadsheet/pull/2451)
+- Null passed to `AutoFilter::setRange()` [Issue #2281](https://github.com/PHPOffice/PhpSpreadsheet/issues/2281) [PR #2454](https://github.com/PHPOffice/PhpSpreadsheet/pull/2454)
+- Another undefined index in Xls reader (#2470) [Issue #2463](https://github.com/PHPOffice/PhpSpreadsheet/issues/2463) [PR #2470](https://github.com/PHPOffice/PhpSpreadsheet/pull/2470)
+- Allow single-cell checks on conditional styles, even when the style is configured for a range of cells (#) [PR #2483](https://github.com/PHPOffice/PhpSpreadsheet/pull/2483)
+
+## 1.20.0 - 2021-11-23
+
+### Added
+
+- Xlsx Writer Support for WMF Files [#2339](https://github.com/PHPOffice/PhpSpreadsheet/issues/2339)
+- Use standard temporary file for internal use of HTMLPurifier [#2383](https://github.com/PHPOffice/PhpSpreadsheet/issues/2383)
+
+### Changed
+
+- Drop support for PHP 7.2, according to https://phpspreadsheet.readthedocs.io/en/latest/#php-version-support
+- Use native typing for objects that were already documented as such
+
+### Deprecated
+
+- Nothing
+
+### Removed
+
+- Nothing
+
+### Fixed
+
+- Fixed null conversation for strToUpper [#2292](https://github.com/PHPOffice/PhpSpreadsheet/issues/2292)
+- Fixed Trying to access array offset on value of type null (Xls Reader) [#2315](https://github.com/PHPOffice/PhpSpreadsheet/issues/2315)
+- Don't corrupt XLSX files containing data validation [#2377](https://github.com/PHPOffice/PhpSpreadsheet/issues/2377)
+- Non-fixed cells were not updated if shared formula has a fixed cell [#2354](https://github.com/PHPOffice/PhpSpreadsheet/issues/2354)
+- Declare key of generic ArrayObject
+- CSV reader better support for boolean values [#2374](https://github.com/PHPOffice/PhpSpreadsheet/pull/2374)
+- Some ZIP file could not be read [#2376](https://github.com/PHPOffice/PhpSpreadsheet/pull/2376)
+- Fix regression were hyperlinks could not be read [#2391](https://github.com/PHPOffice/PhpSpreadsheet/pull/2391)
+- AutoFilter Improvements [#2393](https://github.com/PHPOffice/PhpSpreadsheet/pull/2393)
+- Don't corrupt file when using chart with fill color [#589](https://github.com/PHPOffice/PhpSpreadsheet/pull/589)
+- Restore imperfect array formula values in xlsx writer [#2343](https://github.com/PHPOffice/PhpSpreadsheet/pull/2343)
+- Restore explicit list of changes to PHPExcel migration document [#1546](https://github.com/PHPOffice/PhpSpreadsheet/issues/1546)
+
 ## 1.19.0 - 2021-10-31
 
 ### Added
@@ -29,7 +102,7 @@ and this project adheres to [Semantic Versioning](https://semver.org).
 
 ### Deprecated
 
-- PHP 8.1 will deprecate auto_detect_line_endings. As a result of this change, Csv Reader using PHP8.1+ will no longer be able to handle a Csv with Mac line endings.
+- PHP 8.1 will deprecate auto_detect_line_endings. As a result of this change, Csv Reader using some release after PHP8.1 will no longer be able to handle a Csv with Mac line endings.
 
 ### Removed
 
@@ -82,6 +155,7 @@ and this project adheres to [Semantic Versioning](https://semver.org).
 ## 1.18.0 - 2021-05-31
 
 ### Added
+
 - Enhancements to CSV Reader, allowing options to be set when using `IOFactory::load()` with a callback to set delimiter, enclosure, charset etc [PR #2103](https://github.com/PHPOffice/PhpSpreadsheet/pull/2103) - See [documentation](https://github.com/PHPOffice/PhpSpreadsheet/blob/master/docs/topics/reading-and-writing-to-file.md#csv-comma-separated-values) for details.
 - Implemented basic AutoFiltering for Ods Reader and Writer [PR #2053](https://github.com/PHPOffice/PhpSpreadsheet/pull/2053)
 - Implemented basic AutoFiltering for Gnumeric Reader [PR #2055](https://github.com/PHPOffice/PhpSpreadsheet/pull/2055)
@@ -104,6 +178,7 @@ and this project adheres to [Semantic Versioning](https://semver.org).
 - Use of `nb` rather than `no` as the locale language code for Norsk Bokmål.
 
 ### Fixed
+
 - Fixed error in COUPNCD() calculation for end of month [Issue #2116](https://github.com/PHPOffice/PhpSpreadsheet/issues/2116) - [PR #2119](https://github.com/PHPOffice/PhpSpreadsheet/pull/2119)
 - Resolve default values when a null argument is passed for HLOOKUP(), VLOOKUP() and ADDRESS() functions [Issue #2120](https://github.com/PHPOffice/PhpSpreadsheet/issues/2120) - [PR #2121](https://github.com/PHPOffice/PhpSpreadsheet/pull/2121)
 - Fixed incorrect R1C1 to A1 subtraction formula conversion (`R[-2]C-R[2]C`) [Issue #2076](https://github.com/PHPOffice/PhpSpreadsheet/pull/2076) [PR #2086](https://github.com/PHPOffice/PhpSpreadsheet/pull/2086)

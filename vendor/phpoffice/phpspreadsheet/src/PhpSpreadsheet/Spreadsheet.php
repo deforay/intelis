@@ -1174,11 +1174,9 @@ class Spreadsheet
     /**
      * Check if style exists in style collection.
      *
-     * @param Style $cellStyleIndex
-     *
      * @return bool
      */
-    public function cellXfExists($cellStyleIndex)
+    public function cellXfExists(Style $cellStyleIndex)
     {
         return in_array($cellStyleIndex, $this->cellXfCollection, true);
     }
@@ -1589,6 +1587,19 @@ class Spreadsheet
             $this->tabRatio = (int) $tabRatio;
         } else {
             throw new Exception('Tab ratio must be between 0 and 1000.');
+        }
+    }
+
+    public function reevaluateAutoFilters(bool $resetToMax): void
+    {
+        foreach ($this->workSheetCollection as $sheet) {
+            $filter = $sheet->getAutoFilter();
+            if (!empty($filter->getRange())) {
+                if ($resetToMax) {
+                    $filter->setRangeToMaxRow();
+                }
+                $filter->showHideRows();
+            }
         }
     }
 }
