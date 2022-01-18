@@ -7,7 +7,7 @@ use JsonMachine\JsonDecoder\Decoder;
 class JsonMachine implements \IteratorAggregate, PositionAware
 {
     /**
-     * @var \Traversable
+     * @var iterable
      */
     private $bytesIterator;
 
@@ -22,12 +22,12 @@ class JsonMachine implements \IteratorAggregate, PositionAware
     private $jsonDecoder;
 
     /**
-     * @var iterable
+     * @var Parser
      */
     private $parser;
 
     /**
-     * @param $bytesIterator
+     * @param iterable $bytesIterator
      * @param string $jsonPointer
      * @param Decoder $jsonDecoder
      */
@@ -41,7 +41,7 @@ class JsonMachine implements \IteratorAggregate, PositionAware
     }
 
     /**
-     * @param $string
+     * @param string $string
      * @param string $jsonPointer
      * @param Decoder $jsonDecoder
      * @return self
@@ -84,6 +84,7 @@ class JsonMachine implements \IteratorAggregate, PositionAware
         return new static($iterable, $jsonPointer, $jsonDecoder);
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->parser;

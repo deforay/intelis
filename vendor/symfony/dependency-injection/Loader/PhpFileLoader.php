@@ -45,7 +45,7 @@ class PhpFileLoader extends FileLoader
     /**
      * {@inheritdoc}
      */
-    public function load($resource, string $type = null)
+    public function load(mixed $resource, string $type = null): mixed
     {
         // the container and loader variables are exposed to the included file below
         $container = $this->container;
@@ -70,12 +70,14 @@ class PhpFileLoader extends FileLoader
             $this->instanceof = [];
             $this->registerAliasesForSinglyImplementedInterfaces();
         }
+
+        return null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supports($resource, string $type = null)
+    public function supports(mixed $resource, string $type = null): bool
     {
         if (!\is_string($resource)) {
             return false;
@@ -101,17 +103,15 @@ class PhpFileLoader extends FileLoader
         $configBuilders = [];
         $r = new \ReflectionFunction($callback);
 
-        if (\PHP_VERSION_ID >= 80000) {
-            $attribute = null;
-            foreach ($r->getAttributes(When::class) as $attribute) {
-                if ($this->env === $attribute->newInstance()->env) {
-                    $attribute = null;
-                    break;
-                }
+        $attribute = null;
+        foreach ($r->getAttributes(When::class) as $attribute) {
+            if ($this->env === $attribute->newInstance()->env) {
+                $attribute = null;
+                break;
             }
-            if (null !== $attribute) {
-                return;
-            }
+        }
+        if (null !== $attribute) {
+            return;
         }
 
         foreach ($r->getParameters() as $parameter) {
@@ -135,7 +135,7 @@ class PhpFileLoader extends FileLoader
                 default:
                     try {
                         $configBuilder = $this->configBuilder($type);
-                    } catch (InvalidArgumentException | \LogicException $e) {
+                    } catch (InvalidArgumentException|\LogicException $e) {
                         throw new \InvalidArgumentException(sprintf('Could not resolve argument "%s" for "%s".', $type.' $'.$parameter->getName(), $path), 0, $e);
                     }
                     $configBuilders[] = $configBuilder;

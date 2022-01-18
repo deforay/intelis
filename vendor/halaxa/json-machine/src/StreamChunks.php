@@ -9,7 +9,7 @@ class StreamChunks implements \IteratorAggregate
     /** @var resource */
     private $stream;
 
-    /** @var float|int */
+    /** @var int */
     private $chunkSize;
 
     /**
@@ -18,7 +18,7 @@ class StreamChunks implements \IteratorAggregate
      */
     public function __construct($stream, $chunkSize = 1024 * 8)
     {
-        if ( ! is_resource($stream) || get_resource_type($stream) !== 'stream') {
+        if (! is_resource($stream) || get_resource_type($stream) !== 'stream') {
             throw new InvalidArgumentException("Argument \$stream must be a valid stream resource.");
         }
         $this->stream = $stream;
@@ -28,6 +28,7 @@ class StreamChunks implements \IteratorAggregate
     /**
      * @return \Generator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         while ('' !== ($chunk = fread($this->stream, $this->chunkSize))) {

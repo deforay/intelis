@@ -37,30 +37,24 @@ class ConsoleEvent extends Event
 
     /**
      * Gets the command that is executed.
-     *
-     * @return Command|null A Command instance
      */
-    public function getCommand()
+    public function getCommand(): ?Command
     {
         return $this->command;
     }
 
     /**
      * Gets the input instance.
-     *
-     * @return InputInterface An InputInterface instance
      */
-    public function getInput()
+    public function getInput(): InputInterface
     {
         return $this->input;
     }
 
     /**
      * Gets the output instance.
-     *
-     * @return OutputInterface An OutputInterface instance
      */
-    public function getOutput()
+    public function getOutput(): OutputInterface
     {
         return $this->output;
     }

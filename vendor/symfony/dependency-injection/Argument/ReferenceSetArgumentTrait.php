@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 trait ReferenceSetArgumentTrait
 {
-    private $values;
+    private array $values;
 
     /**
      * @param Reference[] $values
@@ -31,9 +31,9 @@ trait ReferenceSetArgumentTrait
     }
 
     /**
-     * @return Reference[] The values in the set
+     * @return Reference[]
      */
-    public function getValues()
+    public function getValues(): array
     {
         return $this->values;
     }

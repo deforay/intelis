@@ -30,7 +30,7 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
  */
 class RegisterServiceSubscribersPass extends AbstractRecursivePass
 {
-    protected function processValue($value, bool $isRoot = false)
+    protected function processValue(mixed $value, bool $isRoot = false): mixed
     {
         if (!$value instanceof Definition || $value->isAbstract() || $value->isSynthetic() || !$value->hasTag('container.service_subscriber')) {
             return parent::processValue($value, $isRoot);
@@ -68,11 +68,12 @@ class RegisterServiceSubscribersPass extends AbstractRecursivePass
             throw new InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $this->currentId, ServiceSubscriberInterface::class));
         }
         $class = $r->name;
+        // to remove when symfony/dependency-injection will stop being compatible with symfony/framework-bundle<6.0
         $replaceDeprecatedSession = $this->container->has('.session.deprecated') && $r->isSubclassOf(AbstractController::class);
         $subscriberMap = [];
 
         foreach ($class::getSubscribedServices() as $key => $type) {
-            if (!\is_string($type) || !preg_match('/^\??[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $type)) {
+            if (!\is_string($type) || !preg_match('/(?(DEFINE)(?<cn>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+))(?(DEFINE)(?<fqcn>(?&cn)(?:\\\\(?&cn))*+))^\??(?&fqcn)(?:(?:\|(?&fqcn))*+|(?:&(?&fqcn))*+)$/', $type)) {
                 throw new InvalidArgumentException(sprintf('"%s::getSubscribedServices()" must return valid PHP types for service "%s" key "%s", "%s" returned.', $class, $this->currentId, $key, \is_string($type) ? $type : get_debug_type($type)));
             }
             if ($optionalBehavior = '?' === $type[0]) {
@@ -89,7 +90,7 @@ class RegisterServiceSubscribersPass extends AbstractRecursivePass
                 }
                 if ($replaceDeprecatedSession && SessionInterface::class === $type) {
                     // This prevents triggering the deprecation when building the container
-                    // Should be removed in Symfony 6.0
+                    // to remove when symfony/dependency-injection will stop being compatible with symfony/framework-bundle<6.0
                     $type = '.session.deprecated';
                 }
                 $serviceMap[$key] = new Reference($type);

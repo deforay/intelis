@@ -14,6 +14,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Symfony\Component\Config\Loader\ParamConfigurator;
 use Symfony\Component\DependencyInjection\Argument\AbstractArgument;
 use Symfony\Component\DependencyInjection\Argument\ArgumentInterface;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Parameter;
@@ -30,7 +31,7 @@ abstract class AbstractConfigurator
     public static $valuePreProcessor;
 
     /** @internal */
-    protected $definition;
+    protected $definition = null;
 
     public function __call(string $method, array $args)
     {
@@ -41,10 +42,7 @@ abstract class AbstractConfigurator
         throw new \BadMethodCallException(sprintf('Call to undefined method "%s::%s()".', static::class, $method));
     }
 
-    /**
-     * @return array
-     */
-    public function __sleep()
+    public function __sleep(): array
     {
         throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
     }
@@ -57,12 +55,11 @@ abstract class AbstractConfigurator
     /**
      * Checks that a value is valid, optionally replacing Definition and Reference configurators by their configure value.
      *
-     * @param mixed $value
-     * @param bool  $allowServices whether Definition and Reference are allowed; by default, only scalars and arrays are
+     * @param bool $allowServices whether Definition and Reference are allowed; by default, only scalars and arrays are
      *
      * @return mixed the value, optionally cast to a Definition/Reference
      */
-    public static function processValue($value, $allowServices = false)
+    public static function processValue(mixed $value, bool $allowServices = false): mixed
     {
         if (\is_array($value)) {
             foreach ($value as $k => $v) {
@@ -77,7 +74,9 @@ abstract class AbstractConfigurator
         }
 
         if ($value instanceof ReferenceConfigurator) {
-            return new Reference($value->id, $value->invalidBehavior);
+            $reference = new Reference($value->id, $value->invalidBehavior);
+
+            return $value instanceof ClosureReferenceConfigurator ? new ServiceClosureArgument($reference) : $reference;
         }
 
         if ($value instanceof InlineServiceConfigurator) {

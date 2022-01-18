@@ -8,22 +8,33 @@
             "email": "filip@halaxa.cz"
         }
     ],
+    "scripts": {
+        "tests": "build/composer-update.sh && vendor/bin/phpunit",
+        "cs": "build/composer-update.sh && vendor/bin/php-cs-fixer fix --dry-run --verbose",
+        "cs-fix": "build/composer-update.sh && vendor/bin/php-cs-fixer fix --verbose",
+        "performance-tests": "php test/performance/testPerformance.php"
+    },
+    "config": {
+        "lock": false,
+        "sort-packages": true
+    },
     "require": {
         "php": ">=5.6"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7.27",
-        "guzzlehttp/guzzle": "^6",
-        "ext-json": "*"
+        "ext-json": "*",
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpunit/phpunit": "^8.0"
     },
     "suggest": {
-        "ext-json": "To run JSON Machine out of the box without custom decoders."
+        "ext-json": "To run JSON Machine out of the box without custom decoders.",
+        "guzzlehttp/guzzle": "To run example with GuzzleHttp"
     },
-    "autoload" : {
+    "autoload": {
         "psr-4": {"JsonMachine\\": "src/"},
         "files": ["src/functions.php"]
     },
-    "autoload-dev" : {
+    "autoload-dev": {
         "psr-4": {"JsonMachineTest\\": "test/JsonMachineTest"}
     }
 }

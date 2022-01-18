@@ -20,20 +20,18 @@ namespace Symfony\Component\Config\Builder;
  */
 class ClassBuilder
 {
-    /** @var string */
-    private $namespace;
-
-    /** @var string */
-    private $name;
+    private string $namespace;
+    private string $name;
 
     /** @var Property[] */
-    private $properties = [];
+    private array $properties = [];
 
     /** @var Method[] */
-    private $methods = [];
-    private $require = [];
-    private $use = [];
-    private $implements = [];
+    private array $methods = [];
+    private array $require = [];
+    private array $use = [];
+    private array $implements = [];
+    private bool $allowExtraKeys = false;
 
     public function __construct(string $namespace, string $name)
     {
@@ -93,8 +91,6 @@ USE
 
 /**
  * This class is automatically generated to help creating config.
- *
- * @experimental in 5.3
  */
 class CLASS IMPLEMENTS
 {
@@ -127,7 +123,7 @@ BODY
 
     public function addProperty(string $name, string $classType = null): Property
     {
-        $property = new Property($name, $this->camelCase($name));
+        $property = new Property($name, '_' !== $name[0] ? $this->camelCase($name) : $name);
         if (null !== $classType) {
             $property->setType($classType);
         }
@@ -162,5 +158,15 @@ BODY
     public function getFqcn(): string
     {
         return '\\'.$this->namespace.'\\'.$this->name;
+    }
+
+    public function setAllowExtraKeys(bool $allowExtraKeys): void
+    {
+        $this->allowExtraKeys = $allowExtraKeys;
+    }
+
+    public function shouldAllowExtraKeys(): bool
+    {
+        return $this->allowExtraKeys;
     }
 }

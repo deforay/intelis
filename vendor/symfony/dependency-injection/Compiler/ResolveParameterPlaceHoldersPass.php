@@ -23,13 +23,11 @@ use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 class ResolveParameterPlaceHoldersPass extends AbstractRecursivePass
 {
     private $bag;
-    private $resolveArrays;
-    private $throwOnResolveException;
 
-    public function __construct($resolveArrays = true, $throwOnResolveException = true)
-    {
-        $this->resolveArrays = $resolveArrays;
-        $this->throwOnResolveException = $throwOnResolveException;
+    public function __construct(
+        private bool $resolveArrays = true,
+        private bool $throwOnResolveException = true,
+    ) {
     }
 
     /**
@@ -57,10 +55,10 @@ class ResolveParameterPlaceHoldersPass extends AbstractRecursivePass
         }
 
         $this->bag->resolve();
-        $this->bag = null;
+        unset($this->bag);
     }
 
-    protected function processValue($value, bool $isRoot = false)
+    protected function processValue(mixed $value, bool $isRoot = false): mixed
     {
         if (\is_string($value)) {
             try {

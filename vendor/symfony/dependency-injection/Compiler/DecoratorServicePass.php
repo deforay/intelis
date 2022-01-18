@@ -27,17 +27,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class DecoratorServicePass extends AbstractRecursivePass
 {
-    private $innerId = '.inner';
-
-    public function __construct(?string $innerId = '.inner')
-    {
-        if (0 < \func_num_args()) {
-            trigger_deprecation('symfony/dependency-injection', '5.3', 'Configuring "%s" is deprecated.', __CLASS__);
-        }
-
-        $this->innerId = $innerId;
-    }
-
     public function process(ContainerBuilder $container)
     {
         $definitions = new \SplPriorityQueue();
@@ -73,13 +62,11 @@ class DecoratorServicePass extends AbstractRecursivePass
             if ($container->hasAlias($inner)) {
                 $alias = $container->getAlias($inner);
                 $public = $alias->isPublic();
-                $private = $alias->isPrivate();
                 $container->setAlias($renamedId, new Alias((string) $alias, false));
                 $decoratedDefinition = $container->findDefinition($alias);
             } elseif ($container->hasDefinition($inner)) {
                 $decoratedDefinition = $container->getDefinition($inner);
                 $public = $decoratedDefinition->isPublic();
-                $private = $decoratedDefinition->isPrivate();
                 $decoratedDefinition->setPublic(false);
                 $container->setDefinition($renamedId, $decoratedDefinition);
                 $decoratingDefinitions[$inner] = $decoratedDefinition;
@@ -88,7 +75,6 @@ class DecoratorServicePass extends AbstractRecursivePass
                 continue;
             } elseif (ContainerInterface::NULL_ON_INVALID_REFERENCE === $invalidBehavior) {
                 $public = $definition->isPublic();
-                $private = $definition->isPrivate();
                 $decoratedDefinition = null;
             } else {
                 throw new ServiceNotFoundException($inner, $id);
@@ -121,9 +107,9 @@ class DecoratorServicePass extends AbstractRecursivePass
         }
     }
 
-    protected function processValue($value, bool $isRoot = false)
+    protected function processValue(mixed $value, bool $isRoot = false): mixed
     {
-        if ($value instanceof Reference && $this->innerId === (string) $value) {
+        if ($value instanceof Reference && '.inner' === (string) $value) {
             return new Reference($this->currentId, $value->getInvalidBehavior());
         }
 

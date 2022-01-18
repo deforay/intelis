@@ -30,7 +30,7 @@ use Symfony\Component\Lock\SharedLockStoreInterface;
  */
 class FlockStore implements BlockingStoreInterface, SharedLockStoreInterface
 {
-    private $lockPath;
+    private ?string $lockPath;
 
     /**
      * @param string|null $lockPath the directory to store the lock, defaults to the system's temporary directory
@@ -106,15 +106,18 @@ class FlockStore implements BlockingStoreInterface, SharedLockStoreInterface
 
             // Silence error reporting
             set_error_handler(function ($type, $msg) use (&$error) { $error = $msg; });
-            if (!$handle = fopen($fileName, 'r+') ?: fopen($fileName, 'r')) {
-                if ($handle = fopen($fileName, 'x')) {
-                    chmod($fileName, 0666);
-                } elseif (!$handle = fopen($fileName, 'r+') ?: fopen($fileName, 'r')) {
-                    usleep(100); // Give some time for chmod() to complete
-                    $handle = fopen($fileName, 'r+') ?: fopen($fileName, 'r');
+            try {
+                if (!$handle = fopen($fileName, 'r+') ?: fopen($fileName, 'r')) {
+                    if ($handle = fopen($fileName, 'x')) {
+                        chmod($fileName, 0666);
+                    } elseif (!$handle = fopen($fileName, 'r+') ?: fopen($fileName, 'r')) {
+                        usleep(100); // Give some time for chmod() to complete
+                        $handle = fopen($fileName, 'r+') ?: fopen($fileName, 'r');
+                    }
                 }
+            } finally {
+                restore_error_handler();
             }
-            restore_error_handler();
         }
 
         if (!$handle) {
@@ -161,7 +164,7 @@ class FlockStore implements BlockingStoreInterface, SharedLockStoreInterface
     /**
      * {@inheritdoc}
      */
-    public function exists(Key $key)
+    public function exists(Key $key): bool
     {
         return $key->hasState(__CLASS__);
     }

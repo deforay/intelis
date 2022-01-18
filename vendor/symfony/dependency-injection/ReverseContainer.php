@@ -23,8 +23,8 @@ final class ReverseContainer
 {
     private $serviceContainer;
     private $reversibleLocator;
-    private $tagName;
-    private $getServiceId;
+    private string $tagName;
+    private \Closure $getServiceId;
 
     public function __construct(Container $serviceContainer, ContainerInterface $reversibleLocator, string $tagName = 'container.reversible')
     {
