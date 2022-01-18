@@ -92,7 +92,7 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
             if ($rowData) {
                 $update = "yes";
-                if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+                if ($user['access_type'] != 'testing-lab') {
                     $sampleData['sampleCode'] = (!empty($rowData['remote_sample_code'])) ? $rowData['remote_sample_code'] : null;
                     $sampleData['sampleCodeFormat'] = (!empty($rowData['remote_sample_code_format'])) ? $rowData['remote_sample_code_format'] : null;
                     $sampleData['sampleCodeKey'] = (!empty($rowData['remote_sample_code_key'])) ? $rowData['remote_sample_code_key'] : null;
@@ -129,10 +129,10 @@ try {
             'last_modified_datetime' => $general->getDateTime()
         );
 
-        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+        if ($user['access_type'] != 'testing-lab') {
             $eidData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $eidData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;;
-            $eidData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;;
+            $eidData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+            $eidData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
             $eidData['remote_sample'] = 'yes';
             $eidData['result_status'] = 9;
             /* if ($roleUser['access_type'] == 'testing-lab') {
@@ -140,8 +140,8 @@ try {
             } */
         } else {
             $eidData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $eidData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;;
-            $eidData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;;
+            $eidData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+            $eidData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
             $eidData['remote_sample'] = 'no';
             $eidData['result_status'] = 6;
         }
@@ -275,6 +275,7 @@ try {
             'mother_treatment_initiation_date'                  => isset($data['motherTreatmentInitiationDate']) ? $data['motherTreatmentInitiationDate'] : null,
             'child_id'                                          => isset($data['childId']) ? $data['childId'] : null,
             'child_name'                                        => isset($data['childName']) ? $data['childName'] : null,
+            'child_surname'                                     => isset($data['childSurName']) ? $data['childSurName'] : null,
             'child_dob'                                         => isset($data['childDob']) ? $data['childDob'] : null,
             'child_gender'                                      => isset($data['childGender']) ? $data['childGender'] : null,
             'child_age'                                         => isset($data['childAge']) ? $data['childAge'] : null,

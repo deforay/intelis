@@ -125,19 +125,19 @@ try {
             'last_modified_datetime' => $general->getDateTime()
         );
 
-        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
-            $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
-            $covid19Data['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+        if ($user['access_type'] != 'testing-lab') {
+            $covid19Data['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+            $covid19Data['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+            $covid19Data['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
             $covid19Data['remote_sample'] = 'yes';
             $covid19Data['result_status'] = 9;
-            if ($roleUser['access_type'] == 'testing-lab') {
+            /* if ($roleUser['access_type'] == 'testing-lab') {
                 $covid19Data['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
-            }
+            } */
         } else {
-            $covid19Data['sample_code'] = $sampleData['sampleCode'];
-            $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
+            $covid19Data['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+            $covid19Data['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+            $covid19Data['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
             $covid19Data['remote_sample'] = 'no';
             $covid19Data['result_status'] = 6;
         }
@@ -281,7 +281,7 @@ try {
             'sample_collection_date'              => !empty($data['sampleCollectionDate']) ? $data['sampleCollectionDate'] : null,
             'health_outcome'                      => !empty($data['healthOutcome']) ? $data['healthOutcome'] : null,
             'health_outcome_date'                 => !empty($data['outcomeDate']) ? $general->dateFormat($data['outcomeDate']) : null,
-            'is_sampledata_mortem'               => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,
+            // 'is_sampledata_mortem'                => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,
             'priority_status'                     => !empty($data['priorityStatus']) ? $data['priorityStatus'] : null,
             'number_of_days_sick'                 => !empty($data['numberOfDaysSick']) ? $data['numberOfDaysSick'] : null,
             'suspected_case'                      => !empty($data['suspectedCase']) ? $data['suspectedCase'] : null,

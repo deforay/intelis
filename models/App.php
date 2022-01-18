@@ -411,7 +411,7 @@ class App
                 $confSampleCode = 'covid19_sample_code';
                 $confSampleCodePrefix = 'covid19_sample_code_prefix';
                 $table = "form_covid19";
-                $shortCode = 'c19';
+                $shortCode = 'C19';
             } else if ($testType == "eid") {
                 $confSampleCode = 'eid_sample_code';
                 $confSampleCodePrefix = 'eid_sample_code_prefix';

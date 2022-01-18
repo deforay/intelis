@@ -20,7 +20,7 @@ try {
         $userResult = $db->rawQueryOne("SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, r.*, (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ? AND ud.password = ?", $queryParams);
         // print_r($userResult);die;
 
-        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+        if ($userResult['testing_user'] == 'yes') {
             $remoteUser = "yes";
         } else {
             $remoteUser = "no";

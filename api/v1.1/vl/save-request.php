@@ -73,12 +73,12 @@ try {
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'province_name', 'province_details', 'province_id', true);
         }
-        if (!is_numeric($data['implementingPartner'])) {
+        /* if (!is_numeric($data['implementingPartner'])) {
             $data['implementingPartner'] = $general->getValueByName($data['implementingPartner'], 'i_partner_name', 'r_implementation_partners', 'i_partner_id');
         }
         if (!is_numeric($data['fundingSource'])) {
             $data['fundingSource'] = $general->getValueByName($data['fundingSource'], 'funding_source_name', 'r_funding_sources', 'funding_source_id');
-        }
+        } */
 
         $data['api'] = "yes";
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
@@ -118,6 +118,13 @@ try {
         if (!isset($data['countryId']) || $data['countryId'] == '') {
             $data['countryId'] = '';
         }
+
+        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
+            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
+            $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+        } else {
+            $data['sampleCollectionDate'] = NULL;
+        }
         $vlData = array(
             'vlsm_country_id' => $data['countryId'],
             'sample_collection_date' => $data['sampleCollectionDate'],
@@ -128,22 +135,20 @@ try {
             'last_modified_by' => '',
             'last_modified_datetime' => $general->getDateTime()
         );
-        $vlData['remote_sample_code'] = "";
-        $vlData['sample_code'] = "";
 
-        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
-            $vlData['remote_sample_code'] = $sampleData['sampleCode'];
-            $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+        if ($user['access_type'] != 'testing-lab') {
+            $vlData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+            $vlData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+            $vlData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
             $vlData['remote_sample'] = 'yes';
             $vlData['result_status'] = 9;
-            if ($roleUser['access_type'] == 'testing-lab') {
+            /* if ($roleUser['access_type'] == 'testing-lab') {
                 $vlData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
-            }
+            } */
         } else {
-            $vlData['sample_code'] = $sampleData['sampleCode'];
-            $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
+            $vlData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+            $vlData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+            $vlData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
             $vlData['remote_sample'] = 'no';
             $vlData['result_status'] = 6;
         }
@@ -177,13 +182,6 @@ try {
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') {
             $data['result'] = null;
             $status = 4;
-        }
-
-        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
-        } else {
-            $data['sampleCollectionDate'] = NULL;
         }
 
         if (isset($data['approvedOnDateTime']) && trim($data['approvedOnDateTime']) != "") {
@@ -353,8 +351,8 @@ try {
             'reason_for_vl_result_changes'          => (!empty($_POST['reasonForVlResultChanges']) && !empty($_POST['reasonForVlResultChanges'])) ? $_POST['reasonForVlResultChanges'] : null,
             'approver_comments'                     => (isset($data['labComments']) && trim($data['labComments']) != '') ? trim($data['labComments']) :  NULL,
             'result_status'                         => $status,
-            'funding_source'                        => (isset($data['fundingSource']) && trim($data['fundingSource']) != '') ? base64_decode($data['fundingSource']) : NULL,
-            'implementing_partner'                  => (isset($data['implementingPartner']) && trim($data['implementingPartner']) != '') ? base64_decode($data['implementingPartner']) : NULL,
+            'funding_source'                        => (isset($data['fundingSource']) && trim($data['fundingSource']) != '') ? $data['fundingSource'] : NULL,
+            'implementing_partner'                  => (isset($data['implementingPartner']) && trim($data['implementingPartner']) != '') ? $data['implementingPartner'] : NULL,
             'request_created_datetime'              => $general->getDateTime(),
             'last_modified_datetime'                => $general->getDateTime(),
             'manual_result_entry'                   => 'yes',
@@ -398,12 +396,14 @@ try {
         $vlFulldata['last_modified_by'] =  $user['user_id'];
 
         /* echo "<pre>";
-        print_r($vlFulldata);
+        print_r($data);
         die; */
         $id = 0;
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update($tableName, $vlFulldata);
+            // print_r($db->getLastError());
+            // echo "ID=>" . $id;
         }
         if ($id > 0) {
             $vlFulldata = $app->getTableDataUsingId($tableName, 'vl_sample_id', $data['vlSampleId']);

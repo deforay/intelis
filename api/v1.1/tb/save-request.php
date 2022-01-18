@@ -113,19 +113,19 @@ try {
             'last_modified_datetime' => $general->getDateTime()
         );
 
-        if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
-            $tbData['remote_sample_code'] = $sampleData['sampleCode'];
-            $tbData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $tbData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+        if ($user['access_type'] != 'testing-lab') {
+            $tbData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+            $tbData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+            $tbData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
             $tbData['remote_sample'] = 'yes';
             $tbData['result_status'] = 9;
-            if ($roleUser['access_type'] == 'testing-lab') {
+            /* if ($roleUser['access_type'] == 'testing-lab') {
                 $tbData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
-            }
+            } */
         } else {
-            $tbData['sample_code'] = $sampleData['sampleCode'];
-            $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
+            $tbData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+            $tbData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+            $tbData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
             $tbData['remote_sample'] = 'no';
             $tbData['result_status'] = 6;
         }
