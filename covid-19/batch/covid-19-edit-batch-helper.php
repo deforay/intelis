@@ -13,6 +13,7 @@ try {
 		$id = intval($_POST['batchId']);
 		$data = array(
 			'batch_code' => $_POST['batchCode'],
+			'position_type' => $_POST['positions'],
 			'machine' => $_POST['machine']
 		);
 		$db = $db->where('batch_id', $id);
@@ -66,6 +67,7 @@ try {
 					$jsonToArray = json_decode($batchInfo[0]['label_order'], true);
 					$displaySampleArray = array();
 					if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
+						$displayOrder = array();
 						for ($j = 0; $j < count($jsonToArray); $j++) {
 							$xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
 							if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
@@ -78,6 +80,7 @@ try {
 							}
 						}
 					} else {
+						$displayOrder = array();
 						for ($j = 0; $j < count($jsonToArray); $j++) {
 							$xplodJsonToArray = explode("_", $jsonToArray[$j]);
 							if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
@@ -92,6 +95,7 @@ try {
 					}
 					$remainSampleNewArray = array_values(array_diff($displaySampleOrderArray, $displaySampleArray));
 					//For new samples
+					// $displayOrder = array();
 					for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
 						$displayOrder[] = 's_' . $remainSampleNewArray[$ns];
 					}

@@ -102,9 +102,18 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 					<td>
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
 					</td>
-
 				</tr>
-
+				<tr>
+					<th><?php echo _("Positions"); ?></th>
+					<td>
+						<select id="positions-type" class="form-control" title="Please select the postion">
+							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Numeric"); ?></option>
+							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Alpha Numeric"); ?></option>
+						</select>
+					</td>
+					<th></th>
+					<td></td>
+				</tr>
 				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="Filter Samples" class="btn btn-success btn-sm">
 						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset Filters</span></button>
@@ -172,6 +181,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 					<div class="box-footer">
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
 						<input type="hidden" name="resultSample" id="resultSample" />
+						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 						<a href="covid-19-batches.php" class="btn btn-default"> Cancel</a>
 					</div>
@@ -200,6 +210,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 		});
 
 		if (flag) {
+			$("#positions").val($('#positions-type').val());
 			$.blockUI();
 			document.getElementById('editBatchForm').submit();
 		}

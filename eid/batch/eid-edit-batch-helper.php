@@ -13,6 +13,7 @@ try {
 		$id = intval($_POST['batchId']);
 		$data = array(
 			'batch_code' => $_POST['batchCode'],
+			'position_type' => $_POST['positions'],
 			'machine' => $_POST['machine']
 		);
 		$db = $db->where('batch_id', $id);
@@ -65,6 +66,7 @@ try {
 					//Set label order
 					$jsonToArray = json_decode($batchInfo[0]['label_order'], true);
 					$displaySampleArray = array();
+					$displayOrder = array();
 					if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
 						for ($j = 0; $j < count($jsonToArray); $j++) {
 							$xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
