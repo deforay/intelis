@@ -210,6 +210,20 @@ try {
             $data['revisedOn'] = NULL;
         }
 
+        if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
+            $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
+            $data['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+        } else {
+            $data['resultDispatchedOn'] = NULL;
+        }
+
+        if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
+            $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
+            $data['sampleDispatchedOn'] = $general->dateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+        } else {
+            $data['sampleDispatchedOn'] = NULL;
+        }
+
         if (isset($data['sampleDispatchedDate']) && trim($data['sampleDispatchedDate']) != "") {
             $sampleDispatchedDate = explode(" ", $data['sampleDispatchedDate']);
             $data['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
@@ -248,7 +262,8 @@ try {
             'specimen_type'                       => !empty($data['specimenType']) ? $data['specimenType'] : null,
             'other_specimen_type'                 => !empty($data['otherSpecimenType']) ? $data['otherSpecimenType'] : null,
             'sample_collection_date'              => !empty($data['sampleCollectionDate']) ? $data['sampleCollectionDate'] : null,
-            'sample_dispatched_datetime'          => isset($data['sampleDispatchedDate']) ? $data['sampleDispatchedDate'] : null,
+            'sample_dispatched_datetime'          => $data['sampleDispatchedOn'],
+            'result_dispatched_datetime'          => $data['resultDispatchedOn'],
             'sample_tested_datetime'              => isset($data['sampleTestedDateTime']) ? $data['sampleTestedDateTime'] : null,
             'sample_received_at_hub_datetime'     => !empty($data['sampleReceivedHubDate']) ? $data['sampleReceivedHubDate'] : null,
             'sample_received_at_lab_datetime'     => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,

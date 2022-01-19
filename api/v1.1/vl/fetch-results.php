@@ -107,6 +107,7 @@ try {
         vl.sample_received_at_hub_datetime                   as sampleReceivedAtHubOn,
         vl.sample_received_at_vl_lab_datetime                as sampleReceivedDate,
         vl.sample_tested_datetime                            as sampleTestingDateAtLab,
+        vl.sample_dispatched_datetime                        as sampleDispatchedOn,
         vl.result_dispatched_datetime                        as resultDispatchedOn,
         vl.reason_for_sample_rejection                       as rejectionReasonId,
         vl.rejection_on                                      as rejectionDate,
