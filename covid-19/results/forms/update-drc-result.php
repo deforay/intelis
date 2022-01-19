@@ -247,8 +247,12 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 </tr>
                                 <tr>
                                     <th>Pays de résidence</th>
-                                    <td><input type="text" class="form-control" value="<?php echo $covid19Info['patient_nationality']; ?>" id="patientNationality" name="patientNationality" placeholder="Pays de résidence" title="Pays de résidence" style="width:100%;" /></td>
-
+                                    <td>
+                                        <select class="form-control select2" id="patientNationality" name="patientNationality" title="Commune">
+                                            <?= $general->generateSelectOptions($countyData, $covid19Info['patient_nationality'], '-- Sélectionner --'); ?>
+                                        </select>
+                                        <!-- <input type="text" class="form-control" value="<?php echo $covid19Info['patient_nationality']; ?>" id="patientNationality" name="patientNationality" placeholder="Pays de résidence" title="Pays de résidence" style="width:100%;" /> -->
+                                    </td>
                                     <th></th>
                                     <td></td>
                                 </tr>
@@ -1063,6 +1067,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         });
         $('#province').select2({
             placeholder: "Province"
+        });
+        $('#patientNationality').select2({
+            placeholder: "Nationalité du patient"
         });
         getfacilityProvinceDetails($("#facilityId").val());
         <?php if (isset($covid19Info['mother_treatment']) && in_array('Other', $covid19Info['mother_treatment'])) { ?>

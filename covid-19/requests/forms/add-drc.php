@@ -222,7 +222,12 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 
                                     <tr>
                                         <th>Pays de résidence</th>
-                                        <td><input type="text" class="form-control" id="patientNationality" name="patientNationality" placeholder="Pays de résidence" title="Pays de résidence" style="width:100%;" /></td>
+                                        <td>
+                                            <select class="form-control select2" id="patientNationality" name="patientNationality" title="Commune">
+                                                <?= $general->generateSelectOptions($countyData, null, '-- Sélectionner --'); ?>
+                                            </select>
+                                            <!-- <input type="text" class="form-control" id="patientNationality" name="patientNationality" placeholder="Pays de résidence" title="Pays de résidence" style="width:100%;" /> -->
+                                        </td>
 
                                         <th></th>
                                         <td></td>
@@ -1242,6 +1247,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
         });
         $('#province').select2({
             placeholder: "Province"
+        });
+        $('#patientNationality').select2({
+            placeholder: "Nationalité du patient"
         });
         $('#labId').select2({
             placeholder: "Select Nom du laboratoire"

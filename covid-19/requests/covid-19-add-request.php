@@ -60,11 +60,14 @@ foreach ($rejectionTypeResult as $type) {
     }
     $rejectionReason .= '</optgroup>';
 }
-
-
-
 $specimenTypeResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 'active'");
-
+$countryResult = $general->fetchDataFromTable('r_countries', null);
+$countyData = array();
+if (isset($countryResult) && sizeof($countryResult) > 0) {
+    foreach ($countryResult as $country) {
+        $countyData[$country['id']] = $country['iso_name'];
+    }
+}
 
 $fileArray = array(
     1 => 'forms/add-southsudan.php',
@@ -207,7 +210,7 @@ if (file_exists($fileArray[$arr['vl_form']])) {
                 $('#sampleRejectionReason').prop('disabled', false);
                 $('#sampleTestedDateTime,#result,.test-name-table-input').val('');
                 // }else if(this.value == 'no'){
-            } else if(this.value == 'no') {
+            } else if (this.value == 'no') {
                 $('#sampleRejectionReason').val('');
                 $('#rejectionDate').val('');
                 $('.show-rejection').hide();
@@ -220,14 +223,14 @@ if (file_exists($fileArray[$arr['vl_form']])) {
                 checkPostive();
             }
             if (this.value == '') {
-            $('#sampleRejectionReason').val('');
-            $('#rejectionDate').val('');
-            $('.show-rejection').hide();
-            $('#sampleRejectionReason,#rejectionDate').removeClass('isRequired');
-            $('#sampleTestedDateTime,#result,.test-name-table-input').removeClass('isRequired');
-            $('#sampleRejectionReason').prop('disabled', true);
-            $('#sampleTestedDateTime,#result,.test-name-table-input').val('');
-        }
+                $('#sampleRejectionReason').val('');
+                $('#rejectionDate').val('');
+                $('.show-rejection').hide();
+                $('#sampleRejectionReason,#rejectionDate').removeClass('isRequired');
+                $('#sampleTestedDateTime,#result,.test-name-table-input').removeClass('isRequired');
+                $('#sampleRejectionReason').prop('disabled', true);
+                $('#sampleTestedDateTime,#result,.test-name-table-input').val('');
+            }
         });
         $('#hasRecentTravelHistory').change(function(e) {
             if (this.value == 'no' || this.value == 'unknown') {
