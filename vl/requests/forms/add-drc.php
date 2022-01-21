@@ -129,7 +129,7 @@ $sFormat = '';
 										</td>
 										<td><label for="clinicanTelephone">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control checkNum" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="Please enter téléphone" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="Please enter téléphone" style="width:100%;" />
 										</td>
 										<td><label for="implementingPartner">Partnaire d'appui </label></td>
 										<td>
@@ -197,11 +197,11 @@ $sFormat = '';
 										</td>
 										<td style="width:6% !important;"><label for="ageInYears">Âge en années </label></td>
 										<td style="width:19% !important;">
-											<input type="text" class="form-control checkNum" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width:10% !important;"><label for="ageInMonths">Âge en mois </label></td>
 										<td style="width:15% !important;">
-											<input type="text" class="form-control checkNum" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width:10% !important;text-align:center;"><label for="sex">Sexe </label></td>
 										<td style="width:15% !important;">
@@ -406,7 +406,7 @@ $sFormat = '';
 									<tr class="plasmaElement" style="display:none;">
 										<td><label for="conservationTemperature">Si plasma,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Température de conservation </label></td>
 										<td>
-											<input type="text" class="form-control checkNum" id="conservationTemperature" name="conservationTemperature" placeholder="Température de conservation" title="Please enter température de conservation" style="width:100%;" />&nbsp;(°C)
+											<input type="text" class="form-control forceNumeric" id="conservationTemperature" name="conservationTemperature" placeholder="Température de conservation" title="Please enter température de conservation" style="width:100%;" />&nbsp;(°C)
 										</td>
 										<td style="text-align:center;"><label for="durationOfConservation">Durée de conservation </label></td>
 										<td>
@@ -510,7 +510,7 @@ $sFormat = '';
 										<tr class="resultSection">
 											<td class="vlResult"><label for="vlResult">Résultat </label></td>
 											<td>
-												<input type="text" class="vlResult form-control checkNum" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
+												<input type="text" class="vlResult form-control forceNumeric" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
 												<input type="checkbox" class="specialResults" id="vlLt20" name="vlLt20" value="yes" title="Please check VL value">
 												< 20<br>
 													<input type="checkbox" class="specialResults" id="vlLt40" name="vlLt40" value="yes" title="Please check VL value">
@@ -521,7 +521,7 @@ $sFormat = '';
 											</td>
 											<td style="text-align:center;"><label for="vlLog">Log </label></td>
 											<td>
-												<input type="text" class="vlLog form-control checkNum" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
+												<input type="text" class="vlLog form-control forceNumeric" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
@@ -790,7 +790,9 @@ $sFormat = '';
 	function calculateLogValue(obj) {
 		if (obj.id == "vlResult") {
 			absValue = $("#vlResult").val();
-			if (absValue != '' && absValue != 0) {
+			absValue = Number.parseFloat(absValue).toFixed();
+			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
+				$("#vlResult").val(absValue);
 				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
 			} else {
 				$("#vlLog").val("");
@@ -800,7 +802,7 @@ $sFormat = '';
 			logValue = $("#vlLog").val();
 			if (logValue != '' && logValue != 0) {
 				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
-				if (absVal != 'Infinity') {
+				if (absVal != 'Infinity' && !isNaN(absVal)) {
 					$("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
 				} else {
 					$("#vlResult").val('');

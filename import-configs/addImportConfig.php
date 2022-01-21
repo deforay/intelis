@@ -85,7 +85,7 @@ include_once(APPLICATION_PATH . '/header.php');
 								<div class="form-group">
 									<label for="configurationFileName" class="col-lg-4 control-label">Lower Limit</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control checkNum" id="lowerLimit" name="lowerLimit" placeholder="eg. 20" title="Please enter lower limit" />
+										<input type="text" class="form-control forceNumeric" id="lowerLimit" name="lowerLimit" placeholder="eg. 20" title="Please enter lower limit" />
 									</div>
 								</div>
 							</div>
@@ -95,7 +95,7 @@ include_once(APPLICATION_PATH . '/header.php');
 								<div class="form-group">
 									<label for="configurationFileName" class="col-lg-4 control-label">Higher Limit</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control checkNum" id="higherLimit" name="higherLimit" placeholder="eg. 10000000" title="Please enter lower limit" />
+										<input type="text" class="form-control forceNumeric" id="higherLimit" name="higherLimit" placeholder="eg. 10000000" title="Please enter lower limit" />
 									</div>
 								</div>
 							</div>
@@ -105,7 +105,7 @@ include_once(APPLICATION_PATH . '/header.php');
 								<div class="form-group">
 									<label for="maxNOfSamplesInBatch" class="col-lg-4 control-label">Maximum No. of Samples In a Batch <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control checkNum isRequired" id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch" placeholder="Max. no of samples" title="Please enter max no of samples in a row" />
+										<input type="text" class="form-control forceNumeric isRequired" id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch" placeholder="Max. no of samples" title="Please enter max no of samples in a row" />
 									</div>
 								</div>
 							</div>

@@ -107,7 +107,13 @@ try {
 
 
                         if (strpos($sheetData[$resultCol], "<") !== false) {
-                            $txtVal = $absVal = "< " . trim($absDecimalVal);
+                            if ($sheetData[$resultCol] == "< INF") {
+                                $txtVal = $absVal = $absDecimalVal = 839;
+                                $logVal = round(log10($absDecimalVal), 2);
+                            } else {
+                                $txtVal = $absVal = "< " . trim($absDecimalVal);
+                                $logVal = $absDecimalVal = $resultFlag = "";
+                            }
                         } else if (strpos($sheetData[$resultCol], ">") !== false) {
                             $txtVal = $absVal = "> " . trim($absDecimalVal);
                         } else {
@@ -117,8 +123,13 @@ try {
                     } else if (strpos($sheetData[$resultCol], 'Copies') !== false) {
                         $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                         if (strpos($sheetData[$resultCol], '<') !== false) {
-                            $txtVal = $absVal = "< " . trim($absDecimalVal);
-                            $logVal = $absDecimalVal = $resultFlag = "";
+                            if ($sheetData[$resultCol] == "< INF") {
+                                $txtVal = $absVal = $absDecimalVal = 839;
+                                $logVal = round(log10($absDecimalVal), 2);
+                            } else {
+                                $txtVal = $absVal = "< " . trim($absDecimalVal);
+                                $logVal = $absDecimalVal = $resultFlag = "";
+                            }
                         } else if (strpos($sheetData[$resultCol], '>') !== false) {
                             $txtVal = $absVal = "> " . trim($absDecimalVal);
                             $logVal = $absDecimalVal = $resultFlag = "";

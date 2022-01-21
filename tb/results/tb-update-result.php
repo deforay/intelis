@@ -76,7 +76,7 @@ if ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'auto2' || $ar
         $maxLength = "maxlength=" . $maxLength;
     }
 } else {
-    $sampleClass = 'checkNum';
+    $sampleClass = '';
     $maxLength = '';
     if ($arr['tb_max_length'] != '') {
         $maxLength = $arr['tb_max_length'];

@@ -20,7 +20,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 		$maxLength = "maxlength=" . $maxLength;
 	}
 } else {
-	$sampleClass = 'checkNum';
+	$sampleClass = '';
 	$maxLength = '';
 	if ($arr['max_length'] != '') {
 		$maxLength = $arr['max_length'];
@@ -306,7 +306,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<label for="telephone">Clinic/Ward Telephone </label>
 										</td>
 										<td>
-											<input type="text" class="form-control checkNum" name="telephone" id="telephone" placeholder="Telephone" title="Enter Telephone" style="width:100%;" value="<?php echo $vlQueryInfo['lab_phone_number']; ?>">
+											<input type="text" class="form-control forceNumeric" name="telephone" id="telephone" placeholder="Telephone" title="Enter Telephone" style="width:100%;" value="<?php echo $vlQueryInfo['lab_phone_number']; ?>">
 										</td>
 										<td>
 											<label for="clinicDate">Date Requested </label>
@@ -372,12 +372,12 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 										<td><label for="ageInYears">If DOB unknown, Age in Years</label></td>
 										<td>
-											<input type="text" name="ageInYears" id="ageInYears" class="form-control checkNum" maxlength="2" placeholder="Age in Year" title="Enter age in years" value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" />
+											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" />
 										</td>
 										<td><label for="ageInMonths">If Age < 1, Age in Months </label>
 										</td>
 										<td>
-											<input type="text" name="ageInMonths" id="ageInMonths" class="form-control checkNum" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" />
+											<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" />
 										</td>
 
 									</tr>

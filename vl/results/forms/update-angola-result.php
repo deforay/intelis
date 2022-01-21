@@ -238,7 +238,7 @@ $disable = "disabled = 'disabled'";
 											<td><label for="ageInMonths"> Idade (em meses se < 1 ano) </label>
 											</td>
 											<td>
-												<input type="text" class="form-control checkNum" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
+												<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
 											</td>
 											<td colspan="3"><label for="responsiblePersonName">Nome da Mãe/ Pai/ Familiar responsáve </label></td>
 											<td>
@@ -910,7 +910,9 @@ $disable = "disabled = 'disabled'";
 	function calculateLogValue(obj) {
 		if (obj.id == "vlResult") {
 			absValue = $("#vlResult").val();
+			absValue = Number.parseFloat(absValue).toFixed();
 			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
+				$("#vlResult").val(absValue);
 				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
 			} else {
 				$("#vlLog").val('');
@@ -920,7 +922,7 @@ $disable = "disabled = 'disabled'";
 			logValue = $("#vlLog").val();
 			if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
 				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
-				if (absVal != 'Infinity') {
+				if (absVal != 'Infinity' && !isNaN(absVal)) {
 					$("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
 				}
 			} else {

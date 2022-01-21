@@ -1,13 +1,15 @@
 <footer class="main-footer">
-	<small class="pull-right" style="font-weight:bold;"><a onclick="takeShot()">
+	<!-- <small class="pull-right" style="font-weight:bold;"><a onclick="takeShot()">
 			Take Screenshot
-		</a></small><br>
+		</a></small><br> -->
 
 	<small>This project is supported by the U.S. President’s Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC).</small>
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;<?php echo "v" . VERSION; ?></small>
-	<?php if (!empty($systemConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
+	<?php
+
+	if (!empty($systemConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 		<div class="pull-right">
-			<small><a href="javascript:forceRemoteSync();">Force Remote Sync</a>&nbsp;&nbsp;</small>
+			<small><a href="javascript:syncRemoteData(<?= $systemConfig['remoteURL']; ?>);">Force Remote Sync</a>&nbsp;&nbsp;</small>
 		</div>
 	<?php
 	}
@@ -41,7 +43,8 @@
 <!-- DataTables -->
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
-<!-- AdminLTE App -->
+
+<script src="/assets/js/main.js"></script>
 <script src="/assets/js/app.min.js"></script>
 <script src="/assets/js/deforayValidation.js"></script>
 <script src="/assets/js/jquery.maskedinput.js"></script>
@@ -57,19 +60,14 @@
 		if (typeof(Storage) !== "undefined") {
 			sessionStorage.setItem("crosslogin", "true");
 		} else {
-			alert("Your browser doesn't support the session!");
+			alert("Your browser doesn't support this session!");
 			sessionStorage.setItem("crosslogin", "false");
 		}
 	}
 	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 		var remoteSync = true;
-		var remoteUrl = '<?php echo $systemConfig['remoteURL']; ?>';
 
-		function forceRemoteSync() {
-			syncRemoteData();
-		}
-
-		function syncRemoteData() {
+		function syncRemoteData(remoteURL) {
 			if (!navigator.onLine) {
 				alert('Please connect to internet to sync with VLSTS');
 				return false;
@@ -93,12 +91,12 @@
 					.always(function() {
 						//alert( "complete" );
 						$.unblockUI();
-						syncRequests();
+						syncRequests(remoteUrl);
 					});
 			}
 		}
 
-		function syncRequests() {
+		function syncRequests(remoteUrl) {
 			$.blockUI({
 				message: '<h3>Trying to sync Test Requests<br>Please wait...</h3>'
 			});
@@ -117,13 +115,13 @@
 					})
 					.always(function() {
 						$.unblockUI();
-						syncResults();
+						syncResults(remoteUrl);
 					});
 			}
 		}
 
 
-		function syncResults() {
+		function syncResults(remoteUrl) {
 
 			$.blockUI({
 				message: '<h3>Trying to sync Test Results<br>Please wait...</h3>'
@@ -147,30 +145,7 @@
 			}
 		}
 
-		// function syncCommon() {
 
-		// 	$.blockUI({
-		// 		message: '<h3>Trying to sync common data<br>Please wait...</h3>'
-		// 	});
-
-		// 	if (remoteSync && remoteUrl != null && remoteUrl != '') {
-		// 		var jqxhr = $.ajax({
-		// 				url: "/remote/scheduled-jobs/syncCommonData.php",
-		// 			})
-		// 			.done(function(data) {
-		// 				//console.log(data);
-		// 				//alert( "success" );
-		// 			})
-		// 			.fail(function() {
-		// 				$.unblockUI();
-		// 				alert("Unable to do VLSTS Remote Sync. Please contact technical team for assistance.");
-		// 			})
-		// 			.always(function() {
-		// 				$.unblockUI();
-		// 				syncRequests()
-		// 			});
-		// 	}
-		// }
 	<?php } ?>
 	let syncInterval = 60 * 60 * 1000 * 2 // 2 hours in ms
 	$(document).ready(function() {
@@ -188,13 +163,6 @@
 							if (lastSyncDateString != null && lastSyncDateString != undefined) {
 								$('.sync-time').html(lastSyncDateString);
 								$('.syncHistoryDiv').show();
-								// lastSyncDateString.replace("-", "/"); // We had to do this for Firefox 
-								// var lastSyncDate = new Date(lastSyncDateString);
-								// if ((currentDateTime - lastSyncDate) > syncInterval) {
-								// 	syncRemoteData();
-								// }
-							} else {
-								//syncRemoteData();
 							}
 						},
 						error: function(data) {}
@@ -796,32 +764,6 @@
 		$(".dashboardMenu").addClass('active');
 	}
 
-	function showModal(url, w, h) {
-		showdefModal('dDiv', w, h);
-		document.getElementById('dFrame').style.height = h + 'px';
-		document.getElementById('dFrame').style.width = w + 'px';
-		document.getElementById('dFrame').src = url;
-	}
-
-	function closeModal() {
-		document.getElementById('dFrame').src = "";
-		hidedefModal('dDiv');
-	}
-	jQuery(".checkNum").keydown(function(e) {
-		// Allow: backspace, delete, tab, escape, enter and .
-		if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-			// Allow: Ctrl+A
-			(e.keyCode == 65 && e.ctrlKey === true) ||
-			// Allow: home, end, left, right
-			(e.keyCode >= 35 && e.keyCode <= 39)) {
-			// let it happen, don't do anything
-			return;
-		}
-		// Ensure that it is a number and stop the keypress
-		if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-			e.preventDefault();
-		}
-	});
 
 	function takeShot() {
 		conf = confirm("Do you wish to take a screenshot?");

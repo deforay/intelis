@@ -74,7 +74,7 @@ if ($arr['hepatitis_sample_code'] == 'auto' || $arr['hepatitis_sample_code'] == 
         $maxLength = "maxlength=" . $maxLength;
     }
 } else {
-    $sampleClass = 'checkNum';
+    $sampleClass = '';
     $maxLength = '';
     if ($arr['hepatitis_max_length'] != '') {
         $maxLength = $arr['hepatitis_max_length'];

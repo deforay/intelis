@@ -1,8 +1,7 @@
-
-  <footer class="main-footer">
-    <a href="http://taskforce.org/">Funded by TaskForce</a>
-    <span class="pull-right">v <?php echo VERSION; ?></span>
-  </footer>
+<footer class="main-footer">
+  <a href="http://taskforce.org/">Funded by TaskForce</a>
+  <span class="pull-right">v <?php echo VERSION; ?></span>
+</footer>
 </div>
 <!-- ./wrapper -->
 
@@ -21,76 +20,47 @@
 
 <!-- AdminLTE App -->
 <script src="/assets/js/app.min.js"></script>
+<script src="/assets/js/main.js"></script>
 <script src="/assets/js/deforayValidation.js"></script>
 <script src="/assets/js/jquery.maskedinput.js"></script>
 <script src="/assets/js/jquery.blockUI.js"></script>
 <script src="/assets/js/moment.min.js"></script>
 
 <script type="text/javascript">
-  $(document).ready(function(){
-  <?php
-  if(isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg'])!=""){
-  ?>
-    alert('<?php echo $_SESSION['alertMsg']; ?>');
-  <?php
-  $_SESSION['alertMsg']='';
-  unset($_SESSION['alertMsg']);
-  }
-  ?>
+  $(document).ready(function() {
+    <?php
+    if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") {
+    ?>
+      alert('<?php echo $_SESSION['alertMsg']; ?>');
+    <?php
+      $_SESSION['alertMsg'] = '';
+      unset($_SESSION['alertMsg']);
+    }
+    ?>
   });
-  str=$(location).attr('pathname');
-  splitsUrl=str.substr(str.lastIndexOf('/') + 1);
-  if (splitsUrl=='index.php' ) {
+  str = $(location).attr('pathname');
+  splitsUrl = str.substr(str.lastIndexOf('/') + 1);
+  if (splitsUrl == 'index.php') {
     $(".manage").addClass('active');
     $(".allMenu").removeClass('active');
     $(".systemConfigmenu").addClass('active');
-  }
-  else if(splitsUrl=='instanceIndex.php') {
+  } else if (splitsUrl == 'instanceIndex.php') {
     $(".manage").addClass('active');
     $(".allMenu").removeClass('active');
     $(".instanceOverviewMenu").addClass('active');
-  }
-  else if(splitsUrl=='apiIndex.php') {
+  } else if (splitsUrl == 'apiIndex.php') {
     $(".manage").addClass('active');
     $(".allMenu").removeClass('active');
     $(".apiStatsMenu").addClass('active');
-  }
-  else if(splitsUrl=='userLoginIndex.php') {
+  } else if (splitsUrl == 'userLoginIndex.php') {
     $(".manage").addClass('active');
     $(".allMenu").removeClass('active');
     $(".userLoginMenu").addClass('active');
-  }
-  
-  else{
+  } else {
     $(".allMenu").removeClass('active');
     $(".dashboardMenu").addClass('active');
   }
-  
-  function showModal(url, w, h) {
-      showdefModal('dDiv', w, h);
-      document.getElementById('dFrame').style.height = h + 'px';
-      document.getElementById('dFrame').style.width = w + 'px';
-      document.getElementById('dFrame').src = url;
-  }
-  function closeModal() {
-      document.getElementById('dFrame').src = "";
-      hidedefModal('dDiv');
-  }
-  jQuery(".checkNum").keydown(function (e) {
-	      // Allow: backspace, delete, tab, escape, enter and .
-	      if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-		       // Allow: Ctrl+A
-		      (e.keyCode == 65 && e.ctrlKey === true) || 
-		       // Allow: home, end, left, right
-		      (e.keyCode >= 35 && e.keyCode <= 39)) {
-			       // let it happen, don't do anything
-			       return;
-	      }
-	      // Ensure that it is a number and stop the keypress
-	      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-		      e.preventDefault();
-	      }
-  });
 </script>
 </body>
+
 </html>
