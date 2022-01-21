@@ -94,6 +94,8 @@ try {
         vl.eid_test_platform                                 as eidPlatform,
         vl.import_machine_name                               as machineName,
         vl.sample_tested_datetime                            as sampleTestedDateTime,
+        vl.sample_dispatched_datetime                        as sampleDispatchedOn,
+        vl.result_dispatched_datetime                        as resultDispatchedOn,
         vl.is_sample_rejected                                as isSampleRejected,
         COALESCE(vl.result,null)                             as result,
         vl.tested_by                                         as testedBy,

@@ -272,7 +272,12 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                                     </tr>
                                     <tr>
                                         <th>Pays de résidence</th>
-                                        <td><input type="text" class="form-control" value="<?php echo $covid19Info['patient_nationality']; ?>" id="patientNationality" name="patientNationality" placeholder="Pays de résidence" title="Pays de résidence" style="width:100%;" /></td>
+                                        <td>
+                                            <select class="form-control select2" id="patientNationality" name="patientNationality" title="Commune">
+                                                <?= $general->generateSelectOptions($countyData, $covid19Info['patient_nationality'], '-- Sélectionner --'); ?>
+                                            </select>
+                                            <!-- <input type="text" class="form-control" value="<?php echo $covid19Info['patient_nationality']; ?>" id="patientNationality" name="patientNationality" placeholder="Pays de résidence" title="Pays de résidence" style="width:100%;" /> -->
+                                        </td>
 
                                         <th></th>
                                         <td></td>
@@ -1349,6 +1354,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
         });
         $('#province').select2({
             placeholder: "Province"
+        });
+        $('#patientNationality').select2({
+            placeholder: "Nationalité du patient"
         });
         $('#labId').select2({
             placeholder: "Select Nom du laboratoire"

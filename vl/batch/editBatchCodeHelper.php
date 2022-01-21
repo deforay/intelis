@@ -92,7 +92,6 @@ try {
                     }
                     $remainSampleNewArray = array_values(array_diff($displaySampleOrderArray, $displaySampleArray));
                     //For new samples
-                    $displayOrder = array();
                     for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
                         $displayOrder[] = 's_' . $remainSampleNewArray[$ns];
                     }

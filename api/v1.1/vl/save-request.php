@@ -205,6 +205,27 @@ try {
             $data['resultDispatchedOn'] = NULL;
         }
 
+        if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
+            $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
+            $data['sampleDispatchedOn'] = $general->dateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+        } else {
+            $data['sampleDispatchedOn'] = NULL;
+        }
+
+        if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
+            $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
+            $data['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+        } else {
+            $data['resultDispatchedOn'] = NULL;
+        }
+
+        if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
+            $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
+            $data['sampleDispatchedOn'] = $general->dateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+        } else {
+            $data['sampleDispatchedOn'] = NULL;
+        }
+
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
             $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
@@ -335,6 +356,7 @@ try {
             'sample_received_at_hub_datetime'       => $data['sampleReceivedAtHubOn'],
             'sample_received_at_vl_lab_datetime'    => $data['sampleReceivedDate'],
             'sample_tested_datetime'                => $data['sampleTestingDateAtLab'],
+            'sample_dispatched_datetime'            => $data['sampleDispatchedOn'],
             'result_dispatched_datetime'            => $data['resultDispatchedOn'],
             'is_sample_rejected'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] != '') ? $data['isSampleRejected'] : NULL,
             'reason_for_sample_rejection'           => (isset($data['rejectionReason']) && $data['rejectionReason'] != '') ? $data['rejectionReason'] :  NULL,

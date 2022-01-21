@@ -182,7 +182,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $typeOfTestReqList[$key]['show'] = $req;
     }
     $data['covid19']['testingPoint'] = $typeOfTestReqList;
-    // $data['covid19']['testingLabsList'] = $app->getTestingLabs('covid19', null, true);
+    $data['covid19']['testingLabsList'] = $app->getTestingLabs('covid19', null, true);
     /* Type of Test Request */
     $qualityList = array();
     $qualityResults = array('Good', 'Poor');

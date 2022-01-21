@@ -247,6 +247,21 @@ try {
         } else {
             $data['reviewedOn'] = NULL;
         }
+
+        if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
+            $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
+            $data['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+        } else {
+            $data['resultDispatchedOn'] = NULL;
+        }
+
+        if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
+            $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
+            $data['sampleDispatchedOn'] = $general->dateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+        } else {
+            $data['sampleDispatchedOn'] = NULL;
+        }
+
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
             $data['revisedOn'] = $general->dateFormat($data['revisedOn']);
         } else {
@@ -294,6 +309,8 @@ try {
             'is_cotrimoxazole_being_administered_to_the_infant' => isset($data['isCotrimoxazoleBeingAdministered']) ? $data['isCotrimoxazoleBeingAdministered'] : null,
             'specimen_type'                                     => isset($data['specimenType']) ? $data['specimenType'] : null,
             'sample_collection_date'                            => isset($data['sampleCollectionDate']) ? $data['sampleCollectionDate'] : null,
+            'sample_dispatched_datetime'                        => $data['sampleDispatchedOn'],
+            'result_dispatched_datetime'                        => $data['resultDispatchedOn'],
             'sample_requestor_phone'                            => isset($data['sampleRequestorPhone']) ? $data['sampleRequestorPhone'] : null,
             'sample_requestor_name'                             => isset($data['sampleRequestorName']) ? $data['sampleRequestorName'] : null,
             'rapid_test_performed'                              => isset($data['rapidTestPerformed']) ? $data['rapidTestPerformed'] : null,
