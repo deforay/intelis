@@ -182,7 +182,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										</td>
 										<td><label for="clinicanTelephone">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control checkNum" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="supportPartner">Partenaire dappui </label></td>
 										<td>
@@ -248,11 +248,11 @@ $sampleSuggestionDisplay = 'display:none;';
 										</td>
 										<td style="width:6%;"><label for="ageInYears">Âge en années </label></td>
 										<td style="width:19%;">
-											<input type="text" class="form-control checkNum" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width:10%;"><label for="ageInMonths">Âge en mois </label></td>
 										<td style="width:15%;">
-											<input type="text" class="form-control checkNum" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width:10%;text-align:center;"><label for="sex">Sexe </label></td>
 										<td style="width:15%;">
@@ -455,7 +455,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr class="plasmaElement" style="display:<?php echo ($vlQueryInfo['sample_type'] == 2) ? '' : 'none'; ?>;">
 										<td><label for="conservationTemperature">Si plasma,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Température de conservation </label></td>
 										<td>
-											<input type="text" class="form-control checkNum" id="conservationTemperature" name="conservationTemperature" placeholder="Température de conservation" title="Please enter température de conservation" value="<?php echo $vlQueryInfo['plasma_conservation_temperature']; ?>" style="width:100%;" />&nbsp;(°C)
+											<input type="text" class="form-control forceNumeric" id="conservationTemperature" name="conservationTemperature" placeholder="Température de conservation" title="Please enter température de conservation" value="<?php echo $vlQueryInfo['plasma_conservation_temperature']; ?>" style="width:100%;" />&nbsp;(°C)
 										</td>
 										<td style="text-align:center;"><label for="durationOfConservation">Durée de conservation </label></td>
 										<td>
@@ -565,7 +565,7 @@ $sampleSuggestionDisplay = 'display:none;';
 											<td class="vlResult"><label for="vlResult">Résultat</label></td>
 											<td class="vlResult">
 
-												<input type="text" class="vlResult form-control checkNum" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)" style="width:100%;" />
+												<input type="text" class="vlResult form-control forceNumeric" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)" style="width:100%;" />
 												<input type="checkbox" class="specialResults" id="vlLt20" name="vlLt20" value="yes" title="Please check VL value" <?php echo ($vlQueryInfo['result'] == '< 20' || $vlQueryInfo['result'] == '<20') ? 'checked="checked"' : ''; ?>>
 												&lt; 20<br>
 												<input type="checkbox" class="specialResults" id="vlLt40" name="vlLt40" value="yes" title="Please check VL value" <?php echo ($vlQueryInfo['result'] == '< 40' || $vlQueryInfo['result'] == '<40') ? 'checked="checked"' : ''; ?>>
@@ -576,7 +576,7 @@ $sampleSuggestionDisplay = 'display:none;';
 											</td>
 											<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label></td>
 											<td class="vlLog">
-												<input type="text" class="form-control checkNum" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
+												<input type="text" class="form-control forceNumeric" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
 											</td>
 										</tr>
 										<tr>
@@ -878,7 +878,9 @@ $sampleSuggestionDisplay = 'display:none;';
 	function calculateLogValue(obj) {
 		if (obj.id == "vlResult") {
 			absValue = $("#vlResult").val();
-			if (absValue != '' && absValue != 0) {
+			absValue = Number.parseFloat(absValue).toFixed();
+			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
+				$("#vlResult").val(absValue);
 				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
 			} else {
 				$("#vlLog").val('');
@@ -888,7 +890,7 @@ $sampleSuggestionDisplay = 'display:none;';
 			logValue = $("#vlLog").val();
 			if (logValue != '' && logValue != 0) {
 				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
-				if (absVal != 'Infinity') {
+				if (absVal != 'Infinity' && !isNaN(absVal)) {
 					$("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
 				} else {
 					$("#vlResult").val('');

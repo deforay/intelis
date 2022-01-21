@@ -132,7 +132,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<label for="telephone">Clinic/Ward Telephone </label>
 										</td>
 										<td style="width:20%">
-											<input type="text" class="form-control checkNum" name="telephone" id="telephone" placeholder="Telephone" title="Enter Telephone" style="width:100%;">
+											<input type="text" class="form-control forceNumeric" name="telephone" id="telephone" placeholder="Telephone" title="Enter Telephone" style="width:100%;">
 										</td>
 										<td style="width:10%">
 											<label for="clinicDate">Date Requested</label>
@@ -198,12 +198,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</td>
 										<td><label for="ageInYears">If DOB unknown, Age in Years</label></td>
 										<td>
-											<input type="text" name="ageInYears" id="ageInYears" class="form-control checkNum" maxlength="2" placeholder="Age in Year" title="Enter age in years" />
+											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" />
 										</td>
 										<td><label for="ageInMonths">If Age < 1, Age in Months </label>
 										</td>
 										<td>
-											<input type="text" name="ageInMonths" id="ageInMonths" class="form-control checkNum" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
+											<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
 										</td>
 
 									</tr>

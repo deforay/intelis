@@ -257,13 +257,13 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="ageInYears">If DOB unknown, Age in Year </label>
-										<input type="text" name="ageInYears" id="ageInYears" class="form-control checkNum" maxlength="2" placeholder="Age in Year" title="Enter age in years" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" />
+										<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" />
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="ageInMonths">If Age
-											< 1, Age in Month </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control checkNum" maxlength="2" placeholder="Age in Month" title="Enter age in months" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" />
+											< 1, Age in Month </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -302,7 +302,7 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="patientPhoneNumber">Phone Number</label>
-										<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control checkNum" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" <?php echo $disable; ?> />
+										<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" <?php echo $disable; ?> />
 									</div>
 								</div>
 							</div>
@@ -463,7 +463,7 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-6">
 												<label for="rmTestingVlValue" class="col-lg-3 control-label">VL Value</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control checkNum viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_routine']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_routine']; ?>" <?php echo $disable; ?> />
 													(copies/ml)
 												</div>
 											</div>
@@ -501,7 +501,7 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-6">
 												<label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Value</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control checkNum viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_failure_ac']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_failure_ac']; ?>" <?php echo $disable; ?> />
 													(copies/ml)
 												</div>
 											</div>
@@ -539,7 +539,7 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-6">
 												<label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Value</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control checkNum viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_failure']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_failure']; ?>" <?php echo $disable; ?> />
 													(copies/ml)
 												</div>
 											</div>
@@ -554,7 +554,7 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-4">
 												<label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control checkNum" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-4">
@@ -602,7 +602,7 @@ $disable = "disabled = 'disabled'";
 													<div class="col-md-4">
 														<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number</label>
 														<div class="col-lg-7">
-															<input type="text" class="form-control checkNum labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?php echo $vlQueryInfo['vl_focal_person_phone_number']; ?>" />
+															<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?php echo $vlQueryInfo['vl_focal_person_phone_number']; ?>" />
 														</div>
 													</div>
 												</div>
@@ -894,7 +894,7 @@ $disable = "disabled = 'disabled'";
 			$('#tnd,#bdl').attr('disabled', true);
 		} else {
 			$('#tnd,#bdl').attr('disabled', false);
-		}
+		} 
 	});
 
 	$("#vlRequestFormSudan .labSection").on("change", function() {
@@ -952,7 +952,9 @@ $disable = "disabled = 'disabled'";
 	function calculateLogValue(obj) {
 		if (obj.id == "vlResult") {
 			absValue = $("#vlResult").val();
+			absValue = Number.parseFloat(absValue).toFixed();
 			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
+				$("#vlResult").val(absValue);
 				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
 			} else {
 				$("#vlLog").val('');
@@ -962,7 +964,7 @@ $disable = "disabled = 'disabled'";
 			logValue = $("#vlLog").val();
 			if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
 				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
-				if (absVal != 'Infinity') {
+				if (absVal != 'Infinity' && !isNaN(absVal)) {
 					$("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
 				}
 			} else {

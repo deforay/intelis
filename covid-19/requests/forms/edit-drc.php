@@ -1049,7 +1049,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                                 <div class="form-group">
                                     <label for="phoneNo" class="col-lg-4 control-label">Phone Number</label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control checkNum" id="phoneNo" name="phoneNo" placeholder="Phone Number" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
+                                        <input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="Phone Number" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
                                     </div>
                                 </div>
                             </div>
@@ -1100,7 +1100,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                                 <div class="form-group">
                                     <label for="latitude" class="col-lg-4 control-label">Latitude</label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control checkNum" id="latitude" name="latitude" placeholder="Latitude" title="Please enter latitude" />
+                                        <input type="text" class="form-control forceNumeric" id="latitude" name="latitude" placeholder="Latitude" title="Please enter latitude" />
                                     </div>
                                 </div>
                             </div>
@@ -1108,7 +1108,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                                 <div class="form-group">
                                     <label for="longitude" class="col-lg-4 control-label">Longitude</label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control checkNum" id="longitude" name="longitude" placeholder="Longitude" title="Please enter longitude" />
+                                        <input type="text" class="form-control forceNumeric" id="longitude" name="longitude" placeholder="Longitude" title="Please enter longitude" />
                                         <input type="hidden" name="reqForm" id="reqForm" value="1" />
                                         <input type="hidden" name="headerText" id="headerText" />
                                         <input type="hidden" name="testType[]" id="testType" value="covid19" />

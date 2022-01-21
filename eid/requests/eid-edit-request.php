@@ -79,7 +79,7 @@ if ($arr['eid_sample_code'] == 'auto' || $arr['eid_sample_code'] == 'auto2' || $
         $maxLength = "maxlength=" . $maxLength;
     }
 } else {
-    $sampleClass = 'checkNum';
+    $sampleClass = '';
     $maxLength = '';
     if ($arr['eid_max_length'] != '') {
         $maxLength = $arr['eid_max_length'];

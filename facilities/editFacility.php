@@ -224,7 +224,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="phoneNo" class="col-lg-4 control-label">Phone Number</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control checkNum" id="phoneNo" name="phoneNo" placeholder="Phone Number" value="<?php echo $facilityInfo[0]['facility_mobile_numbers']; ?>" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,'<?php echo "facility_id##" . $facilityInfo[0]['facility_id']; ?>','The mobile no that you entered already exists.Enter another mobile no.',null)" />
+										<input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="Phone Number" value="<?php echo $facilityInfo[0]['facility_mobile_numbers']; ?>" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,'<?php echo "facility_id##" . $facilityInfo[0]['facility_id']; ?>','The mobile no that you entered already exists.Enter another mobile no.',null)" />
 									</div>
 								</div>
 							</div>
@@ -299,7 +299,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="latitude" class="col-lg-4 control-label">Latitude</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control checkNum" id="latitude" name="latitude" placeholder="Latitude" title="Please enter latitude" value="<?php echo $facilityInfo[0]['latitude']; ?>" />
+										<input type="text" class="form-control forceNumeric" id="latitude" name="latitude" placeholder="Latitude" title="Please enter latitude" value="<?php echo $facilityInfo[0]['latitude']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -310,7 +310,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="longitude" class="col-lg-4 control-label">Longitude</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control checkNum" id="longitude" name="longitude" placeholder="Longitude" title="Please enter longitude" value="<?php echo $facilityInfo[0]['longitude']; ?>" />
+										<input type="text" class="form-control forceNumeric" id="longitude" name="longitude" placeholder="Longitude" title="Please enter longitude" value="<?php echo $facilityInfo[0]['longitude']; ?>" />
 									</div>
 								</div>
 							</div>

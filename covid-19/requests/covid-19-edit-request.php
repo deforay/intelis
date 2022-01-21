@@ -72,7 +72,7 @@ if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'aut
         $maxLength = "maxlength=" . $maxLength;
     }
 } else {
-    $sampleClass = 'checkNum';
+    $sampleClass = '';
     $maxLength = '';
     if ($arr['covid19_max_length'] != '') {
         $maxLength = $arr['covid19_max_length'];

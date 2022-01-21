@@ -6,11 +6,11 @@ $artRegimenResult = $db->rawQuery($artRegimenQuery);
 $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
   $sampleCode = 'remote_sample_code';
-  if(!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+  if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
+    $sampleCode = 'remote_sample_code';
+  } else {
+    $sampleCode = 'sample_code';
+  }
   //check user exist in user_facility_map table
   $chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
   $chkUserFcMapResult = $db->query($chkUserFcMapQry);
@@ -263,7 +263,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                       <td><label for="ageInMonths"> Idade (em meses se < 1 ano) </label>
                       </td>
                       <td>
-                        <input type="text" class="form-control checkNum" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
+                        <input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
                       </td>
                       <td colspan="3"><label for="responsiblePersonName">Nome da Mãe/ Pai/ Familiar responsáve </label></td>
                       <td>
@@ -819,7 +819,9 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
   function calculateLogValue(obj) {
     if (obj.id == "vlResult") {
       absValue = $("#vlResult").val();
+      absValue = Number.parseFloat(absValue).toFixed();
       if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
+        $("#vlResult").val(absValue);
         $("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
       } else {
         $("#vlLog").val('');
@@ -829,7 +831,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
       logValue = $("#vlLog").val();
       if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
         var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
-        if (absVal != 'Infinity') {
+        if (absVal != 'Infinity' && !isNaN(absVal)) {
           $("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
         }
       } else {

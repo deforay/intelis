@@ -9,7 +9,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $a
           $maxLength = "maxlength=" . $maxLength;
      }
 } else {
-     $sampleClass = 'checkNum';
+     $sampleClass = '';
      $maxLength = '';
      if ($arr['max_length'] != '') {
           $maxLength = $arr['max_length'];
@@ -203,13 +203,13 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="ageInYears">If DOB unknown, Age in Year(s) </label>
-                                                       <input type="text" name="ageInYears" id="ageInYears" class="form-control checkNum" maxlength="2" placeholder="Age in Year(s)" title="Enter age in years" />
+                                                       <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year(s)" title="Enter age in years" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="ageInMonths">If Age
-                                                            < 1, Age in Month(s) </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control checkNum" maxlength="2" placeholder="Age in Month(s)" title="Enter age in months" />
+                                                            < 1, Age in Month(s) </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month(s)" title="Enter age in months" />
                                                   </div>
                                              </div>
                                         </div>
@@ -237,7 +237,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientPhoneNumber">Phone Number</label>
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control checkNum" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" />
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" />
                                                   </div>
                                              </div>
                                         </div>
@@ -374,7 +374,7 @@ $sFormat = '';
                                                             <div class="col-md-6">
                                                                  <label for="rmTestingVlValue" class="col-lg-3 control-label">VL Value</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control checkNum viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
                                                                       (copies/ml)<br>
                                                                       <input type="checkbox" id="rmTestingVlCheckValuelt20" name="rmTestingVlCheckValue" value="<20" title="Please check VL value">
                                                                       < 20<br>
@@ -404,7 +404,7 @@ $sFormat = '';
                                                             <div class="col-md-6">
                                                                  <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Value</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control checkNum viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
                                                                       (copies/ml)<br>
                                                                       <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlCheckValue" value="<20" title="Please check VL value">
                                                                       < 20<br>
@@ -434,7 +434,7 @@ $sFormat = '';
                                                             <div class="col-md-6">
                                                                  <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Value</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control checkNum viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
                                                                       (copies/ml)<br>
                                                                       <input type="checkbox" id="suspendTreatmentVlCheckValuelt20" name="suspendTreatmentVlCheckValue" value="<20" title="Please check VL value">
                                                                       < 20<br>
@@ -467,7 +467,7 @@ $sFormat = '';
                                                             <div class="col-md-4">
                                                                  <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control checkNum <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" />
+                                                                      <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -487,7 +487,7 @@ $sFormat = '';
                                                             <div class="col-md-4">
                                                                  <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control checkNum <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
+                                                                      <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -1139,7 +1139,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function calculateLogValue(obj) {
           if (obj.id == "vlResult") {
                absValue = $("#vlResult").val();
+               absValue = Number.parseFloat(absValue).toFixed();
                if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
+                    $("#vlResult").val(absValue);
                     $("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
                } else {
                     $("#vlLog").val('');
@@ -1149,7 +1151,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                logValue = $("#vlLog").val();
                if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
                     var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
-                    if (absVal != 'Infinity') {
+                    if (absVal != 'Infinity' && !isNaN(absVal)) {
                          $("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
                     }
                } else {

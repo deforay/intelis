@@ -88,7 +88,7 @@ foreach ($configControlInfo as $info) {
 								<div class="form-group">
 									<label for="configurationFileName" class="col-lg-4 control-label">Lower Limit</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control checkNum" id="lowerLimit" name="lowerLimit" placeholder="eg. 20" title="Please enter lower limit" value="<?php echo $sInfo['lower_limit']; ?>" />
+										<input type="text" class="form-control forceNumeric" id="lowerLimit" name="lowerLimit" placeholder="eg. 20" title="Please enter lower limit" value="<?php echo $sInfo['lower_limit']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -98,7 +98,7 @@ foreach ($configControlInfo as $info) {
 								<div class="form-group">
 									<label for="configurationFileName" class="col-lg-4 control-label">Higher Limit</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control checkNum" id="higherLimit" name="higherLimit" placeholder="eg. 10000000" title="Please enter lower limit" value="<?php echo $sInfo['higher_limit']; ?>" />
+										<input type="text" class="form-control forceNumeric" id="higherLimit" name="higherLimit" placeholder="eg. 10000000" title="Please enter lower limit" value="<?php echo $sInfo['higher_limit']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -108,7 +108,7 @@ foreach ($configControlInfo as $info) {
 								<div class="form-group">
 									<label for="maxNOfSamplesInBatch" class="col-lg-4 control-label">Maximum No. of Samples In a Batch <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control checkNum isRequired" id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch" placeholder="Max. no of samples" title="Please enter max no of samples in a row" value="<?php echo $sInfo['max_no_of_samples_in_a_batch']; ?>" />
+										<input type="text" class="form-control forceNumeric isRequired" id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch" placeholder="Max. no of samples" title="Please enter max no of samples in a row" value="<?php echo $sInfo['max_no_of_samples_in_a_batch']; ?>" />
 									</div>
 								</div>
 							</div>
