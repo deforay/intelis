@@ -2868,3 +2868,6 @@ ALTER TABLE `batch_details` CHANGE `batch_code_key` `batch_code_key` INT NULL DE
 
 -- Thana 11-Jan-2022
 ALTER TABLE `batch_details` ADD `position_type` VARCHAR(256) NULL DEFAULT NULL AFTER `sent_mail`;
+
+-- Amit 24 Jan 2021 version 4.4.7
+UPDATE `system_config` SET `value` = '4.4.7' WHERE `system_config`.`name` = 'sc_version';
