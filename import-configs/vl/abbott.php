@@ -121,7 +121,7 @@ try {
                             $absVal = $absDecimalVal;
                         }
                     } else if (strpos($sheetData[$resultCol], 'Copies') !== false) {
-                        $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
+                        $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                         if (strpos($sheetData[$resultCol], '<') !== false) {
                             if ($sheetData[$resultCol] == "< INF") {
                                 $txtVal = $absVal = $absDecimalVal = 839;

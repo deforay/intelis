@@ -82,43 +82,59 @@ if (count($interfaceInfo) > 0) {
                 $vlResult = trim($result['results']);
                 $unit = trim($result['test_unit']);
 
-
-
-                if ($vlResult == "< Titer min") {
+                if ($vlResult == "< INF") {
+                    $absDecimalVal = 839;
+                    $vlResult = $absVal = "839";
+                } else if ($vlResult == "< Titer min") {
                     $absDecimalVal = 20;
                     $txtVal = $vlResult = $absVal = "< 20";
                 } else if ($vlResult == "> Titer max") {
                     $absDecimalVal = 10000000;
                     $txtVal = $vlResult = $absVal = "> 1000000";
-                } else if (strpos($vlResult, "<") !== false) {
-                    $logVal = str_replace("<", "", $vlResult);
-                    $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                    $txtVal = $vlResult = $absVal = "< " . trim($absDecimalVal);
-                } else if (strpos($vlResult, ">") !== false) {
-                    $logVal = str_replace(">", "", $vlResult);
-                    $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                    $txtVal = $vlResult = $absVal = "> " . trim($absDecimalVal);
-                } else if (strpos($unit, '10') !== false) {
-                    $unitArray = explode(".", $unit);
-                    $exponentArray = explode("*", $unitArray[0]);
-                    $multiplier = pow($exponentArray[0], $exponentArray[1]);
-                    $vlResult = $vlResult * $multiplier;
-                    $unit = $unitArray[1];
-                } else if (strpos($unit, 'Log') !== false && is_numeric($vlResult)) {
-                    $logVal = $vlResult;
-                    $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                } else if (strpos($vlResult, 'E+') !== false || strpos($vlResult, 'E-') !== false) {
-                    if (strpos($vlResult, '< 2.00E+1') !== false) {
-                        $vlResult = "< 20";
-                        //$vlResultCategory = 'Suppressed';
+                } else if (strpos(strtolower($vlResult), 'log') !== false || strpos(strtolower($unit), 'log') !== false) {
+                    if (strpos($vlResult, "<") !== false) {
+                        $logVal = str_replace("<", "", $vlResult);
+                        $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                        $txtVal = $vlResult = $absVal = "< " . trim($absDecimalVal);
+                    } else if (strpos($vlResult, ">") !== false) {
+                        $logVal = str_replace(">", "", $vlResult);
+                        $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                        $txtVal = $vlResult = $absVal = "> " . trim($absDecimalVal);
+                    } else if (is_numeric($vlResult)) {
+                        $logVal = $vlResult;
+                        $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                    }
+                } else if (strpos(strtolower($vlResult), 'copies') !== false || strpos(strtolower($unit), 'copies') !== false) {
+                    $absVal = $absDecimalVal = abs((int) filter_var($vlResult, FILTER_SANITIZE_NUMBER_INT));
+                    if (strpos($unit, '10') !== false) {
+                        $unitArray = explode(".", $unit);
+                        $exponentArray = explode("*", $unitArray[0]);
+                        $multiplier = pow($exponentArray[0], $exponentArray[1]);
+                        $vlResult = $vlResult * $multiplier;
+                        $unit = $unitArray[1];
+                    } else if (strpos($vlResult, 'E+') !== false || strpos($vlResult, 'E-') !== false) {
+                        if (strpos($vlResult, '< 2.00E+1') !== false) {
+                            $vlResult = "< 20";
+                            //$vlResultCategory = 'Suppressed';
+                        } else {
+                            $resultArray = explode("(", $vlResult);
+                            $exponentArray = explode("E", $resultArray[0]);
+                            $vlResult = (float) $resultArray[0];
+                            $absDecimalVal = (float) trim($vlResult);
+                            $logVal = round(log10($absDecimalVal), 2);
+                        }
+                    } else if (strpos($sheetData[$resultCol], '<') !== false) {
+                        $txtVal = $absVal = "< " . trim($absDecimalVal);
+                        $logVal = $absDecimalVal = $resultFlag = "";
+                    } else if (strpos($sheetData[$resultCol], '>') !== false) {
+                        $txtVal = $absVal = "> " . trim($absDecimalVal);
+                        $logVal = $absDecimalVal = $resultFlag = "";
                     } else {
-                        $resultArray = explode("(", $vlResult);
-                        $exponentArray = explode("E", $resultArray[0]);
-                        $vlResult = (float) $resultArray[0];
-                        $absDecimalVal = (float) trim($vlResult);
                         $logVal = round(log10($absDecimalVal), 2);
+                        $absVal = $absDecimalVal;
                     }
                 } else {
+                    $absVal = $absDecimalVal = abs((int) filter_var($vlResult, FILTER_SANITIZE_NUMBER_INT));
                     $vlResult = $txtVal = trim($result['results']);
                 }
 
