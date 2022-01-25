@@ -84,13 +84,16 @@ if (count($interfaceInfo) > 0) {
 
                 if ($vlResult == "< INF") {
                     $absDecimalVal = 839;
-                    $vlResult = $absVal = "839";
+                    $vlResult = $absVal = 839;
+                    $logVal = 2.92;
                 } else if ($vlResult == "< Titer min") {
                     $absDecimalVal = 20;
                     $txtVal = $vlResult = $absVal = "< 20";
+                    $logVal = null;
                 } else if ($vlResult == "> Titer max") {
                     $absDecimalVal = 10000000;
                     $txtVal = $vlResult = $absVal = "> 1000000";
+                    $logVal = null;
                 } else if (strpos(strtolower($vlResult), 'log') !== false || strpos(strtolower($unit), 'log') !== false) {
                     if (strpos($vlResult, "<") !== false) {
                         $logVal = str_replace("<", "", $vlResult);
@@ -106,15 +109,23 @@ if (count($interfaceInfo) > 0) {
                     }
                 } else if (strpos(strtolower($vlResult), 'copies') !== false || strpos(strtolower($unit), 'copies') !== false) {
                     $absVal = $absDecimalVal = abs((int) filter_var($vlResult, FILTER_SANITIZE_NUMBER_INT));
-                    if (strpos($unit, '10') !== false) {
+                    if (strpos($sheetData[$resultCol], '<') !== false) {
+                        $txtVal = $absVal = "< " . trim($absDecimalVal);
+                        $logVal = $absDecimalVal = $resultFlag = null;
+                    } else if (strpos($sheetData[$resultCol], '>') !== false) {
+                        $txtVal = $absVal = "> " . trim($absDecimalVal);
+                        $logVal = $absDecimalVal = $resultFlag = null;
+                    } else if (strpos($unit, '10') !== false) {
                         $unitArray = explode(".", $unit);
                         $exponentArray = explode("*", $unitArray[0]);
                         $multiplier = pow($exponentArray[0], $exponentArray[1]);
                         $vlResult = $vlResult * $multiplier;
                         $unit = $unitArray[1];
+                        $logVal = round(log10($absDecimalVal), 2);
                     } else if (strpos($vlResult, 'E+') !== false || strpos($vlResult, 'E-') !== false) {
                         if (strpos($vlResult, '< 2.00E+1') !== false) {
                             $vlResult = "< 20";
+                            $logVal = null;
                             //$vlResultCategory = 'Suppressed';
                         } else {
                             $resultArray = explode("(", $vlResult);
@@ -123,12 +134,6 @@ if (count($interfaceInfo) > 0) {
                             $absDecimalVal = (float) trim($vlResult);
                             $logVal = round(log10($absDecimalVal), 2);
                         }
-                    } else if (strpos($sheetData[$resultCol], '<') !== false) {
-                        $txtVal = $absVal = "< " . trim($absDecimalVal);
-                        $logVal = $absDecimalVal = $resultFlag = "";
-                    } else if (strpos($sheetData[$resultCol], '>') !== false) {
-                        $txtVal = $absVal = "> " . trim($absDecimalVal);
-                        $logVal = $absDecimalVal = $resultFlag = "";
                     } else {
                         $logVal = round(log10($absDecimalVal), 2);
                         $absVal = $absDecimalVal;

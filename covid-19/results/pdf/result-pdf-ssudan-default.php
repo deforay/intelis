@@ -446,8 +446,8 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
         $encryption_iv
     );
     $pdf->writeHTML($html);
-    $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-    if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
+    if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($systemConfig['remoteURL'])) {
+        $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
         $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, 175, 20, 20, $style, 'N');
     }
     $pdf->lastPage();

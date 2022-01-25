@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-01-11 11:31+0530\n"
-"PO-Revision-Date: 2022-01-11 11:47+0530\n"
+"POT-Creation-Date: 2022-01-24 17:49+0530\n"
+"PO-Revision-Date: 2022-01-24 17:50+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -10,12 +10,36 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: .\n"
 
+#: covid-19/batch/covid-19-add-batch.php:115
+#: covid-19/batch/covid-19-edit-batch.php:107 eid/batch/eid-add-batch.php:117
+#: eid/batch/eid-edit-batch.php:106 vl/batch/addBatch.php:149
+#: vl/batch/editBatch.php:126
+msgid "Positions"
+msgstr "Positions"
+
+#: covid-19/batch/covid-19-add-batch.php:118
+#: covid-19/batch/covid-19-edit-batch.php:110 eid/batch/eid-add-batch.php:120
+#: eid/batch/eid-edit-batch.php:109 vl/batch/addBatch.php:152
+#: vl/batch/editBatch.php:129
+msgid "Numeric"
+msgstr "Numérique"
+
+#: covid-19/batch/covid-19-add-batch.php:119
+#: covid-19/batch/covid-19-edit-batch.php:111 eid/batch/eid-add-batch.php:121
+#: eid/batch/eid-edit-batch.php:110 vl/batch/addBatch.php:153
+#: vl/batch/editBatch.php:130
+msgid "Alpha Numeric"
+msgstr "Alphanumérique"
+
 #: covid-19/batch/covid-19-batches.php:14
-#: covid-19/batch/covid-19-batches.php:17
+#: covid-19/batch/covid-19-batches.php:17 eid/batch/eid-batches.php:14
+#: eid/batch/eid-batches.php:17 hepatitis/batch/hepatitis-batches.php:14
+#: hepatitis/batch/hepatitis-batches.php:17 tb/batch/tb-batches.php:14
+#: tb/batch/tb-batches.php:17
 #, fuzzy
 #| msgid "Manage Batch"
 msgid "Manage Batches"
@@ -37,16 +61,52 @@ msgstr "Gérer le lot"
 #: covid-19/results/covid-19-failed-results.php:30
 #: covid-19/results/covid-19-manual-results.php:48
 #: covid-19/results/covid-19-print-results.php:41
-#: covid-19/results/covid-19-result-status.php:65
-#: import-result/addImportResult.php:29
+#: covid-19/results/covid-19-result-status.php:65 eid/batch/eid-batches.php:16
+#: eid/management/eid-clinic-report.php:40
+#: eid/management/eid-sample-rejection-report.php:28
+#: eid/management/eid-sample-status.php:45
+#: eid/requests/addSamplesFromManifest.php:28
+#: eid/requests/eid-bulk-import-request.php:16 eid/requests/eid-requests.php:40
+#: eid/requests/forms/add-drc.php:59 eid/requests/forms/add-png.php:60
+#: eid/requests/forms/add-rwanda.php:61
+#: eid/requests/forms/add-southsudan.php:61 eid/requests/forms/edit-drc.php:68
+#: eid/requests/forms/edit-png.php:98 eid/requests/forms/edit-rwanda.php:79
+#: eid/requests/forms/edit-southsudan.php:78
+#: eid/results/eid-failed-results.php:34 eid/results/eid-manual-results.php:50
+#: eid/results/eid-print-results.php:41 eid/results/eid-result-status.php:66
+#: eid/results/forms/update-drc-result.php:57
+#: eid/results/forms/update-png-result.php:98
+#: eid/results/forms/update-rwanda-result.php:63
+#: eid/results/forms/update-southsudan-result.php:67
+#: hepatitis/batch/hepatitis-batches.php:16
+#: hepatitis/requests/add-samples-from-manifest.php:19
+#: hepatitis/requests/forms/add-rwanda.php:52
+#: hepatitis/requests/forms/edit-rwanda.php:72
+#: hepatitis/requests/hepatitis-requests.php:41
+#: hepatitis/results/hepatitis-failed-results.php:30
+#: hepatitis/results/hepatitis-manual-results.php:46
+#: hepatitis/results/hepatitis-print-results.php:41
+#: hepatitis/results/hepatitis-result-status.php:65
+#: import-result/addImportResult.php:29 tb/batch/tb-batches.php:16
+#: tb/management/tb-clinic-report.php:38
+#: tb/management/tb-sample-rejection-report.php:30
+#: tb/management/tb-sample-status.php:36
+#: tb/requests/addSamplesFromManifest.php:19
+#: tb/requests/forms/add-southsudan.php:74
+#: tb/requests/forms/edit-southsudan.php:94 tb/requests/tb-requests.php:47
+#: tb/results/forms/update-southsudan.php:93
+#: tb/results/tb-failed-results.php:30 tb/results/tb-manual-results.php:53
+#: tb/results/tb-print-results.php:24 tb/results/tb-result-status.php:65
+#: vl/requests/vlRequest.php:39
 msgid "Home"
-msgstr ""
+msgstr "Accueil"
 
 #: covid-19/batch/covid-19-batches.php:29
 #: covid-19/batch/covid-19-batches.php:55
 #: covid-19/management/covid-19-clinic-report.php:66
 #: covid-19/management/covid-19-clinic-report.php:165
 #: covid-19/management/covid-19-clinic-report.php:251
+#: covid-19/management/covid-19-clinic-report.php:342
 #: covid-19/management/covid-19-clinic-report.php:370
 #: covid-19/management/covid-19-export-data.php:121
 #: covid-19/management/covid-19-export-data.php:187
@@ -67,23 +127,89 @@ msgstr ""
 #: covid-19/results/covid-19-print-results.php:239
 #: covid-19/results/covid-19-print-results.php:274
 #: covid-19/results/covid-19-result-status.php:93
-#: covid-19/results/covid-19-result-status.php:167
+#: covid-19/results/covid-19-result-status.php:167 eid/batch/eid-batches.php:29
+#: eid/batch/eid-batches.php:55 eid/management/eid-clinic-report.php:68
+#: eid/management/eid-clinic-report.php:167
+#: eid/management/eid-clinic-report.php:253
+#: eid/management/eid-clinic-report.php:341
+#: eid/management/eid-clinic-report.php:369
+#: eid/management/eid-export-data.php:111
+#: eid/management/eid-export-data.php:176
+#: eid/management/eid-export-data.php:215
+#: eid/management/eid-sample-status.php:61
+#: eid/requests/addSamplesFromManifest.php:65 eid/requests/eid-requests.php:56
+#: eid/requests/eid-requests.php:189 eid/results/eid-failed-results.php:50
+#: eid/results/eid-failed-results.php:122 eid/results/eid-manual-results.php:65
+#: eid/results/eid-manual-results.php:111
+#: eid/results/eid-manual-results.php:158 eid/results/eid-print-results.php:67
+#: eid/results/eid-print-results.php:122 eid/results/eid-print-results.php:158
+#: eid/results/eid-print-results.php:184 eid/results/eid-print-results.php:239
+#: eid/results/eid-print-results.php:274 eid/results/eid-result-status.php:94
+#: eid/results/eid-result-status.php:161
+#: hepatitis/batch/hepatitis-batches.php:29
+#: hepatitis/batch/hepatitis-batches.php:55
+#: hepatitis/management/hepatitis-clinic-report.php:68
+#: hepatitis/management/hepatitis-clinic-report.php:168
+#: hepatitis/management/hepatitis-clinic-report.php:254
+#: hepatitis/management/hepatitis-clinic-report.php:345
+#: hepatitis/management/hepatitis-clinic-report.php:373
+#: hepatitis/management/hepatitis-export-data.php:176
+#: hepatitis/management/hepatitis-export-data.php:212
+#: hepatitis/management/hepatitis-sample-status.php:55
+#: hepatitis/requests/add-samples-from-manifest.php:56
+#: hepatitis/requests/hepatitis-requests.php:57
+#: hepatitis/requests/hepatitis-requests.php:181
+#: hepatitis/results/hepatitis-failed-results.php:46
+#: hepatitis/results/hepatitis-failed-results.php:118
+#: hepatitis/results/hepatitis-manual-results.php:61
+#: hepatitis/results/hepatitis-manual-results.php:114
+#: hepatitis/results/hepatitis-manual-results.php:161
+#: hepatitis/results/hepatitis-print-results.php:67
+#: hepatitis/results/hepatitis-print-results.php:122
+#: hepatitis/results/hepatitis-print-results.php:158
+#: hepatitis/results/hepatitis-print-results.php:185
+#: hepatitis/results/hepatitis-print-results.php:240
+#: hepatitis/results/hepatitis-print-results.php:275
+#: hepatitis/results/hepatitis-result-status.php:93
+#: hepatitis/results/hepatitis-result-status.php:167 tb/batch/tb-batches.php:29
+#: tb/batch/tb-batches.php:55 tb/management/tb-clinic-report.php:66
+#: tb/management/tb-clinic-report.php:165
+#: tb/management/tb-clinic-report.php:251
+#: tb/management/tb-clinic-report.php:342
+#: tb/management/tb-clinic-report.php:370 tb/management/tb-export-data.php:121
+#: tb/management/tb-export-data.php:187 tb/management/tb-export-data.php:223
+#: tb/management/tb-sample-status.php:52
+#: tb/requests/addSamplesFromManifest.php:56 tb/requests/tb-requests.php:63
+#: tb/requests/tb-requests.php:187 tb/results/tb-failed-results.php:46
+#: tb/results/tb-failed-results.php:118 tb/results/tb-manual-results.php:68
+#: tb/results/tb-manual-results.php:121 tb/results/tb-manual-results.php:168
+#: tb/results/tb-print-results.php:50 tb/results/tb-print-results.php:105
+#: tb/results/tb-print-results.php:141 tb/results/tb-print-results.php:167
+#: tb/results/tb-print-results.php:222 tb/results/tb-print-results.php:257
+#: tb/results/tb-result-status.php:93 tb/results/tb-result-status.php:167
+#: vl/requests/vlRequest.php:55 vl/requests/vlRequest.php:226
+#: vl/requests/vlRequest.php:269
 msgid "Batch Code"
-msgstr ""
+msgstr "Code de lot"
 
-#: covid-19/batch/covid-19-batches.php:32
+#: covid-19/batch/covid-19-batches.php:32 eid/batch/eid-batches.php:32
+#: hepatitis/batch/hepatitis-batches.php:32 tb/batch/tb-batches.php:32
 #, fuzzy
 #| msgid "Move Samples"
 msgid "No. Of Samples"
 msgstr "Déplacer les échantillons"
 
 #: covid-19/batch/covid-19-batches.php:35
-#: covid-19/batch/covid-19-batches.php:59
+#: covid-19/batch/covid-19-batches.php:59 eid/batch/eid-batches.php:35
+#: eid/batch/eid-batches.php:59 hepatitis/batch/hepatitis-batches.php:35
+#: hepatitis/batch/hepatitis-batches.php:59 tb/batch/tb-batches.php:35
+#: tb/batch/tb-batches.php:59
 msgid "Created On"
-msgstr ""
+msgstr "Créé le"
 
 #: covid-19/batch/covid-19-batches.php:38
 #: covid-19/management/covid-19-clinic-report.php:148
+#: covid-19/management/covid-19-clinic-report.php:350
 #: covid-19/management/covid-19-clinic-report.php:377
 #: covid-19/management/covid-19-export-data.php:110
 #: covid-19/management/covid-19-export-data.php:202
@@ -97,26 +223,72 @@ msgstr ""
 #: covid-19/results/covid-19-print-results.php:164
 #: covid-19/results/covid-19-print-results.php:260
 #: covid-19/results/covid-19-print-results.php:280
-#: covid-19/results/covid-19-result-status.php:173
+#: covid-19/results/covid-19-result-status.php:173 eid/batch/eid-batches.php:38
+#: eid/management/eid-clinic-report.php:150
+#: eid/management/eid-clinic-report.php:349
+#: eid/management/eid-clinic-report.php:376
+#: eid/management/eid-export-data.php:100
+#: eid/management/eid-export-data.php:194
+#: eid/management/eid-export-data.php:222
+#: eid/requests/addSamplesFromManifest.php:75 eid/requests/eid-requests.php:199
+#: eid/results/eid-failed-results.php:132
+#: eid/results/eid-manual-results.php:132
+#: eid/results/eid-manual-results.php:166 eid/results/eid-print-results.php:143
+#: eid/results/eid-print-results.php:164 eid/results/eid-print-results.php:260
+#: eid/results/eid-print-results.php:280 eid/results/eid-result-status.php:169
+#: hepatitis/batch/hepatitis-batches.php:38
+#: hepatitis/management/hepatitis-clinic-report.php:151
+#: hepatitis/management/hepatitis-clinic-report.php:353
+#: hepatitis/management/hepatitis-clinic-report.php:381
+#: hepatitis/management/hepatitis-export-data.php:112
+#: hepatitis/management/hepatitis-export-data.php:191
+#: hepatitis/management/hepatitis-export-data.php:218
+#: hepatitis/requests/add-samples-from-manifest.php:65
+#: hepatitis/requests/hepatitis-requests.php:190
+#: hepatitis/results/hepatitis-failed-results.php:128
+#: hepatitis/results/hepatitis-manual-results.php:135
+#: hepatitis/results/hepatitis-manual-results.php:168
+#: hepatitis/results/hepatitis-print-results.php:143
+#: hepatitis/results/hepatitis-print-results.php:165
+#: hepatitis/results/hepatitis-print-results.php:261
+#: hepatitis/results/hepatitis-print-results.php:282
+#: hepatitis/results/hepatitis-result-status.php:174 tb/batch/tb-batches.php:38
+#: tb/management/tb-clinic-report.php:148
+#: tb/management/tb-clinic-report.php:350
+#: tb/management/tb-clinic-report.php:377 tb/management/tb-export-data.php:110
+#: tb/management/tb-export-data.php:202 tb/management/tb-export-data.php:229
+#: tb/requests/addSamplesFromManifest.php:64 tb/requests/tb-requests.php:199
+#: tb/results/tb-failed-results.php:128 tb/results/tb-manual-results.php:142
+#: tb/results/tb-manual-results.php:174 tb/results/tb-print-results.php:126
+#: tb/results/tb-print-results.php:147 tb/results/tb-print-results.php:243
+#: tb/results/tb-print-results.php:263 tb/results/tb-result-status.php:173
+#: vl/requests/vlRequest.php:253 vl/requests/vlRequest.php:278
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
-#: covid-19/batch/covid-19-batches.php:46
+#: covid-19/batch/covid-19-batches.php:46 eid/batch/eid-batches.php:46
+#: hepatitis/batch/hepatitis-batches.php:46 tb/batch/tb-batches.php:46
 msgid "Create New Batch"
 msgstr ""
 
 #: covid-19/batch/covid-19-batches.php:56
-#: covid-19/management/get-rejected-samples.php:80
+#: covid-19/management/get-rejected-samples.php:80 eid/batch/eid-batches.php:56
+#: eid/management/get-rejected-samples.php:80
+#: hepatitis/batch/hepatitis-batches.php:56
+#: hepatitis/management/get-rejected-samples.php:83 tb/batch/tb-batches.php:56
+#: tb/management/get-rejected-samples.php:80
 #, fuzzy
 #| msgid "Move Samples"
 msgid "No. of Samples"
 msgstr "Déplacer les échantillons"
 
-#: covid-19/batch/covid-19-batches.php:57
+#: covid-19/batch/covid-19-batches.php:57 eid/batch/eid-batches.php:57
+#: hepatitis/batch/hepatitis-batches.php:57 tb/batch/tb-batches.php:57
 msgid "No. of Samples Tested"
 msgstr ""
 
-#: covid-19/batch/covid-19-batches.php:58
+#: covid-19/batch/covid-19-batches.php:58 eid/batch/eid-batches.php:58
+#: hepatitis/batch/hepatitis-batches.php:58 tb/batch/tb-batches.php:58
 msgid "Last Tested Date"
 msgstr ""
 
@@ -126,9 +298,25 @@ msgstr ""
 #: covid-19/results/covid-19-failed-results.php:130
 #: covid-19/results/covid-19-manual-results.php:170
 #: covid-19/results/covid-19-print-results.php:165
-#: covid-19/results/covid-19-print-results.php:281
+#: covid-19/results/covid-19-print-results.php:281 eid/batch/eid-batches.php:61
+#: eid/management/eid-export-data.php:225 eid/requests/eid-requests.php:201
+#: eid/results/eid-failed-results.php:134
+#: eid/results/eid-manual-results.php:167 eid/results/eid-print-results.php:165
+#: eid/results/eid-print-results.php:281
+#: hepatitis/batch/hepatitis-batches.php:61
+#: hepatitis/management/hepatitis-export-data.php:221
+#: hepatitis/requests/hepatitis-requests.php:192
+#: hepatitis/results/hepatitis-failed-results.php:129
+#: hepatitis/results/hepatitis-manual-results.php:169
+#: hepatitis/results/hepatitis-print-results.php:166
+#: hepatitis/results/hepatitis-print-results.php:283 tb/batch/tb-batches.php:61
+#: tb/management/tb-export-data.php:232 tb/requests/tb-requests.php:201
+#: tb/results/tb-failed-results.php:130 tb/results/tb-manual-results.php:175
+#: tb/results/tb-print-results.php:148 tb/results/tb-print-results.php:264
+#: vl/requests/vlRequest.php:280
+#, fuzzy
 msgid "Action"
-msgstr ""
+msgstr "Action"
 
 #: covid-19/batch/covid-19-batches.php:67
 #: covid-19/management/covid-19-clinic-report.php:153
@@ -143,32 +331,84 @@ msgstr ""
 #: covid-19/results/covid-19-manual-results.php:175
 #: covid-19/results/covid-19-print-results.php:170
 #: covid-19/results/covid-19-print-results.php:286
-#: covid-19/results/covid-19-result-status.php:181
+#: covid-19/results/covid-19-result-status.php:181 eid/batch/eid-batches.php:67
+#: eid/management/eid-clinic-report.php:155
+#: eid/management/eid-clinic-report.php:241
+#: eid/management/eid-clinic-report.php:323
+#: eid/management/eid-clinic-report.php:381
+#: eid/management/eid-export-data.php:230
+#: eid/management/eid-sample-status.php:121
+#: eid/management/eidTestingTargetReport.php:224
+#: eid/requests/eid-requests.php:207 eid/results/eid-failed-results.php:140
+#: eid/results/eid-manual-results.php:172 eid/results/eid-print-results.php:170
+#: eid/results/eid-print-results.php:286 eid/results/eid-result-status.php:177
+#: hepatitis/batch/hepatitis-batches.php:67
+#: hepatitis/management/hepatitis-clinic-report.php:156
+#: hepatitis/management/hepatitis-clinic-report.php:242
+#: hepatitis/management/hepatitis-clinic-report.php:327
+#: hepatitis/management/hepatitis-clinic-report.php:386
+#: hepatitis/management/hepatitis-export-data.php:226
+#: hepatitis/management/hepatitis-sample-status.php:115
+#: hepatitis/management/hepatitis-testing-target-report.php:225
+#: hepatitis/requests/hepatitis-requests.php:198
+#: hepatitis/results/hepatitis-failed-results.php:134
+#: hepatitis/results/hepatitis-manual-results.php:174
+#: hepatitis/results/hepatitis-print-results.php:171
+#: hepatitis/results/hepatitis-print-results.php:288
+#: hepatitis/results/hepatitis-result-status.php:182 tb/batch/tb-batches.php:67
+#: tb/management/tb-clinic-report.php:153
+#: tb/management/tb-clinic-report.php:239
+#: tb/management/tb-clinic-report.php:324
+#: tb/management/tb-clinic-report.php:382 tb/management/tb-export-data.php:237
+#: tb/management/tb-sample-status.php:112 tb/requests/tb-requests.php:207
+#: tb/results/tb-failed-results.php:136 tb/results/tb-manual-results.php:180
+#: tb/results/tb-print-results.php:153 tb/results/tb-print-results.php:269
+#: tb/results/tb-result-status.php:181 vl/requests/vlRequest.php:286
 msgid "Loading data from server"
 msgstr ""
 
 #: covid-19/management/covid-19-clinic-report.php:36
-#: covid-19/management/covid-19-clinic-report.php:39 header.php:695
+#: covid-19/management/covid-19-clinic-report.php:39
+#: eid/management/eid-clinic-report.php:38
+#: eid/management/eid-clinic-report.php:41 header.php:695
+#: hepatitis/management/hepatitis-clinic-report.php:36
+#: hepatitis/management/hepatitis-clinic-report.php:41
+#: tb/management/tb-clinic-report.php:36 tb/management/tb-clinic-report.php:39
 msgid "Clinic Reports"
 msgstr "Rapports cliniques"
 
 #: covid-19/management/covid-19-clinic-report.php:53
+#: eid/management/eid-clinic-report.php:55
+#: hepatitis/management/hepatitis-clinic-report.php:55
+#: tb/management/tb-clinic-report.php:53
 #, fuzzy
 #| msgid "Clinic Report"
 msgid "Positivity Report"
 msgstr "Rapport de la clinique"
 
 #: covid-19/management/covid-19-clinic-report.php:54
-#: covid-19/management/covid-19-sample-rejection-report.php:28 header.php:804
+#: covid-19/management/covid-19-sample-rejection-report.php:28
+#: eid/management/eid-clinic-report.php:56
+#: eid/management/eid-sample-rejection-report.php:26 header.php:804
 #: header.php:910 header.php:1011 header.php:1112
+#: hepatitis/management/hepatitis-clinic-report.php:56
+#: hepatitis/management/hepatitis-sample-rejection-report.php:28
+#: tb/management/tb-clinic-report.php:54
+#: tb/management/tb-sample-rejection-report.php:28
 msgid "Sample Rejection Report"
 msgstr "Exemple de rapport de rejet"
 
 #: covid-19/management/covid-19-clinic-report.php:55
+#: eid/management/eid-clinic-report.php:57
+#: hepatitis/management/hepatitis-clinic-report.php:57
+#: tb/management/tb-clinic-report.php:55
 msgid "Results Not Available Report"
 msgstr ""
 
 #: covid-19/management/covid-19-clinic-report.php:56
+#: eid/management/eid-clinic-report.php:58
+#: hepatitis/management/hepatitis-clinic-report.php:58
+#: tb/management/tb-clinic-report.php:56
 msgid "Data Quality Check"
 msgstr ""
 
@@ -179,6 +419,22 @@ msgstr ""
 #: covid-19/management/covid19TestingTargetReport.php:181
 #: covid-19/results/covid-19-print-results.php:81
 #: covid-19/results/covid-19-print-results.php:198
+#: eid/management/eid-clinic-report.php:64
+#: eid/management/eid-clinic-report.php:163
+#: eid/management/eid-export-data.php:79
+#: eid/management/eid-sample-status.php:114
+#: eid/management/eidTestingTargetReport.php:179
+#: eid/results/eid-print-results.php:81 eid/results/eid-print-results.php:198
+#: hepatitis/management/hepatitis-clinic-report.php:64
+#: hepatitis/management/hepatitis-clinic-report.php:164
+#: hepatitis/management/hepatitis-export-data.php:87
+#: hepatitis/management/hepatitis-sample-status.php:108
+#: hepatitis/management/hepatitis-testing-target-report.php:179
+#: hepatitis/results/hepatitis-print-results.php:81
+#: hepatitis/results/hepatitis-print-results.php:199
+#: tb/management/tb-clinic-report.php:62 tb/management/tb-clinic-report.php:161
+#: tb/management/tb-export-data.php:90 tb/management/tb-sample-status.php:105
+#: tb/results/tb-print-results.php:64 tb/results/tb-print-results.php:181
 #, fuzzy
 #| msgid "Sample Type"
 msgid "Sample Test Date"
@@ -187,11 +443,34 @@ msgstr "Échantillon type"
 #: covid-19/management/covid-19-clinic-report.php:79
 #: covid-19/management/covid-19-clinic-report.php:178
 #: covid-19/management/covid-19-clinic-report.php:264
+#: covid-19/management/covid-19-clinic-report.php:348
 #: covid-19/management/covid-19-clinic-report.php:375
 #: covid-19/results/covid-19-manual-results.php:128
 #: covid-19/results/covid-19-print-results.php:134
-#: covid-19/results/covid-19-print-results.php:251 header.php:473
-#: header.php:494 header.php:524 header.php:558 header.php:583
+#: covid-19/results/covid-19-print-results.php:251
+#: eid/management/eid-clinic-report.php:81
+#: eid/management/eid-clinic-report.php:180
+#: eid/management/eid-clinic-report.php:266
+#: eid/management/eid-clinic-report.php:347
+#: eid/management/eid-clinic-report.php:374
+#: eid/results/eid-manual-results.php:123 eid/results/eid-print-results.php:134
+#: eid/results/eid-print-results.php:251 header.php:473 header.php:494
+#: header.php:524 header.php:558 header.php:583
+#: hepatitis/management/hepatitis-clinic-report.php:81
+#: hepatitis/management/hepatitis-clinic-report.php:181
+#: hepatitis/management/hepatitis-clinic-report.php:267
+#: hepatitis/management/hepatitis-clinic-report.php:351
+#: hepatitis/management/hepatitis-clinic-report.php:378
+#: hepatitis/results/hepatitis-manual-results.php:126
+#: hepatitis/results/hepatitis-print-results.php:134
+#: hepatitis/results/hepatitis-print-results.php:252
+#: tb/management/tb-clinic-report.php:79 tb/management/tb-clinic-report.php:178
+#: tb/management/tb-clinic-report.php:264
+#: tb/management/tb-clinic-report.php:348
+#: tb/management/tb-clinic-report.php:375 tb/results/tb-manual-results.php:133
+#: tb/results/tb-print-results.php:117 tb/results/tb-print-results.php:234
+#: vl/requests/vlRequest.php:68 vl/requests/vlRequest.php:244
+#: vl/requests/vlRequest.php:275
 msgid "Sample Type"
 msgstr "Échantillon type"
 
@@ -199,19 +478,160 @@ msgstr "Échantillon type"
 #: covid-19/management/covid-19-clinic-report.php:193
 #: covid-19/management/covid-19-clinic-report.php:279
 #: covid-19/results/covid-19-result-status.php:109
+#: hepatitis/management/hepatitis-clinic-report.php:96
+#: hepatitis/management/hepatitis-clinic-report.php:196
+#: hepatitis/management/hepatitis-clinic-report.php:282
+#: hepatitis/results/hepatitis-result-status.php:109
+#: tb/management/tb-clinic-report.php:94 tb/management/tb-clinic-report.php:193
+#: tb/management/tb-clinic-report.php:279 tb/results/tb-result-status.php:109
 msgid "Facility Name & Code"
 msgstr ""
 
 #: covid-19/management/covid-19-clinic-report.php:100
+#: eid/management/eid-clinic-report.php:102
+#: hepatitis/management/hepatitis-clinic-report.php:102
+#: tb/management/tb-clinic-report.php:100
+#, fuzzy
 msgid "Contact Status"
-msgstr ""
+msgstr "Type de contact"
+
+#: covid-19/management/covid-19-clinic-report.php:103
+#: covid-19/management/covid-19-clinic-report.php:112
+#: covid-19/management/covid-19-clinic-report.php:202
+#: covid-19/management/covid-19-clinic-report.php:288
+#: covid-19/management/covid-19-clinic-report.php:339
+#: covid-19/requests/covid-19-requests.php:120
+#: covid-19/requests/covid-19-requests.php:131
+#: covid-19/results/covid-19-manual-results.php:147
+#: eid/management/eid-clinic-report.php:105
+#: eid/management/eid-clinic-report.php:114
+#: eid/management/eid-clinic-report.php:204
+#: eid/management/eid-clinic-report.php:290
+#: eid/management/eid-clinic-report.php:338 eid/requests/eid-requests.php:105
+#: eid/requests/eid-requests.php:114 eid/results/eid-manual-results.php:142
+#: hepatitis/management/hepatitis-clinic-report.php:105
+#: hepatitis/management/hepatitis-clinic-report.php:114
+#: hepatitis/management/hepatitis-clinic-report.php:205
+#: hepatitis/management/hepatitis-clinic-report.php:291
+#: hepatitis/management/hepatitis-clinic-report.php:342
+#: hepatitis/management/hepatitis-export-data.php:115
+#: hepatitis/requests/hepatitis-requests.php:106
+#: hepatitis/requests/hepatitis-requests.php:115
+#: hepatitis/results/hepatitis-manual-results.php:145
+#: tb/management/tb-clinic-report.php:103
+#: tb/management/tb-clinic-report.php:112
+#: tb/management/tb-clinic-report.php:202
+#: tb/management/tb-clinic-report.php:288
+#: tb/management/tb-clinic-report.php:339 tb/requests/tb-requests.php:112
+#: tb/requests/tb-requests.php:121 tb/results/tb-manual-results.php:152
+#, fuzzy
+msgid "-- Select --"
+msgstr "-- Sélectionner --"
+
+#: covid-19/management/covid-19-clinic-report.php:104
+#: eid/management/eid-clinic-report.php:106
+#: hepatitis/management/hepatitis-clinic-report.php:106
+#: tb/management/tb-clinic-report.php:104
+#, fuzzy
+msgid "Completed"
+msgstr "Terminé"
+
+#: covid-19/management/covid-19-clinic-report.php:105
+#: eid/management/eid-clinic-report.php:107
+#: hepatitis/management/hepatitis-clinic-report.php:107
+#: tb/management/tb-clinic-report.php:105
+#, fuzzy
+msgid "Not Completed"
+msgstr "Incomplet"
+
+#: covid-19/management/covid-19-clinic-report.php:106
+#: covid-19/requests/covid-19-requests.php:83
+#: eid/management/eid-clinic-report.php:108 eid/requests/eid-requests.php:72
+#: eid/results/eid-failed-results.php:66
+#: hepatitis/management/hepatitis-clinic-report.php:108
+#: hepatitis/requests/hepatitis-requests.php:73
+#: hepatitis/results/hepatitis-failed-results.php:62
+#: tb/management/tb-clinic-report.php:106 tb/requests/tb-requests.php:79
+#: tb/results/tb-failed-results.php:62 vl/requests/vlRequest.php:171
+#, fuzzy
+msgid "All"
+msgstr "Tout"
 
 #: covid-19/management/covid-19-clinic-report.php:109
 #: covid-19/management/covid-19-clinic-report.php:199
 #: covid-19/management/covid-19-clinic-report.php:285
 #: covid-19/requests/covid-19-requests.php:117
+#: eid/management/eid-clinic-report.php:111
+#: eid/management/eid-clinic-report.php:201
+#: eid/management/eid-clinic-report.php:287 eid/requests/eid-requests.php:102
+#: hepatitis/management/hepatitis-clinic-report.php:111
+#: hepatitis/management/hepatitis-clinic-report.php:202
+#: hepatitis/management/hepatitis-clinic-report.php:288
+#: hepatitis/requests/hepatitis-requests.php:103
+#: tb/management/tb-clinic-report.php:109
+#: tb/management/tb-clinic-report.php:199
+#: tb/management/tb-clinic-report.php:285 tb/requests/tb-requests.php:109
+#: vl/requests/vlRequest.php:105
+#, fuzzy
 msgid "Gender"
-msgstr ""
+msgstr "Sexe"
+
+#: covid-19/management/covid-19-clinic-report.php:113
+#: covid-19/management/covid-19-clinic-report.php:203
+#: covid-19/management/covid-19-clinic-report.php:289
+#: covid-19/requests/covid-19-requests.php:121
+#: eid/management/eid-clinic-report.php:115
+#: eid/management/eid-clinic-report.php:205
+#: eid/management/eid-clinic-report.php:291 eid/requests/eid-requests.php:106
+#: hepatitis/management/hepatitis-clinic-report.php:115
+#: hepatitis/management/hepatitis-clinic-report.php:206
+#: hepatitis/management/hepatitis-clinic-report.php:292
+#: hepatitis/requests/hepatitis-requests.php:107
+#: tb/management/tb-clinic-report.php:113
+#: tb/management/tb-clinic-report.php:203
+#: tb/management/tb-clinic-report.php:289 tb/requests/tb-requests.php:113
+#: vl/requests/vlRequest.php:109
+#, fuzzy
+msgid "Male"
+msgstr "Homme"
+
+#: covid-19/management/covid-19-clinic-report.php:114
+#: covid-19/management/covid-19-clinic-report.php:204
+#: covid-19/management/covid-19-clinic-report.php:290
+#: covid-19/requests/covid-19-requests.php:122
+#: eid/management/eid-clinic-report.php:116
+#: eid/management/eid-clinic-report.php:206
+#: eid/management/eid-clinic-report.php:292 eid/requests/eid-requests.php:107
+#: hepatitis/management/hepatitis-clinic-report.php:116
+#: hepatitis/management/hepatitis-clinic-report.php:207
+#: hepatitis/management/hepatitis-clinic-report.php:293
+#: hepatitis/requests/hepatitis-requests.php:108
+#: tb/management/tb-clinic-report.php:114
+#: tb/management/tb-clinic-report.php:204
+#: tb/management/tb-clinic-report.php:290 tb/requests/tb-requests.php:114
+#: vl/requests/vlRequest.php:110
+#, fuzzy
+msgid "Female"
+msgstr "Femme"
+
+#: covid-19/management/covid-19-clinic-report.php:115
+#: covid-19/management/covid-19-clinic-report.php:205
+#: covid-19/management/covid-19-clinic-report.php:291
+#: covid-19/requests/covid-19-requests.php:123
+#: eid/management/eid-clinic-report.php:117
+#: eid/management/eid-clinic-report.php:207
+#: eid/management/eid-clinic-report.php:293 eid/requests/eid-requests.php:108
+#: hepatitis/management/hepatitis-clinic-report.php:117
+#: hepatitis/management/hepatitis-clinic-report.php:208
+#: hepatitis/management/hepatitis-clinic-report.php:294
+#: hepatitis/requests/hepatitis-requests.php:109
+#: tb/management/tb-clinic-report.php:115
+#: tb/management/tb-clinic-report.php:205
+#: tb/management/tb-clinic-report.php:291 tb/requests/tb-requests.php:115
+#: vl/requests/vlRequest.php:111
+#, fuzzy
+msgid "Not Recorded"
+msgstr "Pas enregistré"
 
 #: covid-19/management/covid-19-clinic-report.php:126
 #: covid-19/management/covid-19-clinic-report.php:216
@@ -227,8 +647,43 @@ msgstr ""
 #: covid-19/results/covid-19-print-results.php:100
 #: covid-19/results/covid-19-print-results.php:217
 #: covid-19/results/covid-19-result-status.php:131
+#: eid/management/eid-clinic-report.php:128
+#: eid/management/eid-clinic-report.php:218
+#: eid/management/eid-clinic-report.php:301
+#: eid/management/eid-clinic-report.php:355
+#: eid/management/eid-export-data.php:151
+#: eid/management/eid-sample-rejection-report.php:64
+#: eid/management/eid-sample-status.php:91
+#: eid/management/eidTestingTargetReport.php:202
+#: eid/requests/eid-requests.php:144 eid/results/eid-failed-results.php:93
+#: eid/results/eid-manual-results.php:91 eid/results/eid-print-results.php:100
+#: eid/results/eid-print-results.php:217 eid/results/eid-result-status.php:125
+#: hepatitis/management/hepatitis-clinic-report.php:128
+#: hepatitis/management/hepatitis-clinic-report.php:219
+#: hepatitis/management/hepatitis-clinic-report.php:305
+#: hepatitis/management/hepatitis-clinic-report.php:359
+#: hepatitis/management/hepatitis-export-data.php:151
+#: hepatitis/management/hepatitis-sample-rejection-report.php:68
+#: hepatitis/management/hepatitis-sample-status.php:85
+#: hepatitis/management/hepatitis-testing-target-report.php:202
+#: hepatitis/requests/hepatitis-requests.php:146
+#: hepatitis/results/hepatitis-failed-results.php:89
+#: hepatitis/results/hepatitis-manual-results.php:94
+#: hepatitis/results/hepatitis-print-results.php:100
+#: hepatitis/results/hepatitis-print-results.php:218
+#: hepatitis/results/hepatitis-result-status.php:131
+#: tb/management/tb-clinic-report.php:126
+#: tb/management/tb-clinic-report.php:216
+#: tb/management/tb-clinic-report.php:302
+#: tb/management/tb-clinic-report.php:356 tb/management/tb-export-data.php:162
+#: tb/management/tb-sample-rejection-report.php:66
+#: tb/management/tb-sample-status.php:82 tb/requests/tb-requests.php:152
+#: tb/results/tb-failed-results.php:89 tb/results/tb-manual-results.php:101
+#: tb/results/tb-print-results.php:83 tb/results/tb-print-results.php:200
+#: tb/results/tb-result-status.php:131
+#, fuzzy
 msgid "Search"
-msgstr ""
+msgstr "Rechercher"
 
 #: covid-19/management/covid-19-clinic-report.php:127
 #: covid-19/management/covid-19-clinic-report.php:217
@@ -243,8 +698,41 @@ msgstr ""
 #: covid-19/results/covid-19-print-results.php:101
 #: covid-19/results/covid-19-print-results.php:218
 #: covid-19/results/covid-19-result-status.php:132
+#: eid/management/eid-clinic-report.php:129
+#: eid/management/eid-clinic-report.php:219
+#: eid/management/eid-clinic-report.php:302
+#: eid/management/eid-clinic-report.php:356
+#: eid/management/eid-sample-rejection-report.php:65
+#: eid/management/eid-sample-status.php:92
+#: eid/management/eidTestingTargetReport.php:203
+#: eid/requests/eid-requests.php:145 eid/results/eid-failed-results.php:94
+#: eid/results/eid-manual-results.php:92 eid/results/eid-print-results.php:101
+#: eid/results/eid-print-results.php:218 eid/results/eid-result-status.php:126
+#: hepatitis/management/hepatitis-clinic-report.php:129
+#: hepatitis/management/hepatitis-clinic-report.php:220
+#: hepatitis/management/hepatitis-clinic-report.php:306
+#: hepatitis/management/hepatitis-clinic-report.php:360
+#: hepatitis/management/hepatitis-sample-rejection-report.php:69
+#: hepatitis/management/hepatitis-sample-status.php:86
+#: hepatitis/management/hepatitis-testing-target-report.php:203
+#: hepatitis/requests/hepatitis-requests.php:147
+#: hepatitis/results/hepatitis-failed-results.php:90
+#: hepatitis/results/hepatitis-manual-results.php:95
+#: hepatitis/results/hepatitis-print-results.php:101
+#: hepatitis/results/hepatitis-print-results.php:219
+#: hepatitis/results/hepatitis-result-status.php:132
+#: tb/management/tb-clinic-report.php:127
+#: tb/management/tb-clinic-report.php:217
+#: tb/management/tb-clinic-report.php:303
+#: tb/management/tb-clinic-report.php:357
+#: tb/management/tb-sample-rejection-report.php:67
+#: tb/management/tb-sample-status.php:83 tb/requests/tb-requests.php:153
+#: tb/results/tb-failed-results.php:90 tb/results/tb-manual-results.php:102
+#: tb/results/tb-print-results.php:84 tb/results/tb-print-results.php:201
+#: tb/results/tb-result-status.php:132 vl/requests/vlRequest.php:179
+#, fuzzy
 msgid "Reset"
-msgstr ""
+msgstr "Réinitialiser"
 
 #: covid-19/management/covid-19-clinic-report.php:128
 #: covid-19/management/covid-19-clinic-report.php:218
@@ -252,14 +740,30 @@ msgstr ""
 #: covid-19/management/covid-19-clinic-report.php:358
 #: covid-19/management/covid-19-sample-status.php:98
 #: covid-19/management/covid19TestingTargetReport.php:207
+#: eid/management/eid-clinic-report.php:130
+#: eid/management/eid-clinic-report.php:220
+#: eid/management/eid-clinic-report.php:303
+#: eid/management/eid-clinic-report.php:357
+#: eid/management/eid-sample-status.php:107
+#: eid/management/eidTestingTargetReport.php:205
+#: hepatitis/management/hepatitis-clinic-report.php:130
+#: hepatitis/management/hepatitis-clinic-report.php:221
+#: hepatitis/management/hepatitis-clinic-report.php:307
+#: hepatitis/management/hepatitis-clinic-report.php:361
+#: hepatitis/management/hepatitis-testing-target-report.php:205
+#: tb/management/tb-clinic-report.php:128
+#: tb/management/tb-clinic-report.php:218
+#: tb/management/tb-clinic-report.php:304
+#: tb/management/tb-clinic-report.php:358 tb/management/tb-sample-status.php:98
 #, fuzzy
 #| msgid "Export Results"
 msgid "Export to excel"
-msgstr "Exporter les résultats"
+msgstr "Exporter vers Excel"
 
 #: covid-19/management/covid-19-clinic-report.php:136
 #: covid-19/management/covid-19-clinic-report.php:225
 #: covid-19/management/covid-19-clinic-report.php:311
+#: covid-19/management/covid-19-clinic-report.php:340
 #: covid-19/management/covid-19-clinic-report.php:365
 #: covid-19/management/covid-19-export-data.php:177
 #: covid-19/management/covid-19-export-data.php:219
@@ -273,6 +777,48 @@ msgstr "Exporter les résultats"
 #: covid-19/results/covid-19-print-results.php:229
 #: covid-19/results/covid-19-print-results.php:270
 #: covid-19/results/covid-19-result-status.php:162
+#: eid/management/eid-clinic-report.php:138
+#: eid/management/eid-clinic-report.php:227
+#: eid/management/eid-clinic-report.php:310
+#: eid/management/eid-clinic-report.php:339
+#: eid/management/eid-clinic-report.php:364
+#: eid/management/eid-export-data.php:166
+#: eid/management/eid-export-data.php:211
+#: eid/requests/addSamplesFromManifest.php:60 eid/requests/eid-requests.php:184
+#: eid/results/eid-failed-results.php:117
+#: eid/results/eid-manual-results.php:101
+#: eid/results/eid-manual-results.php:154 eid/results/eid-print-results.php:112
+#: eid/results/eid-print-results.php:154 eid/results/eid-print-results.php:229
+#: eid/results/eid-print-results.php:270 eid/results/eid-result-status.php:156
+#: hepatitis/management/hepatitis-clinic-report.php:138
+#: hepatitis/management/hepatitis-clinic-report.php:228
+#: hepatitis/management/hepatitis-clinic-report.php:314
+#: hepatitis/management/hepatitis-clinic-report.php:343
+#: hepatitis/management/hepatitis-clinic-report.php:368
+#: hepatitis/management/hepatitis-export-data.php:166
+#: hepatitis/management/hepatitis-export-data.php:208
+#: hepatitis/requests/add-samples-from-manifest.php:51
+#: hepatitis/requests/hepatitis-requests.php:176
+#: hepatitis/results/hepatitis-failed-results.php:113
+#: hepatitis/results/hepatitis-manual-results.php:104
+#: hepatitis/results/hepatitis-manual-results.php:157
+#: hepatitis/results/hepatitis-print-results.php:112
+#: hepatitis/results/hepatitis-print-results.php:154
+#: hepatitis/results/hepatitis-print-results.php:230
+#: hepatitis/results/hepatitis-print-results.php:271
+#: hepatitis/results/hepatitis-result-status.php:162
+#: tb/management/tb-clinic-report.php:136
+#: tb/management/tb-clinic-report.php:225
+#: tb/management/tb-clinic-report.php:311
+#: tb/management/tb-clinic-report.php:340
+#: tb/management/tb-clinic-report.php:365 tb/management/tb-export-data.php:177
+#: tb/management/tb-export-data.php:219
+#: tb/requests/addSamplesFromManifest.php:51 tb/requests/tb-requests.php:182
+#: tb/results/tb-failed-results.php:113 tb/results/tb-manual-results.php:111
+#: tb/results/tb-manual-results.php:164 tb/results/tb-print-results.php:95
+#: tb/results/tb-print-results.php:137 tb/results/tb-print-results.php:212
+#: tb/results/tb-print-results.php:253 tb/results/tb-result-status.php:162
+#: vl/requests/vlRequest.php:213 vl/requests/vlRequest.php:264
 #, fuzzy
 #| msgid "Sample Type"
 msgid "Sample Code"
@@ -290,6 +836,35 @@ msgstr "Échantillon type"
 #: covid-19/results/covid-19-print-results.php:156
 #: covid-19/results/covid-19-print-results.php:272
 #: covid-19/results/covid-19-result-status.php:164
+#: eid/management/eid-clinic-report.php:140
+#: eid/management/eid-clinic-report.php:229
+#: eid/management/eid-clinic-report.php:312
+#: eid/management/eid-clinic-report.php:366
+#: eid/management/eid-export-data.php:213
+#: eid/requests/addSamplesFromManifest.php:62 eid/requests/eid-requests.php:186
+#: eid/results/eid-failed-results.php:119
+#: eid/results/eid-manual-results.php:156 eid/results/eid-print-results.php:156
+#: eid/results/eid-print-results.php:272 eid/results/eid-result-status.php:158
+#: hepatitis/management/hepatitis-clinic-report.php:140
+#: hepatitis/management/hepatitis-clinic-report.php:230
+#: hepatitis/management/hepatitis-clinic-report.php:316
+#: hepatitis/management/hepatitis-clinic-report.php:370
+#: hepatitis/management/hepatitis-export-data.php:210
+#: hepatitis/requests/add-samples-from-manifest.php:53
+#: hepatitis/requests/hepatitis-requests.php:178
+#: hepatitis/results/hepatitis-failed-results.php:115
+#: hepatitis/results/hepatitis-manual-results.php:159
+#: hepatitis/results/hepatitis-print-results.php:156
+#: hepatitis/results/hepatitis-print-results.php:273
+#: hepatitis/results/hepatitis-result-status.php:164
+#: tb/management/tb-clinic-report.php:138
+#: tb/management/tb-clinic-report.php:227
+#: tb/management/tb-clinic-report.php:313
+#: tb/management/tb-clinic-report.php:367 tb/management/tb-export-data.php:221
+#: tb/requests/addSamplesFromManifest.php:53 tb/requests/tb-requests.php:184
+#: tb/results/tb-failed-results.php:115 tb/results/tb-manual-results.php:166
+#: tb/results/tb-print-results.php:139 tb/results/tb-print-results.php:255
+#: tb/results/tb-result-status.php:164 vl/requests/vlRequest.php:266
 #, fuzzy
 #| msgid "Move Samples"
 msgid "Remote Sample"
@@ -307,12 +882,43 @@ msgstr "Déplacer les échantillons"
 #: covid-19/results/covid-19-print-results.php:156
 #: covid-19/results/covid-19-print-results.php:272
 #: covid-19/results/covid-19-result-status.php:164
+#: eid/management/eid-clinic-report.php:140
+#: eid/management/eid-clinic-report.php:229
+#: eid/management/eid-clinic-report.php:312
+#: eid/management/eid-clinic-report.php:366
+#: eid/management/eid-export-data.php:213
+#: eid/requests/addSamplesFromManifest.php:62 eid/requests/eid-requests.php:186
+#: eid/results/eid-failed-results.php:119
+#: eid/results/eid-manual-results.php:156 eid/results/eid-print-results.php:156
+#: eid/results/eid-print-results.php:272 eid/results/eid-result-status.php:158
+#: hepatitis/management/hepatitis-clinic-report.php:140
+#: hepatitis/management/hepatitis-clinic-report.php:230
+#: hepatitis/management/hepatitis-clinic-report.php:316
+#: hepatitis/management/hepatitis-clinic-report.php:370
+#: hepatitis/management/hepatitis-export-data.php:210
+#: hepatitis/requests/add-samples-from-manifest.php:53
+#: hepatitis/requests/hepatitis-requests.php:178
+#: hepatitis/results/hepatitis-failed-results.php:115
+#: hepatitis/results/hepatitis-manual-results.php:159
+#: hepatitis/results/hepatitis-print-results.php:156
+#: hepatitis/results/hepatitis-print-results.php:273
+#: hepatitis/results/hepatitis-result-status.php:164
+#: tb/management/tb-clinic-report.php:138
+#: tb/management/tb-clinic-report.php:227
+#: tb/management/tb-clinic-report.php:313
+#: tb/management/tb-clinic-report.php:367 tb/management/tb-export-data.php:221
+#: tb/requests/addSamplesFromManifest.php:53 tb/requests/tb-requests.php:184
+#: tb/results/tb-failed-results.php:115 tb/results/tb-manual-results.php:166
+#: tb/results/tb-print-results.php:139 tb/results/tb-print-results.php:255
+#: tb/results/tb-result-status.php:164
+#, fuzzy
 msgid "Code"
-msgstr ""
+msgstr "Code"
 
 #: covid-19/management/covid-19-clinic-report.php:140
 #: covid-19/management/covid-19-clinic-report.php:229
 #: covid-19/management/covid-19-clinic-report.php:315
+#: covid-19/management/covid-19-clinic-report.php:345
 #: covid-19/management/covid-19-clinic-report.php:372
 #: covid-19/management/covid-19-export-data.php:76
 #: covid-19/management/covid-19-export-data.php:196
@@ -334,6 +940,68 @@ msgstr ""
 #: covid-19/results/covid-19-print-results.php:248
 #: covid-19/results/covid-19-print-results.php:277
 #: covid-19/results/covid-19-result-status.php:170
+#: eid/management/eid-clinic-report.php:96
+#: eid/management/eid-clinic-report.php:142
+#: eid/management/eid-clinic-report.php:195
+#: eid/management/eid-clinic-report.php:231
+#: eid/management/eid-clinic-report.php:281
+#: eid/management/eid-clinic-report.php:314
+#: eid/management/eid-clinic-report.php:344
+#: eid/management/eid-clinic-report.php:371
+#: eid/management/eid-export-data.php:65 eid/management/eid-export-data.php:185
+#: eid/management/eid-export-data.php:218
+#: eid/management/eidTestingTargetReport.php:214
+#: eid/management/get-rejected-samples.php:77
+#: eid/requests/addSamplesFromManifest.php:66 eid/requests/eid-requests.php:80
+#: eid/requests/eid-requests.php:190 eid/results/eid-failed-results.php:74
+#: eid/results/eid-failed-results.php:123 eid/results/eid-manual-results.php:80
+#: eid/results/eid-manual-results.php:120
+#: eid/results/eid-manual-results.php:159 eid/results/eid-print-results.php:87
+#: eid/results/eid-print-results.php:131 eid/results/eid-print-results.php:161
+#: eid/results/eid-print-results.php:204 eid/results/eid-print-results.php:248
+#: eid/results/eid-print-results.php:277 eid/results/eid-result-status.php:110
+#: eid/results/eid-result-status.php:166
+#: hepatitis/management/get-rejected-samples.php:80
+#: hepatitis/management/hepatitis-clinic-report.php:142
+#: hepatitis/management/hepatitis-clinic-report.php:232
+#: hepatitis/management/hepatitis-clinic-report.php:318
+#: hepatitis/management/hepatitis-clinic-report.php:348
+#: hepatitis/management/hepatitis-clinic-report.php:375
+#: hepatitis/management/hepatitis-export-data.php:73
+#: hepatitis/management/hepatitis-export-data.php:185
+#: hepatitis/management/hepatitis-export-data.php:215
+#: hepatitis/management/hepatitis-testing-target-report.php:214
+#: hepatitis/requests/add-samples-from-manifest.php:57
+#: hepatitis/requests/hepatitis-requests.php:81
+#: hepatitis/requests/hepatitis-requests.php:182
+#: hepatitis/results/hepatitis-failed-results.php:70
+#: hepatitis/results/hepatitis-failed-results.php:119
+#: hepatitis/results/hepatitis-manual-results.php:76
+#: hepatitis/results/hepatitis-manual-results.php:123
+#: hepatitis/results/hepatitis-manual-results.php:162
+#: hepatitis/results/hepatitis-print-results.php:87
+#: hepatitis/results/hepatitis-print-results.php:131
+#: hepatitis/results/hepatitis-print-results.php:161
+#: hepatitis/results/hepatitis-print-results.php:205
+#: hepatitis/results/hepatitis-print-results.php:249
+#: hepatitis/results/hepatitis-print-results.php:278
+#: hepatitis/results/hepatitis-result-status.php:170
+#: tb/management/get-rejected-samples.php:77
+#: tb/management/tb-clinic-report.php:140
+#: tb/management/tb-clinic-report.php:229
+#: tb/management/tb-clinic-report.php:315
+#: tb/management/tb-clinic-report.php:345
+#: tb/management/tb-clinic-report.php:372 tb/management/tb-export-data.php:76
+#: tb/management/tb-export-data.php:196 tb/management/tb-export-data.php:226
+#: tb/requests/addSamplesFromManifest.php:57 tb/requests/tb-requests.php:87
+#: tb/requests/tb-requests.php:188 tb/results/tb-failed-results.php:70
+#: tb/results/tb-failed-results.php:119 tb/results/tb-manual-results.php:83
+#: tb/results/tb-manual-results.php:130 tb/results/tb-manual-results.php:169
+#: tb/results/tb-print-results.php:70 tb/results/tb-print-results.php:114
+#: tb/results/tb-print-results.php:144 tb/results/tb-print-results.php:187
+#: tb/results/tb-print-results.php:231 tb/results/tb-print-results.php:260
+#: tb/results/tb-result-status.php:170 vl/requests/vlRequest.php:83
+#: vl/requests/vlRequest.php:235 vl/requests/vlRequest.php:272
 #, fuzzy
 #| msgid "Facilities"
 msgid "Facility Name"
@@ -342,16 +1010,40 @@ msgstr "Installations"
 #: covid-19/management/covid-19-clinic-report.php:141
 #: covid-19/management/covid-19-clinic-report.php:230
 #: covid-19/management/covid-19-clinic-report.php:316
+#: hepatitis/management/hepatitis-clinic-report.php:143
+#: hepatitis/management/hepatitis-clinic-report.php:233
+#: hepatitis/management/hepatitis-clinic-report.php:319
+#: tb/management/tb-clinic-report.php:141
+#: tb/management/tb-clinic-report.php:230
+#: tb/management/tb-clinic-report.php:316
 msgid "Patient's ID"
 msgstr ""
 
 #: covid-19/management/covid-19-clinic-report.php:142
 #: covid-19/management/covid-19-clinic-report.php:231
 #: covid-19/management/covid-19-clinic-report.php:317
+#: covid-19/management/covid-19-clinic-report.php:344
 #: covid-19/management/covid-19-clinic-report.php:371
 #: covid-19/results/covid-19-manual-results.php:122
 #: covid-19/results/covid-19-print-results.php:128
 #: covid-19/results/covid-19-print-results.php:245
+#: eid/results/eid-manual-results.php:117 eid/results/eid-print-results.php:128
+#: eid/results/eid-print-results.php:245
+#: hepatitis/management/hepatitis-clinic-report.php:144
+#: hepatitis/management/hepatitis-clinic-report.php:234
+#: hepatitis/management/hepatitis-clinic-report.php:320
+#: hepatitis/management/hepatitis-clinic-report.php:347
+#: hepatitis/management/hepatitis-clinic-report.php:374
+#: hepatitis/results/hepatitis-manual-results.php:120
+#: hepatitis/results/hepatitis-print-results.php:128
+#: hepatitis/results/hepatitis-print-results.php:246
+#: tb/management/tb-clinic-report.php:142
+#: tb/management/tb-clinic-report.php:231
+#: tb/management/tb-clinic-report.php:317
+#: tb/management/tb-clinic-report.php:344
+#: tb/management/tb-clinic-report.php:371 tb/results/tb-manual-results.php:127
+#: tb/results/tb-print-results.php:111 tb/results/tb-print-results.php:228
+#: vl/requests/vlRequest.php:232 vl/requests/vlRequest.php:271
 msgid "Patient's Name"
 msgstr ""
 
@@ -364,6 +1056,7 @@ msgstr ""
 #: covid-19/management/covid-19-clinic-report.php:247
 #: covid-19/management/covid-19-clinic-report.php:318
 #: covid-19/management/covid-19-clinic-report.php:332
+#: covid-19/management/covid-19-clinic-report.php:341
 #: covid-19/management/covid-19-clinic-report.php:369
 #: covid-19/management/covid-19-export-data.php:68
 #: covid-19/management/covid-19-sample-rejection-report.php:42
@@ -376,12 +1069,61 @@ msgstr ""
 #: covid-19/results/covid-19-print-results.php:180
 #: covid-19/results/covid-19-result-status.php:89
 #: covid-19/results/covid-19-result-status.php:166
+#: eid/management/eid-clinic-report.php:146
+#: eid/management/eid-clinic-report.php:234
+#: eid/management/eid-clinic-report.php:249
+#: eid/management/eid-clinic-report.php:317
+#: eid/management/eid-clinic-report.php:331
+#: eid/management/eid-clinic-report.php:340
+#: eid/management/eid-clinic-report.php:368
+#: eid/management/eid-export-data.php:61
+#: eid/management/eid-sample-rejection-report.php:40
+#: eid/management/eid-sample-status.php:57
+#: eid/management/eid-sample-status.php:112 eid/requests/eid-requests.php:52
+#: eid/results/eid-failed-results.php:46 eid/results/eid-print-results.php:63
+#: eid/results/eid-print-results.php:180 eid/results/eid-result-status.php:90
+#: eid/results/eid-result-status.php:160
+#: hepatitis/management/hepatitis-clinic-report.php:146
+#: hepatitis/management/hepatitis-clinic-report.php:235
+#: hepatitis/management/hepatitis-clinic-report.php:250
+#: hepatitis/management/hepatitis-clinic-report.php:321
+#: hepatitis/management/hepatitis-clinic-report.php:335
+#: hepatitis/management/hepatitis-clinic-report.php:344
+#: hepatitis/management/hepatitis-clinic-report.php:372
+#: hepatitis/management/hepatitis-export-data.php:69
+#: hepatitis/management/hepatitis-sample-rejection-report.php:44
+#: hepatitis/management/hepatitis-sample-status.php:51
+#: hepatitis/management/hepatitis-sample-status.php:106
+#: hepatitis/requests/hepatitis-requests.php:53
+#: hepatitis/results/hepatitis-failed-results.php:42
+#: hepatitis/results/hepatitis-manual-results.php:57
+#: hepatitis/results/hepatitis-print-results.php:63
+#: hepatitis/results/hepatitis-print-results.php:181
+#: hepatitis/results/hepatitis-result-status.php:89
+#: hepatitis/results/hepatitis-result-status.php:166
+#: tb/management/tb-clinic-report.php:144
+#: tb/management/tb-clinic-report.php:232
+#: tb/management/tb-clinic-report.php:247
+#: tb/management/tb-clinic-report.php:318
+#: tb/management/tb-clinic-report.php:332
+#: tb/management/tb-clinic-report.php:341
+#: tb/management/tb-clinic-report.php:369 tb/management/tb-export-data.php:68
+#: tb/management/tb-sample-rejection-report.php:42
+#: tb/management/tb-sample-status.php:48 tb/management/tb-sample-status.php:103
+#: tb/requests/tb-requests.php:59 tb/results/tb-failed-results.php:42
+#: tb/results/tb-manual-results.php:64 tb/results/tb-print-results.php:46
+#: tb/results/tb-print-results.php:163 tb/results/tb-result-status.php:89
+#: tb/results/tb-result-status.php:166 vl/requests/vlRequest.php:51
+#: vl/requests/vlRequest.php:223
 #, fuzzy
 #| msgid "Sample Rejection Report"
 msgid "Sample Collection Date"
 msgstr "Exemple de rapport de rejet"
 
 #: covid-19/management/covid-19-clinic-report.php:145
+#: eid/management/eid-clinic-report.php:147
+#: hepatitis/management/hepatitis-clinic-report.php:147
+#: tb/management/tb-clinic-report.php:145
 #, fuzzy
 #| msgid "Sample Type"
 msgid "Sample Tested Date"
@@ -391,10 +1133,21 @@ msgstr "Échantillon type"
 #: covid-19/management/covid-19-export-data.php:84
 #: covid-19/management/covid-19-sample-status.php:69
 #: covid-19/requests/covid-19-requests.php:107
+#: eid/management/eid-clinic-report.php:148
+#: eid/management/eid-export-data.php:71
+#: eid/management/eid-sample-status.php:78 eid/requests/eid-requests.php:96
+#: hepatitis/management/hepatitis-clinic-report.php:148
+#: hepatitis/management/hepatitis-export-data.php:79
+#: hepatitis/management/hepatitis-sample-status.php:72
+#: hepatitis/requests/hepatitis-requests.php:97
+#: tb/management/tb-clinic-report.php:146 tb/management/tb-export-data.php:84
+#: tb/management/tb-sample-status.php:69 tb/requests/tb-requests.php:103
+#: vl/requests/vlRequest.php:99
 msgid "Testing Lab"
 msgstr ""
 
 #: covid-19/management/covid-19-clinic-report.php:147
+#: covid-19/management/covid-19-clinic-report.php:349
 #: covid-19/management/covid-19-clinic-report.php:376
 #: covid-19/management/covid-19-export-data.php:95
 #: covid-19/management/covid-19-export-data.php:199
@@ -409,97 +1162,70 @@ msgstr ""
 #: covid-19/results/covid-19-print-results.php:254
 #: covid-19/results/covid-19-print-results.php:278
 #: covid-19/results/covid-19-result-status.php:171
+#: eid/management/eid-clinic-report.php:149
+#: eid/management/eid-clinic-report.php:348
+#: eid/management/eid-clinic-report.php:375
+#: eid/management/eid-export-data.php:84 eid/management/eid-export-data.php:191
+#: eid/management/eid-export-data.php:221
+#: eid/requests/addSamplesFromManifest.php:73 eid/requests/eid-requests.php:197
+#: eid/results/eid-failed-results.php:130
+#: eid/results/eid-manual-results.php:126
+#: eid/results/eid-manual-results.php:164 eid/results/eid-print-results.php:137
+#: eid/results/eid-print-results.php:162 eid/results/eid-print-results.php:254
+#: eid/results/eid-print-results.php:278 eid/results/eid-result-status.php:167
+#: hepatitis/management/hepatitis-clinic-report.php:352
+#: hepatitis/management/hepatitis-export-data.php:188
+#: hepatitis/results/hepatitis-failed-results.php:126
+#: hepatitis/results/hepatitis-manual-results.php:129
+#: hepatitis/results/hepatitis-print-results.php:137
+#: hepatitis/results/hepatitis-print-results.php:255
+#: tb/management/tb-clinic-report.php:147
+#: tb/management/tb-clinic-report.php:349
+#: tb/management/tb-clinic-report.php:376 tb/management/tb-export-data.php:95
+#: tb/management/tb-export-data.php:199 tb/management/tb-export-data.php:228
+#: tb/requests/addSamplesFromManifest.php:62 tb/requests/tb-requests.php:197
+#: tb/results/tb-failed-results.php:126 tb/results/tb-manual-results.php:136
+#: tb/results/tb-manual-results.php:172 tb/results/tb-print-results.php:120
+#: tb/results/tb-print-results.php:145 tb/results/tb-print-results.php:237
+#: tb/results/tb-print-results.php:261 tb/results/tb-result-status.php:171
+#: vl/requests/vlRequest.php:247 vl/requests/vlRequest.php:276
 #, fuzzy
 #| msgid "Results"
 msgid "Result"
-msgstr "Résultats"
+msgstr "Résultat"
 
 #: covid-19/management/covid-19-clinic-report.php:233
 #: covid-19/management/covid-19-clinic-report.php:319
+#: eid/management/eid-clinic-report.php:235
+#: eid/management/eid-clinic-report.php:318
+#: hepatitis/management/hepatitis-clinic-report.php:236
+#: hepatitis/management/hepatitis-clinic-report.php:322
+#: tb/management/tb-clinic-report.php:233
+#: tb/management/tb-clinic-report.php:319
 msgid "VL Lab Name"
 msgstr ""
 
 #: covid-19/management/covid-19-clinic-report.php:234
 #: covid-19/management/get-rejected-samples.php:78
+#: eid/management/eid-clinic-report.php:236
+#: eid/management/get-rejected-samples.php:78
+#: hepatitis/management/get-rejected-samples.php:81
+#: hepatitis/management/hepatitis-clinic-report.php:237
+#: tb/management/get-rejected-samples.php:78
+#: tb/management/tb-clinic-report.php:234
 #, fuzzy
 #| msgid "Rejection Reasons"
 msgid "Rejection Reason"
-msgstr "Motifs de rejet"
+msgstr "Motif de rejet"
 
 #: covid-19/management/covid-19-clinic-report.php:336
+#: eid/management/eid-clinic-report.php:335
+#: tb/management/tb-clinic-report.php:336
+#, fuzzy
 msgid "Fields"
-msgstr ""
+msgstr "Champs"
 
-#: covid-19/management/covid-19-clinic-report.php:373
-#: covid-19/requests/addSamplesFromManifest.php:60
-#: covid-19/requests/covid-19-requests.php:97
-#: covid-19/requests/covid-19-requests.php:216
-#: covid-19/results/covid-19-failed-results.php:76
-#: covid-19/results/covid-19-failed-results.php:124
-msgid "Province/State"
-msgstr ""
-
-#: covid-19/management/covid-19-clinic-report.php:374
-#: covid-19/requests/addSamplesFromManifest.php:61
-#: covid-19/requests/covid-19-requests.php:101
-#: covid-19/requests/covid-19-requests.php:217
-#: covid-19/results/covid-19-failed-results.php:80
-#: covid-19/results/covid-19-failed-results.php:125
-msgid "District/County"
-msgstr ""
-
-#: covid-19/management/covid-19-export-data.php:52
-#, fuzzy
-#| msgid "Export Results"
-msgid "Export Data"
-msgstr "Exporter les résultats"
-
-#: covid-19/management/covid-19-export-data.php:72
-msgid "Sample Received At Lab"
-msgstr ""
-
-#: covid-19/management/covid-19-export-data.php:106
-msgid "Last Print Date"
-msgstr ""
-
-#: covid-19/management/covid-19-export-data.php:136
-#: covid-19/requests/covid-19-requests.php:136 header.php:452
-msgid "Funding Sources"
-msgstr "Sources de financement"
-
-#: covid-19/management/covid-19-export-data.php:147
-#: covid-19/requests/covid-19-requests.php:147
-#, fuzzy
-#| msgid "Implementation Partners"
-msgid "Implementing Partners"
-msgstr "Partenaires de mise en œuvre"
-
-#: covid-19/management/covid-19-export-data.php:164
-msgid "Clear Search"
-msgstr ""
-
-#: covid-19/management/covid-19-export-data.php:166
-msgid "Download"
-msgstr ""
-
-#: covid-19/management/covid-19-export-data.php:168
-#: covid-19/results/covid-19-manual-results.php:98
-#: covid-19/results/covid-19-print-results.php:103
-#: covid-19/results/covid-19-print-results.php:220
-#, fuzzy
-#| msgid "Management"
-msgid "Manage Columns"
-msgstr "Gestion"
-
-#: covid-19/management/covid-19-export-data.php:183
-#: covid-19/results/covid-19-manual-results.php:112
-#: covid-19/results/covid-19-print-results.php:118
-#: covid-19/results/covid-19-print-results.php:235
-#, fuzzy
-#| msgid "Remote Sample Tracking Module"
-msgid "Remote Sample Code"
-msgstr "Module de suivi des échantillons à distance"
-
+#: covid-19/management/covid-19-clinic-report.php:343
 #: covid-19/management/covid-19-export-data.php:190
 #: covid-19/management/covid-19-export-data.php:224
 #: covid-19/requests/addSamplesFromManifest.php:58
@@ -509,8 +1235,185 @@ msgstr "Module de suivi des échantillons à distance"
 #: covid-19/results/covid-19-print-results.php:159
 #: covid-19/results/covid-19-print-results.php:275
 #: covid-19/results/covid-19-result-status.php:168
+#: eid/management/eid-clinic-report.php:342
+#: hepatitis/management/hepatitis-clinic-report.php:346
+#: hepatitis/management/hepatitis-export-data.php:179
+#: hepatitis/management/hepatitis-export-data.php:213
+#: hepatitis/requests/add-samples-from-manifest.php:58
+#: hepatitis/requests/hepatitis-requests.php:183
+#: hepatitis/results/hepatitis-manual-results.php:163
+#: hepatitis/results/hepatitis-print-results.php:159
+#: hepatitis/results/hepatitis-print-results.php:276
+#: hepatitis/results/hepatitis-result-status.php:168
+#: tb/management/tb-clinic-report.php:343 tb/management/tb-export-data.php:190
+#: tb/management/tb-export-data.php:224
+#: tb/requests/addSamplesFromManifest.php:58 tb/requests/tb-requests.php:192
+#: tb/results/tb-manual-results.php:170 tb/results/tb-print-results.php:142
+#: tb/results/tb-print-results.php:258 tb/results/tb-result-status.php:168
+#, fuzzy
 msgid "Patient ID"
+msgstr "ID Patient"
+
+#: covid-19/management/covid-19-clinic-report.php:346
+#: eid/management/eid-clinic-report.php:345
+#: hepatitis/management/hepatitis-clinic-report.php:349
+#: tb/management/tb-clinic-report.php:346
+#, fuzzy
+msgid "Province"
+msgstr "Province"
+
+#: covid-19/management/covid-19-clinic-report.php:347
+#: eid/management/eid-clinic-report.php:346
+#: hepatitis/management/hepatitis-clinic-report.php:350
+#: tb/management/tb-clinic-report.php:347
+#, fuzzy
+msgid "County"
+msgstr "Pays"
+
+#: covid-19/management/covid-19-clinic-report.php:373
+#: covid-19/requests/addSamplesFromManifest.php:60
+#: covid-19/requests/covid-19-requests.php:97
+#: covid-19/requests/covid-19-requests.php:216
+#: covid-19/results/covid-19-failed-results.php:76
+#: covid-19/results/covid-19-failed-results.php:124
+#: eid/management/eid-clinic-report.php:372
+#: eid/requests/addSamplesFromManifest.php:71 eid/requests/eid-requests.php:86
+#: eid/requests/eid-requests.php:195 eid/results/eid-failed-results.php:80
+#: eid/results/eid-failed-results.php:128
+#: hepatitis/management/hepatitis-clinic-report.php:376
+#: hepatitis/requests/add-samples-from-manifest.php:60
+#: hepatitis/requests/hepatitis-requests.php:87
+#: hepatitis/requests/hepatitis-requests.php:185
+#: hepatitis/results/hepatitis-failed-results.php:76
+#: hepatitis/results/hepatitis-failed-results.php:124
+#: tb/management/tb-clinic-report.php:373
+#: tb/requests/addSamplesFromManifest.php:60 tb/requests/tb-requests.php:93
+#: tb/requests/tb-requests.php:195 tb/results/tb-failed-results.php:76
+#: tb/results/tb-failed-results.php:124 vl/requests/vlRequest.php:89
+#: vl/requests/vlRequest.php:238 vl/requests/vlRequest.php:273
+#, fuzzy
+msgid "Province/State"
+msgstr "Province/Etat"
+
+#: covid-19/management/covid-19-clinic-report.php:374
+#: covid-19/requests/addSamplesFromManifest.php:61
+#: covid-19/requests/covid-19-requests.php:101
+#: covid-19/requests/covid-19-requests.php:217
+#: covid-19/results/covid-19-failed-results.php:80
+#: covid-19/results/covid-19-failed-results.php:125
+#: eid/management/eid-clinic-report.php:373
+#: eid/requests/addSamplesFromManifest.php:72 eid/requests/eid-requests.php:90
+#: eid/requests/eid-requests.php:196 eid/results/eid-failed-results.php:84
+#: eid/results/eid-failed-results.php:129
+#: hepatitis/management/hepatitis-clinic-report.php:377
+#: hepatitis/requests/add-samples-from-manifest.php:61
+#: hepatitis/requests/hepatitis-requests.php:91
+#: hepatitis/requests/hepatitis-requests.php:186
+#: hepatitis/results/hepatitis-failed-results.php:80
+#: hepatitis/results/hepatitis-failed-results.php:125
+#: tb/management/tb-clinic-report.php:374
+#: tb/requests/addSamplesFromManifest.php:61 tb/requests/tb-requests.php:97
+#: tb/requests/tb-requests.php:196 tb/results/tb-failed-results.php:80
+#: tb/results/tb-failed-results.php:125 vl/requests/vlRequest.php:93
+#: vl/requests/vlRequest.php:241 vl/requests/vlRequest.php:274
+msgid "District/County"
 msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:52
+#: eid/management/eid-export-data.php:46
+#: hepatitis/management/hepatitis-export-data.php:53
+#: tb/management/tb-export-data.php:52
+#, fuzzy
+#| msgid "Export Results"
+msgid "Export Data"
+msgstr "Exporter les données"
+
+#: covid-19/management/covid-19-export-data.php:72
+#: tb/management/tb-export-data.php:72
+msgid "Sample Received At Lab"
+msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:106
+#: eid/management/eid-export-data.php:94
+#: hepatitis/management/hepatitis-export-data.php:146
+#: tb/management/tb-export-data.php:106
+msgid "Last Print Date"
+msgstr ""
+
+#: covid-19/management/covid-19-export-data.php:136
+#: covid-19/requests/covid-19-requests.php:136
+#: eid/management/eid-export-data.php:124 eid/requests/eid-requests.php:121
+#: header.php:452 hepatitis/management/hepatitis-export-data.php:121
+#: hepatitis/requests/hepatitis-requests.php:122
+#: tb/management/tb-export-data.php:136 tb/requests/tb-requests.php:128
+#: vl/requests/vlRequest.php:144
+msgid "Funding Sources"
+msgstr "Sources de financement"
+
+#: covid-19/management/covid-19-export-data.php:147
+#: covid-19/requests/covid-19-requests.php:147
+#: eid/management/eid-export-data.php:137 eid/requests/eid-requests.php:132
+#: hepatitis/management/hepatitis-export-data.php:132
+#: hepatitis/requests/hepatitis-requests.php:133
+#: tb/management/tb-export-data.php:147 tb/requests/tb-requests.php:139
+#: vl/requests/vlRequest.php:155
+#, fuzzy
+#| msgid "Implementation Partners"
+msgid "Implementing Partners"
+msgstr "Partenaires de mise en œuvre"
+
+#: covid-19/management/covid-19-export-data.php:164
+#: eid/management/eid-export-data.php:153
+#: hepatitis/management/hepatitis-export-data.php:153
+#: tb/management/tb-export-data.php:164
+#, fuzzy
+msgid "Clear Search"
+msgstr "Effacer la recherche"
+
+#: covid-19/management/covid-19-export-data.php:166
+#: eid/management/eid-export-data.php:155
+#: hepatitis/management/hepatitis-export-data.php:155
+#: tb/management/tb-export-data.php:166
+#, fuzzy
+msgid "Download"
+msgstr "Télécharger"
+
+#: covid-19/management/covid-19-export-data.php:168
+#: covid-19/results/covid-19-manual-results.php:98
+#: covid-19/results/covid-19-print-results.php:103
+#: covid-19/results/covid-19-print-results.php:220
+#: eid/management/eid-export-data.php:157 eid/results/eid-manual-results.php:93
+#: eid/results/eid-print-results.php:103 eid/results/eid-print-results.php:220
+#: hepatitis/management/hepatitis-export-data.php:157
+#: hepatitis/results/hepatitis-manual-results.php:96
+#: hepatitis/results/hepatitis-print-results.php:103
+#: hepatitis/results/hepatitis-print-results.php:221
+#: tb/management/tb-export-data.php:168 tb/results/tb-manual-results.php:103
+#: tb/results/tb-print-results.php:86 tb/results/tb-print-results.php:203
+#: vl/requests/vlRequest.php:188 vl/requests/vlRequest.php:203
+#, fuzzy
+#| msgid "Management"
+msgid "Manage Columns"
+msgstr "Gestion"
+
+#: covid-19/management/covid-19-export-data.php:183
+#: covid-19/results/covid-19-manual-results.php:112
+#: covid-19/results/covid-19-print-results.php:118
+#: covid-19/results/covid-19-print-results.php:235
+#: eid/management/eid-export-data.php:172
+#: eid/results/eid-manual-results.php:107 eid/results/eid-print-results.php:118
+#: eid/results/eid-print-results.php:235
+#: hepatitis/management/hepatitis-export-data.php:172
+#: hepatitis/results/hepatitis-manual-results.php:110
+#: hepatitis/results/hepatitis-print-results.php:118
+#: hepatitis/results/hepatitis-print-results.php:236
+#: tb/management/tb-export-data.php:183 tb/results/tb-manual-results.php:117
+#: tb/results/tb-print-results.php:101 tb/results/tb-print-results.php:218
+#: vl/requests/vlRequest.php:219
+#, fuzzy
+#| msgid "Remote Sample Tracking Module"
+msgid "Remote Sample Code"
+msgstr "Module de suivi des échantillons à distance"
 
 #: covid-19/management/covid-19-export-data.php:193
 #: covid-19/management/covid-19-export-data.php:225
@@ -519,11 +1422,28 @@ msgstr ""
 #: covid-19/results/covid-19-manual-results.php:166
 #: covid-19/results/covid-19-print-results.php:160
 #: covid-19/results/covid-19-print-results.php:276
+#: hepatitis/management/hepatitis-export-data.php:182
+#: hepatitis/management/hepatitis-export-data.php:214
+#: hepatitis/requests/add-samples-from-manifest.php:59
+#: hepatitis/requests/hepatitis-requests.php:184
+#: hepatitis/results/hepatitis-manual-results.php:164
+#: hepatitis/results/hepatitis-print-results.php:160
+#: hepatitis/results/hepatitis-print-results.php:277
+#: tb/management/tb-export-data.php:193 tb/management/tb-export-data.php:225
+#: tb/requests/addSamplesFromManifest.php:59 tb/requests/tb-requests.php:194
+#: tb/results/tb-manual-results.php:171 tb/results/tb-print-results.php:143
+#: tb/results/tb-print-results.php:259
+#, fuzzy
 msgid "Patient Name"
-msgstr ""
+msgstr "Nom du patient"
 
 #: covid-19/management/covid-19-export-data.php:205
 #: covid-19/management/covid-19-export-data.php:230
+#: eid/management/eid-export-data.php:197
+#: eid/management/eid-export-data.php:223
+#: hepatitis/management/hepatitis-export-data.php:194
+#: hepatitis/management/hepatitis-export-data.php:219
+#: tb/management/tb-export-data.php:205 tb/management/tb-export-data.php:230
 #, fuzzy
 #| msgid "Funding Sources"
 msgid "Funding Source"
@@ -531,6 +1451,11 @@ msgstr "Sources de financement"
 
 #: covid-19/management/covid-19-export-data.php:208
 #: covid-19/management/covid-19-export-data.php:231
+#: eid/management/eid-export-data.php:200
+#: eid/management/eid-export-data.php:224
+#: hepatitis/management/hepatitis-export-data.php:197
+#: hepatitis/management/hepatitis-export-data.php:220
+#: tb/management/tb-export-data.php:208 tb/management/tb-export-data.php:231
 #, fuzzy
 #| msgid "Implementation Partners"
 msgid "Implementing Partner"
@@ -539,20 +1464,36 @@ msgstr "Partenaires de mise en œuvre"
 #: covid-19/management/covid-19-export-data.php:227
 #: covid-19/management/covid19TestingTargetReport.php:185
 #: covid-19/management/get-rejected-samples.php:76
+#: eid/management/eid-export-data.php:219
+#: eid/management/eidTestingTargetReport.php:183
+#: eid/management/get-rejected-samples.php:76
+#: hepatitis/management/get-rejected-samples.php:79
+#: hepatitis/management/hepatitis-testing-target-report.php:183
+#: tb/management/get-rejected-samples.php:76
+#: tb/management/tb-export-data.php:227
 msgid "Lab Name"
 msgstr ""
 
 #: covid-19/management/covid-19-sample-rejection-report.php:31
+#: eid/management/eid-sample-rejection-report.php:29
+#: hepatitis/management/hepatitis-sample-rejection-report.php:33
+#: tb/management/tb-sample-rejection-report.php:31
 #, fuzzy
 #| msgid "Rejection Reasons"
 msgid "Rejection Result"
 msgstr "Motifs de rejet"
 
 #: covid-19/management/covid-19-sample-rejection-report.php:46
+#: eid/management/eid-sample-rejection-report.php:44
+#: hepatitis/management/hepatitis-sample-rejection-report.php:48
+#: tb/management/tb-sample-rejection-report.php:46
 msgid "Lab"
 msgstr ""
 
 #: covid-19/management/covid-19-sample-rejection-report.php:55
+#: eid/management/eid-sample-rejection-report.php:53
+#: hepatitis/management/hepatitis-sample-rejection-report.php:57
+#: tb/management/tb-sample-rejection-report.php:55
 #, fuzzy
 #| msgid "Clinic Report"
 msgid "Clinic Name"
@@ -577,16 +1518,25 @@ msgid "Covid-19 Sample ID"
 msgstr "Déplacer les échantillons"
 
 #: covid-19/management/covid-19-sample-status.php:104
+#: eid/management/eid-sample-status.php:113
+#: hepatitis/management/hepatitis-sample-status.php:107
+#: tb/management/tb-sample-status.php:104
 msgid "Sample Received Date in Lab"
 msgstr ""
 
 #: covid-19/management/covid-19-sample-status.php:106
+#: eid/management/eid-sample-status.php:115
+#: hepatitis/management/hepatitis-sample-status.php:109
+#: tb/management/tb-sample-status.php:106
 #, fuzzy
 #| msgid "Sample Tracking"
 msgid "Sample Print Date"
 msgstr "Suivi des échantillons"
 
 #: covid-19/management/covid-19-sample-status.php:107
+#: eid/management/eid-sample-status.php:116
+#: hepatitis/management/hepatitis-sample-status.php:110
+#: tb/management/tb-sample-status.php:107
 msgid "Sample Email Date"
 msgstr ""
 
@@ -595,43 +1545,85 @@ msgid "COVID-19 Testing Target Report"
 msgstr "Rapport cible de test COVID-19"
 
 #: covid-19/management/covid19TestingTargetReport.php:194
+#: eid/management/eidTestingTargetReport.php:192
+#: hepatitis/management/hepatitis-testing-target-report.php:192
 #, fuzzy
 #| msgid "Sample Type"
 msgid "Target Type"
-msgstr "Échantillon type"
+msgstr "Type de cible"
 
-#: covid-19/management/covid19TestingTargetReport.php:217
-msgid "Month"
+#: covid-19/management/covid19TestingTargetReport.php:197
+#: eid/management/eidTestingTargetReport.php:195
+#: hepatitis/management/hepatitis-testing-target-report.php:195
+msgid "Monthly Targets not met"
 msgstr ""
 
+#: covid-19/management/covid19TestingTargetReport.php:198
+#: eid/management/eidTestingTargetReport.php:196
+#: hepatitis/management/hepatitis-testing-target-report.php:196
+msgid "Monthly Targets met"
+msgstr ""
+
+#: covid-19/management/covid19TestingTargetReport.php:199
+#: eid/management/eidTestingTargetReport.php:197
+#: hepatitis/management/hepatitis-testing-target-report.php:197
+#, fuzzy
+msgid "Show all"
+msgstr "Tout afficher"
+
+#: covid-19/management/covid19TestingTargetReport.php:217
+#: eid/management/eidTestingTargetReport.php:215
+#: hepatitis/management/hepatitis-testing-target-report.php:215
+#, fuzzy
+msgid "Month"
+msgstr "Mois"
+
 #: covid-19/management/covid19TestingTargetReport.php:218
+#: eid/management/eidTestingTargetReport.php:216
+#: hepatitis/management/hepatitis-testing-target-report.php:216
 msgid "Number of Samples Received"
 msgstr ""
 
 #: covid-19/management/covid19TestingTargetReport.php:219
+#: eid/management/eidTestingTargetReport.php:217
+#: hepatitis/management/hepatitis-testing-target-report.php:217
 msgid "Number of Samples Rejected"
 msgstr ""
 
 #: covid-19/management/covid19TestingTargetReport.php:220
+#: eid/management/eidTestingTargetReport.php:218
+#: hepatitis/management/hepatitis-testing-target-report.php:218
 msgid "Number of Samples Tested"
 msgstr ""
 
 #: covid-19/management/covid19TestingTargetReport.php:221
+#: eid/management/eidTestingTargetReport.php:219
+#: hepatitis/management/hepatitis-testing-target-report.php:219
 msgid "Monthly Test Target"
 msgstr ""
 
 #: covid-19/management/get-rejected-samples.php:70
+#: eid/management/get-rejected-samples.php:70 eid/requests/eid-requests.php:172
+#: hepatitis/management/get-rejected-samples.php:73
+#: tb/management/get-rejected-samples.php:70 vl/requests/vlRequest.php:190
+#: vl/requests/vlRequest.php:204
 #, fuzzy
 #| msgid "Export Results"
 msgid "Export Excel"
-msgstr "Exporter les résultats"
+msgstr "Exporter au format Excel"
 
 #: covid-19/management/get-rejected-samples.php:79
+#: eid/management/get-rejected-samples.php:79
+#: hepatitis/management/get-rejected-samples.php:82
+#: tb/management/get-rejected-samples.php:79
 msgid "Reason Category"
 msgstr ""
 
-#: covid-19/requests/addSamplesFromManifest.php:17 header.php:627
-#: header.php:745 header.php:842 header.php:949 header.php:1050
+#: covid-19/requests/addSamplesFromManifest.php:17
+#: eid/requests/addSamplesFromManifest.php:26 header.php:627 header.php:745
+#: header.php:842 header.php:949 header.php:1050
+#: hepatitis/requests/add-samples-from-manifest.php:17
+#: tb/requests/addSamplesFromManifest.php:17
 msgid "Add Samples from Manifest"
 msgstr "Ajouter des échantillons à partir du manifeste"
 
@@ -641,11 +1633,25 @@ msgstr "Ajouter des échantillons à partir du manifeste"
 msgid "Covid-19 Test Request"
 msgstr "Afficher les demandes de test"
 
+#: covid-19/requests/addSamplesFromManifest.php:31
+#: eid/requests/addSamplesFromManifest.php:40
+#: hepatitis/requests/add-samples-from-manifest.php:31
+#: tb/requests/addSamplesFromManifest.php:31
+#, fuzzy
+#| msgid "Remote Sample Tracking Module"
+msgid "Enter Sample Manifest Code"
+msgstr "Module de suivi des échantillons à distance"
+
 #: covid-19/requests/addSamplesFromManifest.php:37
+#: eid/requests/addSamplesFromManifest.php:46
+#: hepatitis/requests/add-samples-from-manifest.php:37
+#: tb/requests/addSamplesFromManifest.php:37
+#, fuzzy
 msgid "Submit"
-msgstr ""
+msgstr "Envoyer"
 
 #: covid-19/requests/addSamplesFromManifest.php:42
+#: hepatitis/requests/add-samples-from-manifest.php:42
 #, fuzzy
 #| msgid "Move Samples"
 msgid "Activate Samples"
@@ -654,6 +1660,13 @@ msgstr "Déplacer les échantillons"
 #: covid-19/requests/addSamplesFromManifest.php:55
 #: covid-19/requests/covid-19-requests.php:207
 #: covid-19/results/covid-19-failed-results.php:117
+#: eid/requests/addSamplesFromManifest.php:64 eid/requests/eid-requests.php:188
+#: eid/results/eid-failed-results.php:121
+#: hepatitis/requests/add-samples-from-manifest.php:55
+#: hepatitis/requests/hepatitis-requests.php:180
+#: hepatitis/results/hepatitis-failed-results.php:117
+#: tb/requests/addSamplesFromManifest.php:55 tb/requests/tb-requests.php:186
+#: tb/results/tb-failed-results.php:117 vl/requests/vlRequest.php:268
 #, fuzzy
 #| msgid "Sample Rejection Report"
 msgid "Sample Collection"
@@ -662,8 +1675,16 @@ msgstr "Exemple de rapport de rejet"
 #: covid-19/requests/addSamplesFromManifest.php:55
 #: covid-19/requests/covid-19-requests.php:207
 #: covid-19/results/covid-19-failed-results.php:117
+#: eid/requests/addSamplesFromManifest.php:64 eid/requests/eid-requests.php:188
+#: eid/results/eid-failed-results.php:121
+#: hepatitis/requests/add-samples-from-manifest.php:55
+#: hepatitis/requests/hepatitis-requests.php:180
+#: hepatitis/results/hepatitis-failed-results.php:117
+#: tb/requests/addSamplesFromManifest.php:55 tb/requests/tb-requests.php:186
+#: tb/results/tb-failed-results.php:117 vl/requests/vlRequest.php:268
+#, fuzzy
 msgid "Date"
-msgstr ""
+msgstr "Date"
 
 #: covid-19/requests/addSamplesFromManifest.php:63
 #: covid-19/requests/covid-19-requests.php:219
@@ -672,6 +1693,21 @@ msgstr ""
 #: covid-19/results/covid-19-print-results.php:163
 #: covid-19/results/covid-19-print-results.php:257
 #: covid-19/results/covid-19-print-results.php:279
+#: eid/requests/addSamplesFromManifest.php:74 eid/requests/eid-requests.php:198
+#: eid/results/eid-failed-results.php:131 eid/results/eid-print-results.php:140
+#: eid/results/eid-print-results.php:163 eid/results/eid-print-results.php:257
+#: eid/results/eid-print-results.php:279
+#: hepatitis/requests/add-samples-from-manifest.php:64
+#: hepatitis/requests/hepatitis-requests.php:189
+#: hepatitis/results/hepatitis-failed-results.php:127
+#: hepatitis/results/hepatitis-print-results.php:140
+#: hepatitis/results/hepatitis-print-results.php:164
+#: hepatitis/results/hepatitis-print-results.php:258
+#: hepatitis/results/hepatitis-print-results.php:281
+#: tb/requests/addSamplesFromManifest.php:63 tb/requests/tb-requests.php:198
+#: tb/results/tb-failed-results.php:127 tb/results/tb-print-results.php:123
+#: tb/results/tb-print-results.php:146 tb/results/tb-print-results.php:240
+#: tb/results/tb-print-results.php:262
 msgid "Last Modified On"
 msgstr ""
 
@@ -681,6 +1717,8 @@ msgstr ""
 
 #: covid-19/requests/covid-19-bulk-import-request.php:14
 #: covid-19/requests/covid-19-bulk-import-request.php:17
+#: eid/requests/eid-bulk-import-request.php:14
+#: eid/requests/eid-bulk-import-request.php:17
 #, fuzzy
 #| msgid "View Test Requests"
 msgid "Import Test Requests In Bulk"
@@ -693,6 +1731,13 @@ msgstr "Afficher les demandes de test"
 #: covid-19/requests/covid-19-requests.php:52
 #: covid-19/results/covid-19-failed-results.php:31
 #: covid-19/results/covid-19-result-status.php:66
+#: eid/requests/eid-requests.php:41 eid/results/eid-failed-results.php:35
+#: eid/results/eid-result-status.php:67
+#: hepatitis/requests/hepatitis-requests.php:42
+#: hepatitis/results/hepatitis-failed-results.php:31
+#: hepatitis/results/hepatitis-result-status.php:66
+#: tb/requests/tb-requests.php:48 tb/results/tb-failed-results.php:31
+#: tb/results/tb-result-status.php:66 vl/requests/vlRequest.php:40
 #, fuzzy
 #| msgid "View Test Requests"
 msgid "Test Request"
@@ -700,17 +1745,69 @@ msgstr "Afficher les demandes de test"
 
 #: covid-19/requests/covid-19-requests.php:80
 #: covid-19/results/covid-19-failed-results.php:59
+#: eid/requests/eid-requests.php:69 eid/results/eid-failed-results.php:63
+#: hepatitis/requests/hepatitis-requests.php:70
+#: hepatitis/results/hepatitis-failed-results.php:59
+#: tb/requests/tb-requests.php:76 tb/results/tb-failed-results.php:59
+#: vl/requests/vlRequest.php:168
 #, fuzzy
 #| msgid "Sample Type"
 msgid "Req. Sample Type"
 msgstr "Échantillon type"
 
+#: covid-19/requests/covid-19-requests.php:84 eid/requests/eid-requests.php:73
+#: eid/results/eid-failed-results.php:67
+#: hepatitis/requests/hepatitis-requests.php:74
+#: hepatitis/results/hepatitis-failed-results.php:63
+#: tb/requests/tb-requests.php:80 tb/results/tb-failed-results.php:63
+#: vl/requests/vlRequest.php:172
+#, fuzzy
+#| msgid "Export Results"
+msgid "Sample With Result"
+msgstr "Exporter les résultats"
+
+#: covid-19/requests/covid-19-requests.php:85 eid/requests/eid-requests.php:74
+#: eid/results/eid-failed-results.php:68
+#: hepatitis/requests/hepatitis-requests.php:75
+#: hepatitis/results/hepatitis-failed-results.php:64
+#: tb/requests/tb-requests.php:81 tb/results/tb-failed-results.php:64
+#: vl/requests/vlRequest.php:173
+#, fuzzy
+#| msgid "Export Results"
+msgid "Sample Without Result"
+msgstr "Exporter les résultats"
+
 #: covid-19/requests/covid-19-requests.php:128
+#: hepatitis/requests/hepatitis-requests.php:112
+#: tb/requests/tb-requests.php:118 vl/requests/vlRequest.php:114
 msgid "Show only Reordered Samples"
 msgstr ""
 
+#: covid-19/requests/covid-19-requests.php:132
+#: eid/requests/eid-requests.php:115
+#: hepatitis/requests/hepatitis-requests.php:116
+#: tb/requests/tb-requests.php:122 vl/requests/vlRequest.php:118
+#: vl/requests/vlRequest.php:130 vl/requests/vlRequest.php:138
+#, fuzzy
+msgid "Yes"
+msgstr "Oui"
+
+#: covid-19/requests/covid-19-requests.php:133
+#: eid/requests/eid-requests.php:116
+#: hepatitis/requests/hepatitis-requests.php:117
+#: tb/requests/tb-requests.php:123 vl/requests/vlRequest.php:119
+#: vl/requests/vlRequest.php:131 vl/requests/vlRequest.php:139
+#, fuzzy
+msgid "No"
+msgstr "Non"
+
 #: covid-19/requests/covid-19-requests.php:162
 #: covid-19/results/covid-19-failed-results.php:91
+#: eid/requests/eid-requests.php:146 eid/results/eid-failed-results.php:95
+#: hepatitis/requests/hepatitis-requests.php:148
+#: hepatitis/results/hepatitis-failed-results.php:91
+#: tb/requests/tb-requests.php:154 tb/results/tb-failed-results.php:91
+#: vl/requests/vlRequest.php:180
 msgid "Hide Advanced Search"
 msgstr ""
 
@@ -728,7 +1825,7 @@ msgstr ""
 msgid "Quick Add Covid-19 Request"
 msgstr ""
 
-#: covid-19/requests/covid-19-requests.php:211
+#: covid-19/requests/covid-19-requests.php:211 tb/requests/tb-requests.php:190
 msgid "Case ID"
 msgstr ""
 
@@ -745,6 +1842,8 @@ msgstr ""
 #: covid-19/requests/forms/add-who.php:64
 #: covid-19/requests/forms/quick-add-southsudan.php:72 header.php:622
 #: header.php:740 header.php:837 header.php:944 header.php:1045
+#: hepatitis/requests/forms/add-rwanda.php:53
+#: tb/requests/forms/add-southsudan.php:75
 msgid "Add New Request"
 msgstr "Ajouter une nouvelle demande"
 
@@ -757,67 +1856,137 @@ msgstr ""
 #, fuzzy
 #| msgid "View Test Requests"
 msgid "Edit Request"
-msgstr "Afficher les demandes de test"
+msgstr "Modifier la demande"
 
 #: covid-19/requests/forms/edit-who.php:80
+#: hepatitis/requests/forms/edit-rwanda.php:74
 #, fuzzy
 #| msgid "View Test Requests"
 msgid "View Request"
-msgstr "Afficher les demandes de test"
+msgstr "Voir la demande"
 
 #: covid-19/requests/forms/edit-who.php:82
+#: hepatitis/requests/forms/edit-rwanda.php:76
 #, fuzzy
 #| msgid "Add New Request"
 msgid "Update Request"
-msgstr "Ajouter une nouvelle demande"
+msgstr "Mettre à jour la demande"
 
-#: covid-19/results/covid-19-failed-results.php:28 header.php:659
-#: header.php:776 header.php:873 header.php:980 header.php:1081
+#: covid-19/results/covid-19-failed-results.php:28
+#: eid/results/eid-failed-results.php:32 header.php:659 header.php:776
+#: header.php:873 header.php:980 header.php:1081
+#: hepatitis/results/hepatitis-failed-results.php:28
+#: tb/results/tb-failed-results.php:28
 msgid "Failed/Hold Samples"
 msgstr "Échec/Echantillons en attente"
 
 #: covid-19/results/covid-19-failed-results.php:94
 #: covid-19/results/covid-19-failed-results.php:101
+#: eid/results/eid-failed-results.php:98 eid/results/eid-failed-results.php:105
+#: hepatitis/results/hepatitis-failed-results.php:94
+#: hepatitis/results/hepatitis-failed-results.php:101
+#: tb/results/tb-failed-results.php:94 tb/results/tb-failed-results.php:101
 msgid "Retest the selected samples"
 msgstr ""
 
 #: covid-19/results/covid-19-failed-results.php:120
+#: eid/management/eid-clinic-report.php:143
+#: eid/management/eid-clinic-report.php:232
+#: eid/management/eid-clinic-report.php:315
+#: eid/management/eid-export-data.php:179
+#: eid/management/eid-export-data.php:216
+#: eid/requests/addSamplesFromManifest.php:67 eid/requests/eid-requests.php:191
+#: eid/results/eid-failed-results.php:124
+#: eid/results/eid-manual-results.php:160 eid/results/eid-print-results.php:159
+#: eid/results/eid-print-results.php:275 eid/results/eid-result-status.php:162
+#: hepatitis/results/hepatitis-failed-results.php:120
+#: tb/results/tb-failed-results.php:120
 msgid "Child's ID"
 msgstr ""
 
 #: covid-19/results/covid-19-failed-results.php:121
+#: eid/management/eid-clinic-report.php:144
+#: eid/management/eid-clinic-report.php:233
+#: eid/management/eid-clinic-report.php:316
+#: eid/management/eid-clinic-report.php:343
+#: eid/management/eid-clinic-report.php:370
+#: eid/management/eid-export-data.php:182
+#: eid/management/eid-export-data.php:217
+#: eid/requests/addSamplesFromManifest.php:68 eid/requests/eid-requests.php:192
+#: eid/results/eid-failed-results.php:125
+#: eid/results/eid-manual-results.php:161 eid/results/eid-print-results.php:160
+#: eid/results/eid-print-results.php:276 eid/results/eid-result-status.php:163
+#: hepatitis/results/hepatitis-failed-results.php:121
+#: tb/results/tb-failed-results.php:121
 msgid "Child's Name"
 msgstr ""
 
 #: covid-19/results/covid-19-failed-results.php:122
+#: eid/management/eid-export-data.php:188
+#: eid/management/eid-export-data.php:220
+#: eid/requests/addSamplesFromManifest.php:69 eid/requests/eid-requests.php:193
+#: eid/results/eid-failed-results.php:126
+#: eid/results/eid-manual-results.php:162 eid/results/eid-result-status.php:164
+#: hepatitis/results/hepatitis-failed-results.php:122
+#: tb/results/tb-failed-results.php:122
 msgid "Mother's ID"
 msgstr ""
 
 #: covid-19/results/covid-19-failed-results.php:123
+#: eid/requests/addSamplesFromManifest.php:70 eid/requests/eid-requests.php:194
+#: eid/results/eid-failed-results.php:127
+#: eid/results/eid-manual-results.php:163 eid/results/eid-result-status.php:165
+#: hepatitis/results/hepatitis-failed-results.php:123
+#: tb/results/tb-failed-results.php:123
+#, fuzzy
 msgid "Mother's Name"
-msgstr ""
+msgstr "Nom de la mère"
 
 #: covid-19/results/covid-19-failed-results.php:142
+#: eid/requests/eid-requests.php:215 eid/results/eid-failed-results.php:148
+#: hepatitis/requests/hepatitis-requests.php:206
+#: hepatitis/results/hepatitis-failed-results.php:140
+#: tb/requests/tb-requests.php:215 tb/results/tb-failed-results.php:142
+#: vl/requests/vlRequest.php:294
 msgid "Loading Printer Details"
 msgstr ""
 
 #: covid-19/results/covid-19-failed-results.php:149
+#: eid/requests/eid-requests.php:222 eid/results/eid-failed-results.php:155
+#: hepatitis/requests/hepatitis-requests.php:213
+#: hepatitis/results/hepatitis-failed-results.php:147
+#: tb/requests/tb-requests.php:222 tb/results/tb-failed-results.php:149
 msgid "No printer selected"
 msgstr ""
 
 #: covid-19/results/covid-19-failed-results.php:150
+#: eid/requests/eid-requests.php:223 eid/results/eid-failed-results.php:156
+#: hepatitis/requests/hepatitis-requests.php:214
+#: hepatitis/results/hepatitis-failed-results.php:148
+#: tb/requests/tb-requests.php:223 tb/results/tb-failed-results.php:150
+#: vl/requests/vlRequest.php:302
 msgid "Change/Retry"
 msgstr ""
 
 #: covid-19/results/covid-19-failed-results.php:153
+#: eid/requests/eid-requests.php:226 eid/results/eid-failed-results.php:159
+#: hepatitis/requests/hepatitis-requests.php:217
+#: hepatitis/results/hepatitis-failed-results.php:151
+#: tb/requests/tb-requests.php:226 tb/results/tb-failed-results.php:153
+#: vl/requests/vlRequest.php:305
 msgid "Zebra Printer Options"
 msgstr ""
 
 #: covid-19/results/covid-19-failed-results.php:154
+#: eid/results/eid-failed-results.php:160
+#: hepatitis/requests/hepatitis-requests.php:218
+#: hepatitis/results/hepatitis-failed-results.php:152
+#: tb/requests/tb-requests.php:227 tb/results/tb-failed-results.php:154
+#: vl/requests/vlRequest.php:306
 #, fuzzy
 #| msgid "Print Result"
 msgid "Printer"
-msgstr "Imprimer le résultat"
+msgstr "Imprimante"
 
 #: covid-19/results/covid-19-manual-results.php:46
 #: covid-19/results/covid-19-manual-results.php:49
@@ -829,13 +1998,51 @@ msgstr "Saisir le résultat manuellement"
 #: covid-19/results/covid-19-manual-results.php:119
 #: covid-19/results/covid-19-print-results.php:125
 #: covid-19/results/covid-19-print-results.php:242
+#: eid/results/eid-manual-results.php:114 eid/results/eid-print-results.php:125
+#: eid/results/eid-print-results.php:242
+#: hepatitis/results/hepatitis-manual-results.php:117
+#: hepatitis/results/hepatitis-print-results.php:125
+#: hepatitis/results/hepatitis-print-results.php:243
+#: tb/results/tb-manual-results.php:124 tb/results/tb-print-results.php:108
+#: tb/results/tb-print-results.php:225 vl/requests/vlRequest.php:229
 msgid "Art No"
 msgstr ""
 
 #: covid-19/results/covid-19-manual-results.php:134
 #: covid-19/results/covid-19-manual-results.php:168
+#: eid/results/eid-manual-results.php:129
+#: eid/results/eid-manual-results.php:165
+#: hepatitis/results/hepatitis-manual-results.php:132
+#: hepatitis/results/hepatitis-manual-results.php:167
+#: tb/results/tb-manual-results.php:139 tb/results/tb-manual-results.php:173
+#, fuzzy
 msgid "Modified On"
+msgstr "Modifié le"
+
+#: covid-19/results/covid-19-manual-results.php:148
+#: eid/results/eid-manual-results.php:143
+#: hepatitis/results/hepatitis-manual-results.php:146
+#: tb/results/tb-manual-results.php:153
+msgid "Results Not Recorded"
 msgstr ""
+
+#: covid-19/results/covid-19-manual-results.php:149
+#: eid/results/eid-manual-results.php:144
+#: hepatitis/results/hepatitis-manual-results.php:147
+#: tb/results/tb-manual-results.php:154
+#, fuzzy
+#| msgid "Results"
+msgid "Results Recorded"
+msgstr "Résultats"
+
+#: covid-19/results/covid-19-manual-results.php:150
+#: eid/results/eid-manual-results.php:145
+#: hepatitis/results/hepatitis-manual-results.php:148
+#: tb/results/tb-manual-results.php:155
+#, fuzzy
+#| msgid "Move Samples"
+msgid "Rejected Samples"
+msgstr "Déplacer les échantillons"
 
 #: covid-19/results/covid-19-print-results.php:39
 #: covid-19/results/covid-19-print-results.php:42
@@ -845,47 +2052,268 @@ msgid "Print Covid-19 Results"
 msgstr "Imprimer le résultat"
 
 #: covid-19/results/covid-19-print-results.php:56
+#: eid/results/eid-print-results.php:56
+#: hepatitis/results/hepatitis-print-results.php:56
+#: tb/results/tb-print-results.php:39
 msgid "Results not yet Printed"
 msgstr ""
 
 #: covid-19/results/covid-19-print-results.php:57
+#: eid/results/eid-print-results.php:57
+#: hepatitis/results/hepatitis-print-results.php:57
+#: tb/results/tb-print-results.php:40
 msgid "Results already Printed"
 msgstr ""
 
 #: covid-19/results/covid-19-print-results.php:102
 #: covid-19/results/covid-19-print-results.php:219
+#: eid/results/eid-print-results.php:102 eid/results/eid-print-results.php:219
+#: hepatitis/results/hepatitis-print-results.php:102
+#: hepatitis/results/hepatitis-print-results.php:220
+#: tb/results/tb-print-results.php:85 tb/results/tb-print-results.php:202
 #, fuzzy
 #| msgid "Results"
 msgid "Result PDF"
 msgstr "Résultats"
 
 #: covid-19/results/covid-19-result-status.php:63
+#: eid/results/eid-result-status.php:64
+#: hepatitis/results/hepatitis-result-status.php:63
+#: tb/results/tb-result-status.php:63
 #, fuzzy
 #| msgid "Results"
 msgid "Results Approval"
 msgstr "Résultats"
 
 #: covid-19/results/covid-19-result-status.php:75
+#: eid/results/eid-result-status.php:76
+#: hepatitis/results/hepatitis-result-status.php:75
+#: tb/results/tb-result-status.php:75
 #, fuzzy
 #| msgid "Rejection Reasons"
 msgid "Choose Rejection Reason"
 msgstr "Motifs de rejet"
 
 #: covid-19/results/covid-19-result-status.php:122
+#: eid/results/eid-result-status.php:116
+#: hepatitis/results/hepatitis-result-status.php:122
+#: tb/results/tb-result-status.php:122
 msgid "Show Samples that are"
 msgstr ""
 
-#: covid-19/results/covid-19-result-status.php:154
-msgid "Apply"
+#: covid-19/results/covid-19-result-status.php:125
+#: eid/results/eid-result-status.php:119
+#: hepatitis/results/hepatitis-result-status.php:125
+#: tb/results/tb-result-status.php:125
+msgid "Not Approved/Rejected"
 msgstr ""
 
+#: covid-19/results/covid-19-result-status.php:126
+#: eid/results/eid-result-status.php:120
+#: hepatitis/results/hepatitis-result-status.php:126
+#: tb/results/tb-result-status.php:126
+msgid "Already Approved/Rejected"
+msgstr ""
+
+#: covid-19/results/covid-19-result-status.php:142
+#: eid/results/eid-result-status.php:136
+#: hepatitis/results/hepatitis-result-status.php:142
+#: tb/results/tb-result-status.php:142
+msgid "-- Select at least one sample to apply bulk action --"
+msgstr ""
+
+#: covid-19/results/covid-19-result-status.php:143
+#: eid/management/eid-export-data.php:104 eid/results/eid-result-status.php:137
+#: hepatitis/management/hepatitis-export-data.php:116
+#: hepatitis/results/hepatitis-result-status.php:143
+#: tb/management/tb-export-data.php:114 tb/results/tb-result-status.php:143
+#, fuzzy
+msgid "Accepted"
+msgstr "Accepté"
+
+#: covid-19/results/covid-19-result-status.php:144
+#: eid/management/eid-export-data.php:105 eid/results/eid-result-status.php:138
+#: hepatitis/management/hepatitis-export-data.php:117
+#: hepatitis/results/hepatitis-result-status.php:144
+#: tb/management/tb-export-data.php:115 tb/results/tb-result-status.php:144
+#, fuzzy
+msgid "Rejected"
+msgstr "Rejeté"
+
+#: covid-19/results/covid-19-result-status.php:145
+#: eid/results/eid-result-status.php:139
+#: hepatitis/results/hepatitis-result-status.php:145
+#: tb/results/tb-result-status.php:145
+#, fuzzy
+msgid "Lost"
+msgstr "Perdu"
+
+#: covid-19/results/covid-19-result-status.php:154
+#: eid/results/eid-result-status.php:148
+#: hepatitis/results/hepatitis-result-status.php:154
+#: tb/results/tb-result-status.php:154
+#, fuzzy
+msgid "Apply"
+msgstr "Appliquer"
+
 #: covid-19/results/covid-19-result-status.php:169
+#: hepatitis/results/hepatitis-result-status.php:169
+#: tb/results/tb-result-status.php:169
 msgid "Paitent Name"
 msgstr ""
 
 #: covid-19/results/covid-19-result-status.php:172
+#: eid/results/eid-result-status.php:168
+#: hepatitis/results/hepatitis-result-status.php:173
+#: tb/results/tb-result-status.php:172
+#, fuzzy
 msgid "Last Modified on"
+msgstr "Dernière Modification le"
+
+#: eid/management/eid-clinic-report.php:145
+#: hepatitis/management/hepatitis-clinic-report.php:145
+#: tb/management/tb-clinic-report.php:143
+msgid "Caretaker Phone No"
 msgstr ""
+
+#: eid/management/eid-export-data.php:103 tb/management/tb-export-data.php:113
+#, fuzzy
+msgid "All Status"
+msgstr "Tous les statuts"
+
+#: eid/management/eid-export-data.php:106 tb/management/tb-export-data.php:116
+#, fuzzy
+#| msgid "Results"
+msgid "Awaiting Approval"
+msgstr "En attente d'approbation"
+
+#: eid/management/eid-export-data.php:107 tb/management/tb-export-data.php:117
+msgid "Registered At Testing Lab"
+msgstr ""
+
+#: eid/management/eid-export-data.php:108 tb/management/tb-export-data.php:118
+#, fuzzy
+msgid "Expired"
+msgstr "Expiré"
+
+#: eid/management/eid-sample-status.php:43
+#, fuzzy
+#| msgid "Sample Status Report"
+msgid "EID Sample Status Report"
+msgstr "Exemple de rapport d'état"
+
+#: eid/management/eid-sample-status.php:46
+#, fuzzy
+#| msgid "Covid-19 Specimen Manifest"
+msgid "EID Sample Status"
+msgstr "Manifeste des spécimens de Covid-19"
+
+#: eid/management/eid-sample-status.php:111
+#, fuzzy
+#| msgid "Move Samples"
+msgid "EID Sample ID"
+msgstr "Déplacer les échantillons"
+
+#: eid/management/eidTestingTargetReport.php:164
+#, fuzzy
+#| msgid "EID Testing Target Report"
+msgid "EARLY INFANT DIAGNOSIS - Testing Target Report"
+msgstr "Rapport cible de test EID"
+
+#: eid/requests/addSamplesFromManifest.php:29
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "EID Test Request"
+msgstr "Afficher les demandes de test"
+
+#: eid/requests/addSamplesFromManifest.php:80
+#: hepatitis/requests/add-samples-from-manifest.php:70
+#: tb/requests/addSamplesFromManifest.php:69
+msgid "Please enter the manifest code then submit"
+msgstr ""
+
+#: eid/requests/eid-requests.php:38
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "EID Test Requests"
+msgstr "Afficher les demandes de test"
+
+#: eid/requests/eid-requests.php:151 eid/requests/eid-requests.php:167
+#, fuzzy
+#| msgid "Add New Request"
+msgid "Add new EID Request"
+msgstr "Ajouter une nouvelle demande"
+
+#: eid/requests/eid-requests.php:153 eid/requests/eid-requests.php:169
+#, fuzzy
+#| msgid "Export Results"
+msgid "Bulk Import EID Request"
+msgstr "Exporter les résultats"
+
+#: eid/requests/eid-requests.php:173
+#: hepatitis/requests/hepatitis-requests.php:165
+#: tb/requests/tb-requests.php:171 vl/requests/vlRequest.php:205
+#, fuzzy
+msgid "Show Advanced Search"
+msgstr "Afficher la recherche avancée"
+
+#: eid/requests/eid-requests.php:227
+#, fuzzy
+#| msgid "Print Result"
+msgid "Printer:"
+msgstr "Imprimante :"
+
+#: eid/requests/forms/add-drc.php:57 eid/requests/forms/add-png.php:58
+#: eid/requests/forms/add-rwanda.php:59
+#: eid/requests/forms/add-southsudan.php:59 eid/requests/forms/edit-drc.php:66
+#: eid/requests/forms/edit-png.php:96 eid/requests/forms/edit-rwanda.php:77
+#: eid/requests/forms/edit-southsudan.php:76
+#: eid/results/forms/update-drc-result.php:55
+#: eid/results/forms/update-png-result.php:96
+#: eid/results/forms/update-rwanda-result.php:61
+#: eid/results/forms/update-southsudan-result.php:65
+#, fuzzy
+#| msgid "EARLY INFANT DIAGNOSIS (EID)"
+msgid "EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"
+msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
+
+#: eid/requests/forms/add-drc.php:60 eid/requests/forms/add-png.php:61
+#: eid/requests/forms/add-rwanda.php:62
+#: eid/requests/forms/add-southsudan.php:62
+#: eid/requests/forms/edit-rwanda.php:80
+#: eid/requests/forms/edit-southsudan.php:79
+#, fuzzy
+#| msgid "Add New Request"
+msgid "Add EID Request"
+msgstr "Ajouter une nouvelle demande"
+
+#: eid/requests/forms/edit-drc.php:69 eid/requests/forms/edit-png.php:99
+#: eid/results/forms/update-drc-result.php:58
+#: eid/results/forms/update-png-result.php:99
+#: eid/results/forms/update-rwanda-result.php:64
+#: eid/results/forms/update-southsudan-result.php:68
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "Edit EID Request"
+msgstr "Afficher les demandes de test"
+
+#: eid/results/eid-manual-results.php:48 eid/results/eid-manual-results.php:51
+#, fuzzy
+#| msgid "Enter Result Manually"
+msgid "Enter EID Result Manually"
+msgstr "Saisir le résultat manuellement"
+
+#: eid/results/eid-manual-results.php:61
+#, fuzzy
+#| msgid "Sample Rejection Report"
+msgid "Sample Collection Date&nbsp"
+msgstr "Exemple de rapport de rejet"
+
+#: eid/results/eid-print-results.php:39 eid/results/eid-print-results.php:42
+#, fuzzy
+#| msgid "Print Result"
+msgid "Print EID Results"
+msgstr "Imprimer le résultat"
 
 #: header.php:24 login.php:25
 msgid "Lab Sample Management Module"
@@ -1056,6 +2484,10 @@ msgid "E-mail Test Result"
 msgstr "Résultat du test de courrier électronique"
 
 #: header.php:674 header.php:788 header.php:894 header.php:995 header.php:1096
+#: hepatitis/management/hepatitis-clinic-report.php:40
+#: hepatitis/management/hepatitis-sample-rejection-report.php:32
+#: hepatitis/management/hepatitis-sample-status.php:39
+#: hepatitis/management/hepatitis-testing-target-report.php:168
 msgid "Management"
 msgstr "Gestion"
 
@@ -1135,7 +2567,10 @@ msgstr "Manifeste de confirmation"
 msgid "Record Confirmatory Tests"
 msgstr "Enregistrer les tests de confirmation"
 
-#: header.php:926
+#: header.php:926 hepatitis/management/hepatitis-clinic-report.php:39
+#: hepatitis/management/hepatitis-sample-rejection-report.php:31
+#: hepatitis/management/hepatitis-sample-status.php:38
+#: hepatitis/management/hepatitis-testing-target-report.php:167
 msgid "Hepatitis"
 msgstr "Hépatite"
 
@@ -1143,23 +2578,122 @@ msgstr "Hépatite"
 msgid "Hepatitis Specimen Manifest"
 msgstr "Manifeste d'échantillon d'hépatite"
 
-#: header.php:1017
+#: header.php:1017 hepatitis/management/hepatitis-testing-target-report.php:163
 msgid "Hepatitis Testing Target Report"
 msgstr "Rapport cible de dépistage de l'hépatite"
 
 #: header.php:1027
+#, fuzzy
 msgid "TB"
-msgstr ""
+msgstr "TB"
 
 #: header.php:1060
 msgid "TB Specimen Manifest"
 msgstr "Manifeste des spécimens de tuberculose"
 
+#: hepatitis/management/hepatitis-clinic-report.php:149
+#: hepatitis/management/hepatitis-clinic-report.php:379
+#: hepatitis/management/hepatitis-export-data.php:92
+#: hepatitis/management/hepatitis-export-data.php:216
+#: hepatitis/requests/add-samples-from-manifest.php:62
+#: hepatitis/results/hepatitis-manual-results.php:165
+#: hepatitis/results/hepatitis-print-results.php:162
+#: hepatitis/results/hepatitis-result-status.php:171
+#, fuzzy
+#| msgid "Results"
+msgid "HCV VL Result"
+msgstr "Résultats"
+
+#: hepatitis/management/hepatitis-clinic-report.php:150
+#: hepatitis/management/hepatitis-clinic-report.php:380
+#: hepatitis/management/hepatitis-export-data.php:101
+#: hepatitis/management/hepatitis-export-data.php:217
+#: hepatitis/requests/add-samples-from-manifest.php:63
+#: hepatitis/results/hepatitis-manual-results.php:166
+#: hepatitis/results/hepatitis-print-results.php:163
+#: hepatitis/results/hepatitis-result-status.php:172
+#, fuzzy
+#| msgid "Results"
+msgid "HBV VL Result"
+msgstr "Résultats"
+
+#: hepatitis/management/hepatitis-sample-status.php:35
+#, fuzzy
+#| msgid "Sample Status Report"
+msgid "Hepatitis Sample Status Report"
+msgstr "Exemple de rapport d'état"
+
+#: hepatitis/management/hepatitis-sample-status.php:40
+#, fuzzy
+#| msgid "Covid-19 Specimen Manifest"
+msgid "Hepatitis Sample Status"
+msgstr "Manifeste des spécimens de Covid-19"
+
+#: hepatitis/management/hepatitis-sample-status.php:105
+#, fuzzy
+#| msgid "Hepatitis"
+msgid "Hepatitis Sample ID"
+msgstr "Hépatite"
+
+#: hepatitis/management/hepatitis-testing-target-report.php:169
+#, fuzzy
+#| msgid "VL Testing Target Report"
+msgid "Testing Target Report"
+msgstr "Rapport cible de test de CV"
+
+#: hepatitis/requests/add-samples-from-manifest.php:20
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "Hepatitis Test Request"
+msgstr "Afficher les demandes de test"
+
+#: hepatitis/requests/forms/add-rwanda.php:50
+#: hepatitis/requests/forms/edit-rwanda.php:70
+msgid "RWANDA HEPATITIS LABORATORY TEST REQUEST FORM"
+msgstr ""
+
+#: hepatitis/requests/hepatitis-requests.php:39
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "Hepatitis Test Requests"
+msgstr "Afficher les demandes de test"
+
+#: hepatitis/requests/hepatitis-requests.php:152
+#: hepatitis/requests/hepatitis-requests.php:163
+#, fuzzy
+#| msgid "Add New Request"
+msgid "Add new Hepatitis Request"
+msgstr "Ajouter une nouvelle demande"
+
+#: hepatitis/requests/hepatitis-requests.php:187
+#: hepatitis/results/hepatitis-print-results.php:279
+msgid "HCV VL Count"
+msgstr ""
+
+#: hepatitis/requests/hepatitis-requests.php:188
+#: hepatitis/results/hepatitis-print-results.php:280
+msgid "HBV VL Count"
+msgstr ""
+
+#: hepatitis/results/hepatitis-manual-results.php:44
+#: hepatitis/results/hepatitis-manual-results.php:47
+#, fuzzy
+#| msgid "Enter Result Manually"
+msgid "Enter Hepatitis Result Manually"
+msgstr "Saisir le résultat manuellement"
+
+#: hepatitis/results/hepatitis-print-results.php:39
+#: hepatitis/results/hepatitis-print-results.php:42
+#, fuzzy
+#| msgid "Print Result"
+msgid "Print Hepatitis Results"
+msgstr "Imprimer le résultat"
+
 #: import-result/addImportResult.php:27
 #, fuzzy
 #| msgid "Report"
 msgid "Import"
-msgstr "Reportage"
+msgstr "Importer"
 
 #: import-result/addImportResult.php:27
 #, fuzzy
@@ -1172,3 +2706,125 @@ msgstr "Importer le résultat du fichier"
 #| msgid "Export Results"
 msgid "Import Result"
 msgstr "Exporter les résultats"
+
+#: tb/management/tb-sample-status.php:34
+#, fuzzy
+#| msgid "Sample Status Report"
+msgid "TB Sample Status Report"
+msgstr "Exemple de rapport d'état"
+
+#: tb/management/tb-sample-status.php:37
+#, fuzzy
+#| msgid "Covid-19 Specimen Manifest"
+msgid "TB Sample Status"
+msgstr "Manifeste des spécimens de Covid-19"
+
+#: tb/management/tb-sample-status.php:102
+#, fuzzy
+#| msgid "Move Samples"
+msgid "TB Sample ID"
+msgstr "Déplacer les échantillons"
+
+#: tb/requests/addSamplesFromManifest.php:20
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "TB Test Request"
+msgstr "Afficher les demandes de test"
+
+#: tb/requests/forms/add-southsudan.php:72
+#: tb/requests/forms/edit-southsudan.php:92
+#: tb/results/forms/update-southsudan.php:91
+msgid "TB LABORATORY TEST REQUEST FORM"
+msgstr ""
+
+#: tb/requests/forms/edit-southsudan.php:95
+#: tb/results/forms/update-southsudan.php:94
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "Edit New Request"
+msgstr "Afficher les demandes de test"
+
+#: tb/requests/tb-requests.php:45
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "TB Test Requests"
+msgstr "Afficher les demandes de test"
+
+#: tb/requests/tb-requests.php:158 tb/requests/tb-requests.php:169
+#, fuzzy
+#| msgid "Add New Request"
+msgid "Add new TB Request"
+msgstr "Ajouter une nouvelle demande"
+
+#: tb/results/tb-manual-results.php:51 tb/results/tb-manual-results.php:54
+#, fuzzy
+#| msgid "Enter Result Manually"
+msgid "Enter TB Result Manually"
+msgstr "Saisir le résultat manuellement"
+
+#: tb/results/tb-print-results.php:22 tb/results/tb-print-results.php:25
+#, fuzzy
+#| msgid "Print Result"
+msgid "Print TB Results"
+msgstr "Imprimer le résultat"
+
+#: vl/requests/vlRequest.php:37
+#, fuzzy
+#| msgid "View Test Requests"
+msgid "Viral Load Test Requests"
+msgstr "Afficher les demandes de test"
+
+#: vl/requests/vlRequest.php:127
+#, fuzzy
+msgid "Pregnant"
+msgstr "Enceinte"
+
+#: vl/requests/vlRequest.php:135
+msgid "Breastfeeding"
+msgstr ""
+
+#: vl/requests/vlRequest.php:185 vl/requests/vlRequest.php:200
+#, fuzzy
+#| msgid "Add New Request"
+msgid "Add VL Request Form"
+msgstr "Ajouter une nouvelle demande"
+
+#: vl/requests/vlRequest.php:250 vl/requests/vlRequest.php:277
+#, fuzzy
+msgid "Last Modified Date"
+msgstr "Date de dernière modification"
+
+#: vl/requests/vlRequest.php:270
+msgid "Unique ART No"
+msgstr ""
+
+#: vl/requests/vlRequest.php:301
+msgid "No printer selected!"
+msgstr ""
+
+#: vl/requests/vlRequest.php:361
+#, fuzzy
+#| msgid "Facilities"
+msgid "Select Facilities"
+msgstr "Sélectionnez des Aptitudes"
+
+#: vl/requests/vlRequest.php:364
+msgid "Select Vl Lab"
+msgstr ""
+
+#: vl/requests/vlRequest.php:367
+msgid "Select Batch Code"
+msgstr ""
+
+#: vl/requests/vlRequest.php:646
+#, fuzzy
+msgid "Updated successfully."
+msgstr "Annonce mise à jour avec succès."
+
+#: vl/requests/vlRequest.php:651
+msgid "Please checked atleast one checkbox."
+msgstr ""
+
+#: vl/requests/vlRequest.php:664
+msgid "Unable to generate the excel file"
+msgstr ""
