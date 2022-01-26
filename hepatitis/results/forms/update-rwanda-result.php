@@ -265,7 +265,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                 </div>
 
                 <form class="form-horizontal" method="post" name="updateHepatitisRequestForm" id="updateHepatitisRequestForm" autocomplete="off" action="hepatitis-update-result-helper.php">
-                <?php if ($usersModel->isAllowed('covid-19-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>                        
+                <?php if ($usersModel->isAllowed('hepatitis-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>                        
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="box-header with-border">
@@ -371,11 +371,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                                 <option value='no' <?php echo ($hepatitisInfo['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                             </select>
                                         </td>
-                                        <th>Authorized By</th>
+                                        <th>Authorized By <span class="mandatory">*</span></th>
                                         <td><input value="<?php echo $hepatitisInfo['authorized_by']; ?>" type="text" name="authorizedBy" id="authorizedBy" class="disabled-field form-control rejected-input" placeholder="Authorized By" /></td>
                                     </tr>
                                     <tr>
-                                        <th>Authorized on</td>
+                                        <th>Authorized on <span class="mandatory">*</span></td>
                                         <td><input value="<?php echo $general->humanDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date rejected-input" placeholder="Authorized on" /></td>
                                         <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
                                         <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>

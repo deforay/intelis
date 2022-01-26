@@ -95,7 +95,7 @@ foreach ($formResults as $row) {
     $eventPayload = array(
       "event" => $eventId,
       "eventDate" => $eventDate,
-      "program" => "nZRqRmZvdJd",
+      "program" => "LEhPhsbgfFB",
       "orgUnit" => $facResult['other_id'],
       "programStage" => $programStages[$row['reason_for_vl_test']],
       "status" => "ACTIVE",
@@ -105,31 +105,31 @@ foreach ($formResults as $row) {
     if (!empty($dataValues)) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
       $payload = json_encode($eventPayload);
-      echo "<br><br><pre>";
-      print_r($payload);
-      echo "</pre>";
+      // echo "<br><br><pre>";
+      // print_r($payload);
+      // echo "</pre>";
 
       $response = $dhis2->post("/api/33/events/", $payload);
-      echo "<br><br><pre>";
-      var_dump($response);
-      echo "</pre>";
+      // echo "<br><br><pre>";
+      // var_dump($response);
+      // echo "</pre>";
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {
       if (!empty($dataValues)) {
         $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
         $payload = json_encode($eventPayload);
-        echo "<br><br><pre>";
-        echo ($payload);
-        echo "</pre>";
+        // echo "<br><br><pre>";
+        // echo ($payload);
+        // echo "</pre>";
         $urlParams = array();
         $urlParams[] = "mergeMode=REPLACE";
         $urlParams[] = "strategy=UPDATE";
         $urlParams[] = "importStrategy=CREATE_AND_UPDATE";
         $response = $dhis2->post("/api/33/events/", $payload, $urlParams);
-        echo "<br><br><pre>";
-        echo ($response);
-        echo "</pre>";
+        // echo "<br><br><pre>";
+        // echo ($response);
+        // echo "</pre>";
       }
     }
   }

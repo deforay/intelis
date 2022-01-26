@@ -217,7 +217,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
 
         $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ?  $formData['sample_collection_date'] : $enrollmentDate);
-        $formData['reason_for_hepatitis_test'] = (!empty($formData['reason_for_hepatitis_test']) ?  $formData['reason_for_hepatitis_test'] : "Suspect");
+        $formData['reason_for_hepatitis_test'] = (!empty($formData['reason_for_hepatitis_test']) ?  $formData['reason_for_hepatitis_test'] : 1);
         if (isset($formData['hepatitis_test_type']) && stripos($formData['hepatitis_test_type'], "hbv") === FALSE) {
             $formData['hepatitis_test_type'] = "HBV";
         } else {
@@ -266,6 +266,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $updateColumns = array_keys($formData);
         $db->onDuplicate($updateColumns, 'unique_id');
         $id = $db->insert("form_hepatitis", $formData);
+        echo ($db->getLastError() . PHP_EOL);
         if ($id != false) {
             $processedCounter++;
         }

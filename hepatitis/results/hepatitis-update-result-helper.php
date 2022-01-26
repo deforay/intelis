@@ -68,8 +68,8 @@ try {
 		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->dateFormat($_POST['authorizedOn']) : null,
-		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
+		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
+		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : null,
 		'result_status'                       => 8,
 		'result_sent_to_source'               => $resultSentToSource,
 		'data_sync'                           => 0,
@@ -82,6 +82,7 @@ try {
 
 	$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$id = $db->update($tableName, $hepatitisData);
+	error_log ($db->getLastError() . PHP_EOL);
 	if ($id > 0) {
 		$_SESSION['alertMsg'] = "Hepatitis result updated successfully";
 	} else {
@@ -94,13 +95,14 @@ try {
 
 	$general->activityLog($eventType, $action, $resource);
 
-	$data = array(
-		'user_id' => $_SESSION['userId'],
-		'vl_sample_id' => $_POST['hepatitisSampleId'],
-		'test_type' => 'hepatitis',
-		'updated_on' => $general->getDateTime()
-	);
-	$db->insert($tableName2, $data);
+	// $data = array(
+	// 	'user_id' => $_SESSION['userId'],
+	// 	'vl_sample_id' => $_POST['hepatitisSampleId'],
+	// 	'test_type' => 'hepatitis',
+	// 	'updated_on' => $general->getDateTime()
+	// );
+	// $db->insert($tableName2, $data);
+	error_log ($db->getLastError() . PHP_EOL);
 
 	header("location:hepatitis-manual-results.php");
 } catch (Exception $exc) {
