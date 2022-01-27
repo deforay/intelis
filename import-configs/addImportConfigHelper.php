@@ -20,10 +20,10 @@ try {
             'machine_name' => $_POST['configurationName'],
             'supported_tests' => $_POST['supportedTests'],
             'import_machine_file_name' => $_POST['configurationFile'],
-            'lower_limit' => $_POST['lowerLimit'],
-            'higher_limit' => $_POST['higherLimit'],
-            'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'],
-            'low_vl_result_text' => $_POST['lowVlResultText'],
+            'lower_limit' => !empty($_POST['lowerLimit']) ? $_POST['lowerLimit'] : null,
+            'higher_limit' => !empty($_POST['higherLimit']) ? $_POST['higherLimit'] : null,
+            'max_no_of_samples_in_a_batch' => !empty($_POST['maxNOfSamplesInBatch']) ? $_POST['maxNOfSamplesInBatch'] : null,
+            'low_vl_result_text' => !empty($_POST['lowVlResultText']) ? $_POST['lowVlResultText'] : null,
             'status' => 'active'
         );
         //print_r($data);die;
@@ -78,6 +78,7 @@ try {
             fclose($fp);
         }
     }
+    error_log($db->getLastError());
     header("location:importConfig.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

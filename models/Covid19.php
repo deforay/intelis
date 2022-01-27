@@ -167,6 +167,7 @@ class Covid19
 
     public function checkAllCovid19TestsForPositive($covid19SampleId)
     {
+        if(empty($covid19SampleId)) return false;
         $response = $this->db->rawQuery("SELECT * FROM covid19_tests WHERE `covid19_id` = $covid19SampleId ORDER BY test_id ASC");
 
         foreach ($response as $row) {

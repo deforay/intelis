@@ -163,11 +163,11 @@ try {
                     if (count($vlResult) > 0) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
-                        if ($data['result'] == 'positive' || $covid19Obj->checkAllCovid19TestsForPositive($vlResult[0]['covid19_id'])) {
-                            $data['result'] = null;  // CANNOT PUT FINAL RESULT FOR POSITIVE
-                            $data['result_status'] = 6; // CANNOT ACCEPT IT AUTOMATICALLY
-                            //var_dump($data);die;
-                        }
+                        // if ($data['result'] == 'positive' || $covid19Obj->checkAllCovid19TestsForPositive($vlResult[0]['covid19_id'])) {
+                        //     $data['result'] = null;  // CANNOT PUT FINAL RESULT FOR POSITIVE
+                        //     $data['result_status'] = 6; // CANNOT ACCEPT IT AUTOMATICALLY
+                        //     //var_dump($data);die;
+                        // }
                         $db = $db->where('sample_code', $rResult[0]['sample_code']);
 
                         $result = $db->update($tableName1, $data);

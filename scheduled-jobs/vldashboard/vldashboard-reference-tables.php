@@ -127,9 +127,9 @@ try {
     $result = curl_exec($ch);
     curl_close($ch);
 
-    echo "<pre>";
-    print_r($result);
-    die;
+    // echo "<pre>";
+    // print_r($result);
+    // die;
     $response = json_decode($result, true);
 } catch (Exception $exc) {
     error_log($exc->getMessage());
