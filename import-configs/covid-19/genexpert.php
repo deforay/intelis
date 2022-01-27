@@ -21,10 +21,15 @@ try {
     $allowedExtensions = array(
         'csv',
     );
+
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
     $ranNumber = str_pad(rand(0, pow(10, 6) - 1), 6, '0', STR_PAD_LEFT);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    if(!in_array($extension,$allowedExtensions)){
+        throw new Exception("Invalid file format.");
+    }
+    
     $fileName = $ranNumber . "." . $extension;
 
     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result")) {
@@ -115,7 +120,7 @@ try {
             $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
 
-            if ($vlResult && $sampleCode != '') {
+            if (!empty($vlResult) && !empty($sampleCode)) {
                 if ($vlResult[0]['result'] != null && !empty($vlResult[0]['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 } else {
@@ -126,7 +131,7 @@ try {
                 $data['sample_details'] = 'New Sample';
             }
             //echo "<pre>";var_dump($data);echo "</pre>";continue;
-            if ($sampleCode != '') {
+            if (!empty($sampleCode)) {
                 $data['result_imported_datetime'] = $general->getDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
@@ -135,7 +140,7 @@ try {
         }
     }
 
-    $_SESSION['alertMsg'] = "Results imported successfully";
+    $_SESSION['alertMsg'] = "Result file imported successfully";
     //Add event log
     $eventType = 'import';
     $action = ucwords($_SESSION['userName']) . ' imported a new test result with the sample code ' . $sampleCode;
@@ -154,6 +159,10 @@ try {
     }
     header("location:/import-result/imported-results.php");
 } catch (Exception $exc) {
+    
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
+    $_SESSION['alertMsg'] = "Result file could not be imported. Please check if the file is of correct format.";
+    header("location:/import-result/addImportResult.php?t=" . base64_encode('covid19'));
+    
 }

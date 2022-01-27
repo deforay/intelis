@@ -10,8 +10,9 @@ $tableName = "import_config";
 $importMachineTable = "import_config_machines";
 $importControlTable = "import_config_controls";
 // print_r($_POST);die;
+$_POST['configurationName'] = trim($_POST['configurationName']);
 try {
-    if (trim($_POST['configurationName']) != "") {
+    if (!empty($_POST['configurationName'])) {
 
         $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
 

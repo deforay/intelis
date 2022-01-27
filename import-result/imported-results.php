@@ -19,7 +19,7 @@ $module = $tResult['module'];
 
 $general = new \Vlsm\Models\General();
 $arr = $general->getGlobalConfig();
-
+$errorInImport = false;
 if ($module == 'vl') {
 
 	$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active'";
@@ -36,7 +36,7 @@ if ($module == 'vl') {
 	//sample rejection reason
 	$rejectionQuery = "SELECT * FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active'";
 	$rejectionResult = $db->rawQuery($rejectionQuery);
-} else if ($module == 'covid19') {
+} else if ($module == 'covid19' || $module == 'covid-19') {
 
 	$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
@@ -53,7 +53,7 @@ if ($module == 'vl') {
 	$rejectionQuery = "SELECT * FROM r_hepatitis_sample_rejection_reasons where rejection_reason_status = 'active'";
 	$rejectionResult = $db->rawQuery($rejectionQuery);
 } else {
-	die('You seem to have reached this page by mistake. Please contact support if you need assistance.');
+	$errorInImport = true;
 }
 
 
@@ -127,107 +127,116 @@ foreach ($rejectionTypeResult as $type) {
 
 	</div>
 	<!-- Main content -->
+
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<div class="box-header with-border">
-						<div class="box-header with-border">
-							<ul style="list-style: none;float: right;">
-								<li><i class="fa fa-square" aria-hidden="true" style="color:#e8000b;"></i> - Unknown Sample</li>
-								<li><i class="fa fa-square" aria-hidden="true" style="color:#86c0c8;"></i> - Existing Result</li>
-								<li><i class="fa fa-square" aria-hidden="true" style="color:#337ab7;"></i> - Result for Sample</li>
-								<li><i class="fa fa-square" aria-hidden="true" style="color:#7d8388;"></i> - Control</li>
-							</ul>
-						</div>
-						<span><b style="color: #f03033;">Note:-</b>When you leave this page, these temporary records will be deleted from the system.</span>
-					</div>
-					<!-- /.box-header -->
-					<div class="box-body">
-						<div class="col-md-2 col-sm-2"><input type="button" onclick="acceptAllSamples();" value="Accept All Samples" class="btn btn-success btn-sm"></div>
-						<table id="vlRequestDataTable" class="table table-bordered table-striped">
-							<thead>
-								<tr>
-									<!--<th style="width: 1%;"><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
-									<th style="width: 23%;">Sample Code/ID</th>
-									<th style="width: 11%;">Sample Collection Date</th>
-									<th style="width: 10%;">Sample Test Date</th>
-									<th style="width: 10%;">Clinic Name</th>
-									<th style="width: 10%;">Batch Code</th>
-									<th style="width: 10%;">Lot No.</th>
-									<th style="width: 10%;">Lot Expiry Date</th>
-									<th style="width: 10%;">Reason</th>
-									<th style="max-width: 9%;">Sample Type</th>
-									<th style="width: 9%;">Result</th>
-									<th style="width: 9%;">Status</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td colspan="11" class="dataTables_empty">Loading data from server</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 100%;">
-						<tr>
-							<input type="hidden" name="checkedTests" id="checkedTests" />
-							<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />
-							<td style=" width: 30%; ">
-								<b>Comments&nbsp;</b>
-								<textarea style="height: 34px;width: 100%;" class="form-control" id="comments" name="comments" placeholder="Comments"></textarea>
-							</td>
-							<td style=" width: 20%; ">
-								<b>Tested By<span class="mandatory">*</span>&nbsp;</b>
-								<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
-									<option value="">-- Select --</option>
-									<?php
-									foreach ($userResult as $uName) {
-									?>
-										<option value="<?php echo $uName['user_id']; ?>"><?php echo ucwords($uName['user_name']); ?></option>
-									<?php
-									}
-									?>
-								</select>
-							</td>
-							<td style=" width: 20%; ">
-								<b>Reviewed By<span class="mandatory">*</span>&nbsp;</b>
-								<!--<input type="text" name="reviewedBy" id="reviewedBy" class="form-control" title="Please enter Reviewed By" placeholder ="Reviewed By"/>-->
-								<select name="reviewedBy" id="reviewedBy" class="form-control" title="Please choose reviewed by" style="width: 100%;">
-									<option value="">-- Select --</option>
-									<?php
-									foreach ($userResult as $uName) {
-									?>
-										<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $reviewBy) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
-									<?php
-									}
-									?>
-								</select>
-							</td>
-							<td style=" width: 20%; ">
-								<b>Approved By<span class="mandatory">*</span>&nbsp;</b>
-								<!--<input type="text" name="approvedBy" id="approvedBy" class="form-control" title="Please enter Approved By" placeholder ="Approved By"/>-->
-								<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" style="width: 100%;">
-									<option value="">-- Select --</option>
-									<?php
-									foreach ($userResult as $uName) {
-									?>
-										<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $_SESSION['userId']) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
-									<?php
-									}
-									?>
-								</select>
-							</td>
-							<td style=" width: 10%; ">
-								<br>
-								<input type="hidden" name="print" id="print" />
-								<input type="hidden" name="module" id="module" value="<?php echo $module; ?>" />
-								<input type="button" onclick="submitTestStatus();" value="Save" class="btn btn-success btn-sm">
-							</td>
-						</tr>
+					<?php if ($errorInImport == false) { ?>
 
-					</table>
-					<!-- /.box-body -->
+						<div class="box-header with-border">
+							<div class="box-header with-border">
+								<ul style="list-style: none;float: right;">
+									<li><i class="fa fa-square" aria-hidden="true" style="color:#e8000b;"></i> - Unknown Sample</li>
+									<li><i class="fa fa-square" aria-hidden="true" style="color:#86c0c8;"></i> - Existing Result</li>
+									<li><i class="fa fa-square" aria-hidden="true" style="color:#337ab7;"></i> - Result for Sample</li>
+									<li><i class="fa fa-square" aria-hidden="true" style="color:#7d8388;"></i> - Control</li>
+								</ul>
+							</div>
+							<span><b style="color: #f03033;">Note:-</b>When you leave this page, these temporary records will be deleted from the system.</span>
+						</div>
+						<!-- /.box-header -->
+						<div class="box-body">
+							<div class="col-md-2 col-sm-2"><input type="button" onclick="acceptAllSamples();" value="Accept All Samples" class="btn btn-success btn-sm"></div>
+							<table id="vlRequestDataTable" class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<!--<th style="width: 1%;"><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
+										<th style="width: 23%;">Sample Code/ID</th>
+										<th style="width: 11%;">Sample Collection Date</th>
+										<th style="width: 10%;">Sample Test Date</th>
+										<th style="width: 10%;">Clinic Name</th>
+										<th style="width: 10%;">Batch Code</th>
+										<th style="width: 10%;">Lot No.</th>
+										<th style="width: 10%;">Lot Expiry Date</th>
+										<th style="width: 10%;">Reason</th>
+										<th style="max-width: 9%;">Sample Type</th>
+										<th style="width: 9%;">Result</th>
+										<th style="width: 9%;">Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td colspan="11" class="dataTables_empty">Loading data from server</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 100%;">
+							<tr>
+								<input type="hidden" name="checkedTests" id="checkedTests" />
+								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />
+								<td style=" width: 30%; ">
+									<b>Comments&nbsp;</b>
+									<textarea style="height: 34px;width: 100%;" class="form-control" id="comments" name="comments" placeholder="Comments"></textarea>
+								</td>
+								<td style=" width: 20%; ">
+									<b>Tested By<span class="mandatory">*</span>&nbsp;</b>
+									<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
+										<option value="">-- Select --</option>
+										<?php
+										foreach ($userResult as $uName) {
+										?>
+											<option value="<?php echo $uName['user_id']; ?>"><?php echo ucwords($uName['user_name']); ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</td>
+								<td style=" width: 20%; ">
+									<b>Reviewed By<span class="mandatory">*</span>&nbsp;</b>
+									<!--<input type="text" name="reviewedBy" id="reviewedBy" class="form-control" title="Please enter Reviewed By" placeholder ="Reviewed By"/>-->
+									<select name="reviewedBy" id="reviewedBy" class="form-control" title="Please choose reviewed by" style="width: 100%;">
+										<option value="">-- Select --</option>
+										<?php
+										foreach ($userResult as $uName) {
+										?>
+											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $reviewBy) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</td>
+								<td style=" width: 20%; ">
+									<b>Approved By<span class="mandatory">*</span>&nbsp;</b>
+									<!--<input type="text" name="approvedBy" id="approvedBy" class="form-control" title="Please enter Approved By" placeholder ="Approved By"/>-->
+									<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" style="width: 100%;">
+										<option value="">-- Select --</option>
+										<?php
+										foreach ($userResult as $uName) {
+										?>
+											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $_SESSION['userId']) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</td>
+								<td style=" width: 10%; ">
+									<br>
+									<input type="hidden" name="print" id="print" />
+									<input type="hidden" name="module" id="module" value="<?php echo $module; ?>" />
+									<input type="button" onclick="submitTestStatus();" value="Save" class="btn btn-success btn-sm">
+								</td>
+							</tr>
+
+						</table>
+						<!-- /.box-body -->
+
+
+					<?php } else { ?>
+						<h4>Either there were no records imported or you seem to have reached this page by mistake. Please contact support if you need assistance. </h4>
+						<input type="button" onclick="history.go(-1);" value="Back" class="btn btn-danger btn-sm">
+					<?php } ?>
 				</div>
 				<!-- /.box -->
 			</div>
@@ -235,6 +244,7 @@ foreach ($rejectionTypeResult as $type) {
 		</div>
 		<!-- /.row -->
 	</section>
+
 	<!-- /.content -->
 </div>
 
