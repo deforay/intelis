@@ -1,5 +1,5 @@
 <?php
-$title = "Tb | View All Requests";
+$title = "TB | View All Requests";
 #require_once('../../startup.php');
 
 
@@ -34,7 +34,7 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> Tb Test Requests</h1>
+        <h1><i class="fa fa-edit"></i> TB Test Requests</h1>
         <ol class="breadcrumb">
             <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="active">Test Request</li>
@@ -101,7 +101,7 @@ $batResult = $db->rawQuery($batQuery);
                             </td>
                             <td colspan="4">
                                 <?php if (isset($_SESSION['privileges']) && in_array("tb-add-request.php", $_SESSION['privileges'])) { ?>
-                                    <a style=" margin: 0px 5px; " href="/tb/requests/tb-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Add new Tb Request</a>
+                                    <a style=" margin: 0px 5px; " href="/tb/requests/tb-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Add new TB Request</a>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -112,7 +112,7 @@ $batResult = $db->rawQuery($batQuery);
 
                                 <?php
                                 if (isset($_SESSION['privileges']) && in_array("tb-add-request.php", $_SESSION['privileges'])) { ?>
-                                    <a style=" margin: 0px 5px; " href="/tb/requests/tb-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Add new Tb Request</a>
+                                    <a style=" margin: 0px 5px; " href="/tb/requests/tb-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Add new TB Request</a>
                                 <?php } ?>
                                 <button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>Show Advanced Search</span></button>
                             </td>

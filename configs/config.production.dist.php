@@ -5,6 +5,9 @@ require_once(APPLICATION_PATH . '/system/system.php');
 
 $systemConfig = array();
 
+// System Locale
+$systemConfig['locale'] = 'en_US';
+
 
 // Enable/Disable Modules
 // true => Enabled

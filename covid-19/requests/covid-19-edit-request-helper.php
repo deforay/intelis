@@ -132,7 +132,7 @@ try {
 	$covid19Data = array(
 		'external_sample_code'                => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
 		'facility_id'                         => !empty($_POST['facilityId']) ? $_POST['facilityId'] : null,
-		'investogator_name'                   => !empty($_POST['investigatorName']) ? $_POST['investigatorName'] : null,
+		'investigator_name'                   => !empty($_POST['investigatorName']) ? $_POST['investigatorName'] : null,
 		'investigator_phone'                  => !empty($_POST['investigatorPhone']) ? $_POST['investigatorPhone'] : null,
 		'investigator_email'                  => !empty($_POST['investigatorEmail']) ? $_POST['investigatorEmail'] : null,
 		'clinician_name'                      => !empty($_POST['clinicianName']) ? $_POST['clinicianName'] : null,

@@ -646,12 +646,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="col-md-12">
 											<div class="form-group">
 												<?php if (isset($arr['covid19_report_type']) && $arr['covid19_report_type'] != '') { ?>
-													<label for="covid19ReportType" class="col-lg-2 control-label">Covid-19 Report Type<span class="mandatory ">*</span></label>
+													<label for="covid19ReportType" class="col-lg-2 control-label">Covid-19 Excel Export Report Format<span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select name="covid19ReportType" id="covid19ReportType" class="form-control isRequired readPage" title="Please select covid19 report type">
 															<option value="">-- Select --</option>
+															<option value='who' <?php echo (empty($arr['covid19_report_type']) || $arr['covid19_report_type'] == 'standard') ? "selected='selected'" : ""; ?>> Standard </option>
 															<option value='rwanda' <?php echo ($arr['covid19_report_type'] == 'rwanda') ? "selected='selected'" : ""; ?>> Rwanda </option>
-															<option value='who' <?php echo ($arr['covid19_report_type'] == 'who') ? "selected='selected'" : ""; ?>> WHO </option>
 														</select>
 													</div>
 												<?php }
@@ -912,7 +912,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						if ($systemConfig['modules']['tb']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h3 class="panel-title">Tb Settings</h3>
+									<h3 class="panel-title">TB Settings</h3>
 								</div>
 								<div class="panel-body">
 									<div class="row">
@@ -933,12 +933,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														$sPrefixYYDisplay = '';
 													}
 													?>
-													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_auto_generate_yy" name="tb_sample_code" value="YY" <?php echo ($arr['tb_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixYY readPage" id="tb_prefixYY" name="tb_sample_code_prefix" title="Enter Prefix" value="<?php echo $sPrefixYY; ?>" /> YY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_auto_generate_mmyy" name="tb_sample_code" value="MMYY" <?php echo ($arr['tb_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixMMYY readPage" id="tb_prefixMMYY" name="tb_sample_code_prefix" title="Enter Prefix" value="<?php echo $sPrefixMMYY; ?>" /> MMYY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_auto_generate" name="tb_sample_code" value="auto" <?php echo ($arr['tb_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="tb_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_auto_generate2" name="tb_sample_code" value="auto2" <?php echo ($arr['tb_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="tb_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> Auto 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_numeric" name="tb_sample_code" value="numeric" <?php echo ($arr['tb_sample_code'] == 'numeric') ? 'checked' : ''; ?>> Numeric&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="Please select the Tb Sample Code Format" id="tb_alpha_numeric" name="tb_sample_code" value="alphanumeric" <?php echo ($arr['tb_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> Alpha Numeric
+													<input type="radio" class="isRequired readPage" title="Please select the TB Sample Code Format" id="tb_auto_generate_yy" name="tb_sample_code" value="YY" <?php echo ($arr['tb_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixYY readPage" id="tb_prefixYY" name="tb_sample_code_prefix" title="Enter Prefix" value="<?php echo $sPrefixYY; ?>" /> YY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="Please select the TB Sample Code Format" id="tb_auto_generate_mmyy" name="tb_sample_code" value="MMYY" <?php echo ($arr['tb_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixMMYY readPage" id="tb_prefixMMYY" name="tb_sample_code_prefix" title="Enter Prefix" value="<?php echo $sPrefixMMYY; ?>" /> MMYY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="Please select the TB Sample Code Format" id="tb_auto_generate" name="tb_sample_code" value="auto" <?php echo ($arr['tb_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="tb_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="Please select the TB Sample Code Format" id="tb_auto_generate2" name="tb_sample_code" value="auto2" <?php echo ($arr['tb_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="tb_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> Auto 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+													<input type="radio" class="isRequired readPage" title="Please select the TB Sample Code Format" id="tb_numeric" name="tb_sample_code" value="numeric" <?php echo ($arr['tb_sample_code'] == 'numeric') ? 'checked' : ''; ?>> Numeric&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="Please select the TB Sample Code Format" id="tb_alpha_numeric" name="tb_sample_code" value="alphanumeric" <?php echo ($arr['tb_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> Alpha Numeric
 												</div>
 											</div>
 										</div>

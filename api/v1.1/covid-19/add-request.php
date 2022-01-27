@@ -237,7 +237,7 @@ try {
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'external_sample_code'                => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,
-            'investogator_name'                   => !empty($data['investigatorName']) ? $data['investigatorName'] : null,
+            'investigator_name'                   => !empty($data['investigatorName']) ? $data['investigatorName'] : null,
             'investigator_phone'                  => !empty($data['investigatorPhone']) ? $data['investigatorPhone'] : null,
             'investigator_email'                  => !empty($data['investigatorEmail']) ? $data['investigatorEmail'] : null,
             'clinician_name'                      => !empty($data['clinicianName']) ? $data['clinicianName'] : null,

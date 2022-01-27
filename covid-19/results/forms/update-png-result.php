@@ -166,7 +166,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <tr>
                                     <th><label for="investigatorName">Investigator’s name </label></th>
                                     <td>
-                                        <input type="text" class="form-control" value="<?php echo $covid19Info['investogator_name']; ?>" id="investigatorName" name="investigatorName" placeholder="Investigator’s name" title="Please enter Investigator’s name" style="width:100%;" />
+                                        <input type="text" class="form-control" value="<?php echo $covid19Info['investigator_name']; ?>" id="investigatorName" name="investigatorName" placeholder="Investigator’s name" title="Please enter Investigator’s name" style="width:100%;" />
                                     </td>
                                     <td><label for="investigatorPhone">Investigator’s phone</label></td>
                                     <td>

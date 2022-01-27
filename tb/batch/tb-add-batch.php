@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$title = "Tb | Add Batch";
+$title = "TB | Add Batch";
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 

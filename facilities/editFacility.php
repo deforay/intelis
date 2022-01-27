@@ -346,7 +346,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value='hepatitis' <?php echo (preg_match("/hepatitis/i", $facilityInfo[0]['test_type'])) ? "selected='selected'" : '';  ?>>Hepatitis</option>
 											<?php }
 											if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
-												<option value='tb' <?php echo (preg_match("/tb/i", $facilityInfo[0]['test_type'])) ? "selected='selected'" : '';  ?>>Tb</option>
+												<option value='tb' <?php echo (preg_match("/tb/i", $facilityInfo[0]['test_type'])) ? "selected='selected'" : '';  ?>>TB</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -446,7 +446,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							$count = sizeof($reportFormats['tb']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat" class="col-lg-4 control-label">Report Format For Tb</label>
+									<label for="reportFormat" class="col-lg-4 control-label">Report Format For TB</label>
 									<div class="col-lg-7">
 										<select class="form-control" name='reportFormat[tb]' id='reportFormat' title="Please select the status" onchange="checkIfExist(this);">
 											<?php if (($count > 1)) { ?>

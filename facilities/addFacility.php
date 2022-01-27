@@ -354,7 +354,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								$count = sizeof($reportFormats['tb']); ?>
 								<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 									<div class="form-group">
-										<label for="reportFormat" class="col-lg-4 control-label">Report Format For Tb</label>
+										<label for="reportFormat" class="col-lg-4 control-label">Report Format For TB</label>
 										<div class="col-lg-7">
 											<select class="form-control" name='reportFormat[tb]' id='reportFormat' title="Please select the status" onchange="checkIfExist(this);">
 												<?php if (($count > 1)) { ?>
@@ -446,7 +446,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 												<option value="eid">Early Infant Diagnosis</option>
 												<option value="covid19">Covid-19</option>
 												<option value='hepatitis'>Hepatitis</option>
-												<option value='tb'>Tb</option>
+												<option value='tb'>TB</option>
 											</select>
 										</td>
 										<td style="width:14%;"><input type="text" class="form-control" name="sortOrder[]" id="sortOrder1" placeholder="Display Order" title="Please enter the Display Order"></td>
@@ -648,7 +648,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 					testOrg = 'Hepatitis';
 					var extraDiv = '<td></td>';
 				} else if (testType[i] == 'tb') {
-					testOrg = 'Tb';
+					testOrg = 'TB';
 					var extraDiv = '<td></td>';
 				}
 				div += '<tr><td>' + testOrg + '<input type="hidden" name="testData[]" id ="testData' + i + '" value="' + testType[i] + '" /></td>';

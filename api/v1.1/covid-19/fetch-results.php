@@ -52,7 +52,7 @@ try {
         vl.external_sample_code                 as externalSampleCode,
         vl.facility_id                          as facilityId,
         f.facility_name                         as facilityName,
-        vl.investogator_name                    as investigatorName,
+        vl.investigator_name                    as investigatorName,
         vl.investigator_phone                   as investigatorPhone,
         vl.investigator_email                   as investigatorEmail,
         vl.clinician_name                       as clinicianName,
