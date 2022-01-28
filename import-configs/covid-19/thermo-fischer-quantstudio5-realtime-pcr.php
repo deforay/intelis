@@ -48,7 +48,7 @@ try {
         $skipTillRow = 47;
 
         $sampleIdCol = "D";
-        $resultCol = "I";
+        $resultCol = "J";
 
 
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $fileName);
@@ -69,7 +69,8 @@ try {
 
             if ($rowIndex == 34) {
                 $rowData["B"] = str_replace("/", "-", $rowData["B"]);
-                $testingDate = date('Y-m-d H:i', strtotime($rowData["B"]));
+                $testingDateTimeArray = explode(" ", $rowData["B"]);
+                $testingDate = date('Y-m-d H:i', strtotime($testingDateTimeArray[0] . " " . $testingDateTimeArray[1]));
             }
 
             if ($rowIndex < $skipTillRow)
@@ -98,21 +99,34 @@ try {
             // $rowData[$testDateCol] = str_replace("/", "-", $rowData[$testDateCol]);
             // $testingDate = date('Y-m-d H:i', strtotime($rowData[$testDateCol]));
             $result = '';
+            $hold = false;
 
-            if (strpos(strtolower($rowData[$resultCol]), 'undetermined') !== false) {
+            if (strtolower($rowData[$resultCol]) == 'n') {
                 $result = 'negative';
-            } else if ((float)$rowData[$resultCol] > 0) {
+            } else if (strtolower($rowData[$resultCol]) == 'p') {
                 $result = 'positive';
+            } else if (strtolower($rowData[$resultCol]) == 'pr' || strtolower($rowData[$resultCol]) == 'er') {
+                $result = null;
+                $hold = true;
             }
 
 
 
             if (!isset($infoFromFile[$sampleCode])) {
-                $infoFromFile[$sampleCode] = array(
-                    "sampleCode" => $sampleCode,
-                    "testingDate" => $testingDate,
-                    "result" => $result
-                );
+                if (!empty($result)) {
+                    $infoFromFile[$sampleCode] = array(
+                        "sampleCode" => $sampleCode,
+                        "testingDate" => $testingDate,
+                        "result" => $result
+                    );
+                } else if ($hold) {
+                    $infoFromFile[$sampleCode] = array(
+                        "sampleCode" => $sampleCode,
+                        "testingDate" => null,
+                        "result" => null,
+                        "result_status" => 1 // 1 => hold
+                    );
+                }
             }
 
             $m++;
@@ -122,7 +136,7 @@ try {
 
         $inc = 0;
         foreach ($infoFromFile as $sampleCode => $d) {
-            
+
             $data = array(
                 'module' => 'covid19',
                 'lab_id' => base64_decode($_POST['labId']),
@@ -131,7 +145,7 @@ try {
                 'result_reviewed_by' => $_SESSION['userId'],
                 'sample_code' => $d['sampleCode'],
                 'sample_tested_datetime' => $testingDate,
-                'result_status' => '6',
+                'result_status' => !empty($d['result_status']) ? $d['result_status'] : '6',
                 'import_machine_file_name' => $fileName,
                 'result' => $d['result'],
             );
@@ -150,7 +164,7 @@ try {
 
             $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
-            
+
             if ($vlResult && $sampleCode != '') {
                 if ($vlResult[0]['result'] != null && !empty($vlResult[0]['result'])) {
                     $data['sample_details'] = 'Result already exists';

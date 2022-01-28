@@ -109,7 +109,7 @@ foreach ($rejectionTypeResult as $type) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>Imported Results</h1>
+		<h1><?= _("Imported Results"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
 			<li class="active">Test Request</li>
@@ -134,35 +134,37 @@ foreach ($rejectionTypeResult as $type) {
 				<div class="box">
 					<?php if ($errorInImport == false) { ?>
 
-						<div class="box-header with-border">
+						<div class="box-header without-border">
 							<div class="box-header with-border">
 								<ul style="list-style: none;float: right;">
-									<li><i class="fa fa-square" aria-hidden="true" style="color:#e8000b;"></i> - Unknown Sample</li>
-									<li><i class="fa fa-square" aria-hidden="true" style="color:#86c0c8;"></i> - Existing Result</li>
-									<li><i class="fa fa-square" aria-hidden="true" style="color:#337ab7;"></i> - Result for Sample</li>
-									<li><i class="fa fa-square" aria-hidden="true" style="color:#7d8388;"></i> - Control</li>
+									<li style="float:left;margin-right:40px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#e8000b;"></i>  <?= _("Sample Code/ID not from VLSM"); ?></li>
+									<li style="float:left;margin-right:40px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#86c0c8;"></i>  <?= _("Result already exists for this sample"); ?></li>
+									<li style="float:left;margin-right:40px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#337ab7;"></i>  <?= _("Result for sample from VLSM"); ?></li>
+									<li style="float:left;margin-right:20px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#7d8388;"></i>  <?= _("Control"); ?></li>
 								</ul>
 							</div>
-							<span><b style="color: #f03033;">Note:-</b>When you leave this page, these temporary records will be deleted from the system.</span>
 						</div>
 						<!-- /.box-header -->
 						<div class="box-body">
-							<div class="col-md-2 col-sm-2"><input type="button" onclick="acceptAllSamples();" value="Accept All Samples" class="btn btn-success btn-sm"></div>
+							<div class="col-md-6 col-sm-6">
+								<input type="button" onclick="acceptAllSamples();" value="<?= _("Accept All Samples"); ?>" class="btn btn-success btn-sm">
+								<br><strong class="text-danger"><?= _("Only accepts samples that do not have status field already selected"); ?></strong>
+							</div>
 							<table id="vlRequestDataTable" class="table table-bordered table-striped">
 								<thead>
 									<tr>
 										<!--<th style="width: 1%;"><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
-										<th style="width: 23%;">Sample Code/ID</th>
-										<th style="width: 11%;">Sample Collection Date</th>
-										<th style="width: 10%;">Sample Test Date</th>
-										<th style="width: 10%;">Clinic Name</th>
-										<th style="width: 10%;">Batch Code</th>
-										<th style="width: 10%;">Lot No.</th>
-										<th style="width: 10%;">Lot Expiry Date</th>
-										<th style="width: 10%;">Reason</th>
-										<th style="max-width: 9%;">Sample Type</th>
-										<th style="width: 9%;">Result</th>
-										<th style="width: 9%;">Status</th>
+										<th style="width: 23%;"><?= _("Sample Code/ID"); ?></th>
+										<th style="width: 11%;"><?= _("Sample Collection Date"); ?></th>
+										<th style="width: 10%;"><?= _("Sample Test Date"); ?></th>
+										<th style="width: 10%;"><?= _("Clinic/Site Name"); ?></th>
+										<th style="width: 10%;"><?= _("Batch Code"); ?></th>
+										<th style="width: 10%;"><?= _("Lot No."); ?></th>
+										<th style="width: 10%;"><?= _("Lot Expiry Date"); ?></th>
+										<th style="width: 10%;"><?= _("Rejection Reason"); ?></th>
+										<th style="max-width: 9%;"><?= _("Sample Type"); ?></th>
+										<th style="width: 9%;"><?= _("Result"); ?></th>
+										<th style="width: 9%;"><?= _("Status"); ?></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -177,11 +179,11 @@ foreach ($rejectionTypeResult as $type) {
 								<input type="hidden" name="checkedTests" id="checkedTests" />
 								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />
 								<td style=" width: 30%; ">
-									<b>Comments&nbsp;</b>
+									<b><?= _("Comments") ?>&nbsp;</b>
 									<textarea style="height: 34px;width: 100%;" class="form-control" id="comments" name="comments" placeholder="Comments"></textarea>
 								</td>
 								<td style=" width: 20%; ">
-									<b>Tested By<span class="mandatory">*</span>&nbsp;</b>
+									<b><?= _("Tested By"); ?><span class="mandatory">*</span>&nbsp;</b>
 									<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
 										<option value="">-- Select --</option>
 										<?php
@@ -194,7 +196,7 @@ foreach ($rejectionTypeResult as $type) {
 									</select>
 								</td>
 								<td style=" width: 20%; ">
-									<b>Reviewed By<span class="mandatory">*</span>&nbsp;</b>
+									<b><?= _("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;</b>
 									<!--<input type="text" name="reviewedBy" id="reviewedBy" class="form-control" title="Please enter Reviewed By" placeholder ="Reviewed By"/>-->
 									<select name="reviewedBy" id="reviewedBy" class="form-control" title="Please choose reviewed by" style="width: 100%;">
 										<option value="">-- Select --</option>
@@ -208,7 +210,7 @@ foreach ($rejectionTypeResult as $type) {
 									</select>
 								</td>
 								<td style=" width: 20%; ">
-									<b>Approved By<span class="mandatory">*</span>&nbsp;</b>
+									<b><?= _("Approved By"); ?><span class="mandatory">*</span>&nbsp;</b>
 									<!--<input type="text" name="approvedBy" id="approvedBy" class="form-control" title="Please enter Approved By" placeholder ="Approved By"/>-->
 									<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" style="width: 100%;">
 										<option value="">-- Select --</option>
@@ -225,7 +227,7 @@ foreach ($rejectionTypeResult as $type) {
 									<br>
 									<input type="hidden" name="print" id="print" />
 									<input type="hidden" name="module" id="module" value="<?php echo $module; ?>" />
-									<input type="button" onclick="submitTestStatus();" value="Save" class="btn btn-success btn-sm">
+									<input type="button" onclick="submitTestStatus();" value="<?= _("Save"); ?>" class="btn btn-success btn-sm">
 								</td>
 							</tr>
 
