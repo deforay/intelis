@@ -62,11 +62,11 @@ $batResult = $db->rawQuery($batQuery);
 						<tr>
 							<td><b><?php echo _("Sample Collection Date");?> :</b></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="background:#fff;" />
 							</td>
 							<td><b><?php echo _("Batch Code"); ?> :</b></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="Please select batch code">
+								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code');?>">
 									<option value=""> -- Select -- </option>
 									<?php
 									foreach ($batResult as $code) {
@@ -79,7 +79,7 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 							<td><b><?php echo _("Req. Sample Type");?> :</b></td>
 							<td>
-								<select class="form-control" id="requestSampleType" name="requestSampleType" title="Please select request sample type">
+								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _('Please select request sample type');?>">
 									<option value=""><?php echo _("All");?></option>
 									<option value="result"><?php echo _("Sample With Result");?></option>
 									<option value="noresult"><?php echo _("Sample Without Result");?></option>
@@ -90,33 +90,33 @@ $batResult = $db->rawQuery($batQuery);
 						<tr>
 							<td><b><?php echo _("Facility Name");?>:</b></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="Please select facility name" style="width:100%;">
+								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name');?>" style="width:100%;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
 							<td><b><?php echo _("Province/State");?>&nbsp;:</b></td>
 							<td>
-								<input type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
+								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State');?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 							<td><b><?php echo _("District/County");?> :</b></td>
 							<td>
-								<input type="text" id="district" name="district" class="form-control" placeholder="Enter District/County" onkeyup="loadVlRequestStateDistrict()" />
+								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County');?>" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 						</tr>
 						<tr>
 							<td><b><?php echo _("Testing Lab");?> :</b></td>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="Please select vl lab" style="width:220px;">
+								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab');?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
 							<td><b><?php echo _("Patient ID");?></b></td>
 							<td>
-								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="Patient ID" title="Please enter the patient ID to search" />
+								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Patient ID');?>" title="<?php echo _('Please enter the patient ID to search');?>" />
 							</td>
 							<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 							<td>
-								<select name="gender" id="gender" class="form-control" title="Please choose gender" style="width:220px;" onchange="hideFemaleDetails(this.value)">
+								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
 									<option value=""> <?php echo _("-- Select --");?> </option>
 									<option value="male"><?php echo _("Male");?></option>
 									<option value="female"><?php echo _("Female");?></option>
@@ -127,7 +127,7 @@ $batResult = $db->rawQuery($batQuery);
 						<tr>
 							<td><b><?php echo _("Show only Reordered Samples");?>&nbsp;:</b></td>
 							<td>
-								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
+								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample');?>">
 									<option value=""> <?php echo _("-- Select --");?> </option>
 									<option value="yes"><?php echo _("Yes");?></option>
 									<option value="no" selected="selected"><?php echo _("No");?></option>
@@ -135,8 +135,8 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 							<td><b><?php echo _("Funding Sources");?>&nbsp;:</b></td>
 							<td>
-								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
-									<option value=""> -- Select -- </option>
+								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source');?>">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php
 									foreach ($fundingSourceList as $fundingSource) {
 									?>
@@ -146,8 +146,8 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 							<td><b><?php echo _("Implementing Partners");?>&nbsp;:</b></td>
 							<td>
-								<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner">
-									<option value=""> -- Select -- </option>
+								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner');?>">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) {
 									?>
@@ -240,12 +240,12 @@ $batResult = $db->rawQuery($batQuery);
 								</div>
 							</div> <!-- /printer_data_loading -->
 							<div id="printer_details" style="display:none">
-								<span id="selected_printer">No printer selected!</span>
-								<button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
+								<span id="selected_printer"><?php echo _("No printer selected");?>!</span>
+								<button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry");?></button>
 							</div><br /> <!-- /printer_details -->
 							<div id="printer_select" style="display:none">
-								Zebra Printer Options<br />
-								Printer: <select id="printers"></select>
+							<?php echo _("Zebra Printer Options");?><br />
+							<?php echo _("Printer:");?> <select id="printers"></select>
 							</div> <!-- /printer_select -->
 
 						<?php
@@ -300,13 +300,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		?>
 		$("#facilityName").select2({
-			placeholder: "Select Facilities"
+			placeholder: "<?php echo _('Select Facilities');?>"
 		});
 		$("#vlLab").select2({
-			placeholder: "Select Vl Lab"
+			placeholder: "<?php echo _('Select Vl Lab');?>"
 		});
 		$("#batchCode").select2({
-			placeholder: "Select Batch Code"
+			placeholder: "<?php echo _('Select Batch Code');?>"
 		});
 		loadVlRequestData();
 		$('#sampleCollectionDate').daterangepicker({
