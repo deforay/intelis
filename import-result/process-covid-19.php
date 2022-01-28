@@ -68,8 +68,7 @@ try {
                     'result_approved_datetime' => $general->getDateTime(),
                     'vlsm_country_id' => $arr['vl_form'],
                     'file_name' => $rResult[0]['import_machine_file_name'],
-                    'imported_date_time' => $rResult[0]['result_imported_datetime'],
-                    'result_printed_datetime' => NULL
+                    'imported_date_time' => $rResult[0]['result_imported_datetime']
                 );
                 if ($status[$i] == 4) {
                     $data['is_sample_rejected'] = 'yes';
@@ -144,7 +143,7 @@ try {
 
 
                     //get bacth code
-                    $bquery = "select * from batch_details where batch_code='" . $rResult[0]['batch_code'] . "'";
+                    $bquery = "SELECT * from batch_details where batch_code='" . $rResult[0]['batch_code'] . "'";
                     $bvlResult = $db->rawQuery($bquery);
                     if ($bvlResult) {
                         $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
@@ -174,10 +173,10 @@ try {
                         $covid19Obj->insertCovid19Tests($vlResult[0]['covid19_id'], $rResult[0]['lot_number'], $rResult[0]['lab_id'], $rResult[0]['sample_tested_datetime'], $rResult[0]['result']);
                     } else {
                         if ($importNonMatching == false) continue;
-                        if ($data['result'] == 'positive') {
-                            $data['result'] = null;  // CANNOT PUT FINAL RESULT FOR POSITIVE
-                            $data['result_status'] = 6; // CANNOT ACCEPT IT AUTOMATICALLY
-                        }
+                        // if ($data['result'] == 'positive') {
+                        //     $data['result'] = null;  // CANNOT PUT FINAL RESULT FOR POSITIVE
+                        //     $data['result_status'] = 6; // CANNOT ACCEPT IT AUTOMATICALLY
+                        // }
                         $data['sample_code'] = $rResult[0]['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
@@ -244,11 +243,11 @@ try {
                 $data['sample_batch_id'] = $db->getInsertId();
             }
             $data['data_sync'] = 0;
-            if ($data['result'] == 'positive' || $covid19Obj->checkAllCovid19TestsForPositive($accResult[$i]['covid19_id'])) {
-                $data['result'] = null;  // CANNOT PUT FINAL RESULT FOR POSITIVE
-                $data['result_status'] = 6; // CANNOT ACCEPT IT AUTOMATICALLY
-                //var_dump($data);die;
-            }
+            // if ($data['result'] == 'positive' || $covid19Obj->checkAllCovid19TestsForPositive($accResult[$i]['covid19_id'])) {
+            //     $data['result'] = null;  // CANNOT PUT FINAL RESULT FOR POSITIVE
+            //     $data['result_status'] = 6; // CANNOT ACCEPT IT AUTOMATICALLY
+            //     //var_dump($data);die;
+            // }
             $db = $db->where('sample_code', $accResult[$i]['sample_code']);
             $result = $db->update($tableName1, $data);
 
