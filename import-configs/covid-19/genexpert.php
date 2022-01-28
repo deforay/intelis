@@ -63,6 +63,7 @@ try {
         foreach ($reader as $offset => $record) {
             //$newRow = array();
             foreach ($record as $o => $v) {
+                //echo "<pre>";var_dump($record);echo "</pre><br><br><br>";
                 $v = preg_replace('/[[:cntrl:]]/', '',  $v);
                 if ($v == 'End Time') {
                     $testedOn = preg_replace('/[[:cntrl:]]/', '',  $record[1]);
@@ -83,11 +84,14 @@ try {
                 } else if ($v == 'Test Result') {
                     if (empty($sampleCode)) continue;
                     $infoFromFile[$sampleCode]['result'] = strtolower(str_replace("SARS-CoV-2 ", "", preg_replace('/[[:cntrl:]]/', '',  $record[1])));
+                    //echo "<pre>";var_dump($infoFromFile[$sampleCode]['result']);echo "</pre><br><br><br>";
                 }
             }
         }
 
-
+        
+        // echo "<pre>";var_dump($infoFromFile);echo "</pre>";
+        // die;
         $inc = 0;
         foreach ($infoFromFile as $sampleCode => $d) {
 
