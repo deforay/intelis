@@ -100,17 +100,20 @@ try {
         $_SESSION['alertMsg'] = "User saved successfully!";
 
         $userType = $general->getSystemConfig('sc_user_type');
-        if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $userType == 'vluser') {
+        if (!empty($systemConfig['remoteURL']) && $userType == 'vluser') {
 
             $_POST['role'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['status'] = null; // so that we can retain whatever status is on server
             $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
-            $post = array('post' => json_encode($_POST), 'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18));
+            $post = array(
+                'post' => ($_POST),
+                'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18)
+            );
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $apiUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
             $result = curl_exec($ch);
             curl_close($ch);
 

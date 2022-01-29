@@ -32,9 +32,9 @@ class General
     }
 
     // Returns a UUID format string
-    public function generateUUID()
+    public function generateUUID($attachExtraString = true)
     {
-        return sprintf(
+        $uuid = sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
             mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
@@ -45,6 +45,10 @@ class General
             mt_rand(0, 0xffD3),
             mt_rand(0, 0xff4B)
         );
+        if ($attachExtraString) {
+            $uuid .= "-" . $this->generateRandomString('4');
+        }
+        return $uuid;
     }
 
     //This will return a hex token that is twice the specified length

@@ -12,7 +12,7 @@ if(!empty($userInfo[0]['interface_user_name'])){
      $interfaceUsers = implode(", " , json_decode($userInfo[0]['interface_user_name'], true));
 }
 
-$query = "SELECT * FROM roles WHERE status='active' GROUP BY role_code";
+$query = "SELECT * FROM roles WHERE status='active'";
 $result = $db->rawQuery($query);
 
 

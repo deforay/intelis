@@ -1,28 +1,29 @@
 <?php
 
 header('Content-Type: application/json');
-// require_once('../startup.php');
+
 
 session_unset(); // no need of session in json response
 $general = new \Vlsm\Models\General();
 $jsonResponse = file_get_contents('php://input');
 try {
-    if (isset($jsonResponse) && $jsonResponse != "") {
-        $decode = json_decode($jsonResponse, true);
-        $_POST = $decode;
+    if (empty($jsonResponse)) {
+        throw new Exception("Invalid request. Please check your request parameters.");
     }
+    $decode = json_decode($jsonResponse, true);
+
 
     if (isset($decode['api-type']) && $decode['api-type'] == "sync") {
         $postData = $decode['result'];
         foreach ($postData as $post) {
             $userId = $post['user_id'];
             $aRow = null;
-            if (!empty($userId) || !empty($post->email)) {
+            if (!empty($userId) || !empty($post['email'])) {
                 if (!empty($userId)) {
                     $db->where("user_id", $userId);
                 }
-                if (!empty($post->email)) {
-                    $db->where("login_id", $post->email);
+                if (!empty($post['email'])) {
+                    $db->where("login_id", $post['email']);
                 }
                 $aRow = $db->getOne("user_details");
             }
@@ -68,36 +69,24 @@ try {
         }
     } else {
 
-        $apiKey = isset($_POST['x-api-key']) && !empty($_POST['x-api-key']) ? $_POST['x-api-key'] : null;
+        $apiKey = isset($decode['x-api-key']) && !empty($decode['x-api-key']) ? $decode['x-api-key'] : null;
 
-        if (!$_POST['post']) {
-            $response = array(
-                'status' => 'failed',
-                'data' => 'Missing post data',
-                'timestamp' => $general->getDateTime()
-            );
-            echo json_encode($response);
-            exit(0);
+        if (!$decode['post']) {
+            throw new Exception("Invalid request. Please check your request parameters.");
         } else {
-            $post = json_decode($_POST['post']);
+            $post = ($decode['post']);
         }
-        $userId = !empty($post->userId) ? base64_decode($post->userId) : null;
+        $userId = !empty($post['userId']) ? base64_decode($post['userId']) : null;
         if (!$apiKey) {
-            $response = array(
-                'status' => 'failed',
-                'data' => 'API Key invalid',
-                'timestamp' => $general->getDateTime()
-            );
-            echo json_encode($response);
-            exit(0);
+            throw new Exception("Invalid API Key. Please check your request parameters.");
         }
         $aRow = null;
-        if (!empty($userId) || !empty($post->email)) {
+        if (!empty($userId) || !empty($post['email'])) {
             if (!empty($userId)) {
                 $db->where("user_id", $userId);
             }
-            if (!empty($post->email)) {
-                $db->where("email", $post->email);
+            if (!empty($post['email'])) {
+                $db->where("email", $post['email']);
             }
             $aRow = $db->getOne("user_details");
         }
@@ -120,36 +109,40 @@ try {
         }
         $data = array(
             'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
-            'user_name' => $post->userName,
-            'email' => $post->email,
-            'interface_user_name' => $post->interfaceUserName,
-            'login_id' => $post->loginId,
-            'phone_number' => $post->phoneNo,
-            'user_signature' => $imageName
+            'user_name' => $post['userName'],
+            'email' => $post['email'],
+            'interface_user_name' => $post['interfaceUserName'],
+            'login_id' => $post['loginId'],
+            'phone_number' => $post['phoneNo'],
+            'user_signature' => !empty($imageName) ? $imageName : null
         );
 
-        if (!empty($post->status)) {
-            $data['status'] = $post->status;
+        if (!empty($post['status'])) {
+            $data['status'] = $post['status'];
         }
-        if (!empty($post->role)) {
-            $data['role_id'] = $post->role;
-        }
-        if (!empty($post->password)) {
-            $data['password'] = sha1($post->password . $systemConfig['passwordSalt']);
+
+        if (!empty($post['password'])) {
+            $data['password'] = sha1($post['password'] . $systemConfig['passwordSalt']);
         }
 
         $id = 0;
         if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
+
+            if (!empty($post['role'])) {
+                $data['role_id'] = $post['role'];
+            }
             $db = $db->where('user_id', $aRow['user_id']);
             $id = $db->update("user_details", $data);
         } else {
+            $data['status'] = 'inactive';
             $id = $db->insert("user_details", $data);
         }
-        if ($id > 0 && trim($post->selectedFacility) != '') {
-            if ($id > 0 && trim($post->selectedFacility) != '') {
+        error_log($db->getLastError());
+        if ($id > 0 && trim($post['selectedFacility']) != '') {
+            if ($id > 0 && trim($post['selectedFacility']) != '') {
                 $db = $db->where('user_id', $data['user_id']);
                 $delId = $db->delete("vl_user_facility_map");
-                $selectedFacility = explode(",", $post->selectedFacility);
+                $selectedFacility = explode(",", $post['selectedFacility']);
                 $uniqueFacilityId = array_unique($selectedFacility);
                 for ($j = 0; $j <= count($selectedFacility); $j++) {
                     if (isset($uniqueFacilityId[$j])) {
@@ -170,9 +163,15 @@ try {
     );
 
     echo json_encode($payload);
-    exit(0);
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
+    $payload = array(
+        'status' => 'failed',
+        'error' => $exc->getMessage(),
+        'timestamp' => $general->getDateTime()
+    );
+
+    echo json_encode($payload);
+    error_log("Save User Profile API : " . $exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
 }
+exit(0);

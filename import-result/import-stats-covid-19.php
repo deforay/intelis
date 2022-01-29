@@ -97,7 +97,7 @@ unset($_SESSION['controllertrack']);
                     <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 75%;">
                         <tr>
                             <td>
-                            <a href="/covid-19/requests/covid-19-requests.php" class="btn btn-success btn-sm">Continue </a>
+                            <a href="/covid-19/results/covid-19-print-results.php" class="btn btn-success btn-sm">Continue to Print Results</a>
                             </td>
                         </tr>
 

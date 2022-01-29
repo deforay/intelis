@@ -2874,3 +2874,6 @@ UPDATE `system_config` SET `value` = '4.4.7' WHERE `system_config`.`name` = 'sc_
 
 -- Amit 27 Jan 2022
 ALTER TABLE `form_covid19` CHANGE `investogator_name` `investigator_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+-- Amit 29 Jan 2022
+ALTER TABLE `user_details` CHANGE `role_id` `role_id` INT NULL DEFAULT NULL;

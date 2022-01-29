@@ -84,12 +84,15 @@ try {
         $_POST['status'] = 'inactive';
         $_POST['userId'] = base64_encode($data['user_id']);
         $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
-        $post = array('post' => json_encode($_POST), 'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18));
+        $post = array(
+            'post' => ($_POST),
+            'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18)
+        );
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $apiUrl);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
         $result = curl_exec($ch);
         curl_close($ch);
 
