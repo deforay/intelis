@@ -36,6 +36,7 @@ $samplePrintQuery = "SELECT vl.*, b.*, ts.*, f.facility_name, l_f.facility_name 
                         f.facility_code,
                         f.facility_state,
                         f.facility_district,
+                        l.report_format as reportFormat,
                         u_d.user_name as reviewedBy,
                         a_u_d.user_name as approvedBy,
                         rs.rejection_reason_name

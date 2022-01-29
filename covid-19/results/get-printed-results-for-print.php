@@ -141,6 +141,7 @@ $sQuery = 	 "SELECT covid19_id,
 							vl.result_printed_datetime,
 							vl.authorized_by,	
 							vl.authorized_on,
+							l.report_format as reportFormat,
 							b.batch_code, 
 							ts.status_name,
 							imp.i_partner_name,
@@ -151,6 +152,7 @@ $sQuery = 	 "SELECT covid19_id,
 							
 							FROM form_covid19 as vl  
 							LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+							LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id 
                             LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
 							LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by  

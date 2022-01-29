@@ -12,10 +12,14 @@ $decryption = openssl_decrypt(
     $options,
     $decryption_iv
 );
-$data = explode('&&&', $decryption);
+$data = explode('&&&', urldecode($decryption));
 /* if ($data[1] != "qr")
     include_once(APPLICATION_PATH . '/header.php'); */
-$id = $data[0];
+$uniqueId = $data[0];
+$db = MysqliDb::getInstance();
+$db->where("unique_id", $uniqueId);
+$res = $db->getOne("form_covid19","covid19_id");
+$id = $res['covid19_id'];
 ?>
 <style>
     #the-canvas {

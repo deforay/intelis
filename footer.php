@@ -67,7 +67,7 @@
 	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 		var remoteSync = true;
 
-		function syncRemoteData(remoteURL) {
+		function syncRemoteData(remoteUrl) {
 			if (!navigator.onLine) {
 				alert('Please connect to internet to sync with VLSTS');
 				return false;

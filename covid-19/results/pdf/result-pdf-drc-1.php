@@ -382,7 +382,7 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $ciphering = "AES-128-CTR";
     $iv_length = openssl_cipher_iv_length($ciphering);
     $options = 0;
-    $simple_string = $result['covid19_id'] . "&&&qr";
+    $simple_string = $result['unique_id'] . "&&&qr";
     $encryption_iv = $systemConfig['tryCrypt'];
     $encryption_key = $systemConfig['tryCrypt'];
     $Cid = openssl_encrypt(
@@ -396,7 +396,7 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($systemConfig['remoteURL'])) {
         $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-        $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, 60, 100, 100, $style, 'N');
+        $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . urlencode($Cid) . '', 'QRCODE,H', 170, 60, 100, 100, $style, 'N');
     }
     $pdf->lastPage();
     $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

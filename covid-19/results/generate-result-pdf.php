@@ -82,7 +82,7 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 } else {
 	$searchQuery = $allQuery;
 }
-// echo($searchQuery);die;
+//echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
 /* Test Results */
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
@@ -346,7 +346,6 @@ if (sizeof($requestResult) > 0) {
 		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
 			$formats = json_decode($result['reportFormat'], true);
 			if (file_exists($formats['covid19'])) {
-				/* New format selection */
 				include($formats['covid19']);
 			} else {
 				if ($arr['vl_form'] == 1) {
