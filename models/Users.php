@@ -217,15 +217,23 @@ class Users
         return $this->db->rawQueryOne($uQuery);
     }
 
-    public function getActiveUsers($facilityMap = null)
+    public function getAllUsers($facilityMap = null, $status = null)
     {
         if (!empty($facilityMap)) {
             $facilityMap = explode(",", $facilityMap);
             $this->db->join("vl_user_facility_map map", "map.user_id=u.user_id", "INNER");
             $this->db->where('map.facility_id', $facilityMap, 'IN');
         }
-        $this->db->where("status='active'");
+        if ($status == 'active') {
+            $this->db->where("status='active'");
+        }
+
         return $this->db->get('user_details u');
+    }
+
+    public function getActiveUsers($facilityMap = null)
+    {
+        return $this->getAllUsers($facilityMap, 'active');
     }
 
     public function addUserIfNotExists($name, $status = 'inactive', $role = 4)

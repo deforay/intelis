@@ -9,7 +9,7 @@
 
 	if (!empty($systemConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 		<div class="pull-right">
-			<small><a href="javascript:syncRemoteData(<?= $systemConfig['remoteURL']; ?>);">Force Remote Sync</a>&nbsp;&nbsp;</small>
+			<small><a href="javascript:syncRemoteData('<?= $systemConfig['remoteURL']; ?>');">Force Remote Sync</a>&nbsp;&nbsp;</small>
 		</div>
 	<?php
 	}

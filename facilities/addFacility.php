@@ -10,7 +10,7 @@ $fResult = $db->rawQuery($fQuery);
 $pQuery = "SELECT * FROM province_details";
 $pResult = $db->rawQuery($pQuery);
 $usersModel = new \Vlsm\Models\Users();
-$userResult = $usersModel->getActiveUsers();
+$userResult = $usersModel->getAllUsers();
 
 $userInfo = array();
 foreach ($userResult as $user) {

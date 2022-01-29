@@ -6,7 +6,7 @@ $general = new \Vlsm\Models\General();
 $geolocation = new \Vlsm\Models\GeoLocations();
 
 $usersModel = new \Vlsm\Models\Users();
-$userResult = $usersModel->getActiveUsers();
+$userResult = $usersModel->getAllUsers();
 
 $userInfo = array();
 foreach ($userResult as $user) {
