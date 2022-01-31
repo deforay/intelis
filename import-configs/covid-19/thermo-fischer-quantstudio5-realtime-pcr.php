@@ -162,7 +162,7 @@ try {
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
-            $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where sample_code='" . $sampleCode . "'";
+            $query = "SELECT facility_id,covid19_id,result from form_covid19 where sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
 
             if ($vlResult && $sampleCode != '') {

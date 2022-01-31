@@ -345,10 +345,10 @@ try {
             $eidData['sample_registered_at_lab']  = $general->getDateTime();
             $eidData['request_created_by']  = $user['user_id'];
         }
-        $lock = $general->getGlobalConfig('lock_approved_eid_samples');
-        if ($status == 7 && $lock == 'yes') {
-            $eidData['locked'] = 'yes';
-        }
+        // $lock = $general->getGlobalConfig('lock_approved_eid_samples');
+        // if ($status == 7 && $lock == 'yes') {
+        //     $eidData['locked'] = 'yes';
+        // }
         $eidData['request_created_by'] =  $user['user_id'];
         $eidData['last_modified_by'] =  $user['user_id'];
 

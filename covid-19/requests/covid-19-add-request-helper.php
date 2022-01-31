@@ -223,10 +223,10 @@ try {
 			$covid19Data['lab_manager'] = $facility['contact_person'];
 		}
 	}
-	$lock = $general->getGlobalConfig('lock_approved_covid19_samples');
-	if ($status == 7 && $lock == 'yes') {
-		$covid19Data['locked'] = 'yes';
-	}
+	// $lock = $general->getGlobalConfig('lock_approved_covid19_samples');
+	// if ($status == 7 && $lock == 'yes') {
+	// 	$covid19Data['locked'] = 'yes';
+	// }
 	if (isset($_POST['asymptomatic']) && $_POST['asymptomatic'] != "yes") {
 		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 		$db->delete("covid19_patient_symptoms");

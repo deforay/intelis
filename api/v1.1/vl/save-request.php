@@ -410,10 +410,10 @@ try {
             $vlFulldata['sample_registered_at_lab']  = $general->getDateTime();
             $vlFulldata['request_created_by']  = $user['user_id'];
         }
-        $lock = $general->getGlobalConfig('lock_approved_eid_samples');
-        if ($status == 7 && $lock == 'yes') {
-            $vlFulldata['locked'] = 'yes';
-        }
+        // $lock = $general->getGlobalConfig('lock_approved_eid_samples');
+        // if ($status == 7 && $lock == 'yes') {
+        //     $vlFulldata['locked'] = 'yes';
+        // }
         $vlFulldata['request_created_by'] =  $user['user_id'];
         $vlFulldata['last_modified_by'] =  $user['user_id'];
 
