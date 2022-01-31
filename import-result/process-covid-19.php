@@ -10,7 +10,7 @@ $fileName = null;
 $importedBy = $_SESSION['userId'];
 
 $covid19Obj = new \Vlsm\Models\Covid19();
-
+$facilityDb = new \Vlsm\Models\Facilities();
 
 
 try {
@@ -70,6 +70,12 @@ try {
                     'file_name' => $rResult[0]['import_machine_file_name'],
                     'imported_date_time' => $rResult[0]['result_imported_datetime']
                 );
+                if (!empty($data['lab_id'])) {
+                    $facility = $facilityDb->getFacilityById($data['lab_id']);
+                    if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
+                        $data['lab_manager'] = $facility['contact_person'];
+                    }
+                }
                 if ($status[$i] == 4) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
@@ -108,6 +114,12 @@ try {
                     'import_machine_file_name' => $rResult[0]['import_machine_file_name'],
                     'manual_result_entry' => 'no',
                 );
+                if (!empty($data['lab_id'])) {
+                    $facility = $facilityDb->getFacilityById($data['lab_id']);
+                    if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
+                        $data['lab_manager'] = $facility['contact_person'];
+                    }
+                }
                 if ($status[$i] == '1') {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult[0]['facility_id'];
@@ -198,6 +210,7 @@ try {
     $accResult = $db->rawQuery($accQuery);
     if ($accResult) {
         for ($i = 0; $i < count($accResult); $i++) {
+
             $data = array(
 
                 //'sample_received_at_vl_lab_datetime' => $accResult[$i]['sample_received_at_vl_lab_datetime'],
@@ -223,6 +236,13 @@ try {
                 'covid19_test_platform' => $accResult[$i]['vl_test_platform'],
                 'import_machine_name' => $accResult[$i]['import_machine_name'],
             );
+
+            if (!empty($data['lab_id'])) {
+                $facility = $facilityDb->getFacilityById($data['lab_id']);
+                if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
+                    $data['lab_manager'] = $facility['contact_person'];
+                }
+            }
 
             if ($accResult[$i]['result_status'] == '4') {
                 $data['is_sample_rejected'] = 'yes';

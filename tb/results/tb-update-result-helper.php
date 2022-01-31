@@ -166,10 +166,10 @@ try {
         'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
         'source_of_request'                   => "web"
     );
-    $lock = $general->getGlobalConfig('lock_approved_tb_samples');
-    if ($status == 7 && $lock == 'yes') {
-        $tbData['locked'] = 'yes';
-    }
+    // $lock = $general->getGlobalConfig('lock_approved_tb_samples');
+    // if ($status == 7 && $lock == 'yes') {
+    //     $tbData['locked'] = 'yes';
+    // }
     $id = 0;
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {

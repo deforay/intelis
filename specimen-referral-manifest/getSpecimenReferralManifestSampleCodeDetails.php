@@ -43,7 +43,7 @@ if (!empty($facilityMap)) {
 }
 
 if (isset($_POST['testingLab']) && $_POST['testingLab'] != "") {
-	$query .= " AND lab_id IN(" . $_POST['testingLab'] . ")";
+	$query .= " AND (lab_id IN(" . $_POST['testingLab'] . ") OR (lab_id like '' OR lab_id is null))";
 }
 
 $query .= " ORDER BY vl.request_created_datetime ASC";
