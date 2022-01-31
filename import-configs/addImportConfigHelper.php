@@ -14,6 +14,21 @@ $_POST['configurationName'] = trim($_POST['configurationName']);
 try {
     if (!empty($_POST['configurationName'])) {
 
+        if (isset($_POST['supportedTests']) && sizeof($_POST['supportedTests']) > 0) {
+            foreach ($_POST['supportedTests'] as $test) {
+                $configDir = __DIR__;
+                if (!file_exists($configDir)) {
+                    mkdir($configDir, 0777, true);
+                }
+                $configFile = $configDir . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
+                if (!file_exists($configFile)) {
+                    $fp = fopen($configFile, 'w');
+                    fwrite($fp, '');
+                    fclose($fp);
+                }
+            }
+        }
+
         $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
 
         $data = array(
@@ -31,15 +46,16 @@ try {
         if ($id > 0 && count($_POST['configMachineName']) > 0) {
             for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
                 $pocDev = 'no';
-                if(trim($_POST['latitude'][$c]) != '' && trim($_POST['longitude'][$c]) != ''){
+                if (trim($_POST['latitude'][$c]) != '' && trim($_POST['longitude'][$c]) != '') {
                     $pocDev = 'yes';
                 }
                 if (trim($_POST['configMachineName'][$c]) != '') {
-                    $configMachineData = array('config_id' => $id, 'config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime'=> $general->getDateTime());
+                    $configMachineData = array('config_id' => $id, 'config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => $general->getDateTime());
                     $db->insert($importMachineTable, $configMachineData);
                 }
             }
         }
+
         if ($id > 0 && isset($_POST['testType']) && count($_POST['testType']) > 0) {
             foreach ($_POST['testType'] as $key => $val) {
                 if (trim($val) != '') {
@@ -48,35 +64,8 @@ try {
                 }
             }
         }
+
         $_SESSION['alertMsg'] = "Result Import configuration initited for " . $_POST['configurationName'] . ". Please proceed to write the import logic in the file " . $_POST['configurationFile'] . " present in import-configs folder";
-
-        $configDir = __DIR__;
-        $configFileVL = $configDir . DIRECTORY_SEPARATOR . "vl" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-        $configFileEID = $configDir . DIRECTORY_SEPARATOR . "eid" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-        $configFileCovid19 = $configDir . DIRECTORY_SEPARATOR . "covid-19" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-
-
-        if (!file_exists($configDir)) {
-            mkdir($configDir, 0777, true);
-        }
-
-        if (!file_exists($configFileVL)) {
-            $fp = fopen($configFileVL, 'w');
-            fwrite($fp, '');
-            fclose($fp);
-        }
-
-        if (!file_exists($configFileEID)) {
-            $fp = fopen($configFileEID, 'w');
-            fwrite($fp, '');
-            fclose($fp);
-        }
-
-        if (!file_exists($configFileCovid19)) {
-            $fp = fopen($configFileCovid19, 'w');
-            fwrite($fp, '');
-            fclose($fp);
-        }
     }
     error_log($db->getLastError());
     header("location:importConfig.php");

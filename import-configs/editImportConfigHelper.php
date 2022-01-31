@@ -17,6 +17,22 @@ $configControlInfo = $db->query($configControlQuery);
 // echo "<pre>";print_r($_POST);die;
 try {
     if (trim($_POST['configurationName']) != "") {
+
+        if (isset($_POST['supportedTests']) && sizeof($_POST['supportedTests']) > 0) {
+            foreach ($_POST['supportedTests'] as $test) {
+                $configDir = __DIR__;
+                if (!file_exists($configDir)) {
+                    mkdir($configDir, 0777, true);
+                }
+                $configFile = $configDir . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
+                if (!file_exists($configFile)) {
+                    $fp = fopen($configFile, 'w');
+                    fwrite($fp, '');
+                    fclose($fp);
+                }
+            }
+        }
+
         $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
         $importConfigData = array(
             'machine_name' => $_POST['configurationName'],
