@@ -34,19 +34,19 @@ if (!empty($interfaceConfig['enabled']) && $interfaceConfig['enabled'] == true) 
 // REMOTE SYNC JOBS START
 if (!empty($systemConfig['remoteURL'])) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/syncCommonData.php")
-        ->cron("0 */30 * * *")
+        ->everyFiveMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing common/reference data from remote system');
 
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/syncRequests.php")
-        ->cron("0 */35 * * *")
+        ->cron("0 */15 * * *")
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing requests from remote system');
 
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/syncResults.php")
-        ->everyFifteenMinutes()
+        ->everyTenMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing results to remote system');
