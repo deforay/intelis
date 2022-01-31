@@ -137,9 +137,9 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['comorbidity_id'] . '" title="Please select status" onchange="updateStatus(this,\'' . $aRow['comorbidity_status'] . '\')">
-               <option value="active" ' . ($aRow['comorbidity_status'] == "active" ? "selected=selected" : "") . '>Active</option>
-               <option value="inactive" ' . ($aRow['comorbidity_status'] == "inactive"  ? "selected=selected" : "") . '>Inactive</option>
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['comorbidity_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,\'' . $aRow['comorbidity_status'] . '\')">
+               <option value="active" ' . ($aRow['comorbidity_status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
+               <option value="inactive" ' . ($aRow['comorbidity_status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
                </select><br><br>';
     $row = array();
     $row[] = ucwords($aRow['comorbidity_name']);
