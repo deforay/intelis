@@ -93,10 +93,10 @@ $sampleSuggestionDisplay = 'display:none;';
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> COVID-19 VIRUS LABORATORY TEST REQUEST FORM</h1>
+        <h1><i class="fa fa-edit"></i> <?php echo _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM");?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Edit Request</li>
+            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+            <li class="active"><?php echo _("Edit Request");?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -104,7 +104,7 @@ $sampleSuggestionDisplay = 'display:none;';
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">

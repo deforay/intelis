@@ -333,7 +333,7 @@ try {
 		exit(0);
 	} else {
 		if ($id > 0) {
-			$_SESSION['alertMsg'] = "Covid-19 test request added successfully";
+			$_SESSION['alertMsg'] = _("Covid-19 test request added successfully");
 			//Add event log
 			$eventType = 'covid-19-add-request';
 			$action = ucwords($_SESSION['userName']) . ' added a new Covid-19 request data with the sample id ' . $_POST['covid19SampleId'];
@@ -341,7 +341,7 @@ try {
 
 			$general->activityLog($eventType, $action, $resource);
 		} else {
-			$_SESSION['alertMsg'] = "Unable to add this Covid-19 sample. Please try again later";
+			$_SESSION['alertMsg'] = _("Unable to add this Covid-19 sample. Please try again later");
 		}
 		if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next' && (!empty($_POST['quickForm']) && $_POST['quickForm'] == "quick")) {
 			header("location:/covid-19/requests/covid-19-quick-add.php");
