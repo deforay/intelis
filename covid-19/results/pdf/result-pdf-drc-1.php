@@ -356,6 +356,7 @@ $html .= '</tr>';
 
 
 if (empty($result['lab_manager'])) {
+    $facilityDb = new \Vlsm\Models\Facilities();
     $labDetails = $facilityDb->getFacilityById($result['lab_id']);
     if (isset($labDetails['contact_person']) && !empty($labDetails['contact_person'])) {
         $result['lab_manager'] = $labDetails['contact_person'];
