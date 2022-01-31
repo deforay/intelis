@@ -139,9 +139,9 @@ try {
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 	$id = $db->update($tableName, $covid19Data);
 	if ($id > 0) {
-		$_SESSION['alertMsg'] = "Covid-19 result updated successfully";
+		$_SESSION['alertMsg'] = _("Covid-19 result updated successfully");
 	} else {
-		$_SESSION['alertMsg'] = "Please try again later";
+		$_SESSION['alertMsg'] = _("Please try again later");
 	}
 	//Add event log
 	$eventType = 'update-covid-19-result';

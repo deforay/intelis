@@ -1,5 +1,5 @@
 <?php
-$title = "Print Covid-19 Results";
+$title = _("Print Covid-19 Results");
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 // $tsQuery = "SELECT * FROM r_sample_status";
@@ -62,12 +62,12 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                 <tr>
                                                     <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
                                                     <td>
-                                                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+                                                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
                                                     <td><b><?php echo _("Batch Code");?>&nbsp;:</b></td>
                                                     <td>
-                                                        <select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
-                                                            <option value=""> -- Select -- </option>
+                                                        <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+                                                            <option value=""> <?php echo _("-- Select --");?> </option>
                                                             <?php
                                                             foreach ($batResult as $code) {
                                                             ?>
@@ -80,13 +80,13 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
                                                     <td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
                                                     <td>
-                                                        <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" />
+                                                        <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td><b><?php echo _("Facility Name");?> :</b></td>
                                                     <td>
-                                                        <select class="form-control" id="facility" name="facility" title="Please select facility name" multiple="multiple" style="width:220px;">
+                                                        <select class="form-control" id="facility" name="facility" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
@@ -179,12 +179,12 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                 <tr>
                                                     <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
                                                     <td>
-                                                        <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+                                                        <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
                                                     <td><b><?php echo _("Batch Code");?>&nbsp;:</b></td>
                                                     <td>
-                                                        <select class="form-control" id="printBatchCode" name="batchCode" title="Please select batch code" style="width:220px;">
-                                                            <option value=""> -- Select -- </option>
+                                                        <select class="form-control" id="printBatchCode" name="batchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+                                                            <option value=""> <?php echo _("-- Select --");?> </option>
                                                             <?php
                                                             foreach ($batResult as $code) {
                                                             ?>
@@ -197,13 +197,13 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
                                                     <td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
                                                     <td>
-                                                        <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" />
+                                                        <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td><b><?php echo _("Facility Name");?> :</b></td>
                                                     <td>
-                                                        <select class="form-control" id="printFacility" name="facility" title="Please select facility name" multiple="multiple" style="width:220px;">
+                                                        <select class="form-control" id="printFacility" name="facility" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
@@ -315,7 +315,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
     var opTable = null;
     $(document).ready(function() {
         $("#facility,#printFacility").select2({
-            placeholder: "Select Facilities"
+            placeholder: "<?php echo _('Select Facilities');?>"
         });
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
                 locale: {
@@ -631,7 +631,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
             function(data) {
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
-                    alert('Unable to generate download');
+                    alert('<?php echo _("Unable to generate download");?>');
                 } else {
                     $.unblockUI();
                     oTable.fnDraw();
@@ -659,11 +659,11 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
         }
         if (rowsLength != 0 && rowsLength > 100) {
             $.unblockUI();
-            alert("You have selected " + rowsLength + " results out of the maximum allowed 100 at a time");
+            alert("<?php echo _('You have selected');?> " + rowsLength + " <?php echo _('results out of the maximum allowed 100 at a time');?>");
             return false;
         } else if (totalCount != 0 && totalCount > 100 && rowsLength == 0) {
             $.unblockUI();
-            alert("Maximum 100 results allowed to print at a time");
+            alert("<?php echo _('Maximum 100 results allowed to print at a time');?>");
             return false;
         } else {
             id = checkedRow;
@@ -676,7 +676,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
             function(data) {
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
-                    alert('Unable to generate download');
+                    alert('<?php echo _("Unable to generate download");?>');
                 } else {
                     $.unblockUI();
                     if (newData == null) {

@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$title = "COVID-19 | Add New Request";
+$title = _("COVID-19 | Add New Request");
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 

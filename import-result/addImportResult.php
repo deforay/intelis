@@ -3,7 +3,7 @@ ob_start();
 
 $type = base64_decode($_GET['t']);
 $db = MysqliDb::getInstance();
-$title = "Import " . strtoupper($type) . " Test Results From File";
+$title = _("Import ") . strtoupper($type) . _(" Test Results From File");
 #require_once('../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 
