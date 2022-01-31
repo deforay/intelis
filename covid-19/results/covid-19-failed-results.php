@@ -1,5 +1,5 @@
 <?php
-$title = "Covid19 | View All Requests";
+$title = _("Covid19 | View All Requests");
 #require_once('../../startup.php');
 
 include_once(APPLICATION_PATH . '/header.php');
@@ -446,10 +446,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 function(data) {
                     $.unblockUI();
                     if (data > 0) {
-                        alert("Retest has been submitted.");
+                        alert("<?php echo _('Retest has been submitted.');?>");
                         oTable.fnDraw();
                     } else {
-                        alert("Something went wrong. Please try again later");
+                        alert("<?php echo _('Something went wrong. Please try again later');?>");
                     }
                 });
         }

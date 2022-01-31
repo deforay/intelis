@@ -1,5 +1,5 @@
 <?php
-$title = "Covid-19 | View All Requests";
+$title = _("Covid-19 | View All Requests");
 #require_once('../../startup.php');
 
 

@@ -1,5 +1,5 @@
 <?php
-$title = "VL Quarterly Monitoring Report";
+$title = _("VL Quarterly Monitoring Report");
 #require_once('../../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -180,11 +180,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             <tr>
               <td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
               <td>
-                <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="background:#fff;" />
+                <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="background:#fff;" />
               </td>
               <td><b><?php echo _("Lab Name");?> :</b></td>
               <td style="width: 30%;">
-                <select id="facilityName" name="facilityName" title="Please select facility name" multiple>
+                <select id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple>
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>
@@ -193,7 +193,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             <tr>
               <td><b><?php echo _("Target Type");?>&nbsp;:</b></td>
               <td>
-                <select class="form-control" id="targetType" name="targetType" title="Please select Target Type">
+                <select class="form-control" id="targetType" name="targetType" title="<?php echo _('Please select Target Type');?>">
                   <option value="1"><?php echo _("Monthly Targets not met");?></option>
                   <option value="2"><?php echo _("Monthly Targets met");?></option>
                   <option value="3"><?php echo _("Show all");?></option>
@@ -248,7 +248,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   var oTable = null;
   $(document).ready(function() {
     $("#facilityName").multipleSelect({
-      placeholder: 'Select facility name',
+      placeholder: '<?php echo _("Select facility name");?>',
       width: '100%'
     });
     $('#sampleTestDate').daterangepicker({
@@ -358,7 +358,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       },
       function(data) {
         if (data == "" || data == null || data == undefined) {
-          alert('Unable to generate excel file');
+          alert('<?php echo _("Unable to generate excel file");?>');
         } else {
           location.href = '/temporary/' + data;
         }
@@ -402,7 +402,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       content += '</div></div></div></div>';
     }
     content += '<div class="col-xs-1">';
-    content += '<button class="btn btn-info mpr-close">Apply</button>';
+    content += '<button class="btn btn-info mpr-close"><?php echo _("Apply");?></button>';
     content += '</div>';
     content += '</div>';
 

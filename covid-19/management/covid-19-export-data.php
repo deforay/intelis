@@ -1,5 +1,5 @@
 <?php
-$title = "Export Data";
+$title = _("Export Data");
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -67,15 +67,15 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 						<tr>
 							<th><?php echo _("Sample Collection Date");?></th>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="filter-input form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="filter-input form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
 							</td>
 							<th><?php echo _("Sample Received At Lab");?></th>
 							<td>
-								<input type="text" id="sampleRecievedDate" name="sampleRecievedDate" class="filter-input form-control" placeholder="Select Recieved Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleRecievedDate" name="sampleRecievedDate" class="filter-input form-control" placeholder="<?php echo _('Select Recieved Date');?>" readonly style="width:220px;background:#fff;" />
 							</td>
 							<th><?php echo _("Facility Name");?></th>
 							<td>
-								<select class="filter-input form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
+								<select class="filter-input form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
@@ -83,19 +83,19 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 						<tr>
 							<th><?php echo _("Testing Lab");?></th>
 							<td>
-								<select class="filter-input form-control" id="testingLab" name="testingLab" title="Please select vl lab" style="width:220px;">
+								<select class="filter-input form-control" id="testingLab" name="testingLab" title="<?php echo _('Please select vl lab');?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
 							<th><?php echo _("Sample Test Date");?></th>
 							<td>
-								<input type="text" id="sampleTestDate" name="sampleTestDate" class="filter-input form-control" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleTestDate" name="sampleTestDate" class="filter-input form-control" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" />
 							</td>
 
 							<th><?php echo _("Result");?> </th>
 							<td>
-								<select class="filter-input form-control" id="result" name="result" title="Please select batch code" style="width:220px;">
-									<option value=""> -- Select -- </option>
+								<select class="filter-input form-control" id="result" name="result" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php foreach ($covid19Results as $covid19ResultKey => $covid19ResultValue) { ?>
 										<option value="<?php echo $covid19ResultKey; ?>"> <?php echo $covid19ResultValue; ?> </option>
 									<?php } ?>
@@ -105,23 +105,23 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 						<tr>
 							<th><?php echo _("Last Print Date");?></th>
 							<td>
-								<input type="text" id="printDate" name="printDate" class="filter-input form-control" placeholder="Select Print Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="printDate" name="printDate" class="filter-input form-control" placeholder="<?php echo _('Select Print Date');?>" readonly style="width:220px;background:#fff;" />
 							</td>
 							<th><?php echo _("Status");?></th>
 							<td>
-								<select name="status" id="status" class="form-control" title="Please choose status" onchange="checkSampleCollectionDate();">
-									<option value="">All Status</option>
-									<option value="7" selected=selected>Accepted</option>
-									<option value="4">Rejected</option>
-									<option value="8">Awaiting Approval</option>
-									<option value="6">Registered At Testing Lab</option>
-									<option value="10">Expired</option>
+								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status');?>" onchange="checkSampleCollectionDate();">
+									<option value=""><?php echo _("All Status");?></option>
+									<option value="7" selected=selected><?php echo _("Accepted");?></option>
+									<option value="4"><?php echo _("Rejected");?></option>
+									<option value="8"><?php echo _("Awaiting Approval");?></option>
+									<option value="6"><?php echo _("Registered At Testing Lab");?></option>
+									<option value="10"><?php echo _("Expired");?></option>
 								</select>
 							</td>
 							<td><b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
-									<option value=""> -- Select -- </option>
+								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php
 									foreach ($batResult as $code) {
 									?>
@@ -135,8 +135,8 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 						<tr>
 							<th><?php echo _("Funding Sources");?></th>
 							<td>
-								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
-									<option value=""> -- Select -- </option>
+								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source');?>">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php
 									foreach ($fundingSourceList as $fundingSource) {
 									?>
@@ -146,8 +146,8 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 							</td>
 							<th><?php echo _("Implementing Partners");?></th>
 							<td>
-								<select class="filter-input form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner">
-									<option value=""> -- Select -- </option>
+								<select class="filter-input form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner');?>">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) {
 									?>
@@ -259,7 +259,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 	var oTable = null;
 	$(document).ready(function() {
 		$("#facilityName").select2({
-			placeholder: "Select Facilities"
+			placeholder: "<?php echo _('Select Facilities');?>"
 		});
 
 		$('#sampleCollectionDate,#sampleTestDate,#printDate,#sampleRecievedDate').on('cancel.daterangepicker', function(ev, picker) {
@@ -452,7 +452,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 			}
 		});
 		if (flag == false) {
-			alert("At Least select one filter for get report");
+			alert("<?php echo _('At Least select one filter for get report');?>");
 			return false;
 		}
 		$.blockUI();
@@ -471,7 +471,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
-					alert('Unable to generate download');
+					alert('<?php echo _("Unable to generate download");?>');
 				} else {
 					window.open('/uploads/' + data, '_blank');
 				}
@@ -496,7 +496,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate excel.');
+					alert('<?php echo _("Unable to generate excel.");?>');
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -506,9 +506,9 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 
 	function checkSampleCollectionDate() {
 		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
-			alert("Please select Sample Collection Date Range");
+			alert("<?php echo _('Please select Sample Collection Date Range');?>");
 		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
-			alert("Please select Sample Test Date Range");
+			alert("<?php echo _('Please select Sample Test Date Range');?>");
 		}
 	}
 </script>

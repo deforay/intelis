@@ -22,15 +22,24 @@ foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];
 	$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 }
+$vl = in_array('vl', $sInfo['supported_tests']) ? "" : "style='display:none;'";
+$eid = in_array('eid', $sInfo['supported_tests']) ? "" : "style='display:none;'";
+$covid19 = in_array('covid19', $sInfo['supported_tests']) ? "" : "style='display:none;'";
+$hepatitis = in_array('hapatitis', $sInfo['supported_tests']) ? "" : "style='display:none;'";
+$tb = in_array('tb', $sInfo['supported_tests']) ? "" : "style='display:none;'";
+$lowerText = "";
+if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['supported_tests'])) {
+	$lowerText = "style='display:none;'";
+}
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1 class="fa fa-gears"> <?php echo _("Edit Instrument");?></h1>
+		<h1 class="fa fa-gears"> <?php echo _("Edit Instrument"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Edit Instrument");?></li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Edit Instrument"); ?></li>
 		</ol>
 	</section>
 
@@ -38,7 +47,7 @@ foreach ($configControlInfo as $info) {
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -49,9 +58,9 @@ foreach ($configControlInfo as $info) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="configurationName" class="col-lg-4 control-label"><?php echo _("Instrument Name");?><span class="mandatory">*</span></label>
+									<label for="configurationName" class="col-lg-4 control-label"><?php echo _("Instrument Name"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _('eg. Roche or Abbott');?>" title="<?php echo _('Please enter configuration name');?>" value="<?php echo $sInfo['machine_name']; ?>" onblur="checkNameValidation('import_config','machine_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo _("This configuration name already exists.Try another name");?>',null);" />
+										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _('eg. Roche or Abbott'); ?>" title="<?php echo _('Please enter configuration name'); ?>" value="<?php echo $sInfo['machine_name']; ?>" onblur="checkNameValidation('import_config','machine_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo _("This configuration name already exists.Try another name"); ?>',null);" />
 									</div>
 								</div>
 							</div>
@@ -59,13 +68,19 @@ foreach ($configControlInfo as $info) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="supportedTests" class="col-lg-4 control-label"><?php echo _("Supported Tests");?> <span class="mandatory">*</span></label>
+									<label for="supportedTests" class="col-lg-4 control-label"><?php echo _("Supported Tests"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
-											<option value='vl' <?php echo (in_array('vl', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>Viral Load</option>
-											<option value='eid' <?php echo (in_array('eid', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>EID</option>
-											<option value='covid19' <?php echo (in_array('covid19', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>Covid-19</option>
-											<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
+											<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
+												<option value='vl' <?php echo (in_array('vl', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>Viral Load</option>
+											<?php }
+											if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
+												<option value='eid' <?php echo (in_array('eid', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>EID</option>
+											<?php }
+											if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
+												<option value='covid19' <?php echo (in_array('covid19', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>Covid-19</option>
+											<?php }
+											if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
 												<option value='hepatitis' <?php echo (in_array('hepatitis', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>Hepatitis</option>
 											<?php } ?>
 										</select>
@@ -76,9 +91,9 @@ foreach ($configControlInfo as $info) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="configurationName" class="col-lg-4 control-label"><?php echo _("Instrument File Name");?><span class="mandatory">*</span></label>
+									<label for="configurationName" class="col-lg-4 control-label"><?php echo _("Instrument File Name"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _('eg. roche.php or abbott.php');?>" title="<?php echo _('Please enter file name');?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" onblur="checkNameValidation('import_config','import_machine_file_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','This file name already exists.Try another name',null)" />
+										<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _('eg. roche.php or abbott.php'); ?>" title="<?php echo _('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" onblur="checkNameValidation('import_config','import_machine_file_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','This file name already exists.Try another name',null)" />
 									</div>
 								</div>
 							</div>
@@ -86,9 +101,9 @@ foreach ($configControlInfo as $info) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="configurationFileName" class="col-lg-4 control-label"><?php echo _("Lower Limit");?></label>
+									<label for="configurationFileName" class="col-lg-4 control-label"><?php echo _("Lower Limit"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="lowerLimit" name="lowerLimit" placeholder="<?php echo _('eg. 20');?>" title="<?php echo _('Please enter lower limit');?>" value="<?php echo $sInfo['lower_limit']; ?>" />
+										<input type="text" class="form-control forceNumeric" id="lowerLimit" name="lowerLimit" placeholder="<?php echo _('eg. 20'); ?>" title="<?php echo _('Please enter lower limit'); ?>" value="<?php echo $sInfo['lower_limit']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -96,9 +111,9 @@ foreach ($configControlInfo as $info) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="configurationFileName" class="col-lg-4 control-label"><?php echo _("Higher Limit");?></label>
+									<label for="configurationFileName" class="col-lg-4 control-label"><?php echo _("Higher Limit"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="higherLimit" name="higherLimit" placeholder="<?php echo _('eg. 10000000');?>" title="<?php echo _('Please enter lower limit');?>" value="<?php echo $sInfo['higher_limit']; ?>" />
+										<input type="text" class="form-control forceNumeric" id="higherLimit" name="higherLimit" placeholder="<?php echo _('eg. 10000000'); ?>" title="<?php echo _('Please enter lower limit'); ?>" value="<?php echo $sInfo['higher_limit']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -106,20 +121,20 @@ foreach ($configControlInfo as $info) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="maxNOfSamplesInBatch" class="col-lg-4 control-label"><?php echo _("Maximum No. of Samples In a Batch");?> <span class="mandatory">*</span></label>
+									<label for="maxNOfSamplesInBatch" class="col-lg-4 control-label"><?php echo _("Maximum No. of Samples In a Batch"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric isRequired" id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch" placeholder="<?php echo _('Max. no of samples');?>" title="<?php echo _('Please enter max no of samples in a row');?>" value="<?php echo $sInfo['max_no_of_samples_in_a_batch']; ?>" />
+										<input type="text" class="form-control forceNumeric isRequired" id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch" placeholder="<?php echo _('Max. no of samples'); ?>" title="<?php echo _('Please enter max no of samples in a row'); ?>" value="<?php echo $sInfo['max_no_of_samples_in_a_batch']; ?>" />
 									</div>
 								</div>
 							</div>
 						</div>
 						<?php if ($systemConfig['modules']['vl']) { ?>
-							<div class="row">
+							<div class="row lowVlResultText" <?php echo $lowerText; ?>>
 								<div class="col-md-12">
 									<div class="form-group">
-										<label for="lowVlResultText" class="col-lg-2 control-label"><?php echo _("Low VL Result Text");?> </label>
+										<label for="lowVlResultText" class="col-lg-2 control-label"><?php echo _("Low VL Result Text"); ?> </label>
 										<div class="col-lg-7">
-											<textarea class="form-control" id="lowVlResultText" name="lowVlResultText" placeholder="<?php echo _('Comma separated Low Viral Load Result Text for eg. Target Not Detected, TND, < 20, < 40');?>" title="<?php echo _('Low Viral Load Result Text for eg. Target Not Detected, TND, < 20, < 40');?>"><?php echo $sInfo['low_vl_result_text']; ?></textarea>
+											<textarea class="form-control" id="lowVlResultText" name="lowVlResultText" placeholder="<?php echo _('Comma separated Low Viral Load Result Text for eg. Target Not Detected, TND, < 20, < 40'); ?>" title="<?php echo _('Low Viral Load Result Text for eg. Target Not Detected, TND, < 20, < 40'); ?>"><?php echo $sInfo['low_vl_result_text']; ?></textarea>
 										</div>
 									</div>
 								</div>
@@ -128,9 +143,9 @@ foreach ($configControlInfo as $info) {
 						<div class="row">
 							<div class="col-md-6" style="padding-top:20px;">
 								<div class="form-group">
-									<label for="status" class="col-lg-4 control-label"><?php echo _("Status");?></label>
+									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" id="status" name="status" title="<?php echo _('Please select import config status');?>">
+										<select class="form-control" id="status" name="status" title="<?php echo _('Please select import config status'); ?>">
 											<option value="active" <?php echo ($sInfo['status'] == 'active') ? 'selected="selected"' : ''; ?>>Active</option>
 											<option value="inactive" <?php echo ($sInfo['status'] == 'inactive') ? 'selected="selected"' : ''; ?>>Inactive</option>
 										</select>
@@ -143,43 +158,51 @@ foreach ($configControlInfo as $info) {
 								<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
 									<thead>
 										<tr>
-											<th style="text-align:center;"><?php echo _("Test Type");?></th>
-											<th style="text-align:center;"><?php echo _("Number of In-House Controls");?></th>
-											<th style="text-align:center;"><?php echo _("Number of Manufacturer Controls");?></th>
-											<th style="text-align:center;"><?php echo _("No. Of Calibrators");?></th>
+											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
+											<th style="text-align:center;"><?php echo _("Number of In-House Controls"); ?></th>
+											<th style="text-align:center;"><?php echo _("Number of Manufacturer Controls"); ?></th>
+											<th style="text-align:center;"><?php echo _("No. Of Calibrators"); ?></th>
 										</tr>
 									</thead>
 									<tbody id="testTypesTable">
 										<?php if (($systemConfig['modules']['vl'])) { ?>
-											<tr>
-												<td align="left"><?php echo _("VL");?><input type="hidden" name="testType[]" id="testType1" value="vl" /></td>
-												<td><input type="text" value="<?php echo $configControl['vl']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in vl');?>" title="<?php echo _('Please enter No of In-House Controls in vl');?>" /></td>
-												<td><input type="text" value="<?php echo $configControl['vl']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in vl');?>" title="<?php echo _('Please enter No of Manufacturer Controls in vl');?>" /></td>
-												<td><input type="text" value="<?php echo $configControl['vl']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in vl');?>" title="<?php echo _('Please enter No of Calibrators in vl');?>" /></td>
+											<tr id="vlTable" class="ctlCalibrator" <?php echo $vl; ?>>
+												<td align="left"><?php echo _("VL"); ?><input type="hidden" name="testType[]" id="testType1" value="vl" /></td>
+												<td><input type="text" value="<?php echo $configControl['vl']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in vl'); ?>" title="<?php echo _('Please enter No of In-House Controls in vl'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['vl']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in vl'); ?>" title="<?php echo _('Please enter No of Manufacturer Controls in vl'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['vl']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in vl'); ?>" title="<?php echo _('Please enter No of Calibrators in vl'); ?>" /></td>
 											</tr>
 										<?php }
 										if (($systemConfig['modules']['eid'])) { ?>
-											<tr>
-												<td align="left"><?php echo _("EID");?><input type="hidden" name="testType[]" id="testType1" value="eid" /></td>
-												<td><input type="text" value="<?php echo $configControl['eid']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in eid');?>" title="<?php echo _('Please enter No of In-House Controls in eid');?>" /></td>
-												<td><input type="text" value="<?php echo $configControl['eid']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in eid');?>" title="<?php echo _('Please enter No of Manufacturer Controls in eid');?>" /></td>
-												<td><input type="text" value="<?php echo $configControl['eid']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in eid');?>" title="<?php echo _('Please enter No of Calibrators in eid');?>" /></td>
+											<tr id="eidTable" class="ctlCalibrator" <?php echo $eid; ?>>
+												<td align="left"><?php echo _("EID"); ?><input type="hidden" name="testType[]" id="testType1" value="eid" /></td>
+												<td><input type="text" value="<?php echo $configControl['eid']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in eid'); ?>" title="<?php echo _('Please enter No of In-House Controls in eid'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['eid']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in eid'); ?>" title="<?php echo _('Please enter No of Manufacturer Controls in eid'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['eid']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in eid'); ?>" title="<?php echo _('Please enter No of Calibrators in eid'); ?>" /></td>
 											</tr>
 										<?php }
 										if (($systemConfig['modules']['covid19'])) { ?>
-											<tr>
-												<td align="left"><?php echo _("Covid-19");?><input type="hidden" name="testType[]" id="testType1" value="covid-19" /></td>
-												<td><input type="text" value="<?php echo $configControl['covid-19']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in covid-19');?>" title="<?php echo _('Please enter No of In-House Controls in covid-19');?>" /></td>
-												<td><input type="text" value="<?php echo $configControl['covid-19']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in covid-19');?>" title="<?php echo _('Please enter No of Manufacturer Controls in covid-19');?>" /></td>
-												<td><input type="text" value="<?php echo $configControl['covid-19']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in covid-19');?>" title="<?php echo _('Please enter No of Calibrators in covid-19');?>" /></td>
+											<tr id="covid19Table" class="ctlCalibrator" <?php echo $covid19; ?>>
+												<td align="left"><?php echo _("Covid-19"); ?><input type="hidden" name="testType[]" id="testType1" value="covid-19" /></td>
+												<td><input type="text" value="<?php echo $configControl['covid-19']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in covid-19'); ?>" title="<?php echo _('Please enter No of In-House Controls in covid-19'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['covid-19']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in covid-19'); ?>" title="<?php echo _('Please enter No of Manufacturer Controls in covid-19'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['covid-19']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in covid-19'); ?>" title="<?php echo _('Please enter No of Calibrators in covid-19'); ?>" /></td>
 											</tr>
 										<?php }
 										if (($systemConfig['modules']['hepatitis'])) { ?>
-											<tr>
-												<td align="left"><?php echo _("Hepatitis");?><input type="hidden" name="testType[]" id="testType1" value="hepatitis" /></td>
-												<td><input type="text" value="<?php echo $configControl['hepatitis']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in hepatitis');?>" title="<?php echo _('Please enter No of In-House Controls in hepatitis');?>" /></td>
-												<td><input type="text" value="<?php echo $configControl['hepatitis']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in hepatitis');?>" title="<?php echo _('Please enter No of Manufacturer Controls in hepatitis');?>" /></td>
-												<td><input type="text" value="<?php echo $configControl['hepatitis']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in hepatitis');?>" title="<?php echo _('Please enter No of Calibrators in hepatitis');?>" /></td>
+											<tr id="hepatitisTable" class="ctlCalibrator" <?php echo $hepatitis; ?>>
+												<td align="left"><?php echo _("Hepatitis"); ?><input type="hidden" name="testType[]" id="testType1" value="hepatitis" /></td>
+												<td><input type="text" value="<?php echo $configControl['hepatitis']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in hepatitis'); ?>" title="<?php echo _('Please enter No of In-House Controls in hepatitis'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['hepatitis']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in hepatitis'); ?>" title="<?php echo _('Please enter No of Manufacturer Controls in hepatitis'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['hepatitis']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in hepatitis'); ?>" title="<?php echo _('Please enter No of Calibrators in hepatitis'); ?>" /></td>
+											</tr>
+										<?php }
+										if (($systemConfig['modules']['tb'])) { ?>
+											<tr id="tbTable" class="ctlCalibrator" <?php echo $tb; ?>>
+												<td align="left"><?php echo _("tb"); ?><input type="hidden" name="testType[]" id="testType1" value="tb" /></td>
+												<td><input type="text" value="<?php echo $configControl['tb']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in TB'); ?>" title="<?php echo _('Please enter No of In-House Controls in TB'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['tb']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in TB'); ?>" title="<?php echo _('Please enter No of Manufacturer Controls in TB'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['tb']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in TB'); ?>" title="<?php echo _('Please enter No of Calibrators in TB'); ?>" /></td>
 											</tr>
 										<?php } ?>
 									</tbody>
@@ -187,15 +210,15 @@ foreach ($configControlInfo as $info) {
 							</div>
 						<?php } ?>
 						<div class="box-header">
-							<h3 class="box-title "><?php echo _("Machine Names");?></h3>
+							<h3 class="box-title "><?php echo _("Machine Names"); ?></h3>
 						</div>
 						<div class="box-body">
 							<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
 								<thead>
 									<tr>
-										<th style="text-align:center;"><?php echo _("Machine Name");?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;"><?php echo _("POC Device");?> </th>
-										<th style="text-align:center;"><?php echo _("Action");?></th>
+										<th style="text-align:center;"><?php echo _("Machine Name"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;"><?php echo _("POC Device"); ?> </th>
+										<th style="text-align:center;"><?php echo _("Action"); ?></th>
 									</tr>
 								</thead>
 								<tbody id="machineTable">
@@ -214,7 +237,7 @@ foreach ($configControlInfo as $info) {
 											<tr>
 												<td>
 													<input type="hidden" name="configMachineId[]" value="<?php echo $machine['config_machine_id']; ?>" />
-													<input type="text" name="configMachineName[]" id="configMachineName<?php echo $i; ?>" class="form-control configMachineName isRequired" placeholder="<?php echo _('Machine Name');?>" title="<?php echo _('Please enter machine name');?>" value="<?php echo $machine['config_machine_name']; ?>" onblur="checkMachineName(this);" ; />
+													<input type="text" name="configMachineName[]" id="configMachineName<?php echo $i; ?>" class="form-control configMachineName isRequired" placeholder="<?php echo _('Machine Name'); ?>" title="<?php echo _('Please enter machine name'); ?>" value="<?php echo $machine['config_machine_name']; ?>" onblur="checkMachineName(this);" ; />
 												</td>
 												<td>
 													<div class="col-md-3">
@@ -222,10 +245,10 @@ foreach ($configControlInfo as $info) {
 													</div>
 													<div class="latLong<?php echo $i; ?> " style="<?php echo $style; ?>">
 														<div class="col-md-4">
-															<input type="text" name="latitude[]" id="latitude<?php echo $i; ?>" value="<?php echo $machine['latitude']; ?>" class="form-control " placeholder="<?php echo _('Latitude');?>" data-placement="bottom" title="<?php echo _('Latitude');?>" />
+															<input type="text" name="latitude[]" id="latitude<?php echo $i; ?>" value="<?php echo $machine['latitude']; ?>" class="form-control " placeholder="<?php echo _('Latitude'); ?>" data-placement="bottom" title="<?php echo _('Latitude'); ?>" />
 														</div>
 														<div class="col-md-4">
-															<input type="text" name="longitude[]" id="longitude<?php echo $i; ?>" value="<?php echo $machine['longitude']; ?>" class="form-control " placeholder="<?php echo _('Longitude');?>" data-placement="bottom" title="<?php echo _('Longitude');?>" />
+															<input type="text" name="longitude[]" id="longitude<?php echo $i; ?>" value="<?php echo $machine['longitude']; ?>" class="form-control " placeholder="<?php echo _('Longitude'); ?>" data-placement="bottom" title="<?php echo _('Longitude'); ?>" />
 														</div>
 													</div>
 												</td>
@@ -240,7 +263,7 @@ foreach ($configControlInfo as $info) {
 										?>
 										<tr>
 											<td>
-												<input type="text" name="configMachineName[]" id="configMachineName0" class="form-control configMachineName isRequired" placeholder="<?php echo _('Machine Name');?>" title="<?php echo _('Please enter machine name');?>" onblur="checkMachineName(this);" />
+												<input type="text" name="configMachineName[]" id="configMachineName0" class="form-control configMachineName isRequired" placeholder="<?php echo _('Machine Name'); ?>" title="<?php echo _('Please enter machine name'); ?>" onblur="checkMachineName(this);" />
 											</td>
 											<td>
 												<div class="col-md-3">
@@ -248,10 +271,10 @@ foreach ($configControlInfo as $info) {
 												</div>
 												<div class="latLong0 " style="display:none">
 													<div class="col-md-4">
-														<input type="text" name="latitude[]" id="latitude0" class="form-control " placeholder="<?php echo _('Latitude');?>" data-placement="bottom" title="<?php echo _('Latitude');?>" />
+														<input type="text" name="latitude[]" id="latitude0" class="form-control " placeholder="<?php echo _('Latitude'); ?>" data-placement="bottom" title="<?php echo _('Latitude'); ?>" />
 													</div>
 													<div class="col-md-4">
-														<input type="text" name="longitude[]" id="longitude0" class="form-control " placeholder="<?php echo _('Longitude');?>" data-placement="bottom" title="<?php echo _('Longitude');?>" />
+														<input type="text" name="longitude[]" id="longitude0" class="form-control " placeholder="<?php echo _('Longitude'); ?>" data-placement="bottom" title="<?php echo _('Longitude'); ?>" />
 													</div>
 												</div>
 											</td>
@@ -267,8 +290,8 @@ foreach ($configControlInfo as $info) {
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<input type="hidden" id="configId" name="configId" value="<?php echo base64_encode($sInfo['config_id']); ?>" />
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
-						<a href="importConfig.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
+						<a href="importConfig.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -287,7 +310,18 @@ foreach ($configControlInfo as $info) {
 
 	$(document).ready(function() {
 		$("#supportedTests").select2({
-			placeholder: "<?php echo _('Select Test Types');?>"
+			placeholder: "<?php echo _('Select Test Types'); ?>"
+		});
+
+		$('#supportedTests').on('select2:select', function(e) {
+			var data = $('#supportedTests').val();
+			$(".ctlCalibrator, .lowVlResultText").hide();
+			$.each(data, function(key, value) {
+				if (value == "vl" || value == "hepatitis") {
+					$(".lowVlResultText").show();
+				}
+				$("#" + value + "Table").show();
+			});
 		});
 	});
 
@@ -327,16 +361,16 @@ foreach ($configControlInfo as $info) {
 		d.setAttribute("align", "center");
 		d.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '"class="isRequired configMachineName form-control" placeholder="<?php echo _('Machine Name');?>" title="<?php echo _('Please enter machine name');?>" onblur="checkMachineName(this);"/ >';
+		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '"class="isRequired configMachineName form-control" placeholder="<?php echo _('Machine Name'); ?>" title="<?php echo _('Please enter machine name'); ?>" onblur="checkMachineName(this);"/ >';
 		c.innerHTML = '<div class="col-md-3" >\
 						<input type="checkbox" id="pocdevice' + tableRowId + '" name="pocdevice[]" value="" onclick="getLatiLongi(' + tableRowId + ');">\
 						</div>\
 						<div class="latLong' + tableRowId + ' " style="display:none">\
 							<div class="col-md-4">\
-								<input type="text" name="latitude[]" id="latitude' + tableRowId + '" class="form-control " placeholder="<?php echo _('Latitude');?>" data-placement="bottom" title="<?php echo _('Latitude');?>"/> \
+								<input type="text" name="latitude[]" id="latitude' + tableRowId + '" class="form-control " placeholder="<?php echo _('Latitude'); ?>" data-placement="bottom" title="<?php echo _('Latitude'); ?>"/> \
 							</div>\
 							<div class="col-md-4">\
-								<input type="text" name="longitude[]" id="longitude' + tableRowId + '" class="form-control " placeholder="<?php echo _('Longitude');?>" data-placement="bottom" title="<?php echo _('Longitude');?>"/>\
+								<input type="text" name="longitude[]" id="longitude' + tableRowId + '" class="form-control " placeholder="<?php echo _('Longitude'); ?>" data-placement="bottom" title="<?php echo _('Longitude'); ?>"/>\
 							</div>\
 						</div>';
 		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>';
