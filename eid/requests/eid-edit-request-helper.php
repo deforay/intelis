@@ -216,10 +216,10 @@ try {
 		// 'last_modified_by' 									=> $_SESSION['userId'],
 		'last_modified_datetime'							=> $general->getDateTime()
 	);
-	$lock = $general->getGlobalConfig('lock_approved_eid_samples');
-	if ($status == 7 && $lock == 'yes') {
-		$eidData['locked'] = 'yes';
-	}
+	// $lock = $general->getGlobalConfig('lock_approved_eid_samples');
+	// if ($status == 7 && $lock == 'yes') {
+	// 	$eidData['locked'] = 'yes';
+	// }
 
 	if (isset($_POST['api']) && $_POST['api'] = "yes") {
 	} else {

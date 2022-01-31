@@ -231,10 +231,10 @@ try {
 			$covid19Data['lab_manager'] = $facility['contact_person'];
 		}
 	}
-	$lock = $general->getGlobalConfig('lock_approved_covid19_samples');
-	if ($status == 7 && $lock == 'yes') {
-		$covid19Data['locked'] = 'yes';
-	}
+	// $lock = $general->getGlobalConfig('lock_approved_covid19_samples');
+	// if ($status == 7 && $lock == 'yes') {
+	// 	$covid19Data['locked'] = 'yes';
+	// }
 
 	if (!empty($_POST['api']) && $_POST['api'] = "yes") {
 		$sampleQuery = "SELECT covid19_id FROM form_covid19 where covid19_id = " . $_POST['covid19SampleId'] . " limit 1";

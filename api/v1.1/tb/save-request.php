@@ -295,10 +295,10 @@ try {
             $tbData['sample_registered_at_lab']  = $general->getDateTime();
             $tbData['request_created_by']  = $user['user_id'];
         }
-        $lock = $general->getGlobalConfig('lock_approved_tb_samples');
-        if ($status == 7 && $lock == 'yes') {
-            $tbData['locked'] = 'yes';
-        }
+        // $lock = $general->getGlobalConfig('lock_approved_tb_samples');
+        // if ($status == 7 && $lock == 'yes') {
+        //     $tbData['locked'] = 'yes';
+        // }
         $tbData['request_created_by'] =  $user['user_id'];
         $tbData['last_modified_by'] =  $user['user_id'];
 

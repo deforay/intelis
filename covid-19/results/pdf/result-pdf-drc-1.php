@@ -279,7 +279,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Age</td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' .  (!empty($age) ? $age. ' ans' : '') . '</td>';
+$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' .  (!empty($age) ? $age . ' ans' : '') . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
@@ -355,12 +355,18 @@ $html .= '<td width="100%" style="line-height:14px;font-size:11px;text-align:cen
 $html .= '</tr>';
 
 
-
-$labManagerRes = $users->getUserInfo($result['lab_manager'], 'user_name');
-if ($labManagerRes) {
-    $labManager = $labManagerRes['user_name'];
-} else {
-    $labManager = "";
+if (empty($result['lab_manager'])) {
+    $labDetails = $facilityDb->getFacilityById($result['lab_id']);
+    if (isset($labDetails['contact_person']) && !empty($labDetails['contact_person'])) {
+        $result['lab_manager'] = $labDetails['contact_person'];
+    }
+}
+$labManager = "";
+if (!empty($result['lab_manager'])) {
+    $labManagerRes = $users->getUserInfo($result['lab_manager'], 'user_name');
+    if ($labManagerRes) {
+        $labManager = $labManagerRes['user_name'];
+    }
 }
 
 $html .= '<tr>';
@@ -393,7 +399,7 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
         $encryption_iv
     );
     $pdf->writeHTML($html);
-    
+
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($systemConfig['remoteURL'])) {
         $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
         $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . urlencode($Cid) . '', 'QRCODE,H', 170, 60, 100, 100, $style, 'N');

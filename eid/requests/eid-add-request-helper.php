@@ -210,10 +210,10 @@ try {
 		// 'last_modified_by' 									=> $_SESSION['userId'],
 		'last_modified_datetime' 							=> $general->getDateTime()
 	);
-	$lock = $general->getGlobalConfig('lock_approved_eid_samples');
-	if ($status == 7 && $lock == 'yes') {
-		$eidData['locked'] = 'yes';
-	}
+	// $lock = $general->getGlobalConfig('lock_approved_eid_samples');
+	// if ($status == 7 && $lock == 'yes') {
+	// 	$eidData['locked'] = 'yes';
+	// }
 	$eidData['source_of_request'] = 'web';
 	if (!empty($_POST['api']) && $_POST['api'] = "yes") {
 		$eidData['source_of_request'] = 'api';

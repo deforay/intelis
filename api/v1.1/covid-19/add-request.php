@@ -333,10 +333,10 @@ try {
             $covid19Data['sample_registered_at_lab']  = $general->getDateTime();
             $covid19Data['request_created_by']  = $user['user_id'];
         }
-        $lock = $general->getGlobalConfig('lock_approved_covid19_samples');
-        if ($status == 7 && $lock == 'yes') {
-            $covid19Data['locked'] = 'yes';
-        }
+        // $lock = $general->getGlobalConfig('lock_approved_covid19_samples');
+        // if ($status == 7 && $lock == 'yes') {
+        //     $covid19Data['locked'] = 'yes';
+        // }
         $covid19Data['request_created_by'] =  $user['user_id'];
         $covid19Data['last_modified_by'] =  $user['user_id'];
         if (isset($data['asymptomatic']) && $data['asymptomatic'] != "yes") {
