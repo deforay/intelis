@@ -44,6 +44,8 @@ try {
                 $value = array(
                     'sample_package_id'   => $lastId,
                     'sample_package_code' => $_POST['packageCode'],
+                    'lab_id'    => $_POST['testingLab'],
+                    'last_modified_datetime' => $general->getDateTime(),
                     'data_sync' => 0
                 );
                 if ($_POST['module'] == 'vl') {
