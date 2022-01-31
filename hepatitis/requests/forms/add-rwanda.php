@@ -47,10 +47,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("RWANDA HEPATITIS LABORATORY TEST REQUEST FORM");?></h1>
+        <h1><i class="fa fa-edit"></i> <?php echo _("RWANDA HEPATITIS LABORATORY TEST REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Add New Request");?></li>
+            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Add New Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -89,7 +89,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         <?php } ?>
                                         <th style="width:15% !important"><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
-                                        <td style="width:35% !important">
+                                        <td style="">
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Code" title="Please enter Patient Code" style="width:100%;" onchange="" />
                                         </td>
                                         <td><label for="hepatitisTestType">Type of Hepatitis Test </label><span class="mandatory">*</span></td>
@@ -122,7 +122,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                    <?php if ($_SESSION['instanceType'] == 'remoteuser'  && $_SESSION['accessType'] == 'collection-site') { ?>
+                                        <?php if ($_SESSION['instanceType'] == 'remoteuser'  && $_SESSION['accessType'] == 'collection-site') { ?>
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
@@ -132,9 +132,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         <?php } ?>
                                         <th style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
-                                        <td style="width:35% !important;">
+                                        <td style="">
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
                                         </td>
+
                                     </tr>
                                 </table>
                                 <br>
@@ -378,11 +379,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr>
                                             <th>Authorized on</td>
-                                            <td><input type="text" name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field form-control date rejected-input" placeholder="Authorized on" title="Please select the authorized on"/></td>
+                                            <td><input type="text" name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field form-control date rejected-input" placeholder="Authorized on" title="Please select the authorized on" /></td>
                                             <th>Lab Technician (VL Testing)</td>
                                             <td>
                                                 <select name="tested_by" id="tested_by" class="form-control" title="Please select a Lab Technician (VL Testing)" style="width:100%;">
-                                                 <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
