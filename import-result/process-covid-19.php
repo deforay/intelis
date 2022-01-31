@@ -170,6 +170,7 @@ try {
                         $db = $db->where('sample_code', $rResult[0]['sample_code']);
 
                         $result = $db->update($tableName1, $data);
+                        $covid19Id = $vlResult[0]['covid19_id'];
                         $covid19Obj->insertCovid19Tests($vlResult[0]['covid19_id'], $rResult[0]['lot_number'], $rResult[0]['lab_id'], $rResult[0]['sample_tested_datetime'], $rResult[0]['result']);
                     } else {
                         if ($importNonMatching == false) continue;
@@ -185,6 +186,16 @@ try {
                     }
                     $printSampleCode[] = "'" . $rResult[0]['sample_code'] . "'";
                 }
+            }
+            if (isset($covid19Id) && $covid19Id != "") {
+                $db->insert('log_result_updates', array(
+                    "user_id" => $_SESSION['userId'],
+                    "vl_sample_id" => $covid19Id,
+                    "test_type" => "vl",
+                    "result_method" => "import",
+                    "file_name" => $rResult[0]['import_machine_file_name'],
+                    "updated_on" => $general->getDateTime()
+                ));
             }
             $db = $db->where('temp_sample_id', $id[$i]);
             $result = $db->update($tableName, array('temp_sample_status' => 1));
