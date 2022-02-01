@@ -1140,6 +1140,8 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         $("#patientAddress").text(patientArray[11]);
         $("#patientNationality").val(patientArray[12]);
         $("#isPatientPregnant").val(patientArray[6]);
+        $("#patientCodePrefix").val("");
+        $("#patientCodeKey").val("");
         setTimeout(function() {
             $("#patientDistrict").val(patientArray[15]).trigger('change');
         }, 3000);

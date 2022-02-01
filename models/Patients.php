@@ -37,7 +37,14 @@ class Patients
         ));
     }
 
-    public function addPatient($params)
+    public function getPatient($patientCode)
+    {
+        if (empty($patientCode)) return null;
+        $this->db->where("patient_code", $patientCode);
+        return $this->db->getOne($this->table);
+    }
+
+    public function savePatient($params)
     {
         $general = new \Vlsm\Models\General();
         $data['patient_code'] = $params['patientId'];
@@ -49,9 +56,17 @@ class Patients
         $data['patient_province'] = (!empty($params['patientProvince']) ? $params['patientProvince'] : null);
         $data['patient_district'] = (!empty($params['patientDistrict']) ? $params['patientDistrict'] : null);
         $data['patient_gender'] = (!empty($params['patientGender']) ? $params['patientGender'] : null);
+        $data['updated_datetime'] = $general->getDateTime();
         $data['patient_registered_on'] = $general->getDateTime();
-        $data['patient_registered_by'] = $params['userId'];
+        $data['patient_registered_by'] = $params['registeredBy'];
 
+        $updateColumns = $data;
+        unset($updateColumns['patient_registered_on']);
+        unset($updateColumns['patient_registered_by']);
+        $updateColumns = array_keys($updateColumns);
+
+        $lastInsertId = "patient_id";
+        $this->db->onDuplicate($updateColumns, $lastInsertId);
         return $this->db->insert($this->table, $data);
     }
 }
