@@ -1,6 +1,6 @@
 <?php
 $title = _("Covid-19 | View All Requests");
-#require_once('../../startup.php');
+
 
 
 // echo "<pre>";

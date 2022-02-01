@@ -1,5 +1,5 @@
 <?php
-#require_once('../../startup.php');
+
 // echo "<pre>";print_r($_POST['tbId']);die;
 try {
     $general = new \Vlsm\Models\General();

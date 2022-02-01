@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "Enter VL Result";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 
 

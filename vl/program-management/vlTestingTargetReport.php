@@ -1,6 +1,6 @@
 <?php
 $title = "VL Quarterly Monitoring Report";
-#require_once('../../startup.php'); 
+ 
 include_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();

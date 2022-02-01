@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../../startup.php');
+
 
 
 $general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php

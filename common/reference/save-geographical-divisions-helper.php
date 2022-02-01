@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $db = MysqliDb::getInstance();
 
 $general = new \Vlsm\Models\General();
-
+$provinceTable = "province_details";
 try {
 	if (isset($_POST['geoName']) && trim($_POST['geoName']) != "") {
 		$lastId = 0;
@@ -30,19 +30,36 @@ try {
 			$db->insert("geographical_divisions", $data);
 			$lastId = $db->getInsertId();
 		}
+		if (!isset($data['geo_parent']) || $data['geo_parent'] == 0) {
+			$provinceQuery = "SELECT province_name from province_details where province_name='" . $_POST['geoName'] . "'";
+			$provinceInfo = $db->rawQueryOne($provinceQuery);
+			$pdata = array(
+				'province_name' => $_POST['geoName'],
+				'province_code' => $_POST['geoCode'],
+				'updated_datetime' => $general->getDateTime(),
+			);
+			if ($provinceInfo && $provinceInfo['province_id'] > 0) {
+				$db->where("province_id", $provinceInfo['province_id']);
+				$db->update($provinceTable, $pdata);
+			} else {
+				$db->insert($provinceTable, $pdata);
+			}
+		}
 		if ($lastId > 0) {
 
 			$facilityData = array();
 			if ($data['geo_parent'] == 0) {
 				$facilityData['facility_state'] = $data['geo_name'];
 				$facilityData['facility_state_id'] = $data['geo_id'];
-				$db->where("(facility_state = ? or facility_state_id = ?)", array($data['geo_name'], $data['geo_id']));
+				$db->where("facility_state", $data['geo_name']);
+				$db->where("facility_state_id", $data['geo_id']);
 			} else {
 				$facilityData['facility_state_id'] = $data['geo_parent'];
 				$facilityData['facility_district'] = $data['geo_name'];
 				$facilityData['facility_district_id'] = $data['geo_id'];
 				$db->where('facility_state', $data['geo_parent']);
-				$db->where("(facility_district = ? or facility_district_id = ?)", array($data['geo_name'], $data['geo_id']));
+				$db->where("facility_district", $data['geo_name']);
+				$db->where("facility_district_id", $data['geo_id']);
 			}
 			$db->update("facility_details", $facilityData);
 

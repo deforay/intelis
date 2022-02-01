@@ -296,7 +296,13 @@ if (file_exists($fileArray[$arr['vl_form']])) {
                 countryId: countryId,
                 sampleCollectionDate: $("#" + sampleCollectionDate).val(),
                 provinceCode: provinceCode,
-                provinceId: provinceId
+                provinceId: provinceId,
+                patientId: $("#patientId"),
+                patientCodePrefix: $("#patientCodePrefix"),
+                patientCodeKey: $("#patientCodeKey"),
+                firstName: $("#firstName"),
+                lastName: $("#lastName"),
+                patientGender: $("#patientGender"),
             },
             function(data) {
 

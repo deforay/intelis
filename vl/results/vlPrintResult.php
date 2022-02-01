@@ -1,6 +1,6 @@
 <?php
 $title = "Print VL Results";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 
 

@@ -3,7 +3,7 @@ ob_start();
 
 $title = "Edit Batch";
 
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 
 

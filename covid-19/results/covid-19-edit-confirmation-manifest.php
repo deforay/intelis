@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "Covid-19 | Add Batch";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 
 $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";

@@ -11,7 +11,7 @@
   <script src="/assets/js/deforayModal.js"></script>
   <?php
   ob_start();
-  #require_once('../../startup.php');
+  
   
   
   $id = base64_decode($_GET['id']);

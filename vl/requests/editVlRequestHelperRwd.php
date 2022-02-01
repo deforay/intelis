@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-#require_once('../../startup.php');
+
 
 //echo "<pre>";var_dump($_POST);die;
 $general = new \Vlsm\Models\General();

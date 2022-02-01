@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../../startup.php');
+
 
 
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
