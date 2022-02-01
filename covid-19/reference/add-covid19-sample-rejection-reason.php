@@ -34,7 +34,7 @@ $rejReaons = $general->getRejectionReasons('covid19');
                 <div class="form-group">
                   <label for="rejectionReasonName" class="col-lg-4 control-label"><?php echo _("Rejection Reason Name");?> <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control isRequired" id="rejectionReasonName" name="rejectionReasonName" placeholder="<?php echo _('Rejection Reason Name');?>" title="<?php echo _('Please enter Rejection Reason name');?>" onblur="checkNameValidation('r_covid19_sample_rejection_reasons','rejection_reason_name',this,null,'<?php echo _('The Rejection Reason name that you entered already exists.Enter another Rejection Reason name');?>',null)" />
+                    <input type="text" class="form-control isRequired" id="rejectionReasonName" name="rejectionReasonName" placeholder="<?php echo _('Rejection Reason Name');?>" title="<?php echo _('Please enter Rejection Reason name');?>" onblur='checkNameValidation("r_covid19_sample_rejection_reasons","rejection_reason_name",this,null,"<?php echo _("The Rejection Reason name that you entered already exists.Enter another Rejection Reason name");?>",null)' />
                   </div>
                 </div>
               </div>
@@ -54,7 +54,7 @@ $rejReaons = $general->getRejectionReasons('covid19');
                 <div class="form-group">
                   <label for="rejectionReasonCode" class="col-lg-4 control-label"><?php echo _("Rejection Reason Code");?> <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control isRequired" id="rejectionReasonCode" name="rejectionReasonCode" placeholder="<?php echo _('Rejection Reason Code');?>" title="<?php echo _('Please enter Rejection Reason Code');?>" onblur="checkNameValidation('r_covid19_sample_rejection_reasons','rejection_reason_code',this,null,'<?php echo _('The Rejection Reason code that you entered already exists.Enter another Rejection Reason code');?>',null)" />
+                    <input type="text" class="form-control isRequired" id="rejectionReasonCode" name="rejectionReasonCode" placeholder="<?php echo _('Rejection Reason Code');?>" title="<?php echo _('Please enter Rejection Reason Code');?>" onblur='checkNameValidation("r_covid19_sample_rejection_reasons","rejection_reason_code",this,null,"<?php echo _("The Rejection Reason code that you entered already exists.Enter another Rejection Reason code");?>",null)' />
                   </div>
                 </div>
               </div>

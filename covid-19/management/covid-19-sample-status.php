@@ -132,7 +132,7 @@ $batResult = $db->rawQuery($batQuery);
 <script>
   $(function() {
     $("#labName").select2({
-      placeholder: "<?php echo _('Select Testing Lab');?>"
+      placeholder: "<?php echo _("Select Testing Lab");?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -263,7 +263,7 @@ $batResult = $db->rawQuery($batQuery);
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert('<?php echo _("Unable to generate the excel file");?>');
+          alert("<?php echo _("Unable to generate the excel file");?>");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;
