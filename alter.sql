@@ -2886,7 +2886,7 @@ ALTER TABLE `log_result_updates` ADD `file_name` VARCHAR(256) NULL DEFAULT NULL 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
 VALUES 
 ('Generate Patient Code', 'covid19_generate_patient_code', 'no', 'covid19', 'no', NULL, NULL, 'active'), 
-('Patient Code Prefix', 'covid19_patient_code_prefix', 'P', 'covid19', 'yes', NULL, NULL, 'active'); 
+('Patient Code Prefix', 'covid19_patient_code_prefix', 'P', 'covid19', 'no', NULL, NULL, 'active'); 
 
 -- Amit 01-Feb-2022
 CREATE TABLE `patients` (

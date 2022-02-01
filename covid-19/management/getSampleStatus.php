@@ -425,7 +425,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 
             series: [{
                     type: 'column',
-                    name: '<?php echo _("No. of Samples Tested");?>',
+                    name: '<?php echo _s("No. of Samples Tested");?>',
                     data: [<?php echo implode(",", $result['totalSamples']); ?>],
                     color: '#7CB5ED',
                     yAxis: 1

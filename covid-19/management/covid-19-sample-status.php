@@ -17,6 +17,7 @@ if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser') {
 }else{
   $testingLabs = $facilitiesDb->getTestingLabs('covid19');
 }
+$testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type='covid19' AND batch_status='completed'";
