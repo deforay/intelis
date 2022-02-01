@@ -178,13 +178,13 @@ foreach ($rResult as $aRow) {
 
 
     $row = array();
-    $printBarcode = '<a href="/vl/batch/generateBarcode.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print bar code"><i class="fa fa-barcode"> Print Batch</i></a>';
-    $printQrcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print qr code" onclick="generateQRcode(\'' . base64_encode($aRow['batch_id']) . '\');"><i class="fa fa-qrcode"> Print QR code</i></a>';
-    $editPosition = '<a href="' . $editPositionFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><i class="fa fa-sort-numeric-desc"> Edit Position</i></a>';
+    $printBarcode = '<a href="/vl/batch/generateBarcode.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank" class="btn btn-info btn-xs" style="margin-right: 2px;" title="'. _("Print bar code").'"><i class="fa fa-barcode"> '. _("Print Batch").'</i></a>';
+    $printQrcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="'. _("Print qr code").'" onclick="generateQRcode(\'' . base64_encode($aRow['batch_id']) . '\');"><i class="fa fa-qrcode"> '. _("Print QR code").'</i></a>';
+    $editPosition = '<a href="' . $editPositionFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="'. _("Edit Position").'"><i class="fa fa-sort-numeric-desc"> '. _("Edit Position").'</i></a>';
 
     $deleteBatch = '';
     if ($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) {
-        $deleteBatch = '<a href="javascript:void(0);" class="btn btn-danger btn-xs" style="margin-right: 2px;margin-top:6px;" title="" onclick="deleteBatchCode(\'' . base64_encode($aRow['batch_id']) . '\',\'' . $aRow['batch_code'] . '\');"><i class="fa fa-times"> Delete</i></a>';
+        $deleteBatch = '<a href="javascript:void(0);" class="btn btn-danger btn-xs" style="margin-right: 2px;margin-top:6px;" title="'. _("Delete").'" onclick="deleteBatchCode(\'' . base64_encode($aRow['batch_id']) . '\',\'' . $aRow['batch_code'] . '\');"><i class="fa fa-times"> '. _("Delete").'</i></a>';
     }
 
     $date = '';
@@ -205,7 +205,7 @@ foreach ($rResult as $aRow) {
         $row[] = $printQrcode;
     } else {
         if ($batch) {
-            $row[] = '<a href="' . $editFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
+            $row[] = '<a href="' . $editFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><i class="fa fa-pencil"> '. _("Edit").'</i></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
         }
     }
     $output['aaData'][] = $row;

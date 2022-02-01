@@ -1,5 +1,5 @@
 <?php
-$title = "Add Samples from Manifest";
+$title = _("Add Samples from Manifest");
 #require_once('../../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -23,10 +23,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-plus"></i> Add Samples from Manifest</h1>
+		<h1><i class="fa fa-plus"></i> <?php echo _("Add Samples from Manifest");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Test Request</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li class="active"><?php echo _("Test Request");?></li>
 		</ol>
 	</section>
 
@@ -37,13 +37,13 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
-							<td style="width:20%;vertical-align:middle;"><b>Enter Sample Manifest Code :</b></td>
+							<td style="width:20%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code");?> :</b></td>
 							<td>
-								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="Sample Manifest Code" title="Please enter the sample manifest code" style="background:#fff;" />
+								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _('Sample Manifest Code');?>" title="<?php echo _('Please enter the sample manifest code');?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td>
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span>Submit</span></button>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span><?php echo _("Submit");?></span></button>
 							</td>
 						</tr>
 						<tr>
@@ -57,26 +57,26 @@ $batResult = $db->rawQuery($batQuery);
 						<table id="vlManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
-									<th>Sample Code</th>
+									<th><?php echo _("Sample Code");?></th>
 									<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-										<th>Remote Sample <br />Code</th>
+										<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 									<?php } ?>
-									<th>Sample Collection<br /> Date</th>
-									<th>Batch Code</th>
-									<th>Unique ART No</th>
-									<th>Patient's Name</th>
-									<th>Facility Name</th>
-									<th>Province/State</th>
-									<th>District/County</th>
-									<th>Sample Type</th>
-									<th>Result</th>
-									<th>Last Modified Date</th>
-									<th>Status</th>
+									<th><?php echo _("Sample Collection");?><br /> <?php echo _("Date");?></th>
+									<th><?php echo _("Batch Code");?></th>
+									<th><?php echo _("Unique ART No");?></th>
+									<th><?php echo _("Patient's Name");?></th>
+									<th><?php echo _("Facility Name");?></th>
+									<th><?php echo _("Province/State");?></th>
+									<th><?php echo _("District/County");?></th>
+									<th><?php echo _("Sample Type");?></th>
+									<th><?php echo _("Result");?></th>
+									<th><?php echo _("Last Modified Date");?></th>
+									<th><?php echo _("Status");?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="13" class="dataTables_empty" style="text-align:center;">Please enter the manifest code then submit!</td>
+									<td colspan="13" class="dataTables_empty" style="text-align:center;"><?php echo _("Please enter the manifest code then submit!");?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -212,7 +212,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					}
 				});
 		} else {
-			alert('Please enter the Sample Manifest Code then hit submit');
+			alert('<?php echo _("Please enter the Sample Manifest Code then hit submit");?>');
 		}
 	}
 
@@ -222,7 +222,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
-				message: '<h3>Trying to sync Relevant Manifest Code Test Requests<br>Please wait...</h3>'
+				message: '<h3><?php echo _("Trying to sync Relevant Manifest Code Test Requests");?><br><?php echo _("Please wait");?>...</h3>'
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
@@ -262,7 +262,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			function(data) {
 				if (data > 0) {
-					alert('Samples from this Manifest have been activated');
+					alert('<?php echo _("Samples from this Manifest have been activated");?>');
 					$('.activateSample').hide();
 				}
 				oTable.fnDraw();
