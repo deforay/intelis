@@ -33,14 +33,16 @@ try {
 		if (!isset($data['geo_parent']) || $data['geo_parent'] == 0) {
 			$provinceQuery = "SELECT province_name from province_details where province_name='" . $_POST['geoName'] . "'";
 			$provinceInfo = $db->rawQueryOne($provinceQuery);
-			if ($provinceInfo) {
+			$pdata = array(
+				'province_name' => $_POST['geoName'],
+				'province_code' => $_POST['geoCode'],
+				'updated_datetime' => $general->getDateTime(),
+			);
+			if ($provinceInfo && $provinceInfo['province_id'] > 0) {
+				$db->where("province_id", $provinceInfo['province_id']);
+				$db->update($provinceTable, $pdata);
 			} else {
-
-				$data = array(
-					'province_name' => $_POST['provinceNew'],
-					'updated_datetime' => $general->getDateTime(),
-				);
-				$db->insert($provinceTable, $data);
+				$db->insert($provinceTable, $pdata);
 			}
 		}
 		if ($lastId > 0) {
