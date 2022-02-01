@@ -34,7 +34,7 @@ include_once(APPLICATION_PATH . '/header.php');
 								<div class="form-group">
 									<label for="resultName" class="col-lg-4 control-label"><?php echo _("Result Name");?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" placeholder="<?php echo _('Result Name');?>" title="<?php echo _('Please enter Result name');?>" onblur="checkNameValidation('r_covid19_results','result',this,null,'<?php echo _('The Result name that you entered already exists.Enter another name');?>',null)" />
+										<input type="text" class="form-control isRequired" id="resultName" name="resultName" placeholder="<?php echo _('Result Name');?>" title="<?php echo _('Please enter Result name');?>" onblur='checkNameValidation("r_covid19_results", "result" , this , null, "<?php echo _("The Result name that you entered already exists. Enter another name");?>", null)' />
 									</div>
 								</div>
 							</div>

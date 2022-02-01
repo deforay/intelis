@@ -193,7 +193,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					}
 				});
 		} else {
-			alert('<?php echo _("Please enter the Sample Manifest Code then hit submit");?>');
+			alert("<?php echo _("Please enter the Sample Manifest Code then hit submit");?>");
 		}
 	}
 
@@ -203,7 +203,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
-				message: '<h3><?php echo _("Trying to sync Relevant Manifest Code Test Requests");?><br><?php echo _("Please wait");?>...</h3>'
+				message: "<h3><?php echo _("Trying to sync Relevant Manifest Code Test Requests");?><br><?php echo _("Please wait");?>...</h3>"
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
@@ -243,7 +243,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			function(data) {
 				if (data > 0) {
-					alert('<?php echo _("Samples from this Manifest have been activated");?>');
+					alert("<?php echo _("Samples from this Manifest have been activated");?>");
 					$('.activateSample').hide();
 				}
 				oTable.fnDraw();
