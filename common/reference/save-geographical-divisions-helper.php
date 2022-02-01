@@ -51,13 +51,15 @@ try {
 			if ($data['geo_parent'] == 0) {
 				$facilityData['facility_state'] = $data['geo_name'];
 				$facilityData['facility_state_id'] = $data['geo_id'];
-				$db->where("(facility_state = ? or facility_state_id = ?)", array($data['geo_name'], $data['geo_id']));
+				$db->where("facility_state", $data['geo_name']);
+				$db->where("facility_state_id", $data['geo_id']);
 			} else {
 				$facilityData['facility_state_id'] = $data['geo_parent'];
 				$facilityData['facility_district'] = $data['geo_name'];
 				$facilityData['facility_district_id'] = $data['geo_id'];
 				$db->where('facility_state', $data['geo_parent']);
-				$db->where("(facility_district = ? or facility_district_id = ?)", array($data['geo_name'], $data['geo_id']));
+				$db->where("facility_district", $data['geo_name']);
+				$db->where("facility_district_id", $data['geo_id']);
 			}
 			$db->update("facility_details", $facilityData);
 
