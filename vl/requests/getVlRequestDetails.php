@@ -471,22 +471,22 @@ foreach ($rResult as $aRow) {
      //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '\',900,520);"> Result</a>';
 
      if ($editRequest) {
-          $edit = '<a href="editVlRequest.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
+          $edit = '<a href="editVlRequest.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><i class="fa fa-pencil"> '. _("Edit").'</i></a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("edit-locked-vl-samples", $_SESSION['privileges'])) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="Locked" disabled><i class="fa fa-lock"> Locked</i></a>';
+                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Locked").'" disabled><i class="fa fa-lock"> '. _("Locked").'</i></a>';
                }
           }
      }
 
      if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
           $fac = ucwords($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
-          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="Barcode"><i class="fa fa-barcode"> </i> Barcode </a>';
+          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Barcode").'"><i class="fa fa-barcode"> </i> '. _("Barcode").' </a>';
      }
 
      if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
           if ($aRow['data_sync'] == 0) {
-               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Sync this sample" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> Sync</a>';
+               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="'. _("Sync this sample").'" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> '. _("Sync").'</a>';
           }
      } else {
           $sync = "";
