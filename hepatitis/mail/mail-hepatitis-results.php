@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "Email Hepatitis Test Results";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 $configQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configResult = $db->rawQuery($configQuery);

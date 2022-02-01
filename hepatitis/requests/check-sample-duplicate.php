@@ -3,7 +3,7 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../../startup.php');
+
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";

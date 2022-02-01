@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-#require_once('../../startup.php');   
+   
 
 
 

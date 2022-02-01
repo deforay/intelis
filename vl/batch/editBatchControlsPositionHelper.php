@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../../startup.php');
+
 
 
 $tableName = "batch_details";

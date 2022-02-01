@@ -3,6 +3,8 @@
 
 ob_start();
 
+
+
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -19,6 +21,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
+$general = new \Vlsm\Models\General();
 $covid19Obj = new \Vlsm\Models\Covid19();
 
 
@@ -58,6 +61,16 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
 $geolocation = new \Vlsm\Models\GeoLocations();
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+
+$generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
+if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
+    $patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
+    $generateAutomatedPatientCode = true;
+} else {
+    $generateAutomatedPatientCode = false;
+}
+
+
 ?>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -173,7 +186,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                                     <tr>
                                         <th style="width:15% !important"><label for="patientId">N&deg; EPID </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" <?= ($generateAutomatedPatientCode) ? "readonly='readonly'" : "" ?> />
                                         </td>
                                         <th><label for="patientDob">Date de naissance</label></th>
                                         <td>
@@ -860,6 +873,8 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Sauver</a>
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Enregistrer et suivant</a>
                         <input type="hidden" name="formId" id="formId" value="<?php echo $arr['vl_form']; ?>" />
+                        <input type="hidden" name="patientCodePrefix" id="patientCodePrefix" value="<?= $patientCodePrefix; ?>" />
+                        <input type="hidden" name="patientCodeKey" id="patientCodeKey" value="" />
                         <input type="hidden" name="covid19SampleId" id="covid19SampleId" value="" />
                         <a href="/covid-19/requests/covid-19-requests.php" class="btn btn-default"> Annuler</a>
                     </div>
@@ -1239,6 +1254,19 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 
     $(document).ready(function() {
 
+        <?php if ($generateAutomatedPatientCode) { ?>
+            //$.blockUI();
+            $.post("/patients/generate-patient-id.php", {
+                    patientCodePrefix: "<?= $patientCodePrefix; ?>",
+                },
+                function(data) {
+                    data = ($.parseJSON(data));
+                    $("#patientId").val(data.patientCode);
+                    $("#patientCodeKey").val(data.patientCodeKey);
+                    //$.unblockUI();
+                });
+        <?php } ?>
+
         $('#facilityId').select2({
             placeholder: "POINT DE COLLECT"
         });
@@ -1309,6 +1337,8 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                 $('.oxygen-saturation').css('display', 'none');
             }
         });
+
+
 
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             $(document).on('change', '.test-result, #result', function(e) {

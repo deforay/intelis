@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "EID | Edit Request";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 ?>
 <style>

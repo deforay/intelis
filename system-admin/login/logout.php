@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-#require_once('../../startup.php');  
+  
 
 // Unset all of the session variables.
 $_SESSION = array();

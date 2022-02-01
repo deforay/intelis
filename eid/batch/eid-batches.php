@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "EID | Batches";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 
 ?>

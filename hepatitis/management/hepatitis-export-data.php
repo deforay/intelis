@@ -1,6 +1,6 @@
 <?php
 $title = "Export Data";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 
 

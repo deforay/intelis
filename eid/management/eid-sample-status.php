@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 $title = "EID | Sample Status Report";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 
 

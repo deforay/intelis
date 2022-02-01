@@ -1,5 +1,5 @@
 <?php
-#require_once('../../startup.php'); 
+ 
 include_once(APPLICATION_PATH.'/header.php');
 ?>
 <script type="text/javascript">

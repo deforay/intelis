@@ -242,7 +242,7 @@ class Users
 
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
-            $general = new \Vlsm\Models\General($this->db);
+            $general = new \Vlsm\Models\General();
             $userId = $general->generateUUID();
             $userData = array(
                 'user_id' => $userId,

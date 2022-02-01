@@ -7,6 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new \Vlsm\Models\General();
 $covid19Model = new \Vlsm\Models\Covid19();
+$patientsModel = new \Vlsm\Models\Patients();
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -70,6 +71,18 @@ try {
         $covid19Data['remote_sample'] = 'no';
         $covid19Data['result_status'] = 6;
     }
+
+    if (!empty($_POST['patientCodeKey']) && !empty($_POST['patientCodePrefix'])) {
+        $patientData['patientId'] = $_POST['patientId'];
+        $patientData['patientCodePrefix'] = $_POST['patientCodePrefix'];
+        $patientData['patientCodeKey'] = $_POST['patientCodeKey'];
+        $patientData['patientFirstName'] = $_POST['firstName'];
+        $patientData['patientLastName'] = $_POST['lastName'];
+        $patientsModel->addPatient($patientData);
+    }
+
+    $covid19Data['patient_id'] = $_POST['patientId'];
+
     // echo "<pre>";
     // print_r($covid19Data);die;
     $id = 0;
