@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $db = MysqliDb::getInstance();
 
 $general = new \Vlsm\Models\General();
-
+$provinceTable = "province_details";
 try {
 	if (isset($_POST['geoName']) && trim($_POST['geoName']) != "") {
 		$lastId = 0;
@@ -29,6 +29,19 @@ try {
 			$data['data_sync'] = 0;
 			$db->insert("geographical_divisions", $data);
 			$lastId = $db->getInsertId();
+		}
+		if (!isset($data['geo_parent']) || $data['geo_parent'] == 0) {
+			$provinceQuery = "SELECT province_name from province_details where province_name='" . $_POST['geoName'] . "'";
+			$provinceInfo = $db->rawQueryOne($provinceQuery);
+			if ($provinceInfo) {
+			} else {
+
+				$data = array(
+					'province_name' => $_POST['provinceNew'],
+					'updated_datetime' => $general->getDateTime(),
+				);
+				$db->insert($provinceTable, $data);
+			}
 		}
 		if ($lastId > 0) {
 
