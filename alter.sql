@@ -2886,5 +2886,24 @@ ALTER TABLE `log_result_updates` ADD `file_name` VARCHAR(256) NULL DEFAULT NULL 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
 VALUES 
 ('Generate Patient Code', 'covid19_generate_patient_code', 'no', 'covid19', 'no', NULL, NULL, 'active'), 
-('Patient Code Prefix', 'covid19_patient_code_prefix', 'P', 'covid19', 'yes', NULL, NULL, 'active'); 
+('Patient Code Prefix', 'covid19_patient_code_prefix', 'P', 'covid19', 'no', NULL, NULL, 'active'); 
 
+-- Amit 01-Feb-2022
+CREATE TABLE `patients` (
+  `patient_id` int(11) NOT NULL AUTO_INCREMENT,
+  `patient_code_prefix` varchar(256) NOT NULL,
+  `patient_code_key` int(11) NOT NULL,
+  `patient_code` varchar(256) NOT NULL,
+  `patient_first_name` text,
+  `patient_middle_name` text,
+  `patient_last_name` text,
+  `patient_gender` varchar(256) DEFAULT NULL,
+  `patient_province` int(11) DEFAULT NULL,
+  `patient_district` int(11) DEFAULT NULL,
+  `patient_registered_on` datetime DEFAULT NULL,
+  `patient_registered_by` text,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`patient_id`),
+  UNIQUE KEY `patient_code` (`patient_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+ALTER TABLE `patients` ADD UNIQUE(`patient_code_prefix`, `patient_code_key`);

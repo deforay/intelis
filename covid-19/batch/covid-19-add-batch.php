@@ -138,7 +138,7 @@ foreach ($testPlatformResult as $machine) {
                                 <div class="form-group">
                                     <label for="batchCode" class="col-lg-4 control-label"><?php echo _("Batch Code");?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7" style="margin-left:3%;">
-                                        <input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _('Batch Code');?>" title="<?php echo _('Please enter batch code');?>" value="<?php echo date('Ymd') . $maxId; ?>" onblur="checkNameValidation('batch_details','batch_code',this,null,'<?php echo _('This batch code already exists.Try another batch code');?>',null)" />
+                                        <input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _('Batch Code');?>" title="<?php echo _('Please enter batch code');?>" value="<?php echo date('Ymd') . $maxId; ?>" onblur='checkNameValidation("batch_details","batch_code",this,null,"<?php echo _("This batch code already exists.Try another batch code");?>",null)' />
                                         <input type="hidden" name="batchCodeKey" id="batchCodeKey" value="<?php echo $maxId; ?>" />
                                         <input type="hidden" name="platform" id="platform" value="" />
                                         <input type="hidden" name="positions" id="positions" value="" />
@@ -191,7 +191,7 @@ foreach ($testPlatformResult as $machine) {
     $(document).ready(function() {
 
         $("#facilityName").select2({
-            placeholder: "<?php echo _('Select Facilities');?>"
+            placeholder: "<?php echo _("Select Facilities");?>"
         });
 
         $('.daterange').daterangepicker({
@@ -234,8 +234,8 @@ foreach ($testPlatformResult as $machine) {
     //$("#auditRndNo").multiselect({height: 100,minWidth: 150});
     $(document).ready(function() {
         $('.search').multiSelect({
-            selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
-            selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
+            selectableHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _("Enter Sample Code");?>">',
+            selectionHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _("Enter Sample Code");?>">',
             afterInit: function(ms) {
                 var that = this,
                     $selectableSearch = that.$selectableUl.prev(),
@@ -262,14 +262,14 @@ foreach ($testPlatformResult as $machine) {
             afterSelect: function() {
                 //button disabled/enabled
                 if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-                    alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+                    alert("<?php echo _("You have selected Maximum no. of sample");?> " + this.qs2.cache().matchedResultsCount);
                     $("#batchSubmit").attr("disabled", false);
                     $("#batchSubmit").css("pointer-events", "auto");
                 } else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
                     $("#batchSubmit").attr("disabled", false);
                     $("#batchSubmit").css("pointer-events", "auto");
                 } else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-                    alert("You have already selected Maximum no. of sample " + noOfSamples);
+                    alert("<?php echo _("You have already selected Maximum no. of sample");?> " + noOfSamples);
                     $("#batchSubmit").attr("disabled", true);
                     $("#batchSubmit").css("pointer-events", "none");
                 }
@@ -282,7 +282,7 @@ foreach ($testPlatformResult as $machine) {
                     $("#batchSubmit").attr("disabled", true);
                     $("#batchSubmit").css("pointer-events", "none");
                 } else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-                    alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+                    alert("<?php echo _("You have selected Maximum no. of sample");?> " + this.qs2.cache().matchedResultsCount);
                     $("#batchSubmit").attr("disabled", false);
                     $("#batchSubmit").css("pointer-events", "auto");
                 } else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
@@ -336,7 +336,7 @@ foreach ($testPlatformResult as $machine) {
         var machine = $("#machine").val();
         if (machine == null || machine == '') {
             $.unblockUI();
-            alert('You have to choose a testing platform to proceed');
+            alert("<?php echo _("You have to choose a testing platform to proceed");?>");
             return false;
         }
         var fName = $("#facilityName").val();
@@ -366,7 +366,7 @@ foreach ($testPlatformResult as $machine) {
             $("#platform").val($("#machine").val());
             var selected = $(this).find('option:selected');
             noOfSamples = selected.data('no-of-samples');
-            $('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' testing platform and it has limit of maximum ' + noOfSamples + ' samples per batch');
+            $('#alertText').html("<?php echo _("You have picked");?> " + $("#machine option:selected").text() + " <?php echo _("testing platform and it has limit of maximum");?> " + noOfSamples + " <?php echo _("samples per batch");?>");
         } else {
             $('.ms-list').html('');
             $('#alertText').html('');

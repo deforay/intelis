@@ -15,6 +15,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 $covid19Obj = new \Vlsm\Models\Covid19();
+$patientsModel = new \Vlsm\Models\Patients();
 
 
 $covid19Results = $covid19Obj->getCovid19Results();
@@ -90,6 +91,23 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 }
 $geolocation = new \Vlsm\Models\GeoLocations();
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+
+$generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
+if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
+    //$patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
+    $generateAutomatedPatientCode = true;
+} else {
+    $generateAutomatedPatientCode = false;
+}
+
+$patientData = $patientsModel->getPatient($covid19Info['patient_id']);
+$patientCodePrefix = $patientCodeKey = "";
+if (!empty($patientData)) {
+    $patientCodePrefix = $patientData['patient_code_prefix'];
+    $patientCodeKey = $patientData['patient_code_key'];
+}
+
+
 ?>
 <style>
     .other-comorbidities {
@@ -224,7 +242,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                                     <tr>
                                         <th style="width:15% !important"><label for="patientId">N&deg; EPID </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
+                                            <input type="text" class="form-control" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" <?= ($generateAutomatedPatientCode) ? "readonly='readonly'" : "" ?> />
                                         </td>
                                         <th><label for="patientDob">Date de naissance</label></th>
                                         <td>
@@ -947,6 +965,8 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
                         <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="7" />
                         <input type="hidden" name="deletedRow" id="deletedRow" value="" />
+                        <input type="hidden" name="patientCodePrefix" id="patientCodePrefix" value="<?= $patientCodePrefix; ?>" />
+                        <input type="hidden" name="patientCodeKey" id="patientCodeKey" value="<?= $patientCodeKey; ?>" />
                         <input type="hidden" name="covid19SampleId" id="covid19SampleId" value="<?php echo $covid19Info['covid19_id']; ?>" />
                         <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?php echo $arr['sample_code']; ?>" />
                         <input type="hidden" name="oldStatus" id="oldStatus" value="<?php echo $covid19Info['result_status']; ?>" />

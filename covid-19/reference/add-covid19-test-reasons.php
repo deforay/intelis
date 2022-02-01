@@ -35,7 +35,7 @@ $rejInfo = $db->query($rejQuery);
                 <div class="form-group">
                   <label for="testReasonName" class="col-lg-4 control-label"><?php echo _("Test Reason Name");?> <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control isRequired" id="testReasonName" name="testReasonName" placeholder="<?php echo _('Test Reason Name');?>" title="<?php echo _('Please enter Test Reason name');?>" onblur="checkNameValidation('r_covid19_test_reasons','test_reason_name',this,null,'<?php echo _('The Test Reason name that you entered already exists.Enter another name');?>',null)" />
+                    <input type="text" class="form-control isRequired" id="testReasonName" name="testReasonName" placeholder="<?php echo _('Test Reason Name');?>" title="<?php echo _('Please enter Test Reason name');?>" onblur='checkNameValidation("r_covid19_test_reasons","test_reason_name",this,null,"<?php echo _("The Test Reason name that you entered already exists.Enter another name");?>",null)' />
                   </div>
                 </div>
               </div>

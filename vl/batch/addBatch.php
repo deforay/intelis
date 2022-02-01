@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$title = "VL | Add New Batch";
+$title = _("VL | Add New Batch");
 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -76,10 +76,10 @@ foreach ($testPlatformResult as $machine) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> Create Batch</h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("Create Batch");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Batch</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li class="active"><?php echo _("Batch");?></li>
 		</ol>
 	</section>
 
@@ -88,14 +88,14 @@ foreach ($testPlatformResult as $machine) {
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
 			</div>
 			<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
-					<th>Testing Platform&nbsp;<span class="mandatory">*</span> </th>
+					<th><?php echo _("Testing Platform");?>&nbsp;<span class="mandatory">*</span> </th>
 					<td>
-						<select name="machine" id="machine" class="form-control isRequired" title="Please choose machine" style="width:280px;">
-							<option value=""> -- Select -- </option>
+						<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine');?>" style="width:280px;">
+							<option value=""> <?php echo _("-- Select --");?> </option>
 							<?php
 							foreach ($testPlatformResult as $machine) {
 								$labelOrder = $machinesLabelOrder[$machine['config_id']];
@@ -104,10 +104,10 @@ foreach ($testPlatformResult as $machine) {
 							<?php } ?>
 						</select>
 					</td>
-					<th>Sample Type</th>
+					<th><?php echo _("Sample Type");?></th>
 					<td>
-						<select class="form-control" id="sampleType" name="sampleType" title="Please select sample type" style="width:150px;">
-							<option value=""> -- Select -- </option>
+						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type');?>" style="width:150px;">
+							<option value=""> <?php echo _("-- Select --");?> </option>
 							<?php
 							foreach ($sResult as $type) {
 							?>
@@ -119,36 +119,36 @@ foreach ($testPlatformResult as $machine) {
 					</td>
 				</tr>
 				<tr>
-					<th>Sample Collection Date</th>
+					<th><?php echo _("Sample Collection Date");?></th>
 					<td>
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:275px;background:#fff;" />
 					</td>
-					<th>Facility</th>
+					<th><?php echo _("Facility");?></th>
 					<td>
-						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
+						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
 				</tr>
 				<tr>
-					<th>Date Sample Receieved at Lab</th>
+					<th><?php echo _("Date Sample Receieved at Lab");?></th>
 					<td>
-						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
+						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date');?>" readonly style="width:275px;background:#fff;" />
 					</td>
-					<th>Patient Gender</th>
+					<th><?php echo _("Patient Gender");?></th>
 					<td>
-						<select name="gender" id="gender" class="form-control" title="Please choose gender" onchange="enableFemaleSection(this);" style="width:150px;">
-							<option value=""> -- Select -- </option>
-							<option value="male">Male</option>
-							<option value="female">Female</option>
-							<option value="not_recorded">Not Recorded</option>
+						<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender');?>" onchange="enableFemaleSection(this);" style="width:150px;">
+							<option value=""> <?php echo _("-- Select --");?> </option>
+							<option value="male"><?php echo _("Male");?></option>
+							<option value="female"><?php echo _("Female");?></option>
+							<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<th><?php echo _("Positions"); ?></th>
 					<td>
-						<select id="positions-type" class="form-control" title="Please select the postion">
+						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion');?>">
 							<option value="numeric"><?php echo _("Numeric"); ?></option>
 							<option value="alpha-numeric"><?php echo _("Alpha Numeric"); ?></option>
 						</select>
@@ -157,20 +157,20 @@ foreach ($testPlatformResult as $machine) {
 					<td></td>
 				</tr>
 				<tr class="showFemaleSection">
-					<td><b>Is Patient Pregnant&nbsp;:</b></td>
+					<td><b><?php echo _("Is Patient Pregnant");?>&nbsp;:</b></td>
 					<td>
-						<input type="radio" name="pregnant" title="Please choose type" class="pregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;Yes
-						<input type="radio" name="pregnant" title="Please choose type" class="pregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;No
+						<input type="radio" name="pregnant" title="<?php echo _('Please choose type');?>" class="pregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;<?php echo _("Yes");?>
+						<input type="radio" name="pregnant" title="<?php echo _('Please choose type');?>" class="pregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;<?php echo _("No");?>
 					</td>
-					<td><b>Is Patient Breastfeeding&nbsp;:</b></td>
+					<td><b><?php echo _("Is Patient Breastfeeding");?>&nbsp;:</b></td>
 					<td>
-						<input type="radio" name="breastfeeding" title="Please choose type" class="breastfeeding" id="breastFeedingYes" value="yes" disabled="disabled" />&nbsp;&nbsp;Yes
-						<input type="radio" name="breastfeeding" title="Please choose type" class="breastfeeding" id="breastFeedingNo" value="no" disabled="disabled" />&nbsp;&nbsp;No
+						<input type="radio" name="breastfeeding" title="<?php echo _('Please choose type');?>" class="breastfeeding" id="breastFeedingYes" value="yes" disabled="disabled" />&nbsp;&nbsp;<?php echo _("Yes");?>
+						<input type="radio" name="breastfeeding" title="<?php echo _('Please choose type');?>" class="breastfeeding" id="breastFeedingNo" value="no" disabled="disabled" />&nbsp;&nbsp;<?php echo _("No");?>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="Filter Samples" class="btn btn-success btn-sm">
-						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset Filters</span></button>
+					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _('Filter Samples');?>" class="btn btn-success btn-sm">
+						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset Filters");?></span></button>
 					</td>
 				</tr>
 			</table>
@@ -182,9 +182,9 @@ foreach ($testPlatformResult as $machine) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="batchCode" class="col-lg-4 control-label">Batch Code <span class="mandatory">*</span></label>
+									<label for="batchCode" class="col-lg-4 control-label"><?php echo _("Batch Code");?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="Batch Code" title="Please enter batch code" value="<?php echo date('Ymd') . $maxId; ?>" onblur="checkNameValidation('batch_details','batch_code',this,null,'This batch code already exists.Try another batch code',null)" />
+										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _('Batch Code');?>" title="<?php echo _('Please enter batch code');?>" value="<?php echo date('Ymd') . $maxId; ?>" onblur="checkNameValidation('batch_details','batch_code',this,null,'<?php echo _('This batch code already exists.Try another batch code');?>',null)" />
 										<input type="hidden" name="batchCodeKey" id="batchCodeKey" value="<?php echo $maxId; ?>" />
 										<input type="hidden" name="platform" id="platform" value="" />
 										<input type="hidden" name="positions" id="positions" value="" />
@@ -199,7 +199,7 @@ foreach ($testPlatformResult as $machine) {
 									<div class="col-md-12">
 										<div class="col-md-12">
 											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
 										</div>
@@ -211,8 +211,8 @@ foreach ($testPlatformResult as $machine) {
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save and Next</a>
-						<a href="batchcode.php" class="btn btn-default"> Cancel</a>
+						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine');?>" onclick="validateNow();return false;" style="pointer-events:none;" disabled><?php echo _("Save and Next");?></a>
+						<a href="batchcode.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -237,7 +237,7 @@ foreach ($testPlatformResult as $machine) {
 	$(document).ready(function() {
 
 		$("#facilityName").select2({
-			placeholder: "Select Facilities"
+			placeholder: "<?php echo _('Select Facilities');?>"
 		});
 
 		$('.daterange').daterangepicker({
@@ -284,8 +284,8 @@ foreach ($testPlatformResult as $machine) {
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
 		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
+			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
 			afterInit: function(ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
@@ -312,14 +312,14 @@ foreach ($testPlatformResult as $machine) {
 			afterSelect: function() {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+					alert("<?php echo _('You have selected Maximum no. of sample');?> " + this.qs2.cache().matchedResultsCount);
 					$("#batchSubmit").attr("disabled", false);
 					$("#batchSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
 					$("#batchSubmit").attr("disabled", false);
 					$("#batchSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					alert("You have already selected Maximum no. of sample " + noOfSamples);
+					alert("<?php echo _('You have already selected Maximum no. of sample');?> " + noOfSamples);
 					$("#batchSubmit").attr("disabled", true);
 					$("#batchSubmit").css("pointer-events", "none");
 				}
@@ -332,7 +332,7 @@ foreach ($testPlatformResult as $machine) {
 					$("#batchSubmit").attr("disabled", true);
 					$("#batchSubmit").css("pointer-events", "none");
 				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+					alert("<?php echo _('You have selected Maximum no. of sample');?> " + this.qs2.cache().matchedResultsCount);
 					$("#batchSubmit").attr("disabled", false);
 					$("#batchSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
@@ -387,7 +387,7 @@ foreach ($testPlatformResult as $machine) {
 		var machine = $("#machine").val();
 		if (machine == null || machine == '') {
 			$.unblockUI();
-			alert('You have to choose a testing platform to proceed');
+			alert('<?php echo _("You have to choose a testing platform to proceed");?>');
 			return false;
 		}
 		var fName = $("#facilityName").val();
@@ -444,7 +444,7 @@ foreach ($testPlatformResult as $machine) {
 			$("#platform").val($("#machine").val());
 			var selected = $(this).find('option:selected');
 			noOfSamples = selected.data('no-of-samples');
-			$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' testing platform and it has limit of maximum ' + noOfSamples + ' samples per batch');
+			$('#alertText').html('<?php echo _("You have picked");?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum");?> ' + noOfSamples + ' <?php echo _("samples per batch");?>');
 		} else {
 			$('.ms-list').html('');
 			$('#alertText').html('');

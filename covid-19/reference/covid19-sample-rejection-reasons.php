@@ -113,7 +113,7 @@ include_once(APPLICATION_PATH . '/header.php');
   });
   function updateStatus(obj, optVal) {
     if (obj.value != '') {
-      conf = confirm("<?php echo _('Are you sure you want to change the status?');?>");
+      conf = confirm("<?php echo _("Are you sure you want to change the status?");?>");
       if (conf) {
         $.post("update-covid19-rejection-status.php", {
             status: obj.value,
@@ -122,7 +122,7 @@ include_once(APPLICATION_PATH . '/header.php');
           function(data) {
             if (data != "") {
               oTable.fnDraw();
-              alert('<?php echo _("Updated successfully.");?>');
+              alert("<?php echo _("Updated successfully.");?>");
             }
           });
       }

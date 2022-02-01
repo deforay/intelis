@@ -17,6 +17,7 @@ if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser') {
 }else{
   $testingLabs = $facilitiesDb->getTestingLabs('covid19');
 }
+$testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type='covid19' AND batch_status='completed'";
@@ -131,7 +132,7 @@ $batResult = $db->rawQuery($batQuery);
 <script>
   $(function() {
     $("#labName").select2({
-      placeholder: "<?php echo _('Select Testing Lab');?>"
+      placeholder: "<?php echo _("Select Testing Lab");?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -262,7 +263,7 @@ $batResult = $db->rawQuery($batQuery);
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert('<?php echo _("Unable to generate the excel file");?>');
+          alert("<?php echo _("Unable to generate the excel file");?>");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;

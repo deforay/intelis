@@ -1,5 +1,5 @@
 <?php
-$title = "Api-Stats";
+$title = "Api Stats";
 #require_once('../startup.php'); 
 include('../admin-header.php');
 ?>

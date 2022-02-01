@@ -288,7 +288,7 @@ if (file_exists($fileArray[$arr['vl_form']])) {
     }
 
     function insertSampleCode(formId, covid19SampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
-        $.blockUI();
+        //$.blockUI();
         $.post("/covid-19/requests/insert-sample.php", {
                 sampleCode: $("#" + sampleCode).val(),
                 sampleCodeKey: $("#" + sampleCodeKey).val(),
@@ -297,15 +297,14 @@ if (file_exists($fileArray[$arr['vl_form']])) {
                 sampleCollectionDate: $("#" + sampleCollectionDate).val(),
                 provinceCode: provinceCode,
                 provinceId: provinceId,
-                patientId: $("#patientId"),
-                patientCodePrefix: $("#patientCodePrefix"),
-                patientCodeKey: $("#patientCodeKey"),
-                firstName: $("#firstName"),
-                lastName: $("#lastName"),
-                patientGender: $("#patientGender"),
+                patientId: $("#patientId").val(),
+                patientCodePrefix: $("#patientCodePrefix").val(),
+                patientCodeKey: $("#patientCodeKey").val(),
+                firstName: $("#firstName").val(),
+                lastName: $("#lastName").val(),
+                patientGender: $("#patientGender").val(),
             },
             function(data) {
-
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("covid19SampleId").value = data;

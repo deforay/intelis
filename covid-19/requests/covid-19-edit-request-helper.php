@@ -10,6 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new \Vlsm\Models\General();
 $facilityDb = new \Vlsm\Models\Facilities();
+$patientsModel = new \Vlsm\Models\Patients();
 
 // echo "<pre>";print_r($_POST);die;
 
@@ -231,10 +232,19 @@ try {
 			$covid19Data['lab_manager'] = $facility['contact_person'];
 		}
 	}
-	// $lock = $general->getGlobalConfig('lock_approved_covid19_samples');
-	// if ($status == 7 && $lock == 'yes') {
-	// 	$covid19Data['locked'] = 'yes';
-	// }
+
+	//saving this patient into patients table
+	if (!empty($_POST['patientCodeKey']) && !empty($_POST['patientCodePrefix'])) {
+		$patientData['patientCodePrefix'] = $_POST['patientCodePrefix'];
+		$patientData['patientCodeKey'] = $_POST['patientCodeKey'];
+	}
+	$patientData['patientId'] = $_POST['patientId'];
+	$patientData['patientFirstName'] = $_POST['firstName'];
+	$patientData['patientLastName'] = $_POST['lastName'];
+	$patientData['patientGender'] = $_POST['patientGender'];
+	$patientData['registeredBy'] = $_SESSION['userId'];
+	$patientsModel->savePatient($patientData);
+
 
 	if (!empty($_POST['api']) && $_POST['api'] = "yes") {
 		$sampleQuery = "SELECT covid19_id FROM form_covid19 where covid19_id = " . $_POST['covid19SampleId'] . " limit 1";

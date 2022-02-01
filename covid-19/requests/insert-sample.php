@@ -72,14 +72,18 @@ try {
         $covid19Data['result_status'] = 6;
     }
 
+    //saving this patient into patients table
     if (!empty($_POST['patientCodeKey']) && !empty($_POST['patientCodePrefix'])) {
-        $patientData['patientId'] = $_POST['patientId'];
         $patientData['patientCodePrefix'] = $_POST['patientCodePrefix'];
         $patientData['patientCodeKey'] = $_POST['patientCodeKey'];
-        $patientData['patientFirstName'] = $_POST['firstName'];
-        $patientData['patientLastName'] = $_POST['lastName'];
-        $patientsModel->addPatient($patientData);
     }
+    $patientData['patientId'] = $_POST['patientId'];
+    $patientData['patientFirstName'] = $_POST['firstName'];
+    $patientData['patientLastName'] = $_POST['lastName'];
+    $patientData['patientGender'] = $_POST['patientGender'];
+    $patientData['registeredBy'] = $_SESSION['userId'];
+    $patientsModel->savePatient($patientData);
+
 
     $covid19Data['patient_id'] = $_POST['patientId'];
 
@@ -91,8 +95,6 @@ try {
         $id = $db->update("form_covid19", $covid19Data);
         $_POST['covid19SampleId'] = $rowData['covid19_id'];
     } else {
-
-
         if (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '' && $_POST['sampleCollectionDate'] != null && $_POST['sampleCollectionDate'] != '') {
             $covid19Data['unique_id'] = $general->generateRandomString(32);
             $id = $db->insert("form_covid19", $covid19Data);
@@ -105,5 +107,6 @@ try {
         echo 0;
     }
 } catch (Exception $e) {
-    echo 'Message: ' . $e->getMessage();
+    error_log('Insert Covid-19 Sample : ' . $db->getLastError());
+    error_log('Insert Covid-19 Sample : ' . $e->getMessage());
 }

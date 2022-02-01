@@ -27,7 +27,7 @@ try {
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();
 
-		$_SESSION['alertMsg'] = "Symptom details added successfully";
+		$_SESSION['alertMsg'] = _("Symptom details added successfully");
 		$general->activityLog('add-symptoms', $_SESSION['userName'] . ' added new reference symptom' . $_POST['symptomsName'], 'reference-covid19-symptoms');
 	}
 	header("location:covid19-symptoms.php");
