@@ -2878,6 +2878,10 @@ ALTER TABLE `form_covid19` CHANGE `investogator_name` `investigator_name` TEXT C
 -- Amit 29 Jan 2022
 ALTER TABLE `user_details` CHANGE `role_id` `role_id` INT NULL DEFAULT NULL;
 
+-- Thana 31-Jan-2022
+ALTER TABLE `log_result_updates` CHANGE `test_type` `test_type` VARCHAR(244) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'vl, eid, covid19, hepatitis, tb';
+ALTER TABLE `log_result_updates` ADD `result_method` VARCHAR(256) NULL DEFAULT NULL AFTER `test_type`;
+ALTER TABLE `log_result_updates` ADD `file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `result_method`;
 -- Amit 31 Jan 2022
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
 VALUES 

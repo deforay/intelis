@@ -161,15 +161,25 @@ try {
 
                         $db = $db->where('sample_code', $rResult[0]['sample_code']);
                         $result = $db->update('form_hepatitis', $data);
+                        $hepatitisId = $vlResult[0]['hepatitis_id'];
                     } else {
                         if ($importNonMatching == false) continue;
                         $data['sample_code'] = $rResult[0]['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
-                        $db->insert('form_hepatitis', $data);
+                        $hepatitisId = $db->insert('form_hepatitis', $data);
                     }
                     $printSampleCode[] = "'" . $rResult[0]['sample_code'] . "'";
                 }
+            }
+            if (isset($hepatitisId) && $hepatitisId != "") {
+                $db->insert('log_result_updates', array(
+                    "user_id" => $_SESSION['userId'],
+                    "vl_sample_id" => $hepatitisId,
+                    "test_type" => "vl",
+                    "result_method" => "import",
+                    "updated_on" => $general->getDateTime()
+                ));
             }
             $db = $db->where('temp_sample_id', $id[$i]);
             $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));

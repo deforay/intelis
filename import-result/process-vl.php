@@ -169,15 +169,28 @@ try {
 
                         $db = $db->where('sample_code', $rResult[0]['sample_code']);
                         $result = $db->update('vl_request_form', $data);
+
+                        $vlSampleId = $vlResult[0]['vl_sample_id'];
                     } else {
                         if ($importNonMatching == false) continue;
                         $data['sample_code'] = $rResult[0]['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
-                        $db->insert('vl_request_form', $data);
+                        $vlSampleId = $db->insert('vl_request_form', $data);
                     }
+
                     $printSampleCode[] = "'" . $rResult[0]['sample_code'] . "'";
                 }
+            }
+            if (isset($vlSampleId) && $vlSampleId != "") {
+                $db->insert('log_result_updates', array(
+                    "user_id" => $_SESSION['userId'],
+                    "vl_sample_id" => $vlSampleId,
+                    "test_type" => "vl",
+                    "result_method" => "import",
+                    "file_name" => $rResult[0]['import_machine_file_name'],
+                    "updated_on" => $general->getDateTime()
+                ));
             }
             $db = $db->where('temp_sample_id', $id[$i]);
             $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
