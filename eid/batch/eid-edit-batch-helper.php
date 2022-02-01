@@ -3,7 +3,7 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-#require_once('../../startup.php');
+
 $general = new \Vlsm\Models\General();
 
 $tableName1 = "batch_details";

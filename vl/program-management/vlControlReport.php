@@ -1,6 +1,6 @@
 <?php
 $title = "VL Control Report";
-#require_once('../../startup.php'); 
+ 
 include_once(APPLICATION_PATH . '/header.php');
 $sQuery = "SELECT * FROM r_sample_controls where r_sample_control_name!='s'";
 $sResult = $db->rawQuery($sQuery);

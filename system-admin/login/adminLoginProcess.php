@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-#require_once('../../startup.php');  
+  
 $tableName= "system_admin";
 $adminUsername = trim($_POST['username']);
 $adminPassword = trim($_POST['password']);

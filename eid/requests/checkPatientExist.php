@@ -1,5 +1,5 @@
 <?php
-#require_once('../../startup.php');  
+  
 
 $general=new \Vlsm\Models\General();
 $artNo=$_POST['artPatientNo'];

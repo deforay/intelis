@@ -1,5 +1,5 @@
 <?php
-#require_once('../../startup.php');
+
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);

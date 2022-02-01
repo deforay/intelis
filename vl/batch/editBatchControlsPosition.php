@@ -3,7 +3,7 @@ ob_start();
 
 $title = "Edit Batch Position";
 
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {

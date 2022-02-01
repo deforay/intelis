@@ -1,5 +1,5 @@
 <?php
-#require_once('../../startup.php');  
+  
 
 $tableName="facility_details";
 $primaryKey="facility_id";

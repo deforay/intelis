@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "Enter EID Result";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 
 $id = base64_decode($_GET['id']);

@@ -368,7 +368,7 @@ try {
 			$payload = array(
 				'status' => '0',
 				'timestamp' => time(),
-				'message' => 'This record already have updated.'
+				'message' => 'This record has already been updated.'
 			);
 			http_response_code(304);
 		}
@@ -395,6 +395,7 @@ try {
 		} else {
 			$_SESSION['alertMsg'] = _("Please try again later");
 		}
+		error_log($db->getLastError());
 		header("location:/covid-19/requests/covid-19-requests.php");
 	}
 } catch (Exception $exc) {

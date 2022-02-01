@@ -2,7 +2,7 @@
 
 $title = "Manage Batch";
 
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 ?>
 <!-- Content Wrapper. Contains page content -->

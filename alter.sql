@@ -2877,3 +2877,10 @@ ALTER TABLE `form_covid19` CHANGE `investogator_name` `investigator_name` TEXT C
 
 -- Amit 29 Jan 2022
 ALTER TABLE `user_details` CHANGE `role_id` `role_id` INT NULL DEFAULT NULL;
+
+-- Amit 31 Jan 2022
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+VALUES 
+('Generate Patient Code', 'covid19_generate_patient_code', 'no', 'covid19', 'no', NULL, NULL, 'active'), 
+('Patient Code Prefix', 'covid19_patient_code_prefix', 'P', 'covid19', 'yes', NULL, NULL, 'active'); 
+

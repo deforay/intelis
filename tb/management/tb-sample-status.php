@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 $title = "TB | Sample Status Report";
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php

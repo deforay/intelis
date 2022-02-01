@@ -1,6 +1,6 @@
 <?php
 $title = _("Enter Covid-19 Result");
-#require_once('../../startup.php');
+
 include_once(APPLICATION_PATH . '/header.php');
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
