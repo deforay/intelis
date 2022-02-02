@@ -4,7 +4,6 @@
 
 $tableName = "temp_sample_import";
 $tableName1 = "eid_form";
-$tableName2 = "hold_sample_import";
 $fileName = null;
 $importedBy = $_SESSION['userId'];
 
@@ -86,7 +85,6 @@ try {
 
                 $data = array(
                     'result_reviewed_by' => $_POST['reviewedBy'],
-                    'eid_test_platform' => $rResult[0]['vl_test_platform'],
                     'import_machine_name' => $rResult[0]['import_machine_name'],
                     'approver_comments' => $comments,
                     'lot_number' => $rResult[0]['lot_number'],
@@ -104,12 +102,14 @@ try {
                     $data['sample_code'] = $rResult[0]['sample_code'];
                     $data['batch_code'] = $rResult[0]['batch_code'];
                     $data['sample_type'] = $rResult[0]['sample_type'];
+                    $data['vl_test_platform'] = $rResult[0]['vl_test_platform'];
                     //$data['last_modified_by']=$rResult[0]['result_reviewed_by'];
                     //$data['last_modified_datetime']=$general->getDateTime();
                     $data['status'] = $status[$i];
                     $data['import_batch_tracking'] = $_SESSION['controllertrack'];
-                    $result = $db->insert($tableName2, $data);
+                    $result = $db->insert('hold_sample_import', $data);
                 } else {
+                    $data['eid_test_platform'] = $rResult[0]['vl_test_platform'];
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult[0]['sample_tested_datetime'];
                     //$data['request_created_by'] = $rResult[0]['result_reviewed_by'];
