@@ -105,7 +105,7 @@ try {
                 $result = 'negative';
             } else if (strtolower($rowData[$resultCol]) == 'p') {
                 $result = 'positive';
-            } else if (strtolower($rowData[$resultCol]) == 'pr' || strtolower($rowData[$resultCol]) == 'er') {
+            } else if (empty($rowData[$resultCol]) || strtolower($rowData[$resultCol]) == 'pr' || strtolower($rowData[$resultCol]) == 'er') {
                 $result = null;
                 $hold = true;
             }

@@ -26,10 +26,10 @@ try {
     $fileName = str_replace(" ", "-", $fileName);
     $ranNumber = str_pad(rand(0, pow(10, 6) - 1), 6, '0', STR_PAD_LEFT);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    if(!in_array($extension,$allowedExtensions)){
+    if (!in_array($extension, $allowedExtensions)) {
         throw new Exception("Invalid file format.");
     }
-    
+
     $fileName = $ranNumber . "." . $extension;
 
     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result")) {
@@ -89,7 +89,7 @@ try {
             }
         }
 
-        
+
         // echo "<pre>";var_dump($infoFromFile);echo "</pre>";
         // die;
         $inc = 0;
@@ -106,8 +106,12 @@ try {
                 'sample_type' => 'S',
                 'result_status' => '6',
                 'import_machine_file_name' => $fileName,
-                'result' => $d['result'],
+                'result' => trim($d['result']),
             );
+
+            if (empty($data['result'])) {
+                $data['result_status'] = '1'; // 1= Hold
+            }
 
             if (empty($batchCode)) {
                 $data['batch_code'] = $newBatchCode;
@@ -128,7 +132,7 @@ try {
                 if ($vlResult[0]['result'] != null && !empty($vlResult[0]['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 } else {
-                    $data['result_status'] = '7';
+                    $data['result_status'] = '1'; // 1= Hold
                 }
                 $data['facility_id'] = $vlResult[0]['facility_id'];
             } else {
@@ -163,10 +167,9 @@ try {
     }
     header("location:/import-result/imported-results.php");
 } catch (Exception $exc) {
-    
+
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
     $_SESSION['alertMsg'] = "Result file could not be imported. Please check if the file is of correct format.";
     header("location:/import-result/addImportResult.php?t=" . base64_encode('covid19'));
-    
 }
