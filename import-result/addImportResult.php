@@ -15,15 +15,15 @@ $fQuery = "SELECT * FROM facility_details WHERE facility_type=2";
 $fResult = $db->rawQuery($fQuery);
 
 if ($type == 'vl') {
-	$lastQuery = "SELECT lab_id FROM vl_request_form ORDER BY vl_sample_id DESC LIMIT 1";
+	$lastQuery = "SELECT lab_id FROM vl_request_form WHERE lab_id is not NULL ORDER BY vl_sample_id DESC LIMIT 1";
 } else if ($type == 'eid') {
-	$lastQuery = "SELECT lab_id FROM eid_form ORDER BY eid_id DESC LIMIT 1";
+	$lastQuery = "SELECT lab_id FROM eid_form WHERE lab_id is not NULL ORDER BY eid_id DESC LIMIT 1";
 } else if ($type == 'covid19') {
-	$lastQuery = "SELECT lab_id FROM form_covid19 ORDER BY covid19_id DESC LIMIT 1";
+	$lastQuery = "SELECT lab_id FROM form_covid19 WHERE lab_id is not NULL ORDER BY covid19_id DESC LIMIT 1";
 } else if ($type == 'hepatitis') {
-	$lastQuery = "SELECT lab_id FROM form_hepatitis ORDER BY hepatitis_id DESC LIMIT 1";
+	$lastQuery = "SELECT lab_id FROM form_hepatitis WHERE lab_id is not NULL ORDER BY hepatitis_id DESC LIMIT 1";
 } else if ($type == 'tb') {
-	$lastQuery = "SELECT lab_id FROM form_tb ORDER BY tb_id DESC LIMIT 1";
+	$lastQuery = "SELECT lab_id FROM form_tb WHERE lab_id is not NULL ORDER BY tb_id DESC LIMIT 1";
 }
 
 $lastResult = $db->rawQueryOne($lastQuery);

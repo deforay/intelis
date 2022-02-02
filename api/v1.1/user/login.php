@@ -1,5 +1,5 @@
 <?php
-
+session_unset(); // no need of session in json response
 header('Content-Type: application/json');
 
 $general = new \Vlsm\Models\General();

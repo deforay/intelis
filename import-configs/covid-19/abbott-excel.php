@@ -185,7 +185,7 @@ try {
             $query = "select facility_id,covid19_id,result from form_covid19 where sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             //insert sample controls
-            $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
+            $scQuery = "SELECT r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if ($scResult == false) {
                 $scData = array('r_sample_control_name' => trim($d['sampleType']));
