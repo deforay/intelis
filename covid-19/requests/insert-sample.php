@@ -72,12 +72,26 @@ try {
         $covid19Data['result_status'] = 6;
     }
 
-    //saving this patient into patients table
-    if (!empty($_POST['patientCodeKey']) && !empty($_POST['patientCodePrefix'])) {
-        $patientData['patientCodePrefix'] = $_POST['patientCodePrefix'];
-        $patientData['patientCodeKey'] = $_POST['patientCodeKey'];
+
+    $generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
+    if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
+        $patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
+        if (empty($patientCodePrefix)) $patientCodePrefix = 'P';
+        $generateAutomatedPatientCode = true;
+        $patientCodeJson = $patientsModel->generatePatientId($patientCodePrefix);
+        $patientCodeArray = json_decode($patientCodeJson, true);
+    } else {
+        $generateAutomatedPatientCode = false;
     }
-    $patientData['patientId'] = $_POST['patientId'];
+
+    $patientCode = $_POST['patientId'];
+    //saving this patient into patients table
+    if (!empty($patientCodeArray['patientCodeKey'])) {
+        $patientData['patientCodePrefix'] = $patientCodePrefix;
+        $patientData['patientCodeKey'] = $patientCodeArray['patientCodeKey'];
+        $patientCode = $patientCodeArray['patientCode'];
+    }
+    $patientData['patientId'] = $patientCode;
     $patientData['patientFirstName'] = $_POST['firstName'];
     $patientData['patientLastName'] = $_POST['lastName'];
     $patientData['patientGender'] = $_POST['patientGender'];
@@ -85,7 +99,7 @@ try {
     $patientsModel->savePatient($patientData);
 
 
-    $covid19Data['patient_id'] = $_POST['patientId'];
+    $covid19Data['patient_id'] = $patientCode;
 
     // echo "<pre>";
     // print_r($covid19Data);die;

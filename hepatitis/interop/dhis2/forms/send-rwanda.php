@@ -4,8 +4,8 @@
 
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
-$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_sent_to_source LIKE 'pending'";
-//$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7" ;// AND result_sent_to_source NOT LIKE 'sent'";
+//$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7 AND result_sent_to_source NOT LIKE 'sent'";
+$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7";// AND result_sent_to_source NOT LIKE 'sent'";
 $formResults = $db->rawQuery($query);
 //var_dump($formResults);die;
 $counter = 0;
@@ -110,9 +110,9 @@ foreach ($formResults as $row) {
       // echo "</pre>";
 
       $response = $dhis2->post("/api/33/events/", $payload);
-      // echo "<br><br><pre>";
-      // var_dump($response);
-      // echo "</pre>";
+      echo "<br><br><pre>";
+      var_dump($response);
+      echo "</pre>";
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {
@@ -127,9 +127,9 @@ foreach ($formResults as $row) {
         $urlParams[] = "strategy=UPDATE";
         $urlParams[] = "importStrategy=CREATE_AND_UPDATE";
         $response = $dhis2->post("/api/33/events/", $payload, $urlParams);
-        // echo "<br><br><pre>";
-        // echo ($response);
-        // echo "</pre>";
+        echo "<br><br><pre>";
+        echo ($response);
+        echo "</pre>";
       }
     }
   }

@@ -22,7 +22,7 @@ class Patients
     public function generatePatientId($prefix)
     {
         $this->db->where("patient_code_prefix", $prefix);
-        $this->db->orderBy("patient_id", "DESC");
+        $this->db->orderBy("patient_code_key", "DESC");
         $res = $this->db->getOne($this->table, array("patient_code_key"));
 
         if ($res) {
