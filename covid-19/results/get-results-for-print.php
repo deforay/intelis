@@ -407,7 +407,7 @@ foreach ($rResult as $aRow) {
     $row = array();
     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
         $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['covid19_id'] . '"  value="' . $aRow['covid19_id'] . '" onclick="checkedRow(this);"  />';
-        $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="View" onclick="resultPDF(' . $aRow['covid19_id'] . ',\'\');"><i class="fa fa-print"> Print</i></a>';
+        $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Print").'" onclick="resultPDF(' . $aRow['covid19_id'] . ',\'\');"><i class="fa fa-print"> '. _("Print").'</i></a>';
     }
 
     $patientFname = $general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']);

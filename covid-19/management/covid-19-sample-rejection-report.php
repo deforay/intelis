@@ -89,7 +89,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <script>
   $(function() {
     $("#clinicName").select2({
-      placeholder: "<?php echo _('Select Clinics');?>"
+      placeholder: "<?php echo _("Select Clinics");?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -141,7 +141,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert('<?php echo _("Unable to generate excel");?>.');
+          alert("<?php echo _("Unable to generate excel");?>.");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;

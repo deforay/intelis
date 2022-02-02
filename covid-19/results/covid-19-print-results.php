@@ -315,7 +315,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
     var opTable = null;
     $(document).ready(function() {
         $("#facility,#printFacility").select2({
-            placeholder: "<?php echo _('Select Facilities');?>"
+            placeholder: "<?php echo _("Select Facilities");?>"
         });
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
                 locale: {
@@ -631,7 +631,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
             function(data) {
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
-                    alert('<?php echo _("Unable to generate download");?>');
+                    alert("<?php echo _("Unable to generate download");?>");
                 } else {
                     $.unblockUI();
                     oTable.fnDraw();
@@ -659,11 +659,11 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
         }
         if (rowsLength != 0 && rowsLength > 100) {
             $.unblockUI();
-            alert("<?php echo _('You have selected');?> " + rowsLength + " <?php echo _('results out of the maximum allowed 100 at a time');?>");
+            alert("<?php echo _("You have selected");?> " + rowsLength + " <?php echo _("results out of the maximum allowed 100 at a time");?>");
             return false;
         } else if (totalCount != 0 && totalCount > 100 && rowsLength == 0) {
             $.unblockUI();
-            alert("<?php echo _('Maximum 100 results allowed to print at a time');?>");
+            alert("<?php echo _("Maximum 100 results allowed to print at a time");?>");
             return false;
         } else {
             id = checkedRow;
@@ -676,7 +676,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
             function(data) {
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
-                    alert('<?php echo _("Unable to generate download");?>');
+                    alert("<?php echo _("Unable to generate download");?>");
                 } else {
                     $.unblockUI();
                     if (newData == null) {

@@ -77,8 +77,8 @@ $lastResult = $db->rawQueryOne($lastQuery);
 												<div class="form-group">
 													<label for="machineName" class="col-lg-4 control-label"><?php echo _("Configuration Name"); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<select name="machineName" id="machineName" class="form-control isRequired" title="Please select the import machine type" onchange="getConfigMachineName();">
-															<option value=""> -- Select -- </option>
+														<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _('Please select the import machine type');?>" onchange="getConfigMachineName();">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php foreach ($iResult as $val) { ?>
 																<option value="<?php echo base64_encode($val['import_machine_file_name']); ?>"><?php echo ucwords($val['machine_name']); ?></option>
 															<?php } ?>
@@ -92,8 +92,8 @@ $lastResult = $db->rawQueryOne($lastQuery);
 												<div class="form-group">
 													<label for="machineName" class="col-lg-4 control-label"><?php echo _("Configuration Machine Name"); ?></label>
 													<div class="col-lg-7">
-														<select name="configMachineName" id="configMachineName" class="form-control" title="Please select the import config machine name">
-															<option value=""> -- Select -- </option>
+														<select name="configMachineName" id="configMachineName" class="form-control" title="<?php echo _('Please select the import config machine name');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 														</select>
 													</div>
 												</div>
@@ -104,7 +104,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 												<div class="form-group">
 													<label class="col-lg-4 control-label"><?php echo _("Upload"); ?> <?= strtoupper($type); ?> <?php echo _("File"); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="file" class="isRequired" accept=".xls,.xlsx,.csv,.txt" name="resultFile" id="resultFile" title="Please choose result file">
+														<input type="file" class="isRequired" accept=".xls,.xlsx,.csv,.txt" name="resultFile" id="resultFile" title="<?php echo _('Please choose result file');?>">
 														<?php echo _("(Upload xls, xlsx, csv, txt format)"); ?>
 													</div>
 												</div>
@@ -122,8 +122,8 @@ $lastResult = $db->rawQueryOne($lastQuery);
 												<div class="form-group">
 													<label for="labId" class="col-lg-4 control-label"><?php echo _("Lab Name"); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<select name="labId" id="labId" class="form-control isRequired" title="Please select the lab name">
-															<option value=""> -- Select -- </option>
+														<select name="labId" id="labId" class="form-control isRequired" title="<?php echo _('Please select the lab name');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($fResult as $val) {
 															?>

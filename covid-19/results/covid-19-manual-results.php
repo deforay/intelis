@@ -197,7 +197,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	var oTable = null;
 	$(document).ready(function() {
 		$("#facilityName").select2({
-			placeholder: "<?php echo _('Select Facilities');?>"
+			placeholder: "<?php echo _("Select Facilities");?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {

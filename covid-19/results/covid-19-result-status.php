@@ -203,7 +203,7 @@ foreach ($rejectionTypeResult as $type) {
   var selectedTestsId = [];
   $(document).ready(function() {
     $("#facilityName").select2({
-      placeholder: "<?php echo _('Select Facilities');?>"
+      placeholder: "<?php echo _("Select Facilities");?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -389,7 +389,7 @@ foreach ($rejectionTypeResult as $type) {
     var stValue = $("#status").val();
     var testIds = $("#checkedTests").val();
     if (stValue != '' && testIds != '') {
-      conf = confirm("<?php echo _('Do you wish to change the test status ?');?>");
+      conf = confirm("<?php echo _("Do you wish to change the test status ?");?>");
       if (conf) {
         $.post("/covid-19/results/update-status.php", {
             status: stValue,
@@ -407,18 +407,18 @@ foreach ($rejectionTypeResult as $type) {
               $("#bulkRejectionReason").val('');
               $(".bulkRejectionReason").hide();
               oTable.fnDraw();
-              alert('<?php echo _("Updated successfully.");?>');
+              alert("<?php echo _("Updated successfully.");?>");
             }
           });
       }
     } else {
-      alert("<?php echo _('Please be checked atleast one checkbox.');?>");
+      alert("<?php echo _("Please be checked atleast one checkbox.");?>");
     }
   }
 
   function updateStatus(obj, optVal) {
     if (obj.value == '4') {
-      var confrm = confirm("<?php echo _('Do you wish to overwrite this result?');?>");
+      var confrm = confirm("<?php echo _("Do you wish to overwrite this result?");?>");
       if (confrm) {
         var pos = $("#" + obj.id).offset();
         $("#rejectReasonDiv").show();
@@ -438,7 +438,7 @@ foreach ($rejectionTypeResult as $type) {
       $("#rejectReasonDiv").hide();
     }
     if (obj.value != '') {
-      conf = confirm("<?php echo _('Do you wish to change the status ?');?>");
+      conf = confirm("<?php echo _("Do you wish to change the status ?");?>");
       if (conf) {
         $.post("/covid-19/results/update-status.php", {
             status: obj.value,
@@ -453,7 +453,7 @@ foreach ($rejectionTypeResult as $type) {
               $("#status").val('');
               $("#status").prop('disabled', true);
               oTable.fnDraw();
-              alert('<?php echo _("Updated successfully.");?>');
+              alert("<?php echo _("Updated successfully.");?>");
             }
           });
       } else {
@@ -464,7 +464,7 @@ foreach ($rejectionTypeResult as $type) {
 
   function updateRejectionReasonStatus(obj) {
     if (obj.value != '') {
-      conf = confirm("<?php echo _('Do you wish to change the status ?');?>");
+      conf = confirm("<?php echo _("Do you wish to change the status ?");?>");
       if (conf) {
         $.post("/covid-19/results/update-status.php", {
             status: '4',
@@ -483,7 +483,7 @@ foreach ($rejectionTypeResult as $type) {
               $("#statusDropDownId").val('');
               $("#rejectionReason").val('');
               oTable.fnDraw();
-              alert('<?php echo _("Updated successfully.");?>');
+              alert("<?php echo _("Updated successfully.");?>");
             }
           });
       } else {

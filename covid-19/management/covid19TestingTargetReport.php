@@ -248,7 +248,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   var oTable = null;
   $(document).ready(function() {
     $("#facilityName").multipleSelect({
-      placeholder: '<?php echo _("Select facility name");?>',
+      placeholder: "<?php echo _("Select facility name");?>",
       width: '100%'
     });
     $('#sampleTestDate').daterangepicker({
@@ -358,7 +358,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       },
       function(data) {
         if (data == "" || data == null || data == undefined) {
-          alert('<?php echo _("Unable to generate excel file");?>');
+          alert("<?php echo _("Unable to generate excel file");?>");
         } else {
           location.href = '/temporary/' + data;
         }

@@ -358,13 +358,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		?>
 		$("#facilityName").select2({
-			placeholder: "<?php echo _('Select Facilities'); ?>"
+			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _('Select Vl Lab'); ?>"
+			placeholder: "<?php echo _("Select Vl Lab"); ?>"
 		});
 		$("#batchCode").select2({
-			placeholder: "<?php echo _('Select Batch Code'); ?>"
+			placeholder: "<?php echo _("Select Batch Code'"); ?>"
 		});
 		loadVlRequestData();
 		$('#sampleCollectionDate').daterangepicker({
@@ -627,7 +627,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		var stValue = $("#status").val();
 		var testIds = $("#checkedTests").val();
 		if (stValue != '' && testIds != '') {
-			conf = confirm("<?php echo _('Do you wish to change the test status ?');?>");
+			conf = confirm("<?php echo _("Do you wish to change the test status ?");?>");
 			if (conf) {
 				$.post("/vl/results/updateTestStatus.php", {
 						status: stValue,
@@ -643,7 +643,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 							$("#status").val('');
 							$("#status").prop('disabled', true);
 							oTable.fnDraw();
-							alert('<?php echo _("Updated successfully."); ?>');
+							alert("<?php echo _("Updated successfully."); ?>");
 						}
 					});
 			}
@@ -661,7 +661,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			function(data) {
 				$.unblockUI();
 				if (data === "" || data === null || data === undefined) {
-					alert('<?php echo _("Unable to generate the excel file"); ?>');
+					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					location.href = '/temporary/' + data;
 				}
@@ -689,7 +689,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		function forceResultSync(sampleCode) {
 			$.blockUI({
-				message: '<h3>Trying to sync ' + sampleCode + '<br>Please wait...</h3>'
+				message: "<h3><?php echo _("Trying to sync");?> " + sampleCode + "<br><?php echo _("Please wait");?>...</h3>"
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {

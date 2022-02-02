@@ -259,7 +259,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 	var oTable = null;
 	$(document).ready(function() {
 		$("#facilityName").select2({
-			placeholder: "<?php echo _('Select Facilities');?>"
+			placeholder: "<?php echo _("Select Facilities");?>"
 		});
 
 		$('#sampleCollectionDate,#sampleTestDate,#printDate,#sampleRecievedDate').on('cancel.daterangepicker', function(ev, picker) {
@@ -452,7 +452,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 			}
 		});
 		if (flag == false) {
-			alert("<?php echo _('At Least select one filter for get report');?>");
+			alert("<?php echo _("At Least select one filter for get report");?>");
 			return false;
 		}
 		$.blockUI();
@@ -471,7 +471,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
-					alert('<?php echo _("Unable to generate download");?>');
+					alert("<?php echo _("Unable to generate download");?>");
 				} else {
 					window.open('/uploads/' + data, '_blank');
 				}
@@ -496,7 +496,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('<?php echo _("Unable to generate excel.");?>');
+					alert("<?php echo _("Unable to generate excel.");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -506,9 +506,9 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 
 	function checkSampleCollectionDate() {
 		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
-			alert("<?php echo _('Please select Sample Collection Date Range');?>");
+			alert("<?php echo _("Please select Sample Collection Date Range");?>");
 		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
-			alert("<?php echo _('Please select Sample Test Date Range');?>");
+			alert("<?php echo _("Please select Sample Test Date Range");?>");
 		}
 	}
 </script>

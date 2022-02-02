@@ -112,7 +112,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: '<?php echo _("Sample Rejection Reasons");?>'
+                text: "<?php echo _("Sample Rejection Reasons");?>"
             },
             credits: {
                 enabled: false
@@ -169,7 +169,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: '<?php echo _("Sample Rejection by Categories");?>'
+                text: "<?php echo _("Sample Rejection by Categories");?>"
             },
             credits: {
                 enabled: false

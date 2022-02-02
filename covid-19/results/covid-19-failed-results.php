@@ -202,7 +202,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         }
         ?>
         $("#facilityName").select2({
-            placeholder: "<?php echo _('Select Facilities');?>"
+            placeholder: "<?php echo _("Select Facilities");?>"
         });
         loadVlRequestData();
         $('#sampleCollectionDate').daterangepicker({
@@ -446,10 +446,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 function(data) {
                     $.unblockUI();
                     if (data > 0) {
-                        alert("<?php echo _('Retest has been submitted.');?>");
+                        alert("<?php echo _("Retest has been submitted.");?>");
                         oTable.fnDraw();
                     } else {
-                        alert("<?php echo _('Something went wrong. Please try again later');?>");
+                        alert("<?php echo _("Something went wrong. Please try again later");?>");
                     }
                 });
         }

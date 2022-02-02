@@ -405,10 +405,10 @@ $batResult = $db->rawQuery($batQuery);
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
-			placeholder: "<?php echo _('Select Facilities');?>"
+			placeholder: "<?php echo _("Select Facilities");?>"
 		});
 		$("#formField").select2({
-			placeholder: "<?php echo _('Select Fields');?>"
+			placeholder: "<?php echo _("Select Fields");?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
 				locale: {
@@ -781,14 +781,14 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function updateStatus(id, value) {
-		conf = confirm("<?php echo _('Do you wisht to change the contact completed status?');?>");
+		conf = confirm("<?php echo _("Do you wisht to change the contact completed status?");?>");
 		if (conf) {
 			$.post("/vl/program-management/updateContactCompletedStatus.php", {
 					id: id,
 					value: value
 				},
 				function(data) {
-					alert("<?php echo _('Status updated successfully');?>");
+					alert("<?php echo _("Status updated successfully");?>");
 					oTableViralLoad.fnDraw();
 				});
 		} else {
@@ -798,7 +798,7 @@ $batResult = $db->rawQuery($batQuery);
 
 	function exportHighViralLoadInexcel() {
 		var markAsComplete = false;
-		confm = confirm("<?php echo _('Do you want to mark these as complete ?');?>");
+		confm = confirm("<?php echo _("Do you want to mark these as complete ?");?>");
 		if (confm) {
 			var markAsComplete = true;
 		}
@@ -814,7 +814,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('<?php echo _("Unable to generate the excel file");?>');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -834,7 +834,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('<?php echo _("Unable to generate the excel file");?>');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -854,7 +854,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('<?php echo _("Unable to generate the excel file");?>');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -871,7 +871,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('<?php echo _("Unable to generate the excel file");?>');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
