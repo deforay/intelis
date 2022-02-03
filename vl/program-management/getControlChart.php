@@ -58,10 +58,10 @@ $sd = (isset($array) && count($array) > 0) ?  (sqrt(array_sum(array_map("sd_squa
     $(function() {
         Highcharts.chart('container', {
             title: {
-                text: 'Control Result'
+                text: "<?php echo _("Control Result");?>"
             },
             subtitle: {
-                text: 'Mean:<?php echo round($mean, 2); ?>   SD:<?php echo round($sd, 2); ?>'
+                text: "<?php echo _("Mean");?>:<?php echo round($mean, 2); ?>   <?php echo _("SD");?>:<?php echo round($sd, 2); ?>"
             },
             xAxis: {
                 categories: [<?php
@@ -75,7 +75,7 @@ $sd = (isset($array) && count($array) > 0) ?  (sqrt(array_sum(array_map("sd_squa
                 min: <?php echo round($mean - ($sd * 3), 2); ?>,
                 max: <?php echo round($mean + ($sd * 3), 2); ?>,
                 title: {
-                    text: 'Control Result'
+                    text: "<?php echo _("Control Result");?>"
                 },
 
                 plotLines: [{

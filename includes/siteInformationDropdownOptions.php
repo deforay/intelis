@@ -15,9 +15,9 @@ $sarr = $general->getSystemConfig();
 
 
 if ($arr['vl_form'] == '3') {
-	$option = "<option value=''> -- Sélectionner -- </option>";
+	$option = '<option value=""> -- Sélectionner -- </option>';
 } else {
-	$option = "<option value=''> -- Select -- </option>";
+	$option = '<option value=""> '. _("-- Select --").' </option>';
 }
 
 if (isset($_POST['testType']) && !empty($_POST['testType'])) {

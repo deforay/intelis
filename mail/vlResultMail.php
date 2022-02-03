@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$title = "Email VL Test Results";
+$title = _("Email VL Test Results");
 #require_once('../startup.php');
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -41,10 +41,10 @@ $batchResult = $db->rawQuery($batchQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1 class="fa fa-envelope"> E-mail Test Result</h1>
+    <h1 class="fa fa-envelope"> <?php echo _("E-mail Test Result");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">E-mail Test Result</li>
+      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("E-mail Test Result");?></li>
     </ol>
   </section>
 
@@ -53,7 +53,7 @@ $batchResult = $db->rawQuery($batchQuery);
 
     <div class="box box-default">
       <div class="box-header with-border">
-        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
@@ -63,9 +63,9 @@ $batchResult = $db->rawQuery($batchQuery);
             <div class="row">
               <div class="col-md-9">
                 <div class="form-group">
-                  <label for="subject" class="col-lg-3 control-label">Subject <span class="mandatory">*</span></label>
+                  <label for="subject" class="col-lg-3 control-label"><?php echo _("Subject");?> <span class="mandatory">*</span></label>
                   <div class="col-lg-9">
-                    <input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="Subject" title="Please enter subject" value="Viral Load Test Results" />
+                    <input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _('Subject');?>" title="<?php echo _('Please enter subject');?>" value="Viral Load Test Results" />
                   </div>
                 </div>
               </div>
@@ -73,9 +73,9 @@ $batchResult = $db->rawQuery($batchQuery);
             <div class="row">
               <div class="col-md-9">
                 <div class="form-group">
-                  <label for="facility" class="col-lg-3 control-label">Facility Name (To)<span class="mandatory">*</span></label>
+                  <label for="facility" class="col-lg-3 control-label"><?php echo _("Facility Name (To)");?><span class="mandatory">*</span></label>
                   <div class="col-lg-9">
-                    <select class="form-control isRequired" id="facility" name="facility" title="Please select facility name">
+                    <select class="form-control isRequired" id="facility" name="facility" title="<?php echo _('Please select facility name');?>">
                       <option></option>
                       <?php
                       foreach ($facilityResult as $facility) { ?>
@@ -93,9 +93,9 @@ $batchResult = $db->rawQuery($batchQuery);
             <div class="row">
               <div class="col-md-9">
                 <div class="form-group">
-                  <label for="message" class="col-lg-3 control-label">Message <span class="mandatory">*</span></label>
+                  <label for="message" class="col-lg-3 control-label"><?php echo _("Message");?> <span class="mandatory">*</span></label>
                   <div class="col-lg-9">
-                    <textarea id="message" name="message" class="form-control isRequired" row="6" placeholder="Message" title="Please enter message"></textarea>
+                    <textarea id="message" name="message" class="form-control isRequired" row="6" placeholder="<?php echo _('Message');?>" title="<?php echo _('Please enter message');?>"></textarea>
                   </div>
                 </div>
               </div>
@@ -105,17 +105,17 @@ $batchResult = $db->rawQuery($batchQuery);
                 <br>
                 <br>
                 <br>
-                <h4>Please use the following to filter the samples you wish to email</h4>
+                <h4><?php echo _("Please use the following to filter the samples you wish to email");?></h4>
                 <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
                   <tr>
-                    <td>&nbsp;<b>Sample Collection Date&nbsp;:</b></td>
+                    <td>&nbsp;<b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
                     <td>
-                      <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
+                      <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:275px;background:#fff;" />
                     </td>
-                    <td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+                    <td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
                     <td>
-                      <select class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
-                        <option value=""> -- Select -- </option>
+                      <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
+                        <option value=""> <?php echo _("-- Select --");?> </option>
                         <?php
                         foreach ($sTypeResult as $type) {
                         ?>
@@ -127,39 +127,39 @@ $batchResult = $db->rawQuery($batchQuery);
                     </td>
                   </tr>
                   <tr>
-                    <td>&nbsp;<b>Facility Name&nbsp;:</b></td>
+                    <td>&nbsp;<b><?php echo _("Facility Name");?>&nbsp;:</b></td>
                     <td>
-                      <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name">
+                      <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>">
                         <?= $facilitiesDropdown; ?>
                       </select>
                     </td>
                     <td><b>Gender&nbsp;:</b></td>
                     <td>
                       <select name="gender" id="gender" class="form-control" title="Please choose gender" onchange="enablePregnant(this);">
-                        <option value=""> -- Select -- </option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="not_recorded">Not Recorded</option>
+                        <option value=""> <?php echo _("-- Select --");?> </option>
+                        <option value="male"><?php echo _("Male");?></option>
+                        <option value="female"><?php echo _("Female");?></option>
+                        <option value="not_recorded"><?php echo _("Not Recorded");?></option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td><b class="showPregnant">Pregnant&nbsp;:</b></td>
+                    <td><b class="showPregnant"><?php echo _("Pregnant");?>&nbsp;:</b></td>
                     <td>
-                      <input type="radio" name="pregnant" title="Please choose type" class="pregnant showPregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;Yes
-                      <input type="radio" name="pregnant" title="Please choose type" class="pregnant showPregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;No
+                      <input type="radio" name="pregnant" title="<?php echo _('Please choose type');?>" class="pregnant showPregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;<?php echo _("Yes");?>
+                      <input type="radio" name="pregnant" title="<?php echo _('Please choose type');?>" class="pregnant showPregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;<?php echo _("No");?>
                     </td>
-                    <td class=""><b>Urgency&nbsp;:</b></td>
+                    <td class=""><b><?php echo _("Urgency");?>&nbsp;:</b></td>
                     <td class="">
-                      <input type="radio" name="urgency" title="Please choose urgency type" class="urgent" id="urgentYes" value="normal" />&nbsp;&nbsp;Normal
-                      <input type="radio" name="urgency" title="Please choose urgency type" class="urgent" id="urgentYes" value="urgent" />&nbsp;&nbsp;Urgent
+                      <input type="radio" name="urgency" title="<?php echo _('Please choose urgency type');?>" class="urgent" id="urgentYes" value="normal" />&nbsp;&nbsp;<?php echo _("Normal");?>
+                      <input type="radio" name="urgency" title="<?php echo _('Please choose urgency type');?>" class="urgent" id="urgentYes" value="urgent" />&nbsp;&nbsp;<?php echo _("Urgent");?>
                     </td>
                   </tr>
                   <tr>
-                    <td>&nbsp;<b>Province/State &nbsp;:</b></td>
+                    <td>&nbsp;<b><?php echo _("Province/State");?> &nbsp;:</b></td>
                     <td>
-                      <select name="state" id="state" class="form-control" title="Please choose province/state" onchange="getProvinceDistricts();" style="width:275px;">
-                        <option value=""> -- Select -- </option>
+                      <select name="state" id="state" class="form-control" title="<?php echo _('Please choose province/state');?>" onchange="getProvinceDistricts();" style="width:275px;">
+                        <option value=""> <?php echo _("-- Select --");?> </option>
                         <?php
                         foreach ($pdResult as $province) {
                         ?>
@@ -167,18 +167,18 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php } ?>
                       </select>
                     </td>
-                    <td>&nbsp;<b>District/County&nbsp;:</b></td>
+                    <td>&nbsp;<b><?php echo _("District/County");?>&nbsp;:</b></td>
                     <td>
-                      <select name="district" id="district" class="form-control" title="Please choose district/county">
-                        <option value=""> -- Select -- </option>
+                      <select name="district" id="district" class="form-control" title="<?php echo _('Please choose district/county');?>">
+                        <option value=""> <?php echo _("-- Select --");?> </option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td class=""><b>Batch&nbsp;:</b></td>
+                    <td class=""><b><?php echo _("Batch");?>&nbsp;:</b></td>
                     <td>
-                      <select name="batch" id="batch" class="form-control" title="Please choose batch" style="width:275px;" multiple="multiple">
-                        <option value=""> -- Select -- </option>
+                      <select name="batch" id="batch" class="form-control" title="<?php echo _('Please choose batch');?>" style="width:275px;" multiple="multiple">
+                        <option value=""> <?php echo _("-- Select --");?> </option>
                         <?php
                         foreach ($batchResult as $batch) {
                         ?>
@@ -186,30 +186,30 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php } ?>
                       </select>
                     </td>
-                    <td class=""><b>Sample Status&nbsp;:</b></td>
+                    <td class=""><b><?php echo _("Sample Status");?>&nbsp;:</b></td>
                     <td>
-                      <select name="sampleStatus" id="sampleStatus" class="form-control" title="Please choose sample status">
-                        <option value=""> -- Select -- </option>
-                        <option value="7">Accepted</option>
-                        <option value="4">Rejected</option>
+                      <select name="sampleStatus" id="sampleStatus" class="form-control" title="<?php echo _('Please choose sample status');?>">
+                        <option value=""> <?php echo _("-- Select --");?> </option>
+                        <option value="7"><?php echo _("Accepted");?></option>
+                        <option value="4"><?php echo _("Rejected");?></option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td class=""><b>Mail Sent Status&nbsp;:</b></td>
+                    <td class=""><b><?php echo _("Mail Sent Status");?>&nbsp;:</b></td>
                     <td>
-                      <select name="sampleMailSentStatus" id="sampleMailSentStatus" class="form-control" title="Please choose sample mail sent status" style="width:275px;">
-                        <option value="no">Samples Not yet Mailed</option>
-                        <option value="">All Samples</option>
-                        <option value="yes">Already Mailed Samples</option>
+                      <select name="sampleMailSentStatus" id="sampleMailSentStatus" class="form-control" title="<?php echo _('Please choose sample mail sent status');?>" style="width:275px;">
+                        <option value="no"><?php echo _("Samples Not yet Mailed");?></option>
+                        <option value=""><?php echo _("All Samples");?></option>
+                        <option value="yes"><?php echo _("Already Mailed Samples");?></option>
                       </select>
                     </td>
                     <td></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td colspan="4" style="text-align:center;">&nbsp;<input type="button" class="btn btn-success btn-sm" onclick="getSampleDetails();" value="Search" />
-                      &nbsp;<input type="button" class="btn btn-danger btn-sm" value="Reset" onclick="document.location.href = document.location;" />
+                    <td colspan="4" style="text-align:center;">&nbsp;<input type="button" class="btn btn-success btn-sm" onclick="getSampleDetails();" value="<?php echo _('Search');?>" />
+                      &nbsp;<input type="button" class="btn btn-danger btn-sm" value="<?php echo _('Reset');?>" onclick="document.location.href = document.location;" />
                     </td>
                   </tr>
                 </table>
@@ -217,17 +217,17 @@ $batchResult = $db->rawQuery($batchQuery);
             </div>
             <div class="row">
               <div class="col-md-4"></div>
-              <div class="col-md-8"><b>Please select maximum 100 samples</b></div>
+              <div class="col-md-8"><b><?php echo _("Please select maximum 100 samples");?></b></div>
             </div>
             <div class="row" id="sampleDetails">
               <div class="col-md-9">
                 <div class="form-group">
-                  <label for="sample" class="col-lg-3 control-label">Choose Sample(s) <span class="mandatory">*</span></label>
+                  <label for="sample" class="col-lg-3 control-label"><?php echo _("Choose Sample(s)");?> <span class="mandatory">*</span></label>
                   <div class="col-lg-9">
                     <div style="width:100%;margin:0 auto;clear:both;">
-                      <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+                      <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
                     </div><br /><br />
-                    <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="Please select sample(s)"></select>
+                    <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="<?php echo _('Please select sample(s)');?>"></select>
                   </div>
                 </div>
               </div>
@@ -245,8 +245,8 @@ $batchResult = $db->rawQuery($batchQuery);
             <input type="hidden" id="toEmail" name="toEmail" />
             <input type="hidden" id="reportEmail" name="reportEmail" />
             <input type="hidden" name="pdfFile" id="pdfFile" />
-            <a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default"> Cancel</a>&nbsp;
-            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+            <a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default"> <?php echo _("Cancel");?></a>&nbsp;
+            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Next");?> <i class="fa fa-chevron-right" aria-hidden="true"></i></a>
           </div>
           <!-- /.box-footer -->
         </form>
@@ -269,15 +269,15 @@ $batchResult = $db->rawQuery($batchQuery);
   var endDate = "";
   let samplesData = null;
   $(document).ready(function() {
-    document.getElementById('message').value = "Hi, \nPFA the viral load test results. \n\nThanks";
+    document.getElementById('message').value = "<?php echo _("Hi");?>, \n<?php echo _("PFA the viral load test results");?>. \n\n<?php echo _("Thanks");?>";
     $('#facility').select2({
-      placeholder: "Select Facility"
+      placeholder: "<?php echo _("Select Facility");?>"
     });
     $('#facilityName').select2({
-      placeholder: "Select Facilities"
+      placeholder: "<?php echo _("Select Facilities");?>"
     });
     $('#batch').select2({
-      placeholder: "Select Batches"
+      placeholder: "<?php echo _("Select Batches");?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -304,8 +304,8 @@ $batchResult = $db->rawQuery($batchQuery);
     $('#sampleCollectionDate').val("");
 
     $('.search').multiSelect({
-      selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-      selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+      selectableHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _("Enter Sample Code");?>">',
+      selectionHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _("Enter Sample Code");?>">',
       afterInit: function(ms) {
         var that = this,
           $selectableSearch = that.$selectableUl.prev(),
@@ -332,7 +332,7 @@ $batchResult = $db->rawQuery($batchQuery);
       afterSelect: function() {
         //button disabled
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
-          $("#errorMsg").html("<b>You have selected " + this.qs2.cache().matchedResultsCount + " Samples out of the maximum allowed " + noOfAllowedSamples + " samples</b>");
+          $("#errorMsg").html("<b><?php echo _("You have selected");?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed");?> " + noOfAllowedSamples + " <?php echo _("samples");?></b>");
           $("#requestSubmit").attr("disabled", true);
           $("#requestSubmit").css("pointer-events", "none");
         }
@@ -341,7 +341,7 @@ $batchResult = $db->rawQuery($batchQuery);
       },
       afterDeselect: function() {
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
-          $("#errorMsg").html("<b>You have selected " + this.qs2.cache().matchedResultsCount + " Samples out of the maximum allowed " + noOfAllowedSamples + " samples</b>");
+          $("#errorMsg").html("<b><?php echo _("You have selected");?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed");?> " + noOfAllowedSamples + " <?php echo _("samples");?></b>");
           $("#requestSubmit").attr("disabled", true);
           $("#requestSubmit").css("pointer-events", "none");
         } else if (this.qs2.cache().matchedResultsCount <= noOfAllowedSamples) {
@@ -431,7 +431,7 @@ $batchResult = $db->rawQuery($batchQuery);
       function(data) {
         if (data === "" || data === null || data === undefined) {
           $.unblockUI();
-          alert('Cannot generate Result PDF for samples without result.');
+          alert("<?php echo _("Cannot generate Result PDF for samples without result.");?>");
         } else {
           $.blockUI();
           $("#pdfFile").val(data);
@@ -453,9 +453,9 @@ $batchResult = $db->rawQuery($batchQuery);
       var reportEmailId = $(this).find(':selected').data('report-email');
       $('#facilityName').val($(this).find(':selected').data('id')).trigger("change");
       if ($.trim(toEmailId) == '') {
-        $('.emailSection').html('No valid Email id available. Please add valid email for this facility..');
+        $('.emailSection').html("<?php echo _("No valid Email id available. Please add valid email for this facility");?>..");
       } else {
-        $('.emailSection').html('<mark>This email will be sent to the facility with an email id <strong>' + toEmailId + '</strong></mark>');
+        $('.emailSection').html("<mark><?php echo _("This email will be sent to the facility with an email id");?> <strong>" + toEmailId + "</strong></mark>");
       }
       $('#toName').val(toName);
       $('#toEmail').val(toEmailId);
@@ -477,11 +477,11 @@ $batchResult = $db->rawQuery($batchQuery);
             details = data.split("###");
             $("#district").html(details[1]);
           } else {
-            $("#district").html('<option value=""> -- Select -- </option>');
+            $("#district").html("<option value=''> <?php echo _("-- Select --");?> </option>");
           }
         });
     } else {
-      $("#district").html('<option value=""> -- Select -- </option>');
+      $("#district").html("<option value=''> <?php echo _("-- Select --");?> </option>");
     }
   }
 
