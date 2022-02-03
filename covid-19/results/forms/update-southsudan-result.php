@@ -50,11 +50,11 @@ $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
@@ -469,7 +469,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                                         <input type="text" value="<?php echo $covid19TestInfo[$indexKey]['kit_lot_no']; ?>" name="lotNo[]" id="lotNo<?php echo ($indexKey + 1); ?>" class="form-control kit-fields<?php echo ($indexKey + 1); ?>" placeholder="Kit lot no" title="Please enter the kit lot no. for row 1" style="<?php echo $display; ?>" />
                                                                     </td>
                                                                     <td class="kitlabels" style="display: none;">
-                                                                        <input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?php echo ($indexKey + 1); ?>" class="form-control date kit-fields<?php echo ($indexKey + 1); ?>" placeholder="Expiry date" title="Please enter the expiry date for row 1" style="<?php echo $display; ?>" />
+                                                                        <input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?php echo ($indexKey + 1); ?>" class="form-control expDate kit-fields<?php echo ($indexKey + 1); ?>" placeholder="Expiry date" title="Please enter the expiry date for row 1" style="<?php echo $display; ?>" />
                                                                     </td>
                                                                     <td><select class="form-control test-result test-name-table-input result-focus isRequired" name="testResult[]" id="testResult<?php echo ($indexKey + 1); ?>" title="Please select the result for row <?php echo ($indexKey + 1); ?>">
                                                                             <option value=''> -- Select -- </option>
@@ -731,6 +731,19 @@ $sampleSuggestionDisplay = 'display:none;';
             addTestRow();
         }
 
+        $('.expDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            onSelect: function() {
+                $(this).change();
+            },
+            dateFormat: 'dd-M-yy',
+            timeFormat: "hh:mm TT",
+            // minDate: "Today",
+            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
 
         $('#isResultAuthorized').change(function(e) {
             checkIsResultAuthorized();
@@ -790,7 +803,7 @@ $sampleSuggestionDisplay = 'display:none;';
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
             <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
             <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display: none;"/></td>
-            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control date kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display: none;"/></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display: none;"/></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>
@@ -827,6 +840,20 @@ $sampleSuggestionDisplay = 'display:none;';
             dateFormat: 'dd-M-yy',
             timeFormat: "hh:mm TT",
             maxDate: "Today",
+            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
+        $('.expDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            onSelect: function() {
+                $(this).change();
+            },
+            dateFormat: 'dd-M-yy',
+            timeFormat: "hh:mm TT",
+            // minDate: "Today",
             yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
