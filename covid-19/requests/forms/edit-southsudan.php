@@ -51,11 +51,11 @@ $pdQuery = "SELECT * FROM province_details";
 if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
@@ -502,7 +502,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                         </select>
                                                                     </td>
                                                                     <td class="kitlabels" style="display: none;"><input type="text" value="<?php echo $covid19TestInfo[$indexKey]['kit_lot_no']; ?>" name="lotNo[]" id="lotNo<?php echo ($indexKey + 1); ?>" class="form-control kit-fields<?php echo ($indexKey + 1); ?>" placeholder="Kit lot no" title="Please enter the kit lot no. for row 1" style="<?php echo $display; ?>" /></td>
-                                                                    <td class="kitlabels" style="display: none;"><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?php echo ($indexKey + 1); ?>" class="form-control date kit-fields<?php echo ($indexKey + 1); ?>" placeholder="Expiry date" title="Please enter the expiry date for row 1" style="<?php echo $display; ?>" /></td>
+                                                                    <td class="kitlabels" style="display: none;"><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?php echo ($indexKey + 1); ?>" class="form-control expDate kit-fields<?php echo ($indexKey + 1); ?>" placeholder="Expiry date" title="Please enter the expiry date for row 1" style="<?php echo $display; ?>" /></td>
                                                                     <td><select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?php echo ($indexKey + 1); ?>" title="Please select the result for row <?php echo ($indexKey + 1); ?>">
                                                                             <option value=''> -- Select -- </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
@@ -570,14 +570,14 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             ?>
                                             <th>Authorized By</th>
                                             <td>
-                                            <select name="authorizedBy" <?php echo $disapled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                <select name="authorizedBy" <?php echo $disapled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['authorized_by'], '-- Select --'); ?>
                                                 </select>
-                                                </td>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Authorized on</td>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On"/></td>
+                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On" /></td>
                                             <th></th>
                                             <td></td>
                                         </tr>
@@ -812,31 +812,45 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
     $(document).ready(function() {
         $("#sampleCollectionDate").datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               onSelect: function(date) {
-                    var dt2 = $('#sampleDispatchedDate');
-                    var startDate = $(this).datetimepicker('getDate');
-                    var minDate = $(this).datetimepicker('getDate');
-                    dt2.datetimepicker('setDate', minDate);
-                    startDate.setDate(startDate.getDate() + 1000000);
-                    //sets dt2 maxDate to the last day of 30 days window
-                    dt2.datetimepicker('option', 'maxDate', startDate);
-                    dt2.datetimepicker('option', 'minDate', minDate);
-                    dt2.datetimepicker('option', 'minDateTime', minDate);
-               }
-          });
-          $('#sampleDispatchedDate').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               minDate: "Today",
-               yearRange:"-100:+100",
-          });
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                //sets dt2 maxDate to the last day of 30 days window
+                dt2.datetimepicker('option', 'maxDate', startDate);
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+            }
+        });
+        $('#sampleDispatchedDate').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            minDate: "Today",
+            yearRange: "-100:+100",
+        });
+
+        $('.expDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            onSelect: function() {
+                $(this).change();
+            },
+            dateFormat: 'dd-M-yy',
+            timeFormat: "hh:mm TT",
+            // minDate: "Today",
+            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
         $(".select2").select2();
         $(".select2").select2({
             tags: true
@@ -928,7 +942,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
             <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
             <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
-            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control date kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>
@@ -965,6 +979,20 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             dateFormat: 'dd-M-yy',
             timeFormat: "hh:mm TT",
             maxDate: "Today",
+            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
+        $('.expDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            onSelect: function() {
+                $(this).change();
+            },
+            dateFormat: 'dd-M-yy',
+            timeFormat: "hh:mm TT",
+            // minDate: "Today",
             yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
