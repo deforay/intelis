@@ -164,7 +164,7 @@ try {
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);
     if ($id > 0) {
-        $_SESSION['alertMsg'] = "VL request updated successfully";
+        $_SESSION['alertMsg'] = _("VL request updated successfully");
         //Log result updates
         $data = array(
             'user_id' => $_SESSION['userId'],
@@ -175,7 +175,7 @@ try {
         $db->insert($tableName2, $data);
         header("location:vlTestResult.php");
     } else {
-        $_SESSION['alertMsg'] = "Please try again later";
+        $_SESSION['alertMsg'] = _("Please try again later");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

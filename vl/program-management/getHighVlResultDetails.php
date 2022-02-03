@@ -234,9 +234,9 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['labName'];
     $row[] = $aRow['result'];
     $row[] = '<select class="form-control" name="status" id=' . $aRow['vl_sample_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
-                            <option value=""> -- Select -- </option>
-                            <option value="yes" ' . ($aRow['contact_complete_status'] == "yes" ? "selected=selected" : "") . '>Yes</option>
-                            <option value="no" ' . ($aRow['contact_complete_status'] == "no" ? "selected=selected" : "") . '>No</option>
+                            <option value=""> '. _("-- Select --").' </option>
+                            <option value="yes" ' . ($aRow['contact_complete_status'] == "yes" ? "selected=selected" : "") . '>'. _("Yes").'</option>
+                            <option value="no" ' . ($aRow['contact_complete_status'] == "no" ? "selected=selected" : "") . '>'. _("No").'</option>
                         </select>';
     $output['aaData'][] = $row;
 }

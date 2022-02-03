@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
-$title = "VL | Sample Status Report";
+$title = _("VL | Sample Status Report");
 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -40,10 +40,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-book"></i> VL Sample Status Report</h1>
+    <h1><i class="fa fa-book"></i> <?php echo _("VL Sample Status Report");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">VL Sample Status Report</li>
+      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("VL Sample Status Report");?></li>
     </ol>
   </section>
 
@@ -54,14 +54,14 @@ $batResult = $db->rawQuery($batQuery);
         <div class="box">
           <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b>Sample Collection Date&nbsp;:</b></td>
+              <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
               <td>
-                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
               </td>
-              <td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+              <td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
               <td>
-                <select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
-                  <option value=""> -- Select -- </option>
+                <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+                  <option value=""> <?php echo _("-- Select --");?> </option>
                   <?php
                   foreach ($batResult as $code) {
                   ?>
@@ -73,10 +73,10 @@ $batResult = $db->rawQuery($batQuery);
               </td>
             </tr>
             <tr>
-              <td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+              <td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
               <td>
-                <select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
-                  <option value=""> -- Select -- </option>
+                <select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
+                  <option value=""> <?php echo _("-- Select --");?> </option>
                   <?php
                   foreach ($sResult as $type) {
                   ?>
@@ -87,17 +87,17 @@ $batResult = $db->rawQuery($batQuery);
                 </select>
               </td>
 
-              <td>&nbsp;<b>Testing Lab &nbsp;:</b></td>
+              <td>&nbsp;<b><?php echo _("Testing Lab");?> &nbsp;:</b></td>
               <td>
-                <select class="form-control" id="labName" name="labName" title="Please select facility name">
+                <select class="form-control" id="labName" name="labName" title="<?php echo _('Please select facility name');?>">
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>
 
             </tr>
             <tr>
-              <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="Search" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+              <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
               </td>
             </tr>
 
@@ -116,17 +116,17 @@ $batResult = $db->rawQuery($batQuery);
             <table id="vlRequestDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Sample ID</th>
-                  <th>Sample Collection Date</th>
-                  <th>Sample Received Date in Lab</th>
-                  <th>Sample Test Date</th>
-                  <th>Sample Print Date</th>
-                  <th>Sample Email Date</th>
+                  <th><?php echo _("Sample ID");?></th>
+                  <th><?php echo _("Sample Collection Date");?></th>
+                  <th><?php echo _("Sample Received Date in Lab");?></th>
+                  <th><?php echo _("Sample Test Date");?></th>
+                  <th><?php echo _("Sample Print Date");?></th>
+                  <th><?php echo _("Sample Email Date");?></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
             </table>
@@ -148,7 +148,7 @@ $batResult = $db->rawQuery($batQuery);
 <script>
   $(function() {
     $("#labName").select2({
-      placeholder: "Select Testing Lab"
+      placeholder: "<?php echo _("Select Testing Lab");?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -282,7 +282,7 @@ $batResult = $db->rawQuery($batQuery);
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert('Unable to generate excel');
+          alert("<?php echo _("Unable to generate excel");?>");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;

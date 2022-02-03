@@ -17,7 +17,7 @@ try {
           $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
           $chkValidation = $general->checkMandatoryFields($validateField);
           if ($chkValidation) {
-               $_SESSION['alertMsg'] = "Please enter all mandatory fields to save the test request";
+               $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
                header("location:editVlRequest.php?id=" . base64_encode($_POST['vlSampleId']));
                die;
           }
@@ -333,7 +333,7 @@ try {
           exit(0);
      } else {
           if ($id > 0) {
-               $_SESSION['alertMsg'] = "VL request updated successfully";
+               $_SESSION['alertMsg'] = _("VL request updated successfully");
                //Add event log
 
                $eventType = 'update-vl-request-sudan';
@@ -351,7 +351,7 @@ try {
                //   $db->insert($tableName1,$data);
 
           } else {
-               $_SESSION['alertMsg'] = "Please try again later";
+               $_SESSION['alertMsg'] = _("Please try again later");
           }
           header("location:vlRequest.php");
      }

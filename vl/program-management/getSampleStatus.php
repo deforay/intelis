@@ -240,13 +240,13 @@ foreach ($tatResult as $sRow) {
                 type: 'pie'
             },
             title: {
-                text: 'Samples Status Overview'
+                text: "<?php echo _("Samples Status Overview");?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: 'Samples :<b>{point.y}</b>'
+                pointFormat: "<?php echo _("Samples");?> :<b>{point.y}</b>"
             },
             plotOptions: {
                 pie: {
@@ -309,13 +309,13 @@ foreach ($tatResult as $sRow) {
                 type: 'pie'
             },
             title: {
-                text: 'VL Suppression'
+                text: "<?php echo _("VL Suppression");?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: 'Samples :<b>{point.y}</b>'
+                pointFormat: "<?php echo _("Samples");?> :<b>{point.y}</b>"
             },
             plotOptions: {
                 pie: {
@@ -356,12 +356,12 @@ foreach ($tatResult as $sRow) {
                 type: 'line'
             },
             title: {
-                text: 'Laboratory Turnaround Time'
+                text: "<?php echo _("Laboratory Turnaround Time");?>"
             },
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: 'Laboratory Turnaround Time',
+                        text: "<?php echo _("Laboratory Turnaround Time");?>",
                     }
                 }
             },
@@ -380,7 +380,7 @@ foreach ($tatResult as $sRow) {
             },
             yAxis: [{
                 title: {
-                    text: 'Average TAT in Days'
+                    text: "<?php echo _("Average TAT in Days");?>"
                 },
                 labels: {
                     formatter: function() {
@@ -390,7 +390,7 @@ foreach ($tatResult as $sRow) {
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: 'No. of Tests'
+                    text: "<?php echo _("No. of Tests");?>"
                 },
                 labels: {
                     format: '{value}'
@@ -420,7 +420,7 @@ foreach ($tatResult as $sRow) {
 
             series: [{
                     type: 'column',
-                    name: 'No. of Samples Tested',
+                    name: "<?php echo _("No. of Samples Tested");?>",
                     data: [<?php echo implode(",", $result['totalSamples']); ?>],
                     color: '#7CB5ED',
                     yAxis: 1
@@ -430,7 +430,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: 'Result - Printed',
+                        name: "<?php echo _("Result - Printed");?>",
                         data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
                         color: '#0f3f6e',
                     },
@@ -440,7 +440,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: 'Collected - Received at Lab',
+                        name: "<?php echo _("Collected - Received at Lab");?>",
                         data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
                         color: '#edb47c',
                     },
@@ -450,7 +450,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: 'Received - Tested',
+                        name: "<?php echo _("Received - Tested");?>",
                         data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
                         color: '#0f3f6e',
                     },
@@ -460,7 +460,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: 'Collected - Tested',
+                        name: "<?php echo _("Collected - Tested");?>",
                         data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
                         color: '#ed7c7d',
                     },
@@ -470,7 +470,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: 'Collected - Printed',
+                        name: "<?php echo _("Collected - Printed");?>",
                         data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
                         color: '#000',
                     },

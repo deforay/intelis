@@ -63,17 +63,17 @@ if (isset($tResult) && count($tResult) > 0) {
 <?php }
 if (isset($tableResult) && count($tableResult) > 0) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export Excel</button>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel");?></button>
     </div>
 <?php } ?>
 <table id="vlRequestDataTable" class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
-            <th>Lab Name</th>
-            <th>Facility Name</th>
-            <th>Rejection Reason</th>
-            <th>Reason Category</th>
-            <th>No. of Samples</th>
+            <th><?php echo _("Lab Name");?></th>
+            <th><?php echo _("Facility Name");?></th>
+            <th><?php echo _("Rejection Reason");?></th>
+            <th><?php echo _("Reason Category");?></th>
+            <th><?php echo _("No. of Samples");?></th>
         </tr>
     </thead>
     <tbody>
@@ -108,7 +108,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: 'Sample Rejection Reasons'
+                text: "<?php echo _("Sample Rejection Reasons");?>"
             },
             credits: {
                 enabled: false
@@ -165,7 +165,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: 'Sample Rejection by Categories'
+                text: "<?php echo _("Sample Rejection by Categories");?>"
             },
             credits: {
                 enabled: false
