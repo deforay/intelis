@@ -414,6 +414,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<a href="/facilities/facilities.php"><i class="fa fa-hospital-o"></i> <?php echo _("Facilities"); ?></a>
 									</li>
 								<?php }
+								if (isset($_SESSION['privileges']) && in_array("audit-trail.php", $_SESSION['privileges'])) { ?>
+									<li class="treeview audit-trail-menu">
+										<a href="/admin/audit-trail/audit-trail.php"><i class=" fa fa-hospital-o"></i> <?php echo _("Audit Trail"); ?></a>
+									</li>
+								<?php }
 								if (in_array("roles.php", $_SESSION['privileges']) || in_array("users.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview system-config-menu">
 										<a href="#">
