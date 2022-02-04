@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$title = "EID | Batches";
+$title = _("EID | Batches");
 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -148,7 +148,7 @@ include_once(APPLICATION_PATH . '/header.php');
       },
       function(data) {
         if (data == "" || data == null || data == undefined) {
-          alert('Unable to generate barcode');
+          alert("<?php echo _("Unable to generate barcode");?>");
         } else {
           window.open('/uploads/barcode/' + data, '_blank');
         }
@@ -163,7 +163,7 @@ include_once(APPLICATION_PATH . '/header.php');
       },
       function(data) {
         if (data == "" || data == null || data == undefined) {
-          alert('Unable to generate QR code');
+          alert("<?php echo _("Unable to generate QR code");?>");
         } else {
           window.open('/uploads/qrcode/' + data, '_blank');
         }
@@ -172,7 +172,7 @@ include_once(APPLICATION_PATH . '/header.php');
   }
 
   function deleteBatchCode(bId, batchCode) {
-    var conf = confirm("Are you sure you want to delete Batch : " + batchCode + "?\nThis action cannot be undone.");
+    var conf = confirm("<?php echo _("Are you sure you want to delete Batch");?> : " + batchCode + "?\n<?php echo _("This action cannot be undone");?>.");
     if (conf) {
       $.post("/vl/batch/deleteBatchCode.php", {
           id: bId,
@@ -180,9 +180,9 @@ include_once(APPLICATION_PATH . '/header.php');
         },
         function(data) {
           if (data == 1) {
-            alert("Batch deleted");
+            alert("<?php echo _("Batch deleted");?>");
           } else {
-            alert("Something went wrong. Please try again!");
+            alert("<?php echo _("Something went wrong. Please try again");?>!");
           }
           oTable.fnDraw();
         });
