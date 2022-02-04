@@ -264,7 +264,7 @@ try {
 		exit(0);
 	} else {
 		if ($id > 0) {
-			$_SESSION['alertMsg'] = "EID request updated successfully";
+			$_SESSION['alertMsg'] = _("EID request updated successfully");
 			//Add event log
 			$eventType = 'eid-edit-request';
 			$action = ucwords($_SESSION['userName']) . ' updated EID request data with the Sample ID ' . $_POST['eidSampleId'];
@@ -281,7 +281,7 @@ try {
 			// $db->insert($tableName1,$data);
 
 		} else {
-			$_SESSION['alertMsg'] = "Please try again later";
+			$_SESSION['alertMsg'] = _("Please try again later");
 		}
 		header("location:/eid/requests/eid-requests.php");
 	}

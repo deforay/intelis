@@ -80,7 +80,7 @@ try {
   $db = $db->where('eid_id', $_POST['eidSampleId']);
   $id = $db->update($tableName, $eidData);
 
-  $_SESSION['alertMsg'] = "EID result updated successfully";
+  $_SESSION['alertMsg'] = _("EID result updated successfully");
   //Add event log
   $eventType = 'update-vl-result-drc';
   $action = ucwords($_SESSION['userName']) . ' updated a result for the EID sample no. ' . $_POST['sampleCode'];
