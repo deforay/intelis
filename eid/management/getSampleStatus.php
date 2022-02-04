@@ -210,13 +210,13 @@ foreach ($tatResult as $sRow) {
 				type: 'pie'
 			},
 			title: {
-				text: 'EID Samples Status Overview'
+				text: "<?php echo _("EID Samples Status Overview");?>"
 			},
 			credits: {
 				enabled: false
 			},
 			tooltip: {
-				pointFormat: 'EID Samples :<b>{point.y}</b>'
+				pointFormat: "<?php echo _("EID Samples");?> :<b>{point.y}</b>"
 			},
 			plotOptions: {
 				pie: {
@@ -283,13 +283,13 @@ foreach ($tatResult as $sRow) {
 				type: 'pie'
 			},
 			title: {
-				text: 'EID Results'
+				text: "<?php echo _("EID Results");?>"
 			},
 			credits: {
 				enabled: false
 			},
 			tooltip: {
-				pointFormat: 'Samples :<b>{point.y}</b>'
+				pointFormat: "<?php echo _("Samples");?> :<b>{point.y}</b>"
 			},
 			plotOptions: {
 				pie: {
@@ -311,11 +311,11 @@ foreach ($tatResult as $sRow) {
 			series: [{
 				colorByPoint: true,
 				data: [{
-						name: 'Positive',
+						name: "<?php echo _("Positive");?>",
 						y: <?php echo (isset($vlSuppressionResult['positiveResult']) && $vlSuppressionResult['positiveResult'] > 0) > 0 ? $vlSuppressionResult['positiveResult'] : 0; ?>
 					},
 					{
-						name: 'Negative',
+						name: "<?php echo _("Negative");?>",
 						y: <?php echo (isset($vlSuppressionResult['negativeResult']) && $vlSuppressionResult['negativeResult'] > 0) > 0 ? $vlSuppressionResult['negativeResult'] : 0; ?>
 					},
 				]
@@ -330,12 +330,12 @@ foreach ($tatResult as $sRow) {
 				type: 'line'
 			},
 			title: {
-				text: 'EID Laboratory Turnaround Time'
+				text: "<?php echo _("EID Laboratory Turnaround Time");?>"
 			},
 			exporting: {
 				chartOptions: {
 					subtitle: {
-						text: 'EID Laboratory Turnaround Time',
+						text: "<?php echo _("EID Laboratory Turnaround Time");?>",
 					}
 				}
 			},
@@ -354,7 +354,7 @@ foreach ($tatResult as $sRow) {
 			},
 			yAxis: [{
 				title: {
-					text: 'Average TAT in Days'
+					text: "<?php echo _("Average TAT in Days");?>"
 				},
 				labels: {
 					formatter: function() {
@@ -364,7 +364,7 @@ foreach ($tatResult as $sRow) {
 			}, { // Secondary yAxis
 				gridLineWidth: 0,
 				title: {
-					text: 'No. of Tests'
+					text: "<?php echo _("No. of Tests");?>"
 				},
 				labels: {
 					format: '{value}'
@@ -394,7 +394,7 @@ foreach ($tatResult as $sRow) {
 
 			series: [{
 					type: 'column',
-					name: 'No. of Samples Tested',
+					name: "<?php echo _("No. of Samples Tested");?>",
 					data: [<?php echo implode(",", $result['totalSamples']); ?>],
 					color: '#7CB5ED',
 					yAxis: 1
@@ -404,7 +404,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: 'Result - Printed',
+						name: "<?php echo _("Result - Printed");?>",
 						data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
 						color: '#0f3f6e',
 					},
@@ -414,7 +414,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: 'Collected - Received at Lab',
+						name: "<?php echo _("Collected - Received at Lab");?>",
 						data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
 						color: '#edb47c',
 					},
@@ -424,7 +424,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: 'Received - Tested',
+						name: "<?php echo _("Received - Tested");?>",
 						data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
 						color: '#0f3f6e',
 					},
@@ -434,7 +434,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: 'Collected - Tested',
+						name: "<?php echo _("Collected - Tested");?>",
 						data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
 						color: '#ed7c7d',
 					},
@@ -444,7 +444,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: 'Collected - Printed',
+						name: "<?php echo _("Collected - Printed");?>",
 						data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
 						color: '#000',
 					},

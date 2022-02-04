@@ -244,7 +244,7 @@ try {
 		exit(0);
 	} else {
 		if ($id > 0) {
-			$_SESSION['alertMsg'] = "EID request added successfully";
+			$_SESSION['alertMsg'] = _("EID request added successfully");
 			//Add event log
 			$eventType = 'add-eid-request-drc';
 			$action = ucwords($_SESSION['userName']) . ' added a new EID request data with the sample id ' . $_POST['eidSampleId'];
@@ -261,7 +261,7 @@ try {
 			// $db->insert($tableName1,$data);
 
 		} else {
-			$_SESSION['alertMsg'] = "Please try again later";
+			$_SESSION['alertMsg'] = _("Please try again later");
 		}
 		if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
 			header("location:/eid/requests/eid-add-request.php");
