@@ -31,7 +31,6 @@ $general = new \Vlsm\Models\General();
 				<div class="box">
 					
 					
-
 					<!-- /.box-header -->
 					<div class="box-body">
 						<table id="vlRequestDataTable" class="table table-bordered table-striped">
