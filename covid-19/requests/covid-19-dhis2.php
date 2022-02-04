@@ -134,7 +134,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	<?php
 	} else if ($global['bar_code_printing'] == 'zebra-printer') {
 	?>
-		<script src="/assets/js/zebra-browserprint.js.js"></script>
+		<script src="/assets/js/zebra-browserprint.js"></script>
 		<script src="/configs/zebra-format.js"></script>
 		<script src="/assets/js/zebra-print.js"></script>
 <?php

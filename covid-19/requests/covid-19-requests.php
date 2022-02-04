@@ -13,7 +13,7 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 /* Global config data */
-$arr = $general->getGlobalConfig();
+$global = $general->getGlobalConfig();
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
@@ -164,7 +164,7 @@ $batResult = $db->rawQuery($batQuery);
 							<td colspan="4">
 								<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new Covid-19 Request");?></a>
-									<?php if ($arr['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
+									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Bulk Import Covid-19 Request");?></a>
 									<?php }
 									if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
@@ -185,7 +185,7 @@ $batResult = $db->rawQuery($batQuery);
 									<?php } ?>
 
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Add new Covid-19 Request</a>
-									<?php if ($arr['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
+									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Bulk Import Covid-19 Request</a>
 								<?php }
 								} ?>
@@ -277,7 +277,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	<?php
 	} else if ($global['bar_code_printing'] == 'zebra-printer') {
 	?>
-		<script src="/assets/js/zebra-browserprint.js.js"></script>
+		<script src="/assets/js/zebra-browserprint.js"></script>
 		<script src="/configs/zebra-format.js"></script>
 		<script src="/assets/js/zebra-print.js"></script>
 <?php

@@ -244,7 +244,7 @@ try {
 	$patientData['patientLastName'] = $_POST['lastName'];
 	$patientData['patientGender'] = $_POST['patientGender'];
 	$patientData['registeredBy'] = $_SESSION['userId'];
-	$patientsModel->savePatient($patientData);
+	$patientsModel->updatePatient($patientData);
 
 
 	if (!empty($_POST['api']) && $_POST['api'] = "yes") {

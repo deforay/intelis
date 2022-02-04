@@ -169,7 +169,7 @@ try {
                 if ($vlResult[0]['result'] != null && !empty($vlResult[0]['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 } else {
-                    $data['result_status'] = '7';
+                    $data['result_status'] = '6';
                 }
                 $data['facility_id'] = $vlResult[0]['facility_id'];
             } else {

@@ -1,5 +1,5 @@
 <?php
-$title = _("VL Quarterly Monitoring Report");
+$title = _("Covid-19 Quarterly Monitoring Report");
  
 include_once(APPLICATION_PATH . '/header.php');
 

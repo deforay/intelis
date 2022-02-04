@@ -1,5 +1,5 @@
 <?php
-$title = "EID | Sample Rejection Report";
+$title = _("EID | Sample Rejection Report");
  
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -39,7 +39,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             <tr>
               <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
               <td>
-                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
               </td>
               <td>&nbsp;<b><?php echo _("Lab");?> &nbsp;:</b></td>
               <td>
@@ -52,7 +52,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
               <td>&nbsp;<b><?php echo _("Clinic Name");?> &nbsp;:</b></td>
               <td>
-                <select class="form-control" id="clinicName" name="clinicName" title="Please select clinic name" multiple="multiple" style="width:220px;">
+                <select class="form-control" id="clinicName" name="clinicName" title="<?php echo _('Please select clinic name');?>" multiple="multiple" style="width:220px;">
                   <?= $facilitiesDropdown; ?>
                 </select>
               </td>
@@ -87,7 +87,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <script>
   $(function() {
     $("#clinicName").select2({
-      placeholder: "Select Clinics"
+      placeholder: "<?php echo _("Select Clinics");?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -139,7 +139,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert('Unable to generate excel.');
+          alert("<?php echo _("Unable to generate excel");?>.");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;

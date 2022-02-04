@@ -286,7 +286,7 @@ foreach ($rResult as $aRow) {
      }
 
      if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
-          $fac = ucwords($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
+          $fac = $aRow['patient_id'];
           $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><i class="fa fa-barcode"> </i> ' . _("Barcode") . ' </a>';
      }
      $actions = "";
