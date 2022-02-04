@@ -1,5 +1,5 @@
 <?php
-$title = "Enter EID Result";
+$title = _("Enter EID Result");
 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -60,12 +60,12 @@ $lastUrl2 = '';
             <tr>
               <td><b><?php echo _("Sample Collection Date&nbsp");?>;:</b></td>
               <td>
-                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" value="<?php echo $collectionDate; ?>" />
+                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" value="<?php echo $collectionDate; ?>" />
               </td>
               <td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
               <td>
-                <select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
-                  <option value=""> -- Select -- </option>
+                <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+                  <option value=""> <?php echo _("-- Select --");?> </option>
                   <?php
                   foreach ($batResult as $code) {
                   ?>
@@ -79,7 +79,7 @@ $lastUrl2 = '';
 
               <td><b><?php echo _("Facility Name");?> :</b></td>
               <td>
-                <select class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
+                <select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
                   <?= $facilitiesDropdown; ?>
                 </select>
               </td>
@@ -138,7 +138,7 @@ $lastUrl2 = '';
           <!-- /.box-header -->
           <div class="box-body">
             <div class="">
-              <select name="status" id="status" class="form-control" title="Please choose result status" style="width:220px;margin-top:30px;" onchange="searchVlRequestData();">
+              <select name="status" id="status" class="form-control" title="<?php echo _('Please choose result status');?>" style="width:220px;margin-top:30px;" onchange="searchVlRequestData();">
                 <option value=""> <?php echo _("-- Select --");?> </option>
                 <option value="no_result" <?php echo ($status == 'no_result') ? "selected='selected'" : "" ?>><?php echo _("Results Not Recorded");?></option>
                 <option value="result" <?php echo ($status == 'result') ? "selected='selected'" : "" ?>><?php echo _("Results Recorded");?></option>
@@ -194,7 +194,7 @@ $lastUrl2 = '';
   var oTable = null;
   $(document).ready(function() {
     $("#facilityName").select2({
-      placeholder: "Select Facilities"
+      placeholder: "<?php echo _("Select Facilities");?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -372,7 +372,7 @@ $lastUrl2 = '';
       function(data) {
         $.unblockUI();
         if (data === "" || data === null || data === undefined) {
-          alert('Unable to generate the excel file');
+          alert("<?php echo _("Unable to generate the excel file");?>");
         } else {
           location.href = '/temporary/' + data;
         }
