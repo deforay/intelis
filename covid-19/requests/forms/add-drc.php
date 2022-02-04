@@ -143,7 +143,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                         <td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Nom de Structure" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
+                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Nom de Structure" style="width:100%;" oninput="sampleCodeGeneration();getfacilityProvinceDetails(this);">
                                                 <?php echo $facility; ?>
                                             </select>
                                         </td>
@@ -868,13 +868,13 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                             <input type="hidden" name="saveNext" id="saveNext" />
                             <!-- <input type="hidden" name="pageURL" id="pageURL" value="<?php echo $_SERVER['PHP_SELF']; ?>" /> -->
                         <?php } ?>
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Sauver</a>
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Enregistrer et suivant</a>
                         <input type="hidden" name="formId" id="formId" value="<?php echo $arr['vl_form']; ?>" />
                         <input type="hidden" name="patientCodePrefix" id="patientCodePrefix" value="<?= $patientCodePrefix; ?>" />
                         <input type="hidden" name="patientCodeKey" id="patientCodeKey" value="" />
                         <input type="hidden" name="covid19SampleId" id="covid19SampleId" value="" />
-                        <a href="/covid-19/requests/covid-19-requests.php" class="btn btn-default"> Annuler</a>
+                        <a class="btn btn-primary submitButton" href="javascript:void(0);" onclick="validateNow();return false;">Sauver</a>
+                        <a class="btn btn-primary submitButton" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Enregistrer et suivant</a>
+                        <a href="/covid-19/requests/covid-19-requests.php" class="btn btn-default submitButton"> Annuler</a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -1216,6 +1216,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
     }
 
     function validateNow() {
+
         if ($("#patientDob").val() == "" && $("#patientAge").val() == "") {
             alert("Please select or enter patient DOB or Age");
             return false;
@@ -1237,7 +1238,8 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             formId: 'addCovid19RequestForm'
         });
         if (flag) {
-            //$.blockUI();
+            $.blockUI();
+            $(".submitButton").hide();
             <?php
             if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'YY' || $arr['covid19_sample_code'] == 'MMYY') {
             ?>

@@ -247,7 +247,7 @@ try {
 			$_SESSION['alertMsg'] = _("EID request added successfully");
 			//Add event log
 			$eventType = 'add-eid-request-drc';
-			$action = ucwords($_SESSION['userName']) . ' added a new EID request data with the sample id ' . $_POST['eidSampleId'];
+			$action = ucwords($_SESSION['userName']) . ' added a new EID request with the Sample ID/Code  ' . $_POST['eidSampleId'];
 			$resource = 'eid-request-drc';
 
 			$general->activityLog($eventType, $action, $resource);

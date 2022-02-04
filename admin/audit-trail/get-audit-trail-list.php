@@ -137,7 +137,7 @@ foreach ($rResult as $key => $aRow) {
      $row = array();
      $row[] = $aRow['action'];
      $row[] = $aRow['event_type'];
-     $row[] = $aRow['display_name'];
+     $row[] = $aRow['ip_address'];
      $row[] = $aRow['createdOn'];
 
      $output['aaData'][] = $row;

@@ -215,7 +215,7 @@ try {
 		$_SESSION['alertMsg'] = "Hepatitis request updated successfully";
 		//Add event log
 		$eventType = 'update-hepatitis-request';
-		$action = ucwords($_SESSION['userName']) . ' updated hepatitis request data with the sample id ' . $_POST['hepatitisSampleId'];
+		$action = ucwords($_SESSION['userName']) . ' updated hepatitis request with the Sample ID/Code  ' . $_POST['hepatitisSampleId'];
 		$resource = 'hepatitis-edit-request';
 
 		$general->activityLog($eventType, $action, $resource);

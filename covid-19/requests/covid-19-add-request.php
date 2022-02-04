@@ -313,6 +313,7 @@ if (file_exists($fileArray[$arr['vl_form']])) {
                     $.unblockUI();
                     //$("#sampleCollectionDate").val('');
                     sampleCodeGeneration();
+                    $(".submitButton").show();
                     alert("We could not save this form. Please try saving again.");
                 }
             });

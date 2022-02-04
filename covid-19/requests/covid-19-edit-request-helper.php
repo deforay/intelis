@@ -389,8 +389,8 @@ try {
 		if ($id > 0 || $sid > 0 || $pid > 0) {
 			$_SESSION['alertMsg'] = _("Covid-19 request updated successfully");
 			//Add event log
-			$eventType = 'update-covid-19-reque_(st';
-			$action = ucwords($_SESSION['userName']) . ' updated Covid-19 request data with the sample id ' . $_POST['covid19SampleId'];
+			$eventType = 'update-covid-19-request';
+			$action = ucwords($_SESSION['userName']) . ' updated Covid-19 request with the Sample ID/Code  ' . $_POST['covid19SampleId'];
 			$resource = 'covid-19-edit-request';
 
 			$general->activityLog($eventType, $action, $resource);
