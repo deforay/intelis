@@ -1,5 +1,5 @@
 <?php
-$title = "VL Quarterly Monitoring Report";
+$title = _("VL Quarterly Monitoring Report");
  
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -158,7 +158,7 @@ $state = $geoLocationDb->getProvinces("yes");
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-book"></i> VL Quarterly Monitoring Tool
+		<h1><i class="fa fa-book"></i> <?php echo _("VL Quarterly Monitoring Tool");?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -173,7 +173,7 @@ $state = $geoLocationDb->getProvinces("yes");
 				<div class="box">
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><b>Sample Collection Date&nbsp;:</b></td>
+							<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
 							<td>
 								<!--<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;"/>-->
 								<div id="sla-data-range" class="mrp-container form-control">
@@ -186,24 +186,24 @@ $state = $geoLocationDb->getProvinces("yes");
 									<input type="hidden" value="<?php echo $endDate; ?>" id="mrp-upperDate" />
 								</div>
 							</td>
-							<td><b>Lab Name :</b></td>
+							<td><b><?php echo _("Lab Name");?> :</b></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" title="Please select facility name">
+								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td><b>Region/Province/State&nbsp;:</b></td>
+							<td><b><?php echo _("Region/Province/State");?>&nbsp;:</b></td>
 							<td>
-								<select name="state" id="state" class="form-control" title="Please choose Province/State/Region" onkeyup="searchVlRequestData()">
-									<?= $general->generateSelectOptions($state, null, '-- Select --'); ?>
+								<select name="state" id="state" class="form-control" title="<?php echo _('Please choose Province/State/Region');?>" onkeyup="searchVlRequestData()">
+									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 
-							<td><b>District/County :</b></td>
+							<td><b><?php echo _("District/County");?> :</b></td>
 							<td>
-								<select name="district" id="district" class="form-control" title="Please choose District/County" onkeyup="searchVlRequestData()">
+								<select name="district" id="district" class="form-control" title="<?php echo _('Please choose District/County');?>" onkeyup="searchVlRequestData()">
 								</select>
 							</td>
 						</tr>
@@ -214,10 +214,10 @@ $state = $geoLocationDb->getProvinces("yes");
               </td> -->
 						</tr>
 						<tr>
-							<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+							<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
 
-								&nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()">Export to excel</button>
+								&nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()"><?php echo _("Export to excel");?></button>
 							</td>
 						</tr>
 					</table>
@@ -226,21 +226,21 @@ $state = $geoLocationDb->getProvinces("yes");
 						<table id="vlMonitoringTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th>Sample Code</th>
-									<th>Batch Code</th>
-									<th>Unique ART No</th>
-									<th>Patient's Name</th>
-									<th>Facility Name</th>
-									<th>Province/State/Region</th>
-									<th>District/County</th>
-									<th>Sample Type</th>
-									<th>Result</th>
-									<th>Status</th>
+									<th><?php echo _("Sample Code");?></th>
+									<th><?php echo _("Batch Code");?></th>
+									<th><?php echo _("Unique ART No");?></th>
+									<th><?php echo _("Patient's Name");?></th>
+									<th><?php echo _("Facility Name");?></th>
+									<th><?php echo _("Province/State/Region");?></th>
+									<th><?php echo _("District/County");?></th>
+									<th><?php echo _("Sample Type");?></th>
+									<th><?php echo _("Result");?></th>
+									<th><?php echo _("Status");?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="10" class="dataTables_empty">Loading data from server</td>
+									<td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -406,7 +406,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
-					alert('Unable to generate excel file');
+					alert("<?php echo _("Unable to generate excel file");?>");
 				} else {
 					location.href = '/temporary/' + data;
 				}
@@ -450,7 +450,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			content += '</div></div></div></div>';
 		}
 		content += '<div class="col-xs-1">';
-		content += '<button class="btn btn-info mpr-close">Apply</button>';
+		content += '<button class="btn btn-info mpr-close"><?php echo _("Apply");?></button>';
 		content += '</div>';
 		content += '</div>';
 

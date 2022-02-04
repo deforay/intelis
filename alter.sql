@@ -2907,3 +2907,9 @@ CREATE TABLE `patients` (
   UNIQUE KEY `patient_code` (`patient_code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 ALTER TABLE `patients` ADD UNIQUE(`patient_code_prefix`, `patient_code_key`);
+
+-- Thana 03-Feb-2022
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'audit-trail.php', 'Audit Trail Details');
+
+-- Thana 04-Feb-2022
+ALTER TABLE `form_covid19` ADD `patient_email` VARCHAR(256) NULL DEFAULT NULL AFTER `patient_phone_number`;

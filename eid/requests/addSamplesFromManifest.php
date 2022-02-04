@@ -1,5 +1,5 @@
 <?php
-$title = "Add Samples from Manifest";
+$title = _("Add Samples from Manifest");
 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -39,7 +39,7 @@ $batResult = $db->rawQuery($batQuery);
 						<tr>
 							<td style="width:20%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code");?> :</b></td>
 							<td>
-								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="Sample manifest code" title="Please enter the sample manifest code" style="background:#fff;" />
+								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _('Sample manifest code');?>" title="<?php echo _('Please enter the sample manifest code');?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td>
@@ -48,7 +48,7 @@ $batResult = $db->rawQuery($batQuery);
 						</tr>
 						<tr>
 							<td style="width:100%;" colspan="3">
-								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa fa-fw fa-check-square-o" aria-hidden="true"></i> Activate Samples</a>
+								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa fa-fw fa-check-square-o" aria-hidden="true"></i> <?php echo _("Activate Samples");?></a>
 							</td>
 						</tr>
 					</table>
@@ -208,7 +208,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					}
 				});
 		} else {
-			alert('Please enter the Sample Manifest Code then hit submit');
+			alert("<?php echo _("Please enter the Sample Manifest Code then hit submit");?>");
 		}
 	}
 
@@ -218,7 +218,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
-				message: '<h3>Trying to sync Relevant Manifest Code Test Requests<br>Please wait...</h3>'
+				message: "<h3><?php echo _("Trying to sync Relevant Manifest Code Test Requests");?><br><?php echo _("Please wait");?>...</h3>"
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
@@ -258,7 +258,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			function(data) {
 				if (data > 0) {
-					alert('Samples from this Manifest have been activated');
+					alert("<?php echo _("Samples from this Manifest have been activated");?>");
 					$('.activateSample').hide();
 				}
 				oTable.fnDraw();

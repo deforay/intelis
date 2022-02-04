@@ -1,5 +1,5 @@
 <?php
-$title = "VL | Clinics Report";
+$title = _("VL | Clinics Report");
  
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -29,10 +29,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1> <i class="fa fa-book"></i> Clinic Reports</h1>
+		<h1> <i class="fa fa-book"></i> <?php echo _("Clinic Reports");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Clinic Reports</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li class="active"><?php echo _("Clinic Reports");?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -46,23 +46,23 @@ $batResult = $db->rawQuery($batQuery);
 							<div class="widget-content">
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-										<li class="active"><a href="#highViralLoadReport" data-toggle="tab">High Viral Load Report</a></li>
-										<li><a href="#sampleRjtReport" data-toggle="tab">Sample Rejection Report</a></li>
-										<li><a href="#notAvailReport" data-toggle="tab">Results Not Available Report</a></li>
-										<li><a href="#incompleteFormReport" data-toggle="tab">Data Quality Check</a></li>
+										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _("High Viral Load Report");?></a></li>
+										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _("Sample Rejection Report");?></a></li>
+										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _("Results Not Available Report");?></a></li>
+										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _("Data Quality Check");?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
 											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b>Sample Test Date&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="Please select batch code" style="width:220px;">
-															<option value=""> -- Select -- </option>
+														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
@@ -72,10 +72,10 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="Please select sample type">
-															<option value=""> -- Select -- </option>
+														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
@@ -87,10 +87,10 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td>&nbsp;<b>Facility Name & Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
-															<option value=""> -- Select -- </option>
+														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($fResult as $name) {
 															?>
@@ -100,47 +100,47 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b>Contact Status&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Contact Status");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="Please select contact status" style="width:220px;">
-															<option value=""> -- Select -- </option>
-															<option value="yes">Completed</option>
-															<option value="no">Not Completed</option>
-															<option value="all" selected="selected">All</option>
+														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status');?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="yes"><?php echo _("Completed");?></option>
+															<option value="no"><?php echo _("Not Completed");?></option>
+															<option value="all" selected="selected"><?php echo _("All");?></option>
 														</select>
 													</td>
-													<td><b>Gender&nbsp;:</b></td>
+													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
-															<option value=""> -- Select -- </option>
-															<option value="male">Male</option>
-															<option value="female">Female</option>
-															<option value="not_recorded">Not Recorded</option>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td><b>Pregnant&nbsp;:</b></td>
-													<td>
-														<select name="hvlPatientPregnant" id="hvlPatientPregnant" class="form-control" title="Please choose pregnant option">
-															<option value=""> -- Select -- </option>
-															<option value="yes">Yes</option>
-															<option value="no">No</option>
-														</select>
-													</td>
-													<td><b>Breastfeeding&nbsp;:</b></td>
-													<td>
-														<select name="hvlPatientBreastfeeding" id="hvlPatientBreastfeeding" class="form-control" title="Please choose option">
-															<option value=""> -- Select -- </option>
-															<option value="yes">Yes</option>
-															<option value="no">No</option>
+														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="male"><?php echo _("Male");?></option>
+															<option value="female"><?php echo _("Female");?></option>
+															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 														</select>
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export to excel</button>
+													<td><b><?php echo _("Pregnant");?>&nbsp;:</b></td>
+													<td>
+														<select name="hvlPatientPregnant" id="hvlPatientPregnant" class="form-control" title="<?php echo _('Please choose pregnant option');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="yes"><?php echo _("Yes");?></option>
+															<option value="no"><?php echo _("No");?></option>
+														</select>
+													</td>
+													<td><b><?php echo _("Breastfeeding");?>&nbsp;:</b></td>
+													<td>
+														<select name="hvlPatientBreastfeeding" id="hvlPatientBreastfeeding" class="form-control" title="<?php echo _('Please choose option');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="yes"><?php echo _("Yes");?></option>
+															<option value="no"><?php echo _("No");?></option>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
@@ -148,24 +148,24 @@ $batResult = $db->rawQuery($batQuery);
 											<table id="highViralLoadReportTable" class="table table-bordered table-striped">
 												<thead>
 													<tr>
-														<th>Sample Code</th>
+														<th><?php echo _("Sample Code");?></th>
 														<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-															<th>Remote Sample <br />Code</th>
+															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 														<?php } ?>
-														<th>Facility Name</th>
-														<th>Patient ART no.</th>
-														<th>Patient's Name</th>
-														<th>Patient Phone no.</th>
-														<th>Sample Collection Date</th>
-														<th>Sample Tested Date</th>
-														<th>Viral Load Lab</th>
-														<th>Viral Load (cp/ml)</th>
-														<th>Status</th>
+														<th><?php echo _("Facility Name");?></th>
+														<th><?php echo _("Patient ART no");?>.</th>
+														<th><?php echo _("Patient's Name");?></th>
+														<th><?php echo _("Patient Phone no");?>.</th>
+														<th><?php echo _("Sample Collection Date");?></th>
+														<th><?php echo _("Sample Tested Date");?></th>
+														<th><?php echo _("Viral Load Lab");?></th>
+														<th><?php echo _("Viral Load (cp/ml)");?></th>
+														<th><?php echo _("Status");?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="7" class="dataTables_empty">Loading data from server</td>
+														<td colspan="7" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -173,14 +173,14 @@ $batResult = $db->rawQuery($batQuery);
 										<div class="tab-pane fade" id="sampleRjtReport">
 											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b>Sample Test Date&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="Please select batch code" style="width:220px;">
-															<option value=""> -- Select -- </option>
+														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
@@ -190,10 +190,10 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="Please select sample type">
-															<option value=""> -- Select -- </option>
+														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
@@ -205,10 +205,10 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td>&nbsp;<b>Facility Name & Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="rjtFacilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
-															<option value=""> -- Select -- </option>
+														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($fResult as $name) {
 															?>
@@ -218,59 +218,59 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td><b>Gender&nbsp;:</b></td>
+													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
-															<option value=""> -- Select -- </option>
-															<option value="male">Male</option>
-															<option value="female">Female</option>
-															<option value="not_recorded">Not Recorded</option>
+														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="male"><?php echo _("Male");?></option>
+															<option value="female"><?php echo _("Female");?></option>
+															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 														</select>
 													</td>
-													<td><b>Pregnant&nbsp;:</b></td>
+													<td><b><?php echo _("Pregnant");?>&nbsp;:</b></td>
 													<td>
-														<select name="rjtPatientPregnant" id="rjtPatientPregnant" class="form-control" title="Please choose pregnant option">
-															<option value=""> -- Select -- </option>
-															<option value="yes">Yes</option>
-															<option value="no">No</option>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td><b>Breastfeeding&nbsp;:</b></td>
-													<td>
-														<select name="rjtPatientBreastfeeding" id="rjtPatientBreastfeeding" class="form-control" title="Please choose option">
-															<option value=""> -- Select -- </option>
-															<option value="yes">Yes</option>
-															<option value="no">No</option>
+														<select name="rjtPatientPregnant" id="rjtPatientPregnant" class="form-control" title="<?php echo _('Please choose pregnant option');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="yes"><?php echo _("Yes");?></option>
+															<option value="no"><?php echo _("No");?></option>
 														</select>
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export to excel</button>
+													<td><b><?php echo _("Breastfeeding");?>&nbsp;:</b></td>
+													<td>
+														<select name="rjtPatientBreastfeeding" id="rjtPatientBreastfeeding" class="form-control" title="<?php echo _('Please choose option');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="yes"><?php echo _("Yes");?></option>
+															<option value="no"><?php echo _("No");?></option>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
 											<table id="sampleRjtReportTable" class="table table-bordered table-striped">
 												<thead>
 													<tr>
-														<th>Sample Code</th>
+														<th><?php echo _("Sample Code");?></th>
 														<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-															<th>Remote Sample <br />Code</th>
+															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 														<?php } ?>
-														<th>Facility Name</th>
-														<th>Patient ART no.</th>
-														<th>Patient Name</th>
-														<th>Sample Collection Date</th>
-														<th>VL Lab Name</th>
-														<th>Rejection Reason</th>
+														<th><?php echo _("Facility Name");?></th>
+														<th><?php echo _("Patient ART no");?>.</th>
+														<th><?php echo _("Patient Name");?></th>
+														<th><?php echo _("Sample Collection Date");?></th>
+														<th><?php echo _("VL Lab Name");?></th>
+														<th><?php echo _("Rejection Reason");?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="6" class="dataTables_empty">Loading data from server</td>
+														<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -278,14 +278,14 @@ $batResult = $db->rawQuery($batQuery);
 										<div class="tab-pane fade" id="notAvailReport">
 											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b>Sample Collection Date&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="Select Sample Collection Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Collection Date');?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="Please select batch code" style="width:220px;">
-															<option value=""> -- Select -- </option>
+														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
@@ -295,10 +295,10 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="Please select sample type">
-															<option value=""> -- Select -- </option>
+														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
@@ -310,10 +310,10 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td>&nbsp;<b>Facility Name & Code&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="noResultFacilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
-															<option value=""> -- Select -- </option>
+														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($fResult as $name) {
 															?>
@@ -323,58 +323,58 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td><b>Gender&nbsp;:</b></td>
+													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
-														<select name="noResultGender" id="noResultGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
-															<option value=""> -- Select -- </option>
-															<option value="male">Male</option>
-															<option value="female">Female</option>
-															<option value="not_recorded">Not Recorded</option>
+														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="male"><?php echo _("Male");?></option>
+															<option value="female"><?php echo _("Female");?></option>
+															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 														</select>
 													</td>
-													<td><b>Pregnant&nbsp;:</b></td>
+													<td><b><?php echo _("Pregnant");?>&nbsp;:</b></td>
 													<td>
-														<select name="noResultPatientPregnant" id="noResultPatientPregnant" class="form-control" title="Please choose pregnant option">
-															<option value=""> -- Select -- </option>
-															<option value="yes">Yes</option>
-															<option value="no">No</option>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td><b>Breastfeeding&nbsp;:</b></td>
-													<td>
-														<select name="noResultPatientBreastfeeding" id="noResultPatientBreastfeeding" class="form-control" title="Please choose option">
-															<option value=""> -- Select -- </option>
-															<option value="yes">Yes</option>
-															<option value="no">No</option>
+														<select name="noResultPatientPregnant" id="noResultPatientPregnant" class="form-control" title="<?php echo _('Please choose pregnant option');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="yes"><?php echo _("Yes");?></option>
+															<option value="no"><?php echo _("No");?></option>
 														</select>
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export to excel</button>
+													<td><b><?php echo _("Breastfeeding");?>&nbsp;:</b></td>
+													<td>
+														<select name="noResultPatientBreastfeeding" id="noResultPatientBreastfeeding" class="form-control" title="<?php echo _('Please choose option');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="yes"><?php echo _("Yes");?></option>
+															<option value="no"><?php echo _("No");?></option>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
 											<table id="notAvailReportTable" class="table table-bordered table-striped">
 												<thead>
 													<tr>
-														<th>Sample Code</th>
+														<th><?php echo _("Sample Code");?></th>
 														<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-															<th>Remote Sample <br />Code</th>
+															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 														<?php } ?>
-														<th>Facility Name</th>
-														<th>Patient ART no.</th>
-														<th>Patient Name</th>
-														<th>Sample Collection Date</th>
-														<th>VL Lab Name</th>
+														<th><?php echo _("Facility Name");?></th>
+														<th><?php echo _("Patient ART no");?>.</th>
+														<th><?php echo _("Patient Name");?></th>
+														<th><?php echo _("Sample Collection Date");?></th>
+														<th><?php echo _("VL Lab Name");?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="4" class="dataTables_empty">Loading data from server</td>
+														<td colspan="4" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -382,58 +382,58 @@ $batResult = $db->rawQuery($batQuery);
 										<div class="tab-pane fade" id="incompleteFormReport">
 											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b>Sample Collection Date&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Sample Collection Date" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Sample Collection Date');?>" readonly style="width:220px;background:#fff;" />
 													</td>
-													<td>&nbsp;<b>Fields&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Fields");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="formField" name="formField" multiple="multiple" title="Please fields" style="width:220px;">
-															<option value=""> -- Select -- </option>
-															<option value="sample_code">Sample Code</option>
-															<option value="sample_collection_date">Sample Collection Date</option>
-															<option value="sample_batch_id">Batch Code</option>
-															<option value="patient_art_no">Unique ART No.</option>
-															<option value="patient_first_name">Patient Name</option>
-															<option value="facility_id">Facility Name</option>
-															<option value="facility_state">Province</option>
-															<option value="facility_district">County</option>
-															<option value="sample_type">Sample Type</option>
-															<option value="result">Result</option>
-															<option value="result_status">Status</option>
+														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _('Please fields');?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
+															<option value="sample_code"><?php echo _("Sample Code");?></option>
+															<option value="sample_collection_date"><?php echo _("Sample Collection Date");?></option>
+															<option value="sample_batch_id"><?php echo _("Batch Code");?></option>
+															<option value="patient_art_no"><?php echo _("Unique ART No");?>.</option>
+															<option value="patient_first_name"><?php echo _("Patient Name");?></option>
+															<option value="facility_id"><?php echo _("Facility Name");?></option>
+															<option value="facility_state"><?php echo _("Province");?></option>
+															<option value="facility_district"><?php echo _("County");?></option>
+															<option value="sample_type"><?php echo _("Sample Type");?></option>
+															<option value="result"><?php echo _("Result");?></option>
+															<option value="result_status"><?php echo _("Status");?></option>
 														</select>
 													</td>
 												</tr>
 
 												<tr>
-													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export to excel</button>
+													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
 											<table id="incompleteReport" class="table table-bordered table-striped">
 												<thead>
 													<tr>
-														<th>Sample Code</th>
+														<th><?php echo _("Sample Code");?></th>
 														<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-															<th>Remote Sample <br />Code</th>
+															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
 														<?php } ?>
-														<th>Sample Collection Date</th>
-														<th>Batch Code</th>
-														<th>Unique ART No</th>
-														<th>Patient's Name</th>
-														<th>Facility Name</th>
-														<th>Province/State</th>
-														<th>District/County</th>
-														<th>Sample Type</th>
-														<th>Result</th>
-														<th>Status</th>
+														<th><?php echo _("Sample Collection Date");?></th>
+														<th><?php echo _("Batch Code");?></th>
+														<th><?php echo _("Unique ART No");?></th>
+														<th><?php echo _("Patient's Name");?></th>
+														<th><?php echo _("Facility Name");?></th>
+														<th><?php echo _("Province/State");?></th>
+														<th><?php echo _("District/County");?></th>
+														<th><?php echo _("Sample Type");?></th>
+														<th><?php echo _("Result");?></th>
+														<th><?php echo _("Status");?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="13" class="dataTables_empty">Loading data from server</td>
+														<td colspan="13" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -459,10 +459,10 @@ $batResult = $db->rawQuery($batQuery);
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
-			placeholder: "Select Facilities"
+			placeholder: "<?php echo _("Select Facilities");?>"
 		});
 		$("#formField").select2({
-			placeholder: "Select Fields"
+			placeholder: "<?php echo _("Select Fields");?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
 				locale: {
@@ -868,14 +868,14 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function updateStatus(id, value) {
-		conf = confirm("Do you wisht to change the contact completed status?");
+		conf = confirm("<?php echo _("Do you wisht to change the contact completed status?");?>");
 		if (conf) {
 			$.post("/vl/program-management/updateContactCompletedStatus.php", {
 					id: id,
 					value: value
 				},
 				function(data) {
-					alert("Status updated successfully");
+					alert("<?php echo _("Status updated successfully");?>");
 					oTableViralLoad.fnDraw();
 				});
 		} else {
@@ -885,7 +885,7 @@ $batResult = $db->rawQuery($batQuery);
 
 	function exportHighViralLoadInexcel() {
 		var markAsComplete = false;
-		confm = confirm("Do you want to mark these as complete ?");
+		confm = confirm("<?php echo _("Do you want to mark these as complete ?");?>");
 		if (confm) {
 			var markAsComplete = true;
 		}
@@ -903,7 +903,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate the excel file');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -925,7 +925,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate the excel file');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -947,7 +947,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate the excel file');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -964,7 +964,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate the excel file');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;

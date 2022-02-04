@@ -91,12 +91,12 @@ $result = $db->rawQuery($query);
 ?>
 <div class="col-md-9">
   <div class="form-group">
-    <label for="sample" class="col-lg-3 control-label">Choose Sample(s) <span class="mandatory">*</span></label>
+    <label for="sample" class="col-lg-3 control-label"><?php echo _("Choose Sample(s)");?> <span class="mandatory">*</span></label>
     <div class="col-lg-9">
       <div style="width:100%;margin:0 auto;clear:both;">
-        <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+        <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
       </div><br /><br />
-      <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="Please select sample(s)">
+      <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="<?php echo _('Please select sample(s)');?>">
         <?php
         foreach ($result as $sample) {
           if (trim($sample['sample_code']) != '') {
@@ -113,8 +113,8 @@ $result = $db->rawQuery($query);
 <script>
   $(document).ready(function() {
     $('.search').multiSelect({
-      selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-      selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+      selectableHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _("Enter Sample Code");?>">',
+      selectionHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _("Enter Sample Code");?>">',
       afterInit: function(ms) {
         var that = this,
           $selectableSearch = that.$selectableUl.prev(),
@@ -140,7 +140,7 @@ $result = $db->rawQuery($query);
       },
       afterSelect: function() {
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
-          $("#errorMsg").html("<b>You have selected " + this.qs2.cache().matchedResultsCount + " Samples out of the maximum allowed " + noOfAllowedSamples + " samples</b>");
+          $("#errorMsg").html("<b><?php echo _("You have selected");?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed");?> " + noOfAllowedSamples + " <?php echo _("samples");?></b>");
           $("#requestSubmit").attr("disabled", true);
           $("#requestSubmit").css("pointer-events", "none");
         }
@@ -149,7 +149,7 @@ $result = $db->rawQuery($query);
       },
       afterDeselect: function() {
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
-          $("#errorMsg").html("<b>You have selected " + this.qs2.cache().matchedResultsCount + " Samples out of the maximum allowed " + noOfAllowedSamples + " samples</b>");
+          $("#errorMsg").html("<b><?php echo _("You have selected");?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed");?> " + noOfAllowedSamples + " <?php echo _("samples");?></b>");
           $("#requestSubmit").attr("disabled", true);
           $("#requestSubmit").css("pointer-events", "none");
         } else if (this.qs2.cache().matchedResultsCount <= noOfAllowedSamples) {

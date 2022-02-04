@@ -221,19 +221,20 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th>Numéro de téléphone</th>
                                         <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Numéro de téléphone" title="Numéro de téléphone" style="width:100%;" onchange="" /></td>
 
+                                        <th>Courriel du patient</th>
+                                        <td><input type="text" class="form-control " id="patientEmail" name="patientEmail" placeholder="Courriel du patient" title="Province du patient" style="width:100%;" /></td>
+                                    </tr>
+
+                                    <tr>
                                         <th>Adresse du patient</th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Adresse du patient" title="Adresse du patient" style="width:100%;" onchange=""></textarea></td>
-                                    </tr>
-
-                                    <tr>
                                         <th>Province du patient</th>
                                         <td><input type="text" class="form-control " id="patientProvince" name="patientProvince" placeholder="Province du patient" title="Province du patient" style="width:100%;" /></td>
-
-                                        <th>Commune</th>
-                                        <td><input class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Commune" title="Commune" style="width:100%;"></td>
                                     </tr>
 
                                     <tr>
+                                        <th>Commune</th>
+                                        <td><input class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Commune" title="Commune" style="width:100%;"></td>
                                         <th>Pays de résidence</th>
                                         <td>
                                             <select class="form-control select2" id="patientNationality" name="patientNationality" title="Commune">
@@ -241,9 +242,6 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             </select>
                                             <!-- <input type="text" class="form-control" id="patientNationality" name="patientNationality" placeholder="Pays de résidence" title="Pays de résidence" style="width:100%;" /> -->
                                         </td>
-
-                                        <th></th>
-                                        <td></td>
                                     </tr>
                                 </table>
 
