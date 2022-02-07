@@ -27,13 +27,13 @@ try {
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 
-    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result")) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result");
+    if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
+        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
     }
-    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $fileName)) {
+    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
-        $mime_type = $file_info->buffer(file_get_contents(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
+        $mime_type = $file_info->buffer(file_get_contents(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
 
         $bquery = "select MAX(batch_code_key) from batch_details";
         $bvlResult = $db->rawQuery($bquery);
@@ -68,7 +68,7 @@ try {
             $skip = 23;
 
             $row = 1;
-            if (($handle = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $fileName, "r")) !== false) {
+            if (($handle = fopen(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName, "r")) !== false) {
                 
                 while (($sheetData = fgetcsv($handle, 10000, ",")) !== FALSE) {
                     $num = count($sheetData);
@@ -253,7 +253,7 @@ try {
     //Add event log
     $eventType = 'import';
     $action = ucwords($_SESSION['userName']) . ' imported a new test result with the sample code ' . $sampleCode;
-    $resource = 'import-result';
+    $resource = 'import-results-manually';
     $general->activityLog($eventType, $action, $resource);
 
     //new log for update in result

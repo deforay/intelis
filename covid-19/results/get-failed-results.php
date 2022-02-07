@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $formConfigQuery = "SELECT * FROM global_config";
 $configResult = $db->query($formConfigQuery);
@@ -288,10 +288,9 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['batch_code'];
     $row[] = ucwords($aRow['facility_name']);
-    $row[] = $aRow['child_id'];
-    $row[] = $aRow['child_name'];
-    $row[] = $aRow['mother_id'];
-    $row[] = $aRow['mother_name'];
+    $row[] = $aRow['patient_id'];
+    $row[] = $aRow['patient_name'];
+    $row[] = $aRow['patient_surname'];
 
     $row[] = ucwords($aRow['facility_state']);
     $row[] = ucwords($aRow['facility_district']);
@@ -300,7 +299,7 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['status_name']);
 
     if ($editRequest) {
-        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Failed result retest").'" onclick="retestSample(\'' . trim(base64_encode($aRow['covid19_id'])) . '\')"><i class="fa fa-refresh"> '. _("Retest").'</i></a>';
+        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Test Sample Again") . '" onclick="retestSample(\'' . trim(base64_encode($aRow['covid19_id'])) . '\')"><i class="fa fa-refresh"> ' . _("Retest") . '</i></a>';
     }
     $output['aaData'][] = $row;
 }

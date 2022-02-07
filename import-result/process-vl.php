@@ -196,8 +196,8 @@ try {
             $db = $db->where('temp_sample_id', $id[$i]);
             $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
         }
-        if (file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $rResult[0]['import_machine_file_name'])) {
-            copy(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $rResult[0]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $rResult[0]['import_machine_file_name']);
+        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult[0]['import_machine_file_name'])) {
+            copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult[0]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult[0]['import_machine_file_name']);
         }
     }
     //get all accepted data result
@@ -280,11 +280,11 @@ try {
             $numberOfResults++;
 
             $printSampleCode[] = "'" . $accResult[$i]['sample_code'] . "'";
-            if (file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']) && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'])) {
-                if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-result")) {
-                    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-result", 0777, true);
+            if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']) && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'])) {
+                if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
+                    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
                 }
-                copy(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
+                copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
             $db = $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
             $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
