@@ -390,7 +390,7 @@ try {
 			$_SESSION['alertMsg'] = _("Covid-19 request updated successfully");
 			//Add event log
 			$eventType = 'update-covid-19-request';
-			$action = ucwords($_SESSION['userName']) . ' updated Covid-19 request with the Sample ID/Code  ' . $_POST['covid19SampleId'];
+			$action = ucwords($_SESSION['userName']) . ' updated Covid-19 request with the Sample Code/ID  ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
 			$resource = 'covid-19-edit-request';
 
 			$general->activityLog($eventType, $action, $resource);

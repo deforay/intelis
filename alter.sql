@@ -2913,3 +2913,6 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 -- Thana 04-Feb-2022
 ALTER TABLE `form_covid19` ADD `patient_email` VARCHAR(256) NULL DEFAULT NULL AFTER `patient_phone_number`;
+
+-- Thana 07-Feb-2022
+ALTER TABLE `activity_log` ADD `user_id` VARCHAR(256) NULL DEFAULT NULL AFTER `resource`;

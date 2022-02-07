@@ -13,7 +13,6 @@ $tableName = "form_covid19";
 $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";
 $testTableName = 'covid19_tests';
-
 try {
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
@@ -145,7 +144,7 @@ try {
 	}
 	//Add event log
 	$eventType = 'update-covid-19-result';
-	$action = ucwords($_SESSION['userName']) . ' updated a result for the Covid-19 sample no. ' . $_POST['sampleCode'];
+	$action = ucwords($_SESSION['userName']) . ' updated a result for the Covid-19 sample Code/ID. ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
 	$resource = 'covid-19-result';
 
 	$general->activityLog($eventType, $action, $resource);

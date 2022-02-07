@@ -551,6 +551,7 @@ $sampleSuggestionDisplay = 'display:none;';
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <a class="btn btn-primary submit-btn" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                        <input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo $covid19Info[$sampleCode]; ?>" />
                         <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="7" />
                         <input type="hidden" name="deletedRow" id="deletedRow" value="" />
@@ -726,6 +727,7 @@ $sampleSuggestionDisplay = 'display:none;';
 
 
         $('.disabledForm input, .disabledForm select , .disabledForm textarea').attr('disabled', true);
+        $('#sampleCode').attr('disabled', false);
         // $('.test-name-table-input').prop('disabled',true);
         if (testCounter == 0) {
             addTestRow();
