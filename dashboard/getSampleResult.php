@@ -30,6 +30,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $table = "form_covid19";
     $samplesReceivedChart   = "covid19SamplesReceivedChart";
     $samplesTestedChart     = "covid19SamplesTestedChart";
+    $samplesNotTestedChart  = "covid19SamplesNotTestedChart";
     $samplesRejectedChart   = "covid19SamplesRejectedChart";
     $samplesWaitingChart    = "covid19SamplesWaitingChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
@@ -178,6 +179,17 @@ foreach ($tRes as $tRow) {
     $acceptedResult[] = array('total' => $tRow['count'], 'date' => $tRow['test_date']);
 }
 
+//Samples Not Tested
+if ($table == "form_covid19") {
+    $sampleNotTestedQuery = 'SELECT DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 JOIN facility_details as f ON f.facility_id=covid19.facility_id  INNER JOIN facility_details as l_f ON covid19.lab_id=l_f.facility_id WHERE (result_status = 6) AND ' . $whereCondition . ' DATE(covid19.sample_collection_date) <= "' . $cDate . '" AND DATE(covid19.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
+}
+$ntRes = $db->rawQuery($sampleNotTestedQuery); //overall result
+$holdResult = array();
+$holdTotal = 0;
+foreach ($ntRes as $ntRow) {
+    $holdTotal += $ntRow['count'];
+    $holdResult[] = array('total' => $ntRow['count'], 'date' => $ntRow['test_date']);
+}
 //Rejected Samples
 if ($table == "eid_form") {
     $sampleRejectedQuery = 'SELECT DATE(eid.sample_collection_date) as `collection_date`, COUNT(eid_id) as `count` FROM ' . $table . ' as eid INNER JOIN facility_details as f ON f.facility_id=eid.facility_id  INNER JOIN facility_details as l_f ON eid.lab_id=l_f.facility_id WHERE (result_status = 4) AND ' . $whereCondition . ' DATE(eid.sample_collection_date) <= "' . $cDate . '" AND DATE(eid.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
@@ -236,6 +248,21 @@ foreach ($tRes as $tRow) {
             </div>
         </div>
         <div id="<?php echo $samplesTestedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
+    </div>
+    <div class="dashboard-stat2 " style="cursor:pointer;">
+        <div class="display">
+            <div class="number">
+                <h3 class="font-blue-sharp">
+                    <span data-counter="counterup" data-value="<?php echo $holdTotal; ?>"><?php echo $holdTotal; ?></span>
+                </h3>
+                <small class="font-blue-sharp">SAMPLES NOT TESTED</small><br>
+                <small class="font-blue-sharp" style="font-size:0.75em;">In Selected Range</small>
+            </div>
+            <div class="icon">
+                <i class="icon-pie-chart"></i>
+            </div>
+        </div>
+        <div id="<?php echo $samplesNotTestedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
     </div>
 </div>
 
@@ -464,6 +491,66 @@ foreach ($tRes as $tRow) {
                 name: 'Samples',
                 data: [<?php
                         foreach ($acceptedResult as $tRow) {
+                            echo ucwords($tRow['total']) . ",";
+                        }
+                        ?>]
+
+            }],
+            colors: ['#7cb72a']
+        });
+    <?php }
+    if ($holdTotal > 0) { ?>
+        $('#<?php echo $samplesNotTestedChart; ?>').highcharts({
+            chart: {
+                type: 'column',
+                height: 150
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            credits: {
+                enabled: false
+            },
+            xAxis: {
+                categories: [<?php
+                                foreach ($holdResult as $tRow) {
+                                    echo "'" . ucwords($tRow['date']) . "',";
+                                }
+                                ?>],
+                crosshair: true,
+                scrollbar: {
+                    enabled: true
+                },
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    cursor: 'pointer',
+                }
+            },
+            series: [{
+                showInLegend: false,
+                name: 'Samples',
+                data: [<?php
+                        foreach ($holdResult as $tRow) {
                             echo ucwords($tRow['total']) . ",";
                         }
                         ?>]

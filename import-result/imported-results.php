@@ -137,10 +137,10 @@ foreach ($rejectionTypeResult as $type) {
 						<div class="box-header without-border">
 							<div class="box-header with-border">
 								<ul style="list-style: none;float: right;">
-									<li style="float:left;margin-right:40px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#e8000b;"></i>  <?= _("Sample Code/ID not from VLSM"); ?></li>
-									<li style="float:left;margin-right:40px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#86c0c8;"></i>  <?= _("Result already exists for this sample"); ?></li>
-									<li style="float:left;margin-right:40px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#337ab7;"></i>  <?= _("Result for sample from VLSM"); ?></li>
-									<li style="float:left;margin-right:20px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#7d8388;"></i>  <?= _("Control"); ?></li>
+									<li style="float:left;margin-right:40px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#e8000b;"></i> <?= _("Sample Code/ID not from VLSM"); ?></li>
+									<li style="float:left;margin-right:40px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#86c0c8;"></i> <?= _("Result already exists for this sample"); ?></li>
+									<li style="float:left;margin-right:40px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#337ab7;"></i> <?= _("Result for sample from VLSM"); ?></li>
+									<li style="float:left;margin-right:20px;"><i class="fa fa-exclamation" aria-hidden="true" style="color:#7d8388;"></i> <?= _("Control"); ?></li>
 								</ul>
 							</div>
 						</div>
@@ -525,7 +525,7 @@ foreach ($rejectionTypeResult as $type) {
 						$("#checkedTestsIdValue").val('');
 						$("#comments").val('');
 					});
-				//$.unblockUI();
+				// $.unblockUI();
 			} else {
 				oTable.fnDraw();
 			}
