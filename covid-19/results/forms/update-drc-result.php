@@ -4,7 +4,6 @@
 
 ob_start();
 
-
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -42,7 +41,7 @@ $covid19SelectedComorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($co
 
 $rKey = '';
 $pdQuery = "SELECT * FROM province_details";
-
+$sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
@@ -893,8 +892,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                             </div>
                         </div>
                         <div class="box-footer">
-
                             <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                            <input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo $covid19Info[$sampleCode]; ?>" />
                             <input type="hidden" name="revised" id="revised" value="no" />
                             <input type="hidden" name="formId" id="formId" value="7" />
                             <input type="hidden" name="deletedRow" id="deletedRow" value="" />
@@ -1130,6 +1129,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         <?php } ?>
 
         $('.enable-input input, .enable-input select , .enable-input textarea').attr('disabled', false);
+        $('#sampleCode').attr('disabled', false);
         $('#isResultAuthorized').change(function(e) {
             checkIsResultAuthorized();
         });

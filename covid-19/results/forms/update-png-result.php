@@ -700,6 +700,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                         <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo (isset($sKey) && $sKey != '') ? $sKey : ''; ?>" />
                     <?php } ?>
                     <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Update</a>
+                    <input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo $covid19Info[$sampleCode]; ?>" />
                     <input type="hidden" name="revised" id="revised" value="no" />
                     <input type="hidden" name="formId" id="formId" value="5" />
                     <input type="hidden" name="deletedRow" id="deletedRow" value="" />
@@ -938,6 +939,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
         <?php } ?>
 
         $('.enable-input input, .enable-input select , .enable-input textarea').attr('disabled', false);
+        $('#sampleCode').attr('disabled', false);
     });
 
 

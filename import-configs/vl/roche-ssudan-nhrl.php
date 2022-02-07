@@ -243,6 +243,7 @@ try {
         'event_type' => $eventType,
         'action' => $action,
         'resource' => $resource,
+        'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
         'date_time' => $general->getDateTime()
     );
     $db->insert("activity_log", $data);

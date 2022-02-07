@@ -29,8 +29,6 @@ $general = new \Vlsm\Models\General();
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					
-					
 					<!-- /.box-header -->
 					<div class="box-body">
 						<table id="vlRequestDataTable" class="table table-bordered table-striped">

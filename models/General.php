@@ -299,6 +299,7 @@ class General
             'event_type' => $eventType,
             'action' => $action,
             'resource' => $resource,
+            'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
             'date_time' => $this->getDateTime(),
             'ip_address' => $ipaddress,
         );
