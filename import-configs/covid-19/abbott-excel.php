@@ -28,10 +28,10 @@ try {
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 
-    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result")) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result");
+    if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
+        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
     }
-    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $fileName)) {
+    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName)) {
 
 
         $bquery = "select MAX(batch_code_key) from batch_details";
@@ -47,7 +47,7 @@ try {
 
 
         //load the CSV document from a file path
-        $csv = Reader::createFromPath(TEMP_PATH . DIRECTORY_SEPARATOR . "import-result" . DIRECTORY_SEPARATOR . $fileName, 'r');
+        $csv = Reader::createFromPath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName, 'r');
         $csv->setDelimiter("\t");
 
         $stmt = new Statement();
@@ -215,7 +215,7 @@ try {
     //Add event log
     $eventType = 'import';
     $action = ucwords($_SESSION['userName']) . ' imported a new test result with the sample code ' . $sampleCode;
-    $resource = 'import-result';
+    $resource = 'import-results-manually';
     $general->activityLog($eventType, $action, $resource);
 
     //new log for update in result

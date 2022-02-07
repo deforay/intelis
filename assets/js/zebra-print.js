@@ -35,7 +35,7 @@ function urldecode(str) { if (typeof str != "string") { return str; } return dec
 function setup_web_print()
 {
 	$('#printer_select').on('change', onPrinterSelected);
-	showLoading("Loading Printer Information...");
+	//showLoading("Loading Printer Information...");
 	default_mode = true;
 	selected_printer = null;
 	available_printers = null;
@@ -106,7 +106,7 @@ function showBrowserPrintNotFound()
 };
 function printBarcodeLabel(bcode,facility)
 {
-	showLoading("Printing...");
+	//showLoading("Printing...");
 	facility = urldecode(facility);
 	checkPrinterStatus( function (text){
 		if (text == "Ready to Print")

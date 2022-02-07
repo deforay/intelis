@@ -446,7 +446,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 function(data) {
                     $.unblockUI();
                     if (data > 0) {
-                        alert("Retest has been submitted.");
+                        alert("Selected Sample(s) ready for testing");
                         oTable.fnDraw();
                     } else {
                         alert("Something went wrong. Please try again later");

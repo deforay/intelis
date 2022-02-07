@@ -117,10 +117,9 @@ $batResult = $db->rawQuery($batQuery);
                                     <th><?php echo _("Sample Collection");?><br /> <?php echo _("Date");?></th>
                                     <th><?php echo _("Batch Code");?></th>
                                     <th><?php echo _("Facility Name");?></th>
-                                    <th><?php echo _("Child's ID");?></th>
-                                    <th><?php echo _("Child's Name");?></th>
-                                    <th><?php echo _("Mother's ID");?></th>
-                                    <th><?php echo _("Mother's Name");?></th>
+                                    <th><?php echo _("Patient ID");?></th>
+                                    <th><?php echo _("Patient First Name");?></th>
+                                    <th><?php echo _("Patient Last Name");?></th>
                                     <th><?php echo _("Province/State");?></th>
                                     <th><?php echo _("District/County");?></th>
                                     <th><?php echo _("Result");?></th>
@@ -137,23 +136,7 @@ $batResult = $db->rawQuery($batQuery);
                                 </tr>
                             </tbody>
                         </table>
-                        <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
-
-                            <div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details");?>...</span><br />
-                                <div class="progress" style="width:100%">
-                                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                                    </div>
-                                </div>
-                            </div> <!-- /printer_data_loading -->
-                            <div id="printer_details" style="display:none">
-                                <span id="selected_printer"><?php echo _("No printer selected");?>!</span>
-                                <button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry");?></button>
-                            </div><br /> <!-- /printer_details -->
-                            <div id="printer_select" style="display:none">
-                            <?php echo _("Zebra Printer Options");?><br />
-                            <?php echo _("Printer");?>: <select id="printers"></select>
-                            </div> <!-- /printer_select -->
-                        <?php } ?>
+                        
                     </div>
 
                 </div>
@@ -169,25 +152,6 @@ $batResult = $db->rawQuery($batQuery);
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
-<?php
-if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
-    if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
-        <script src="/assets/js/DYMO.Label.Framework.js"></script>
-        <script src="/configs/dymo-format.js"></script>
-        <script src="/assets/js/dymo-print.js"></script>
-    <?php
-    } else if ($global['bar_code_printing'] == 'zebra-printer') {
-    ?>
-        <script src="/assets/js/zebra-browserprint.js"></script>
-        <script src="/configs/zebra-format.js"></script>
-        <script src="/assets/js/zebra-print.js"></script>
-<?php
-    }
-}
-?>
-
-
 
 <script type="text/javascript">
     var startDate = "";
@@ -196,11 +160,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     var selectedTestsId = [];
     var oTable = null;
     $(document).ready(function() {
-        <?php
-        if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-            echo "printBarcodeLabel('" . $_GET['s'] . "','" . $_GET['f'] . "');";
-        }
-        ?>
+        
         $("#facilityName").select2({
             placeholder: "<?php echo _("Select Facilities");?>"
         });
@@ -305,10 +265,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     "sClass": "center"
                 }, {
                     "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
                 },
                 <?php if (isset($_SESSION['privileges']) && (in_array("covid-19-edit-request.php", $_SESSION['privileges']))) { ?> {
                         "sClass": "center",
@@ -332,34 +288,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             "bServerSide": true,
             "sAjaxSource": "/covid-19/results/get-failed-results.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
-                aoData.push({
-                    "name": "batchCode",
-                    "value": $("#batchCode").val()
-                });
-                aoData.push({
-                    "name": "sampleCollectionDate",
-                    "value": $("#sampleCollectionDate").val()
-                });
-                aoData.push({
-                    "name": "facilityName",
-                    "value": $("#facilityName").val()
-                });
-                aoData.push({
-                    "name": "sampleType",
-                    "value": $("#sampleType").val()
-                });
-                aoData.push({
-                    "name": "district",
-                    "value": $("#district").val()
-                });
-                aoData.push({
-                    "name": "state",
-                    "value": $("#state").val()
-                });
-                aoData.push({
-                    "name": "reqSampleType",
-                    "value": $("#requestSampleType").val()
-                });
+               
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
@@ -446,7 +375,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 function(data) {
                     $.unblockUI();
                     if (data > 0) {
-                        alert("<?php echo _("Retest has been submitted.");?>");
+                        alert("<?php echo _("Selected Sample(s) ready for testing");?>");
                         oTable.fnDraw();
                     } else {
                         alert("<?php echo _("Something went wrong. Please try again later");?>");
