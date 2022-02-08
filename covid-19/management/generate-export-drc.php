@@ -110,7 +110,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
             $colNo++;
         }
     }
-    $sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
+    $sheet->getStyle('A3:AK3')->applyFromArray($styleArray);
 
     $no = 1;
     foreach ($rResult as $aRow) {
