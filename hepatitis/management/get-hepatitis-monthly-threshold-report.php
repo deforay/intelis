@@ -189,7 +189,7 @@ if (!empty($facilityMap)) {
 $sWhere .= " AND hf.test_type = 'hepatitis'";
 $sQuery = $sQuery . ' ' . $sWhere;
 $_SESSION['hepatitisMonitoringThresholdReportQuery'] = $sQuery;
-die($sQuery);
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQuery($sQuery);

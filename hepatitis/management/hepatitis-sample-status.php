@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
-$title = "Hepatitis | Sample Status Report";
+$title = _("Hepatitis | Sample Status Report");
 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -50,12 +50,12 @@ $batResult = $db->rawQuery($batQuery);
             <tr>
               <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
               <td>
-                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
               </td>
               <td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
               <td>
-                <select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
-                  <option value=""> -- Select -- </option>
+                <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+                  <option value=""> <?php echo _("-- Select --");?> </option>
                   <?php
                   foreach ($batResult as $code) {
                   ?>
@@ -71,7 +71,7 @@ $batResult = $db->rawQuery($batQuery);
 
             <td>&nbsp;<b><?php echo _("Testing Lab");?> &nbsp;:</b></td>
               <td>
-                <select class="form-control" id="labName" name="labName" title="Please select facility name">
+                <select class="form-control" id="labName" name="labName" title="<?php echo _('Please select facility name');?>">
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>
@@ -98,7 +98,7 @@ $batResult = $db->rawQuery($batQuery);
       <div class="col-xs-12">
         <div class="box">
           <div class="box-body">
-            <button class="btn btn-success pull-right" type="button" onclick="hepatitisExportTAT()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export to excel</button>
+            <button class="btn btn-success pull-right" type="button" onclick="hepatitisExportTAT()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel");?></button>
             <table id="hepatitisRequestDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
@@ -134,7 +134,7 @@ $batResult = $db->rawQuery($batQuery);
 <script>
   $(function() {
     $("#labName").select2({
-      placeholder: "Select Testing Lab"
+      placeholder: "<?php echo _("Select Testing Lab");?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -265,7 +265,7 @@ $batResult = $db->rawQuery($batQuery);
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert('Unable to generate the excel file');
+          alert("<?php echo _("Unable to generate the excel file");?>");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;

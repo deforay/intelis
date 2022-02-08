@@ -1,5 +1,5 @@
 <?php
-$title = "Export Data";
+$title = _("Export Data");
 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -68,17 +68,17 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 						<tr>
 							<th><?php echo _("Sample Collection Date");?></th>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
 							</td>
 							<th><?php echo _("Facility Name");?></th>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
+								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
 							<th><?php echo _("Testing Lab");?></th>
 							<td>
-								<select class="form-control" id="testingLab" name="testingLab" title="Please select vl lab" style="width:220px;">
+								<select class="form-control" id="testingLab" name="testingLab" title="<?php echo _('Please select vl lab');?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -86,13 +86,13 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 						<tr>
 							<th><?php echo _("Sample Test Date");?></th>
 							<td>
-								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" />
 							</td>
 
 							<th><?php echo _("HCV VL Result");?> </th>
 							<td>
-								<select class="form-control" id="hcvVLoad" name="hcvVLoad" title="Please select batch code" style="width:220px;">
-									<option value=""> -- Select -- </option>
+								<select class="form-control" id="hcvVLoad" name="hcvVLoad" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php foreach ($hepatitisResults as $hepatitisResultsKey => $hepatitisResultsValue) { ?>
 										<option value="<?php echo $hepatitisResultsKey; ?>"> <?php echo $hepatitisResultsValue; ?> </option>
 									<?php } ?>
@@ -100,8 +100,8 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 							</td>
 							<th><?php echo _("HBV VL Result");?> </th>
 							<td>
-								<select class="form-control" id="hbvVLoad" name="hbvVLoad" title="Please select batch code" style="width:220px;">
-									<option value=""> -- Select -- </option>
+								<select class="form-control" id="hbvVLoad" name="hbvVLoad" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php foreach ($hepatitisResults as $hepatitisResultsKey => $hepatitisResultsValue) { ?>
 										<option value="<?php echo $hepatitisResultsKey; ?>"> <?php echo $hepatitisResultsValue; ?> </option>
 									<?php } ?>
@@ -111,7 +111,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 						<tr>
 							<th><?php echo _("Status");?></th>
 							<td>
-								<select name="status" id="status" class="form-control" title="Please choose status">
+								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status');?>">
 									<option value=""> <?php echo _("-- Select --");?> </option>
 									<option value="7"><?php echo _("Accepted");?></option>
 									<option value="4"><?php echo _("Rejected");?></option>
@@ -120,8 +120,8 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 
 							<th><?php echo _("Funding Sources");?></th>
 							<td>
-								<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source">
-									<option value=""> -- Select -- </option>
+								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source');?>">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php
 									foreach ($fundingSourceList as $fundingSource) {
 									?>
@@ -131,8 +131,8 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 							</td>
 							<th><?php echo _("Implementing Partners");?></th>
 							<td>
-								<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner">
-									<option value=""> -- Select -- </option>
+								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner');?>">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) {
 									?>
@@ -145,7 +145,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 						<tr>
 							<th><?php echo _("Last Print Date");?></th>
 							<td>
-								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="Select Print Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="<?php echo _('Select Print Date');?>" readonly style="width:220px;background:#fff;" />
 							</td>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search");?></span></button>
@@ -250,7 +250,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 	var oTable = null;
 	$(document).ready(function() {
 		$("#facilityName").select2({
-			placeholder: "Select Facilities"
+			placeholder: "<?php echo _("Select Facilities");?>"
 		});
 		$('#sampleCollectionDate,#sampleTestDate,#printDate').daterangepicker({
 				locale: {
@@ -445,7 +445,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
-					alert('Unable to generate download');
+					alert("<?php echo _("Unable to generate download");?>");
 				} else {
 					window.open('/uploads/' + data, '_blank');
 				}
@@ -470,7 +470,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate excel.');
+					alert("<?php echo _("Unable to generate excel");?>.");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;

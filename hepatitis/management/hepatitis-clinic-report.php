@@ -1,5 +1,5 @@
 <?php
-$title = "EID | Clinics Report";
+$title = _("Hepatitis | Clinics Report");
  
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -63,12 +63,12 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="Please select batch code" style="width:220px;">
-															<option value=""> -- Select -- </option>
+														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
@@ -80,8 +80,8 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="Please select sample type">
-															<option value=""> -- Select -- </option>
+														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
@@ -95,13 +95,13 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
 													<td>&nbsp;<b><?php echo _("Contact Status");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="Please select contact status" style="width:220px;">
+														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status');?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --");?> </option>
 															<option value="yes"><?php echo _("Completed");?></option>
 															<option value="no"><?php echo _("Not Completed");?></option>
@@ -110,7 +110,7 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="">
+														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _("-- Select --");?> </option>
 															<option value="male"><?php echo _("Male");?></option>
 															<option value="female"><?php echo _("Female");?></option>
@@ -163,12 +163,12 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="Select Sample Test Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="Please select batch code" style="width:220px;">
-															<option value=""> -- Select -- </option>
+														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
@@ -180,8 +180,8 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="Please select sample type">
-															<option value=""> -- Select -- </option>
+														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
@@ -195,13 +195,13 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="rjtFacilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
 													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="">
+														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _("-- Select --");?> </option>
 															<option value="male"><?php echo _("Male");?></option>
 															<option value="female"><?php echo _("Female");?></option>
@@ -249,12 +249,12 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="Select Sample Collection Date" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Collection Date');?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="Please select batch code" style="width:220px;">
-															<option value=""> -- Select -- </option>
+														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
@@ -266,8 +266,8 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="Please select sample type">
-															<option value=""> -- Select -- </option>
+														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
+															<option value=""> <?php echo _("-- Select --");?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
@@ -281,13 +281,13 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="noResultFacilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
 													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
 													<td>
-														<select name="noResultGender" id="noResultGender" class="form-control" title="Please choose gender" style="width:220px;" onchange="">
+														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _("-- Select --");?> </option>
 															<option value="male"><?php echo _("Male");?></option>
 															<option value="female"><?php echo _("Female");?></option>
@@ -334,11 +334,11 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Sample Collection Date" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Sample Collection Date');?>" readonly style="width:220px;background:#fff;" />
 													</td>
 													<td>&nbsp;<b>Fields&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="formField" name="formField" multiple="multiple" title="Please fields" style="width:220px;">
+														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _('Please fields');?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --");?> </option>
 															<option value="sample_code"><?php echo _("Sample Code");?></option>
 															<option value="sample_collection_date"><?php echo _("Sample Collection Date");?></option>
@@ -409,10 +409,10 @@ $batResult = $db->rawQuery($batQuery);
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
-			placeholder: "Select Facilities"
+			placeholder: "<?php echo _("Select Facilities");?>"
 		});
 		$("#formField").select2({
-			placeholder: "Select Fields"
+			placeholder: "<?php echo _("Select Fields");?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
 				locale: {
@@ -791,14 +791,14 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function updateStatus(id, value) {
-		conf = confirm("Do you wisht to change the contact completed status?");
+		conf = confirm("<?php echo _("Do you wisht to change the contact completed status?");?>");
 		if (conf) {
 			$.post("/vl/program-management/updateContactCompletedStatus.php", {
 					id: id,
 					value: value
 				},
 				function(data) {
-					alert("Status updated successfully");
+					alert("<?php echo _("Status updated successfully");?>");
 					oTableViralLoad.fnDraw();
 				});
 		} else {
@@ -808,7 +808,7 @@ $batResult = $db->rawQuery($batQuery);
 
 	function exportHighViralLoadInexcel() {
 		var markAsComplete = false;
-		confm = confirm("Do you want to mark these as complete ?");
+		confm = confirm("<?php echo _("Do you want to mark these as complete ?");?>");
 		if (confm) {
 			var markAsComplete = true;
 		}
@@ -824,7 +824,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate the excel file');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -844,7 +844,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate the excel file');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -864,7 +864,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate the excel file');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -881,7 +881,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert('Unable to generate the excel file');
+					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
