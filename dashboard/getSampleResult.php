@@ -5,12 +5,13 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php
+$facilityDb = new \Vlsm\Models\Facilities(); // passing $db which is coming from startup.php
 
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
 $cDate = date('Y-m-d');
 $lastSevenDay = date('Y-m-d', strtotime('-7 days'));
-
+$facilityInfo = $facilityDb->getAllFacilities();
 
 
 $waitingTotal = 0;
@@ -33,6 +34,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesNotTestedChart  = "covid19SamplesNotTestedChart";
     $samplesRejectedChart   = "covid19SamplesRejectedChart";
     $samplesWaitingChart    = "covid19SamplesWaitingChart";
+    $samplesCollectionChart = "covid19SamplesCollectionChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
     $table = "form_hepatitis";
     $samplesReceivedChart   = "hepatitisSamplesReceivedChart";
@@ -129,6 +131,18 @@ if ($waitingResult[$i][0]['total'] != 0) {
     unset($waitingResult[$i]);
 }
 
+//get collection data
+if ($table == "form_covid19") {
+    $collectionQuery = "SELECT COUNT(covid19_id) as total, facility_name FROM " . $table . " as covid19 JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE $whereCondtion vlsm_country_id = '" . $configFormResult[0]['value'] . "' AND DATE(covid19.sample_collection_date) <= '" . $cDate . "' AND DATE(covid19.sample_collection_date) >= '" . $lastSevenDay . "'  GROUP BY f.facility_id ORDER BY total DESC";
+    $collectionResult = $db->rawQuery($collectionQuery); //collection result
+    $collectionTotal = 0;
+    if (sizeof($collectionResult) > 0) {
+        foreach ($collectionResult as $total) {
+            $collectionTotal = $collectionTotal + $total['total'];
+        }
+    }
+}
+
 // Samples Accession
 if ($table == "eid_form") {
     $accessionQuery = 'SELECT DATE(eid.sample_collection_date) as `collection_date`, COUNT(eid_id) as `count` FROM ' . $table . ' as eid INNER JOIN facility_details as f ON f.facility_id=eid.facility_id WHERE ' . $whereCondition . ' DATE(eid.sample_collection_date) <= "' . $cDate . '" AND DATE(eid.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
@@ -216,6 +230,37 @@ foreach ($tRes as $tRow) {
 }
 
 ?>
+<link href="/assets/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<style>
+    .select2-container .select2-selection--single {
+        height: 34px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        top: 6px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 22px !important;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        margin-top: 0px !important;
+    }
+
+    .select2-selection__choice__remove {
+        color: red !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        /* background-color: #00c0ef;
+			border-color: #00acd6; */
+        color: #000 !important;
+        font-family: helvetica, arial, sans-serif;
+    }
+</style>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
         <div class="display">
@@ -303,8 +348,63 @@ foreach ($tRes as $tRow) {
         <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="150" style="min-height:150px;"></div>
     </div>
 </div>
-
+<?php if ($table == "form_covid19") { ?>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+        <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+            <tr>
+                <td style="vertical-align:middle;"><b>Facility Name&nbsp;:</b>
+                    <select id="facilityId" name="facilityId" class="form-control" multiple title="Select facility name to filter" style="width:220px;background:#fff;">
+                        <option vlaue="">--Select--</option>
+                        <?php foreach ($facilityInfo as $facility) { ?>
+                            <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+                <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();" value="Search" class="searchBtn btn btn-success btn-sm">
+                </td>
+            </tr>
+        </table>
+        <div class="dashboard-stat2 " style="cursor:pointer;">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-purple-soft">
+                        <span data-counter="counterup" data-value="<?php echo $collectionTotal; ?>"><?php echo $collectionTotal; ?></span>
+                    </h3>
+                    <small class="font-purple-soft">SAMPLES REGISTERED BY COLLECTION POINT</small><br>
+                    <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->
+                </div>
+                <div class="icon">
+                    <i class="icon-pie-chart"></i>
+                </div>
+            </div>
+            <div id="collectionSite">
+                <div id="<?php echo $samplesCollectionChart; ?>" width="210" height="150" style="min-height:150px;"></div>
+            </div>
+        </div>
+    </div>
+<?php } ?>
+<script src="/assets/js/select2.js"></script>
 <script>
+    $(document).ready(function() {
+        $('#facilityId').select2({
+            width: '100%',
+            placeholder: "Select Facility"
+        });
+    });
+
+    function fetchByFacility() {
+        $.blockUI();
+        $.post("/dashboard/get-collection-samples.php", {
+                table: 'form_covid19',
+                facilityId: $('#facilityId').val(),
+                cDate: <?php echo $cDate; ?>,
+                sampleCollectionDate: '<?php echo $_POST['sampleCollectionDate']; ?>',
+            },
+            function(data) {
+                $("#collectionSite").html(data);
+            });
+        $.unblockUI();
+    }
     <?php
     //if(isset($tResult) && count($tResult)>0){
     if ($receivedTotal > 0) { ?>
@@ -435,6 +535,66 @@ foreach ($tRes as $tRow) {
 
             }],
             colors: ['#8877a9']
+        });
+    <?php }
+    if ($collectionTotal > 0 && $table == "form_covid19") { ?>
+        $('#<?php echo $samplesCollectionChart; ?>').highcharts({
+            chart: {
+                type: 'column',
+                height: 150
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            credits: {
+                enabled: false
+            },
+            xAxis: {
+                categories: [<?php
+                                foreach ($collectionResult as $tRow) {
+                                    echo "'" . ucwords($tRow['facility_name']) . "',";
+                                }
+                                ?>],
+                crosshair: true,
+                scrollbar: {
+                    enabled: true
+                },
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    cursor: 'pointer',
+                }
+            },
+            series: [{
+                showInLegend: false,
+                name: 'Samples',
+                data: [<?php
+                        foreach ($collectionResult as $tRow) {
+                            echo ucwords($tRow['total']) . ",";
+                        }
+                        ?>]
+
+            }],
+            colors: ['#f36a5a']
         });
     <?php }
     if ($acceptedTotal > 0) {
