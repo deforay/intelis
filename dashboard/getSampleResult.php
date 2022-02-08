@@ -133,7 +133,7 @@ if ($waitingResult[$i][0]['total'] != 0) {
 
 //get collection data
 if ($table == "form_covid19") {
-    $collectionQuery = "SELECT COUNT(covid19_id) as total, facility_name FROM " . $table . " as covid19 JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE $whereCondtion vlsm_country_id = '" . $configFormResult[0]['value'] . "' AND DATE(covid19.sample_collection_date) <= '" . $cDate . "' AND DATE(covid19.sample_collection_date) >= '" . $lastSevenDay . "'  GROUP BY f.facility_id ORDER BY total DESC";
+    $collectionQuery = "SELECT COUNT(covid19_id) as total, facility_name FROM " . $table . " as covid19 JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE $whereCondtion vlsm_country_id = '" . $configFormResult[0]['value'] . "' AND DATE(covid19.sample_collection_date) <= '" . $cDate . "' AND DATE(covid19.sample_collection_date) >= '" . $lastSevenDay . "'  GROUP BY f.facility_id having `total` > 0 ORDER BY total DESC";
     $collectionResult = $db->rawQuery($collectionQuery); //collection result
     $collectionTotal = 0;
     if (sizeof($collectionResult) > 0) {
@@ -352,9 +352,8 @@ foreach ($tRes as $tRow) {
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
         <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
             <tr>
-                <td style="vertical-align:middle;"><b>Facility Name&nbsp;:</b>
+                <td style="vertical-align:middle;"><b>Collection Point&nbsp;:</b>
                     <select id="facilityId" name="facilityId" class="form-control" multiple title="Select facility name to filter" style="width:220px;background:#fff;">
-                        <option vlaue="">--Select--</option>
                         <?php foreach ($facilityInfo as $facility) { ?>
                             <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?></option>
                         <?php } ?>
@@ -388,7 +387,7 @@ foreach ($tRes as $tRow) {
     $(document).ready(function() {
         $('#facilityId').select2({
             width: '100%',
-            placeholder: "Select Facility"
+            placeholder: "<?= _("Select Collection Point(s)"); ?>"
         });
     });
 

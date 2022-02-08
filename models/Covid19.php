@@ -149,7 +149,7 @@ class Covid19
         if (!empty($name)) {
             $where = " AND sample_name LIKE '$name%'";
         }
-        $query = "SELECT * FROM r_covid19_sample_type where status='active'$where";
+        $query = "SELECT * FROM r_covid19_sample_type where status='active' $where";
         return $this->db->rawQuery($query);
     }
 
@@ -167,7 +167,7 @@ class Covid19
 
     public function checkAllCovid19TestsForPositive($covid19SampleId)
     {
-        if(empty($covid19SampleId)) return false;
+        if (empty($covid19SampleId)) return false;
         $response = $this->db->rawQuery("SELECT * FROM covid19_tests WHERE `covid19_id` = $covid19SampleId ORDER BY test_id ASC");
 
         foreach ($response as $row) {

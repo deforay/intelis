@@ -96,9 +96,6 @@ try {
 
                 $db->insert('covid19_imported_controls', $data);
             } else {
-
-
-
                 $data = array(
                     'result_reviewed_by' => $_POST['reviewedBy'],
                     'import_machine_name' => $rResult[0]['import_machine_name'],
@@ -151,7 +148,6 @@ try {
                         $data['reason_for_sample_rejection'] = null;
                         $data['result'] = $rResult[0]['result'];
                     }
-
 
 
                     //get bacth code
