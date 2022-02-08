@@ -56,7 +56,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("Testing Platform"),
         _("Test Method"),
         _("Result"),
-        _("Date result released")
+        _("Date result released"),
+        _("Symptom Detected")
     );
 
 
@@ -110,10 +111,20 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
             $colNo++;
         }
     }
-    $sheet->getStyle('A3:AK3')->applyFromArray($styleArray);
+    $sheet->getStyle('A3:AL3')->applyFromArray($styleArray);
 
     $no = 1;
     foreach ($rResult as $aRow) {
+        $symptomList = array();
+        $squery = "SELECT s.*, ps.* FROM form_covid19 as c19 
+        INNER JOIN covid19_patient_symptoms AS ps ON c19.covid19_id = ps.covid19_id 
+        INNER JOIN r_covid19_symptoms AS s ON ps.symptom_id = s.symptom_id 
+        WHERE c19.covid19_id = " . $aRow['covid19_id'];
+        $result = $db->rawQuery($squery);
+        foreach ($result as $symptom) {
+            $symResult = (isset($symptom['symptom_detected']) && $symptom['symptom_detected'] != "") ? ucwords($symptom['symptom_detected']) : "Unknown";
+            $symptomList[] = $symptom['symptom_name'] . ' = ' . $symResult;
+        }
         $row = array();
         if ($arr['vl_form'] == 1) {
             // Get testing platform and test method 
@@ -226,6 +237,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = ucwords($testMethod);
         $row[] = $covid19Results[$aRow['result']];
         $row[] = $general->humanDateFormat($aRow['result_printed_datetime']);
+        $row[] = implode(", ", $symptomList);
 
         $output[] = $row;
         $no++;
