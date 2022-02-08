@@ -212,7 +212,7 @@ try {
 	}
 
 	if ($id > 0 || $sid > 0 || $pid > 0) {
-		$_SESSION['alertMsg'] = "Hepatitis request updated successfully";
+		$_SESSION['alertMsg'] = _("Hepatitis request updated successfully");
 		//Add event log
 		$eventType = 'update-hepatitis-request';
 		$action = ucwords($_SESSION['userName']) . ' updated hepatitis request with the Sample ID/Code  ' . $_POST['hepatitisSampleId'];
@@ -229,7 +229,7 @@ try {
 		// $db->insert($tableName1,$data);
 
 	} else {
-		$_SESSION['alertMsg'] = "Please try again later";
+		$_SESSION['alertMsg'] = _("Please try again later");
 	}
 	header("location:/hepatitis/requests/hepatitis-requests.php");
 } catch (Exception $exc) {

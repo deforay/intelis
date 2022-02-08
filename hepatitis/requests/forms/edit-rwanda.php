@@ -67,13 +67,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("RWANDA HEPATITIS LABORATORY TEST REQUEST FORM");?></h1>
+        <h1><i class="fa fa-edit"></i> RWANDA HEPATITIS LABORATORY TEST REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
             <?php if (isset($hepatitisInfo['result']) && $hepatitisInfo['result'] != "") { ?>
-                <li class="active"><?php echo _("View Request");?></li>
+                <li class="active">View Request</li>
             <?php } else { ?>
-                <li class="active"><?php echo _("Update Request");?></li>
+                <li class="active">Update Request</li>
             <?php } ?>
         </ol>
     </section>

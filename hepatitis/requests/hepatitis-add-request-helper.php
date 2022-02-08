@@ -191,7 +191,7 @@ try {
 	}
 
 	if ($id > 0) {
-		$_SESSION['alertMsg'] = "Hepatitis test request added successfully";
+		$_SESSION['alertMsg'] = _("Hepatitis test request added successfully");
 		//Add event log
 		$eventType = 'hepatitis-add-request';
 		$action = ucwords($_SESSION['userName']) . ' added a new hepatitis request with the Sample ID/Code  ' . $_POST['hepatitisSampleId'];
@@ -199,7 +199,7 @@ try {
 
 		$general->activityLog($eventType, $action, $resource);
 	} else {
-		$_SESSION['alertMsg'] = "Unable to add this hepatitis sample. Please try again later";
+		$_SESSION['alertMsg'] = _("Unable to add this hepatitis sample. Please try again later");
 	}
 
 	if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {

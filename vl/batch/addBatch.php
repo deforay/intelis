@@ -237,7 +237,7 @@ foreach ($testPlatformResult as $machine) {
 	$(document).ready(function() {
 
 		$("#facilityName").select2({
-			placeholder: "<?php echo _('Select Facilities');?>"
+			placeholder: "<?php echo _("Select Facilities");?>"
 		});
 
 		$('.daterange').daterangepicker({

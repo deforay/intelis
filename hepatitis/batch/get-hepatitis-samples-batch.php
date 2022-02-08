@@ -67,7 +67,7 @@ $result = $db->rawQuery($query);
         <div class="col-md-12">
             <div class="col-md-12">
                 <div style="width:60%;margin:0 auto;clear:both;">
-                    <a href="#" id="select-all-samplecode" style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+                    <a href="#" id="select-all-samplecode" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
                 </div><br /><br />
                 <select id="sampleCode" name="sampleCode[]" multiple="multiple" class="search">
                     <?php
@@ -85,10 +85,10 @@ $result = $db->rawQuery($query);
 <script>
     $(document).ready(function() {
         $('.search').multiSelect({
-            selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-            selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-            selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(<?php echo count($result); ?>)</div>",
-            selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'>Selected samples(0)</div>",
+            selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
+			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
+			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'><?php echo _("Available samples");?>(<?php echo count($result); ?>)</div>",
+			selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'><?php echo _("Selected samples");?>(0)</div>",
             afterInit: function(ms) {
                 var that = this,
                     $selectableSearch = that.$selectableUl.prev(),
@@ -115,14 +115,14 @@ $result = $db->rawQuery($query);
             afterSelect: function() {
                 //button disabled/enabled
                 if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-                    alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+                    alert("<?php echo _("You have selected Maximum no. of sample");?> " + this.qs2.cache().matchedResultsCount);
                     $("#batchSubmit").attr("disabled", false);
                     $("#batchSubmit").css("pointer-events", "auto");
                 } else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
                     $("#batchSubmit").attr("disabled", false);
                     $("#batchSubmit").css("pointer-events", "auto");
                 } else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-                    alert("You have already selected Maximum no. of sample " + noOfSamples);
+                    alert("<?php echo _("You have already selected Maximum no. of sample");?> " + noOfSamples);
                     $("#batchSubmit").attr("disabled", true);
                     $("#batchSubmit").css("pointer-events", "none");
                 }
@@ -137,7 +137,7 @@ $result = $db->rawQuery($query);
                     $("#batchSubmit").attr("disabled", true);
                     $("#batchSubmit").css("pointer-events", "none");
                 } else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-                    alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+                    alert("<?php echo _("You have selected Maximum no. of sample");?> " + this.qs2.cache().matchedResultsCount);
                     $("#batchSubmit").attr("disabled", false);
                     $("#batchSubmit").css("pointer-events", "auto");
                 } else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
@@ -149,8 +149,8 @@ $result = $db->rawQuery($query);
                 }
                 this.qs1.cache();
                 this.qs2.cache();
-                $("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
-                $("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
+                $("#unselectableCount").html("<?php echo _("Available samples");?>(" + this.qs1.cache().matchedResultsCount + ")");
+                $("#selectableCount").html("<?php echo _("Selected samples");?>(" + this.qs2.cache().matchedResultsCount + ")");
             }
         });
         $('#select-all-samplecode').click(function() {
