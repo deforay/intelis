@@ -652,6 +652,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															<option value="">-- Select --</option>
 															<option value='who' <?php echo (empty($arr['covid19_report_type']) || $arr['covid19_report_type'] == 'standard') ? "selected='selected'" : ""; ?>> Standard </option>
 															<option value='rwanda' <?php echo ($arr['covid19_report_type'] == 'rwanda') ? "selected='selected'" : ""; ?>> Rwanda </option>
+															<option value='drc' <?php echo ($arr['covid19_report_type'] == 'drc') ? "selected='selected'" : ""; ?>> DRC </option>
 														</select>
 													</div>
 												<?php }

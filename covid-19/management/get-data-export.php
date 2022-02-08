@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
+
 
 
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
@@ -118,6 +118,12 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.patient_district,
                         vl.patient_nationality,
                         vl.patient_city,
+                        vl.fever_temp,
+                        vl.temperature_measurement_method,
+                        vl.respiratory_rate,
+                        vl.oxygen_saturation,
+                        vl.number_of_days_sick,
+                        vl.date_of_initial_consultation,
                         vl.sample_collection_date,
                         vl.type_of_test_requested,
                         vl.date_of_symptom_onset,
@@ -340,9 +346,9 @@ foreach ($rResult as $aRow) {
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
      if ($aRow['is_result_authorised'] == 'yes') {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("View").'" onclick="convertSearchResultToPdf(' . $aRow['covid19_id'] . ');"><i class="fa fa-file-text"></i> '. _("Result PDF").'</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['covid19_id'] . ');"><i class="fa fa-file-text"></i> ' . _("Result PDF") . '</a>';
      } else {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="'. _("View").'"><i class="fa fa-ban"></i> '. _("Not Authorized").'</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="' . _("View") . '"><i class="fa fa-ban"></i> ' . _("Not Authorized") . '</a>';
      }
 
      $output['aaData'][] = $row;
