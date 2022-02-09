@@ -12,7 +12,7 @@ try {
 
     $exist = $general->existBatchCode($_POST['batchCode']);
     if ($exist) {
-        $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
+        $_SESSION['alertMsg'] = _("Something went wrong. Please try again later.");
         header("location:hepatitis-batches.php");
     } else {
 

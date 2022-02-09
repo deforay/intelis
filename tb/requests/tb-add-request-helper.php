@@ -204,7 +204,7 @@ try {
         $id = $db->update($tableName, $tbData);
     }
     if ($id > 0) {
-        $_SESSION['alertMsg'] = "TB test request added successfully";
+        $_SESSION['alertMsg'] = _("TB test request added successfully");
         //Add event log
         $eventType = 'tb-add-request';
         $action = ucwords($_SESSION['userName']) . ' added a new TB request with the Sample ID/Code  ' . $_POST['tbSampleId'];
@@ -212,7 +212,7 @@ try {
 
         $general->activityLog($eventType, $action, $resource);
     } else {
-        $_SESSION['alertMsg'] = "Unable to add this TB sample. Please try again later";
+        $_SESSION['alertMsg'] = _("Unable to add this TB sample. Please try again later");
     }
 
     if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {

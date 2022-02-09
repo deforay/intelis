@@ -84,9 +84,9 @@ try {
 	$id = $db->update($tableName, $hepatitisData);
 	error_log ($db->getLastError() . PHP_EOL);
 	if ($id > 0) {
-		$_SESSION['alertMsg'] = "Hepatitis result updated successfully";
+		$_SESSION['alertMsg'] = _("Hepatitis result updated successfully");
 	} else {
-		$_SESSION['alertMsg'] = "Please try again later";
+		$_SESSION['alertMsg'] = _("Please try again later");
 	}
 	//Add event log
 	$eventType = 'update-hepatitis-result';

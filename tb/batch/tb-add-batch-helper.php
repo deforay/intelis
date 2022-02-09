@@ -11,7 +11,7 @@ $tableName2 = "form_tb";
 try {
     $exist = $general->existBatchCode($_POST['batchCode']);
     if ($exist) {
-        $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
+        $_SESSION['alertMsg'] = _("Something went wrong. Please try again later.");
         header("location:tb-batches.php");
     } else {
 
