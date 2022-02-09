@@ -318,7 +318,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						<li><span class="is-remote-server-reachable"></span></li>
 						<li class="dropdown user user-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<img src="/assets/img/default-user.png" class="user-image" alt="User Image">
+								<img src="/assets/img/default-user.png" class="user-image" alt="User Image" style="max-width:25px;">
 								<span class="hidden-xs"><?php if (isset($_SESSION['userName'])) {
 															echo $_SESSION['userName'];
 														} ?></span>
