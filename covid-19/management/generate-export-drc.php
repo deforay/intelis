@@ -34,15 +34,32 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("Patient DoB"),
         _("Patient Age"),
         _("Patient Gender"),
-        _("Nationality"),
+        _("Is Patient Pregnant"),
+        _("Patient Phone No."),
+        _("Patient Email"),
+        _("Patient Address"),
         _("Patient State"),
         _("Patient County"),
         _("Patient City/Village"),
+        _("Nationality"),
         _("Fever/Temperature"),
-        _("Symptoms Detected"),
         _("Temprature Measurement"),
-        _("Respiratory Rate"),
-        _("Oxygen Saturation"),
+        _("Symptoms Detected"),
+        _("Medical History"),
+        _("Comorbidities"),
+        _("Recenty Hospitalized?"),
+        _("Patient Lives With Children"),
+        _("Patient Cares for Children"),
+        _("Close Contacts"),
+        _("Has Recent Travel History"),
+        _("Country Names"),
+        _("Travel Return Date"),
+        _("Airline"),
+        _("Seat No."),
+        _("Arrival Date/Time"),
+        _("Departure Airport"),
+        _("Transit"),
+        _("Reason of Visit"),
         _("Number of Days Sick"),
         _("Date of Symptoms Onset"),
         _("Date of Initial Consultation"),
@@ -90,7 +107,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         )
     );
 
-    $sheet->mergeCells('A1:AG1');
+    $sheet->mergeCells('A1:BG1');
     $nameValue = '';
     foreach ($_POST as $key => $value) {
         if (trim($value) != '' && trim($value) != '-- Select --') {
@@ -111,7 +128,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
             $colNo++;
         }
     }
-    $sheet->getStyle('A3:AL3')->applyFromArray($styleArray);
+    $sheet->getStyle('A3:CG3')->applyFromArray($styleArray);
 
     $no = 1;
     foreach ($rResult as $aRow) {
@@ -119,22 +136,33 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $squery = "SELECT s.*, ps.* FROM form_covid19 as c19 
         INNER JOIN covid19_patient_symptoms AS ps ON c19.covid19_id = ps.covid19_id 
         INNER JOIN r_covid19_symptoms AS s ON ps.symptom_id = s.symptom_id 
-        WHERE c19.covid19_id = " . $aRow['covid19_id'];
+        WHERE ps.symptom_detected like 'yes' AND c19.covid19_id = " . $aRow['covid19_id'];
         $result = $db->rawQuery($squery);
-        foreach ($result as $symptom) {
-            $symResult = (isset($symptom['symptom_detected']) && $symptom['symptom_detected'] != "") ? ucwords($symptom['symptom_detected']) : "Unknown";
-            $symptomList[] = $symptom['symptom_name'] . ' = ' . $symResult;
+        foreach ($result as $symp) {
+            //$symResult = (isset($symptom['symptom_detected']) && $symptom['symptom_detected'] != "") ? ucwords($symptom['symptom_detected']) : "Unknown";
+            $symptomList[] = $symp['symptom_name'];
         }
+
+        $comorbiditiesList = array();
+        $squery = "SELECT s.*, como.* FROM form_covid19 as c19 
+        INNER JOIN covid19_patient_comorbidities AS como ON c19.covid19_id = como.covid19_id 
+        INNER JOIN r_covid19_comorbidities AS s ON como.comorbidity_id = s.comorbidity_id 
+        WHERE como.comorbidity_detected like 'yes' AND c19.covid19_id = " . $aRow['covid19_id'];
+        $result = $db->rawQuery($squery);
+        foreach ($result as $como) {
+            $comorbiditiesList[] = $como['comorbidity_name'];
+        }
+
         $row = array();
-        if ($arr['vl_form'] == 1) {
-            // Get testing platform and test method 
-            $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";
-            $covid19TestInfo = $db->rawQuery($covid19TestQuery);
-            foreach ($covid19TestInfo as $indexKey => $rows) {
-                $testPlatform = $rows['testing_platform'];
-                $testMethod = $rows['test_name'];
-            }
+        //if ($arr['vl_form'] == 1) {
+        // Get testing platform and test method 
+        $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id DESC LIMIT 1";
+        $covid19TestInfo = $db->rawQueryOne($covid19TestQuery);
+        foreach ($covid19TestInfo as $indexKey => $rows) {
+            $testPlatform = $rows['testing_platform'];
+            $testMethod = $rows['test_name'];
         }
+        //}
 
         //date of birth
         $dob = '';
@@ -170,7 +198,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         }
         //result dispatched date
         $resultDispatchedDate = '';
-        if ($aRow['result_printed_datetime'] != NULL && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+        if ($aRow['result_printed_datetime'] != NULL && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $aRow['result_printed_datetime']);
             $resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
         }
@@ -214,15 +242,32 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = $general->humanDateFormat($aRow['patient_dob']);
         $row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = ucwords($aRow['patient_gender']);
-        $row[] = ucwords($aRow['nationality']);
+        $row[] = ucwords($aRow['is_patient_pregnant']);
+        $row[] = ucwords($aRow['patient_phone_number']);
+        $row[] = ucwords($aRow['patient_email']);
+        $row[] = ucwords($aRow['patient_address']);
         $row[] = ucwords($aRow['patient_province']);
         $row[] = ucwords($aRow['patient_district']);
         $row[] = ucwords($aRow['patient_city']);
+        $row[] = ucwords($aRow['nationality']);
         $row[] = $aRow['fever_temp'];
-        $row[] = implode(", ", $symptomList);
         $row[] = $aRow['temperature_measurement_method'];
-        $row[] = $aRow['respiratory_rate'];
-        $row[] = $aRow['oxygen_saturation'];
+        $row[] = implode(", ", $symptomList);
+        $row[] = $aRow['medical_history'];
+        $row[] = implode(", ", $comorbiditiesList);
+        $row[] = $aRow['recent_hospitalization'];
+        $row[] = $aRow['patient_lives_with_children'];
+        $row[] = $aRow['patient_cares_for_children'];
+        $row[] = $aRow['close_contacts'];
+        $row[] = $aRow['has_recent_travel_history'];
+        $row[] = $aRow['travel_country_names'];
+        $row[] = $aRow['travel_return_date'];
+        $row[] = $aRow['flight_airline'];
+        $row[] = $aRow['flight_seat_no'];
+        $row[] = $aRow['flight_arrival_datetime'];
+        $row[] = $aRow['flight_airport_of_departure'];
+        $row[] = $aRow['flight_transit'];
+        $row[] = $aRow['reason_of_visit'];
         $row[] = $aRow['number_of_days_sick'];
         $row[] = $general->humanDateFormat($aRow['date_of_symptom_onset']);
         $row[] = $general->humanDateFormat($aRow['date_of_initial_consultation']);
