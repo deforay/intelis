@@ -306,10 +306,10 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     $row = array();
-    $print = '<a href="tb-update-result.php?id=' . base64_encode($aRow['tb_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><i class="fa fa-pencil-square-o"></i> Enter Result</a>';
+    $print = '<a href="tb-update-result.php?id=' . base64_encode($aRow['tb_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="'. _("Result").'"><i class="fa fa-pencil-square-o"></i> '. _("Enter Result").'</a>';
     if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
         if (isset($_SESSION['privileges']) && !in_array("edit-locked-tb-samples", $_SESSION['privileges'])) {
-            $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="Locked" disabled><i class="fa fa-lock"> Locked</i></a>';
+            $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Locked").'" disabled><i class="fa fa-lock"> '. _("Locked").'</i></a>';
         }
     }
 

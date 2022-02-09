@@ -313,7 +313,7 @@ foreach ($rResult as $aRow) {
     $row = array();
     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
         $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['tb_id'] . '"  value="' . $aRow['tb_id'] . '" onclick="checkedPrintedRow(this);"  />';
-        $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="View" onclick="resultPDF(' . $aRow['tb_id'] . ',\'printData\');"><i class="fa fa-print"> Print</i></a>';
+        $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Print").'" onclick="resultPDF(' . $aRow['tb_id'] . ',\'printData\');"><i class="fa fa-print"> '. _("Print").'</i></a>';
     }
     if ($aRow['remote_sample'] == 'yes') {
         $decrypt = 'remote_sample_code';

@@ -1,5 +1,5 @@
 <?php
-$title = "Manage Result Status";
+$title = _("Manage Result Status");
 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -73,8 +73,8 @@ foreach ($rejectionTypeResult as $type) {
         <div class="arrow-right"></div>
         <input type="hidden" name="statusDropDownId" id="statusDropDownId" />
         <h3 style="color:red;"><?php echo _("Choose Rejection Reason");?></h3>
-        <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="updateRejectionReasonStatus(this);">
-            <option value=''> -- Select -- </option>
+        <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?php echo _('Please choose reason');?>" onchange="updateRejectionReasonStatus(this);">
+            <option value=''> <?php echo _("-- Select --");?> </option>
             <?php echo $rejectionReason; ?>
         </select>
 
@@ -88,12 +88,12 @@ foreach ($rejectionTypeResult as $type) {
                         <tr>
                             <td style=""><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
                             <td>
-                                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+                                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
                             </td>
                             <td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
                             <td>
-                                <select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
-                                    <option value=""> -- Select -- </option>
+                                <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
+                                    <option value=""> <?php echo _("-- Select --");?> </option>
                                     <?php
                                     foreach ($batResult as $code) {
                                     ?>
@@ -108,8 +108,8 @@ foreach ($rejectionTypeResult as $type) {
 
                             <td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
                             <td>
-                                <select class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
-                                    <option value=""> -- Select -- </option>
+                                <select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
+                                    <option value=""> <?php echo _("-- Select --");?> </option>
                                     <?php
                                     foreach ($fResult as $name) {
                                     ?>
@@ -121,7 +121,7 @@ foreach ($rejectionTypeResult as $type) {
                             </td>
                             <td>&nbsp;<b><?php echo _("Show Samples that are");?> &nbsp;:</b></td>
                             <td>
-                                <select class="form-control" id="statusFilter" name="statusFilter" title="Please choose a status" style="width:220px;">
+                                <select class="form-control" id="statusFilter" name="statusFilter" title="<?php echo _('Please choose a status');?>" style="width:220px;">
                                     <option value="notApprovedOrRejected"> <?php echo _("Not Approved/Rejected");?> </option>
                                     <option value="approvedOrRejected"> <?php echo _("Already Approved/Rejected");?> </option>
                                 </select>
@@ -138,7 +138,7 @@ foreach ($rejectionTypeResult as $type) {
                     <div class="box-header with-border">
                         <div class="col-md-5 col-sm-5">
                             <input type="hidden" name="checkedTests" id="checkedTests" />
-                            <select style="" class="form-control" id="status" name="status" title="Please select test status" disabled="disabled" onchange="showSampleRejectionReason()">
+                            <select style="" class="form-control" id="status" name="status" title="<?php echo _('Please select test status');?>" disabled="disabled" onchange="showSampleRejectionReason()">
                                 <option value=""><?php echo _("-- Select at least one sample to apply bulk action --");?></option>
                                 <option value="7"><?php echo _("Accepted");?></option>
                                 <option value="4"><?php echo _("Rejected");?></option>
@@ -146,7 +146,7 @@ foreach ($rejectionTypeResult as $type) {
                             </select>
                         </div>
                         <div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
-                            <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="Please select test status">
+                            <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _('Please select test status');?>">
                                 <option value=''> -- Select -- </option>
                                 <?php echo $rejectionReason; ?>
                             </select>
@@ -203,7 +203,7 @@ foreach ($rejectionTypeResult as $type) {
     var selectedTestsId = [];
     $(document).ready(function() {
         $("#facilityName").select2({
-            placeholder: "Select Facilities"
+            placeholder: "<?php echo _("Select Facilities");?>"
         });
         $('#sampleCollectionDate').daterangepicker({
                 locale: {
@@ -389,7 +389,7 @@ foreach ($rejectionTypeResult as $type) {
         var stValue = $("#status").val();
         var testIds = $("#checkedTests").val();
         if (stValue != '' && testIds != '') {
-            conf = confirm("Do you wish to change the test status ?");
+            conf = confirm("<?php echo _("Do you wish to change the test status ?");?>");
             if (conf) {
                 $.post("/tb/results/update-status.php", {
                         status: stValue,
@@ -407,18 +407,18 @@ foreach ($rejectionTypeResult as $type) {
                             $("#bulkRejectionReason").val('');
                             $(".bulkRejectionReason").hide();
                             oTable.fnDraw();
-                            alert('Updated successfully.');
+                            alert("<?php echo _("Updated successfully");?>.");
                         }
                     });
             }
         } else {
-            alert("Please be checked atleast one checkbox.");
+            alert("<?php echo _("Please be checked atleast one checkbox");?>.");
         }
     }
 
     function updateStatus(obj, optVal) {
         if (obj.value == '4') {
-            var confrm = confirm("Do you wish to overwrite this result?");
+            var confrm = confirm("<?php echo _("Do you wish to overwrite this result?");?>");
             if (confrm) {
                 var pos = $("#" + obj.id).offset();
                 $("#rejectReasonDiv").show();
@@ -438,7 +438,7 @@ foreach ($rejectionTypeResult as $type) {
             $("#rejectReasonDiv").hide();
         }
         if (obj.value != '') {
-            conf = confirm("Do you wish to change the status ?");
+            conf = confirm("<?php echo _("Do you wish to change the status ?");?>");
             if (conf) {
                 $.post("/tb/results/update-status.php", {
                         status: obj.value,
@@ -453,7 +453,7 @@ foreach ($rejectionTypeResult as $type) {
                             $("#status").val('');
                             $("#status").prop('disabled', true);
                             oTable.fnDraw();
-                            alert('Updated successfully.');
+                            alert("<?php echo _("Updated successfully");?>.");
                         }
                     });
             } else {
@@ -464,7 +464,7 @@ foreach ($rejectionTypeResult as $type) {
 
     function updateRejectionReasonStatus(obj) {
         if (obj.value != '') {
-            conf = confirm("Do you wish to change the status ?");
+            conf = confirm("<?php echo _("Do you wish to change the status ?");?>");
             if (conf) {
                 $.post("/tb/results/update-status.php", {
                         status: '4',
@@ -483,7 +483,7 @@ foreach ($rejectionTypeResult as $type) {
                             $("#statusDropDownId").val('');
                             $("#rejectionReason").val('');
                             oTable.fnDraw();
-                            alert('Updated successfully.');
+                            alert("<?php echo _("Updated successfully");?>.");
                         }
                     });
             } else {
