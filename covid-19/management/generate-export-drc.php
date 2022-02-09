@@ -38,26 +38,26 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("Patient State"),
         _("Patient County"),
         _("Patient City/Village"),
-        _("Fever Temparature"),
+        _("Fever/Temperature"),
+        _("Symptoms Detected"),
         _("Temprature Measurement"),
         _("Respiratory Rate"),
         _("Oxygen Saturation"),
         _("Number of Days Sick"),
-        _("Date of Symptom Onset"),
+        _("Date of Symptoms Onset"),
         _("Date of Initial Consultation"),
-        _("Date specimen collected"),
+        _("Sample Collection Date"),
         _("Reason for Test Request"),
-        _("Date specimen Received"),
-        _("Date specimen Entered"),
+        _("Date specimen received"),
+        _("Date specimen registered"),
         _("Specimen Condition"),
         _("Specimen Status"),
         _("Specimen Type"),
-        _("Date specimen Tested"),
+        _("Sample Tested Date"),
         _("Testing Platform"),
         _("Test Method"),
         _("Result"),
-        _("Date result released"),
-        _("Symptom Detected")
+        _("Date result released")
     );
 
 
@@ -81,7 +81,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
     $borderStyle = array(
         'alignment' => array(
-            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
         ),
         'borders' => array(
             'outline' => array(
@@ -128,7 +128,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row = array();
         if ($arr['vl_form'] == 1) {
             // Get testing platform and test method 
-            $covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";
+            $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";
             $covid19TestInfo = $db->rawQuery($covid19TestQuery);
             foreach ($covid19TestInfo as $indexKey => $rows) {
                 $testPlatform = $rows['testing_platform'];
@@ -219,6 +219,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = ucwords($aRow['patient_district']);
         $row[] = ucwords($aRow['patient_city']);
         $row[] = $aRow['fever_temp'];
+        $row[] = implode(", ", $symptomList);
         $row[] = $aRow['temperature_measurement_method'];
         $row[] = $aRow['respiratory_rate'];
         $row[] = $aRow['oxygen_saturation'];
@@ -237,7 +238,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = ucwords($testMethod);
         $row[] = $covid19Results[$aRow['result']];
         $row[] = $general->humanDateFormat($aRow['result_printed_datetime']);
-        $row[] = implode(", ", $symptomList);
 
         $output[] = $row;
         $no++;
