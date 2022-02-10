@@ -141,6 +141,27 @@ if ($table == "form_covid19") {
             $collectionTotal = $collectionTotal + $total['total'];
         }
     }
+
+    $aggregateC19Query = "SELECT COUNT(covid19_id) as totalCollected, 
+                        SUM(CASE WHEN (covid19.lab_id is NOT NULL 
+                                            AND covid19.sample_tested_datetime is NOT NULL 
+                                            AND covid19.result is NOT NULL 
+                                            AND covid19.result not like '' 
+                                            AND covid19.result_status = 7) 
+                                THEN 1 ELSE 0 END) as 'tested',
+                        SUM(CASE WHEN ((covid19.result_status = 1)) THEN 1 ELSE 0 END) as 'hold',
+                        SUM(CASE WHEN ((covid19.result_status = 4)) THEN 1 ELSE 0 END) as 'rejected',
+                        SUM(CASE WHEN ((covid19.result_status = 5)) THEN 1 ELSE 0 END) as 'invalid',
+                        SUM(CASE WHEN ((covid19.result_status = 6)) THEN 1 ELSE 0 END) as 'registeredAtTestingLab',
+                        SUM(CASE WHEN ((covid19.result_status = 8)) THEN 1 ELSE 0 END) as 'awaitingApproval',
+                        SUM(CASE WHEN ((covid19.result_status = 9)) THEN 1 ELSE 0 END) as 'registeredAtCollectionPoint',
+                        SUM(CASE WHEN ((covid19.result_status = 10)) THEN 1 ELSE 0 END) as 'expired'
+            FROM $table as covid19
+            INNER JOIN facility_details as f ON f.facility_id=covid19.facility_id 
+            WHERE $whereCondtion vlsm_country_id = '" . $configFormResult[0]['value'] . "' 
+            AND DATE(covid19.sample_collection_date) <= '" . $cDate . "' 
+            AND DATE(covid19.sample_collection_date) >= '" . $lastSevenDay . "'";
+    $aggregateC19Result = $db->rawQueryOne($aggregateC19Query);
 }
 
 // Samples Accession
@@ -171,7 +192,7 @@ foreach ($tRes as $tRow) {
 if ($table == "eid_form") {
     $sampleTestedQuery = 'SELECT DATE(eid.sample_tested_datetime) as `test_date`, COUNT(eid_id) as `count` FROM ' . $table . ' as eid JOIN facility_details as f ON f.facility_id=eid.facility_id INNER JOIN facility_details as l_f ON eid.lab_id=l_f.facility_id WHERE (result_status = 7) AND ' . $whereCondition . ' DATE(eid.sample_tested_datetime) <= "' . $cDate . '" AND DATE(eid.sample_tested_datetime) >= "' . $lastSevenDay . '" group by `test_date` order by `test_date`';
 } else if ($table == "form_covid19") {
-    $sampleTestedQuery = 'SELECT DATE(covid19.sample_tested_datetime) as `test_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 JOIN facility_details as f ON f.facility_id=covid19.facility_id  INNER JOIN facility_details as l_f ON covid19.lab_id=l_f.facility_id WHERE (result_status = 7) AND ' . $whereCondition . ' DATE(covid19.sample_tested_datetime) <= "' . $cDate . '" AND DATE(covid19.sample_tested_datetime) >= "' . $lastSevenDay . '" group by `test_date` order by `test_date`';
+    $sampleTestedQuery = 'SELECT DATE(covid19.sample_tested_datetime) as `test_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 JOIN facility_details as f ON f.facility_id=covid19.facility_id  WHERE (covid19.lab_id is NOT NULL AND covid19.sample_tested_datetime is NOT NULL AND covid19.result is NOT NULL AND covid19.result not like "" AND covid19.result_status = 7) AND ' . $whereCondition . ' DATE(covid19.sample_collection_date) <= "' . $cDate . '" AND DATE(covid19.sample_collection_date) >= "' . $lastSevenDay . '" group by `test_date` order by `test_date`';
 } else if ($table == "form_hepatitis") {
     $sampleTestedQuery = 'SELECT DATE(req.sample_tested_datetime) as `test_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req JOIN facility_details as f ON f.facility_id=req.facility_id  INNER JOIN facility_details as l_f ON req.lab_id=l_f.facility_id WHERE (result_status = 7) AND ' . $whereCondition . ' DATE(req.sample_tested_datetime) <= "' . $cDate . '" AND DATE(req.sample_tested_datetime) >= "' . $lastSevenDay . '" group by `test_date` order by `test_date`';
 } else if ($table == "form_tb") {
@@ -193,17 +214,6 @@ foreach ($tRes as $tRow) {
     $acceptedResult[] = array('total' => $tRow['count'], 'date' => $tRow['test_date']);
 }
 
-//Samples Not Tested
-if ($table == "form_covid19") {
-    $sampleNotTestedQuery = 'SELECT DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE (result_status = 6) AND ' . $whereCondition . ' DATE(covid19.sample_collection_date) <= "' . $cDate . '" AND DATE(covid19.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
-}
-$ntRes = $db->rawQuery($sampleNotTestedQuery); //overall result
-$holdResult = array();
-$holdTotal = 0;
-foreach ($ntRes as $ntRow) {
-    $holdTotal += $ntRow['count'];
-    $holdResult[] = array('total' => $ntRow['count'], 'date' => $ntRow['test_date']);
-}
 //Rejected Samples
 if ($table == "eid_form") {
     $sampleRejectedQuery = 'SELECT DATE(eid.sample_collection_date) as `collection_date`, COUNT(eid_id) as `count` FROM ' . $table . ' as eid INNER JOIN facility_details as f ON f.facility_id=eid.facility_id  INNER JOIN facility_details as l_f ON eid.lab_id=l_f.facility_id WHERE (result_status = 4) AND ' . $whereCondition . ' DATE(eid.sample_collection_date) <= "' . $cDate . '" AND DATE(eid.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
@@ -294,21 +304,7 @@ foreach ($tRes as $tRow) {
         </div>
         <div id="<?php echo $samplesTestedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
     </div>
-    <div class="dashboard-stat2 " style="cursor:pointer;">
-        <div class="display">
-            <div class="number">
-                <h3 class="font-blue-sharp">
-                    <span data-counter="counterup" data-value="<?php echo $holdTotal; ?>"><?php echo $holdTotal; ?></span>
-                </h3>
-                <small class="font-blue-sharp">SAMPLES NOT TESTED</small><br>
-                <small class="font-blue-sharp" style="font-size:0.75em;">In Selected Range</small>
-            </div>
-            <div class="icon">
-                <i class="icon-pie-chart"></i>
-            </div>
-        </div>
-        <div id="<?php echo $samplesNotTestedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
-    </div>
+    
 </div>
 
 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
@@ -346,6 +342,21 @@ foreach ($tRes as $tRow) {
             </div>
         </div>
         <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="150" style="min-height:150px;"></div>
+    </div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+    <div class="dashboard-stat2 " style="cursor:pointer;">
+        <div class="display">
+            <div class="number">
+                <small class="font-purple-soft"><?= _("OVERALL SAMPLE STATUS"); ?></small><br>
+                <small class="font-purple-soft" style="font-size:0.75em;"><?= _("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?></small>
+                <!--<small class="font-purple-soft"><?php echo $waitingDate; ?></small>-->
+            </div>
+            <div class="icon">
+                <i class="icon-pie-chart"></i>
+            </div>
+        </div>
+        <div id="aggregate-c19-chart" width="210" height="180" style="min-height:150px;"></div>
     </div>
 </div>
 <?php if ($table == "form_covid19") { ?>
@@ -658,66 +669,7 @@ foreach ($tRes as $tRow) {
             colors: ['#7cb72a']
         });
     <?php }
-    if ($holdTotal > 0) { ?>
-        $('#<?php echo $samplesNotTestedChart; ?>').highcharts({
-            chart: {
-                type: 'column',
-                height: 150
-            },
-            title: {
-                text: ''
-            },
-            subtitle: {
-                text: ''
-            },
-            credits: {
-                enabled: false
-            },
-            xAxis: {
-                categories: [<?php
-                                foreach ($holdResult as $tRow) {
-                                    echo "'" . ucwords($tRow['date']) . "',";
-                                }
-                                ?>],
-                crosshair: true,
-                scrollbar: {
-                    enabled: true
-                },
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: null
-                }
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0,
-                    cursor: 'pointer',
-                }
-            },
-            series: [{
-                showInLegend: false,
-                name: 'Samples',
-                data: [<?php
-                        foreach ($holdResult as $tRow) {
-                            echo ucwords($tRow['total']) . ",";
-                        }
-                        ?>]
-
-            }],
-            colors: ['#f36a5a']
-        });
-    <?php }
+    
     if ($rejectedTotal > 0) { ?>
         $('#<?php echo $samplesRejectedChart; ?>').highcharts({
             chart: {
@@ -780,4 +732,98 @@ foreach ($tRes as $tRow) {
     <?php }
     //}
     ?>
+
+    <?php if (isset($aggregateC19Result) && !empty($aggregateC19Result)) { ?>
+        $('#aggregate-c19-chart').highcharts({
+            chart: {
+                type: 'column'
+            },
+
+            title: {
+                text: ''
+            },
+            exporting: {
+                chartOptions: {
+                    subtitle: {
+                        text: "<?= _("Overall Covid-19 Sample Status"); ?>",
+                    }
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            xAxis: {
+                categories: ["<?= _("Samples Registered"); ?>",
+                    "<?= _("Samples Tested"); ?>",
+                    "<?= _("Samples Rejected"); ?>",
+                    "<?= _("Samples on Hold"); ?>",
+                    "<?= _("Samples Registered at Testing Lab"); ?>",
+                    "<?= _("Samples Awaiting Approval"); ?>",
+                    "<?= _("Samples Registered at Collection Site"); ?>"
+                ]
+            },
+
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'No. of Samples'
+                }
+            },
+
+            tooltip: {
+                formatter: function() {
+                    return '<b>' + this.x + '</b><br/>' +
+                        this.series.name + ': ' + this.y + '<br/>' +
+                        'Total: ' + this.point.stackTotal;
+                }
+            },
+
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: false
+                }
+            },
+
+            series: [{
+                name: 'Sample',
+                showInLegend: false,
+                data: [{
+                        y: <?php echo (isset($aggregateC19Result['totalCollected'])) ? $aggregateC19Result['totalCollected'] : 0; ?>,
+                        color: '#6e6e9e'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateC19Result['tested'])) ? $aggregateC19Result['tested'] : 0; ?>,
+                        color: '#039BE6'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateC19Result['rejected'])) ? $aggregateC19Result['rejected'] : 0; ?>,
+                        color: '#492828'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateC19Result['hold'])) ? $aggregateC19Result['hold'] : 0; ?>,
+                        color: '#60d18f'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateC19Result['registeredAtTestingLab'])) ? $aggregateC19Result['registeredAtTestingLab'] : 0; ?>,
+                        color: '#ff1900'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateC19Result['awaitingApproval'])) ? $aggregateC19Result['awaitingApproval'] : 0; ?>,
+                        color: '#395B64'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateC19Result['registeredAtCollectionPoint'])) ? $aggregateC19Result['registeredAtCollectionPoint'] : 0; ?>,
+                        color: '#2C3333'
+                    }
+                ],
+                stack: 'total',
+                color: 'red',
+            }]
+        });
+    <?php } ?>
 </script>
