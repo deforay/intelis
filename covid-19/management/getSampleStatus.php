@@ -201,11 +201,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 // echo "<pre>";print_r($testReasonResult);die;
 ?>
 <div class="col-xs-12">
-    <div class="box">
-        <div class="box-body">
-            <div id="covid19SampleStatusOverviewContainer" style="float:left;width:100%; margin: 0 auto;"></div>
-        </div>
-    </div>
+
     <div class="box">
         <div class="box-body">
             <div id="covid19TestReasonContainer" style="float:left;width:100%; margin: 0 auto;"></div>
@@ -227,75 +223,6 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 </div>
 <script>
     <?php
-    if (isset($tResult) && count($tResult) > 0) {
-    ?>
-        $('#covid19SampleStatusOverviewContainer').highcharts({
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: "<?php echo _("Covid-19 Samples Status Overview");?>"
-            },
-            credits: {
-                enabled: false
-            },
-            tooltip: {
-                pointFormat: "<?php echo _("Covid-19 Samples");?> :<b>{point.y}</b>"
-            },
-            plotOptions: {
-                pie: {
-                    size: '100%',
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        useHTML: true,
-                        format: '<div style="padding-bottom:10px;"><b>{point.name}</b>: {point.y}</div>',
-                        style: {
-
-                            //crop:false,
-                            //overflow:'none',
-                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                        },
-                        distance: 10
-                    },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                colorByPoint: false,
-                point: {
-                    events: {
-                        click: function(e) {
-                            //console.log(e.point.url);
-                            window.open(e.point.url, '_blank');
-                            e.preventDefault();
-                        }
-                    }
-                },
-                data: [
-                    <?php
-                    foreach ($tResult as $tRow) {
-                    ?> {
-                            name: '<?php echo ($tRow['status_name']); ?>',
-                            y: <?php echo ($tRow['total']); ?>,
-                            color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
-                            url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>'
-                        },
-                    <?php
-                    }
-                    ?>
-                ]
-            }]
-        });
-
-    <?php
-
-    }
-
     if (isset($vlSuppressionResult) && (isset($vlSuppressionResult['positiveResult']) || isset($vlSuppressionResult['negativeResult']) || isset($vlSuppressionResult['rejectedResult']))) {
 
     ?>
@@ -310,13 +237,13 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Covid-19 Results");?>"
+                text: "<?php echo _("Covid-19 Results"); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Samples");?> :<b>{point.y}</b>"
+                pointFormat: "<?php echo _("Samples"); ?> :<b>{point.y}</b>"
             },
             plotOptions: {
                 pie: {
@@ -338,15 +265,15 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             series: [{
                 colorByPoint: true,
                 data: [{
-                        name: "<?php echo _("Positive");?>",
+                        name: "<?php echo _("Positive"); ?>",
                         y: <?php echo (isset($vlSuppressionResult['positiveResult']) && $vlSuppressionResult['positiveResult'] > 0) > 0 ? $vlSuppressionResult['positiveResult'] : 0; ?>
                     },
                     {
-                        name: "<?php echo _("Negative");?>",
+                        name: "<?php echo _("Negative"); ?>",
                         y: <?php echo (isset($vlSuppressionResult['negativeResult']) && $vlSuppressionResult['negativeResult'] > 0) > 0 ? $vlSuppressionResult['negativeResult'] : 0; ?>
                     },
                     {
-                        name: "<?php echo _("Rejected");?>",
+                        name: "<?php echo _("Rejected"); ?>",
                         y: <?php echo (isset($vlSuppressionResult['rejectedResult']) && $vlSuppressionResult['rejectedResult'] > 0) > 0 ? $vlSuppressionResult['rejectedResult'] : 0; ?>
                     },
                 ]
@@ -361,12 +288,12 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 type: 'line'
             },
             title: {
-                text: "<?php echo _("COVID-19 Laboratory Turnaround Time");?>"
+                text: "<?php echo _("COVID-19 Laboratory Turnaround Time"); ?>"
             },
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: "<?php echo _("COVID-19 Laboratory Turnaround Time");?>",
+                        text: "<?php echo _("COVID-19 Laboratory Turnaround Time"); ?>",
                     }
                 }
             },
@@ -385,7 +312,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             },
             yAxis: [{
                 title: {
-                    text: "<?php echo _("Average TAT in Days");?>"
+                    text: "<?php echo _("Average TAT in Days"); ?>"
                 },
                 labels: {
                     formatter: function() {
@@ -395,7 +322,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: "<?php echo _("No. of Tests");?>"
+                    text: "<?php echo _("No. of Tests"); ?>"
                 },
                 labels: {
                     format: '{value}'
@@ -425,7 +352,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 
             series: [{
                     type: 'column',
-                    name: "<?php echo _("No. of Samples Tested");?>",
+                    name: "<?php echo _("No. of Samples Tested"); ?>",
                     data: [<?php echo implode(",", $result['totalSamples']); ?>],
                     color: '#7CB5ED',
                     yAxis: 1
@@ -435,7 +362,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Result - Printed");?>",
+                        name: "<?php echo _("Result - Printed"); ?>",
                         data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
                         color: '#0f3f6e',
                     },
@@ -445,7 +372,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Collected - Received at Lab");?>",
+                        name: "<?php echo _("Collected - Received at Lab"); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
                         color: '#edb47c',
                     },
@@ -455,7 +382,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Received - Tested");?>",
+                        name: "<?php echo _("Received - Tested"); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
                         color: '#0f3f6e',
                     },
@@ -465,7 +392,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Collected - Tested");?>",
+                        name: "<?php echo _("Collected - Tested"); ?>",
                         data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
                         color: '#ed7c7d',
                     },
@@ -475,22 +402,22 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Collected - Printed");?>",
+                        name: "<?php echo _("Collected - Printed"); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
                         color: '#000',
                     },
                 <?php
                 }
                 if (isset($result['sampleDispatchResult'])) {
-                    ?> {
-                            connectNulls: false,
-                            showInLegend: true,
-                            name: "<?php echo _("Collected - Dispatched");?>",
-                            data: [<?php echo implode(",", $result['sampleDispatchResult']); ?>],
-                            color: '#ed7c7f',
-                        },
-                    <?php
-                    }
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: "<?php echo _("Collected - Dispatched"); ?>",
+                        data: [<?php echo implode(",", $result['sampleDispatchResult']); ?>],
+                        color: '#ed7c7f',
+                    },
+                <?php
+                }
                 ?>
             ],
         });
@@ -504,13 +431,13 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Covid-19 Test Reasons");?>"
+                text: "<?php echo _("Covid-19 Test Reasons"); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Test Reasons");?> :<b>{point.y}</b>"
+                pointFormat: "<?php echo _("Test Reasons"); ?> :<b>{point.y}</b>"
             },
             plotOptions: {
                 pie: {

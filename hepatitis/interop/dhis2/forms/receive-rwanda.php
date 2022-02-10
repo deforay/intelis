@@ -147,7 +147,9 @@ foreach ($trackedEntityInstances as $tracker) {
         } else {
             $formData['hbsag_result'] = null;
         }
-        if ($formData['hbsag_result'] == null && $formData['anti_hcv_result'] == null) {
+
+
+        if (($formData['hbsag_result'] == null && $formData['anti_hcv_result'] == null) || ($formData['hbsag_result'] != 'positive' && $formData['anti_hcv_result'] != 'positive')) {
             continue;
         }
 
@@ -188,6 +190,7 @@ foreach ($trackedEntityInstances as $tracker) {
             }
         } else {
             $formData['lab_id'] = null;
+            continue;
         }
 
 

@@ -2924,3 +2924,6 @@ OR `global_config`.`name` = 'eid_indeterminate'
 OR `global_config`.`name` = 'covid19_positive'
 OR `global_config`.`name` = 'covid19_negative'
 OR `global_config`.`name` = 'covid19_indeterminate';
+
+
+UPDATE `r_sample_status` SET `status_name` = 'Sample Registered at Testing Lab' WHERE `r_sample_status`.`status_id` = 6;
