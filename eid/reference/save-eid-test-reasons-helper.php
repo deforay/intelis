@@ -25,7 +25,7 @@ try {
 		}
 
 		if($lastId > 0){
-            $_SESSION['alertMsg'] = "EID Test Reason details saved successfully";
+            $_SESSION['alertMsg'] = _("EID Test Reason details saved successfully");
             $general->activityLog('EID Test Reason details', $_SESSION['userName'] . ' added new Test Reason for ' . $_POST['testReasonName'], 'eid-reference');
         }
 	}
