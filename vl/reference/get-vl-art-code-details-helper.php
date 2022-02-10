@@ -140,9 +140,9 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['art_id'] . '" title="Please select status" onchange="updateStatus(this,\'' . $aRow['art_status'] . '\')">
-               <option value="active" ' . ($aRow['art_status'] == "active" ? "selected=selected" : "") . '>Active</option>
-               <option value="inactive" ' . ($aRow['art_status'] == "inactive"  ? "selected=selected" : "") . '>Inactive</option>
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['art_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,\'' . $aRow['art_status'] . '\')">
+               <option value="active" ' . ($aRow['art_status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
+               <option value="inactive" ' . ($aRow['art_status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
                </select><br><br>';
     $row = array();
     $row[] = $aRow['art_code'];
