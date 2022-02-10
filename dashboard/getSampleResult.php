@@ -133,7 +133,7 @@ if ($waitingResult[$i][0]['total'] != 0) {
 
 //get collection data
 if ($table == "form_covid19") {
-    $collectionQuery = "SELECT COUNT(covid19_id) as total, facility_name FROM " . $table . " as covid19 INNER JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE $whereCondtion vlsm_country_id = '" . $configFormResult[0]['value'] . "' AND DATE(covid19.sample_collection_date) <= '" . $cDate . "' AND DATE(covid19.sample_collection_date) >= '" . $lastSevenDay . "'  GROUP BY f.facility_id having `total` > 0 ORDER BY total DESC";
+    $collectionQuery = "SELECT COUNT(covid19_id) as total, facility_name, DATE(covid19.sample_collection_date) as `collection_date`, FROM " . $table . " as covid19 INNER JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE $whereCondtion vlsm_country_id = '" . $configFormResult[0]['value'] . "' AND DATE(covid19.sample_collection_date) <= '" . $cDate . "' AND DATE(covid19.sample_collection_date) >= '" . $lastSevenDay . "'  GROUP BY f.facility_id having `total` > 0 ORDER BY total DESC";
     $collectionResult = $db->rawQuery($collectionQuery); //collection result
     $collectionTotal = 0;
     if (sizeof($collectionResult) > 0) {
