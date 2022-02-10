@@ -268,8 +268,8 @@ foreach ($tRes as $tRow) {
                 <h3 class="font-green-sharp">
                     <span data-counter="counterup" data-value="<?php echo $receivedTotal; ?>"><?php echo $receivedTotal; ?></span>
                 </h3>
-                <small class="font-green-sharp">SAMPLES REGISTERED</small><br>
-                <small class="font-green-sharp" style="font-size:0.75em;">in selected range</small>
+                <small class="font-green-sharp"><?php echo _("SAMPLES REGISTERED");?></small><br>
+                <small class="font-green-sharp" style="font-size:0.75em;"><?php echo _("in selected range");?></small>
             </div>
             <div class="icon">
                 <i class="icon-pie-chart"></i>
@@ -285,8 +285,8 @@ foreach ($tRes as $tRow) {
                 <h3 class="font-blue-sharp">
                     <span data-counter="counterup" data-value="<?php echo $acceptedTotal; ?>"><?php echo $acceptedTotal; ?></span>
                 </h3>
-                <small class="font-blue-sharp">SAMPLES TESTED</small><br>
-                <small class="font-blue-sharp" style="font-size:0.75em;">In Selected Range</small>
+                <small class="font-blue-sharp"><?php echo _("SAMPLES TESTED");?></small><br>
+                <small class="font-blue-sharp" style="font-size:0.75em;"><?php echo _("In Selected Range");?></small>
             </div>
             <div class="icon">
                 <i class="icon-pie-chart"></i>
@@ -300,8 +300,8 @@ foreach ($tRes as $tRow) {
                 <h3 class="font-blue-sharp">
                     <span data-counter="counterup" data-value="<?php echo $holdTotal; ?>"><?php echo $holdTotal; ?></span>
                 </h3>
-                <small class="font-blue-sharp">SAMPLES NOT TESTED</small><br>
-                <small class="font-blue-sharp" style="font-size:0.75em;">In Selected Range</small>
+                <small class="font-blue-sharp"><?php echo _("SAMPLES NOT TESTED");?></small><br>
+                <small class="font-blue-sharp" style="font-size:0.75em;"><?php echo _("In Selected Range");?></small>
             </div>
             <div class="icon">
                 <i class="icon-pie-chart"></i>
@@ -318,8 +318,8 @@ foreach ($tRes as $tRow) {
                 <h3 class="font-red-haze">
                     <span data-counter="counterup" data-value="<?php echo $rejectedTotal; ?>"><?php echo $rejectedTotal; ?></span>
                 </h3>
-                <small class="font-red-haze">SAMPLES REJECTED</small><br>
-                <small class="font-red-haze" style="font-size:0.75em;">In Selected Range</small>
+                <small class="font-red-haze"><?php echo _("SAMPLES REJECTED");?></small><br>
+                <small class="font-red-haze" style="font-size:0.75em;"><?php echo _("In Selected Range");?></small>
                 <!--<small class="font-red-haze"><?php echo $rejectedDate; ?></small>-->
             </div>
             <div class="icon">
@@ -337,8 +337,8 @@ foreach ($tRes as $tRow) {
                 <h3 class="font-purple-soft">
                     <span data-counter="counterup" data-value="<?php echo $waitingTotal; ?>"><?php echo $waitingTotal; ?></span>
                 </h3>
-                <small class="font-purple-soft">SAMPLES WITH NO RESULTS</small><br>
-                <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small>
+                <small class="font-purple-soft"><?php echo _("SAMPLES WITH NO RESULTS");?></small><br>
+                <small class="font-purple-soft" style="font-size:0.75em;"><?php echo _("(LAST 6 MONTHS)");?></small>
                 <!--<small class="font-purple-soft"><?php echo $waitingDate; ?></small>-->
             </div>
             <div class="icon">
@@ -352,14 +352,14 @@ foreach ($tRes as $tRow) {
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
         <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
             <tr>
-                <td style="vertical-align:middle;"><b>Collection Point&nbsp;:</b>
-                    <select id="facilityId" name="facilityId" class="form-control" multiple title="Select facility name to filter" style="width:220px;background:#fff;">
+                <td style="vertical-align:middle;"><b><?php echo _("Collection Point");?>&nbsp;:</b>
+                    <select id="facilityId" name="facilityId" class="form-control" multiple title="<?php echo _('Select facility name to filter');?>" style="width:220px;background:#fff;">
                         <?php foreach ($facilityInfo as $facility) { ?>
                             <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?></option>
                         <?php } ?>
                     </select>
                 </td>
-                <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();" value="Search" class="searchBtn btn btn-success btn-sm">
+                <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();" value="<?php echo _('Search');?>" class="searchBtn btn btn-success btn-sm">
                 </td>
             </tr>
         </table>
@@ -369,7 +369,7 @@ foreach ($tRes as $tRow) {
                     <h3 class="font-purple-soft">
                         <span data-counter="counterup" data-value="<?php echo $collectionTotal; ?>"><?php echo $collectionTotal; ?></span>
                     </h3>
-                    <small class="font-purple-soft">SAMPLES REGISTERED BY COLLECTION POINT</small><br>
+                    <small class="font-purple-soft"><?php echo _("SAMPLES REGISTERED BY COLLECTION POINT");?></small><br>
                     <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->
                 </div>
                 <div class="icon">
@@ -707,7 +707,7 @@ foreach ($tRes as $tRow) {
             },
             series: [{
                 showInLegend: false,
-                name: 'Samples',
+                name: "<?php echo _("Samples");?>",
                 data: [<?php
                         foreach ($holdResult as $tRow) {
                             echo ucwords($tRow['total']) . ",";
@@ -767,7 +767,7 @@ foreach ($tRes as $tRow) {
             },
             series: [{
                 showInLegend: false,
-                name: 'Samples',
+                name: "<?php echo _("Samples");?>",
                 data: [<?php
                         foreach ($rejectedResult as $tRow) {
                             echo ucwords($tRow['total']) . ",";

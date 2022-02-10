@@ -183,12 +183,12 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
             type: 'column'
         },
         title: {
-            text: 'VL Suppressed Testing Target'
+            text: "<?php echo _("VL Suppressed Testing Target");?>"
         },
         exporting: {
             chartOptions: {
                 subtitle: {
-                    text: 'VL Suppressed Testing Target',
+                    text: "<?php echo _("VL Suppressed Testing Target");?>",
                 }
             }
         },
@@ -203,7 +203,7 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
         },
         yAxis: {
             title: {
-                text: 'No of target in month %'
+                text: "<?php echo _("No of target in month %");?>"
             },
             labels: {
                 formatter: function() {
