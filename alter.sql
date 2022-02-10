@@ -594,12 +594,6 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `status`)
       ('Covid-19 Minimum Length', 'covid19_min_length', '', 'active'), 
       ('Covid-19 Sample Code Format', 'covid19_sample_code', 'MMYY', 'active'), 
       ('Covid-19 Sample Code Prefix', 'covid19_sample_code_prefix', 'C19', 'active');
-INSERT INTO `global_config` (`display_name`,`name`, `value`) 
-        VALUES ('Covid-19 Positive','covid19_positive', 'Positive');
-INSERT INTO `global_config` (`display_name`,`name`, `value`) 
-        VALUES ('Covid-19 Negative','covid19_negative', 'Negative');
-INSERT INTO `global_config` (`display_name`,`name`, `value`) 
-        VALUES ('Covid-19 Indeterminate','covid19_indeterminate', 'Indeterminate');
 
 
 CREATE TABLE `r_covid19_results` (
@@ -2916,3 +2910,17 @@ ALTER TABLE `form_covid19` ADD `patient_email` VARCHAR(256) NULL DEFAULT NULL AF
 
 -- Thana 07-Feb-2022
 ALTER TABLE `activity_log` ADD `user_id` VARCHAR(256) NULL DEFAULT NULL AFTER `resource`;
+
+-- Amit 10-Feb-2022
+UPDATE `global_config` SET `remote_sync_needed` = 'no';
+UPDATE `global_config` SET `remote_sync_needed` = 'yes' WHERE `global_config`.`name` = 'r_mandatory_fields';
+UPDATE `global_config` SET `remote_sync_needed` = 'yes' WHERE `global_config`.`name` = 'l_vl_msg';
+UPDATE `global_config` SET `remote_sync_needed` = 'yes' WHERE `global_config`.`name` = 'l_vl_msg';
+UPDATE `global_config` SET `remote_sync_needed` = 'yes' WHERE `global_config`.`name` = 'low_vl_text_results';
+UPDATE `global_config` SET `remote_sync_needed` = 'yes' WHERE `global_config`.`name` = 'vldashboard_url';
+DELETE FROM `global_config`  WHERE `global_config`.`name` = 'eid_positive' 
+OR`global_config`.`name` = 'eid_negative' 
+OR `global_config`.`name` = 'eid_indeterminate'
+OR `global_config`.`name` = 'covid19_positive'
+OR `global_config`.`name` = 'covid19_negative'
+OR `global_config`.`name` = 'covid19_indeterminate';

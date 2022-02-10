@@ -23,13 +23,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("S. No."),
         _("Sample Code"),
         _("Testing Lab Name"),
-        _("Testing Point"),
-        _("Lab staff Assigned"),
-        _("Source Of Alert / POE"),
-        _("Health Facility/POE County"),
-        _("Health Facility/POE State"),
-        _("Health Facility/POE"),
-        _("Case ID"),
+        _("Tested By"),
+        "Prélévement",
+        _("District"),
+        _("State"),
+        "POINT DE COLLECT",
+        "No. EPID",
         _("Patient Name"),
         _("Patient DoB"),
         _("Patient Age"),
@@ -38,12 +37,14 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("Patient Phone No."),
         _("Patient Email"),
         _("Patient Address"),
-        _("Patient State"),
-        _("Patient County"),
-        _("Patient City/Village"),
+        _("Patient Province"),
+        'Commune',
         _("Nationality"),
         _("Fever/Temperature"),
         _("Temprature Measurement"),
+        _("Respiratory Rate"),
+        _("Oxygen Saturation"),
+        _("Asymptomatic"),
         _("Symptoms Detected"),
         _("Medical History"),
         _("Comorbidities"),
@@ -64,6 +65,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("Date of Symptoms Onset"),
         _("Date of Initial Consultation"),
         _("Sample Collection Date"),
+        _("Reason for Test Request"),
         _("Reason for Test Request"),
         _("Date specimen received"),
         _("Date specimen registered"),
@@ -110,7 +112,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
     $sheet->mergeCells('A1:BG1');
     $nameValue = '';
     foreach ($_POST as $key => $value) {
-        if (trim($value) != '' && trim($value) != '-- Select --') {
+        if (trim($value) != '' && trim($value) != '-- Select --' && trim($value) != '-- Sélectionner --') {
             $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
         }
     }
@@ -153,16 +155,26 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
             $comorbiditiesList[] = $como['comorbidity_name'];
         }
 
+        $subReasonsList = null;
+        $squery = "SELECT reas.* FROM form_covid19 as c19 
+        INNER JOIN covid19_reasons_for_testing AS reas ON c19.covid19_id = reas.covid19_id
+        WHERE reas.reasons_detected like 'yes' AND c19.covid19_id = " . $aRow['covid19_id'];
+        $result = $db->rawQueryOne($squery);
+
+        $subReasonsList = json_decode($result['reason_details']);
+        $subReasonsList = implode(", ", $subReasonsList);
+
+
         $row = array();
-        //if ($arr['vl_form'] == 1) {
-        // Get testing platform and test method 
-        $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id DESC LIMIT 1";
-        $covid19TestInfo = $db->rawQueryOne($covid19TestQuery);
-        foreach ($covid19TestInfo as $indexKey => $rows) {
-            $testPlatform = $rows['testing_platform'];
-            $testMethod = $rows['test_name'];
+        if ($arr['vl_form'] == 1) {
+            // Get testing platform and test method 
+            $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id DESC LIMIT 1";
+            $covid19TestInfo = $db->rawQueryOne($covid19TestQuery);
+            foreach ($covid19TestInfo as $indexKey => $rows) {
+                $testPlatform = $rows['testing_platform'];
+                $testMethod = $rows['test_name'];
+            }
         }
-        //}
 
         //date of birth
         $dob = '';
@@ -231,9 +243,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = $no;
         $row[] = $aRow[$sampleCode];
         $row[] = ucwords($aRow['lab_name']);
-        $row[] = ucwords($aRow['testing_point']);
         $row[] = ucwords($aRow['labTechnician']);
-        $row[] = ucwords($sourceOfArtPOE);
+        $row[] = $aRow['test_number'];
         $row[] = ucwords($aRow['facility_district']);
         $row[] = ucwords($aRow['facility_state']);
         $row[] = ucwords($aRow['facility_name']);
@@ -248,10 +259,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = ucwords($aRow['patient_address']);
         $row[] = ucwords($aRow['patient_province']);
         $row[] = ucwords($aRow['patient_district']);
-        $row[] = ucwords($aRow['patient_city']);
         $row[] = ucwords($aRow['nationality']);
         $row[] = $aRow['fever_temp'];
         $row[] = $aRow['temperature_measurement_method'];
+        $row[] = $aRow['respiratory_rate'];
+        $row[] = $aRow['oxygen_saturation'];
+        $row[] = $aRow['asymptomatic'];
         $row[] = implode(", ", $symptomList);
         $row[] = $aRow['medical_history'];
         $row[] = implode(", ", $comorbiditiesList);
@@ -273,13 +286,14 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = $general->humanDateFormat($aRow['date_of_initial_consultation']);
         $row[] = $general->humanDateFormat($aRow['sample_collection_date']);
         $row[] = ucwords($aRow['test_reason_name']);
+        $row[] = $subReasonsList;
         $row[] = $general->humanDateFormat($aRow['sample_received_at_vl_lab_datetime']);
         $row[] = $general->humanDateFormat($aRow['request_created_datetime']);
         $row[] = ucwords($aRow['sample_condition']);
         $row[] = ucwords($aRow['status_name']);
         $row[] = ucwords($aRow['sample_name']);
         $row[] = $general->humanDateFormat($aRow['sample_tested_datetime']);
-        $row[] = ucwords($testPlatform);
+        $row[] = $aRow['covid19_test_platform'];
         $row[] = ucwords($testMethod);
         $row[] = $covid19Results[$aRow['result']];
         $row[] = $general->humanDateFormat($aRow['result_printed_datetime']);

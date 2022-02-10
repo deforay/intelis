@@ -28,7 +28,7 @@ try {
 			$lastId = $db->getInsertId();
 		}
         if($lastId > 0){
-			$_SESSION['alertMsg'] = "EID Sample Rejection Reasons details added successfully";
+			$_SESSION['alertMsg'] = _("EID Sample Rejection Reasons details added successfully");
 			$general->activityLog('EID Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for  ' . $_POST['rejectionReasonName'], 'eid-reference');
 		}
 	}

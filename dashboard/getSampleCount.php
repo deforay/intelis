@@ -156,16 +156,16 @@ $tableResult = $db->rawQuery($sQuery);
             <table id="<?php echo $requestCountDataTable; ?>" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Facility Name</th>
-                        <th class="sum">Total Samples Registered</th>
-                        <th class="sum">Samples Currently Registered at HC</th>
+                        <th><?php echo _("Facility Name");?></th>
+                        <th class="sum"><?php echo _("Total Samples Registered");?></th>
+                        <th class="sum"><?php echo _("Samples Currently Registered at HC");?></th>
                         <!-- <th class="sum">Samples Received/ Sent To Lab</th> -->
-                        <th class="sum">Samples Currently Registered at VL Lab<br>(Results not yet available)</th>
-                        <th class="sum">Samples with Accepted Results</th>
-                        <th class="sum">Samples Rejected</th>
-                        <th class="sum">Samples with Invalid or Failed Results</th>
-                        <th class="sum">Samples Reordered</th>
-                        <th class="sum">Results Printed</th>
+                        <th class="sum"><?php echo _("Samples Currently Registered at VL Lab");?><br><?php echo _("(Results not yet available)");?></th>
+                        <th class="sum"><?php echo _("Samples with Accepted Results");?></th>
+                        <th class="sum"><?php echo _("Samples Rejected");?></th>
+                        <th class="sum"><?php echo _("Samples with Invalid or Failed Results");?></th>
+                        <th class="sum"><?php echo _("Samples Reordered");?></th>
+                        <th class="sum"><?php echo _("Results Printed");?></th>
                     </tr>
                 </thead>
                 <tbody>

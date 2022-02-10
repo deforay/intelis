@@ -1,5 +1,5 @@
 <?php
-$title = "Dashboard";
+$title = _("Dashboard");
 include_once(APPLICATION_PATH . '/header.php');
 ?>
 <link rel="stylesheet" href="/assets/css/components-rounded.min.css">
@@ -29,23 +29,23 @@ include_once(APPLICATION_PATH . '/header.php');
 		<div class="bs-example bs-example-tabs">
 			<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 				<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
-					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab" onclick="generateDashboard('vl');">Viral Load Tests</a></li>
+					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab" onclick="generateDashboard('vl');"><?php echo _("Viral Load Tests");?></a></li>
 				<?php } ?>
 				<?php if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
-					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');">EID Tests</a></li>
+					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');"><?php echo _("EID Tests");?></a></li>
 				<?php } ?>
 				<?php if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
-					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab" onclick="generateDashboard('covid19');">Covid-19 Tests</a></li>
+					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab" onclick="generateDashboard('covid19');"><?php echo _("Covid-19 Tests");?></a></li>
 				<?php } ?>
 				<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
-					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');">Hepatitis Tests</a></li>
+					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');"><?php echo _("Hepatitis Tests");?></a></li>
 				<?php } ?>
 				<?php if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
 					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
 				<?php } ?>
 				<?php
 				if (isset($recencyConfig['vlsync']) && $recencyConfig['vlsync'] == true) {  ?>
-					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')">Confirmation Tests for Recency</a></li>
+					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')"><?php echo _("Confirmation Tests for Recency");?></a></li>
 				<?php }  ?>
 			</ul>
 			<div id="myTabContent" class="tab-content">
@@ -62,12 +62,12 @@ include_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><b>Date Range&nbsp;:</b></td>
+												<td style="vertical-align:middle;"><b><?php echo _("Date Range");?>&nbsp;:</b></td>
 												<td>
-													<input type="text" id="vlSampleCollectionDate" name="vlSampleCollectionDate" class="form-control" placeholder="Select Collection Date" style="width:220px;background:#fff;" />
+													<input type="text" id="vlSampleCollectionDate" name="vlSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('vl');" value="Search" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('vl');"><span>Reset</span></button>
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('vl');" value="<?php echo _('Search');?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('vl');"><span><?php echo _("Reset");?></span></button>
 												</td>
 											</tr>
 										</table>
@@ -100,12 +100,12 @@ include_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><b>Date Range&nbsp;:</b></td>
+												<td style="vertical-align:middle;"><b><?php echo _("Date Range");?>&nbsp;:</b></td>
 												<td>
-													<input type="text" id="recencySampleCollectionDate" name="recencySampleCollectionDate" class="form-control" placeholder="Select Collection Date" style="width:220px;background:#fff;" />
+													<input type="text" id="recencySampleCollectionDate" name="recencySampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('recency')" value="Search" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('recency');"><span>Reset</span></button>
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('recency')" value="<?php echo _('Search');?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('recency');"><span><?php echo _("Reset");?></span></button>
 												</td>
 											</tr>
 										</table>
@@ -138,12 +138,12 @@ include_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><b>Date Range&nbsp;:</b></td>
+												<td style="vertical-align:middle;"><b><?php echo _("Date Range");?>&nbsp;:</b></td>
 												<td>
-													<input type="text" id="eidSampleCollectionDate" name="eidSampleCollectionDate" class="form-control" placeholder="Select Collection Date" style="width:220px;background:#fff;" />
+													<input type="text" id="eidSampleCollectionDate" name="eidSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('eid')" value="Search" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('eid');"><span>Reset</span></button>
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('eid')" value="<?php echo _('Search');?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('eid');"><span><?php echo _("Reset");?></span></button>
 												</td>
 											</tr>
 										</table>
@@ -178,12 +178,12 @@ include_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><b>Date Range&nbsp;:</b></td>
+												<td style="vertical-align:middle;"><b><?php echo _("Date Range");?>&nbsp;:</b></td>
 												<td>
-													<input type="text" id="covid19SampleCollectionDate" name="covid19SampleCollectionDate" class="form-control" placeholder="Select Collection Date" style="width:220px;background:#fff;" />
+													<input type="text" id="covid19SampleCollectionDate" name="covid19SampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('covid19')" value="Search" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('covid19');"><span>Reset</span></button>
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('covid19')" value="<?php echo _('Search');?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('covid19');"><span><?php echo _("Reset");?></span></button>
 												</td>
 											</tr>
 										</table>
@@ -219,12 +219,12 @@ include_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><b>Date Range&nbsp;:</b></td>
+												<td style="vertical-align:middle;"><b><?php echo _("Date Range");?>&nbsp;:</b></td>
 												<td>
-													<input type="text" id="hepatitisSampleCollectionDate" name="hepatitisSampleCollectionDate" class="form-control" placeholder="Select Collection Date" style="width:220px;background:#fff;" />
+													<input type="text" id="hepatitisSampleCollectionDate" name="hepatitisSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('hepatitis')" value="Search" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('hepatitis');"><span>Reset</span></button>
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('hepatitis')" value="<?php echo _('Search');?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('hepatitis');"><span><?php echo _("Reset");?></span></button>
 												</td>
 											</tr>
 										</table>
@@ -260,12 +260,12 @@ include_once(APPLICATION_PATH . '/header.php');
 				<form autocomplete="off">
 					<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 						<tr>
-							<td style="vertical-align:middle;"><b>Date Range&nbsp;:</b></td>
+							<td style="vertical-align:middle;"><b><?php echo _("Date Range");?>&nbsp;:</b></td>
 							<td>
-								<input type="text" id="tbSampleCollectionDate" name="tbSampleCollectionDate" class="form-control" placeholder="Select Collection Date" style="width:220px;background:#fff;" />
+								<input type="text" id="tbSampleCollectionDate" name="tbSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" style="width:220px;background:#fff;" />
 							</td>
-							<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('tb')" value="Search" class="searchBtn btn btn-success btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('tb');"><span>Reset</span></button>
+							<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('tb')" value="<?php echo _('Search');?>" class="searchBtn btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('tb');"><span><?php echo _("Reset");?></span></button>
 							</td>
 						</tr>
 					</table>
@@ -574,7 +574,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' EID testing lab(s) did not meet the monthly test target. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> more </a>\
+							<span>' + data['aaData'].length + ' <?php echo _("EID testing lab(s) did not meet the monthly test target");?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?php echo _("more");?> </a>\
 							</div>';
 					$("#contEid").html(div);
 				}
@@ -598,7 +598,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' VL testing lab(s) did not meet the monthly test target. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> more </a>\
+							<span>' + data['aaData'].length + ' <?php echo _("VL testing lab(s) did not meet the monthly test target");?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?php echo _("more");?> </a>\
 							</div>';
 					$("#cont").html(div);
 				}
@@ -621,7 +621,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				if (data == 1) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span> VL testing lab(s) did not meet suppression targets </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> more </a>\
+							<span> <?php echo _("VL testing lab(s) did not meet suppression targets");?> </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> <?php echo _("more");?> </a>\
 							</div>';
 					$("#contVl").html(div);
 				}
@@ -645,7 +645,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span >' + data['aaData'].length + ' Covid-19 testing lab(s) did not meet the monthly test target.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> more </a>\
+							<span >' + data['aaData'].length + ' <?php echo _("Covid-19 testing lab(s) did not meet the monthly test target");?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?php echo _("more");?> </a>\
 							</div>';
 					$("#contCovid").html(div);
 				}
@@ -669,7 +669,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' Hepatitis testing lab(s) did not meet the monthly test target.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> more </a>\
+				<span >' + data['aaData'].length + ' <?php echo _("Hepatitis testing lab(s) did not meet the monthly test target");?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?php echo _("more");?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}
@@ -693,7 +693,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' TB testing lab(s) did not meet the monthly test target.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> more </a>\
+				<span >' + data['aaData'].length + ' <?php echo _("TB testing lab(s) did not meet the monthly test target");?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?php echo _("more");?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}

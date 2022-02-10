@@ -1,5 +1,5 @@
 <?php
-$title = "Covid-19 Sample Type";
+$title = _("Viral Load Sample Type");
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -8,10 +8,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-flask"></i> Viral Load Sample Type</h1>
+    <h1><i class="fa fa-flask"></i> <?php echo _("Viral Load Sample Type");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Viral Load Sample Type</li>
+      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("Viral Load Sample Type");?></li>
     </ol>
   </section>
 
@@ -22,7 +22,7 @@ include_once(APPLICATION_PATH . '/header.php');
         <div class="box">
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-              <a href="add-vl-sample-type.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add Viral Load Sample Type</a>
+              <a href="add-vl-sample-type.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add Viral Load Sample Type");?></a>
             <?php } ?>
           </div>
           <!-- /.box-header -->
@@ -30,8 +30,8 @@ include_once(APPLICATION_PATH . '/header.php');
             <table id="samTypDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Sample Name</th>
-                  <th>Sample Status</th>
+                  <th><?php echo _("Sample Name");?></th>
+                  <th><?php echo _("Sample Status");?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
                     <!-- <th>Action</th> -->
                   <?php } ?>
@@ -39,7 +39,7 @@ include_once(APPLICATION_PATH . '/header.php');
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="3" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
 
@@ -100,7 +100,7 @@ include_once(APPLICATION_PATH . '/header.php');
 
   function updateStatus(obj, optVal) {
     if (obj.value != '') {
-      conf = confirm("Are you sure you want to change the status?");
+      conf = confirm("<?php echo _("Are you sure you want to change the status?");?>");
       if (conf) {
         $.post("update-vl-sample-status.php", {
             status: obj.value,
@@ -109,7 +109,7 @@ include_once(APPLICATION_PATH . '/header.php');
           function(data) {
             if (data != "") {
               oTable.fnDraw();
-              alert('Updated successfully.');
+              alert("<?php echo _("Updated successfully");?>.");
             }
           });
       }
