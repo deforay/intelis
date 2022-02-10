@@ -168,23 +168,7 @@ try {
         }
     }
 
-    if (isset($_POST['eid_positive']) && trim($_POST['eid_positive']) != "") {
-        $data = array('result' => trim($_POST['eid_positive']));
-        $db = $db->where('result_id', 'positive');
-        $db->update('r_eid_results', $data);
-    }
-
-    if (isset($_POST['eid_negative']) && trim($_POST['eid_negative']) != "") {
-        $data = array('result' => trim($_POST['eid_negative']));
-        $db = $db->where('result_id', 'negative');
-        $db->update('r_eid_results', $data);
-    }
-
-    if (isset($_POST['eid_indeterminate']) && trim($_POST['eid_indeterminate']) != "") {
-        $data = array('result' => trim($_POST['eid_indeterminate']));
-        $db = $db->where('result_id', 'indeterminate');
-        $db->update('r_eid_results', $data);
-    }
+   
     /* For Lock approve sample updates */
     if (isset($_POST['lockApprovedVlSamples']) && trim($_POST['lockApprovedVlSamples']) != "") {
         $data = array('value' => trim($_POST['lockApprovedVlSamples']));

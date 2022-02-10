@@ -496,40 +496,6 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<h3 class="panel-title">EID Settings</h3>
 								</div>
 								<div class="panel-body">
-
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="eid_positive" class="col-lg-2 control-label">EID Positive <span class="mandatory">*</span></label>
-												<div class="col-lg-10">
-													<input type="text" class="form-control readPage" id="eid_positive" name="eid_positive" placeholder="EID Positive" title="Please enter EID Positive" value="<?php echo (isset($arr['eid_positive']) && !empty($arr['eid_positive']) ? $arr['eid_positive'] : 'Positive'); ?>" style="max-width:200px;" />
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="eid_negative" class="col-lg-2 control-label">EID Negative <span class="mandatory">*</span></label>
-												<div class="col-lg-10">
-													<input type="text" class="form-control readPage" id="eid_negative" name="eid_negative" placeholder="EID Negative" title="Please enter EID Negative" value="<?php echo (isset($arr['eid_negative']) && !empty($arr['eid_negative']) ? $arr['eid_negative'] : 'Negative'); ?>" style="max-width:200px;" />
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="eid_indeterminate" class="col-lg-2 control-label">EID Indeterminate <span class="mandatory">*</span></label>
-												<div class="col-lg-10">
-													<input type="text" class="form-control readPage" id="eid_indeterminate" name="eid_indeterminate" placeholder="EID Indeterminate" title="Please enter EID Indeterminate" value="<?php echo (isset($arr['eid_indeterminate']) && !empty($arr['eid_indeterminate']) ? $arr['eid_indeterminate'] : 'Indeterminate'); ?>" style="max-width:200px;" />
-												</div>
-											</div>
-										</div>
-									</div>
-
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -743,26 +709,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															<option value='no' <?php echo ($arr['covid19_tests_table_in_results_pdf'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
 														</select>
 													</div>
-												<?php }
-												if (isset($arr['covid19_negative']) && $arr['covid19_negative'] != '') { ?>
-													<label for="covid19Negative" class="col-lg-2 control-label">Covid-19 Negative<span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<input value="<?php echo $arr['covid19_negative']; ?>" name="covid19Negative" id="covid19Negative" type="text" class="form-control readPage" placeholder="Sample code prefix" title="Please enter sample code prefix" />
-													</div>
 												<?php } ?>
 											</div>
 										</div>
 									</div>
 									<div class="row">
 										<div class="col-md-12">
-											<div class="form-group">
-												<?php if (isset($arr['covid19_positive']) && $arr['covid19_positive'] != '') { ?>
-													<label for="covid19Positive" class="col-lg-2 control-label">Covid-19 Positive<span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<input value="<?php echo $arr['covid19_positive']; ?>" id="covid19Positive" name="covid19Positive" type="text" class="form-control readPage" placeholder="Sample code prefix" title="Please enter sample code prefix" />
-													</div>
-												<?php } ?>
-											</div>
 											<?php if (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] != '') { ?>
 												<div class="form-group">
 													<label for="lockApprovedCovid19Samples" class="col-lg-2 control-label">Lock Approved Covid19 Samples<span class="mandatory ">*</span></label>
