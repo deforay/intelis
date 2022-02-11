@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
+
 
 
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
@@ -430,16 +430,16 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['patient_id'];
      $row[] = ucwords($patientFname . " " . $patientLname);
      $row[] = ucwords($aRow['facility_name']);
-     $row[] = $aRow['hcv_vl_result'];
-     $row[] = $aRow['hbv_vl_result'];
+     $row[] = ucwords($aRow['hcv_vl_result']);
+     $row[] = ucwords($aRow['hbv_vl_result']);
      $row[] = ucwords($aRow['status_name']);
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
      if ($aRow['is_result_authorised'] == 'yes') {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("View").'" onclick="convertSearchResultToPdf(' . $aRow['hepatitis_id'] . ');"><i class="fa fa-file-text"></i> '. _("Result PDF").'</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['hepatitis_id'] . ');"><i class="fa fa-file-text"></i> ' . _("Result PDF") . '</a>';
           $row[] = '';
      } else {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="'. _("View").'"><i class="fa fa-ban"></i> '. _("Not Authorized").'</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="' . _("View") . '"><i class="fa fa-ban"></i> ' . _("Not Authorized") . '</a>';
      }
 
      $output['aaData'][] = $row;
