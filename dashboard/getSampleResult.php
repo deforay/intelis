@@ -35,7 +35,6 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart   = "covid19SamplesRejectedChart";
     $samplesWaitingChart    = "covid19SamplesWaitingChart";
     $samplesCollectionChart = "covid19SamplesCollectionChart";
-    $statusChart            = "statusChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
     $table = "form_hepatitis";
     $samplesReceivedChart   = "hepatitisSamplesReceivedChart";
@@ -215,17 +214,6 @@ foreach ($tRes as $tRow) {
     $acceptedResult[] = array('total' => $tRow['count'], 'date' => $tRow['test_date']);
 }
 
-//Samples Not Tested
-if ($table == "form_covid19") {
-    $sampleNotTestedQuery = 'SELECT DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE (result_status = 6) AND ' . $whereCondition . ' DATE(covid19.sample_collection_date) <= "' . $cDate . '" AND DATE(covid19.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
-    $ntRes = $db->rawQuery($sampleNotTestedQuery); //overall result
-    $holdResult = array();
-    $holdTotal = 0;
-    foreach ($ntRes as $ntRow) {
-        $holdTotal += $ntRow['count'];
-        $holdResult[] = array('total' => $ntRow['count'], 'date' => $ntRow['collection_date']);
-    }
-}
 //Rejected Samples
 if ($table == "eid_form") {
     $sampleRejectedQuery = 'SELECT DATE(eid.sample_collection_date) as `collection_date`, COUNT(eid_id) as `count` FROM ' . $table . ' as eid INNER JOIN facility_details as f ON f.facility_id=eid.facility_id  INNER JOIN facility_details as l_f ON eid.lab_id=l_f.facility_id WHERE (result_status = 4) AND ' . $whereCondition . ' DATE(eid.sample_collection_date) <= "' . $cDate . '" AND DATE(eid.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
@@ -326,23 +314,6 @@ if ($table == "form_covid19") {
         </div>
         <div id="<?php echo $samplesTestedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
     </div>
-    <?php if ($table == "form_covid19") { ?>
-        <div class="dashboard-stat2 " style="cursor:pointer;">
-            <div class="display">
-                <div class="number">
-                    <h3 class="font-blue-sharp">
-                        <span data-counter="counterup" data-value="<?php echo $holdTotal; ?>"><?php echo $holdTotal; ?></span>
-                    </h3>
-                    <small class="font-blue-sharp">SAMPLES NOT TESTED</small><br>
-                    <small class="font-blue-sharp" style="font-size:0.75em;">In Selected Range</small>
-                </div>
-                <div class="icon">
-                    <i class="icon-pie-chart"></i>
-                </div>
-            </div>
-            <div id="<?php echo $samplesNotTestedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
-        </div>
-    <?php } ?>
 </div>
 
 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
@@ -427,23 +398,6 @@ if ($table == "form_covid19") {
             </div>
             <div id="collectionSite">
                 <div id="<?php echo $samplesCollectionChart; ?>" width="210" height="150" style="min-height:150px;"></div>
-            </div>
-        </div>
-        <div class="dashboard-stat3 " style="cursor:pointer;">
-            <div class="display">
-                <!-- <pre><?php print_r($statusResult); ?></pre> -->
-                <div class="number">
-                    <h3 class="font-purple-soft">
-                        <span data-counter="counterup" data-value="<?php echo $statusTotal; ?>"><?php echo $statusTotal; ?></span>
-                    </h3>
-                    <small class="font-purple-soft">NUMBER OF SAMPLES BY STATUS</small><br>
-                </div>
-                <div class="icon">
-                    <i class="icon-pie-chart"></i>
-                </div>
-            </div>
-            <div id="collectionSite">
-                <div id="<?php echo $statusChart; ?>" width="210" height="150" style="min-height:150px;"></div>
             </div>
         </div>
     </div>
@@ -662,59 +616,7 @@ if ($table == "form_covid19") {
             colors: ['#f36a5a']
         });
     <?php }
-    if ($statusTotal > 0 && $table == "form_covid19") { ?>
-        Highcharts.chart('<?php echo $statusChart; ?>', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: ''
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                categories: [
-                    <?php
-                    echo implode(",", $statusResult['date']);
-                    ?>
-                ],
-                crosshair: true
-            },
-            yAxis: {
-                // min: 0,
-                title: {
-                    text: 'Sample Status'
-                }
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: [
-                <?php foreach ($statusResult['status'] as $status => $val) { ?> {
-                        name: '<?php echo $status; ?>',
-                        data: [
-                            <?php foreach ($statusResult["date"] as $date => $count) { ?>
-                                <?php echo (isset($statusResult["status"][$status][$date]) && $statusResult["status"][$status][$date] > 0) ? $statusResult["status"][$status][$date] : 0;
-                                echo ","; ?>
-                            <?php } ?>
-                        ],
-                    },
-                <?php } ?>
-            ]
-        });
-    <?php }
+
     if ($acceptedTotal > 0) {
     ?>
 

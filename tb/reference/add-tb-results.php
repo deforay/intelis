@@ -8,10 +8,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-heartbeat"></i> Add TB Results</h1>
+		<h1><i class="fa fa-heartbeat"></i> <?php echo _("Add TB Results");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">TB Results</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li class="active"><?php echo _("TB Results");?></li>
 		</ol>
 	</section>
 
@@ -20,7 +20,7 @@ include_once(APPLICATION_PATH . '/header.php');
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -30,27 +30,27 @@ include_once(APPLICATION_PATH . '/header.php');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="resultName" class="col-lg-4 control-label">Result Name<span class="mandatory">*</span></label>
+									<label for="resultName" class="col-lg-4 control-label"><?php echo _("Result Name");?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" placeholder="Result Name" title="Please enter Result name" onblur="checkNameValidation('r_tb_results','result',this,null,'The Result name that you entered already exists.Enter another name',null)" />
+										<input type="text" class="form-control isRequired" id="resultName" name="resultName" placeholder="<?php echo _('Result Name');?>" title="<?php echo _('Please enter Result name');?>" onblur='checkNameValidation("r_tb_results","result",this,null,"<?php echo _("The Result name that you entered already exists.Enter another name");?>",null)' />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="resultType" class="col-lg-4 control-label">Result Type<span class="mandatory">*</span></label>
+									<label for="resultType" class="col-lg-4 control-label"><?php echo _("Result Type");?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultType" name="resultType" placeholder="Result Type" title="Please enter Result type" onblur="checkNameValidation('r_tb_results','result_type',this,null,'The Result type that you entered already exists.Enter another type',null)" />
+										<input type="text" class="form-control isRequired" id="resultType" name="resultType" placeholder="<?php echo _('Result Type');?>" title="<?php echo _('Please enter Result type');?>" onblur='checkNameValidation("r_tb_results","result_type",this,null,"<?php echo _("The Result type that you entered already exists.Enter another type");?>",null)' />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="resultStatus" class="col-lg-4 control-label">Result Status</label>
+									<label for="resultStatus" class="col-lg-4 control-label"><?php echo _("Result Status");?></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="Result Status" title="Please select Result Status">
-											<option value="active">Active</option>
-											<option value="inactive">Inactive</option>
+										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="<?php echo _('Result Status');?>" title="<?php echo _('Please select Result Status');?>">
+											<option value="active"><?php echo _("Active");?></option>
+											<option value="inactive"><?php echo _("Inactive");?></option>
 										</select>
 									</div>
 								</div>
@@ -60,8 +60,8 @@ include_once(APPLICATION_PATH . '/header.php');
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-						<a href="tb-results.php" class="btn btn-default"> Cancel</a>
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
+						<a href="tb-results.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

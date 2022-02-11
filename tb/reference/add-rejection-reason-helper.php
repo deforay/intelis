@@ -27,7 +27,7 @@ try {
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();
 
-		$_SESSION['alertMsg'] = "TB Sample Rejection Reasons details added successfully";
+		$_SESSION['alertMsg'] = _("TB Sample Rejection Reasons details added successfully");
 		$general->activityLog('add-Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons ' . $_POST['rejectionReasonName'], 'reference-tb-Sample Rejection Reasons');
 	}
 	header("location:tb-sample-rejection-reasons.php");
