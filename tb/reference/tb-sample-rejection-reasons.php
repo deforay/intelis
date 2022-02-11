@@ -1,5 +1,5 @@
 <?php
-$title = "TB Sample Rejection Reasons";
+$title = _("TB Sample Rejection Reasons");
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -11,10 +11,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-heartbeat"></i> TB Sample Rejection Reasons</h1>
+    <h1><i class="fa fa-heartbeat"></i> <?php echo _("TB Sample Rejection Reasons");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">TB Sample Rejection Reasons</li>
+      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("TB Sample Rejection Reasons");?></li>
     </ol>
   </section>
 
@@ -25,7 +25,7 @@ include_once(APPLICATION_PATH . '/header.php');
         <div class="box">
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-              <a href="add-tb-sample-rejection-reason.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add TB Sample Rejection Reasons</a>
+              <a href="add-tb-sample-rejection-reason.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add TB Sample Rejection Reasons");?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
@@ -34,10 +34,10 @@ include_once(APPLICATION_PATH . '/header.php');
             <table id="samRejReasonDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Rejection Reason</th>
-                  <th>Rejection Reason Type</th>
-                  <th>Rejection Reason Code</th>
-                  <th>Rejection Reason Status</th>
+                  <th><?php echo _("Rejection Reason");?></th>
+                  <th><?php echo _("Rejection Reason Type");?></th>
+                  <th><?php echo _("Rejection Reason Code");?></th>
+                  <th><?php echo _("Rejection Reason Status");?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
                     <!-- <th>Action</th> -->
                   <?php } ?>
@@ -45,7 +45,7 @@ include_once(APPLICATION_PATH . '/header.php');
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
 
@@ -111,7 +111,7 @@ include_once(APPLICATION_PATH . '/header.php');
   });
   function updateStatus(obj, optVal) {
     if (obj.value != '') {
-      conf = confirm("Are you sure you want to change the status?");
+      conf = confirm("<?php echo _("Are you sure you want to change the status?");?>");
       if (conf) {
         $.post("update-tb-rejection-status.php", {
             status: obj.value,
@@ -120,7 +120,7 @@ include_once(APPLICATION_PATH . '/header.php');
           function(data) {
             if (data != "") {
               oTable.fnDraw();
-              alert('Updated successfully.');
+              alert("<?php echo _("Updated successfully");?>.");
             }
           });
       }
