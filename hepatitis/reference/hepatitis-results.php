@@ -1,5 +1,5 @@
 <?php
-$title = "Hepatitis Results";
+$title = _("Hepatitis Results");
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 ?>
@@ -7,10 +7,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-h-square"></i> Hepatitis Results</h1>
+		<h1><i class="fa fa-h-square"></i> <?php echo _("Hepatitis Results");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Hepatitis Results</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li class="active"><?php echo _("Hepatitis Results");?></li>
 		</ol>
 	</section>
 
@@ -21,7 +21,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-hepatitis-results.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add Hepatitis Results</a>
+							<a href="add-hepatitis-results.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add Hepatitis Results");?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -29,16 +29,16 @@ include_once(APPLICATION_PATH . '/header.php');
 						<table id="sampTypDataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th>Result Name</th>
-									<th>Status</th>
+									<th><?php echo _("Result Name");?></th>
+									<th><?php echo _("Status");?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<th>Action</th>
+										<!-- <th>Action</th> -->
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="3" class="dataTables_empty">Loading data from server</td>
+									<td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 								</tr>
 							</tbody>
 
@@ -101,6 +101,26 @@ include_once(APPLICATION_PATH . '/header.php');
 		});
 		$.unblockUI();
 	});
+	function updateStatus(obj, optVal) {
+    if (obj.value != '') {
+      conf = confirm("<?php echo _("Are you sure you want to change the status?");?>");
+      if (conf) {
+        $.post("update-heptitis-result-status.php", {
+            status: obj.value,
+            id: obj.id
+          },
+          function(data) {
+            if (data != "") {
+              oTable.fnDraw();
+              alert("<?php echo _("Updated successfully");?>.");
+            }
+          });
+      }
+	  else {
+		window.top.location = window.top.location;
+	  }
+    }
+  }
 </script>
 <?php
 include(APPLICATION_PATH . '/footer.php');

@@ -136,11 +136,17 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['comorbidity_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,\'' . $aRow['comorbidity_status'] . '\')">
+               <option value="active" ' . ($aRow['comorbidity_status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
+               <option value="inactive" ' . ($aRow['comorbidity_status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
+               </select><br><br>';
     $row = array();
     $row[] = ucwords($aRow['comorbidity_name']);
-    $row[] = ucwords($aRow['comorbidity_status']);
     if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
-        $row[] = '<a href="edit-hepatitis-comorbidities.php?id=' . base64_encode($aRow['comorbidity_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
+        $row[] = $status;
+    }
+    else {
+        $row[] = ucwords($aRow['comorbidity_status']);
     }
     $output['aaData'][] = $row;
 }
