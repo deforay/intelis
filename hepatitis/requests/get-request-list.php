@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
+
 
 
 $formConfigQuery = "SELECT * FROM global_config";
@@ -30,7 +30,7 @@ $primaryKey = "hepatitis_id";
 */
 $sampleCode = 'sample_code';
 
-$aColumns = array('vl.sample_code','vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -160,29 +160,29 @@ if (isset($sWhere) && $sWhere != "") {
           $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
      }
      /* VL lab id filter */
-if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
-     $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
-}
-/* Gender filter */
-if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-     if (trim($_POST['gender']) == "not_recorded") {
-          $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-     } else {
-          $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }
-}
-/* Show only recorded sample filter */
-if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
-     $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
-}
-/* Funding src filter */
-if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-     $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-}
-/* Implemening partner filter */
-if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-}
+     /* Gender filter */
+     if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
+          if (trim($_POST['gender']) == "not_recorded") {
+               $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+          } else {
+               $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
+          }
+     }
+     /* Show only recorded sample filter */
+     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
+          $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
+     }
+     /* Funding src filter */
+     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+          $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+     }
+     /* Implemening partner filter */
+     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+          $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+     }
 } else {
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $setWhr = 'where';
@@ -234,40 +234,36 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      }
      if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
           if (isset($setWhr)) {
-          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
-          }
-          else {
+               $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
           }
      }
      if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-     if (trim($_POST['gender']) == "not_recorded") {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-          }
-          else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
-          }
-     }
-     else {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.patient_gender IN ("' . $_POST['gender'] . '")';
+          if (trim($_POST['gender']) == "not_recorded") {
+               if (isset($setWhr)) {
+                    $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+               } else {
+                    $setWhr = 'where';
+                    $sWhere = ' where ' . $sWhere;
+                    $sWhere = $sWhere . ' vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
+               }
           } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
+               if (isset($setWhr)) {
+                    $sWhere = $sWhere . ' AND vl.patient_gender IN ("' . $_POST['gender'] . '")';
+               } else {
+                    $setWhr = 'where';
+                    $sWhere = ' where ' . $sWhere;
+                    $sWhere = $sWhere . ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
+               }
           }
      }
-}
      if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
-          }
-          else {
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
@@ -276,8 +272,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
-          }
-          else {
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
@@ -286,8 +281,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
-          }
-          else {
+          } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
@@ -404,19 +398,19 @@ foreach ($rResult as $aRow) {
      $row[] = ([$aRow['hbv_vl_count']]);
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ucwords($aRow['status_name']);
-     
+
      if ($editRequest) {
-          $edit = '<a href="hepatitis-edit-request.php?id=' . base64_encode($aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><i class="fa fa-pencil"> '. _("Edit").'</i></a>';
+          $edit = '<a href="hepatitis-edit-request.php?id=' . base64_encode($aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("edit-locked-hepatitis-samples", $_SESSION['privileges'])) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Locked").'" disabled><i class="fa fa-lock"> '. _("Locked").'</i></a>';
+                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><i class="fa fa-lock"> ' . _("Locked") . '</i></a>';
                }
           }
      }
 
      if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
           if ($aRow['data_sync'] == 0) {
-               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="'. _("Sync this sample").'" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> '. _("Sync").'</a>';
+               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Sync this sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _("Sync") . '</a>';
           }
      } else {
           $sync = "";
@@ -424,7 +418,7 @@ foreach ($rResult as $aRow) {
 
      if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
           $fac = ucwords($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
-          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Barcode").'"><i class="fa fa-barcode"> </i> '. _("Barcode").' </a>';
+          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><i class="fa fa-barcode"> </i> ' . _("Barcode") . ' </a>';
      }
      $actions = "";
      if ($editRequest) {

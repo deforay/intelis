@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+	session_start();
 }
 ob_start();
 
@@ -13,18 +13,17 @@ $covid19Results = $general->getCovid19Results();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
-// echo "<pre>";print_r($arr);die;
-if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQuery']) != "") {
-
-	$rResult = $db->rawQuery($_SESSION['hepatitisResultQuery']);
+$sessionQuery = (isset($_SESSION['hepatitisRequestSearchResultQuery']) && $_SESSION['hepatitisRequestSearchResultQuery'] != "") ? $_SESSION['hepatitisRequestSearchResultQuery'] : $_SESSION['hepatitisResultQuery'];
+if (isset($sessionQuery) && trim($sessionQuery) != "") {
+	$rResult = $db->rawQuery($sessionQuery);
 
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
-	if($arr['vl_form'] == 1){
+	if ($arr['vl_form'] == 1) {
 		$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
-	} else{
-		$headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date","Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	} else {
+		$headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	}
 
 	$colNo = 1;
@@ -91,7 +90,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		// 		$testMethod = $rows['test_name'];
 		// 	}
 		// }
-		
+
 		//date of birth
 		$dob = '';
 		if ($aRow['patient_dob'] != NULL && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
@@ -148,13 +147,13 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 			$patientLname = '';
 		}
 
-		if(isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others"){
-			$sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']) ;
-		} else{
+		if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
+			$sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']);
+		} else {
 			$sourceOfArtPOE = $aRow['source_of_alert_other'];
 		}
-		
-		if($arr['vl_form'] == 1){
+
+		if ($arr['vl_form'] == 1) {
 
 			$row[] = $no;
 			$row[] = $aRow[$sampleCode];
@@ -184,10 +183,10 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 			$row[] = $general->humanDateFormat($aRow['sample_tested_datetime']);
 			// $row[] = ucwords($testPlatform);
 			// $row[] = ucwords($testMethod);
-			$row[] = $aRow['hcv_vl_result'];
-			$row[] = $aRow['hbv_vl_result'];
+			$row[] = ucwords($aRow['hcv_vl_result']);
+			$row[] = ucwords($aRow['hbv_vl_result']);
 			$row[] = $general->humanDateFormat($aRow['result_printed_datetime']);
-		} else{
+		} else {
 
 			$row[] = $no;
 			$row[] = $aRow[$sampleCode];
@@ -208,8 +207,8 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 			$row[] = $general->humanDateFormat($aRow['travel_return_date']);
 			$row[] = $sampleRejection;
 			$row[] = $sampleTestedOn;
-			$row[] = $aRow['hcv_vl_result'];
-			$row[] = $aRow['hbv_vl_result'];
+			$row[] = ucwords($aRow['hcv_vl_result']);
+			$row[] = ucwords($aRow['hbv_vl_result']);
 			$row[] = $general->humanDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 			$row[] = $resultDispatchedDate;
 			$row[] = ucfirst($aRow['approver_comments']);
