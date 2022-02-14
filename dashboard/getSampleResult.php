@@ -365,7 +365,7 @@ if ($table == "form_covid19") {
                 <i class="icon-pie-chart"></i>
             </div>
         </div>
-        <div id="aggregate-c19-chart" width="210" height="180" style="min-height:150px;"></div>
+        <div id="aggregate-c19-chart" width="210" height="240" style="min-height:240px;"></div>
     </div>
 </div>
 <?php if ($table == "form_covid19") { ?>
