@@ -14,6 +14,7 @@ try {
     $user = null;
 
     $input = json_decode(file_get_contents("php://input"), true);
+
     /* For API Tracking params */
     $requestUrl = $_SERVER['REQUEST_URI'];
     $params = file_get_contents("php://input");
@@ -414,6 +415,7 @@ try {
             $db = $db->where('covid19_id', $data['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);
         }
+        $responseData = array();
         if ($id > 0) {
             $c19Data = $app->getTableDataUsingId('form_covid19', 'covid19_id', $data['covid19SampleId']);
             $c19SampleCode = (isset($c19Data['sample_code']) && $c19Data['sample_code']) ? $c19Data['sample_code'] : $c19Data['remote_sample_code'];
