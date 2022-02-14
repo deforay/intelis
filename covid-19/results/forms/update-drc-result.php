@@ -1013,12 +1013,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
     function validateNow() {
-        if ($('#isResultAuthorized').val() != "yes" && $('#result').val() == "") {
-            $('#approvedBy,#approvedOn').removeClass('isRequired');
-        } else {
-            $('#isResultAuthorized').val('yes');
-            $('#approvedBy,#approvedOn').addClass('isRequired');
-        }
+
+        checkIsResultAuthorized();
+
+
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         flag = deforayValidator.init({
@@ -1038,8 +1036,16 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
 
+    $('#isResultAuthorized').change(function(e) {
+        checkIsResultAuthorized();
+    });
+
+
 
     $(document).ready(function() {
+
+        checkIsResultAuthorized();
+
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,
@@ -1130,10 +1136,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
         $('.enable-input input, .enable-input select , .enable-input textarea').attr('disabled', false);
         $('#sampleCode').attr('disabled', false);
-        $('#isResultAuthorized').change(function(e) {
-            checkIsResultAuthorized();
-        });
-        checkIsResultAuthorized();
+
+
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             $(document).change('.test-result, #result', function(e) {
                 checkPostive();
