@@ -25,7 +25,7 @@ try {
 		}
 
 		if($lastId > 0){
-            $_SESSION['alertMsg'] = "Hepatitis Test Reason details saved successfully";
+            $_SESSION['alertMsg'] = _("Hepatitis Test Reason details saved successfully");
             $general->activityLog('Hepatitis Test Reason details', $_SESSION['userName'] . ' added new Test Reason for ' . $_POST['testReasonName'], 'hepatitis-reference');
         }
 	}
