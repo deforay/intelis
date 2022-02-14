@@ -408,6 +408,15 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <label class="radio-inline" for="contact1" style="padding-left:17px !important;margin-left:0;">Tout cas suspects avec deux résultats de laboratoire négatifs au COVID-19 a au moins 48 heures d'intervalle</label>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <label class="radio-inline" style="margin-left:0;">
+                                            <input type="radio" id="reason5" name="reasonForCovid19Test" value="5" title="Diagnostique">
+                                            <input type="radio" id="reason5" name="reasonForCovid19Test" value="5" title="Diagnostique" <?php echo (isset($covid19SelectedReasonsDetailsForTesting['reasons_id']) && $covid19SelectedReasonsDetailsForTesting['reasons_id'] == 5) ? "checked" : ""; ?>>
+                                            <strong>Diagnostique</strong>
+                                        </label>
+                                    </td>
+                                </tr>
                             </table>
 
                             <div class="box-header with-border sectionHeader">

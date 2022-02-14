@@ -402,6 +402,14 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             <label class="radio-inline" for="contact1" style="padding-left:17px !important;margin-left:0;">Tout cas suspects avec deux résultats de laboratoire négatifs au COVID-19 a au moins 48 heures d'intervalle</label>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <label class="radio-inline" style="margin-left:0;">
+                                                <input type="radio" class="" id="reason5" name="reasonForCovid19Test" value="5" title="Diagnostique">
+                                                <strong>Diagnostique</strong>
+                                            </label>
+                                        </td>
+                                    </tr>
                                 </table>
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">
