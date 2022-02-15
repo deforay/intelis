@@ -37,9 +37,9 @@ $pdQuery = "SELECT * from province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
-	if(!empty($tbInfo['remote_sample']) && $tbInfo['remote_sample'] == 'yes'){
+	if (!empty($tbInfo['remote_sample']) && $tbInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
-	}else{
+	} else {
 		$sampleCode = 'sample_code';
 	}
 	$rKey = 'R';
@@ -88,10 +88,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("TB LABORATORY TEST REQUEST FORM");?></h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("TB LABORATORY TEST REQUEST FORM"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Edit New Request");?></li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Edit New Request"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -294,7 +294,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 								<table class="table">
 									<tr>
-										<th><label class="label-control" for="sampleCollectionDate">Date of Specimen Collected </label></th>
+										<th><label class="label-control" for="sampleCollectionDate">Date Specimen Collected </label></th>
 										<td>
 											<input class="form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
 										</td>

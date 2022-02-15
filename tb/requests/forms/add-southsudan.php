@@ -182,9 +182,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								</div>
 								<table class="table" style="width:100%">
 									<tr>
-										<th><label for="patientId">Unique ART Number <span class="mandatory">*</span> </label></th>
+										<th><label for="patientId">Unique ART Number</label></th>
 										<td>
-											<input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
+											<input type="text" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
 										<th><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
 										<td>
@@ -289,7 +289,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								</div>
 								<table class="table">
 									<tr>
-										<th><label class="label-control" for="sampleCollectionDate">Date of Specimen Collected <span class="mandatory">*</span></label></th>
+										<th><label class="label-control" for="sampleCollectionDate">Date Specimen Collected <span class="mandatory">*</span></label></th>
 										<td>
 											<input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
 										</td>
