@@ -181,7 +181,7 @@ try {
     }
 
     if (!empty($input['childName'])) {
-        $where[] = " (vl.child_name like '%" . $input['childName'] . "%' OR vl.child_surname like '%" . $input['childName'] . "%')";
+        $where[] = " (vl.child_name like '" . $input['childName'] . "' OR vl.child_surname like '" . $input['childName'] . "')";
     }
 
     $sampleStatus = $input['sampleStatus'];

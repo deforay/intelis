@@ -778,6 +778,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 		$('.reason-checkbox').prop("checked", false);
 		if (opUncheck == "followup-uncheck") {
 			$('#followUp').val("");
+			$("#xPertMTMResult").prop('disabled', true);
+		} else {
+			$("#xPertMTMResult").prop('disabled', false);
 		}
 		$('.' + opUncheck).prop("checked", false);
 		if ($(obj).prop("checked", true)) {
