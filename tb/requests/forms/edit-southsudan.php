@@ -814,6 +814,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		$('.reason-checkbox').prop("checked", false);
 		if (opUncheck == "followup-uncheck") {
 			$('#followUp').val("");
+			$("#xPertMTMResult").prop('disabled', false);
+		} else {
+			$("#xPertMTMResult").prop('disabled', true);
 		}
 		$('.' + opUncheck).prop("checked", false);
 		if ($(obj).prop("checked", true)) {
