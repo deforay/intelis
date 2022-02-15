@@ -99,7 +99,7 @@ include_once(APPLICATION_PATH . '/header.php');
 	});
 	function updateStatus(obj, optVal) {
     if (obj.value != '') {
-      conf = confirm("Are you sure you want to change the status?");
+      conf = confirm("<?= _("Are you sure you want to change the status ?"); ?>");
       if (conf) {
         $.post("update-implementation-status.php", {
             status: obj.value,
@@ -108,7 +108,7 @@ include_once(APPLICATION_PATH . '/header.php');
           function(data) {
             if (data != "") {
               oTable.fnDraw();
-              alert('Updated successfully.');
+              alert("<?= _("Updated successfully."); ?>");
             }
           });
       }

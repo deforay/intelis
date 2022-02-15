@@ -111,7 +111,7 @@ function checkPasswordLength() {
     var pwd = $('#confirmPassword').val();
     var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
     if (regex.test(pwd) == false) {
-      alert('Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.');
+      alert("<?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
       $('.ppwd').focus();
     }
     return regex.test(pwd);
@@ -120,7 +120,7 @@ function checkPasswordLength() {
             <?php
             if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") {
             ?>
-                alert('<?php echo $_SESSION['alertMsg']; ?>');
+                alert("<?php echo $_SESSION['alertMsg']; ?>");
             <?php
                 $_SESSION['alertMsg'] = '';
                 unset($_SESSION['alertMsg']);

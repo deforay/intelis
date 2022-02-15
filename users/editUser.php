@@ -8,8 +8,8 @@ $userQuery = "SELECT * from user_details as ud INNER JOIN roles as r ON ud.role_
 $userInfo = $db->query($userQuery);
 
 $interfaceUsers = "";
-if(!empty($userInfo[0]['interface_user_name'])){
-     $interfaceUsers = implode(", " , json_decode($userInfo[0]['interface_user_name'], true));
+if (!empty($userInfo[0]['interface_user_name'])) {
+     $interfaceUsers = implode(", ", json_decode($userInfo[0]['interface_user_name'], true));
 }
 
 $query = "SELECT * FROM roles WHERE status='active'";
@@ -203,7 +203,7 @@ $ftResult = $db->rawQuery($fQuery);
                                              <label for="password" class="col-lg-4 control-label">Password </label>
                                              <div class="col-lg-7">
                                                   <input type="password" class="form-control ppwd" id="confirmPassword" name="password" placeholder="Password" title="Please enter the password" />
-                                                  <code>Password must be at least 8 characters long and must include AT LEAST one number, one alphabet. You can also use special characters.</code>
+                                                  <code><?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                                              </div>
                                         </div>
                                    </div>
@@ -435,7 +435,7 @@ $ftResult = $db->rawQuery($fQuery);
           var pwd = $('#confirmPassword').val();
           var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
           if (regex.test(pwd) == false) {
-               alert('Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.');
+               alert("<?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
                $('.ppwd').focus();
           }
           return regex.test(pwd);

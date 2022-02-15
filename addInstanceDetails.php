@@ -104,7 +104,7 @@ ob_start();
 <script type="text/javascript">
   <?php if (isset($_SESSION['success']) && trim($_SESSION['success']) != "") { ?>
     window.parent.closeModal();
-    window.parent.alert('<?php echo $_SESSION['alertMsg']; ?>');
+    window.parent.alert("<?php echo $_SESSION['alertMsg']; ?>");
     <?php $_SESSION['alertMsg'] = '';
     unset($_SESSION['alertMsg']);
     $_SESSION['success'] = '';

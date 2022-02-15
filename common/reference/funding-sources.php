@@ -97,26 +97,26 @@ include_once(APPLICATION_PATH . '/header.php');
 		});
 		$.unblockUI();
 	});
+
 	function updateStatus(obj, optVal) {
-    if (obj.value != '') {
-      conf = confirm("Are you sure you want to change the status?");
-      if (conf) {
-        $.post("update-funding-source-status.php", {
-            status: obj.value,
-            id: obj.id
-          },
-          function(data) {
-            if (data != "") {
-              oTable.fnDraw();
-              alert('Updated successfully.');
-            }
-          });
-      }
-	  else {
-		window.top.location = window.top.location;
-	  }
-    }
-  }
+		if (obj.value != '') {
+			conf = confirm("<?= _("Are you sure you want to change the status ?"); ?>");
+			if (conf) {
+				$.post("update-funding-source-status.php", {
+						status: obj.value,
+						id: obj.id
+					},
+					function(data) {
+						if (data != "") {
+							oTable.fnDraw();
+							alert("<?= _("Updated successfully."); ?>");
+						}
+					});
+			} else {
+				window.top.location = window.top.location;
+			}
+		}
+	}
 </script>
 <?php
 include(APPLICATION_PATH . '/footer.php');

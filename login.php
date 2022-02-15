@@ -5,24 +5,34 @@ if (session_status() == PHP_SESSION_NONE) {
 if (isset($_SESSION['userId'])) {
   header("location:dashboard/index.php");
 }
-$adminCount = $db->rawQuery("SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id");
-if (count($adminCount) == 0) {
+
+// If there are NO users, then we need to register the admin user
+// This happens during first setup typically
+$count = $db->getValue("user_details", "count(*)");
+if ($count == 0) {
   header("location:/setup/index.php");
 }
-#require_once('../startup.php');
 
-$globalConfigQuery = "SELECT * from global_config where name='logo'";
-$configResult = $db->query($globalConfigQuery);
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-  $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
+$general = new \Vlsm\Models\General();
+
+$globalConfigResult = $general->getGlobalConfig();
+// //system config
+// $systemConfigQuery = "SELECT * from system_config";
+// $systemConfigResult = $db->query($systemConfigQuery);
+// $sarr = array();
+// // now we create an associative array so that we can easily create view variables
+// for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
+//   $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
+// }
+
+if (isset($systemConfig['instanceName']) && !empty($systemConfig['instanceName'])) {
+  $systemType = $systemConfig['instanceName'];
+} else {
+  $systemType = _("Lab Sample Management Module");
 }
-$shortName = _('Sample Management');
-$systemType = _("Lab Sample Management Module");
+
+$shortName = _('Sample Management System');
+
 if ($_SESSION['instanceType'] == 'remoteuser') {
   $shortName = 'Sample Tracking';
   $systemType = "Remote Sample Tracking Module";
@@ -121,10 +131,10 @@ function generate_token()
     $filePath = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'login-logos';
 
 
-    if (isset($configResult[0]['value']) && trim($configResult[0]['value']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $configResult[0]['value'])) {
+    if (isset($globalConfigResult[0]['value']) && trim($globalConfigResult[0]['value']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $globalConfigResult[0]['value'])) {
     ?>
       <div style="margin-top:15px;float:left;">
-        <img src="/uploads/logo/<?php echo $configResult[0]['value']; ?>" alt="Logo image" style="max-width:120px;">
+        <img src="/uploads/logo/<?php echo $globalConfigResult[0]['value']; ?>" alt="Logo image" style="max-width:120px;">
       </div>
     <?php
     }
@@ -246,7 +256,7 @@ function generate_token()
         }
       <?php }
       if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?>
-        alert('<?php echo $_SESSION['alertMsg']; ?>');
+        alert("<?php echo $_SESSION['alertMsg']; ?>");
       <?php $_SESSION['alertMsg'] = '';
         unset($_SESSION['alertMsg']);
       } ?>
