@@ -46,6 +46,14 @@ if (isset($_POST['testingLab']) && $_POST['testingLab'] != "") {
 	$query .= " AND (lab_id IN(" . $_POST['testingLab'] . ") OR (lab_id like '' OR lab_id is null))";
 }
 
+if (isset($_POST['facility']) && $_POST['facility'] != "") {
+	$query .= " AND (facility_id IN(" . $_POST['facility'] . ") OR (facility_id like '' OR facility_id is null))";
+}
+
+if (isset($_POST['operator']) && $_POST['operator'] != "") {
+	$query .= " AND (request_created_by like '" . $_POST['operator'] . "' OR (request_created_by like '' OR request_created_by is null))";
+}
+
 $query .= " ORDER BY vl.request_created_datetime ASC";
 // echo $query;die;
 $result = $db->rawQuery($query);
