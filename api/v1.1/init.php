@@ -161,7 +161,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
     /* Type of Test Request */
     $typeOfTestReqList = array();
-    $typeOfTestReqResult = array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'Others');
+    if ($formId == 3) {
+        $typeOfTestReqResult = array("PCR/RT-PCR", "RdRp-SARS Cov-2", "GeneXpert", "Rapid Antigen Test", "Other");
+    } else {
+        $typeOfTestReqResult = array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'Others');
+    }
     foreach ($typeOfTestReqResult as $key => $req) {
         $typeOfTestReqList[$key]['value'] = $req;
         $typeOfTestReqList[$key]['show'] = $req;
@@ -178,10 +182,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $data['covid19']['covid19ReasonsForTestingList'] = $app->generateSelectOptions($covid19Obj->getCovid19ReasonsForTesting());
     $data['covid19']['specimenTypeResultList'] = $app->generateSelectOptions($covid19Obj->getCovid19SampleTypes());
     foreach (range(1, 5) as $key => $req) {
-        $typeOfTestReqList[$key]['value'] = $req;
-        $typeOfTestReqList[$key]['show'] = $req;
+        $testingPoint[$key]['value'] = $req;
+        $testingPoint[$key]['show'] = $req;
     }
-    $data['covid19']['testingPoint'] = $typeOfTestReqList;
+    $data['covid19']['testingPoint'] = $testingPoint;
     $data['covid19']['testingLabsList'] = $app->getTestingLabs('covid19', null, true);
     /* Type of Test Request */
     $qualityList = array();
