@@ -28,7 +28,7 @@ try {
 			$lastId = $db->getInsertId();
 		}
         if($lastId > 0){
-            $_SESSION['alertMsg'] = "Implementation Partners saved successfully";
+            $_SESSION['alertMsg'] = _("Implementation Partners saved successfully");
             $general->activityLog('Implementation Partners', $_SESSION['userName'] . ' added new Implementation Partner for ' . $_POST['partnerName'], 'common-reference');
         }
 	}

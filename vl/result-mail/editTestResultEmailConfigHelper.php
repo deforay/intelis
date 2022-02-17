@@ -21,7 +21,7 @@ try {
             $db->update($tableName, $data);
         }
     }
-    $_SESSION['alertMsg'] = "Test Result Email Config values updated successfully.";
+    $_SESSION['alertMsg'] = _("Test Result Email Config values updated successfully.");
     header("location:testResultEmailConfig.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

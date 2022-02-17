@@ -65,7 +65,7 @@ try {
             }
         }
 
-        $_SESSION['alertMsg'] = "Result Import configuration initited for " . $_POST['configurationName'] . ". Please proceed to write the import logic in the file " . $_POST['configurationFile'] . " present in import-configs folder";
+        $_SESSION['alertMsg'] = _("Result Import configuration initited for ") . $_POST['configurationName'] . _(". Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _(" present in import-configs folder");
     }
     error_log($db->getLastError());
     header("location:importConfig.php");

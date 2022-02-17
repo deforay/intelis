@@ -91,7 +91,7 @@ try {
                 }
             }
         }
-        $_SESSION['alertMsg'] = "Import config details updated successfully";
+        $_SESSION['alertMsg'] = _("Import config details updated successfully");
         $configDir = __DIR__;
         $configFileVL = $configDir . DIRECTORY_SEPARATOR . "vl" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
         $configFileEID = $configDir . DIRECTORY_SEPARATOR . "eid" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];

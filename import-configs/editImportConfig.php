@@ -60,7 +60,7 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 								<div class="form-group">
 									<label for="configurationName" class="col-lg-4 control-label"><?php echo _("Instrument Name"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _('eg. Roche or Abbott'); ?>" title="<?php echo _('Please enter configuration name'); ?>" value="<?php echo $sInfo['machine_name']; ?>" onblur="checkNameValidation('import_config','machine_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo _("This configuration name already exists.Try another name"); ?>',null);" />
+										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _('eg. Roche or Abbott'); ?>" title="<?php echo _('Please enter configuration name'); ?>" value="<?php echo $sInfo['machine_name']; ?>" onblur="checkNameValidation('import_config','machine_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo _('This configuration name already exists.Try another name'); ?>',null);" />
 									</div>
 								</div>
 							</div>
@@ -72,16 +72,16 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
 											<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
-												<option value='vl' <?php echo (in_array('vl', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>Viral Load</option>
+												<option value='vl' <?php echo (in_array('vl', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Viral Load");?></option>
 											<?php }
 											if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
-												<option value='eid' <?php echo (in_array('eid', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>EID</option>
+												<option value='eid' <?php echo (in_array('eid', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("EID");?></option>
 											<?php }
 											if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
-												<option value='covid19' <?php echo (in_array('covid19', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>Covid-19</option>
+												<option value='covid19' <?php echo (in_array('covid19', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Covid-19");?></option>
 											<?php }
 											if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
-												<option value='hepatitis' <?php echo (in_array('hepatitis', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>>Hepatitis</option>
+												<option value='hepatitis' <?php echo (in_array('hepatitis', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Hepatitis");?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -93,7 +93,7 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 								<div class="form-group">
 									<label for="configurationName" class="col-lg-4 control-label"><?php echo _("Instrument File Name"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _('eg. roche.php or abbott.php'); ?>" title="<?php echo _('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" onblur="checkNameValidation('import_config','import_machine_file_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','This file name already exists.Try another name',null)" />
+										<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _('eg. roche.php or abbott.php'); ?>" title="<?php echo _('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" onblur="checkNameValidation('import_config','import_machine_file_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo("This file name already exists.Try another name");?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -146,8 +146,8 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?></label>
 									<div class="col-lg-7">
 										<select class="form-control" id="status" name="status" title="<?php echo _('Please select import config status'); ?>">
-											<option value="active" <?php echo ($sInfo['status'] == 'active') ? 'selected="selected"' : ''; ?>>Active</option>
-											<option value="inactive" <?php echo ($sInfo['status'] == 'inactive') ? 'selected="selected"' : ''; ?>>Inactive</option>
+											<option value="active" <?php echo ($sInfo['status'] == 'active') ? 'selected="selected"' : ''; ?>><?php echo _("Active");?></option>
+											<option value="inactive" <?php echo ($sInfo['status'] == 'inactive') ? 'selected="selected"' : ''; ?>><?php echo _("Inactive");?></option>
 										</select>
 									</div>
 								</div>
@@ -310,7 +310,7 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 
 	$(document).ready(function() {
 		$("#supportedTests").select2({
-			placeholder: "<?php echo _('Select Test Types'); ?>"
+			placeholder: '<?php echo _("Select Test Types"); ?>'
 		});
 
 		$('#supportedTests').on('select2:select', function(e) {
