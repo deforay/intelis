@@ -63,4 +63,4 @@ Add the following in crontab (or equivalent for your Operating System)
 
 
 #### Who do I talk to?
-You can reach us at hello (at) deforay (dot) com
+You can reach us at support (at) deforay (dot) com

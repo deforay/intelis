@@ -408,6 +408,15 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <label class="radio-inline" for="contact1" style="padding-left:17px !important;margin-left:0;">Tout cas suspects avec deux résultats de laboratoire négatifs au COVID-19 a au moins 48 heures d'intervalle</label>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <label class="radio-inline" style="margin-left:0;">
+                                            <input type="radio" id="reason5" name="reasonForCovid19Test" value="5" title="Diagnostique">
+                                            <input type="radio" id="reason5" name="reasonForCovid19Test" value="5" title="Diagnostique" <?php echo (isset($covid19SelectedReasonsDetailsForTesting['reasons_id']) && $covid19SelectedReasonsDetailsForTesting['reasons_id'] == 5) ? "checked" : ""; ?>>
+                                            <strong>Diagnostique</strong>
+                                        </label>
+                                    </td>
+                                </tr>
                             </table>
 
                             <div class="box-header with-border sectionHeader">
@@ -753,6 +762,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </thead>
                                                 <tbody id="testKitNameTable">
                                                     <?php if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) {
+                                                        $testMethod = array("PCR/RT-PCR", "RdRp-SARS Cov-2", "GeneXpert", "Rapid Antigen Test", "other");
                                                         foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                             <tr>
                                                                 <td class="text-center"><?php echo ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>"></td>
@@ -761,11 +771,13 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                         <option value="">--Select--</option>
                                                                         <option value="PCR/RT-PCR" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'PCR/RT-PCR') ? "selected='selected'" : ""; ?>>PCR/RT-PCR</option>
                                                                         <option value="RdRp-SARS Cov-2" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'RdRp-SARS Cov-2') ? "selected='selected'" : ""; ?>>RdRp-SARS Cov-2</option>
+                                                                        <option value="GeneXpert" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'GeneXpert') ? "selected='selected'" : ""; ?>>GeneXpert</option>
+                                                                        <option value="Rapid Antigen Test" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'Rapid Antigen Test') ? "selected='selected'" : ""; ?>>Rapid Antigen Test</option>
                                                                         <option value="other" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'other') ? "selected='selected'" : ""; ?>>Others</option>
                                                                     </select>
                                                                     <?php $show =  (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'other') ? "block" : "none";
                                                                     $value = '';
-                                                                    if ($covid19TestInfo[$indexKey]['test_name'] != 'PCR/RT-PCR' && $covid19TestInfo[$indexKey]['test_name'] != 'RdRp-SARS Cov-2' && $covid19TestInfo[$indexKey]['test_name'] != 'other') {
+                                                                    if (!in_array($covid19TestInfo[$indexKey]['test_name'], $testMethod)) {
                                                                         $value = 'value="' . $covid19TestInfo[$indexKey]['test_name'] . '"';
                                                                         $show =  "block";
                                                                     } else {
@@ -795,6 +807,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <option value="">--Select--</option>
                                                                     <option value="PCR/RT-PCR">PCR/RT-PCR</option>
                                                                     <option value="RdRp-SARS Cov-2">RdRp-SARS Cov-2</option>
+                                                                    <option value="GeneXpert">GeneXpert</option>
+                                                                    <option value="Rapid Antigen Test">Rapid Antigen Test</option>
                                                                     <option value="other">Others</option>
                                                                 </select>
                                                                 <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testInputOther1" title="Veuillez saisir le nom du test pour les lignes 1" placeholder="Entrez le nom du test 1" style="display: none;margin-top: 10px;" />
@@ -1013,12 +1027,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
     function validateNow() {
-        if ($('#isResultAuthorized').val() != "yes" && $('#result').val() == "") {
-            $('#approvedBy,#approvedOn').removeClass('isRequired');
-        } else {
-            $('#isResultAuthorized').val('yes');
-            $('#approvedBy,#approvedOn').addClass('isRequired');
-        }
+
+        checkIsResultAuthorized();
+
+
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         flag = deforayValidator.init({
@@ -1038,8 +1050,16 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
 
+    $('#isResultAuthorized').change(function(e) {
+        checkIsResultAuthorized();
+    });
+
+
 
     $(document).ready(function() {
+
+        checkIsResultAuthorized();
+
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,
@@ -1130,10 +1150,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
         $('.enable-input input, .enable-input select , .enable-input textarea').attr('disabled', false);
         $('#sampleCode').attr('disabled', false);
-        $('#isResultAuthorized').change(function(e) {
-            checkIsResultAuthorized();
-        });
-        checkIsResultAuthorized();
+
+
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             $(document).change('.test-result, #result', function(e) {
                 checkPostive();
@@ -1210,6 +1228,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                     <option value="">--Select--</option>
                     <option value="PCR/RT-PCR">PCR/RT-PCR</option>
                     <option value="RdRp-SARS Cov-2">RdRp-SARS Cov-2</option>
+                    <option value="GeneXpert">GeneXpert</option>
+                    <option value="Rapid Antigen Test">Rapid Antigen Test</option>
                     <option value="other">Others</option>
                 </select>
                 <input type="text" name="testNameOther[]" id="testNameOther${tableRowId}" class="form-control testInputOther' + tableRowId + '" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />

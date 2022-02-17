@@ -412,7 +412,7 @@ foreach ($rejectionTypeResult as $type) {
 							$("#bulkRejectionReason").val('');
 							$(".bulkRejectionReason").hide();
 							oTable.fnDraw();
-							alert('Updated successfully.');
+							alert("<?= _("Updated successfully."); ?>");
 						}
 					});
 			}

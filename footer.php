@@ -69,13 +69,13 @@
 
 		function syncRemoteData(remoteUrl) {
 			if (!navigator.onLine) {
-				alert('Please connect to internet to sync with VLSTS');
+				alert("<?= _("Please connect to internet to sync with VLSTS"); ?>");
 				return false;
 			}
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				$.blockUI({
-					message: '<h3>Preparing for VLSTS Remote sync.<br>Please wait...</h3>'
+					message: "<h3><?= _("Preparing for VLSTS Remote sync."); ?><br><?= _("Please wait..."); ?></h3>"
 				});
 				var jqxhr = $.ajax({
 						url: "/remote/scheduled-jobs/syncCommonData.php",
@@ -86,7 +86,7 @@
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("Unable to do VLSTS Remote Sync. Please contact technical team for assistance.");
+						alert("<?= _("Unable to do VLSTS Remote Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
 						//alert( "complete" );
@@ -98,7 +98,7 @@
 
 		function syncRequests(remoteUrl) {
 			$.blockUI({
-				message: '<h3>Trying to sync Test Requests<br>Please wait...</h3>'
+				message: "<h3><?= _("Trying to sync Test Requests"); ?><br><?= _("Please wait..."); ?></h3>"
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
@@ -111,7 +111,7 @@
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("Unable to do VLSTS Remote Sync. Please contact technical team for assistance.");
+						alert("<?= _("Unable to do VLSTS Remote Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
 						$.unblockUI();
@@ -124,7 +124,7 @@
 		function syncResults(remoteUrl) {
 
 			$.blockUI({
-				message: '<h3>Trying to sync Test Results<br>Please wait...</h3>'
+				message: "<h3><?= _("Trying to sync Test Results"); ?><br><?= _("Please wait..."); ?></h3>"
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
@@ -137,7 +137,7 @@
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("Unable to do VLSTS Remote Sync. Please contact technical team for assistance.");
+						alert("<?= _("Unable to do VLSTS Remote Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
 						$.unblockUI();
@@ -192,7 +192,7 @@
 				})();
 		<?php } ?>
 
-		<?php if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?> alert('<?php echo $_SESSION['alertMsg']; ?>');
+		<?php if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?> alert("<?php echo $_SESSION['alertMsg']; ?>");
 		<?php $_SESSION['alertMsg'] = '';
 			unset($_SESSION['alertMsg']);
 		}

@@ -428,12 +428,12 @@ foreach ($rejectionTypeResult as $type) {
               $("#bulkRejectionReason").val('');
               $(".bulkRejectionReason").hide();
               oTable.fnDraw();
-              alert('Updated successfully.');
+              alert("<?= _("Updated successfully."); ?>");
             }
           });
       }
     } else {
-      alert("Please be checked atleast one checkbox.");
+      alert("<?= _("Please select at least one checkbox"); ?>");
     }
   }
 
@@ -459,7 +459,7 @@ foreach ($rejectionTypeResult as $type) {
       $("#rejectReasonDiv").hide();
     }
     if (obj.value != '') {
-      conf = confirm("Do you wish to change the status ?");
+      conf = confirm("<?= _("Do you wish to change the status ?"); ?>");
       if (conf) {
         $.post("/vl/results/updateTestStatus.php", {
             status: obj.value,
@@ -474,7 +474,7 @@ foreach ($rejectionTypeResult as $type) {
               $("#status").val('');
               $("#status").prop('disabled', true);
               oTable.fnDraw();
-              alert('Updated successfully.');
+              alert("<?= _("Updated successfully."); ?>");
             }
           });
       } else {
@@ -485,7 +485,7 @@ foreach ($rejectionTypeResult as $type) {
 
   function updateRejectionReasonStatus(obj) {
     if (obj.value != '') {
-      conf = confirm("Do you wish to change the status ?");
+      conf = confirm("<?= _("Do you wish to change the status ?"); ?>");
       if (conf) {
         $.post("/vl/results/updateTestStatus.php", {
             status: '4',
@@ -504,7 +504,7 @@ foreach ($rejectionTypeResult as $type) {
               $("#statusDropDownId").val('');
               $("#rejectionReason").val('');
               oTable.fnDraw();
-              alert('Updated successfully.');
+              alert("<?= _("Updated successfully."); ?>");
             }
           });
       } else {

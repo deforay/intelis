@@ -542,7 +542,7 @@ foreach ($rejectionTypeResult as $type) {
 
 	function updateStatus(value, status) {
 		if (status != '') {
-			conf = confirm("Do you wish to change the status ?");
+			conf = confirm("<?= _("Do you wish to change the status ?"); ?>");
 			if (conf) {
 				$.blockUI();
 				$.post("/import-result/processImportedResults.php", {

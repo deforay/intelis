@@ -11,10 +11,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("Manage Batches");?></h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("Manage Batches"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Manage Batches");?></li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Manage Batches"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -26,16 +26,16 @@ include_once(APPLICATION_PATH . '/header.php');
 						<div class="row" style="background:#e0e0e0;padding: 15px;">
 							<div class="col-md-12">
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Batch Code");?></label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Batch Code"); ?></label>
 								</div>
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="''" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("No. Of Samples");?></label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="''" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("No. Of Samples"); ?></label>
 								</div>
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="2" id="iCol2" data-showhide="request_created_datetime" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Created On");?></label>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="2" id="iCol2" data-showhide="request_created_datetime" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Created On"); ?></label>
 								</div>
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="3" id="iCol3" data-showhide="batch_status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status");?></label> <br>
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="3" id="iCol3" data-showhide="batch_status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status"); ?></label> <br>
 								</div>
 							</div>
 						</div>
@@ -43,7 +43,7 @@ include_once(APPLICATION_PATH . '/header.php');
 
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-batch.php", $_SESSION['privileges'])) { ?>
-							<a href="covid-19-add-batch.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Create New Batch");?></a>
+							<a href="covid-19-add-batch.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Create New Batch"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
 					</div>
@@ -52,19 +52,19 @@ include_once(APPLICATION_PATH . '/header.php');
 						<table id="batchCodeDataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th><?php echo _("Batch Code");?></th>
-									<th><?php echo _("No. of Samples");?></th>
-									<th><?php echo _("No. of Samples Tested");?></th>
-									<th><?php echo _("Last Tested Date");?></th>
-									<th><?php echo _("Created On");?></th>
+									<th><?php echo _("Batch Code"); ?></th>
+									<th><?php echo _("No. of Samples"); ?></th>
+									<th><?php echo _("No. of Samples Tested"); ?></th>
+									<th><?php echo _("Last Tested Date"); ?></th>
+									<th><?php echo _("Created On"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("covid-19-edit-batch.php", $_SESSION['privileges'])) { ?>
-										<th><?php echo _("Action");?></th>
+										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+									<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -111,7 +111,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("editBatch.php", $_SESSION['privileges'])) { ?> {
+				<?php if (isset($_SESSION['privileges']) && in_array("covid-19-edit-batch.php", $_SESSION['privileges'])) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},
@@ -143,12 +143,12 @@ include_once(APPLICATION_PATH . '/header.php');
 
 	function generateQRcode(bId) {
 		$.blockUI();
-	$.post("/qr-code/generateQRcode.php", {
+		$.post("/qr-code/generateQRcode.php", {
 				id: bId
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
-					alert("<?php echo _("Unable to generate QR code");?>");
+					alert("<?php echo _("Unable to generate QR code"); ?>");
 				} else {
 					window.open('/uploads/qrcode/' + data, '_blank');
 				}
@@ -157,7 +157,7 @@ include_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function deleteBatchCode(bId, batchCode) {
-		var conf = confirm("<?php echo _("Are you sure you want to delete Batch");?> : " + batchCode + "?\n<?php echo _("This action cannot be undone.");?>");
+		var conf = confirm("<?php echo _("Are you sure you want to delete Batch"); ?> : " + batchCode + "?\n<?php echo _("This action cannot be undone."); ?>");
 		if (conf) {
 			$.post("/vl/batch/deleteBatchCode.php", {
 					id: bId,
@@ -165,9 +165,9 @@ include_once(APPLICATION_PATH . '/header.php');
 				},
 				function(data) {
 					if (data == 1) {
-						alert("<?php echo _("Batch deleted");?>");
+						alert("<?php echo _("Batch deleted"); ?>");
 					} else {
-						alert("<?php echo _("Something went wrong. Please try again!");?>");
+						alert("<?php echo _("Something went wrong. Please try again!"); ?>");
 					}
 					oTable.fnDraw();
 				});

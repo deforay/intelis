@@ -12,10 +12,17 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 $testingLabs = $facilitiesDb->getTestingLabs($module);
 if ($module == 'covid19') {
+	$usersDb = new \Vlsm\Models\Users();
+	$usersList = array();
+	$users = $usersDb->getActiveUsers();
+	foreach ($users as $u) {
+		$usersList[$u["user_id"]] = $u['user_name'];
+	}
+	$facilities = $facilitiesDb->getHealthFacilities($module);
 	$shortCode = 'C19';
 } else if ($module == 'hepatitis') {
 	$shortCode = 'HEP';
-}else{
+} else {
 	$shortCode = $module;
 }
 $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomString(6);
@@ -97,6 +104,31 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 								</div>
 							</div>
 						</div>
+						<?php if ($module == 'covid19') { ?>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="operator" class="col-lg-4 control-label"><?php echo _("Operator/Technician"); ?> <span class="mandatory">*</span></label>
+										<div class="col-lg-7" style="margin-left:3%;">
+											<select type="text" class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
+												<?= $general->generateSelectOptions($usersList, null, '-- Select --'); ?>
+											</select>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="facility" class="col-lg-4 control-label"><?php echo _("Sample Collection Point"); ?></label>
+										<div class="col-lg-7" style="margin-left:3%;">
+											<select type="text" class="form-control select2" id="facility" name="facility" title="Choose one sample collection point">
+												<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+						<?php } ?>
 						<div class="row">
 							<div class="col-md-12 text-center">
 								<div class="form-group">
@@ -264,7 +296,9 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 
 			$.post("/specimen-referral-manifest/getSpecimenReferralManifestSampleCodeDetails.php", {
 					module: $("#module").val(),
-					testingLab: $('#testingLab').val()
+					testingLab: $('#testingLab').val(),
+					facility: $('#facility').val(),
+					operator: $('#operator').val()
 				},
 				function(data) {
 					if (data != "") {

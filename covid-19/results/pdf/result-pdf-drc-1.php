@@ -309,11 +309,11 @@ $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:cente
 $html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . $result['patient_phone_number'] . '</td>';
 $html .= '</tr>';
 
-$html .= '<tr>';
-$html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Type de Cas</td>';
-$html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . $result['reasonForTesting'] . '</td>';
-$html .= '</tr>';
+// $html .= '<tr>';
+// $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Type de Cas</td>';
+// $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
+// $html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . $result['reasonForTesting'] . '</td>';
+// $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Structure Sanitaire</td>';

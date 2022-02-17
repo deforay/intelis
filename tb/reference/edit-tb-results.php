@@ -45,13 +45,16 @@ $resultInfo = $db->query($resultQuery);
 								<div class="form-group">
 									<label for="resultType" class="col-lg-4 control-label">Result Type<span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" readonly class="form-control isRequired" id="resultType" name="resultType" value="<?php echo $resultInfo[0]['result_type']; ?>" placeholder="Result Type" title="Please enter Result type" onblur="checkNameValidation('r_tb_results','result_type',this,'<?php echo "result_id##" . $id; ?>','The Result type that you entered already exists.Enter another type',null)" />
+										<select class="form-control isRequired" id="resultType" name="resultType" placeholder="<?php echo _('Result Type'); ?>" title="<?php echo _('Please select Result Type'); ?>">
+											<option value="lam" <?php echo ($resultInfo[0]['result_type'] == "lam" ? 'selected' : ''); ?>><?php echo _("LAM"); ?></option>
+											<option value="x-pert" <?php echo ($resultInfo[0]['result_type'] == "x-pert" ? 'selected' : ''); ?>><?php echo _("X-PERT"); ?></option>
+										</select>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="resultStatus" class="col-lg-4 control-label">Result Status</label>
+									<label for="resultStatus" class="col-lg-4 control-label">Result Status<span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="Result Status" title="Please select Result Status">
 											<option value="active" <?php echo ($resultInfo[0]['status'] == "active" ? 'selected' : ''); ?>>Active</option>

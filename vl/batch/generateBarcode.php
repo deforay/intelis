@@ -66,8 +66,14 @@ if ($id > 0) {
 
     $bQuery = "SELECT * from batch_details as b_d LEFT JOIN import_config as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
     $bResult = $db->query($bQuery);
+    if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
 
-    $dateQuery = "SELECT sample_tested_datetime,result_reviewed_datetime from $refTable where sample_batch_id='" . $id . "' AND (sample_tested_datetime IS NOT NULL AND sample_tested_datetime not like '' AND sample_tested_datetime!= '0000-00-00 00:00:00') LIMIT 1";
+        $dateQuery = "SELECT ct.*,covid19.sample_tested_datetime, result_reviewed_datetime, lot_number, lot_expiration_date, result_printed_datetime from $refTable as covid19
+        left join covid19_tests as ct on covid19.covid19_id = ct.covid19_id where sample_batch_id='" . $id . "' AND (covid19.sample_tested_datetime IS NOT NULL AND covid19.sample_tested_datetime not like '' AND covid19.sample_tested_datetime!= '0000-00-00 00:00:00') GROUP BY covid19.covid19_id LIMIT 1";
+    } else {
+
+        $dateQuery = "SELECT sample_tested_datetime,result_reviewed_datetime from $refTable where sample_batch_id='" . $id . "' AND (sample_tested_datetime IS NOT NULL AND sample_tested_datetime not like '' AND sample_tested_datetime!= '0000-00-00 00:00:00') LIMIT 1";
+    }
     $dateResult = $db->query($dateQuery);
     $resulted = '';
     $reviewed = '';
@@ -177,18 +183,49 @@ if ($id > 0) {
 
         // add a page
         $pdf->AddPage();
-
-        $tbl = '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
+        if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+            if (isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "" && $dateResult['kit_expiry_date'] != null) {
+                $dateResult['kit_expiry_date'] = date("d-M-Y", strtotime($dateResult['kit_expiry_date']));
+            }
+            if (isset($dateResult['lot_expiration_date']) && $dateResult['lot_expiration_date'] != "" && $dateResult['lot_expiration_date'] != null) {
+                $dateResult['lot_expiration_date'] = date("d-M-Y", strtotime($dateResult['lot_expiration_date']));
+            }
+            if (isset($dateResult['result_printed_datetime']) && $dateResult['result_printed_datetime'] != "" && $dateResult['result_printed_datetime'] != null) {
+                $dateResult['result_printed_datetime'] = date("d-M-Y", strtotime($dateResult['result_printed_datetime']));
+            }
+            $tbl = '<table cellspacing="10" cellpadding="10" style="width:100%;" border="0">
+                <tr>
+                    <th style="font-weight: bold;">Reagent/Kit Name</th><td>' . ((isset($dateResult['test_name']) && $dateResult['test_name'] != "") ? $dateResult['test_name'] : "") . '</td>
+                    <th style="font-weight: bold;">Lot Number</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>
+                </tr>
+                <tr>
+                    <th style="font-weight: bold;">Lot Expiry Date</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>
+                    <th style="font-weight: bold;">Printed Date/Time</th><td>' . $dateResult['result_printed_datetime'] . '</td>
+                </tr>
+            </table>
+            <hr>
+            <table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
                 <tr style="border-bottom:1px solid #333 !important;">
-                    <th align="center" width="6%"><strong>Pos.</strong></th>
-                    <th align="center" width="20%"><strong>Sample ID</strong></th>
-                    <th align="center" width="35%"><strong>BARCODE</strong></th>
-                    <th align="center" width="13%"><strong>Patient Code</strong></th>
-                    <th align="center" width="13%"><strong>Lot No. / <br>Exp. Date</strong></th>
-                    <th align="center" width="13%"><strong>Test Result</strong></th>
+                    <th align="center" width="5%"><strong>' . _('Pos.') . '</strong></th>
+                    <th align="center" width="20%"><strong>' . _('Sample Code') . '</strong></th>
+                    <th align="center" width="30%"><strong>' . _('BARCODE') . '</strong></th>
+                    <th align="center" width="20%"><strong>' . _('Remote Sample Code') . '</strong></th>
+                    <th align="center" width="12.5%"><strong>' . _('Patient Code') . '</strong></th>
+                    <th align="center" width="12.5%"><strong>' . _('Test Result') . '</strong></th>
                 </tr>';
-        $tbl .= '</table>';
-
+            $tbl .= '</table>';
+        } else {
+            $tbl = '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
+                    <tr style="border-bottom:1px solid #333 !important;">
+                        <th align="center" width="6%"><strong>Pos.</strong></th>
+                        <th align="center" width="20%"><strong>Sample ID</strong></th>
+                        <th align="center" width="35%"><strong>BARCODE</strong></th>
+                        <th align="center" width="13%"><strong>Patient Code</strong></th>
+                        <th align="center" width="13%"><strong>Lot No. / <br>Exp. Date</strong></th>
+                        <th align="center" width="13%"><strong>Test Result</strong></th>
+                    </tr>';
+            $tbl .= '</table>';
+        }
         if (isset($bResult[0]['label_order']) && trim($bResult[0]['label_order']) != '') {
             $jsonToArray = json_decode($bResult[0]['label_order'], true);
             $sampleCounter = 1;
@@ -208,9 +245,9 @@ if ($id > 0) {
                     $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
-                            $sampleQuery = "SELECT sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
                         } else {
-                            $sampleQuery = "SELECT sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
                         }
                         $sampleResult = $db->query($sampleQuery);
 
@@ -226,12 +263,23 @@ if ($id > 0) {
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                         $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
-                        $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                        $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                        $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
-                        $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                        $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
-                        $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+
+                            $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                            $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
+                            $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        } else {
+
+                            $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                            $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
+                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
+                            $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
+                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        }
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
@@ -254,9 +302,9 @@ if ($id > 0) {
                     $xplodJsonToArray = explode("_", $jsonToArray[$j]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
-                            $sampleQuery = "SELECT sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
                         } else {
-                            $sampleQuery = "SELECT sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
                         }
                         $sampleResult = $db->query($sampleQuery);
 
@@ -272,12 +320,23 @@ if ($id > 0) {
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                         $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
-                        $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                        $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                        $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
-                        $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                        $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
-                        $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+
+                            $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                            $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
+                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
+                            $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
+                            $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        } else {
+
+                            $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                            $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
+                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
+                            $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
+                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        }
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
@@ -350,7 +409,7 @@ if ($id > 0) {
                 }
             }
             $sampleCounter = ($noOfInHouseControls + $noOfManufacturerControls + $noOfCalibrators + 1);
-            $sQuery = "SELECT sample_code,lot_number,lot_expiration_date,result,$patientIdColumn from $refTable where sample_batch_id=$id";
+            $sQuery = "SELECT sample_code,remote_sample_code,lot_number,lot_expiration_date,result,$patientIdColumn from $refTable where sample_batch_id=$id";
             $result = $db->query($sQuery);
             foreach ($result as $sample) {
                 // if($pdf->getY()>=250){
@@ -374,12 +433,23 @@ if ($id > 0) {
 
                 $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                 $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333 !important;width:100%;">';
-                $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
-                $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
-                $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $patientIdentifier . '</td>';
-                $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
-                $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['result'] . '</td>';
+                if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+
+                    $tbl .= '<td align="center" width="5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                    $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
+                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
+                    $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
+                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $patientIdentifier . '</td>';
+                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['result'] . '</td>';
+                } else {
+
+                    $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
+                    $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
+                    $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
+                    $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $patientIdentifier . '</td>';
+                    $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
+                    $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['result'] . '</td>';
+                }
                 $tbl .= '</tr>';
                 $tbl .= '</table>';
 

@@ -37,9 +37,9 @@ $pdQuery = "SELECT * from province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
-	if(!empty($tbInfo['remote_sample']) && $tbInfo['remote_sample'] == 'yes'){
+	if (!empty($tbInfo['remote_sample']) && $tbInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
-	}else{
+	} else {
 		$sampleCode = 'sample_code';
 	}
 	$rKey = 'R';
@@ -201,9 +201,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 								<table class="table" style="width:100%">
 									<tr>
-										<th><label for="patientId">Unique ART Number <span class="mandatory">*</span> </label></th>
+										<th><label for="patientId">Unique ART Number</label></th>
 										<td>
-											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
+											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
 										<th><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
 										<td>
@@ -302,7 +302,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 								<table class="table">
 									<tr>
-										<th><label class="label-control" for="sampleCollectionDate">Date of Specimen Collected <span class="mandatory">*</span></label></th>
+										<th><label class="label-control" for="sampleCollectionDate">Date Specimen Collected <span class="mandatory">*</span></label></th>
 										<td>
 											<input class="form-control isRequired" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
 										</td>
@@ -814,6 +814,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		$('.reason-checkbox').prop("checked", false);
 		if (opUncheck == "followup-uncheck") {
 			$('#followUp').val("");
+			$("#xPertMTMResult").prop('disabled', false);
+		} else {
+			$("#xPertMTMResult").prop('disabled', true);
 		}
 		$('.' + opUncheck).prop("checked", false);
 		if ($(obj).prop("checked", true)) {
