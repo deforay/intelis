@@ -34,7 +34,7 @@ try {
                                 $db->insert($tableName2, $value);
                         }
                 }
-                $_SESSION['alertMsg'] = "Roles updated successfully";
+                $_SESSION['alertMsg'] = _("Roles updated successfully");
         }
         header("location:roles.php");
 } catch (Exception $exc) {
