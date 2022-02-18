@@ -195,12 +195,15 @@ if ($id > 0) {
             }
             $tbl = '<table cellspacing="10" cellpadding="10" style="width:100%;" border="0">
                 <tr>
-                    <th style="font-weight: bold;">Reagent/Kit Name</th><td>' . ((isset($dateResult['test_name']) && $dateResult['test_name'] != "") ? $dateResult['test_name'] : "") . '</td>
-                    <th style="font-weight: bold;">Lot Number</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>
+                    <th style="font-weight: bold;">Reagent/Kit Name :</th><td>' . ((isset($dateResult['test_name']) && $dateResult['test_name'] != "") ? $dateResult['test_name'] : "") . '</td>
+                    <th style="font-weight: bold;">Lot Number :</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>
                 </tr>
                 <tr>
-                    <th style="font-weight: bold;">Lot Expiry Date</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>
-                    <th style="font-weight: bold;">Printed Date/Time</th><td>' . date("d-M-Y h:i:A") . '</td>
+                    <th style="font-weight: bold;">Lot Expiry Date :</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>
+                    <th style="font-weight: bold;">Printed By :</th><td>' . ucwords($_SESSION['userName']) . '</td>
+                    </tr>
+                    <tr>
+                    <th style="font-weight: bold;">Printed Date/Time :</th><td colspan="3">' . date("d-M-Y h:i:A") . '</td>
                 </tr>
             </table>
             <hr>
