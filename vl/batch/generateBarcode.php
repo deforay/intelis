@@ -200,7 +200,7 @@ if ($id > 0) {
                 </tr>
                 <tr>
                     <th style="font-weight: bold;">Lot Expiry Date</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>
-                    <th style="font-weight: bold;">Printed Date/Time</th><td>' . $dateResult['result_printed_datetime'] . '</td>
+                    <th style="font-weight: bold;">Printed Date/Time</th><td>' . date("d-M-Y h:i:A") . '</td>
                 </tr>
             </table>
             <hr>
