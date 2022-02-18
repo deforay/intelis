@@ -193,7 +193,7 @@ if ($id > 0) {
             if (isset($dateResult['result_printed_datetime']) && $dateResult['result_printed_datetime'] != "" && $dateResult['result_printed_datetime'] != null) {
                 $dateResult['result_printed_datetime'] = date("d-M-Y", strtotime($dateResult['result_printed_datetime']));
             }
-            $tbl = '<table cellspacing="10" cellpadding="10" style="width:100%;" border="0">
+            $tbl = '<table cellspacing="2" cellpadding="6" style="width:100%;" border="0">
                 <tr>
                     <th style="font-weight: bold;">Reagent/Kit Name :</th><td>' . ((isset($dateResult['test_name']) && $dateResult['test_name'] != "") ? $dateResult['test_name'] : "") . '</td>
                     <th style="font-weight: bold;">Lot Number :</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>
