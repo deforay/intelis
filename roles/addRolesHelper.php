@@ -28,7 +28,7 @@ try {
                                         }
                                 }
                         }
-                        $_SESSION['alertMsg'] = "Roles Added successfully";
+                        $_SESSION['alertMsg'] = _("Roles Added successfully");
                 }
         }
         header("location:roles.php");
