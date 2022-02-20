@@ -198,6 +198,10 @@ if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample
     $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
     $sampleReceivedDate = $general->humanDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
+} else if (isset($result['sample_registered_at_lab']) && trim($result['sample_registered_at_lab']) != '' && $result['sample_registered_at_lab'] != '0000-00-00 00:00:00') {
+    $expStr = explode(" ", $result['sample_registered_at_lab']);
+    $sampleReceivedDate = $general->humanDateFormat($expStr[0]);
+    $sampleReceivedTime = $expStr[1];
 }
 
 if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
@@ -327,11 +331,13 @@ $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:cente
 $html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
 $html .= '</tr>';
 
-$html .= '<tr>';
-$html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Date de Réception</td>';
-$html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
-$html .= '</tr>';
+if (!empty($sampleReceivedDate)) {
+    $html .= '<tr>';
+    $html .= '<td width="20%" style="line-height:14px;font-size:11px;text-align:left;font-weight:bold;">Date de Réception</td>';
+    $html .= '<td width="5%" style="line-height:14px;font-size:11px;text-align:center;">:</td>';
+    $html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
+    $html .= '</tr>';
+}
 
 $html .= '<tr>';
 $html .= '<td width="50%" style="line-height:14px;font-size:11px;text-align:left;" colspan="2"><b>Resultats SARS-CoV-2 &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $covid19Results[$result['result']] . '</td>';
