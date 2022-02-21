@@ -354,9 +354,6 @@ if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_test
         $html .= '</tr>';
     }
 }
-$html .= '<tr>';
-$html .= '<td width="100%" style="line-height:10px;"></td>';
-$html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3"><br><br><b>Fait a Kinshasa, le : </b>' . $general->humanDateFormat($result['result_approved_datetime']) . '<br><span style="font-size:8;font-weight:normal;">(Result Approved Date)</span></td>';
