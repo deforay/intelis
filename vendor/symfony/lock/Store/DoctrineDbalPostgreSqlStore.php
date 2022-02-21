@@ -36,20 +36,24 @@ class DoctrineDbalPostgreSqlStore implements BlockingSharedLockStoreInterface, B
      * You can either pass an existing database connection a Doctrine DBAL Connection
      * or a URL that will be used to connect to the database.
      *
+     * @param Connection|string $connOrUrl A Connection instance or Doctrine URL
+     *
      * @throws InvalidArgumentException When first argument is not Connection nor string
      */
-    public function __construct(Connection|string $connOrUrl)
+    public function __construct($connOrUrl)
     {
         if ($connOrUrl instanceof Connection) {
             if (!$connOrUrl->getDatabasePlatform() instanceof PostgreSQLPlatform) {
                 throw new InvalidArgumentException(sprintf('The adapter "%s" does not support the "%s" platform.', __CLASS__, \get_class($connOrUrl->getDatabasePlatform())));
             }
             $this->conn = $connOrUrl;
-        } else {
+        } elseif (\is_string($connOrUrl)) {
             if (!class_exists(DriverManager::class)) {
                 throw new InvalidArgumentException(sprintf('Failed to parse the DSN "%s". Try running "composer require doctrine/dbal".', $connOrUrl));
             }
             $this->conn = DriverManager::getConnection(['url' => $this->filterDsn($connOrUrl)]);
+        } else {
+            throw new \TypeError(sprintf('Argument 1 passed to "%s()" must be "%s" or string, "%s" given.', Connection::class, __METHOD__, get_debug_type($connOrUrl)));
         }
     }
 
@@ -148,7 +152,7 @@ class DoctrineDbalPostgreSqlStore implements BlockingSharedLockStoreInterface, B
         $store->delete($key);
     }
 
-    public function exists(Key $key): bool
+    public function exists(Key $key)
     {
         $sql = "SELECT count(*) FROM pg_locks WHERE locktype='advisory' AND objid=:key AND pid=pg_backend_pid()";
         $result = $this->conn->executeQuery($sql, [

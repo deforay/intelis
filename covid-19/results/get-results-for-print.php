@@ -134,8 +134,8 @@ $sQuery = "SELECT vl.*,b.*,ts.*,imp.*,
             rs.rejection_reason_name 
             FROM form_covid19 as vl 
             LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-            LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+            INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
+            INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
             LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 

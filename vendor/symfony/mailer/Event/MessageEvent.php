@@ -24,8 +24,8 @@ final class MessageEvent extends Event
 {
     private $message;
     private $envelope;
-    private string $transport;
-    private bool $queued;
+    private $transport;
+    private $queued;
 
     public function __construct(RawMessage $message, Envelope $envelope, string $transport, bool $queued = false)
     {

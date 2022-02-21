@@ -38,9 +38,9 @@ class PrototypeConfigurator extends AbstractServiceConfigurator
     public const FACTORY = 'load';
 
     private $loader;
-    private string $resource;
-    private ?array $excludes = null;
-    private bool $allowParent;
+    private $resource;
+    private $excludes;
+    private $allowParent;
 
     public function __construct(ServicesConfigurator $parent, PhpFileLoader $loader, Definition $defaults, string $namespace, string $resource, bool $allowParent)
     {
@@ -65,10 +65,10 @@ class PrototypeConfigurator extends AbstractServiceConfigurator
     {
         parent::__destruct();
 
-        if (isset($this->loader)) {
+        if ($this->loader) {
             $this->loader->registerClasses($this->definition, $this->id, $this->resource, $this->excludes);
         }
-        unset($this->loader);
+        $this->loader = null;
     }
 
     /**
@@ -78,7 +78,7 @@ class PrototypeConfigurator extends AbstractServiceConfigurator
      *
      * @return $this
      */
-    final public function exclude(array|string $excludes): static
+    final public function exclude($excludes): self
     {
         $this->excludes = (array) $excludes;
 

@@ -19,9 +19,11 @@ trait FactoryTrait
     /**
      * Sets a factory.
      *
+     * @param string|array|ReferenceConfigurator $factory A PHP callable reference
+     *
      * @return $this
      */
-    final public function factory(string|array|ReferenceConfigurator $factory): static
+    final public function factory($factory): self
     {
         if (\is_string($factory) && 1 === substr_count($factory, ':')) {
             $factoryParts = explode(':', $factory);

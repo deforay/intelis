@@ -22,8 +22,8 @@ class SentMessage
     private $original;
     private $raw;
     private $envelope;
-    private string $messageId;
-    private string $debug = '';
+    private $messageId;
+    private $debug = '';
 
     /**
      * @internal

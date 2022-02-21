@@ -1,11 +1,6 @@
 CHANGELOG
 =========
 
-6.0
----
-
- * The `HttpTransportException` class takes a string at first argument
-
 5.4
 ---
 

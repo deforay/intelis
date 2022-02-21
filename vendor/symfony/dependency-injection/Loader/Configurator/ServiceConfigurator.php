@@ -42,10 +42,10 @@ class ServiceConfigurator extends AbstractServiceConfigurator
     public const FACTORY = 'services';
 
     private $container;
-    private array $instanceof;
-    private bool $allowParent;
-    private ?string $path;
-    private bool $destructed = false;
+    private $instanceof;
+    private $allowParent;
+    private $path;
+    private $destructed = false;
 
     public function __construct(ContainerBuilder $container, array $instanceof, bool $allowParent, ServicesConfigurator $parent, Definition $definition, ?string $id, array $defaultTags, string $path = null)
     {

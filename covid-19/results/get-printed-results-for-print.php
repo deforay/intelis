@@ -151,8 +151,8 @@ $sQuery = 	 "SELECT covid19_id,
 							testres.test_reason_name as reasonForTesting
 							
 							FROM form_covid19 as vl  
-							LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-							LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id 
+							INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
+							INNER JOIN facility_details as l ON l.facility_id=vl.lab_id 
                             LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
 							LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by  

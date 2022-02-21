@@ -38,8 +38,8 @@ class QuestionHelper extends Helper
      */
     private $inputStream;
 
-    private static bool $stty = true;
-    private static bool $stdinIsInteractive;
+    private static $stty = true;
+    private static $stdinIsInteractive;
 
     /**
      * Asks a question to the user.
@@ -48,7 +48,7 @@ class QuestionHelper extends Helper
      *
      * @throws RuntimeException If there is no data to read in the input stream
      */
-    public function ask(InputInterface $input, OutputInterface $output, Question $question): mixed
+    public function ask(InputInterface $input, OutputInterface $output, Question $question)
     {
         if ($output instanceof ConsoleOutputInterface) {
             $output = $output->getErrorOutput();
@@ -86,7 +86,7 @@ class QuestionHelper extends Helper
     /**
      * {@inheritdoc}
      */
-    public function getName(): string
+    public function getName()
     {
         return 'question';
     }
@@ -102,9 +102,11 @@ class QuestionHelper extends Helper
     /**
      * Asks the question to the user.
      *
+     * @return mixed
+     *
      * @throws RuntimeException In case the fallback is deactivated and the response cannot be hidden
      */
-    private function doAsk(OutputInterface $output, Question $question): mixed
+    private function doAsk(OutputInterface $output, Question $question)
     {
         $this->writePrompt($output, $question);
 
@@ -151,7 +153,10 @@ class QuestionHelper extends Helper
         return $ret;
     }
 
-    private function getDefaultAnswer(Question $question): mixed
+    /**
+     * @return mixed
+     */
+    private function getDefaultAnswer(Question $question)
     {
         $default = $question->getDefault();
 
@@ -199,7 +204,7 @@ class QuestionHelper extends Helper
     /**
      * @return string[]
      */
-    protected function formatChoiceQuestionChoices(ChoiceQuestion $question, string $tag): array
+    protected function formatChoiceQuestionChoices(ChoiceQuestion $question, string $tag)
     {
         $messages = [];
 
@@ -246,6 +251,9 @@ class QuestionHelper extends Helper
         $numMatches = \count($matches);
 
         $sttyMode = shell_exec('stty -g');
+        $isStdin = 'php://stdin' === (stream_get_meta_data($inputStream)['uri'] ?? null);
+        $r = [$inputStream];
+        $w = [];
 
         // Disable icanon (so we can fread each keypress) and echo (we'll do echoing here instead)
         shell_exec('stty -icanon -echo');
@@ -255,11 +263,15 @@ class QuestionHelper extends Helper
 
         // Read a keypress
         while (!feof($inputStream)) {
+            while ($isStdin && 0 === @stream_select($r, $w, $w, 0, 100)) {
+                // Give signal handlers a chance to run
+                $r = [$inputStream];
+            }
             $c = fread($inputStream, 1);
 
             // as opposed to fgets(), fread() returns an empty string when the stream content is empty, not false.
             if (false === $c || ('' === $ret && '' === $c && null === $question->getDefault())) {
-                shell_exec(sprintf('stty %s', $sttyMode));
+                shell_exec('stty '.$sttyMode);
                 throw new MissingInputException('Aborted.');
             } elseif ("\177" === $c) { // Backspace Character
                 if (0 === $numMatches && 0 !== $i) {
@@ -364,7 +376,7 @@ class QuestionHelper extends Helper
         }
 
         // Reset stty so it behaves normally again
-        shell_exec(sprintf('stty %s', $sttyMode));
+        shell_exec('stty '.$sttyMode);
 
         return $fullChoice;
     }
@@ -425,7 +437,7 @@ class QuestionHelper extends Helper
         $value = fgets($inputStream, 4096);
 
         if (self::$stty && Terminal::hasSttyAvailable()) {
-            shell_exec(sprintf('stty %s', $sttyMode));
+            shell_exec('stty '.$sttyMode);
         }
 
         if (false === $value) {
@@ -444,9 +456,11 @@ class QuestionHelper extends Helper
      *
      * @param callable $interviewer A callable that will ask for a question and return the result
      *
+     * @return mixed The validated response
+     *
      * @throws \Exception In case the max number of attempts has been reached and no valid response has been given
      */
-    private function validateAttempts(callable $interviewer, OutputInterface $output, Question $question): mixed
+    private function validateAttempts(callable $interviewer, OutputInterface $output, Question $question)
     {
         $error = null;
         $attempts = $question->getMaxAttempts();
@@ -473,16 +487,16 @@ class QuestionHelper extends Helper
             return false;
         }
 
-        if (isset(self::$stdinIsInteractive)) {
+        if (null !== self::$stdinIsInteractive) {
             return self::$stdinIsInteractive;
         }
 
         if (\function_exists('stream_isatty')) {
-            return self::$stdinIsInteractive = stream_isatty(fopen('php://stdin', 'r'));
+            return self::$stdinIsInteractive = @stream_isatty(fopen('php://stdin', 'r'));
         }
 
         if (\function_exists('posix_isatty')) {
-            return self::$stdinIsInteractive = posix_isatty(fopen('php://stdin', 'r'));
+            return self::$stdinIsInteractive = @posix_isatty(fopen('php://stdin', 'r'));
         }
 
         if (!\function_exists('exec')) {
@@ -499,8 +513,10 @@ class QuestionHelper extends Helper
      *
      * @param resource $inputStream The handler resource
      * @param Question $question    The question being asked
+     *
+     * @return string|false The input received, false in case input could not be read
      */
-    private function readInput($inputStream, Question $question): string|false
+    private function readInput($inputStream, Question $question)
     {
         if (!$question->isMultiline()) {
             $cp = $this->setIOCodepage();
@@ -526,6 +542,11 @@ class QuestionHelper extends Helper
         return $this->resetIOCodepage($cp, $ret);
     }
 
+    /**
+     * Sets console I/O to the host code page.
+     *
+     * @return int Previous code page in IBM/EBCDIC format
+     */
     private function setIOCodepage(): int
     {
         if (\function_exists('sapi_windows_cp_set')) {
@@ -540,8 +561,12 @@ class QuestionHelper extends Helper
 
     /**
      * Sets console I/O to the specified code page and converts the user input.
+     *
+     * @param string|false $input
+     *
+     * @return string|false
      */
-    private function resetIOCodepage(int $cp, string|false $input): string|false
+    private function resetIOCodepage(int $cp, $input)
     {
         if (0 !== $cp) {
             sapi_windows_cp_set($cp);

@@ -32,9 +32,9 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
     protected $container;
     protected $currentId;
 
-    private bool $processExpressions = false;
+    private $processExpressions = false;
     private $expressionLanguage;
-    private bool $inExpression = false;
+    private $inExpression = false;
 
     /**
      * {@inheritdoc}
@@ -68,9 +68,11 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
     /**
      * Processes a value found in a definition tree.
      *
+     * @param mixed $value
+     *
      * @return mixed
      */
-    protected function processValue(mixed $value, bool $isRoot = false)
+    protected function processValue($value, bool $isRoot = false)
     {
         if (\is_array($value)) {
             foreach ($value as $k => $v) {
@@ -103,9 +105,11 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
     }
 
     /**
+     * @return \ReflectionFunctionAbstract|null
+     *
      * @throws RuntimeException
      */
-    protected function getConstructor(Definition $definition, bool $required): ?\ReflectionFunctionAbstract
+    protected function getConstructor(Definition $definition, bool $required)
     {
         if ($definition->isSynthetic()) {
             return null;
@@ -172,8 +176,10 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
 
     /**
      * @throws RuntimeException
+     *
+     * @return \ReflectionFunctionAbstract
      */
-    protected function getReflectionMethod(Definition $definition, string $method): \ReflectionFunctionAbstract
+    protected function getReflectionMethod(Definition $definition, string $method)
     {
         if ('__construct' === $method) {
             return $this->getConstructor($definition, true);
@@ -209,7 +215,7 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
 
     private function getExpressionLanguage(): ExpressionLanguage
     {
-        if (!isset($this->expressionLanguage)) {
+        if (null === $this->expressionLanguage) {
             if (!class_exists(ExpressionLanguage::class)) {
                 throw new LogicException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed. Try running "composer require symfony/expression-language".');
             }
