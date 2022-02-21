@@ -90,7 +90,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         if ($sWhereSub == "") {
             $sWhereSub .= "(";
         } else {
-            $sWhereSub .= " (";
+            $sWhereSub .= " AND (";
         }
         $colSize = count($aColumns);
 
@@ -103,7 +103,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere[] = " AND " . $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
@@ -145,7 +145,7 @@ $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT COUNT(b.batch_id) AS total FROM $refTable vl, batch_details b WHERE vl.sample_batch_id = b.batch_id AND b.test_type LIKE '" . $_POST['type'] . "' $sWhere GROUP BY b.batch_id");
+$aResultFilterTotal = $db->rawQueryOne("SELECT COUNT(b.batch_id) AS total FROM $refTable vl, batch_details b WHERE vl.sample_batch_id = b.batch_id AND b.test_type LIKE '" . $_POST['type'] . "' " . implode(" AND ", $sWhere) . " GROUP BY b.batch_id");
 $iFilteredTotal = !empty($aResultFilterTotal['total']) ? $aResultFilterTotal['total'] : 0;
 
 $aResultTotal = $db->rawQueryOne("SELECT COUNT(b.batch_id) AS total FROM $refTable vl, batch_details b WHERE vl.sample_batch_id = b.batch_id AND b.test_type LIKE '" . $_POST['type'] . "' GROUP BY b.batch_id");
