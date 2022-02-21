@@ -21,7 +21,7 @@ class DirectoryLoader extends FileLoader
     /**
      * {@inheritdoc}
      */
-    public function load(mixed $file, string $type = null): mixed
+    public function load($file, string $type = null)
     {
         $file = rtrim($file, '/');
         $path = $this->locator->locate($file);
@@ -45,7 +45,7 @@ class DirectoryLoader extends FileLoader
     /**
      * {@inheritdoc}
      */
-    public function supports(mixed $resource, string $type = null): bool
+    public function supports($resource, string $type = null)
     {
         if ('directory' === $type) {
             return true;

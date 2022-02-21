@@ -30,22 +30,37 @@ interface ContainerInterface extends PsrContainerInterface
     public const IGNORE_ON_INVALID_REFERENCE = 3;
     public const IGNORE_ON_UNINITIALIZED_REFERENCE = 4;
 
+    /**
+     * Sets a service.
+     */
     public function set(string $id, ?object $service);
 
     /**
+     * Gets a service.
+     *
+     * @param string $id              The service identifier
+     * @param int    $invalidBehavior The behavior when the service does not exist
+     *
+     * @return object|null
+     *
      * @throws ServiceCircularReferenceException When a circular reference is detected
      * @throws ServiceNotFoundException          When the service is not defined
      *
      * @see Reference
      */
-    public function get(string $id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE): ?object;
+    public function get(string $id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE);
 
-    public function has(string $id): bool;
+    /**
+     * @return bool
+     */
+    public function has(string $id);
 
     /**
      * Check for whether or not a service has been initialized.
+     *
+     * @return bool
      */
-    public function initialized(string $id): bool;
+    public function initialized(string $id);
 
     /**
      * @return array|bool|string|int|float|null
@@ -54,7 +69,16 @@ interface ContainerInterface extends PsrContainerInterface
      */
     public function getParameter(string $name);
 
-    public function hasParameter(string $name): bool;
+    /**
+     * @return bool
+     */
+    public function hasParameter(string $name);
 
-    public function setParameter(string $name, array|bool|string|int|float|null $value);
+    /**
+     * Sets a parameter.
+     *
+     * @param string                           $name  The parameter name
+     * @param array|bool|string|int|float|null $value The parameter value
+     */
+    public function setParameter(string $name, $value);
 }

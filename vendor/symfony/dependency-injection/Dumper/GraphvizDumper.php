@@ -30,10 +30,10 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class GraphvizDumper extends Dumper
 {
-    private array $nodes;
-    private array $edges;
+    private $nodes;
+    private $edges;
     // All values should be strings
-    private array $options = [
+    private $options = [
             'graph' => ['ratio' => 'compress'],
             'node' => ['fontsize' => '11', 'fontname' => 'Arial', 'shape' => 'record'],
             'edge' => ['fontsize' => '9', 'fontname' => 'Arial', 'color' => 'grey', 'arrowhead' => 'open', 'arrowsize' => '0.5'],
@@ -53,8 +53,10 @@ class GraphvizDumper extends Dumper
      *  * node.instance: The default options for services that are defined directly by object instances
      *  * node.definition: The default options for services that are defined via service definition instances
      *  * node.missing: The default options for missing services
+     *
+     * @return string
      */
-    public function dump(array $options = []): string
+    public function dump(array $options = [])
     {
         foreach (['graph', 'node', 'edge', 'node.instance', 'node.definition', 'node.missing'] as $key) {
             if (isset($options[$key])) {

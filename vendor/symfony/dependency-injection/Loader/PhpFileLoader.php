@@ -45,7 +45,7 @@ class PhpFileLoader extends FileLoader
     /**
      * {@inheritdoc}
      */
-    public function load(mixed $resource, string $type = null): mixed
+    public function load($resource, string $type = null)
     {
         // the container and loader variables are exposed to the included file below
         $container = $this->container;
@@ -77,7 +77,7 @@ class PhpFileLoader extends FileLoader
     /**
      * {@inheritdoc}
      */
-    public function supports(mixed $resource, string $type = null): bool
+    public function supports($resource, string $type = null)
     {
         if (!\is_string($resource)) {
             return false;
@@ -103,15 +103,17 @@ class PhpFileLoader extends FileLoader
         $configBuilders = [];
         $r = new \ReflectionFunction($callback);
 
-        $attribute = null;
-        foreach ($r->getAttributes(When::class) as $attribute) {
-            if ($this->env === $attribute->newInstance()->env) {
-                $attribute = null;
-                break;
+        if (\PHP_VERSION_ID >= 80000) {
+            $attribute = null;
+            foreach ($r->getAttributes(When::class) as $attribute) {
+                if ($this->env === $attribute->newInstance()->env) {
+                    $attribute = null;
+                    break;
+                }
             }
-        }
-        if (null !== $attribute) {
-            return;
+            if (null !== $attribute) {
+                return;
+            }
         }
 
         foreach ($r->getParameters() as $parameter) {

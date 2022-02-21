@@ -24,7 +24,7 @@ class AutowireRequiredMethodsPass extends AbstractRecursivePass
     /**
      * {@inheritdoc}
      */
-    protected function processValue(mixed $value, bool $isRoot = false): mixed
+    protected function processValue($value, bool $isRoot = false)
     {
         $value = parent::processValue($value, $isRoot);
 
@@ -50,7 +50,7 @@ class AutowireRequiredMethodsPass extends AbstractRecursivePass
             }
 
             while (true) {
-                if ($r->getAttributes(Required::class)) {
+                if (\PHP_VERSION_ID >= 80000 && $r->getAttributes(Required::class)) {
                     if ($this->isWither($r, $r->getDocComment() ?: '')) {
                         $withers[] = [$r->name, [], true];
                     } else {

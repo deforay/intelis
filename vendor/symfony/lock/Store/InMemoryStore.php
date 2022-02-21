@@ -23,8 +23,8 @@ use Symfony\Component\Lock\SharedLockStoreInterface;
  */
 class InMemoryStore implements SharedLockStoreInterface
 {
-    private array $locks = [];
-    private array $readLocks = [];
+    private $locks = [];
+    private $readLocks = [];
 
     public function save(Key $key)
     {
@@ -94,7 +94,7 @@ class InMemoryStore implements SharedLockStoreInterface
         }
     }
 
-    public function exists(Key $key): bool
+    public function exists(Key $key)
     {
         $hashKey = (string) $key;
         $token = $this->getUniqueToken($key);
