@@ -75,7 +75,7 @@ if (!class_exists('DRC_PDF')) {
                 }
                 if ($stamp != "") {
                     $this->SetAlpha(0.6);
-                    $this->Image($stamp, 40, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
+                    $this->Image($stamp, 50, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
                     $this->Image($stamp, 145, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
                 }
             }
@@ -339,7 +339,7 @@ $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;" colspan="2"><b>Resultats SARS-CoV-2 &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $covid19Results[$result['result']] . '<br><span style="font-size:8;font-weight:normal;">(Result)</span></td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '<br><span style="font-size:8;font-weight:normal;">(Result Printed On)</span></td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '<br><span style="font-size:8;font-weight:normal;">(Result Returned On)</span></td>';
 $html .= '</tr>';
 
 if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
