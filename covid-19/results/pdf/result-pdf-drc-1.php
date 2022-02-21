@@ -91,8 +91,8 @@ if (!class_exists('DRC_PDF')) {
             $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de Virologie");
 
             // Page number
-            $this->SetFont('helvetica', '', 8);
-            $this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
+            //$this->SetFont('helvetica', '', 8);
+            //$this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
         }
     }
 }
@@ -135,7 +135,7 @@ $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 // set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 24, PDF_MARGIN_RIGHT);
+$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 14, PDF_MARGIN_RIGHT);
 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 $pdf->SetFooterMargin("20");
 
@@ -356,7 +356,7 @@ if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_test
 }
 
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3"><br><br><b>Fait a Kinshasa, le : </b>' . $general->humanDateFormat($result['result_approved_datetime']) . '<br><span style="font-size:8;font-weight:normal;">(Result Approved Date)</span></td>';
+$html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3"><br><br><b>Fait a Kinshasa, le : </b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
 $html .= '</tr>';
 
 
