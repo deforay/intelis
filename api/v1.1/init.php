@@ -422,7 +422,7 @@ if ($status) {
         'status' => 1,
         'message' => 'Success',
         'data' => $data,
-        'timestamp' => $general->getDateTime()
+        'timestamp' => time(),
     );
 } else {
     $payload = array(
