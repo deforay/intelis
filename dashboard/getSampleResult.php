@@ -371,9 +371,9 @@ if ($table == "form_covid19") {
 </div>
 <?php if ($table == "form_covid19") { ?>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-        <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+        <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
             <tr>
-                <td style="vertical-align:middle;"><b><?php echo _("Collection Point"); ?>&nbsp;:</b>
+                <td style="vertical-align:middle;padding-left: 0px;"><b><?php echo _("Collection Point"); ?>&nbsp;:</b>
                     <select id="facilityId" name="facilityId" class="form-control" multiple title="<?php echo _('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
                         <?php foreach ($facilityInfo as $facility) { ?>
                             <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?></option>
