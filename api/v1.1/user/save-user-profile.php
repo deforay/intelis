@@ -159,7 +159,7 @@ try {
 
     $payload = array(
         'status' => 'success',
-        'timestamp' => $general->getDateTime()
+        'timestamp' => time(),
     );
 
     echo json_encode($payload);
@@ -167,7 +167,7 @@ try {
     $payload = array(
         'status' => 'failed',
         'error' => $exc->getMessage(),
-        'timestamp' => $general->getDateTime()
+        'timestamp' => time(),
     );
 
     echo json_encode($payload);
