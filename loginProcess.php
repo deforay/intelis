@@ -21,7 +21,8 @@ $user = new \Vlsm\Models\Users();
 if ($_POST["csrf_token"] != $_SESSION["csrf_token"]) {
     // Reset token
     unset($_SESSION["csrf_token"]);
-    $_SESSION['alertMsg'] = "Validation token has expired. Please try to login again.";
+    $_SESSION['alertMsg'] = "Request expired. Please try to login again.";
+    unset($_SESSION);
     header("location:/login.php");
 }
 //$dashboardUrl = $general->getGlobalConfig('vldashboard_url');
@@ -135,6 +136,7 @@ try {
                 $_SESSION['roleId'] = $admin[0]['role_id'];
                 $_SESSION['accessType'] = $admin[0]['access_type'];
                 $_SESSION['email'] = $admin[0]['email'];
+                $_SESSION['forcePasswordReset'] = $admin[0]['force_password_reset'];
 
                 $redirect = '/error/401.php';
                 //set role and privileges
@@ -165,6 +167,12 @@ try {
                 $_SESSION['userType']   = '';
                 $_SESSION['privileges'] = $priId;
                 $_SESSION['module']     = $module;
+
+                if(!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1){
+                    $redirect = "/users/editProfile.php";
+                    $_SESSION['alertMsg'] = "Please change your password to proceed.";
+                }
+                
 
                 header("location:" . $redirect);
             } else {
@@ -208,6 +216,7 @@ try {
                     $_SESSION['roleId'] = $admin[0]['role_id'];
                     $_SESSION['accessType'] = $admin[0]['access_type'];
                     $_SESSION['email'] = $admin[0]['email'];
+                    $_SESSION['forcePasswordReset'] = $admin[0]['force_password_reset'];
 
                     $redirect = '/error/401.php';
                     //set role and privileges
@@ -239,7 +248,11 @@ try {
                     $_SESSION['privileges'] = $priId;
                     $_SESSION['module']     = $module;
                     
-
+                    if(!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1){
+                        $redirect = "/users/editProfile.php";
+                        $_SESSION['alertMsg'] = "Please change your password to proceed.";
+                    }
+                    
                     header("location:" . $redirect);
                 } else {
                     $user->userHistoryLog($username, $loginStatus = 'failed');

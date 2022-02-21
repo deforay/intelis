@@ -216,18 +216,23 @@ class General
 
     public function fetchDataFromTable($tableName = null, $condition = null, $fieldName = null)
     {
-        if ($this->db == null || $tableName == null) {
+        if ($this->db == null || empty($tableName)) {
             return false;
         }
 
         $fieldName = ($fieldName != null) ? $fieldName : '*';
-        if ($condition == null) {
-            $configQuery = "SELECT $fieldName from $tableName";
-        } else {
-            $configQuery = "SELECT $fieldName from $tableName WHERE $condition";
+
+        $configQuery = "SELECT $fieldName from $tableName";
+
+        if ($condition != null) {
+            $configQuery .= " WHERE $condition ";
         }
+
         if ($tableName == "testing_labs") {
-            $configQuery = "SELECT test_type, facility_id, updated_datetime, monthly_target, suppressed_monthly_target from $tableName WHERE $condition";
+            $configQuery = "SELECT test_type, facility_id, updated_datetime, monthly_target, suppressed_monthly_target from $tableName";
+            if ($condition != null) {
+                $configQuery .= " WHERE $condition ";
+            }
         }
         return $this->db->query($configQuery);
     }

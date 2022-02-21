@@ -2,6 +2,11 @@
 
 if (!isset($_SESSION['userId'])) {
 	header("location:/login.php");
+} else if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
+	$_SESSION['alertMsg'] = _("Please change your password to proceed.");
+	if (strpos($_SERVER['REQUEST_URI'], "editProfile.php") == false) {
+		header("location:/users/editProfile.php");
+	}
 }
 
 $general = new \Vlsm\Models\General();

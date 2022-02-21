@@ -77,6 +77,7 @@ try {
                 }
             }
             $data['password'] = sha1($_POST['password'] . $systemConfig['passwordSalt']);
+            $data['force_password_reset'] = 1;
         }
 
         $db = $db->where('user_id', $userId);

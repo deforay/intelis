@@ -192,8 +192,10 @@
 				})();
 		<?php } ?>
 
-		<?php if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?> alert("<?php echo $_SESSION['alertMsg']; ?>");
-		<?php $_SESSION['alertMsg'] = '';
+		<?php if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?> 
+			alert("<?php echo $_SESSION['alertMsg']; ?>");
+		<?php 
+			$_SESSION['alertMsg'] = '';
 			unset($_SESSION['alertMsg']);
 		}
 		if ($_SESSION['logged']) { ?> setCrossLogin();
