@@ -39,6 +39,7 @@ if ($table == "form_covid19") {
 } ?>
 <div id="collection" width="210" height="150" style="min-height:150px;"></div>
 <script>
+    $('.facilityCounterup').html('0');
     <?php if ($collectionTotal > 0 && $table == "form_covid19") { ?>
         $('.facilityCounterup').html('<?php echo $collectionTotal; ?>')
         $('#collection').highcharts({
