@@ -252,7 +252,7 @@ try {
                         $redirect = "/users/editProfile.php";
                         $_SESSION['alertMsg'] = "Please change your password to proceed.";
                     }
-                    
+
                     header("location:" . $redirect);
                 } else {
                     $user->userHistoryLog($username, $loginStatus = 'failed');
@@ -261,7 +261,7 @@ try {
                 }
             } else {
                 $user->userHistoryLog($username, $loginStatus = 'failed');
-                $_SESSION['alertMsg'] = "You have exhausted maximum login attempts. Please try to login after sometime.";
+                $_SESSION['alertMsg'] = "You have exhausted maximum number of login attempts. Please try to login after sometime.";
                 header("location:/login.php");
             }
         }

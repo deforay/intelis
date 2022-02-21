@@ -35,6 +35,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart   = "covid19SamplesRejectedChart";
     $samplesWaitingChart    = "covid19SamplesWaitingChart";
     $samplesCollectionChart = "covid19SamplesCollectionChart";
+    $samplesOverviewChart = "covid19SamplesOverviewChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
     $table = "form_hepatitis";
     $samplesReceivedChart   = "hepatitisSamplesReceivedChart";
@@ -353,19 +354,19 @@ if ($table == "form_covid19") {
         <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="150" style="min-height:150px;"></div>
     </div>
 </div>
+
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-    <div class="dashboard-stat2 " style="cursor:pointer;">
+    <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
         <div class="display">
             <div class="number">
-                <small class="font-purple-soft"><?= _("OVERALL SAMPLE STATUS"); ?></small><br>
+                <h4 class="font-purple-soft" style="font-weight:600;"><?= _("OVERALL SAMPLE STATUS"); ?></h4>
                 <small class="font-purple-soft" style="font-size:0.75em;"><?= _("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?></small>
-                <!--<small class="font-purple-soft"><?php echo $waitingDate; ?></small>-->
             </div>
             <div class="icon">
                 <i class="icon-pie-chart"></i>
             </div>
         </div>
-        <div id="aggregate-c19-chart" width="210" height="240" style="min-height:240px;"></div>
+        <div id="<?php echo $samplesOverviewChart; ?>" width="210" height="150" style="min-height:240px;"></div>
     </div>
 </div>
 <?php if ($table == "form_covid19") { ?>
@@ -744,7 +745,7 @@ if ($table == "form_covid19") {
     ?>
 
     <?php if (isset($aggregateC19Result) && !empty($aggregateC19Result)) { ?>
-        $('#aggregate-c19-chart').highcharts({
+        $('#<?php echo $samplesOverviewChart; ?>').highcharts({
             chart: {
                 type: 'column'
             },
