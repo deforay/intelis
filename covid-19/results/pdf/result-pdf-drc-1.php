@@ -91,8 +91,8 @@ if (!class_exists('DRC_PDF')) {
             $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de Virologie");
 
             // Page number
-            $this->SetFont('helvetica', '', 8);
-            $this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
+            //$this->SetFont('helvetica', '', 8);
+            //$this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
         }
     }
 }
