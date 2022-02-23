@@ -20,6 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ContainerParametersResourceChecker implements ResourceCheckerInterface
 {
+    /** @var ContainerInterface */
     private $container;
 
     public function __construct(ContainerInterface $container)
@@ -30,7 +31,7 @@ class ContainerParametersResourceChecker implements ResourceCheckerInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(ResourceInterface $metadata): bool
+    public function supports(ResourceInterface $metadata)
     {
         return $metadata instanceof ContainerParametersResource;
     }
@@ -38,7 +39,7 @@ class ContainerParametersResourceChecker implements ResourceCheckerInterface
     /**
      * {@inheritdoc}
      */
-    public function isFresh(ResourceInterface $resource, int $timestamp): bool
+    public function isFresh(ResourceInterface $resource, int $timestamp)
     {
         foreach ($resource->getParameters() as $key => $value) {
             if (!$this->container->hasParameter($key) || $this->container->getParameter($key) !== $value) {

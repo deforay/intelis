@@ -32,12 +32,17 @@ use Symfony\Component\ExpressionLanguage\Expression;
  */
 class XmlDumper extends Dumper
 {
-    private \DOMDocument $document;
+    /**
+     * @var \DOMDocument
+     */
+    private $document;
 
     /**
      * Dumps the service container as an XML string.
+     *
+     * @return string
      */
-    public function dump(array $options = []): string
+    public function dump(array $options = [])
     {
         $this->document = new \DOMDocument('1.0', 'utf-8');
         $this->document->formatOutput = true;
@@ -51,7 +56,7 @@ class XmlDumper extends Dumper
 
         $this->document->appendChild($container);
         $xml = $this->document->saveXML();
-        unset($this->document);
+        $this->document = null;
 
         return $this->container->resolveEnvPlaceholders($xml);
     }
@@ -364,9 +369,11 @@ class XmlDumper extends Dumper
     /**
      * Converts php types to xml types.
      *
+     * @param mixed $value Value to convert
+     *
      * @throws RuntimeException When trying to dump object or resource
      */
-    public static function phpToXml(mixed $value): string
+    public static function phpToXml($value): string
     {
         switch (true) {
             case null === $value:

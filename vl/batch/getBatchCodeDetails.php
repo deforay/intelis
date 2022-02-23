@@ -82,7 +82,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -103,17 +103,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -132,7 +128,7 @@ $sQuery = "SELECT SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELS
                 WHERE vl.sample_batch_id = b.batch_id
                 AND b.test_type like '" . $_POST['type'] . "'";
 
-$sQuery = $sQuery . ' ' . $sWhere;
+$sQuery = $sQuery . ' ' . implode(" AND ", $sWhere);
 $sQuery = $sQuery . ' group by b.batch_id';
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
@@ -142,14 +138,14 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
+// die($sQuery);
 //echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT COUNT(b.batch_id) AS total FROM $refTable vl, batch_details b WHERE vl.sample_batch_id = b.batch_id AND b.test_type LIKE '" . $_POST['type'] . "' $sWhere GROUP BY b.batch_id");
+$aResultFilterTotal = $db->rawQueryOne("SELECT COUNT(b.batch_id) AS total FROM $refTable vl, batch_details b WHERE vl.sample_batch_id = b.batch_id AND b.test_type LIKE '" . $_POST['type'] . "' " . implode(" AND ", $sWhere) . " GROUP BY b.batch_id");
 $iFilteredTotal = !empty($aResultFilterTotal['total']) ? $aResultFilterTotal['total'] : 0;
 
 $aResultTotal = $db->rawQueryOne("SELECT COUNT(b.batch_id) AS total FROM $refTable vl, batch_details b WHERE vl.sample_batch_id = b.batch_id AND b.test_type LIKE '" . $_POST['type'] . "' GROUP BY b.batch_id");
@@ -178,13 +174,13 @@ foreach ($rResult as $aRow) {
 
 
     $row = array();
-    $printBarcode = '<a href="/vl/batch/generateBarcode.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank" class="btn btn-info btn-xs" style="margin-right: 2px;" title="'. _("Print bar code").'"><i class="fa fa-barcode"> '. _("Print Batch").'</i></a>';
-    $printQrcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="'. _("Print qr code").'" onclick="generateQRcode(\'' . base64_encode($aRow['batch_id']) . '\');"><i class="fa fa-qrcode"> '. _("Print QR code").'</i></a>';
-    $editPosition = '<a href="' . $editPositionFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="'. _("Edit Position").'"><i class="fa fa-sort-numeric-desc"> '. _("Edit Position").'</i></a>';
+    $printBarcode = '<a href="/vl/batch/generateBarcode.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><i class="fa fa-barcode"> ' . _("Print Batch") . '</i></a>';
+    $printQrcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print qr code") . '" onclick="generateQRcode(\'' . base64_encode($aRow['batch_id']) . '\');"><i class="fa fa-qrcode"> ' . _("Print QR code") . '</i></a>';
+    $editPosition = '<a href="' . $editPositionFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><i class="fa fa-sort-numeric-desc"> ' . _("Edit Position") . '</i></a>';
 
     $deleteBatch = '';
     if ($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) {
-        $deleteBatch = '<a href="javascript:void(0);" class="btn btn-danger btn-xs" style="margin-right: 2px;margin-top:6px;" title="'. _("Delete").'" onclick="deleteBatchCode(\'' . base64_encode($aRow['batch_id']) . '\',\'' . $aRow['batch_code'] . '\');"><i class="fa fa-times"> '. _("Delete").'</i></a>';
+        $deleteBatch = '<a href="javascript:void(0);" class="btn btn-danger btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Delete") . '" onclick="deleteBatchCode(\'' . base64_encode($aRow['batch_id']) . '\',\'' . $aRow['batch_code'] . '\');"><i class="fa fa-times"> ' . _("Delete") . '</i></a>';
     }
 
     $date = '';
@@ -205,7 +201,7 @@ foreach ($rResult as $aRow) {
         $row[] = $printQrcode;
     } else {
         if ($batch) {
-            $row[] = '<a href="' . $editFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><i class="fa fa-pencil"> '. _("Edit").'</i></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
+            $row[] = '<a href="' . $editFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
         }
     }
     $output['aaData'][] = $row;

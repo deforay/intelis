@@ -35,6 +35,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart   = "covid19SamplesRejectedChart";
     $samplesWaitingChart    = "covid19SamplesWaitingChart";
     $samplesCollectionChart = "covid19SamplesCollectionChart";
+    $samplesOverviewChart = "covid19SamplesOverviewChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
     $table = "form_hepatitis";
     $samplesReceivedChart   = "hepatitisSamplesReceivedChart";
@@ -353,26 +354,26 @@ if ($table == "form_covid19") {
         <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="150" style="min-height:150px;"></div>
     </div>
 </div>
+
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-    <div class="dashboard-stat2 " style="cursor:pointer;">
+    <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
         <div class="display">
             <div class="number">
-                <small class="font-purple-soft"><?= _("OVERALL SAMPLE STATUS"); ?></small><br>
+                <h4 class="font-purple-soft" style="font-weight:600;"><?= _("OVERALL SAMPLE STATUS"); ?></h4>
                 <small class="font-purple-soft" style="font-size:0.75em;"><?= _("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?></small>
-                <!--<small class="font-purple-soft"><?php echo $waitingDate; ?></small>-->
             </div>
             <div class="icon">
                 <i class="icon-pie-chart"></i>
             </div>
         </div>
-        <div id="aggregate-c19-chart" width="210" height="240" style="min-height:240px;"></div>
+        <div id="<?php echo $samplesOverviewChart; ?>" width="210" height="150" style="min-height:240px;"></div>
     </div>
 </div>
 <?php if ($table == "form_covid19") { ?>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-        <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+        <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
             <tr>
-                <td style="vertical-align:middle;"><b><?php echo _("Collection Point"); ?>&nbsp;:</b>
+                <td style="vertical-align:middle;padding-left: 0px;"><b><?php echo _("Collection Point"); ?>&nbsp;:</b>
                     <select id="facilityId" name="facilityId" class="form-control" multiple title="<?php echo _('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
                         <?php foreach ($facilityInfo as $facility) { ?>
                             <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?></option>
@@ -387,7 +388,7 @@ if ($table == "form_covid19") {
             <div class="display">
                 <div class="number">
                     <h3 class="font-purple-soft">
-                        <span data-counter="counterup" data-value="<?php echo $collectionTotal; ?>"><?php echo $collectionTotal; ?></span>
+                        <span data-counter="counterup" class="facilityCounterup" data-value="<?php echo $collectionTotal; ?>"><?php echo $collectionTotal; ?></span>
                     </h3>
                     <small class="font-purple-soft"><?php echo _("SAMPLES REGISTERED BY COLLECTION POINT"); ?></small><br>
                     <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->
@@ -744,7 +745,7 @@ if ($table == "form_covid19") {
     ?>
 
     <?php if (isset($aggregateC19Result) && !empty($aggregateC19Result)) { ?>
-        $('#aggregate-c19-chart').highcharts({
+        $('#<?php echo $samplesOverviewChart; ?>').highcharts({
             chart: {
                 type: 'column'
             },

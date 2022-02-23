@@ -66,6 +66,7 @@ if ($id > 0) {
 
     $bQuery = "SELECT * from batch_details as b_d LEFT JOIN import_config as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
     $bResult = $db->query($bQuery);
+
     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
 
         $dateQuery = "SELECT ct.*,covid19.sample_tested_datetime, result_reviewed_datetime, lot_number, lot_expiration_date, result_printed_datetime from $refTable as covid19
@@ -193,14 +194,17 @@ if ($id > 0) {
             if (isset($dateResult['result_printed_datetime']) && $dateResult['result_printed_datetime'] != "" && $dateResult['result_printed_datetime'] != null) {
                 $dateResult['result_printed_datetime'] = date("d-M-Y", strtotime($dateResult['result_printed_datetime']));
             }
-            $tbl = '<table cellspacing="10" cellpadding="10" style="width:100%;" border="0">
+            $tbl = '<table cellspacing="2" cellpadding="6" style="width:100%;" border="0">
                 <tr>
-                    <th style="font-weight: bold;">Reagent/Kit Name</th><td>' . ((isset($dateResult['test_name']) && $dateResult['test_name'] != "") ? $dateResult['test_name'] : "") . '</td>
-                    <th style="font-weight: bold;">Lot Number</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>
+                    <th style="font-weight: bold;">Reagent/Kit Name :</th><td>' . ((isset($dateResult['test_name']) && $dateResult['test_name'] != "") ? $dateResult['test_name'] : "") . '</td>
+                    <th style="font-weight: bold;">Lot Number :</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>
                 </tr>
                 <tr>
-                    <th style="font-weight: bold;">Lot Expiry Date</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>
-                    <th style="font-weight: bold;">Printed Date/Time</th><td>' . $dateResult['result_printed_datetime'] . '</td>
+                    <th style="font-weight: bold;">Lot Expiry Date :</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>
+                    <th style="font-weight: bold;">Printed By :</th><td>' . ucwords($_SESSION['userName']) . '</td>
+                    </tr>
+                    <tr>
+                    <th style="font-weight: bold;">Printed Date/Time :</th><td colspan="3">' . date("d-M-Y h:i:A") . '</td>
                 </tr>
             </table>
             <hr>
@@ -411,6 +415,16 @@ if ($id > 0) {
             $sampleCounter = ($noOfInHouseControls + $noOfManufacturerControls + $noOfCalibrators + 1);
             $sQuery = "SELECT sample_code,remote_sample_code,lot_number,lot_expiration_date,result,$patientIdColumn from $refTable where sample_batch_id=$id";
             $result = $db->query($sQuery);
+            $sampleCounter = 1;
+            if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
+                foreach ($general->excelColumnRange('A', 'H') as $value) {
+                    foreach (range(1, 12) as $no) {
+                        $alphaNumeric[] = $value . $no;
+                    }
+                }
+                $sampleCounter = $alphaNumeric[0];
+            }
+            $j = 0;
             foreach ($result as $sample) {
                 // if($pdf->getY()>=250){
                 //   $pdf->AddPage();
@@ -434,7 +448,6 @@ if ($id > 0) {
                 $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                 $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333 !important;width:100%;">';
                 if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-
                     $tbl .= '<td align="center" width="5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
                     $tbl .= '<td align="center" width="30%" style="vertical-align:middle;border-bottom:1px solid #333;"><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
@@ -452,8 +465,12 @@ if ($id > 0) {
                 }
                 $tbl .= '</tr>';
                 $tbl .= '</table>';
-
-                $sampleCounter++;
+                if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
+                    $sampleCounter = $alphaNumeric[($j + 1)];
+                    $J++;
+                } else {
+                    $sampleCounter++;
+                }
             }
         }
 

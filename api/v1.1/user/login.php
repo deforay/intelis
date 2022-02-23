@@ -30,13 +30,13 @@ try {
                 $payload = array(
                     'status' => 2,
                     'message' => 'Login failed. Please contact system administrator.',
-                    'timestamp' => $general->getDateTime()
+                    'timestamp' => time(),
                 );
             } else if (isset($userResult['app_access']) && $userResult['app_access'] == "no") {
                 $payload = array(
                     'status' => 2,
                     'message' => 'Login failed. Please contact system administrator.',
-                    'timestamp' => $general->getDateTime()
+                    'timestamp' => time(),
                 );
             } else {
                 $randomString = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
@@ -59,13 +59,13 @@ try {
                         'status' => 1,
                         'message' => 'Login Success',
                         'data' => $data,
-                        'timestamp' => $general->getDateTime()
+                        'timestamp' => time(),
                     );
                 } else {
                     $payload = array(
                         'status' => 2,
                         'message' => 'Someting went wrong. Please try again later.',
-                        'timestamp' => $general->getDateTime()
+                        'timestamp' => time(),
                     );
                 }
             }
@@ -73,14 +73,14 @@ try {
             $payload = array(
                 'status' => 2,
                 'message' => 'Please enter valid credentials',
-                'timestamp' => $general->getDateTime()
+                'timestamp' => time(),
             );
         }
     } else {
         $payload = array(
             'status' => 0,
             'message' => 'Please enter valid credentials',
-            'timestamp' => $general->getDateTime()
+            'timestamp' => time(),
         );
     }
 

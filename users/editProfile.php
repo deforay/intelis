@@ -2,24 +2,22 @@
 ob_start();
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
-if ($global['edit_profile'] == 'no') {
-  header("location:/dashboard/index.php");
-}
+// if ($global['edit_profile'] == 'no') {
+//   header("location:/dashboard/index.php");
+// }
 $id = $_SESSION['userId'];
 $userQuery = "SELECT * from user_details where user_id='" . $id . "'";
 $userInfo = $db->query($userQuery);
-$query = "SELECT * FROM roles where status='active'";
-$result = $db->rawQuery($query);
+// $query = "SELECT * FROM roles where status='active'";
+// $result = $db->rawQuery($query);
 $userLoginhistory = "SELECT * FROM user_login_history ORDER BY history_id DESC LIMIT 25";
 $data = $db->rawQuery($userLoginhistory);
 ?>
 
-<link href="vendor/datatables-plugins/dataTables.bootstrap.css" 
-     rel="stylesheet">
+<link href="vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
 
-     <!-- DataTables Responsive CSS -->
-     <link href="vendor/datatables-responsive/dataTables.responsive.css" 
-     rel="stylesheet">
+<!-- DataTables Responsive CSS -->
+<link href="vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -33,7 +31,7 @@ $data = $db->rawQuery($userLoginhistory);
 
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -103,39 +101,40 @@ $data = $db->rawQuery($userLoginhistory);
         </form>
         <!-- /.row -->
       </div>
-      <table class="table table-striped table-bordered table-hover" id="example">
+      <!-- <table class="table table-striped table-bordered table-hover" id="example">
         <thead>
-            <tr>
+          <tr>
             <th>Login Name</th>
             <th>Attempted Date Time</th>
             <th>IP Address</th>
             <th>Browser</th>
             <th>Operating System</th>
             <th>Status</th>
-        </tr>
-     </thead>
-     <tbody>
-  <?php 
-           if(count($data) > 0){
-       foreach ($data as $project)
-    {
-       
-      ?>
-        <tr>
-        <td><?php echo $project['login_id']; ?></td>
-        <td><?php echo $project['login_attempted_datetime']; ?></td>
-        <td><?php echo $project['ip_address']; ?></td>
-        <td><?php echo $project['browser']; ?></td>
-        <td><?php echo $project['operating_system']; ?></td>
-        <td><?php echo $project['login_status']; ?></td>
-    </tr>
-<?php
-    }
-?>
-</tbody>   
-            <?php } else { echo "No record found"; }?>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          if (count($data) > 0) {
+            foreach ($data as $project) {
 
-</table>
+          ?>
+              <tr>
+                <td><?php echo $project['login_id']; ?></td>
+                <td><?php echo $project['login_attempted_datetime']; ?></td>
+                <td><?php echo $project['ip_address']; ?></td>
+                <td><?php echo $project['browser']; ?></td>
+                <td><?php echo $project['operating_system']; ?></td>
+                <td><?php echo $project['login_status']; ?></td>
+              </tr>
+            <?php
+            }
+            ?>
+        </tbody>
+      <?php } else {
+            echo "No record found";
+          } ?>
+
+      </table> -->
     </div>
     <!-- /.box -->
 
@@ -144,22 +143,23 @@ $data = $db->rawQuery($userLoginhistory);
 </div>
 <script src="vendor/jquery/jquery.min.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 
-   <script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="vendor/datatables-responsive/dataTables.responsive.js">
-    </script>$(document).ready(function() {
-     $('#example').DataTable({
-         responsive: true
-     });
-    });
+<script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
+<script src="vendor/datatables-responsive/dataTables.responsive.js">
+</script>
+<!-- $(document).ready(function() {
+$('#example').DataTable({
+responsive: true
+});
+}); -->
 <script type="text/javascript">
   $(document).ready(function() {
-     $('#example').DataTable({
-         responsive: true
-     });
+    $('#example').DataTable({
+      responsive: true
     });
+  });
   pwdflag = true;
 
   function validateNow() {

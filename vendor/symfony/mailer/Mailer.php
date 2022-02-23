@@ -12,11 +12,14 @@
 namespace Symfony\Component\Mailer;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 use Symfony\Component\Mailer\Event\MessageEvent;
 use Symfony\Component\Mailer\Messenger\SendEmailMessage;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\RawMessage;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as SymfonyEventDispatcherInterface;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
@@ -31,7 +34,7 @@ final class Mailer implements MailerInterface
     {
         $this->transport = $transport;
         $this->bus = $bus;
-        $this->dispatcher = $dispatcher;
+        $this->dispatcher = class_exists(Event::class) && $dispatcher instanceof SymfonyEventDispatcherInterface ? LegacyEventDispatcherProxy::decorate($dispatcher) : $dispatcher;
     }
 
     public function send(RawMessage $message, Envelope $envelope = null): void

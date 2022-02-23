@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class ServiceClosureArgument implements ArgumentInterface
 {
-    private array $values;
+    private $values;
 
     public function __construct(Reference $reference)
     {
@@ -31,7 +31,7 @@ class ServiceClosureArgument implements ArgumentInterface
     /**
      * {@inheritdoc}
      */
-    public function getValues(): array
+    public function getValues()
     {
         return $this->values;
     }

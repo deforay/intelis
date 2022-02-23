@@ -22,7 +22,7 @@ use Symfony\Component\Mime\RawMessage;
 class Envelope
 {
     private $sender;
-    private array $recipients = [];
+    private $recipients = [];
 
     /**
      * @param Address[] $recipients

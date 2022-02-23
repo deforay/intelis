@@ -45,7 +45,7 @@ abstract class AbstractHttpTransport extends AbstractTransport
     /**
      * @return $this
      */
-    public function setHost(?string $host): static
+    public function setHost(?string $host)
     {
         $this->host = $host;
 
@@ -55,7 +55,7 @@ abstract class AbstractHttpTransport extends AbstractTransport
     /**
      * @return $this
      */
-    public function setPort(?int $port): static
+    public function setPort(?int $port)
     {
         $this->port = $port;
 

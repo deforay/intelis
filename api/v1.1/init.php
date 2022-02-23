@@ -121,34 +121,34 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
 }
 
 $data = array();
-// $data['formId'] = $formId;
-// $data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id']);
-// $data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations("", "", "no");
-// $data['healthFacilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], true, 1, false, $activeModule);
-// $data['testingLabsList'] = $app->getTestingLabs(null, $user['user_id'], false, false, $activeModule);
-// /* Province Details */
-// $data['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
-// /* District Details */
-// $data['districtList'] = $app->getDistrictDetails($user['user_id'], true);
-// $data['implementingPartnerList'] = $implementingPartnerList;
-// $data['fundingSourceList'] = $app->generateSelectOptions($fundingSourceList);
-// $data['nationalityList'] = $nationalityList;
-// $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
-// $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
+$data['formId'] = $formId;
+$data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id']);
+$data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations("", "", "no");
+$data['healthFacilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], true, 1, false, $activeModule);
+$data['testingLabsList'] = $app->getTestingLabs(null, $user['user_id'], false, false, $activeModule);
+/* Province Details */
+$data['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
+/* District Details */
+$data['districtList'] = $app->getDistrictDetails($user['user_id'], true);
+$data['implementingPartnerList'] = $implementingPartnerList;
+$data['fundingSourceList'] = $app->generateSelectOptions($fundingSourceList);
+$data['nationalityList'] = $nationalityList;
+$data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
+$data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
     $covid19Obj = new \Vlsm\Models\Covid19();
 
-    if (isset($formId) && $formId == 1) {
-        /* Source of Alert list */
-        $sourceOfAlertList = array();
-        $sourceOfAlert = array('Hotline', 'Community Surveillance', 'POE', 'Contact Tracing', 'Clinic', 'Sentinel Site', 'Screening', 'Others');
-        foreach ($sourceOfAlert as $key => $src) {
-            $sourceOfAlertList[$key]['value'] = strtolower(str_replace(" ", "-", $src));
-            $sourceOfAlertList[$key]['show'] = $src;
-        }
-        $data['covid19']['sourceOfAlertList'] = $sourceOfAlertList;
+    // if (isset($formId) && $formId == 1) {
+    /* Source of Alert list */
+    $sourceOfAlertList = array();
+    $sourceOfAlert = array('Hotline', 'Community Surveillance', 'POE', 'Contact Tracing', 'Clinic', 'Sentinel Site', 'Screening', 'Others');
+    foreach ($sourceOfAlert as $key => $src) {
+        $sourceOfAlertList[$key]['value'] = strtolower(str_replace(" ", "-", $src));
+        $sourceOfAlertList[$key]['show'] = $src;
     }
+    $data['covid19']['sourceOfAlertList'] = $sourceOfAlertList;
+    // }
     /* Province Details */
     $data['covid19']['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
     /* District Details */
@@ -422,7 +422,7 @@ if ($status) {
         'status' => 1,
         'message' => 'Success',
         'data' => $data,
-        'timestamp' => $general->getDateTime()
+        'timestamp' => time(),
     );
 } else {
     $payload = array(

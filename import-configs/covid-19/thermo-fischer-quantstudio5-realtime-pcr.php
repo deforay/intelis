@@ -101,11 +101,16 @@ try {
             $result = '';
             $hold = false;
 
-            if (strtolower($rowData[$resultCol]) == 'n') {
+
+            if(empty($rowData[$resultCol]) || $rowData[$resultCol] == 'NULL'){
+                continue;
+            }
+
+            if (strtolower($rowData[$resultCol]) == 'n' || strtolower($rowData[$resultCol]) == 'negative') {
                 $result = 'negative';
-            } else if (strtolower($rowData[$resultCol]) == 'p') {
+            } else if (strtolower($rowData[$resultCol]) == 'p' || strtolower($rowData[$resultCol]) == 'positive') {
                 $result = 'positive';
-            } else if (empty($rowData[$resultCol]) || strtolower($rowData[$resultCol]) == 'pr' || strtolower($rowData[$resultCol]) == 'er') {
+            } else if (strtolower($rowData[$resultCol]) == 'pr' || strtolower($rowData[$resultCol]) == 'er') {
                 $result = null;
                 $hold = true;
             }
@@ -145,6 +150,7 @@ try {
                 'result_reviewed_by' => $_SESSION['userId'],
                 'sample_code' => $d['sampleCode'],
                 'sample_tested_datetime' => $testingDate,
+                'sample_type' => 'S',
                 'result_status' => !empty($d['result_status']) ? $d['result_status'] : '6',
                 'import_machine_file_name' => $fileName,
                 'result' => $d['result'],
