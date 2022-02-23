@@ -76,7 +76,7 @@ try {
             }
         }
 
-        $_SESSION['alertMsg'] = "User saved successfully!";
+        $_SESSION['alertMsg'] = _("User saved successfully!");
     }
     $userType = $general->getSystemConfig('sc_user_type');
     if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $userType == 'vluser') {
