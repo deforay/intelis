@@ -65,25 +65,31 @@ try {
             foreach ($record as $o => $v) {
                 //echo "<pre>";var_dump($record);echo "</pre><br><br><br>";
                 $v = preg_replace('/[[:cntrl:]]/', '',  $v);
-                if ($v == 'End Time') {
+                if ($v == "End Time" || $v == "Heure de fin") {
                     $testedOn = preg_replace('/[[:cntrl:]]/', '',  $record[1]);
                     $testedOn = date('Y-m-d H:i', strtotime($testedOn));
-                } elseif ($v == 'User') {
+                } elseif ($v == "User" || $v == 'Utilisateur') {
                     $testedBy = preg_replace('/[[:cntrl:]]/', '',  $record[1]);
-                } else if ($v == 'RESULT TABLE') {
+                } else if ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
                     $sampleCode = null;
-                } else if ($v == 'Sample ID') {
+                } else if ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
                     $sampleCode = preg_replace('/[[:cntrl:]]/', '',  $record[1]);
                     if (empty($sampleCode)) continue;
                     $infoFromFile[$sampleCode]['sampleCode'] = $sampleCode;
                     $infoFromFile[$sampleCode]['testedOn'] = $testedOn;
                     $infoFromFile[$sampleCode]['testedBy'] = $testedBy;
-                } else if ($v == 'Assay') {
+                } else if ($v == "Assay" || $v == "Test") {
                     if (empty($sampleCode)) continue;
                     $infoFromFile[$sampleCode]['assay'] = preg_replace('/[[:cntrl:]]/', '',  $record[1]);
-                } else if ($v == 'Test Result') {
+                } else if ($v == "Test Result" || $v == "Résultat du test") {
                     if (empty($sampleCode)) continue;
-                    $infoFromFile[$sampleCode]['result'] = strtolower(str_replace("SARS-CoV-2 ", "", preg_replace('/[[:cntrl:]]/', '',  $record[1])));
+                    $parsedResult = (str_replace("SARS-CoV-2 ", "", preg_replace('/[[:cntrl:]]/', '',  $record[1])));
+                    if($parsedResult == 'NÉGATIF' || $parsedResult == 'NÉGATIVE'){
+                        $parsedResult = 'negative';
+                    }else if($parsedResult == 'POSITIF' || $parsedResult == 'POSITIVE'){
+                        $parsedResult = 'positive';
+                    }
+                    $infoFromFile[$sampleCode]['result'] = strtolower($parsedResult);
                     //echo "<pre>";var_dump($infoFromFile[$sampleCode]['result']);echo "</pre><br><br><br>";
                 }
             }
