@@ -266,7 +266,7 @@ try {
 		$db->insert("health_facilities", $data);
 		return 1;
 	} else {
-		$_SESSION['alertMsg'] = "Facility details added successfully";
+		$_SESSION['alertMsg'] = _("Facility details added successfully");
 		header("location:facilities.php");
 	}
 } catch (Exception $exc) {

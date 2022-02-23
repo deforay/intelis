@@ -30,7 +30,7 @@ include_once(APPLICATION_PATH . '/header.php');
 	<section class="content-header">
 		<h1 class="fa fa-hospital-o"> <?php echo $title; ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
 			<li class="active"> <?php echo $title; ?></li>
 		</ol>
 	</section>
@@ -52,24 +52,24 @@ include_once(APPLICATION_PATH . '/header.php');
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="testType" class="col-lg-4 control-label">Test Type</label>
+											<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type");?></label>
 											<div class="col-lg-8">
-												<select type="text" class="form-control" id="testType" name="testType" title="Choose one test type" onchange="selectedTestType(this.value);">
-													<option value="">--Select--</option>
+												<select type="text" class="form-control" id="testType" name="testType" title="<?php echo _('Choose one test type');?>" onchange="selectedTestType(this.value);">
+													<option value=""><?php echo _("--Select--");?></option>
 													<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
-														<option value="vl">Viral Load</option>
+														<option value="vl"><?php echo _("Viral Load");?></option>
 													<?php }
 													if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
-														<option value="eid">Early Infant Diagnosis</option>
+														<option value="eid"><?php echo _("Early Infant Diagnosis");?></option>
 													<?php }
 													if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
-														<option value="covid19">Covid-19</option>
+														<option value="covid19"><?php echo _("Covid-19");?></option>
 													<?php }
 													if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
-														<option value='hepatitis'>Hepatitis</option>
+														<option value='hepatitis'><?php echo _("Hepatitis");?></option>
 													<?php }
 													if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
-														<option value='tb'>TB</option>
+														<option value='tb'><?php echo _("TB");?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -80,7 +80,7 @@ include_once(APPLICATION_PATH . '/header.php');
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="facilities" class="col-lg-4 control-label">Select the <?php echo str_replace("Manage", "", $title); ?> for test type </label>
+											<label for="facilities" class="col-lg-4 control-label"><?php echo _("Select the");?> <?php echo str_replace("Manage", "", $title); ?> <?php echo _("for test type");?> </label>
 											<div class="col-lg-8">
 												<div class="form-group">
 													<div class="col-md-12">
@@ -90,7 +90,7 @@ include_once(APPLICATION_PATH . '/header.php');
 															</div>
 														</div>
 														<div style="width:100%;margin:10px auto;clear:both;">
-															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
 														</div><br /><br />
 														<select id="facilities" name="facilities[]" multiple="multiple" class="search">
 														</select>
@@ -106,8 +106,8 @@ include_once(APPLICATION_PATH . '/header.php');
 						<div class="box-footer">
 							<input type="hidden" name="facilityType" class="form-control" id="facilityType" value="<?php echo $type; ?>" />
 							<input type="hidden" name="mappedFacilities" id="mappedFacilities" value="" />
-							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-							<a href="facilities.php" class="btn btn-default"> Cancel</a>
+							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
+							<a href="facilities.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
 						</div>
 						<!-- /.box-footer -->
 					</div>
@@ -155,7 +155,7 @@ include_once(APPLICATION_PATH . '/header.php');
 
 	function selectedTestType(val) {
 		$.blockUI({
-			message: '<h3>Trying to get mapped facilities <br>Please wait...</h3>'
+			message: '<h3><?php echo _("Trying to get mapped facilities");?> <br><?php echo _("Please wait");?>...</h3>'
 		});
 		$.post("getTestTypeFacilitiesHelper.php", {
 				facilityType: $('#facilityType').val(),
@@ -175,8 +175,8 @@ include_once(APPLICATION_PATH . '/header.php');
 	function init() {
 
 		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Field Name'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Field Name'>",
+			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Field Name");?>'>",
+			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Field Name");?>'>",
 			afterInit: function(ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
