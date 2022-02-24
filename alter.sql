@@ -2938,3 +2938,10 @@ DELETE FROM hepatitis_risk_factors WHERE hepatitis_id NOT IN (SELECT hepatitis_i
 
 -- Amit 21 Feb 2022
 ALTER TABLE `user_details` ADD `force_password_reset` INT NULL DEFAULT NULL AFTER `api_token_exipiration_days`;
+
+-- Amit 24-Feb-2022
+
+INSERT INTO `global_config` 
+(`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+VALUES 
+('App Locale/Language', 'app_locale', 'en_US', 'common', 'no', NULL, NULL, 'active');

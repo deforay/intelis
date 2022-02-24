@@ -226,10 +226,12 @@ foreach ($trackedEntityInstances as $tracker) {
             $sampleCode = 'remote_sample_code';
             $sampleCodeKey = 'remote_sample_code_key';
             $sampleCodeFormat = 'remote_sample_code_format';
+            $formData['remote_sample'] = 'yes';
         } else {
             $sampleCode = 'sample_code';
             $sampleCodeKey = 'sample_code_key';
             $sampleCodeFormat = 'sample_code_format';
+            $formData['remote_sample'] = 'no';
         }
 
         $formData[$sampleCode] = $sampleData['sampleCode'];
