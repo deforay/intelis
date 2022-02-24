@@ -2945,3 +2945,6 @@ INSERT INTO `global_config`
 (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
 VALUES 
 ('App Locale/Language', 'app_locale', 'en_US', 'common', 'no', NULL, NULL, 'active');
+
+-- Amit 24-Feb-2022 version 4.4.8
+UPDATE `system_config` SET `value` = '4.4.8' WHERE `system_config`.`name` = 'sc_version';

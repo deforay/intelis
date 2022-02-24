@@ -62,8 +62,10 @@ set_include_path(implode(PATH_SEPARATOR, array(
     get_include_path()
 )));
 
+require_once(APPLICATION_PATH . '/system/system.php');
 require_once(APPLICATION_PATH . '/vendor/autoload.php');
-require_once(APPLICATION_PATH . "/configs/config." . APPLICATION_ENV . ".php");
+
+$systemConfig = require_once(APPLICATION_PATH . "/configs/config." . APPLICATION_ENV . ".php");
 
 // Database Connection
 $db = new MysqliDb(array(

@@ -36,7 +36,7 @@ $_SESSION['instanceType'] = $systemInfo['sc_user_type'];
 $_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
 
 
-if (isset($_GET['u']) && isset($_GET['t']) && $recencyConfig['crosslogin']) {
+if (isset($_GET['u']) && isset($_GET['t']) && $systemConfig['recency']['crosslogin']) {
 
     $_GET['u'] = filter_var($_GET['u'], FILTER_SANITIZE_STRING);
     $_GET['t'] = filter_var($_GET['t'], FILTER_SANITIZE_STRING);
@@ -45,7 +45,7 @@ if (isset($_GET['u']) && isset($_GET['t']) && $recencyConfig['crosslogin']) {
     $crossLoginQuery = "SELECT `login_id`,`password`,`user_name` FROM user_details WHERE `login_id` = ?";
     $check = $db->rawQueryOne($crossLoginQuery, array($db->escape($_POST['username'])));
     if ($check) {
-        $passwordCrossLoginSalt = $check['password'] . $recencyConfig['crossloginSalt'];
+        $passwordCrossLoginSalt = $check['password'] . $systemConfig['recency']['crossloginSalt'];
         $_POST['password'] = hash('sha256', $passwordCrossLoginSalt);
         if ($_POST['password'] == $_GET['t']) {
             $password = $check['password'];
@@ -58,7 +58,7 @@ if (isset($_GET['u']) && isset($_GET['t']) && $recencyConfig['crosslogin']) {
         $_POST['password'] = "";
     }
 } else {
-    if (!$recencyConfig['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
+    if (!$systemConfig['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
         $_SESSION['alertMsg'] = "Sorry! Recency cross-login has not been activated. Please contact system administrator.";
     }
 }

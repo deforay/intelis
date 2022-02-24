@@ -62,9 +62,9 @@ try {
         }
 
         if (isset($_POST['password']) && trim($_POST['password']) != "") {
-            if ($recencyConfig['crosslogin'] && !empty($recencyConfig['url'])) {
+            if ($systemConfig['recency']['crosslogin'] && !empty($systemConfig['recency']['url'])) {
                 $client = new \GuzzleHttp\Client();
-                $url = rtrim($recencyConfig['url'], "/");
+                $url = rtrim($systemConfig['recency']['url'], "/");
                 $result = $client->post($url . '/api/update-password', [
                     'form_params' => [
                         'u' => $_POST['loginId'],

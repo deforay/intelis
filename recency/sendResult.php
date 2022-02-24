@@ -14,7 +14,7 @@ try {
     $vlTestResult = $db->query($vlTestResultQuery);
     $client = new \GuzzleHttp\Client();
 
-    $domain = rtrim($recencyConfig['url'], "/");
+    $domain = rtrim($systemConfig['recency']['url'], "/");
     $urlCart = $domain . '/api/vl-test-result';
 
     foreach ($vlTestResult as $result) {
