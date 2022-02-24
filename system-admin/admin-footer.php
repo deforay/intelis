@@ -1,5 +1,5 @@
 <footer class="main-footer">
-  <a href="http://taskforce.org/">Funded by TaskForce</a>
+  <a href="http://taskforce.org/"><?php echo _("Funded by TaskForce");?></a>
   <span class="pull-right">v <?php echo VERSION; ?></span>
 </footer>
 </div>

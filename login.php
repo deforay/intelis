@@ -77,7 +77,7 @@ function generate_token()
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><?php echo $shortName; ?> | Login</title>
+  <title><?php echo $shortName; ?> | <?php echo _("Login");?></title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -169,27 +169,27 @@ function generate_token()
             <input type="hidden" name="csrf_token" value="<?php echo generate_token(); ?>" />
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="User Name" title="Please enter the user name" onblur="checkNameValidation('user_login_history','login_id', this.id,'')">
+              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name');?>" title="<?php echo _('Please enter the user name');?>" onblur="checkNameValidation('user_login_history','login_id', this.id,'')">
             </div>
 
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="Password" title="Please enter the password">
+              <input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="<?php echo _('Password');?>" title="<?php echo _('Please enter the password');?>">
             </div>
             <div style="margin-bottom: 5px;display:none" class="input-group" id="captcha">
               <div>
-                <input type="text" style="height: 70%;" id="challengeResponse" name="captcha" placeholder="Please enter the text from the image" class="form-control" title="Please enter the text from the image." maxlength="40">
+                <input type="text" style="height: 70%;" id="challengeResponse" name="captcha" placeholder="<?php echo _('Please enter the text from the image');?>" class="form-control" title="<?php echo _('Please enter the text from the image');?>." maxlength="40">
               </div>
               <div>
                 <img id="capChaw" width="254px" height="100px" src="/includes/captcha.php/<?php echo rand(); ?>" />
-                <a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa fa-refresh" aria-hidden="true"></i> Get New Image</a>
+                <a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo _("Get New Image");?></a>
               </div>
             </div>
 
             <div style="margin-top:10px" class="form-group">
               <!-- Button -->
               <div class="col-sm-12 controls">
-                <button class="btn btn-lg btn-success btn-block" onclick="validateNow();return false;">Login</button>
+                <button class="btn btn-lg btn-success btn-block" onclick="validateNow();return false;"><?php echo _("Login");?></button>
               </div>
             </div>
           </form>
@@ -227,7 +227,7 @@ function generate_token()
               },
               function(data) {
                 if (data == 'fail') {
-                  alert("Text you entered from the image is incorrect. Please try again");
+                  alert('<?php echo _("Text you entered from the image is incorrect. Please try again");?>');
                   getCaptcha('capChaw');
                   document.getElementById("challengeResponse").value = "";
                   return false;
@@ -237,7 +237,7 @@ function generate_token()
                 }
               });
           } else {
-            alert("Please enter the text from the image to proceed.");
+            alert('<?php echo _("Please enter the text from the image to proceed.");?>');
             // $('.ppwd').focus();
             return false;
           }

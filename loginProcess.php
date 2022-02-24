@@ -21,7 +21,7 @@ $user = new \Vlsm\Models\Users();
 if ($_POST["csrf_token"] != $_SESSION["csrf_token"]) {
     // Reset token
     unset($_SESSION["csrf_token"]);
-    $_SESSION['alertMsg'] = "Request expired. Please try to login again.";
+    $_SESSION['alertMsg'] = _("Request expired. Please try to login again.");
     unset($_SESSION);
     header("location:/login.php");
 }
@@ -59,7 +59,7 @@ if (isset($_GET['u']) && isset($_GET['t']) && $recencyConfig['crosslogin']) {
     }
 } else {
     if (!$recencyConfig['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
-        $_SESSION['alertMsg'] = "Sorry! Recency cross-login has not been activated. Please contact system administrator.";
+        $_SESSION['alertMsg'] = _("Sorry! Recency cross-login has not been activated. Please contact system administrator.");
     }
 }
 /* Crosss Login Block End */
@@ -170,14 +170,14 @@ try {
 
                 if(!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1){
                     $redirect = "/users/editProfile.php";
-                    $_SESSION['alertMsg'] = "Please change your password to proceed.";
+                    $_SESSION['alertMsg'] = _("Please change your password to proceed.");
                 }
                 
 
                 header("location:" . $redirect);
             } else {
                 $user->userHistoryLog($username, $loginStatus = 'failed');
-                $_SESSION['alertMsg'] = "Please check your login credentials";
+                $_SESSION['alertMsg'] = _("Please check your login credentials");
                 header("location:/login.php");
             }
         } else if ($attemptCount1['LoginIdCount'] >= 3 || $attemptCount1['IpCount'] >= 3) {
@@ -250,18 +250,18 @@ try {
                     
                     if(!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1){
                         $redirect = "/users/editProfile.php";
-                        $_SESSION['alertMsg'] = "Please change your password to proceed.";
+                        $_SESSION['alertMsg'] = _("Please change your password to proceed.");
                     }
 
                     header("location:" . $redirect);
                 } else {
                     $user->userHistoryLog($username, $loginStatus = 'failed');
-                    $_SESSION['alertMsg'] = "Please check your login credentials";
+                    $_SESSION['alertMsg'] = _("Please check your login credentials");
                     header("location:/login.php");
                 }
             } else {
                 $user->userHistoryLog($username, $loginStatus = 'failed');
-                $_SESSION['alertMsg'] = "You have exhausted maximum number of login attempts. Please try to login after sometime.";
+                $_SESSION['alertMsg'] = _("You have exhausted maximum number of login attempts. Please try to login after sometime.");
                 header("location:/login.php");
             }
         }

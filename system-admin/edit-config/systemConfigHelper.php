@@ -12,7 +12,7 @@ try {
         $db = $db->where('name', $fieldName);
         $db->update($tableName, $data);
     }
-    $_SESSION['alertMsg'] = "System Config values updated successfully";
+    $_SESSION['alertMsg'] = _("System Config values updated successfully");
     header("location:index.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

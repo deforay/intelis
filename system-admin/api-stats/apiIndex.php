@@ -1,5 +1,5 @@
 <?php
-$title = "Api Stats";
+$title = _("Api Stats");
 #require_once('../startup.php'); 
 include('../admin-header.php');
 ?>
@@ -8,10 +8,10 @@ include('../admin-header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <i class="fa fa-gears"></i> Api Stats</h1>
+    <h1> <i class="fa fa-gears"></i> <?php echo _("Api Stats");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/system-admin/edit-config/index.php"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Manage Api Stats</li>
+      <li><a href="/system-admin/edit-config/index.php"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("Manage Api Stats");?></li>
     </ol>
   </section>
 
@@ -27,18 +27,18 @@ include('../admin-header.php');
             <table id="apiStatsDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Requested On</th>
-                  <th>Number of Records</th>
-                  <th>Request Type</th>
-                  <th>Test_Type</th>
-                  <th>Api Url</th>
-                  <th>Date Format</th>
+                  <th><?php echo _("Requested On");?></th>
+                  <th><?php echo _("Number of Records");?></th>
+                  <th><?php echo _("Request Type");?></th>
+                  <th><?php echo _("Test_Type");?></th>
+                  <th><?php echo _("Api Url");?></th>
+                  <th><?php echo _("Date Format");?></th>
                   
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
 

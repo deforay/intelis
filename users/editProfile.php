@@ -22,10 +22,10 @@ $data = $db->rawQuery($userLoginhistory);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <i class="fa fa-gears"></i> Edit Profile</h1>
+    <h1> <i class="fa fa-gears"></i> <?php echo _("Edit Profile");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Users</li>
+      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("Users");?></li>
     </ol>
   </section>
 
@@ -44,18 +44,18 @@ $data = $db->rawQuery($userLoginhistory);
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="userName" class="col-lg-4 control-label">User Name <span class="mandatory">*</span></label>
+                  <label for="userName" class="col-lg-4 control-label"><?php echo _("User Name");?> <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="User Name" title="Please enter user name" value="<?php echo $userInfo[0]['user_name']; ?>" />
+                    <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _('User Name');?>" title="<?php echo _('Please enter user name');?>" value="<?php echo $userInfo[0]['user_name']; ?>" />
                     <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode($userInfo[0]['user_id']); ?>" />
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="email" class="col-lg-4 control-label">Email </label>
+                  <label for="email" class="col-lg-4 control-label"><?php echo _("Email");?> </label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Email" title="Please enter email" value="<?php echo $userInfo[0]['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo[0]['user_id']; ?>','This email id that you entered already exists.Try another email id',null)" />
+                    <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('Email');?>" title="<?php echo _('Please enter email');?>" value="<?php echo $userInfo[0]['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo[0]['user_id']; ?>','<?php echo _("This email id that you entered already exists.Try another email id");?>',null)" />
                   </div>
                 </div>
               </div>
@@ -63,17 +63,17 @@ $data = $db->rawQuery($userLoginhistory);
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="phoneNo" class="col-lg-4 control-label">Phone Number</label>
+                  <label for="phoneNo" class="col-lg-4 control-label"><?php echo _("Phone Number");?></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="Phone Number" title="Please enter phone number" value="<?php echo $userInfo[0]['phone_number']; ?>" />
+                    <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?php echo _('Phone Number');?>" title="<?php echo _('Please enter phone number');?>" value="<?php echo $userInfo[0]['phone_number']; ?>" />
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="password" class="col-lg-4 control-label">Password </label>
+                  <label for="password" class="col-lg-4 control-label"><?php echo _("Password");?> </label>
                   <div class="col-lg-7">
-                    <input type="password" class="form-control ppwd" id="confirmPassword" name="password" placeholder="Password" title="Please enter the password" />
+                    <input type="password" class="form-control ppwd" id="confirmPassword" name="password" placeholder="<?php echo _('Password');?>" title="<?php echo _('Please enter the password');?>" />
                     <code><?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                   </div>
                 </div>
@@ -83,9 +83,9 @@ $data = $db->rawQuery($userLoginhistory);
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="confirmPassword" class="col-lg-4 control-label">Confirm Password</label>
+                  <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _("Confirm Password");?></label>
                   <div class="col-lg-7">
-                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="Confirm Password" title="" />
+                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password');?>" title="" />
                   </div>
                 </div>
               </div>
@@ -94,8 +94,8 @@ $data = $db->rawQuery($userLoginhistory);
           </div>
           <!-- /.box-body -->
           <div class="box-footer">
-            <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-            <a href="/dashboard/index.php" class="btn btn-default"> Cancel</a>
+            <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
+            <a href="/dashboard/index.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
           </div>
           <!-- /.box-footer -->
         </form>

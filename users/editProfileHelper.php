@@ -17,8 +17,15 @@ if ($fromApiTrue) {
     $userId = base64_decode($_POST['userId']);
 }
 
-try {
-    if (trim($_POST['userName']) != '') {
+try {  
+        $password = sha1($_POST['password'] . $systemConfig['passwordSalt']);
+        $queryParams = array($password);
+        $admin = $db->rawQuery("SELECT * FROM user_details as ud WHERE ud.password = ?", $queryParams);
+        if (count($admin) > 0) {
+            $_SESSION['alertMsg'] = _("Your new password is too similar to your current password. Please try another password.");
+        }
+
+    else if (trim($_POST['userName']) != '') {
         if ($fromApiFalse) {
             $data = array(
                 'user_name' => $_POST['userName'],

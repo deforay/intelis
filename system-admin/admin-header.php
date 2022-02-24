@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>VLSM</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";
-$systemType = "Viral Load Sample Management";
+$systemType = _("Viral Load Sample Management");
 $skin = "skin-blue";
 if (!isset($_SESSION['adminUserId'])) {
   header("location:/system-admin/login/login.php");
@@ -119,10 +119,10 @@ if (!isset($_SESSION['adminUserId'])) {
               <ul class="dropdown-menu">
                 <!-- Menu Footer-->
                 <li class="user-footer">
-									<a href="/system-admin/edit-config/resetPassword.php" class="">Change Password</a>
+									<a href="/system-admin/edit-config/resetPassword.php" class=""><?php echo _("Change Password");?></a>
 								</li>
                 <li class="user-footer">
-                  <a href="/system-admin/login/logout.php" class="">Sign out</a>
+                  <a href="/system-admin/login/logout.php" class=""><?php echo _("Sign out");?></a>
                 </li>
               </ul>
             </li>
@@ -140,29 +140,29 @@ if (!isset($_SESSION['adminUserId'])) {
           <li class="treeview manage">
             <a href="#">
               <i class="fa fa-gears"></i>
-              <span>Admin</span>
+              <span><?php echo _("Admin");?></span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
             </a>
             <ul class="treeview-menu">
               <li class="allMenu systemConfigmenu">
-                <a href="/system-admin/edit-config/index.php"><i class="fa fa-circle-o"></i>System Configuration</a>
+                <a href="/system-admin/edit-config/index.php"><i class="fa fa-circle-o"></i><?php echo _("System Configuration");?></a>
               </li>
             </ul>
             <ul class="treeview-menu">
               <li class="allMenu instanceOverviewMenu">
-                <a href="/system-admin/instance-overview/instanceIndex.php"><i class="fa fa-circle-o"></i>Instance Overview</a>
+                <a href="/system-admin/instance-overview/instanceIndex.php"><i class="fa fa-circle-o"></i><?php echo _("Instance Overview");?></a>
               </li>
             </ul>
             <ul class="treeview-menu">
               <li class="allMenu apiStatsMenu">
-                <a href="/system-admin/api-stats/apiIndex.php"><i class="fa fa-circle-o"></i>Api Stats</a>
+                <a href="/system-admin/api-stats/apiIndex.php"><i class="fa fa-circle-o"></i><?php echo _("Api Stats");?></a>
               </li>
             </ul>
             <ul class="treeview-menu">
               <li class="allMenu userLoginMenu">
-                <a href="/system-admin/user-login-history/userLoginIndex.php"><i class="fa fa-circle-o"></i>User Login History</a>
+                <a href="/system-admin/user-login-history/userLoginIndex.php"><i class="fa fa-circle-o"></i><?php echo _("User Login History");?></a>
               </li>
             </ul>
           </li>
@@ -174,5 +174,5 @@ if (!isset($_SESSION['adminUserId'])) {
     <!-- content-wrapper -->
     <div id="dDiv" class="dialog">
       <div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div>
-      <iframe id="dFrame" src="" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">some problem</iframe>
+      <iframe id="dFrame" src="" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"><?php echo _("some problem");?></iframe>
     </div>
