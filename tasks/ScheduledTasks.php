@@ -21,7 +21,7 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/upd
 
 
 // MACHINE INTERFACING
-if (!empty($interfaceConfig['enabled']) && $interfaceConfig['enabled'] == true) {
+if (!empty($systemConfig['interfacing']['enabled']) && $systemConfig['interfacing']['enabled'] == true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/interface.php")
         ->everyMinute()
         ->timezone($timeZone)

@@ -248,11 +248,11 @@ function generate_token()
     }
 
     $(document).ready(function() {
-      <?php if ($recencyConfig['crosslogin']) { ?>
+      <?php if ($systemConfig['recency']['crosslogin']) { ?>
         if (sessionStorage.getItem("crosslogin") == "true") {
           <?php $_SESSION['logged'] = false; ?>
           sessionStorage.setItem("crosslogin", "false");
-          $('<iframe src="<?php echo rtrim($recencyConfig['url'], "/") . '/logout'; ?>" frameborder="0" scrolling="no" id="myFrame" style="display:none;"></iframe>').appendTo('body');
+          $('<iframe src="<?php echo rtrim($systemConfig['recency']['url'], "/") . '/logout'; ?>" frameborder="0" scrolling="no" id="myFrame" style="display:none;"></iframe>').appendTo('body');
         }
       <?php }
       if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?>

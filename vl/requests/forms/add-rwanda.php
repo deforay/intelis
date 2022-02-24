@@ -442,7 +442,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                        </div>
-                                                       <?php if (isset($recencyConfig['vlsync']) && $recencyConfig['vlsync'] == true) {  ?>
+                                                       <?php if (isset($systemConfig['recency']['vlsync']) && $systemConfig['recency']['vlsync'] == true) {  ?>
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <div class="form-group">

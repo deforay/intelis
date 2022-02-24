@@ -314,10 +314,10 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 				</ul>
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
-						<?php if ($recencyConfig['crosslogin']) {
-							$password = $crossLoginResult['password'] . $recencyConfig['crossloginSalt']; ?>
+						<?php if ($systemConfig['recency']['crosslogin']) {
+							$password = $crossLoginResult['password'] . $systemConfig['recency']['crossloginSalt']; ?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?php echo rtrim($recencyConfig['url'], "/") . '/login?u=' . base64_encode($crossLoginResult['login_id']) . '&t=' . hash('sha256', $password) . '&name=' . base64_encode($crossLoginResult['user_name']); ?>" class="btn btn-link"><i class="fa fa-fw fa-external-link"></i> Recency</a>
+								<a onclick="setCrossLogin();" href="<?php echo rtrim($systemConfig['recency']['url'], "/") . '/login?u=' . base64_encode($crossLoginResult['login_id']) . '&t=' . hash('sha256', $password) . '&name=' . base64_encode($crossLoginResult['user_name']); ?>" class="btn btn-link"><i class="fa fa-fw fa-external-link"></i> Recency</a>
 							</li>
 						<?php } ?>
 						<li><span class="is-remote-server-reachable"></span></li>

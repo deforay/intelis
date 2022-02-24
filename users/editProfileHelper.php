@@ -8,7 +8,7 @@ $tableName = "user_details";
 $upId = 0;
 /* To check the password update from the API */
 $fromApiFalse = !isset($_POST['u']) && trim($_POST['u']) == "" && !isset($_POST['t']) && trim($_POST['t']) == "";
-$fromApiTrue = isset($_POST['u']) && trim($_POST['u']) != "" && isset($_POST['t']) && trim($_POST['t']) != "" && $recencyConfig['crosslogin'];
+$fromApiTrue = isset($_POST['u']) && trim($_POST['u']) != "" && isset($_POST['t']) && trim($_POST['t']) != "" && $systemConfig['recency']['crosslogin'];
 
 if ($fromApiTrue) {
     $_POST['userName'] = $_POST['u'];
@@ -39,9 +39,9 @@ try {
             $db = $db->where('user_name', $data['user_name']);
         } else {
             if (isset($_POST['password']) && trim($_POST['password']) != "") {
-                if ($recencyConfig['crosslogin']) {
+                if ($systemConfig['recency']['crosslogin']) {
                     $client = new \GuzzleHttp\Client();
-                    $url = rtrim($recencyConfig['url'], "/");
+                    $url = rtrim($systemConfig['recency']['url'], "/");
                     $result = $client->post($url . '/api/update-password', [
                         'form_params' => [
                             'u' => $_POST['email'],

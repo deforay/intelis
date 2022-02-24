@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . "/../startup.php");
 
-if (!isset($interfaceConfig['enabled']) || $interfaceConfig['enabled'] === false) {
+if (!isset($systemConfig['interfacing']['enabled']) || $systemConfig['interfacing']['enabled'] === false) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
@@ -20,12 +20,12 @@ if (empty($labId)) {
 }
 
 $db->addConnection('interface', array(
-    'host' => $interfaceConfig['dbHost'],
-    'username' => $interfaceConfig['dbUser'],
-    'password' => $interfaceConfig['dbPassword'],
-    'db' =>  $interfaceConfig['dbName'],
-    'port' => (!empty($interfaceConfig['dbPort']) ? $interfaceConfig['dbPort'] : 3306),
-    'charset' => (!empty($interfaceConfig['dbCharset']) ? $interfaceConfig['dbCharset'] : 'utf8mb4')
+    'host' => $systemConfig['interfacing']['dbHost'],
+    'username' => $systemConfig['interfacing']['dbUser'],
+    'password' => $systemConfig['interfacing']['dbPassword'],
+    'db' =>  $systemConfig['interfacing']['dbName'],
+    'port' => (!empty($systemConfig['interfacing']['dbPort']) ? $systemConfig['interfacing']['dbPort'] : 3306),
+    'charset' => (!empty($systemConfig['interfacing']['dbCharset']) ? $systemConfig['interfacing']['dbCharset'] : 'utf8mb4')
 ));
 
 
