@@ -269,4 +269,101 @@ class Tb
         $sQuery = "SELECT * FROM form_tb WHERE sample_code like '$sampleCode%' OR remote_sample_code LIKE '$sampleCode%'";
         return $this->db->rawQueryOne($sQuery);
     }
+
+    public function insertSampleCode($params)
+    {
+        $general = new \Vlsm\Models\General();
+
+        $globalConfig = $general->getGlobalConfig();
+        $vlsmSystemConfig = $general->getSystemConfig();
+
+        try {
+            $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
+            $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
+            $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
+
+            if (empty($sampleCollectionDate)) {
+                echo 0;
+                exit();
+            }
+
+            // PNG FORM CANNOT HAVE PROVINCE EMPTY
+            if ($globalConfig['vl_form'] == 5) {
+                if (empty($provinceId)) {
+                    echo 0;
+                    exit();
+                }
+            }
+
+
+            $sampleJson = $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
+            $sampleData = json_decode($sampleJson, true);
+            $sampleDate = explode(" ", $params['sampleCollectionDate']);
+
+            $params['sampleCollectionDate'] = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            if (!isset($params['countryId']) || $params['countryId'] == '') {
+                $params['countryId'] = '';
+            }
+
+            $tbData = array(
+                'vlsm_country_id' => $params['countryId'],
+                'sample_collection_date' => $params['sampleCollectionDate'],
+                'vlsm_instance_id' => $_SESSION['instanceId'],
+                'province_id' => $provinceId,
+                'request_created_by' => $_SESSION['userId'],
+                'request_created_datetime' => $general->getDateTime(),
+                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_datetime' => $general->getDateTime()
+            );
+
+            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+                $tbData['remote_sample_code'] = $sampleData['sampleCode'];
+                $tbData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tbData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tbData['remote_sample'] = 'yes';
+                $tbData['result_status'] = 9;
+                if ($_SESSION['accessType'] == 'testing-lab') {
+                    $tbData['sample_code'] = $sampleData['sampleCode'];
+                    $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                    $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                    $tbData['result_status'] = 6;
+                }
+            } else {
+                $tbData['sample_code'] = $sampleData['sampleCode'];
+                $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tbData['remote_sample'] = 'no';
+                $tbData['result_status'] = 6;
+            }
+            // echo "<pre>";
+            // print_r($tbData);die;
+
+            $sQuery = "SELECT tb_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
+            if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
+                $sQuery .= "where (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
+            }
+            $sQuery .= "limit 1";
+            $rowData = $this->db->rawQueryOne($sQuery);
+
+            $id = 0;
+            if ($rowData) {
+                $this->db = $this->db->where('tb_id', $rowData['tb_id']);
+                $id = $this->db->update("form_tb", $tbData);
+            } else {
+                if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
+                    $tbData['unique_id'] = $general->generateRandomString(32);
+                    $id = $this->db->insert("form_tb", $tbData);
+                }
+            }
+
+            if ($id > 0) {
+                return $id;
+            } else {
+                return 0;
+            }
+        } catch (Exception $e) {
+            error_log('Insert TB Sample : ' . $this->db->getLastError());
+            error_log('Insert TB Sample : ' . $e->getMessage());
+        }
+    }
 }
