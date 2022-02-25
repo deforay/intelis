@@ -33,10 +33,10 @@ $data = $db->rawQuery($instanceValues);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <i class="fa fa-gears"></i> Instance Overview</h1>
+    <h1> <i class="fa fa-gears"></i> <?php echo _("Instance Overview");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/system-admin/edit-config/index.php"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Instance Overview</li>
+      <li><a href="/system-admin/edit-config/index.php"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("Instance Overview");?></li>
     </ol>
   </section>
 
@@ -55,75 +55,75 @@ $data = $db->rawQuery($instanceValues);
       ?>
        <thead id ="<?php echo $project['vlsm_instance_id']; ?>">
             <tr>
-            <th>Instance Id</th>
+            <th><?php echo _("Instance Id");?></th>
         <td><?php echo $project['vlsm_instance_id']; ?></td> </tr>
         <tr>
-        <th>Instance Facility Name</th>
+        <th><?php echo _("Instance Facility Name");?></th>
     <td><span class="editSpan instanceName"><?php echo $project['instance_facility_name']; ?></span>
         <input class="editInput instanceName form-control input-sm" type="text" name="instance_facility_name" value="<?php echo $project['instance_facility_name']; ?>" style="display: none;">
         </td></tr>
     <tr>
-        <th>Instance Facility Code</th>
+        <th><?php echo _("Instance Facility Code");?></th>
         <td><span class="editSpan instanceCode"><?php echo $project['instance_facility_code']; ?></span>
         <input class="editInput instanceCode form-control input-sm" type="text" name="instance_facility_code" value="<?php echo $project['instance_facility_code']; ?>" style="display: none;">
         </td></tr>
         <tr>
-        <th>Instance Facility Type</th>
+        <th><?php echo _("Instance Facility Type");?></th>
         <td><?php echo $project['instance_facility_type']; ?></td></tr>
         <tr>
-        <th>Added On</th>
+        <th><?php echo _("Added On");?></th>
         <td><?php echo date('d-M-Y H:i:s', strtotime($project['instance_added_on'])); ?></td></tr>
-                        <th>Updated On</th>
+                        <th><?php echo _("Updated On");?></th>
                         <td><?php echo date('d-M-Y H:i:s', strtotime($project['instance_update_on'])); ?></td></tr>
     <tr>
-            <th>Vl Last Sync</th>
+            <th><?php echo _("Vl Last Sync");?></th>
             <td><span class="editSpan vlLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?></span>
                             <input class="editInput vlLastSync form-control input-sm date-time" type="" name="vl_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                         </td>
         </tr>
     </tr>
     <tr>
-            <th>EID Last Sync</th>
+            <th><?php echo _("EID Last Sync");?></th>
             <td><span class="editSpan eidLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['eid_last_dash_sync'])); ?></span>
                             <input class="editInput eidLastSync form-control input-sm date-time" type="" name="eid_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['eid_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                         </td>
         </tr>
     </tr>
     <tr>
-            <th>Covid-19 Last Sync</th>
+            <th><?php echo _("Covid-19 Last Sync");?></th>
             <td><span class="editSpan covid19LastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['covid19_last_dash_sync'])); ?></span>
                             <input class="editInput covid19LastSync form-control input-sm date-time" type="" name="covid19_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['covid19_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                         </td>
         </tr>
     </tr>
     <tr>
-            <th>Remote Request Last Sync</th>
+            <th><?php echo _("Remote Request Last Sync");?></th>
             <td><span class="editSpan remoteRequestLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_requests_sync'])); ?></span>
                             <input class="editInput remoteRequestLastSync form-control input-sm date-time" type="" name="last_remote_requests_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_requests_sync'])); ?>" readonly style="display: none;background:#fff;">
                         </td>
         </tr>
     </tr>
     <tr>
-            <th>Remote Results Last Sync</th>
+            <th><?php echo _("Remote Results Last Sync");?></th>
             <td><span class="editSpan remoteResultsLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_results_sync'])); ?></span>
                             <input class="editInput remoteResultsLastSync form-control input-sm date-time" type="" name="last_remote_results_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_results_sync'])); ?>" readonly style="display: none;background:#fff;">
                         </td>
         </tr>
     </tr>
     <tr>
-            <th>Remote Reference Last Sync</th>
+            <th><?php echo _("Remote Reference Last Sync");?></th>
             <td><span class="editSpan remoteReferenceLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_reference_data_sync'])); ?></span>
                             <input class="editInput remoteReferenceLastSync form-control input-sm date-time" type="" name="last_remote_reference_data_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_reference_data_sync'])); ?>" readonly style="display: none;background:#fff;">
                         </td>
     </tr>
     <tr>
-    <th>Action</th>
+    <th><?php echo _("Action");?></th>
     <td>
                             <div class="btn-group btn-group-sm">
                                 <button type="button" class="btn btn-sm btn-default editBtn" style="float: none;"><span class="glyphicon glyphicon-pencil"></span></button>
                             </div>
-                            <button type="button" class="btn btn-sm btn-success saveBtn" style="float: none; display: none;">Save</button>
-                            <button type="button" class="btn btn-sm-default cancelBtn" style="float: none; display: none;">Cancel</button>
+                            <button type="button" class="btn btn-sm btn-success saveBtn" style="float: none; display: none;"><?php echo _("Save");?></button>
+                            <button type="button" class="btn btn-sm-default cancelBtn" style="float: none; display: none;"><?php echo _("Cancel");?></button>
                         </td>
     </tr>
     </thead>
@@ -131,7 +131,7 @@ $data = $db->rawQuery($instanceValues);
     }
 ?>
 </tbody>   
-            <?php } else { echo "No record found"; }?>
+            <?php } else { echo _("No record found"); }?>
 
 </table>
     </div>

@@ -1,5 +1,5 @@
 <?php
-$title = "Facilities";
+$title = _("Facilities");
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -11,10 +11,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-hospital-o"></i> Facilities</h1>
+    <h1><i class="fa fa-hospital-o"></i> <?php echo _("Facilities");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Facilities</li>
+      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("Facilities");?></li>
     </ol>
   </section>
 
@@ -27,25 +27,25 @@ include_once(APPLICATION_PATH . '/header.php');
             <div class="row" style="background:#e0e0e0;padding: 15px;">
               <div class="col-md-12">
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="facility_code" class="showhideCheckBox" /> <label for="iCol0">Facility Code</label>
+                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="facility_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Facility Code");?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol1">Facility Name</label>
+                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("Facility Name");?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="2" id="iCol2" data-showhide="facility_type" class="showhideCheckBox" /> <label for="iCol2">Facility Type</label>
+                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="2" id="iCol2" data-showhide="facility_type" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Facility Type");?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3">Status</label> <br>
+                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status");?></label> <br>
                 </div>
               </div>
             </div>
           </span>
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("addFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
-              <a href="addFacility.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add Facility</a>
-              <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa fa-plus"></i> Manage Testing Lab</a>
-              <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa fa-plus"></i> Manage Health Facilities</a>
+              <a href="addFacility.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add Facility");?></a>
+              <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa fa-plus"></i> <?php echo _("Manage Testing Lab");?></a>
+              <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa fa-plus"></i> <?php echo _("Manage Health Facilities");?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
@@ -54,18 +54,18 @@ include_once(APPLICATION_PATH . '/header.php');
             <table id="facilityDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Facility Code</th>
-                  <th>Facility Name</th>
-                  <th>Facility Type</th>
-                  <th>Status</th>
+                  <th><?php echo _("Facility Code");?></th>
+                  <th><?php echo _("Facility Name");?></th>
+                  <th><?php echo _("Facility Type");?></th>
+                  <th><?php echo _("Status");?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
-                    <th>Action</th>
+                    <th><?php echo _("Action");?></th>
                   <?php } ?>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
 

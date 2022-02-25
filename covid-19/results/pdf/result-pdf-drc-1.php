@@ -304,7 +304,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:10px;font-size:11px;text-align:left;font-weight:bold;">Commune<br><span style="font-size:8;font-weight:normal;">(Patient District)</span></td>';
 $html .= '<td width="5%" style="line-height:10px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . $result['facility_district'] . '</td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . $result['patient_district'] . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
@@ -338,25 +338,14 @@ $html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;" colspan="2"><b>Resultats SARS-CoV-2 &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $covid19Results[$result['result']] . '<br><span style="font-size:8;font-weight:normal;">(Result)</span></td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;" colspan="2"><b>Resultats SARS-CoV-2 &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>' . $covid19Results[$result['result']] . '</b><br><span style="font-size:8;font-weight:normal;">(Result)</span></td>';
 $html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '<br><span style="font-size:8;font-weight:normal;">(Result Returned On)</span></td>';
 $html .= '</tr>';
 
-if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
-    $html .= '<tr>';
-    $html .= '<td style="line-height:10px;font-size:12px;text-align:left;" colspan="3"><b>Tests de Controle :</b></td>';
-    $html .= '</tr>';
-
-    foreach ($covid19TestInfo as $indexKey => $rows) {
-        $html .= '<tr>';
-        $html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;" colspan="2"><b>Resultats ' . ($indexKey + 1) . 'éme Prélévement &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords($covid19TestInfo[$indexKey]['result']) . '</td>';
-        $html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $general->humanDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']) . '</td>';
-        $html .= '</tr>';
-    }
-}
-
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3"><br><br><b>Fait a Kinshasa, le : </b>' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
+$html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3">
+            <br><br><b>Fait à Kinshasa, le: </b>' . $general->humanDateFormat($result['result_approved_datetime']) .
+        '<br><span style="font-size:8;font-weight:normal;">(Done in Kinshasa, on)</span></td>';
 $html .= '</tr>';
 
 

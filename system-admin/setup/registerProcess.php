@@ -21,7 +21,7 @@ try {
         'system_admin_password' => $userPassword
     );
     $db->insert($tableName, $insertData);
-    $_SESSION['alertMsg'] = "New User Added successfully";
+    $_SESSION['alertMsg'] = _("New User Added successfully");
 }
         header("location:/system-admin/login/login.php");
 } catch (Exception $exc) {

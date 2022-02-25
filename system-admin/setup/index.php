@@ -15,7 +15,7 @@ $path = '/assets/img/remote-bg.jpg';
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>VLSM | New User Registration</title>
+    <title><?php echo _("VLSM");?> | <?php echo _("New User Registration");?></title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
@@ -50,7 +50,7 @@ $path = '/assets/img/remote-bg.jpg';
     <div id="loginbox" style="margin-top:140px;margin-bottom:70px;float:right;margin-right:509px;" class="mainbox col-md-3 col-sm-8 ">
       <div class="panel panel-default" style="opacity: 0.93;">
         <div class="panel-heading">
-                    <div class="panel-title">VLSM New User Register</div>
+                    <div class="panel-title"><?php echo _("VLSM New User Register");?></div>
                 </div>
 
                 <div style="padding-top:10px;" class="panel-body">
@@ -58,28 +58,28 @@ $path = '/assets/img/remote-bg.jpg';
                     <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="User Name" title="Please enter the user name">
+              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name');?>" title="<?php echo _('Please enter the user name');?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="Email Id" title="Please enter the email id">
+              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?php echo _('Email Id');?>" title="<?php echo _('Please enter the email id');?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-log-in"></i></span>
-              <input id="login-id" type="text" class="form-control isRequired" name="loginid" value="" placeholder="Login Id" title="Please enter the login id">
+              <input id="login-id" type="text" class="form-control isRequired" name="loginid" value="" placeholder="<?php echo _('Login Id');?>" title="<?php echo _('Please enter the login id');?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="Password" title="Please enter the password" />
+              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?php echo _('Password');?>" title="<?php echo _('Please enter the password');?>" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="Confirm Password" title="" />
+              <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password');?>" title="" />
             </div>
                         <div style="margin-top:10px" class="form-group">
                             <!-- Button -->
                             <div class="col-sm-12 controls">
-                                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;">Submit</button>
+                                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;"><?php echo _("Submit");?></button>
                             </div>
                         </div>
                     </form>

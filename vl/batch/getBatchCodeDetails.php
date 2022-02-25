@@ -82,7 +82,8 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = array();
+$sWhere[] = "vl.sample_batch_id = b.batch_id";
+$sWhere[] = "b.test_type like '" . $_POST['type'] . "'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -118,18 +119,19 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`, 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS  SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`, 
                 MAX(vl.sample_tested_datetime) as last_tested_date,
                 b.request_created_datetime,
                 b.batch_code, 
                 b.batch_id, 
                 COUNT(vl.sample_code) AS total_samples 
-                FROM $refTable vl, batch_details b 
-                WHERE vl.sample_batch_id = b.batch_id
-                AND b.test_type like '" . $_POST['type'] . "'";
+                FROM $refTable vl, batch_details b";
 
-$sQuery = $sQuery . ' ' . implode(" AND ", $sWhere);
-$sQuery = $sQuery . ' group by b.batch_id';
+if(!empty($sWhere)){
+    $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
+}
+
+$sQuery = $sQuery . ' GROUP BY b.batch_id';
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
@@ -145,11 +147,8 @@ $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT COUNT(b.batch_id) AS total FROM $refTable vl, batch_details b WHERE vl.sample_batch_id = b.batch_id AND b.test_type LIKE '" . $_POST['type'] . "' " . implode(" AND ", $sWhere) . " GROUP BY b.batch_id");
-$iFilteredTotal = !empty($aResultFilterTotal['total']) ? $aResultFilterTotal['total'] : 0;
-
-$aResultTotal = $db->rawQueryOne("SELECT COUNT(b.batch_id) AS total FROM $refTable vl, batch_details b WHERE vl.sample_batch_id = b.batch_id AND b.test_type LIKE '" . $_POST['type'] . "' GROUP BY b.batch_id");
-$iTotal = !empty($aResultTotal['total']) ? $aResultTotal['total'] : 0;
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
 /*

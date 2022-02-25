@@ -44,7 +44,7 @@ include_once(APPLICATION_PATH . '/header.php');
 					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
 				<?php } ?>
 				<?php
-				if (isset($recencyConfig['vlsync']) && $recencyConfig['vlsync'] == true) {  ?>
+				if (isset($systemConfig['recency']['vlsync']) && $systemConfig['recency']['vlsync'] == true) {  ?>
 					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')"><?php echo _("Confirmation Tests for Recency");?></a></li>
 				<?php }  ?>
 			</ul>
@@ -90,7 +90,7 @@ include_once(APPLICATION_PATH . '/header.php');
 
 				<?php } ?>
 
-				<?php if (isset($recencyConfig['vlsync']) && $recencyConfig['vlsync'] == true) {  ?>
+				<?php if (isset($systemConfig['recency']['vlsync']) && $systemConfig['recency']['vlsync'] == true) {  ?>
 					<div class="tab-pane fade in" id="recencyDashboard">
 						<!-- VL content -->
 						<section class="content">

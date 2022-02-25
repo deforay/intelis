@@ -15,9 +15,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 }
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
-    // if (empty($_SESSION['csrf'])) {
-    //     $_SESSION['csrf'] = bin2hex(random_bytes(32));
-    // }    
 }
 
 if (php_sapi_name() !== 'cli') {
@@ -59,20 +56,18 @@ defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ?
         getenv('APPLICATION_ENV') :
         'production'));
-defined('COVID_19_REPORT_PATH')
-    || define('COVID_19_REPORT_PATH', APPLICATION_PATH . DIRECTORY_SEPARATOR . 'covid-19/results/pdf');
 
 set_include_path(implode(PATH_SEPARATOR, array(
     realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . 'vendor'),
-    realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . 'models'),
     get_include_path()
 )));
 
+require_once(APPLICATION_PATH . '/system/system.php');
+require_once(APPLICATION_PATH . '/vendor/autoload.php');
 
-require_once('autoload.php');
-require_once(APPLICATION_PATH . "/configs/config." . APPLICATION_ENV . ".php");
+$systemConfig = require_once(APPLICATION_PATH . "/configs/config." . APPLICATION_ENV . ".php");
 
-// Let us create database object
+// Database Connection
 $db = new MysqliDb(array(
     'host' => $systemConfig['dbHost'],
     'username' => $systemConfig['dbUser'],
@@ -82,17 +77,22 @@ $db = new MysqliDb(array(
     'charset' => (!empty($systemConfig['dbCharset']) ? $systemConfig['dbCharset'] : 'utf8mb4')
 ));
 
+// Locale
+if (empty($_SESSION['APP_LOCALE'])) {
+    $general = new \Vlsm\Models\General();
+    $_SESSION['APP_LOCALE'] = $general->getGlobalConfig('app_locale');
+    $_SESSION['APP_LOCALE'] = !empty($_SESSION['APP_LOCALE']) ? $_SESSION['APP_LOCALE'] : 'en_US';
+}
 
-$locale = !empty($systemConfig['locale']) ? $systemConfig['locale'] : 'en_US';
-// I18N support information here
-putenv('LC_ALL=' . $locale);
-putenv('LANGUAGE=' . $locale);
-setlocale(LC_ALL,  $locale);
+putenv('LC_ALL=' . $_SESSION['APP_LOCALE']);
+putenv('LANGUAGE=' . $_SESSION['APP_LOCALE']);
+setlocale(LC_ALL,  $_SESSION['APP_LOCALE']);
 $domain = "messages";
 bindtextdomain($domain, APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locale');
 bind_textdomain_codeset($domain, 'UTF-8');
 textdomain($domain);
 
+// Timezone
 if (empty($_SESSION['APP_TIMEZONE'])) {
     $general = new \Vlsm\Models\General();
     $_SESSION['APP_TIMEZONE'] = $general->getGlobalConfig('default_time_zone');

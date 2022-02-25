@@ -77,6 +77,7 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
+			<br><br><br><br>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
@@ -159,7 +160,7 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 			<!-- /.box-body -->
 			<div class="box-footer">
 				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save </a>
-				<a href="specimenReferralManifestList.php" class="btn btn-default"> Cancel</a>
+				<a href="specimenReferralManifestList.php?t=<?= $_GET['t']; ?>" class="btn btn-default"> Cancel</a>
 			</div>
 			<!-- /.box-footer -->
 			</form>

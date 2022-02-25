@@ -10,10 +10,10 @@ $sResult = $db->rawQuery($sQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <i class="fa fa-gears"></i> User Login History</h1>
+    <h1> <i class="fa fa-gears"></i> <?php echo _("User Login History");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/system-admin/edit-config/index.php"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Manage User Login History</li>
+      <li><a href="/system-admin/edit-config/index.php"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("Manage User Login History");?></li>
     </ol>
   </section>
 
@@ -26,15 +26,15 @@ $sResult = $db->rawQuery($sQuery);
 <div class="box">
     <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><b>Date&nbsp;:</b></td>
+							<td><b><?php echo _("Date");?>&nbsp;:</b></td>
 							<td>
-								<input type="" id="userDate" name="userDate" class="form-control daterangefield" placeholder="Select User Date" readonly style="width:220px;background:#fff;" />
+								<input type="" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _('Select User Date');?>" readonly style="width:220px;background:#fff;" />
 							</td>
 
-							<td><b>Login ID&nbsp;:</b></td>
+							<td><b><?php echo _("Login ID");?>&nbsp;:</b></td>
 							<td>
-								<select style="width:220px;" class="form-control" id="loginId" name="loginId" title="Please select login id">
-									<option value=""> -- Select -- </option>
+								<select style="width:220px;" class="form-control" id="loginId" name="loginId" title="<?php echo _('Please select login id');?>">
+									<option value=""> <?php echo _("-- Select --");?> </option>
 									<?php
 									foreach ($sResult as $type) {
 									?>
@@ -47,9 +47,9 @@ $sResult = $db->rawQuery($sQuery);
 						</tr>
 						<tr>
 							<td colspan="6">
-								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span>Search</span></button>
+								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search");?></span></button>
 
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Clear Search</span></button>
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search");?></span></button>
 							</td>
 						</tr>
 
@@ -59,18 +59,18 @@ $sResult = $db->rawQuery($sQuery);
             <table id="userLoginHistoryDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Login Id</th>
-                  <th>Attempted Datetime</th>
-                  <th>IP Address</th>
-                  <th>Browser</th>
-                  <th>Operating System</th>
-                  <th>Status</th>
+                  <th><?php echo _("Login Id");?></th>
+                  <th><?php echo _("Attempted Datetime");?></th>
+                  <th><?php echo _("IP Address");?></th>
+                  <th><?php echo _("Browser");?></th>
+                  <th><?php echo _("Operating System");?></th>
+                  <th><?php echo _("Status");?></th>
                   
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
 

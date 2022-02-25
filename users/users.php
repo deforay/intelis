@@ -1,5 +1,5 @@
 <?php
-$title = "Users";
+$title = _("Users");
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 ?>
@@ -8,10 +8,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-user"></i> Users</h1>
+    <h1><i class="fa fa-user"></i> <?php echo _("Users");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Users</li>
+      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li class="active"><?php echo _("Users");?></li>
     </ol>
   </section>
 
@@ -27,16 +27,16 @@ include_once(APPLICATION_PATH . '/header.php');
             <div class="row" style="background:#e0e0e0;padding: 15px;">
               <div class="col-md-12">
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="user_name" class="showhideCheckBox" /> <label for="iCol0">User Name</label>
+                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="user_name" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("User Name");?></label>
                 </div>
                 <div class="col-md-3">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="email" class="showhideCheckBox" /> <label for="iCol1">Email</label>
+                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="email" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("Email");?></label>
                 </div>
                 <div class="col-md-3">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="2" id="iCol2" data-showhide="role_name" class="showhideCheckBox" /> <label for="iCol2">Role</label>
+                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="2" id="iCol2" data-showhide="role_name" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Role");?></label>
                 </div>
                 <div class="col-md-3">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3">Status</label> <br>
+                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status");?></label> <br>
                 </div>
               </div>
             </div>
@@ -44,7 +44,7 @@ include_once(APPLICATION_PATH . '/header.php');
           <div class="box-header with-border">
 
             <?php if (isset($_SESSION['privileges']) && in_array("addUser.php", $_SESSION['privileges'])) { ?>
-              <a href="addUser.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add User</a>
+              <a href="addUser.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add User");?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
@@ -54,18 +54,18 @@ include_once(APPLICATION_PATH . '/header.php');
             <table id="userDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>User Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Status</th>
+                  <th><?php echo _("User Name");?></th>
+                  <th><?php echo _("Email");?></th>
+                  <th><?php echo _("Role");?></th>
+                  <th><?php echo _("Status");?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("editUser.php", $_SESSION['privileges'])) { ?>
-                    <th>Action</th>
+                    <th><?php echo _("Action");?></th>
                   <?php } ?>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="5" class="dataTables_empty">Loading data from server</td>
+                  <td colspan="5" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
 

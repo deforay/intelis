@@ -254,7 +254,7 @@ try {
 			}
 		}
 
-		$_SESSION['alertMsg'] = "Facility details updated successfully";
+		$_SESSION['alertMsg'] = _("Facility details updated successfully");
 		$general->activityLog('update-facility', $_SESSION['userName'] . ' updated facility ' . $_POST['facilityName'], 'facility');
 	}
 	header("location:facilities.php");

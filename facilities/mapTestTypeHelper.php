@@ -43,7 +43,7 @@ try {
         $db->update($tableName, $data);
 
 
-        $_SESSION['alertMsg'] = "Facility Mapped to Selected Test Type successfully";
+        $_SESSION['alertMsg'] = _("Facility Mapped to Selected Test Type successfully");
     }
     header("location:facilities.php");
 } catch (Exception $exc) {

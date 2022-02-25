@@ -8,7 +8,7 @@ $tableName = "user_details";
 $upId = 0;
 /* To check the password update from the API */
 $fromApiFalse = !isset($_POST['u']) && trim($_POST['u']) == "" && !isset($_POST['t']) && trim($_POST['t']) == "";
-$fromApiTrue = isset($_POST['u']) && trim($_POST['u']) != "" && isset($_POST['t']) && trim($_POST['t']) != "" && $recencyConfig['crosslogin'];
+$fromApiTrue = isset($_POST['u']) && trim($_POST['u']) != "" && isset($_POST['t']) && trim($_POST['t']) != "" && $systemConfig['recency']['crosslogin'];
 
 if ($fromApiTrue) {
     $_POST['userName'] = $_POST['u'];
@@ -17,8 +17,15 @@ if ($fromApiTrue) {
     $userId = base64_decode($_POST['userId']);
 }
 
-try {
-    if (trim($_POST['userName']) != '') {
+try {  
+        $password = sha1($_POST['password'] . $systemConfig['passwordSalt']);
+        $queryParams = array($password);
+        $admin = $db->rawQuery("SELECT * FROM user_details as ud WHERE ud.password = ?", $queryParams);
+        if (count($admin) > 0) {
+            $_SESSION['alertMsg'] = _("Your new password is too similar to your current password. Please try another password.");
+        }
+
+    else if (trim($_POST['userName']) != '') {
         if ($fromApiFalse) {
             $data = array(
                 'user_name' => $_POST['userName'],
@@ -32,9 +39,9 @@ try {
             $db = $db->where('user_name', $data['user_name']);
         } else {
             if (isset($_POST['password']) && trim($_POST['password']) != "") {
-                if ($recencyConfig['crosslogin']) {
+                if ($systemConfig['recency']['crosslogin']) {
                     $client = new \GuzzleHttp\Client();
-                    $url = rtrim($recencyConfig['url'], "/");
+                    $url = rtrim($systemConfig['recency']['url'], "/");
                     $result = $client->post($url . '/api/update-password', [
                         'form_params' => [
                             'u' => $_POST['email'],
