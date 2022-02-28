@@ -1,5 +1,5 @@
 <?php
-$title = "Geographical Divisions";
+$title = _("Geographical Divisions");
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -8,10 +8,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-gears"></i> Geographical Divisions</h1>
+		<h1><i class="fa fa-gears"></i> <?php echo _("Geographical Divisions");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Geographical Divisions</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li class="active"><?php echo _("Geographical Divisions");?></li>
 		</ol>
 	</section>
 
@@ -22,7 +22,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("add-geographical-divisions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-geographical-divisions.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add New Geographical Divisions</a>
+							<a href="add-geographical-divisions.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add New Geographical Divisions");?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,17 +30,17 @@ include_once(APPLICATION_PATH . '/header.php');
 						<table id="samTypDataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th>Name</th>
-									<th>Code</th>
-									<th>Status</th>
+									<th><?php echo _("Name");?></th>
+									<th><?php echo _("Code");?></th>
+									<th><?php echo _("Status");?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<th>Action</th>
+										<th><?php echo _("Action");?></th>
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="3" class="dataTables_empty">Loading data from server</td>
+									<td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
 								</tr>
 							</tbody>
 

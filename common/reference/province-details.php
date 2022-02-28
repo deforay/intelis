@@ -1,5 +1,5 @@
 <?php
-$title = "Province";
+$title = _("Province");
 #require_once('../startup.php'); 
 include_once(APPLICATION_PATH . '/header.php');
 
@@ -8,10 +8,10 @@ include_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-gears"></i> Province</h1>
+		<h1><i class="fa fa-gears"></i> <?php echo _("Province");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Province</li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li class="active"><?php echo _("Province");?></li>
 		</ol>
 	</section>
 
@@ -22,7 +22,7 @@ include_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-province.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add New Province</a>
+							<a href="add-province.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add New Province");?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,10 +30,10 @@ include_once(APPLICATION_PATH . '/header.php');
 						<table id="samTypDataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th>Province Name</th>
-									<th>Province Code</th>
+									<th><?php echo _("Province Name");?></th>
+									<th><?php echo _("Province Code");?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<th>Action</th>
+										<th><?php echo _("Action");?></th>
 									<?php } ?>
 								</tr>
 							</thead>
