@@ -35,10 +35,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("EID Test Requests");?></h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("EID Test Requests"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Test Request");?></li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Test Request"); ?></li>
 		</ol>
 	</section>
 
@@ -49,14 +49,14 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<table id="advanceFilter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
-							<td><b><?php echo _("Sample Collection Date");?> :</b></td>
+							<td><b><?php echo _("Sample Collection Date"); ?> :</b></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" />
 							</td>
-							<td><b><?php echo _("Batch Code");?> :</b></td>
+							<td><b><?php echo _("Batch Code"); ?> :</b></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code');?>">
-									<option value=""> <?php echo _("-- Select --");?> </option>
+								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php
 									foreach ($batResult as $code) {
 									?>
@@ -66,62 +66,62 @@ $batResult = $db->rawQuery($batQuery);
 									?>
 								</select>
 							</td>
-							<td><b><?php echo _("Req. Sample Type");?> :</b></td>
+							<td><b><?php echo _("Req. Sample Type"); ?> :</b></td>
 							<td>
-								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _('Please select request sample type');?>">
-									<option value=""><?php echo _("All");?></option>
-									<option value="result"><?php echo _("Sample With Result");?></option>
-									<option value="noresult"><?php echo _("Sample Without Result");?></option>
+								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _('Please select request sample type'); ?>">
+									<option value=""><?php echo _("All"); ?></option>
+									<option value="result"><?php echo _("Sample With Result"); ?></option>
+									<option value="noresult"><?php echo _("Sample Without Result"); ?></option>
 								</select>
 							</td>
 
 						</tr>
 						<tr>
-							<td><b><?php echo _("Facility Name");?> :</b></td>
+							<td><b><?php echo _("Facility Name"); ?> :</b></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name');?>" style="width:100%;">
+								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Province/State");?>&nbsp;:</b></td>
+							<td><b><?php echo _("Province/State"); ?>&nbsp;:</b></td>
 							<td>
-								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State');?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
+								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
-							<td><b><?php echo _("District/County");?> :</b></td>
+							<td><b><?php echo _("District/County"); ?> :</b></td>
 							<td>
-								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County');?>" onkeyup="loadVlRequestStateDistrict()" />
+								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 						</tr>
 						<tr>
-						<td><b><?php echo _("Testing Lab");?> :</b></td>
+							<td><b><?php echo _("Testing Lab"); ?> :</b></td>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab');?>" style="width:220px;">
+								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
+							<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
 							<td>
-								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
-									<option value=""> <?php echo _("-- Select --");?> </option>
-									<option value="male"><?php echo _("Male");?></option>
-									<option value="female"><?php echo _("Female");?></option>
-									<option value="not_recorded"><?php echo _("Not Recorded");?></option>
+								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<option value="male"><?php echo _("Male"); ?></option>
+									<option value="female"><?php echo _("Female"); ?></option>
+									<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 								</select>
 							</td>
-							<td><b><?php echo _("Show only Reordered Samples");?>&nbsp;:</b></td>
+							<td><b><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</b></td>
 							<td>
-								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample');?>">
-									<option value=""> <?php echo _("-- Select --");?> </option>
-									<option value="yes"><?php echo _("Yes");?></option>
-									<option value="no" selected="selected"><?php echo _("No");?></option>
+								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no" selected="selected"><?php echo _("No"); ?></option>
 								</select>
 							</td>
 						</tr>
 						<tr>
-						<td><b><?php echo _("Funding Sources");?>&nbsp;:</b></td>
+							<td><b><?php echo _("Funding Sources"); ?>&nbsp;:</b></td>
 							<td>
-								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source');?>">
-									<option value=""> <?php echo _("-- Select --");?> </option>
+								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php
 									foreach ($fundingSourceList as $fundingSource) {
 									?>
@@ -129,31 +129,34 @@ $batResult = $db->rawQuery($batQuery);
 									<?php } ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Implementing Partners");?>&nbsp;:</b></td>
+							<td><b><?php echo _("Implementing Partners"); ?>&nbsp;:</b></td>
 							<td>
-								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner');?>">
-									<option value=""> <?php echo _("-- Select --");?> </option>
+								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) {
 									?>
 										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
 									<?php } ?>
 								</select>
-							</td></tr>
+							</td>
+						</tr>
 						<tr>
-							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-default btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search");?></span></button>
+							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search"); ?></span></button>
 							</td>
 							<td colspan="4">
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("eid-add-request.php", $_SESSION['privileges'])) { ?>
-									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new EID Request");?></a>
+									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new EID Request"); ?></a>
 									<?php if ($formId == 1) { ?>
-										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Bulk Import EID Request");?></a>
-								<?php }
-								} ?>
-								&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel");?></a>
+										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Bulk Import EID Request"); ?></a>
+									<?php }
+								}
+								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel"); ?></a>
+								<?php } ?>
 								&nbsp;
 							</td>
 						</tr>
@@ -164,13 +167,15 @@ $batResult = $db->rawQuery($batQuery);
 
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("eid-add-request.php", $_SESSION['privileges'])) { ?>
-									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new EID Request");?></a>
+									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new EID Request"); ?></a>
 									<?php if ($formId == 1) { ?>
-										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Bulk Import EID Request");?></a>
-								<?php }
-								} ?>
-								&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel");?></a>
-								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search");?></span></button>
+										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Bulk Import EID Request"); ?></a>
+									<?php }
+								}
+								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel"); ?></a>
+								<?php } ?>
+								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search"); ?></span></button>
 							</td>
 						</tr>
 					</table>
@@ -181,30 +186,30 @@ $batResult = $db->rawQuery($batQuery);
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
-									<th><?php echo _("Sample Code");?></th>
+									<th><?php echo _("Sample Code"); ?></th>
 									<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-										<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
+										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 									<?php } ?>
-									<th><?php echo _("Sample Collection");?><br /> <?php echo _("Date");?></th>
-									<th><?php echo _("Batch Code");?></th>
-									<th><?php echo _("Facility Name");?></th>
-									<th><?php echo _("Child's ID");?></th>
-									<th><?php echo _("Child's Name");?></th>
-									<th><?php echo _("Mother's ID");?></th>
-									<th><?php echo _("Mother's Name");?></th>
-									<th><?php echo _("Province/State");?></th>
-									<th><?php echo _("District/County");?></th>
-									<th><?php echo _("Result");?></th>
-									<th><?php echo _("Last Modified On");?></th>
-									<th><?php echo _("Status");?></th>
+									<th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
+									<th><?php echo _("Batch Code"); ?></th>
+									<th><?php echo _("Facility Name"); ?></th>
+									<th><?php echo _("Child's ID"); ?></th>
+									<th><?php echo _("Child's Name"); ?></th>
+									<th><?php echo _("Mother's ID"); ?></th>
+									<th><?php echo _("Mother's Name"); ?></th>
+									<th><?php echo _("Province/State"); ?></th>
+									<th><?php echo _("District/County"); ?></th>
+									<th><?php echo _("Result"); ?></th>
+									<th><?php echo _("Last Modified On"); ?></th>
+									<th><?php echo _("Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSION['privileges'])) || (in_array("eid-view-request.php", $_SESSION['privileges']))) { ?>
-										<th><?php echo _("Action");?></th>
+										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="15" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+									<td colspan="15" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -212,19 +217,19 @@ $batResult = $db->rawQuery($batQuery);
 						if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
 						?>
 
-							<div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details");?>...</span><br />
+							<div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details"); ?>...</span><br />
 								<div class="progress" style="width:100%">
 									<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 									</div>
 								</div>
 							</div> <!-- /printer_data_loading -->
 							<div id="printer_details" style="display:none">
-								<span id="selected_printer"><?php echo _("No printer selected");?>!</span>
-								<button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry");?></button>
+								<span id="selected_printer"><?php echo _("No printer selected"); ?>!</span>
+								<button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry"); ?></button>
 							</div><br /> <!-- /printer_details -->
 							<div id="printer_select" style="display:none">
-							<?php echo _("Zebra Printer Options");?><br />
-							<?php echo _("Printer:");?> <select id="printers"></select>
+								<?php echo _("Zebra Printer Options"); ?><br />
+								<?php echo _("Printer:"); ?> <select id="printers"></select>
 							</div> <!-- /printer_select -->
 
 						<?php
@@ -279,13 +284,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		?>
 		$("#facilityName").select2({
-			placeholder: "<?php echo _("Select Facilities");?>"
+			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _("Select Vl Lab");?>"
+			placeholder: "<?php echo _("Select Vl Lab"); ?>"
 		});
 		$("#batchCode").select2({
-			placeholder: "<?php echo _("Select Batch Code");?>"
+			placeholder: "<?php echo _("Select Batch Code"); ?>"
 		});
 		loadVlRequestData();
 		$('#sampleCollectionDate').daterangepicker({
@@ -509,7 +514,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		function forceResultSync(sampleCode) {
 			$.blockUI({
-				message: "<h3><?php echo _("Trying to sync");?> " + sampleCode + "<br><?php echo _("Please wait");?>...</h3>"
+				message: "<h3><?php echo _("Trying to sync"); ?> " + sampleCode + "<br><?php echo _("Please wait"); ?>...</h3>"
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
@@ -531,7 +536,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	<?php } ?>
 
-	function exportAllPendingVlRequest() {
+	function exportAllPendingEidRequests() {
 		$.blockUI();
 		var requestSampleType = $('#requestSampleType').val();
 		$.post("generate-pending-eid-request-excel.php", {
@@ -540,7 +545,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			function(data) {
 				$.unblockUI();
 				if (data === "" || data === null || data === undefined) {
-					alert("<?php echo _("Unable to generate the excel file");?>");
+					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					location.href = '/temporary/' + data;
 				}

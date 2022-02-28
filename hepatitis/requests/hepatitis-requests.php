@@ -145,9 +145,11 @@ $batResult = $db->rawQuery($batQuery);
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search"); ?></span></button>
 							</td>
 							<td colspan="4">
-								<a class="btn btn-success btn-sm pull-right" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><span><?php echo _("Export Requests"); ?></span></a>
 								<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
 									<a style=" margin: 0px 5px; " href="/hepatitis/requests/hepatitis-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new Hepatitis Request"); ?></a>
+								<?php } ?>
+								<?php if (isset($_SESSION['privileges']) && in_array("export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
+									<a class="btn btn-success btn-sm pull-right" href="javascript:void(0);" onclick="exportAllPendingHepatitisRequest();"><span><?php echo _("Export Requests"); ?></span></a>
 								<?php } ?>
 							</td>
 						</tr>
@@ -155,10 +157,11 @@ $batResult = $db->rawQuery($batQuery);
 					<table id="filter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
-								<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllPendingVlRequest();"><span>Export Request</span></button>
-								<?php
-								if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
+								<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
 									<a style=" margin: 0px 5px; " href="/hepatitis/requests/hepatitis-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new Hepatitis Request"); ?></a>
+								<?php }
+								if (isset($_SESSION['privileges']) && in_array("export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
+									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllPendingHepatitisRequest();"><span>Export Request</span></button>
 								<?php } ?>
 								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search"); ?></span></button>
 							</td>
@@ -518,7 +521,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	<?php } ?>
 
-	function exportAllPendingVlRequest() {
+	function exportAllPendingHepatitisRequest() {
 		$.blockUI();
 		var requestSampleType = $('#requestSampleType').val();
 		$.post("/hepatitis/management/generate-export-data.php", {

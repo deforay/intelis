@@ -162,7 +162,6 @@ $batResult = $db->rawQuery($batQuery);
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search"); ?></span></button>
 							</td>
 							<td colspan="4">
-								<a class="btn btn-success btn-sm" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><span><?php echo _("Export Requests"); ?></span></a>
 								<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new Covid-19 Request"); ?></a>
 									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
@@ -170,8 +169,11 @@ $batResult = $db->rawQuery($batQuery);
 									<?php }
 									if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Quick Add Covid-19 Request"); ?></a>
-								<?php }
-								} ?>
+									<?php }
+								}
+								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
+									<a class="btn btn-success btn-sm" href="javascript:void(0);" style=" float: right; " onclick="exportAllPendingCovid19Requests();"><span><?php echo _("Export Requests"); ?></span></a>
+								<?php } ?>
 							</td>
 						</tr>
 					</table>
@@ -188,10 +190,12 @@ $batResult = $db->rawQuery($batQuery);
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Add new Covid-19 Request</a>
 									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Bulk Import Covid-19 Request</a>
-								<?php }
-								} ?>
+									<?php }
+								}
+								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
+									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllPendingCovid19Requests();"><span>Export Request</span></button>
+								<?php } ?>
 								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>Show Advanced Search</span></button>
-								<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllPendingVlRequest();"><span>Export Request</span></button>
 							</td>
 						</tr>
 					</table>
@@ -554,7 +558,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	<?php } ?>
 
-	function exportAllPendingVlRequest() {
+	function exportAllPendingCovid19Requests() {
 		$.blockUI();
 		var requestSampleType = $('#requestSampleType').val();
 		$.post("generate-pending-covid19-request-excel.php", {
