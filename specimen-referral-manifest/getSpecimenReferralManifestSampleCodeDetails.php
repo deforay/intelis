@@ -60,16 +60,16 @@ if (isset($_POST['testingLab']) && $_POST['testingLab'] != "") {
 }
 
 if (isset($_POST['facility']) && $_POST['facility'] != "") {
-	$query .= " AND facility_id IN(" . $_POST['facility'] . ")";
+	$query .= " AND (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
 }
 
 if (isset($_POST['operator']) && $_POST['operator'] != "") {
-	$query .= " AND request_created_by like '" . $_POST['operator'] . "'";
+	$query .= " AND (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
 }
 
-/* if (isset($_POST['sampleType']) && $_POST['sampleType'] != "") {
-	$query .= " AND sample_type IN(" . $_POST['sampleType'] . ")";
-} */
+if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module == 'vl') {
+	$query .= " AND (sample_type IN(" . $_POST['sampleType'] . ")  OR (sample_type like '' OR sample_type is null OR sample_type = 0))";
+}
 
 $query .= " ORDER BY vl.request_created_datetime ASC";
 // echo $query;die;
