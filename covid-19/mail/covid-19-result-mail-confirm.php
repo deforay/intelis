@@ -2,7 +2,7 @@
 ob_start();
 
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 $tableName = "form_covid19";
@@ -333,5 +333,5 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
    }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $title = _("Hepatitis | Sample Status Report");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php
 
@@ -275,5 +275,5 @@ $batResult = $db->rawQuery($batQuery);
   }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

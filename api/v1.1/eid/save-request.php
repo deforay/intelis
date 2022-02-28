@@ -63,7 +63,7 @@ try {
         }
 
         $data['api'] = "yes";
-        // include_once(APPLICATION_PATH . '/eid/requests/insert-sample.php');
+        
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
         $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
@@ -159,7 +159,6 @@ try {
         }
         /* print_r($db->getLastError());
         die; */
-        // include_once(APPLICATION_PATH . '/eid/requests/eid-add-request-helper.php');
         $tableName = "eid_form";
         $tableName1 = "activity_log";
 

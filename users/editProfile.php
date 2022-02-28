@@ -1,7 +1,7 @@
 <?php
 ob_start();
 #require_once('../startup.php'); 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 // if ($global['edit_profile'] == 'no') {
 //   header("location:/dashboard/index.php");
 // }
@@ -208,5 +208,5 @@ responsive: true
   }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

@@ -1,6 +1,6 @@
 <?php
 //this file in remote
-include(dirname(__FILE__) . "/../../startup.php");  
+require_once(dirname(__FILE__) . "/../../startup.php");  
 
 $facilityMapQuery = "SELECT facility_id FROM vl_facility_map";
 $fMapResult=$db->query($facilityMapQuery);

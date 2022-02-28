@@ -1,8 +1,8 @@
 <?php
 ob_start();
 $title = _("Edit user");
-#include_once '../startup.php';
-include_once APPLICATION_PATH . '/header.php';
+
+require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 $userQuery = "SELECT * from user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id where user_id='" . $id . "'";
 $userInfo = $db->query($userQuery);

@@ -2,7 +2,7 @@
 ob_start();
 $title = _("TB | Add Batch");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
@@ -296,4 +296,4 @@ $maxId = $general->createBatchCode($start_date, $end_date);
 
 <?php
 
-include_once(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');

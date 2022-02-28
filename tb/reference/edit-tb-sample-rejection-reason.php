@@ -1,7 +1,7 @@
 <?php
 ob_start();
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $rejReaons = $general->getRejectionReasons('tb');
 
 $id = base64_decode($_GET['id']);
@@ -148,5 +148,5 @@ $rsnInfo = $db->query($rsnQuery);
 </script>
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

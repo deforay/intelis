@@ -1,6 +1,6 @@
 <?php
 $title = _("Dashboard");
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 ?>
 <link rel="stylesheet" href="/assets/css/components-rounded.min.css">
 <style>
@@ -705,4 +705,4 @@ include_once(APPLICATION_PATH . '/header.php');
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');

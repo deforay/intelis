@@ -1,6 +1,6 @@
 <?php
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $userQuery = "SELECT * FROM user_details where status='active'";
@@ -671,5 +671,5 @@ foreach ($rejectionTypeResult as $type) {
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

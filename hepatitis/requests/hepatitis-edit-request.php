@@ -2,7 +2,7 @@
 ob_start();
 $title = "Hepatitis | Edit Request";
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 ?>
 <style>
     .ui_tpicker_second_label,
@@ -345,4 +345,4 @@ if (file_exists($fileArray[$arr['vl_form']])) {
             });
     }
 </script>
-<?php include_once(APPLICATION_PATH . '/footer.php');
+<?php require_once(APPLICATION_PATH . '/footer.php');

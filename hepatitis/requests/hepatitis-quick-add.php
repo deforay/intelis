@@ -2,7 +2,7 @@
 ob_start();
 $title = "COVID-19 | Add New Request";
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 ?>
 <style>
@@ -271,4 +271,4 @@ if (file_exists($fileArray[$arr['vl_form']])) {
         $("#patientAge").val(moment().diff(dateOfBirth, 'years'));
     }
 </script>
-<?php include_once(APPLICATION_PATH . '/footer.php');
+<?php require_once(APPLICATION_PATH . '/footer.php');

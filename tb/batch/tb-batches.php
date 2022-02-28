@@ -2,7 +2,7 @@
 ob_start();
 $title = _("TB | Batches");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 ?>
 
@@ -178,4 +178,4 @@ include_once(APPLICATION_PATH . '/header.php');
 
 <?php
 
-include_once(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');

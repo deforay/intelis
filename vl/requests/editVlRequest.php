@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $sCode = $labFieldDisabled = '';
 
@@ -471,4 +471,4 @@ if ($arr['vl_form'] == 1) {
           }
      }
 </script>
-<?php include(APPLICATION_PATH . '/footer.php'); ?>
+<?php require_once(APPLICATION_PATH . '/footer.php'); ?>

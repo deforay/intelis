@@ -1,6 +1,6 @@
 <?php
 //get data from remote db send to lab db
-include(dirname(__FILE__) . "/../../startup.php");
+require_once(dirname(__FILE__) . "/../../startup.php");
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 

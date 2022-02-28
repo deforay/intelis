@@ -1,7 +1,7 @@
 <?php
 $title = _("Enter Covid-19 Result");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
@@ -375,5 +375,5 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

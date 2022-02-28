@@ -2,7 +2,7 @@
 ob_start();
 $title = _("COVID-19 | Add New Request");
 #require_once('../../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 ?>
 <style>
@@ -326,4 +326,4 @@ if (file_exists($fileArray[$arr['vl_form']])) {
 </script>
 <?php
 
-include_once(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');

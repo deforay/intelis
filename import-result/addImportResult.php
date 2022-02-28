@@ -5,7 +5,7 @@ $type = base64_decode($_GET['t']);
 $db = MysqliDb::getInstance();
 $title = _("Import ") . strtoupper($type) . _(" Test Results From File");
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 $query = "SELECT config_id,machine_name,import_machine_file_name FROM import_config WHERE status='active'";
@@ -191,5 +191,5 @@ $lastResult = $db->rawQueryOne($lastQuery);
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

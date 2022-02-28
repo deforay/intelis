@@ -56,7 +56,7 @@ if (!empty($facilityMap)) {
 }
 
 if (isset($_POST['testingLab']) && $_POST['testingLab'] != "") {
-	$query .= " AND lab_id IN(" . $_POST['testingLab'] . ")";
+	$query .= " AND (lab_id IN(" . $_POST['testingLab'] . ") OR (lab_id like '' OR lab_id is null OR lab_id = 0))";
 }
 
 if (isset($_POST['facility']) && $_POST['facility'] != "") {

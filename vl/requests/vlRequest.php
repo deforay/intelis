@@ -1,7 +1,7 @@
 <?php
 $title = _("View All Requests");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 
 $general = new \Vlsm\Models\General();
@@ -716,5 +716,5 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	<?php } ?>
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

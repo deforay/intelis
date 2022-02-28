@@ -1,7 +1,7 @@
 <?php
 ob_start();
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 $sampleQuery = "SELECT * from r_covid19_sample_type where sample_id=$id";
 $sampleInfo = $db->query($sampleQuery);
@@ -109,5 +109,5 @@ $sampleInfo = $db->query($sampleQuery);
 </script>
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

@@ -1,7 +1,7 @@
 <?php
 $title = _("Users");
 #require_once('../startup.php'); 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 ?>
 
 <!-- Content Wrapper. Contains page content -->
@@ -137,5 +137,5 @@ include_once(APPLICATION_PATH . '/header.php');
   });
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

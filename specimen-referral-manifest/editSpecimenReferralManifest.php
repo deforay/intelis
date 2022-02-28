@@ -2,7 +2,7 @@
 ob_start();
 $title = "Edit Specimen Referral Manifest";
 #require_once('../startup.php'); 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
@@ -356,5 +356,5 @@ $global = $general->getGlobalConfig();
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

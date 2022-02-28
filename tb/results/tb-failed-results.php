@@ -2,7 +2,7 @@
 $title = _("TB | View All Requests");
 
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
@@ -456,5 +456,5 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

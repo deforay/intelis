@@ -813,5 +813,5 @@ $disable = "disabled = 'disabled'";
 	}
 </script>
 <?php
-//include(APPLICATION_PATH.'/footer.php');
+//require_once(APPLICATION_PATH.'/footer.php');
 ?>

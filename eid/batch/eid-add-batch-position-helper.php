@@ -1,7 +1,7 @@
 <?php
 ob_start();
   
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $tableName = "batch_details";
 try {

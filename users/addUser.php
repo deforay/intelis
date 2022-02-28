@@ -1,7 +1,7 @@
 <?php
 ob_start();
 #require_once('../startup.php'); 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $query = "SELECT * FROM roles where status='active' GROUP BY role_code";
 $result = $db->rawQuery($query);
 
@@ -451,5 +451,5 @@ $ftResult = $db->rawQuery($fQuery);
      }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

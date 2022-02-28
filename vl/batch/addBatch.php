@@ -2,7 +2,7 @@
 ob_start();
 $title = _("VL | Add New Batch");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 
 $general = new \Vlsm\Models\General();
@@ -452,5 +452,5 @@ foreach ($testPlatformResult as $machine) {
 	});
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

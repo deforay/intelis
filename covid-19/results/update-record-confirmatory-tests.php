@@ -2,7 +2,7 @@
 ob_start();
 $title = "Enter Covid-19 Result";
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $id = base64_decode($_GET['id']);
 
@@ -233,5 +233,5 @@ if ($arr['vl_form'] == 1) {
 
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

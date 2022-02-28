@@ -1,7 +1,7 @@
 <?php
 $title = _("Print TB Results");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='tb' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
@@ -755,4 +755,4 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
     }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');

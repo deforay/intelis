@@ -1,7 +1,7 @@
 <?php
 $title = _("Export Data");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 
 $general = new \Vlsm\Models\General();
@@ -479,5 +479,5 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

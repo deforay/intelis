@@ -2,7 +2,7 @@
 ob_start();
 $title = "Enter Hepatitis Result";
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 
 
@@ -295,5 +295,5 @@ require_once($fileArray[$arr['vl_form']]);
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

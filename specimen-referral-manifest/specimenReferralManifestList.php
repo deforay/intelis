@@ -1,7 +1,7 @@
 <?php
 $title = "Specimen Referral Manifest";
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 ?>
 <style>
   .center {
@@ -206,4 +206,4 @@ include_once(APPLICATION_PATH . '/header.php');
   count_elem.parentNode.insertBefore(div, count_elem);
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');

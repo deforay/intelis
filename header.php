@@ -12,6 +12,7 @@ if (!isset($_SESSION['userId'])) {
 $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
 
+
 $syncLatestTime = $general->getLatestSynDateTime();
 /* Crosss Login Block Start */
 $crossLoginQuery = "SELECT `login_id`,`password`,`user_name` FROM `user_details` WHERE user_id = ?";
@@ -601,7 +602,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset($_SESSION['privileges']) && in_array("move-samples.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') && in_array("move-samples.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview facility-config-menu">
 										<a href="/move-samples/move-samples.php"><i class="fa fa-hospital-o"></i> <?php echo _("Move Samples"); ?></a>
 									</li>

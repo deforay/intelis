@@ -2,7 +2,7 @@
 ob_start();
 $title = "Enter VL Result";
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 
 
@@ -252,7 +252,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 8) {
 	include('forms/update-angola-result.php');
 }
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>
 <script>
 	$(document).ready(function() {

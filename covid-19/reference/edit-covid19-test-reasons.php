@@ -1,7 +1,7 @@
 <?php
 ob_start();
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $rejQuery = "SELECT * from r_covid19_test_reasons WHERE test_reason_status ='active'";
 $rejInfo = $db->query($rejQuery);
 $id = base64_decode($_GET['id']);
@@ -128,5 +128,5 @@ $tstInfo = $db->query($tstQuery);
 </script>
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

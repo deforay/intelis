@@ -1,7 +1,7 @@
 <?php
 $title = _("Print EID Results");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 
 $general = new \Vlsm\Models\General();
@@ -771,4 +771,4 @@ $batResult = $db->rawQuery($batQuery);
     }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
