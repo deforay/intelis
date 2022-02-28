@@ -132,7 +132,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         <?php } ?>
                                         <th style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
-                                        <td style="">
+                                        <td>
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
                                         </td>
 
