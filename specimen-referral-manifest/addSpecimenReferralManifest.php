@@ -24,6 +24,9 @@ if ($module == 'covid19') {
 	$shortCode = 'C19';
 } else if ($module == 'hepatitis') {
 	$shortCode = 'HEP';
+} else if ($module == 'vl') {
+	$vlDb = new \Vlsm\Models\Vl($db);
+	$sampleTypes = $vlDb->getVlSampleTypes();
 } else {
 	$shortCode = $module;
 }
@@ -131,6 +134,27 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 							</div>
 						</div>
 						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7" style="margin-left:3%;">
+										<select type="text" class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
+											<?= $general->generateSelectOptions($sampleTypes, null, '-- Select --'); ?>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="daterange" class="col-lg-4 control-label"><?php echo _("Sample Collection Date Range"); ?></label>
+									<div class="col-lg-7" style="margin-left:3%;">
+										<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
 							<div class="col-md-12 text-center">
 								<div class="form-group">
 									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSampleCodeDetails();return false;">Search </a>
@@ -171,6 +195,8 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 </section>
 <!-- /.content -->
 </div>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
 <script type="text/javascript">
@@ -188,6 +214,28 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 	}
 
 	$(document).ready(function() {
+		$('#daterange').daterangepicker({
+				locale: {
+					cancelLabel: 'Clear'
+				},
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
+				startDate: moment().subtract(29, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+				}
+			},
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -299,6 +347,8 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 					module: $("#module").val(),
 					testingLab: $('#testingLab').val(),
 					facility: $('#facility').val(),
+					daterange: $('#daterange').val(),
+					sampleType: $('#sampleType').val(),
 					operator: $('#operator').val()
 				},
 				function(data) {
