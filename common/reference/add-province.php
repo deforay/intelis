@@ -2,7 +2,7 @@
 ob_start();
 $title = "Province";
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -99,5 +99,5 @@ include_once(APPLICATION_PATH . '/header.php');
 </script>
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

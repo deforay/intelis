@@ -112,6 +112,15 @@ foreach ($trackedEntityInstances as $tracker) {
     }
 
     foreach ($eventsData as $uniqueID => $singleEventData) {
+
+
+        $db->where('unique_id', $uniqueID);
+        $c19Result = $db->getOne("form_covid19");
+
+        if (!empty($c19Result)) {
+            continue;
+        }
+
         $formData = array_merge($singleEventData, $attributesData);
         $formData['source_of_request'] = 'dhis2';
         $formData['source_data_dump'] = json_encode($tracker);
@@ -211,7 +220,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         // all the columns at this point will be in update columns list
         // the columns below this are only for inserting
-        $updateColumns = array_keys($formData);
+        //$updateColumns = array_keys($formData);
 
 
 
@@ -247,7 +256,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['vlsm_country_id'] = 1; // South Sudan
 
 
-        $db->onDuplicate($updateColumns, 'unique_id');
+        //$db->onDuplicate($updateColumns, 'unique_id');
         $id = $db->insert("form_covid19", $formData);
         if ($id != false) {
             $processedCounter++;

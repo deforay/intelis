@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
   
 
-include_once(APPLICATION_PATH . '/includes/mail/PHPMailerAutoload.php');
+require_once(APPLICATION_PATH . '/includes/mail/PHPMailerAutoload.php');
 
 $general = new \Vlsm\Models\General();
 $tableName = "form_hepatitis";

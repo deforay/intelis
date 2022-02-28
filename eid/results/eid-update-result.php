@@ -2,7 +2,7 @@
 ob_start();
 $title = "Enter EID Result";
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $id = base64_decode($_GET['id']);
 
@@ -229,4 +229,4 @@ require_once($fileArray[$arr['vl_form']]);
 
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');

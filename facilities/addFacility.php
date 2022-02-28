@@ -1,7 +1,7 @@
 <?php
 ob_start();
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $geolocation = new \Vlsm\Models\GeoLocations();
 
@@ -711,5 +711,5 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 </script>
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

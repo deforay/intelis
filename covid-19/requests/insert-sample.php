@@ -32,8 +32,7 @@ try {
     }
 
 
-    $sampleJson = $covid19Model->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
-    $sampleData = json_decode($sampleJson, true);
+    
     $sampleDate = explode(" ", $_POST['sampleCollectionDate']);
 
     $_POST['sampleCollectionDate'] = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
@@ -51,6 +50,9 @@ try {
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => $general->getDateTime()
     );
+
+    $sampleJson = $covid19Model->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
+    $sampleData = json_decode($sampleJson, true);
 
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
         $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
@@ -83,14 +85,16 @@ try {
     } else {
         $generateAutomatedPatientCode = false;
     }
-
-    $patientCode = $_POST['patientId'];
+    
     //saving this patient into patients table
-    if (!empty($patientCodeArray['patientCodeKey'])) {
+    if ($generateAutomatedPatientCode && !empty($patientCodeArray['patientCodeKey'])) {
         $patientData['patientCodePrefix'] = $patientCodePrefix;
         $patientData['patientCodeKey'] = $patientCodeArray['patientCodeKey'];
         $patientCode = $patientCodeArray['patientCode'];
+    }else{
+        $patientCode = $_POST['patientId'];
     }
+    
     $patientData['patientId'] = $patientCode;
     $patientData['patientFirstName'] = $_POST['firstName'];
     $patientData['patientLastName'] = $_POST['lastName'];

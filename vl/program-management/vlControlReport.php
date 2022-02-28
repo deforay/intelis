@@ -1,7 +1,7 @@
 <?php
 $title = _("VL Control Report");
  
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $sQuery = "SELECT * FROM r_sample_controls where r_sample_control_name!='s'";
 $sResult = $db->rawQuery($sQuery);
 ?>
@@ -123,5 +123,5 @@ $sResult = $db->rawQuery($sQuery);
   }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

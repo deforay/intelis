@@ -334,7 +334,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $data['hl7'] = "yes";
     $_POST = $data;
     $id = 0;
-    // include_once(APPLICATION_PATH . '/eid/requests/insert-sample.php');
+    
 
     $provinceCode = (isset($_POST['provinceCode']) && !empty($_POST['provinceCode'])) ? $_POST['provinceCode'] : null;
     $provinceId = (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] : null;

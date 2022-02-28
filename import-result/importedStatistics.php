@@ -26,13 +26,13 @@ $module = $tResult['module'];
 $general = new \Vlsm\Models\General();
 
 if ($module == 'vl') {
-  include_once(APPLICATION_PATH . '/import-result/import-stats-vl.php');
+  require_once(APPLICATION_PATH . '/import-result/import-stats-vl.php');
 } else if ($module == 'eid') {
-  include_once(APPLICATION_PATH . '/import-result/import-stats-eid.php');
+  require_once(APPLICATION_PATH . '/import-result/import-stats-eid.php');
 } else if ($module == 'covid19') {
-  include_once(APPLICATION_PATH . '/import-result/import-stats-covid-19.php');
+  require_once(APPLICATION_PATH . '/import-result/import-stats-covid-19.php');
 } else if ($module == 'hepatitis') {
-  include_once(APPLICATION_PATH . '/import-result/import-stats-hepatitis.php');
+  require_once(APPLICATION_PATH . '/import-result/import-stats-hepatitis.php');
 }
 
 

@@ -1,7 +1,7 @@
 <?php
 ob_start();
  
-include_once(APPLICATION_PATH.'/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $id=base64_decode($_GET['id']);
 if(!isset($id) || trim($id)== ''){
@@ -255,5 +255,5 @@ if(isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_orde
    }
 </script>
 <?php
- include(APPLICATION_PATH.'/footer.php');
+ require_once(APPLICATION_PATH.'/footer.php');
  ?>

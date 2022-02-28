@@ -2,7 +2,7 @@
 ob_start();
 $title = "VL Test Reasons";
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $testQuery = "SELECT * from r_vl_test_reasons WHERE parent_reason ='0'";
 $testInfo = $db->query($testQuery);
 foreach ($testInfo as $test) {
@@ -124,5 +124,5 @@ foreach ($testInfo as $test) {
 </script>
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

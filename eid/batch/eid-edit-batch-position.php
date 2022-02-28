@@ -4,7 +4,7 @@ ob_start();
 $title = "Edit Batch Position";
 
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
@@ -175,5 +175,5 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

@@ -3,9 +3,9 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
    session_start();
 }
-  
 
-include_once(APPLICATION_PATH . '/includes/mail/PHPMailerAutoload.php');
+
+require_once(APPLICATION_PATH . '/includes/mail/PHPMailerAutoload.php');
 
 $general = new \Vlsm\Models\General();
 $tableName = "form_covid19";

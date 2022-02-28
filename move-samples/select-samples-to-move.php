@@ -2,7 +2,7 @@
 ob_start();
 $title = "Add Sample List";
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 
@@ -420,5 +420,5 @@ foreach ($fResult as $fDetails) {
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

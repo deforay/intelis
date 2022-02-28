@@ -3,8 +3,8 @@ ob_start();
 
 
 $title = "Add New Specimen Referral Manifest";
-#include_once '../startup.php';
-include_once APPLICATION_PATH . '/header.php';
+
+require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
@@ -320,5 +320,5 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

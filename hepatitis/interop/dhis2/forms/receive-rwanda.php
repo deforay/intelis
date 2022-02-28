@@ -116,6 +116,14 @@ foreach ($trackedEntityInstances as $tracker) {
     }
 
     foreach ($eventsData as $uniqueID => $singleEventData) {
+
+        $db->where('unique_id', $uniqueID);
+        $hepResult = $db->getOne("form_hepatitis");
+
+        if (!empty($hepResult)) {
+            continue;
+        }
+
         $formData = array_merge($singleEventData, $attributesData);
         $formData['source_of_request'] = 'dhis2';
         $formData['source_data_dump'] = json_encode($tracker);
@@ -268,10 +276,11 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['vlsm_country_id'] = 7; // RWANDA
         $formData['last_modified_datetime'] = $general->getDateTime();
         //echo "<pre>";var_dump($formData);echo "</pre>";
-        $updateColumns = array_keys($formData);
-        $db->onDuplicate($updateColumns, 'unique_id');
+        //$updateColumns = array_keys($formData);
+        //$db->onDuplicate($updateColumns, 'unique_id');
+
         $id = $db->insert("form_hepatitis", $formData);
-        echo ($db->getLastError() . PHP_EOL);
+        error_log("Error in Receive Rwanda DHIS2 Script : " . $db->getLastError() . PHP_EOL);
         if ($id != false) {
             $processedCounter++;
         }

@@ -2,7 +2,7 @@
 ob_start();
 $title = "Implementation Partners";
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $id = base64_decode($_GET['id']);
 if (!isset($id) || $id == "") {
@@ -112,5 +112,5 @@ $partnerInfo = $db->query($query);
 </script>
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

@@ -1,7 +1,7 @@
 <?php
 ob_start();
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 $comorbidityQuery = "SELECT * from r_covid19_comorbidities where comorbidity_id=$id";
 $comorbidityInfo = $db->query($comorbidityQuery);
@@ -109,5 +109,5 @@ $comorbidityInfo = $db->query($comorbidityQuery);
 </script>
 
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

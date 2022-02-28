@@ -1,7 +1,7 @@
 <?php
 $title = _("Export Data");
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 
 $general = new \Vlsm\Models\General();
@@ -513,5 +513,5 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 	}
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

@@ -3,13 +3,13 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#include_once '../startup.php';
+
 
 
 
 $general = new \Vlsm\Models\General();
 //#require_once('../startup.php'); 
-// include_once(APPLICATION_PATH . '/header.php');
+// require_once(APPLICATION_PATH . '/header.php');
 $tableName = "user_details";
 $tableName2 = "vl_user_facility_map";
 try {

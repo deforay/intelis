@@ -2,7 +2,7 @@
 ob_start();
 $title = _("Edit Global Configuration");
 #require_once('../startup.php');
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 
 $instanceQuery = "SELECT * from s_vlsm_instance where vlsm_instance_id='" . $_SESSION['instanceId'] . "'";
@@ -1517,4 +1517,4 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 		$("#" + id2).attr("disabled", false).addClass('isRequired');
 	}
 </script>
-<?php include(APPLICATION_PATH . '/footer.php'); ?>
+<?php require_once(APPLICATION_PATH . '/footer.php'); ?>

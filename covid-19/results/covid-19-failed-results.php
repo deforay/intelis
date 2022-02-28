@@ -2,7 +2,7 @@
 $title = _("Covid19 | View All Requests");
 
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
@@ -385,5 +385,5 @@ $batResult = $db->rawQuery($batQuery);
     }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

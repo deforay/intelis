@@ -1,7 +1,7 @@
 <?php
 ob_start();
 #require_once('../startup.php'); 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $id = base64_decode($_GET['id']);
 $vlfmQuery = "SELECT vlfm.*,fd.facility_name FROM vl_facility_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.facility_id where vl_lab_id=" . $id;
@@ -140,5 +140,5 @@ $hcResult = $db->rawQuery($hcQuery);
   }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

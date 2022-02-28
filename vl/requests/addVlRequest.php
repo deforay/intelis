@@ -2,7 +2,7 @@
 ob_start();
 $title = "VL | Add New Request";
 
-include_once APPLICATION_PATH . '/header.php';
+require_once(APPLICATION_PATH . '/header.php');
 
 $labFieldDisabled = '';
 

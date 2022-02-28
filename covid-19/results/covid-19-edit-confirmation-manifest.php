@@ -2,7 +2,7 @@
 ob_start();
 $title = "Covid-19 | Add Batch";
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
 $configResult = $db->query($configQuery);
@@ -240,5 +240,5 @@ $result = $db->rawQuery($query);
     }   
   </script>
  <?php
- include(APPLICATION_PATH.'/footer.php');
+ require_once(APPLICATION_PATH.'/footer.php');
  ?>

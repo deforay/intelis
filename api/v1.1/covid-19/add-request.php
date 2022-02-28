@@ -77,7 +77,6 @@ try {
         }
 
         $data['api'] = "yes";
-        // include_once(APPLICATION_PATH . '/covid-19/requests/insert-sample.php');
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
         $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
@@ -151,7 +150,6 @@ try {
             $id = $db->insert("form_covid19", $covid19Data);
             $data['covid19SampleId'] = $id;
         }
-        // include_once(APPLICATION_PATH . '/covid-19/requests/covid-19-add-request-helper.php');
         $tableName = "form_covid19";
         $tableName1 = "activity_log";
         $testTableName = 'covid19_tests';

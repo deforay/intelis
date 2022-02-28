@@ -2,7 +2,7 @@
 ob_start();
 $title = "Covid-19 | Add Batch";
 
-include_once(APPLICATION_PATH . '/header.php');
+require_once(APPLICATION_PATH . '/header.php');
 
 
 $module = 'C19';
@@ -243,5 +243,5 @@ $packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString
   }
 </script>
 <?php
-include(APPLICATION_PATH . '/footer.php');
+require_once(APPLICATION_PATH . '/footer.php');
 ?>

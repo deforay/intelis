@@ -14,7 +14,7 @@ $decryption = openssl_decrypt(
 );
 $data = explode('&&&', urldecode($decryption));
 /* if ($data[1] != "qr")
-    include_once(APPLICATION_PATH . '/header.php'); */
+    require_once(APPLICATION_PATH . '/header.php'); */
 $uniqueId = $data[0];
 $db = MysqliDb::getInstance();
 $db->where("unique_id", $uniqueId);
