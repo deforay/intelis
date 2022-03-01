@@ -48,7 +48,7 @@ if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 		$endDate = $general->dateFormat(trim($dateRange[1]));
 	}
 
-	$query .= " AND DATE(vl.sample_collection_date) <= '" . $startDate . "' AND DATE(vl.sample_collection_date) >= '" . $endDate . "'";
+	$query .= " AND DATE(vl.sample_collection_date) >= '" . $startDate . "' AND DATE(vl.sample_collection_date) <= '" . $endDate . "'";
 }
 
 if (!empty($facilityMap)) {
@@ -69,6 +69,8 @@ if (isset($_POST['operator']) && $_POST['operator'] != "") {
 
 if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module == 'vl') {
 	$query .= " AND (sample_type IN(" . $_POST['sampleType'] . ")  OR (sample_type like '' OR sample_type is null OR sample_type = 0))";
+} else if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module != 'vl') {
+	$query .= " AND (specimen_type IN(" . $_POST['sampleType'] . ")  OR (specimen_type like '' OR specimen_type is null OR specimen_type = 0))";
 }
 
 $query .= " ORDER BY vl.request_created_datetime ASC";
