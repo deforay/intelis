@@ -281,7 +281,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 			afterSelect: function() {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
 					$("#batchSubmit").attr("disabled", false);
 					$("#batchSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
@@ -303,7 +303,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 					$("#batchSubmit").attr("disabled", true);
 					$("#batchSubmit").css("pointer-events", "none");
 				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
 					$("#batchSubmit").attr("disabled", false);
 					$("#batchSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {

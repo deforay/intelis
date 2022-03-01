@@ -78,11 +78,11 @@ $db = new MysqliDb(array(
 ));
 
 // Locale
-//if (empty($_SESSION['APP_LOCALE'])) {
+if (empty($_SESSION['APP_LOCALE'])) {
     $general = new \Vlsm\Models\General();
-    $_SESSION['APP_LOCALE'] = $systemConfig['locale'];  //$general->getGlobalConfig('app_locale');
+    $_SESSION['APP_LOCALE'] = $general->getGlobalConfig('app_locale');
     $_SESSION['APP_LOCALE'] = !empty($_SESSION['APP_LOCALE']) ? $_SESSION['APP_LOCALE'] : 'en_US';
-//}
+}
 
 putenv('LC_ALL=' . $_SESSION['APP_LOCALE']);
 putenv('LANGUAGE=' . $_SESSION['APP_LOCALE']);

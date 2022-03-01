@@ -141,7 +141,7 @@ $result = $db->rawQuery($query);
 			afterSelect: function() {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
 					$("#packageSubmit").attr("disabled", false);
 					$("#packageSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
@@ -161,7 +161,7 @@ $result = $db->rawQuery($query);
 					$("#packageSubmit").attr("disabled", true);
 					$("#packageSubmit").css("pointer-events", "none");
 				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected Maximum no. of sample " + this.qs2.cache().matchedResultsCount);
+					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
 					$("#packageSubmit").attr("disabled", false);
 					$("#packageSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
