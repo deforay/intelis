@@ -20,13 +20,21 @@ foreach ($users as $u) {
 }
 $facilities = $facilitiesDb->getHealthFacilities($module);
 
-if ($module == 'covid19') {
-	$shortCode = 'C19';
-} else if ($module == 'hepatitis') {
-	$shortCode = 'HEP';
-} else if ($module == 'vl') {
+if ($module == 'vl') {
 	$vlDb = new \Vlsm\Models\Vl($db);
 	$sampleTypes = $vlDb->getVlSampleTypes();
+} else if ($module == 'eid') {
+	$eidDb = new \Vlsm\Models\Eid($db);
+	$sampleTypes = $eidDb->getEidSampleTypes();
+} else if ($module == 'covid19') {
+	$shortCode = 'C19';
+	$covid19Db = new \Vlsm\Models\Covid19($db);
+	$sampleTypes = $covid19Db->getCovid19SampleTypes();
+} else if ($module == 'hepatitis') {
+	$shortCode = 'HEP';
+} else if ($module == 'tb') {
+	$tbDb = new \Vlsm\Models\Tb($db);
+	$sampleTypes = $tbDb->getTbSampleTypes();
 } else {
 	$shortCode = $module;
 }
