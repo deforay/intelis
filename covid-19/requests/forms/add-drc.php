@@ -1430,7 +1430,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         });
 
         $("#patientDistrict").select2({
-            placeholder: "Entrez le district du patient",
+            placeholder: "Entrez le commune du patient",
             minimumInputLength: 0,
             width: '100%',
             allowClear: true,
