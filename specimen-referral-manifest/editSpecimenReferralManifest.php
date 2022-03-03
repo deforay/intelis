@@ -166,7 +166,7 @@ $global = $general->getGlobalConfig();
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="operator" class="col-lg-4 control-label"><?php echo _("Operator/Technician"); ?> <span class="mandatory">*</span></label>
+									<label for="operator" class="col-lg-4 control-label"><?php echo _("Operator/Technician"); ?></label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select type="text" class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
 											<?= $general->generateSelectOptions($usersList, $pResult[0]['added_by'], '-- Select --'); ?>
@@ -188,7 +188,7 @@ $global = $general->getGlobalConfig();
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?> <span class="mandatory">*</span></label>
+									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?></label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select type="text" class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
 											<?= $general->generateSelectOptions($sampleTypes, null, '-- Select --'); ?>

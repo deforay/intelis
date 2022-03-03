@@ -55,26 +55,26 @@ if (!empty($facilityMap)) {
 	$query .= " AND facility_id IN(" . $facilityMap . ")";
 }
 
-if (isset($_POST['testingLab']) && $_POST['testingLab'] != "") {
+if (isset($_POST['testingLab']) && !empty($_POST['testingLab'])) {
 	$query .= " AND (lab_id IN(" . $_POST['testingLab'] . ") OR (lab_id like '' OR lab_id is null OR lab_id = 0))";
 }
 
-if (isset($_POST['facility']) && $_POST['facility'] != "") {
+if (isset($_POST['facility']) && !empty($_POST['facility'])) {
 	$query .= " AND (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
 }
 
-if (isset($_POST['operator']) && $_POST['operator'] != "") {
+if (isset($_POST['operator']) && !empty($_POST['operator'])) {
 	$query .= " AND (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
 }
 
-if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module == 'vl') {
+if (isset($_POST['sampleType']) && !empty($_POST['sampleType']) && $module == 'vl') {
 	$query .= " AND (sample_type IN(" . $_POST['sampleType'] . ")  OR (sample_type like '' OR sample_type is null OR sample_type = 0))";
 } else if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module != 'vl') {
 	$query .= " AND (specimen_type IN(" . $_POST['sampleType'] . ")  OR (specimen_type like '' OR specimen_type is null OR specimen_type = 0))";
 }
 
 $query .= " ORDER BY vl.request_created_datetime ASC";
-// echo $query;die;
+//error_log($query);
 $result = $db->rawQuery($query);
 
 ?>

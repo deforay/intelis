@@ -234,7 +234,9 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
                                     <tr>
                                         <th>Commune</th>
-                                        <td><input class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Commune" title="Commune" style="width:100%;"></td>
+                                        <td>
+                                            <input class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Commune" title="Commune" style="width:100%;">
+                                        </td>
                                         <th>Pays de résidence</th>
                                         <td>
                                             <select class="form-control select2" id="patientNationality" name="patientNationality" title="Commune">
