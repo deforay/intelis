@@ -61,7 +61,13 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
 $geolocation = new \Vlsm\Models\GeoLocations();
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
-
+$cQuery = "SELECT DISTINCT patient_district FROM form_covid19";
+$cResult = $db->rawQuery($cQuery);
+$pateitnDistrict = array();
+foreach ($cResult as $row) {
+    $pateitnDistrict[$row['patient_district']] = $row['patient_district'];
+}
+$pateitnDistrict["other"] = "Other";
 $generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
 if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
     $patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
@@ -234,8 +240,10 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
                                     <tr>
                                         <th>Commune</th>
-                                        <td>
-                                            <input class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Commune" title="Commune" style="width:100%;">
+                                        <td><select class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Commune" style="width:100%;">
+                                                <option value="">-- Sélectionner --</option>
+                                                <?= $general->generateSelectOptions($pateitnDistrict, null, '-- Sélectionner --'); ?>
+                                            </select>
                                         </td>
                                         <th>Pays de résidence</th>
                                         <td>
@@ -1403,6 +1411,54 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                     });
             }
             $.unblockUI();
+        });
+
+        $("#patientProvince").change(function() {
+            $.blockUI();
+            var pName = $(this).val();
+            if ($.trim(pName) != '') {
+                $.post("/covid-19/requests/get-district-list.php", {
+                        pName: pName,
+                    },
+                    function(data) {
+                        if (data != "") {
+                            $("#patientDistrict").html(data);
+                        }
+                    });
+            }
+            $.unblockUI();
+        });
+
+        $("#patientDistrict").select2({
+            placeholder: "Entrez le district du patient",
+            minimumInputLength: 0,
+            width: '100%',
+            allowClear: true,
+            ajax: {
+                placeholder: "Tapez le nom du district à rechercher",
+                url: "/covid-19/requests/get-district-list.php",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.result,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                },
+                //cache: true
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
         });
     });
 
