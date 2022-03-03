@@ -1413,6 +1413,39 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             $.unblockUI();
         });
 
+        $("#patientProvince").select2({
+            placeholder: "Entrez le province du patient",
+            minimumInputLength: 0,
+            width: '100%',
+            allowClear: true,
+            ajax: {
+                placeholder: "Tapez le nom du province à rechercher",
+                url: "/covid-19/requests/get-province-district-list.php",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        type: 'province',
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.result,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                },
+                //cache: true
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+
         $("#patientProvince").change(function() {
             $.blockUI();
             var pName = $(this).val();
@@ -1436,11 +1469,12 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             allowClear: true,
             ajax: {
                 placeholder: "Tapez le nom du district à rechercher",
-                url: "/covid-19/requests/get-district-list.php",
+                url: "/covid-19/requests/get-province-district-list.php",
                 dataType: 'json',
                 delay: 250,
                 data: function(params) {
                     return {
+                        type: 'district',
                         q: params.term, // search term
                         page: params.page
                     };
