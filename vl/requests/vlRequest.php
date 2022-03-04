@@ -24,6 +24,13 @@ $sResult = $db->rawQuery($sQuery);
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'vl' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
+// Src of alert req
+$srcQuery = "SELECT DISTINCT source_of_request from vl_request_form where source_of_request is not null AND source_of_request not like ''";
+$srcResults = $db->rawQuery($srcQuery);
+$srcOfReqList = array();
+foreach ($srcResults as $list) {
+	$srcOfReqList[$list['source_of_request']] = ucwords($list['source_of_request']);
+}
 ?>
 <style>
 	.select2-selection__choice {
@@ -171,6 +178,12 @@ $batResult = $db->rawQuery($batQuery);
 									<option value=""><?php echo _("All"); ?></option>
 									<option value="result"><?php echo _("Sample With Result"); ?></option>
 									<option value="noresult"><?php echo _("Sample Without Result"); ?></option>
+								</select>
+							</td>
+							<td><b><?php echo _("Source of Request"); ?> :</b></td>
+							<td>
+								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
+									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
 						</tr>
@@ -559,6 +572,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "reqSampleType",
 					"value": $("#requestSampleType").val()
+				});
+				aoData.push({
+					"name": "srcOfReq",
+					"value": $("#srcOfReq").val()
 				});
 				$.ajax({
 					"dataType": 'json',

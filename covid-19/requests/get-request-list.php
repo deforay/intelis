@@ -196,6 +196,10 @@ if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
 if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
      $sWhere[] = ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
 }
+
+if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
+     $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
+}
 $whereResult = '';
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
      $whereResult = 'vl.result != "" AND ';
