@@ -1435,7 +1435,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             width: '100%',
             allowClear: true,
             ajax: {
-                placeholder: "Tapez le nom du district à rechercher",
+                placeholder: "Tapez le nom du commune à rechercher",
                 url: "/covid-19/requests/get-district-list.php",
                 dataType: 'json',
                 delay: 250,

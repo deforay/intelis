@@ -161,7 +161,7 @@ if (!empty($_POST['labName'])) {
 
 $tatSampleQuery .= " " . $sWhere;
 $tatSampleQuery .= " GROUP BY monthDate";
-$tatSampleQuery .= " HAVING daydiff < 120";
+//$tatSampleQuery .= " HAVING daydiff < 120";
 $tatSampleQuery .= " ORDER BY sample_tested_datetime";
 
 
