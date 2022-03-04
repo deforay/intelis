@@ -15,7 +15,8 @@ try {
     $input = json_decode(file_get_contents("php://input"), true);
 
     /* For API Tracking params */
-    $requestUrl = $_SERVER['REQUEST_URI'];
+    $requestUrl .= $_SERVER['HTTP_HOST'];
+    $requestUrl .= $_SERVER['REQUEST_URI'];
     $params = file_get_contents("php://input");
 
     $auth = $general->getHeader('Authorization');
@@ -63,7 +64,7 @@ try {
         }
 
         $data['api'] = "yes";
-        
+
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
         $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;

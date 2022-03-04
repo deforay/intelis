@@ -17,10 +17,10 @@ $general = new \Vlsm\Models\General();
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("Audit Trail"); ?></h1>
+		<h1><i class="fa fa-edit"></i> <?php echo _("API Sync History"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Audit Trail"); ?></li>
+			<li class="active"><?php echo _("API Sync History"); ?></li>
 		</ol>
 	</section>
 
@@ -34,10 +34,11 @@ $general = new \Vlsm\Models\General();
 						<table id="vlRequestDataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th><?php echo _("Audit Log"); ?></th>
-									<th><?php echo _("Type of Action"); ?></th>
-									<th><?php echo _("IP Address"); ?></th>
-									<th><?php echo _("Recorded On"); ?></th>
+									<th><?php echo _("Number of Records Synced"); ?></th>
+									<th><?php echo _("Sync Type"); ?></th>
+									<th><?php echo _("Test Type"); ?></th>
+									<th><?php echo _("Url"); ?></th>
+									<th><?php echo _("Synced On"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -59,13 +60,8 @@ $general = new \Vlsm\Models\General();
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
-	var startDate = "";
-	var endDate = "";
-	var selectedTests = [];
-	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
-		
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
 				locale: {
@@ -93,28 +89,7 @@ $general = new \Vlsm\Models\General();
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#dateRange').val("");
-
-		$(".showhideCheckBox").change(function() {
-			if ($(this).attr('checked')) {
-				idpart = $(this).attr('data-showhide');
-				$("#" + idpart + "-sort").show();
-			} else {
-				idpart = $(this).attr('data-showhide');
-				$("#" + idpart + "-sort").hide();
-			}
-		});
-
-		$("#showhide").hover(function() {}, function() {
-			$(this).fadeOut('slow')
-		});
-
 	});
-
-	function fnShowHide(iCol) {
-		var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
-		oTable.fnSetColumnVis(iCol, bVis ? false : true);
-	}
 
 	function loadVlRequestData() {
 		$.blockUI();
@@ -136,11 +111,13 @@ $general = new \Vlsm\Models\General();
 				"sClass": "center"
 			}, {
 				"sClass": "center"
+			}, {
+				"sClass": "center"
 			}],
-			"aaSorting": [3, "desc"],
+			"aaSorting": [4, "desc"],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/admin/audit-trail/get-audit-trail-list.php",
+			"sAjaxSource": "/admin/monitoring/get-api-sync-history-list.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "dateRange",
@@ -156,91 +133,6 @@ $general = new \Vlsm\Models\General();
 			}
 		});
 		$.unblockUI();
-	}
-
-	function searchVlRequestData() {
-		$.blockUI();
-		oTable.fnDraw();
-		$.unblockUI();
-	}
-
-	function loadVlRequestStateDistrict() {
-		oTable.fnDraw();
-	}
-
-	function toggleAllVisible() {
-		//alert(tabStatus);
-		$(".checkTests").each(function() {
-			$(this).prop('checked', false);
-			selectedTests.splice($.inArray(this.value, selectedTests), 1);
-			selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
-			$("#status").prop('disabled', true);
-		});
-		if ($("#checkTestsData").is(':checked')) {
-			$(".checkTests").each(function() {
-				$(this).prop('checked', true);
-				selectedTests.push(this.value);
-				selectedTestsId.push(this.id);
-			});
-			$("#status").prop('disabled', false);
-		} else {
-			$(".checkTests").each(function() {
-				$(this).prop('checked', false);
-				selectedTests.splice($.inArray(this.value, selectedTests), 1);
-				selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
-				$("#status").prop('disabled', true);
-			});
-		}
-		$("#checkedTests").val(selectedTests.join());
-	}
-
-
-	function hideAdvanceSearch(hideId, showId) {
-		$("#" + hideId).hide();
-		$("#" + showId).show();
-	}
-
-	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
-		var remoteUrl = '<?php echo $systemConfig['remoteURL']; ?>';
-
-		function forceResultSync(sampleCode) {
-			$.blockUI({
-				message: "<h3><?php echo _("Trying to sync"); ?> " + sampleCode + "<br><?php echo _("Please wait"); ?>...</h3>"
-			});
-
-			if (remoteSync && remoteUrl != null && remoteUrl != '') {
-				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/syncResults.php?sampleCode=" + sampleCode + "&forceSyncModule=covid19",
-					})
-					.done(function(data) {
-						//console.log(data);
-						//alert( "success" );
-					})
-					.fail(function() {
-						$.unblockUI();
-					})
-					.always(function() {
-						oTable.fnDraw();
-						$.unblockUI();
-					});
-			}
-		}
-	<?php } ?>
-
-	function exportAllPendingVlRequest() {
-		$.blockUI();
-		var requestSampleType = $('#requestSampleType').val();
-		$.post("generate-pending-covid19-request-excel.php", {
-				reqSampleType: requestSampleType
-			},
-			function(data) {
-				$.unblockUI();
-				if (data === "" || data === null || data === undefined) {
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
-				} else {
-					location.href = '/temporary/' + data;
-				}
-			});
 	}
 </script>
 <?php

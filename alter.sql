@@ -2951,3 +2951,6 @@ UPDATE `system_config` SET `value` = '4.4.8' WHERE `system_config`.`name` = 'sc_
 
 -- Thana 28-Feb-2022
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'vl-requests', 'export-vl-requests.php', 'Export VL Requests'), (NULL, 'eid-requests', 'export-eid-requests.php', 'Export EID Requests'), (NULL, 'covid-19-requests', 'export-covid19-requests.php', 'Export Covid-19 Requests '), (NULL, 'hepatitis-requests', 'export-hepatitis-requests.php', 'Export Hepatitis Requests'), (NULL, 'tb-requests', 'export-tb-requests.php', 'Export TB Requests');
+
+-- Thana 04-Mar-2022
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'api-sync-history.php', 'API Sync History');

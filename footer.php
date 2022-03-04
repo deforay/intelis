@@ -226,8 +226,12 @@
 		$(".allMenu").removeClass('active');
 		$(".facilityMenu").addClass('active');
 	} else if (splitsUrl == 'audit-trail.php') {
-		$(".audit-trail-menu,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
+		$(".audit-trail-menu, .manage, .monitoring-menu").addClass('active');
+		$(".facilityMenu").addClass('active');
+	} else if (splitsUrl == 'api-sync-history.php') {
+		$(".allMenu").removeClass('active');
+		$(".api-sync-history-menu, .manage, .monitoring-menu").addClass('active');
 		$(".facilityMenu").addClass('active');
 	} else if (splitsUrl == 'facilityMap.php' || splitsUrl == 'addFacilityMap.php' || splitsUrl == 'editFacilityMap.php') {
 		$(".manage").addClass('active');

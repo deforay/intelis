@@ -419,13 +419,29 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<li class="treeview facility-config-menu">
 										<a href="/facilities/facilities.php"><i class="fa fa-hospital-o"></i> <?php echo _("Facilities"); ?></a>
 									</li>
-								<?php }
-								if (isset($_SESSION['privileges']) && in_array("audit-trail.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview audit-trail-menu">
-										<a href="/admin/audit-trail/audit-trail.php"><i class=" fa fa-hospital-o"></i> <?php echo _("Audit Trail"); ?></a>
-									</li>
-								<?php }
-								if (in_array("roles.php", $_SESSION['privileges']) || in_array("users.php", $_SESSION['privileges'])) { ?>
+								<?php } ?>
+								<li class="treeview monitoring-menu">
+									<a href="#">
+										<i class="fa fa-bullseye"></i>
+										<span><?php echo _("Monitoring"); ?></span>
+										<span class="pull-right-container">
+											<i class="fa fa-angle-left pull-right"></i>
+										</span>
+									</a>
+									<ul class="treeview-menu">
+										<?php if (isset($_SESSION['privileges']) && in_array("audit-trail.php", $_SESSION['privileges'])) { ?>
+											<li class="allMenu treeview audit-trail-menu">
+												<a href="/admin/monitoring/audit-trail.php"><i class="fa fa-file-text-o"></i> <?php echo _("Audit Trail"); ?></a>
+											</li>
+										<?php }
+										if (isset($_SESSION['privileges']) && in_array("api-sync-history.php", $_SESSION['privileges'])) { ?>
+											<li class="allMenu treeview api-sync-history-menu">
+												<a href="/admin/monitoring/api-sync-history.php"><i class="fa fa-cloud" aria-hidden="true"></i> <?php echo _("API Sync History"); ?></a>
+											</li>
+										<?php } ?>
+									</ul>
+								</li>
+								<?php if (in_array("roles.php", $_SESSION['privileges']) || in_array("users.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview system-config-menu">
 										<a href="#">
 											<i class="fa fa-gears"></i>

@@ -31,7 +31,8 @@ $user = null;
 $input = json_decode(file_get_contents("php://input"), true);
 
 /* For API Tracking params */
-$requestUrl = $_SERVER['REQUEST_URI'];
+$requestUrl .= $_SERVER['HTTP_HOST'];
+$requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 
 // The request has to send an Authorization Bearer token 
