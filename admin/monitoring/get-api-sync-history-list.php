@@ -4,14 +4,14 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $general = new \Vlsm\Models\General();
-$tableName = "activity_log";
-$primaryKey = "log_id";
+$tableName = "track_api_requests";
+$primaryKey = "api_track_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('action', 'event_type', 'r.display_name', "DATE_FORMAT(date_time,'%d-%b-%Y')");
-$orderColumns = array('action', 'event_type', 'r.display_name', 'date_time');
+$aColumns = array('number_of_records', 'request_type', 'test_type', "api_url", "DATE_FORMAT(requested_on,'%d-%b-%Y')");
+$orderColumns = array('number_of_records', 'request_type', 'test_type', 'api_url', 'requested_on');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -83,8 +83,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS a.*, r.display_name, DATE_FORMAT(a.date_time,'%d-%b-%Y') AS createdOn FROM activity_log as a 
-          LEFT JOIN resources as r ON a.resource = r.resource_id";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS a.* FROM $tableName as a";
 
 //echo $sQuery;die;
 $start_date = '';
@@ -100,7 +99,7 @@ if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
 }
 
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
-     $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+     $sWhere[] = ' DATE(a.requested_on) >= "' . $start_date . '" AND DATE(a.requested_on) <= "' . $end_date . '"';
 }
 
 /* Implode all the where fields for filtering the data */
@@ -108,7 +107,6 @@ if (sizeof($sWhere) > 0) {
      $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' GROUP BY action';
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -135,10 +133,11 @@ $output = array(
 );
 foreach ($rResult as $key => $aRow) {
      $row = array();
-     $row[] = $aRow['action'];
-     $row[] = $aRow['event_type'];
-     $row[] = $aRow['ip_address'];
-     $row[] = $aRow['createdOn'];
+     $row[] = $aRow['number_of_records'];
+     $row[] = str_replace("-", " ", ucwords($aRow['request_type']));
+     $row[] = ucwords($aRow['test_type']);
+     $row[] = $aRow['api_url'];
+     $row[] = date("d-M-Y, h:i:s", strtotime($aRow['requested_on']));
 
      $output['aaData'][] = $row;
 }

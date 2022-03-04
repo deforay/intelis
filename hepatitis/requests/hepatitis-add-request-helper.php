@@ -146,6 +146,7 @@ try {
 		'last_modified_by'                    => $_SESSION['userId'],
 		'last_modified_datetime'              => $general->getDateTime(),
 		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
+		'source_of_request'					  => 'web'
 	);
 	/* $lock = $general->getGlobalConfig('lock_approved_hepatitis_samples');
     if($status == 7 && $lock == 'yes'){

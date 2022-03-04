@@ -2,18 +2,24 @@
 $geoDb = new \Vlsm\Models\GeoLocations($db);
 $generalDb = new \Vlsm\Models\General($db);
 $text = '';
+if (isset($_GET['type']) && $_GET['type'] == 'district') {
+    $field = "patient_district";
+} else if (isset($_GET['type']) && $_GET['type'] == 'province') {
+    $field = "patient_district";
+}
 if (isset($_GET['q']) && $_GET['q'] != "" && !isset($_POST['pName'])) {
     $text = $_GET['q'];
+
     if ($text != "") {
-        $cQuery = "SELECT DISTINCT patient_district FROM form_covid19 WHERE patient_district like '%" . $text . "%'";
+        $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE $field like '%" . $text . "%'";
     } else {
-        $cQuery = "SELECT DISTINCT patient_district FROM form_covid19";
+        $cQuery = "SELECT DISTINCT $field FROM form_covid19";
     }
     $cResult = $db->rawQuery($cQuery);
     $echoResult = array();
     if (count($cResult) > 0) {
         foreach ($cResult as $row) {
-            $echoResult[] = array("id" => $row['patient_district'], "text" => ucwords($row['patient_district']));
+            $echoResult[] = array("id" => $row[$field], "text" => ucwords($row[$field]));
         }
     } else {
         $echoResult[] = array("id" => $text, 'text' => $text);

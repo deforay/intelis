@@ -16,31 +16,28 @@ $configFormResult = $db->rawQuery($configFormQuery);
 $facilityId = array();
 //get collection data
 $table = $_POST['table'];
+$primaryKey = $_POST['primaryKey'];
 foreach ($_POST['facilityId'] as $facility) {
     $facilities[] = '"' . $facility . '"';
 }
-/* echo "<pre>";
-print_r($facilities);
-die; */
-if ($table == "form_covid19") {
-    $collectionQuery = "SELECT COUNT(covid19_id) as total, facility_name FROM " . $table . " as covid19 JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE vlsm_country_id = '" . $configFormResult[0]['value'] . "' AND DATE(covid19.sample_collection_date) <= '" . $cDate . "' AND DATE(covid19.sample_collection_date)>= '" . $lastSevenDay . "'";
-    if (sizeof($facilities) > 0) {
-        $collectionQuery .= " AND f.facility_name IN (" . implode(",", $facilities) . ")";
+$collectionQuery = "SELECT COUNT($primaryKey) as total, facility_name FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE vlsm_country_id = '" . $configFormResult[0]['value'] . "' AND DATE(vl.sample_collection_date) <= '" . $cDate . "' AND DATE(vl.sample_collection_date)>= '" . $lastSevenDay . "'";
+if (sizeof($facilities) > 0) {
+    $collectionQuery .= " AND f.facility_name IN (" . implode(",", $facilities) . ")";
+}
+$collectionQuery .= "  GROUP BY f.facility_id ORDER BY total DESC";
+// die($collectionQuery);
+$collectionResult = $db->rawQuery($collectionQuery); //collection result
+$collectionTotal = 0;
+if (sizeof($collectionResult) > 0) {
+    foreach ($collectionResult as $total) {
+        $collectionTotal = $collectionTotal + $total['total'];
     }
-    $collectionQuery .= "  GROUP BY f.facility_id ORDER BY total DESC";
-    // die($collectionQuery);
-    $collectionResult = $db->rawQuery($collectionQuery); //collection result
-    $collectionTotal = 0;
-    if (sizeof($collectionResult) > 0) {
-        foreach ($collectionResult as $total) {
-            $collectionTotal = $collectionTotal + $total['total'];
-        }
-    }
-} ?>
+}
+?>
 <div id="collection" width="210" height="150" style="min-height:150px;"></div>
 <script>
     $('.facilityCounterup').html('0');
-    <?php if ($collectionTotal > 0 && $table == "form_covid19") { ?>
+    <?php if ($collectionTotal > 0) { ?>
         $('.facilityCounterup').html('<?php echo $collectionTotal; ?>')
         $('#collection').highcharts({
             chart: {

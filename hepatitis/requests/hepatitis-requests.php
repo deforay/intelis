@@ -23,6 +23,14 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='hepatitis' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
+
+// Src of alert req
+$srcQuery = "SELECT DISTINCT source_of_request from form_hepatitis where source_of_request is not null AND source_of_request not like ''";
+$srcResults = $db->rawQuery($srcQuery);
+$srcOfReqList = array();
+foreach ($srcResults as $list) {
+	$srcOfReqList[$list['source_of_request']] = ucwords($list['source_of_request']);
+}
 ?>
 <style>
 	.select2-selection__choice {
@@ -136,6 +144,12 @@ $batResult = $db->rawQuery($batQuery);
 									?>
 										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
 									<?php } ?>
+								</select>
+							</td>
+							<td><b><?php echo _("Source of Request"); ?> :</b></td>
+							<td>
+								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
+									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
 						</tr>
@@ -439,6 +453,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "implementingPartner",
 					"value": $("#implementingPartner").val()
+				});
+				aoData.push({
+					"name": "srcOfReq",
+					"value": $("#srcOfReq").val()
 				});
 				$.ajax({
 					"dataType": 'json',

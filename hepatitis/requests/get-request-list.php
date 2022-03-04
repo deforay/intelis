@@ -183,6 +183,9 @@ if (isset($sWhere) && $sWhere != "") {
      if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
           $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
      }
+     if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
+          $sWhere = $sWhere . " AND vl.source_of_request LIKE '" . $_POST['srcOfReq'] . "' ";
+     }
 } else {
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $setWhr = 'where';
@@ -285,6 +288,15 @@ if (isset($sWhere) && $sWhere != "") {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
+          }
+     }
+     if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
+          } else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
           }
      }
 }
