@@ -170,7 +170,7 @@ if ($table == "eid_form") {
     $primaryKey = "vl_sample_id";
 }
 
-/* $aggregateQuery = "SELECT COUNT($primaryKey) as totalCollected, 
+$aggregateQuery = "SELECT COUNT($primaryKey) as totalCollected, 
     SUM(CASE WHEN (vl.lab_id is NOT NULL AND vl.sample_tested_datetime is NOT NULL AND vl.result is NOT NULL AND vl.result not like '' AND vl.result_status = 7) THEN 1 ELSE 0 END) as 'tested',
     SUM(CASE WHEN (vl.result_status = 1) THEN 1 ELSE 0 END) as 'hold',
     SUM(CASE WHEN (vl.result_status = 4) THEN 1 ELSE 0 END) as 'rejected',
@@ -179,13 +179,13 @@ if ($table == "eid_form") {
     SUM(CASE WHEN (vl.result_status = 8) THEN 1 ELSE 0 END) as 'awaitingApproval',
     SUM(CASE WHEN (vl.result_status = 9) THEN 1 ELSE 0 END) as 'registeredAtCollectionPoint',
     SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
-FROM $table as vl
+FROM $table as vl 
 INNER JOIN facility_details as f ON f.facility_id=vl.facility_id 
 WHERE vlsm_country_id = '" . $configFormResult['value'] . "' 
 AND DATE(vl.sample_collection_date) <= '" . $cDate . "' 
 AND DATE(vl.sample_collection_date) >= '" . $lastSevenDay . "'";
 // die($aggregateQuery);
-$aggregateResult = $db->rawQueryOne($aggregateQuery); */
+$aggregateResult = $db->rawQueryOne($aggregateQuery);
 
 //get collection data
 $collectionQuery = "SELECT COUNT($primaryKey) as total, facility_name, DATE(vl.sample_collection_date) as `collection_date` FROM " . $table . " as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE vlsm_country_id = '" . $configFormResult['value'] . "' AND DATE(vl.sample_collection_date) <= '" . $cDate . "' AND DATE(vl.sample_collection_date) >= '" . $lastSevenDay . "'  GROUP BY f.facility_id having `total` > 0 ORDER BY total DESC";
@@ -369,7 +369,7 @@ if ($table == "form_covid19") {
         <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="150" style="min-height:150px;"></div>
     </div>
 </div>
-<!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
         <div class="display">
             <div class="number">
@@ -382,7 +382,7 @@ if ($table == "form_covid19") {
         </div>
         <div id="<?php echo $samplesOverviewChart; ?>" width="210" height="150" style="min-height:240px;"></div>
     </div>
-</div> -->
+</div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
         <tr>
