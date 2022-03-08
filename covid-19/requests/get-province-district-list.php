@@ -5,7 +5,7 @@ $text = '';
 if (isset($_GET['type']) && $_GET['type'] == 'district') {
     $field = "patient_district";
 } else if (isset($_GET['type']) && $_GET['type'] == 'province') {
-    $field = "patient_district";
+    $field = "patient_province";
 }
 if (isset($_GET['q']) && $_GET['q'] != "" && !isset($_POST['pName'])) {
     $text = $_GET['q'];
