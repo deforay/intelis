@@ -23,11 +23,11 @@ $pdQuery = "SELECT * from province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     //check user exist in user_facility_map table
     $chkUserFcMapQry = "Select user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
@@ -58,10 +58,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM");?></h1>
+        <h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Edit EID Request");?></li>
+            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Edit EID Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -310,7 +310,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                             </table>
 
                             <br><br>
-                            <table class="table" style="">
+                            <table class="table">
                                 <tr>
                                     <th colspan=4>
                                         <h4>Sample Information</h4>

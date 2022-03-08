@@ -15,8 +15,7 @@ $module = $_POST['module'];
 if ($module == 'vl') {
     $mainTableName = "vl_request_form";
     $rejectionTableName = 'r_vl_sample_rejection_reasons';
-}
-else if ($module == 'eid') {
+} else if ($module == 'eid') {
     $mainTableName = "eid_form";
     $rejectionTableName = 'r_eid_sample_rejection_reasons';
     $eidResults = $general->getEidResults();
@@ -275,7 +274,7 @@ foreach ($rResult as $aRow) {
     }
     //}
     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['temp_sample_id'] . '"  value="' . $aRow['temp_sample_id'] . '" onclick="toggleTest(this);"  />';
-    $status = '<select class="form-control" style="" name="status[]" id="' . $aRow['temp_sample_id'] . '" title="Please select status" onchange="toggleTest(this,' . $sampleCode . ')">
+    $status = '<select class="form-control"  name="status[]" id="' . $aRow['temp_sample_id'] . '" title="Please select status" onchange="toggleTest(this,' . $sampleCode . ')">
 			<option value="">-- Select --</option>
 			<option value="7" ' . ($aRow['result_status'] == "7" ? "selected=selected" : "") . '>Accepted</option>
 			<option value="1" ' . ($aRow['result_status'] == "1" ? "selected=selected" : "") . '>Hold</option>
@@ -284,12 +283,12 @@ foreach ($rResult as $aRow) {
     //}
     //sample to control & control to sample
     if (!empty($scResult) && !empty($inResult) && !empty($inResult[0]) && count($scResult) > 0 && $inResult[0]['number_of_in_house_controls'] > 0 && $tsrResult[0]['count'] > 0 && $tsrResult[0]['count'] > $refno) {
-        $controlName = '<select class="form-control" style="" name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
+        $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
     } else {
         if ($aRow['sample_type'] == 'S' || $aRow['sample_type'] == 's') {
-            $controlName = '<select class="form-control" style="" name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControlAlert(' . $totalControls . ');"><option value="">-- Select --</option>';
+            $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControlAlert(' . $totalControls . ');"><option value="">-- Select --</option>';
         } else {
-            $controlName = '<select class="form-control" style="" name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
+            $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
         }
     }
 

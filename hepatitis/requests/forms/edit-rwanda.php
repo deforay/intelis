@@ -127,7 +127,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         <?php } ?>
                                         <th style="width:15% !important"><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
-                                        <td style="">
+                                        <td>
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" value="<?php echo $hepatitisInfo['patient_id']; ?>" />
                                         </td>
                                         <td><label for="hepatitisTestType">Type of Hepatitis Test </label><span class="mandatory">*</span></td>
@@ -169,11 +169,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         <?php } ?>
                                         <th style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
-                                        <td style="">
+                                        <td>
                                             <input value="<?php echo ($hepatitisInfo['sample_collection_date']); ?>" class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" />
                                         </td>
                                         <th style="width:15% !important">DHIS2 Case ID </th>
-                                        <td style="">
+                                        <td>
                                             <input value="<?php echo ($hepatitisInfo['external_sample_code']); ?>" class="form-control" type="text" name="externalSampleCode" id="externalSampleCode" placeholder="DHIS2 Case ID" />
                                         </td>
                                     </tr>
@@ -322,9 +322,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                             <th><label for="vlTestingSite">VL Testing Site</label></th>
                                             <td>
-                                            <select class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" title="Please select testing site" style="width:100%;">
-									<?= $testingLabsDropdown; ?>
-								</select></td>
+                                                <select class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" title="Please select testing site" style="width:100%;">
+                                                    <?= $testingLabsDropdown; ?>
+                                                </select>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th><label for="reasonVlTest">VL test purpose</label></th>
@@ -407,14 +408,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             ?>
                                             <th>Authorized By</th>
                                             <td>
-                                            <select name="authorizedBy" <?php echo $disapled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                <select name="authorizedBy" <?php echo $disapled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $hepatitisInfo['authorized_by'], '-- Select --'); ?>
                                                 </select>
-                                                </td>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Authorized on</td>
-                                            <td><input value="<?php echo $general->humanDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" <?php echo $disapled; ?> name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field rejected-input form-control date" placeholder="Authorized on" title="Please select the authorized on"/></td>
+                                            <td><input value="<?php echo $general->humanDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" <?php echo $disapled; ?> name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field rejected-input form-control date" placeholder="Authorized on" title="Please select the authorized on" /></td>
                                             <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
@@ -582,13 +583,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $('#province').select2({
             placeholder: "Province"
         });
-        
+
         $("#labId").select2({
             placeholder: "Select Testing Lab"
         });
         $("#vlTestingSite").select2({
-			placeholder: "Select Vl Testing Site"
-		});
+            placeholder: "Select Vl Testing Site"
+        });
         $('#authorizedBy').select2({
             placeholder: "Select Authorized By"
         });

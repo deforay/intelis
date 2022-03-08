@@ -283,11 +283,11 @@ foreach ($rResult as $aRow) {
     $childName = ucwords($general->crypto('decrypt', $aRow['child_name'], $aRow['child_id']));
 
 
-    $status = '<select class="form-control" style="" name="status[]" id="' . $aRow['eid_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
-               <option value="">'. _("-- Select --").'</option>
-               <option value="7" ' . ($aRow['status_id'] == "7" ? "selected=selected" : "") . '>'. _("Accepted").'</option>
-               <option value="4" ' . ($aRow['status_id'] == "4"  ? "selected=selected" : "") . '>'. _("Rejected").'</option>
-               <option value="2" ' . ($aRow['status_id'] == "2"  ? "selected=selected" : "") . '>'. _("Lost").'</option>
+    $status = '<select class="form-control"  name="status[]" id="' . $aRow['eid_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
+               <option value="">' . _("-- Select --") . '</option>
+               <option value="7" ' . ($aRow['status_id'] == "7" ? "selected=selected" : "") . '>' . _("Accepted") . '</option>
+               <option value="4" ' . ($aRow['status_id'] == "4"  ? "selected=selected" : "") . '>' . _("Rejected") . '</option>
+               <option value="2" ' . ($aRow['status_id'] == "2"  ? "selected=selected" : "") . '>' . _("Lost") . '</option>
                </select><br><br>';
 
     $row = array();

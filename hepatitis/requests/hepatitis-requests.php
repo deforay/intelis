@@ -29,7 +29,7 @@ $srcQuery = "SELECT DISTINCT source_of_request from form_hepatitis where source_
 $srcResults = $db->rawQuery($srcQuery);
 $srcOfReqList = array();
 foreach ($srcResults as $list) {
-	$srcOfReqList[$list['source_of_request']] = ucwords($list['source_of_request']);
+	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
 }
 ?>
 <style>

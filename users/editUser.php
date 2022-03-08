@@ -48,10 +48,10 @@ $ftResult = $db->rawQuery($fQuery);
 <div class="content-wrapper">
      <!-- Content Header (Page header) -->
      <section class="content-header">
-          <h1> <i class="fa fa-user"></i> <?php echo _("Edit User");?></h1>
+          <h1> <i class="fa fa-user"></i> <?php echo _("Edit User"); ?></h1>
           <ol class="breadcrumb">
-               <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-               <li class="active"><?php echo _("Users");?></li>
+               <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+               <li class="active"><?php echo _("Users"); ?></li>
           </ol>
      </section>
 
@@ -60,7 +60,7 @@ $ftResult = $db->rawQuery($fQuery);
 
           <div class="box box-default">
                <div class="box-header with-border">
-                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
+                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
                </div>
                <!-- /.box-header -->
                <div class="box-body">
@@ -70,18 +70,18 @@ $ftResult = $db->rawQuery($fQuery);
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="userName" class="col-lg-4 control-label"><?php echo _("User Name");?> <span class="mandatory">*</span></label>
+                                             <label for="userName" class="col-lg-4 control-label"><?php echo _("User Name"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _('User Name');?>" title="<?php echo _('Please enter user name');?>" value="<?php echo $userInfo[0]['user_name']; ?>" />
+                                                  <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter user name'); ?>" value="<?php echo $userInfo[0]['user_name']; ?>" />
                                                   <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode($userInfo[0]['user_id']); ?>" />
                                              </div>
                                         </div>
                                    </div>
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="email" class="col-lg-4 control-label"><?php echo _("Email");?> </label>
+                                             <label for="email" class="col-lg-4 control-label"><?php echo _("Email"); ?> </label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('Email');?>" title="<?php echo _('Please enter email');?>" value="<?php echo $userInfo[0]['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo[0]['user_id']; ?>','<?php echo _("This email id that you entered already exists.Try another email id");?>',null)" />
+                                                  <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('Email'); ?>" title="<?php echo _('Please enter email'); ?>" value="<?php echo $userInfo[0]['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo[0]['user_id']; ?>','<?php echo _("This email id that you entered already exists.Try another email id"); ?>',null)" />
                                              </div>
                                         </div>
                                    </div>
@@ -89,19 +89,19 @@ $ftResult = $db->rawQuery($fQuery);
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="phoneNo" class="col-lg-4 control-label"><?php echo _("Phone Number");?></label>
+                                             <label for="phoneNo" class="col-lg-4 control-label"><?php echo _("Phone Number"); ?></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?php echo _('Phone Number');?>" title="<?php echo _('Please enter phone number');?>" value="<?php echo $userInfo[0]['phone_number']; ?>" />
+                                                  <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?php echo _('Phone Number'); ?>" title="<?php echo _('Please enter phone number'); ?>" value="<?php echo $userInfo[0]['phone_number']; ?>" />
                                              </div>
                                         </div>
                                    </div>
 
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="role" class="col-lg-4 control-label"><?php echo _("Role");?> <span class="mandatory">*</span></label>
+                                             <label for="role" class="col-lg-4 control-label"><?php echo _("Role"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <select class="form-control isRequired" name='role' id='role' title="<?php echo _('Please select the role');?>">
-                                                       <option value=""><?php echo _("--Select--");?></option>
+                                                  <select class="form-control isRequired" name='role' id='role' title="<?php echo _('Please select the role'); ?>">
+                                                       <option value=""><?php echo _("--Select--"); ?></option>
                                                        <?php foreach ($result as $row) {
                                                             $roleCode = (isset($userInfo[0]['role_id']) && $userInfo[0]['role_id'] == $row['role_id']) ? $row['role_code'] : ""
                                                        ?>
@@ -116,35 +116,35 @@ $ftResult = $db->rawQuery($fQuery);
                               <div class="row show-token" style="display: <?php echo ($userInfo[0]['role_code'] != "" && $userInfo[0]['role_code'] == "API") ? 'block' : 'none'; ?>;">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="authToken" class="col-lg-4 control-label"><?php echo _("AuthToken");?> <span class="mandatory">*</span></label>
+                                             <label for="authToken" class="col-lg-4 control-label"><?php echo _("AuthToken"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" value="<?php echo $userInfo[0]['api_token']; ?>" class="form-control" id="authToken" name="authToken" placeholder="<?php echo _('Auth Token');?>" title="<?php echo _('Please Generate the auth token');?>" readonly>
+                                                  <input type="text" value="<?php echo $userInfo[0]['api_token']; ?>" class="form-control" id="authToken" name="authToken" placeholder="<?php echo _('Auth Token'); ?>" title="<?php echo _('Please Generate the auth token'); ?>" readonly>
                                              </div>
                                         </div>
                                    </div>
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <a href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="generateToken('authToken');"><?php echo _("Generate Token");?></a>
+                                             <a href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="generateToken('authToken');"><?php echo _("Generate Token"); ?></a>
                                         </div>
                                    </div>
                               </div>
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="interfaceUserName" class="col-lg-4 control-label"><?php echo _("Interface User Name (from your Molecular testing machine)");?></label>
+                                             <label for="interfaceUserName" class="col-lg-4 control-label"><?php echo _("Interface User Name (from your Molecular testing machine)"); ?></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" value="<?php echo $interfaceUsers ?>" class="form-control" id="interfaceUserName" name="interfaceUserName" placeholder="<?php echo _('Interface User Name');?>" title="<?php echo _('Please enter interface user name');?>" />
+                                                  <input type="text" value="<?php echo $interfaceUsers ?>" class="form-control" id="interfaceUserName" name="interfaceUserName" placeholder="<?php echo _('Interface User Name'); ?>" title="<?php echo _('Please enter interface user name'); ?>" />
                                              </div>
                                         </div>
                                    </div>
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="appAccessable" class="col-lg-4 control-label"><?php echo _("Mobile App Access");?></label>
+                                             <label for="appAccessable" class="col-lg-4 control-label"><?php echo _("Mobile App Access"); ?></label>
                                              <div class="col-lg-7">
-                                                  <select class="form-control" name='appAccessable' id='appAccessable' title="<?php echo _('Please select the mobile App access or not');?>?">
-                                                       <option value=""><?php echo _("--Select--");?></option>
-                                                       <option value="yes" <?php echo ($userInfo[0]['app_access'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _("Yes");?></option>
-                                                       <option value="no" <?php echo ($userInfo[0]['app_access'] == 'no') ? "selected='selected'" : "" ?>><?php echo _("No");?></option>
+                                                  <select class="form-control" name='appAccessable' id='appAccessable' title="<?php echo _('Please select the mobile App access or not'); ?>?">
+                                                       <option value=""><?php echo _("--Select--"); ?></option>
+                                                       <option value="yes" <?php echo ($userInfo[0]['app_access'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _("Yes"); ?></option>
+                                                       <option value="no" <?php echo ($userInfo[0]['app_access'] == 'no') ? "selected='selected'" : "" ?>><?php echo _("No"); ?></option>
                                                   </select>
                                              </div>
                                         </div>
@@ -154,7 +154,7 @@ $ftResult = $db->rawQuery($fQuery);
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="" class="col-lg-4 control-label"><?php echo _("Signature");?> <br><?php echo _("(Used to embed in Result PDF)");?></label>
+                                             <label for="" class="col-lg-4 control-label"><?php echo _("Signature"); ?> <br><?php echo _("(Used to embed in Result PDF)"); ?></label>
                                              <div class="col-lg-8">
                                                   <div class="fileinput fileinput-new userSignature" data-provides="fileinput">
                                                        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
@@ -167,19 +167,19 @@ $ftResult = $db->rawQuery($fQuery);
                                                             <?php } ?>
                                                        </div>
                                                        <div>
-                                                            <span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select Signature Image");?></span><span class="fileinput-exists"><?php echo _("Change");?></span>
-                                                                 <input type="file" id="userSignature" name="userSignature" accept="image/png,image/gpg,image/jpeg" title="<?php echo _('Please select user signature');?>" onchange="getNewSignatureImage('<?php echo $userInfo[0]['user_signature']; ?>');">
+                                                            <span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select Signature Image"); ?></span><span class="fileinput-exists"><?php echo _("Change"); ?></span>
+                                                                 <input type="file" id="userSignature" name="userSignature" accept="image/png,image/gpg,image/jpeg" title="<?php echo _('Please select user signature'); ?>" onchange="getNewSignatureImage('<?php echo $userInfo[0]['user_signature']; ?>');">
                                                             </span>
                                                             <?php
                                                             if (isset($userInfo[0]['user_signature']) && trim($userInfo[0]['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo[0]['user_signature'])) {
                                                             ?>
-                                                                 <a id="clearUserSignature" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearUserSignature('<?php echo $userInfo[0]['user_signature']; ?>')"><?php echo _("Clear");?></a>
+                                                                 <a id="clearUserSignature" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearUserSignature('<?php echo $userInfo[0]['user_signature']; ?>')"><?php echo _("Clear"); ?></a>
                                                             <?php } ?>
-                                                            <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _("Remove");?></a>
+                                                            <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _("Remove"); ?></a>
                                                        </div>
                                                   </div>
                                                   <div class="box-body">
-                                                  <?php echo _("Image Size");?> : <code>100px x 100px</code>
+                                                       <?php echo _("Image Size"); ?> : <code>100px x 100px</code>
                                                   </div>
                                              </div>
                                         </div>
@@ -188,9 +188,9 @@ $ftResult = $db->rawQuery($fQuery);
 
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="loginId" class="col-lg-4 control-label"><?php echo _("Login Id");?> <span class="mandatory">*</span></label>
+                                             <label for="loginId" class="col-lg-4 control-label"><?php echo _("Login Id"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control isRequired" id="loginId" name="loginId" placeholder="<?php echo _('Login Id');?>" title="<?php echo _('Please enter login id');?>" value="<?php echo $userInfo[0]['login_id']; ?>" onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo[0]['user_id']; ?>','<?php echo _("This login id that you entered already exists.Try another login id");?>',null)" />
+                                                  <input type="text" class="form-control isRequired" id="loginId" name="loginId" placeholder="<?php echo _('Login Id'); ?>" title="<?php echo _('Please enter login id'); ?>" value="<?php echo $userInfo[0]['login_id']; ?>" onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo[0]['user_id']; ?>','<?php echo _("This login id that you entered already exists.Try another login id"); ?>',null)" />
                                              </div>
                                         </div>
                                    </div>
@@ -200,30 +200,30 @@ $ftResult = $db->rawQuery($fQuery);
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="password" class="col-lg-4 control-label"><?php echo _("Password");?> </label>
+                                             <label for="password" class="col-lg-4 control-label"><?php echo _("Password"); ?> </label>
                                              <div class="col-lg-7">
-                                                  <input type="password" class="form-control ppwd" id="confirmPassword" name="password" placeholder="<?php echo _('Password');?>" title="<?php echo _('Please enter the password');?>" />
+                                                  <input type="password" class="form-control ppwd" id="confirmPassword" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" />
                                                   <code><?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                                              </div>
                                         </div>
                                    </div>
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _("Confirm Password");?></label>
+                                             <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _("Confirm Password"); ?></label>
                                              <div class="col-lg-7">
-                                                  <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password');?>" title="" />
+                                                  <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password'); ?>" title="" />
                                              </div>
                                         </div>
                                    </div>
 
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="status" class="col-lg-4 control-label"><?php echo _("User Status");?> <span class="mandatory">*</span></label>
+                                             <label for="status" class="col-lg-4 control-label"><?php echo _("User Status"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status');?>">
-                                                       <option value=""> <?php echo _("-- Select --");?> </option>
-                                                       <option value="active" <?php echo ($userInfo[0]['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _("Active");?></option>
-                                                       <option value="inactive" <?php echo ($userInfo[0]['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _("Inactive");?></option>
+                                                  <select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status'); ?>">
+                                                       <option value=""> <?php echo _("-- Select --"); ?> </option>
+                                                       <option value="active" <?php echo ($userInfo[0]['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _("Active"); ?></option>
+                                                       <option value="inactive" <?php echo ($userInfo[0]['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _("Inactive"); ?></option>
                                                   </select>
                                              </div>
                                         </div>
@@ -232,16 +232,16 @@ $ftResult = $db->rawQuery($fQuery);
 
                               <div class="row" style=<?php echo $display; ?>>
                                    <div class="col-md-12">
-                                        <a href="javascript:void(0);" id="showFilter" class="btn btn-primary"><?php echo _("Show Advanced Filter");?></a>
-                                        <a href="javascript:void(0);" style="display:none;" id="hideFilter" class="btn btn-danger"><?php echo _("Hide Advanced Filter");?></a>
+                                        <a href="javascript:void(0);" id="showFilter" class="btn btn-primary"><?php echo _("Show Advanced Filter"); ?></a>
+                                        <a href="javascript:void(0);" style="display:none;" id="hideFilter" class="btn btn-danger"><?php echo _("Hide Advanced Filter"); ?></a>
                                    </div>
                                    <div id="facilityFilter" style="display:none;">
-                                        <h4 style="padding:36px 0px 0px 14px;"> <?php echo _("Filter Facilities by Province & Districts");?></h4>
+                                        <h4 style="padding:36px 0px 0px 14px;"> <?php echo _("Filter Facilities by Province & Districts"); ?></h4>
                                         <div class="col-md-4">
                                              <div class="form-group">
-                                                  <label for="province" style="" class="col-lg-4 control-label"><?php echo _("Province");?> </label>
+                                                  <label for="province" class="col-lg-4 control-label"><?php echo _("Province"); ?> </label>
                                                   <div class="col-lg-7">
-                                                       <select class="form-control " name="province" id="province" title="<?php echo _('Please choose province');?>" style="width:100%;" onchange="getProvinceDistricts();">
+                                                       <select class="form-control " name="province" id="province" title="<?php echo _('Please choose province'); ?>" style="width:100%;" onchange="getProvinceDistricts();">
                                                             <?php echo $province; ?>
                                                        </select>
                                                   </div>
@@ -249,20 +249,20 @@ $ftResult = $db->rawQuery($fQuery);
                                         </div>
                                         <div class="col-md-4">
                                              <div class="form-group">
-                                                  <label for="province" style="" class="col-lg-4 control-label"><?php echo _("District");?> </label>
+                                                  <label for="province" class="col-lg-4 control-label"><?php echo _("District"); ?> </label>
                                                   <div class="col-lg-7">
-                                                       <select class="form-control " name="district" id="district" title="<?php echo _('Please choose district');?>" style="width:100%;" onchange="getFacilities();">
-                                                            <option value=""> <?php echo _("-- Select --");?> </option>
+                                                       <select class="form-control " name="district" id="district" title="<?php echo _('Please choose district'); ?>" style="width:100%;" onchange="getFacilities();">
+                                                            <option value=""> <?php echo _("-- Select --"); ?> </option>
                                                        </select>
                                                   </div>
                                              </div>
                                         </div>
                                         <div class="col-md-4">
                                              <div class="form-group">
-                                                  <label for="province" style="" class="col-lg-4 control-label"><?php echo _("Facility Type");?> </label>
+                                                  <label for="province" class="col-lg-4 control-label"><?php echo _("Facility Type"); ?> </label>
                                                   <div class="col-lg-7">
-                                                       <select class="form-control" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type');?>" onchange="getFacility()">
-                                                            <option value=""> <?php echo _("-- Select --");?> </option>
+                                                       <select class="form-control" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="getFacility()">
+                                                            <option value=""> <?php echo _("-- Select --"); ?> </option>
                                                             <?php
                                                             foreach ($ftResult as $type) {
                                                             ?>
@@ -277,7 +277,7 @@ $ftResult = $db->rawQuery($fQuery);
                                    </div>
                               </div>
                               <div class="row" style="margin: 15px; <?php echo $display; ?>">
-                                   <h4 style=" margin-left: 15px;"> <?php echo _("Facility User Map Details");?></h4>
+                                   <h4 style=" margin-left: 15px;"> <?php echo _("Facility User Map Details"); ?></h4>
                                    <div class="col-xs-5">
                                         <select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
                                              <?php
@@ -317,8 +317,8 @@ $ftResult = $db->rawQuery($fQuery);
                          <div class="box-footer">
                               <input type="hidden" name="selectedFacility" id="selectedFacility" />
                               <input type="hidden" name="removedSignatureImage" id="removedSignatureImage" />
-                              <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
-                              <a href="users.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+                              <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
+                              <a href="users.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
                          </div>
                          <!-- /.box-footer -->
                     </form>
@@ -349,8 +349,8 @@ $ftResult = $db->rawQuery($fQuery);
      jQuery(document).ready(function($) {
           $('#search').multiselect({
                search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search");?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search");?>..." />',
+                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
                },
                fireSearch: function(value) {
                     return value.length > 3;
@@ -383,7 +383,7 @@ $ftResult = $db->rawQuery($fQuery);
                const validImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
                if (!validImageTypes.includes(fileType)) {
                     $('#userSignature').val('');
-                    alert('<?php echo _("Invalid file type. Please upload correct image format like JPG or JPEG or PNG");?>');
+                    alert('<?php echo _("Invalid file type. Please upload correct image format like JPG or JPEG or PNG"); ?>');
                     return false;
                }
           });

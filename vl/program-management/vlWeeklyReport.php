@@ -29,7 +29,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-calendar-check-o" aria-hidden="true"></i> <?php echo _("VL Lab Weekly Report");?>
+    <h1><i class="fa fa-calendar-check-o" aria-hidden="true"></i> <?php echo _("VL Lab Weekly Report"); ?>
       <!--<ol class="breadcrumb">-->
       <!--  <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->
@@ -47,25 +47,25 @@ $facilityResult = $db->rawQuery($facilityQuery);
               <div class="widget-content">
                 <div class="bs-example bs-example-tabs">
                   <ul id="myTab" class="nav nav-tabs">
-                    <li class="active"><a href="#labReport" data-toggle="tab"><?php echo _("VL Lab Weekly Report");?></a></li>
-                    <li><a href="#femaleReport" data-toggle="tab"><?php echo _("VL Lab Weekly Report - Female");?></a></li>
+                    <li class="active"><a href="#labReport" data-toggle="tab"><?php echo _("VL Lab Weekly Report"); ?></a></li>
+                    <li><a href="#femaleReport" data-toggle="tab"><?php echo _("VL Lab Weekly Report - Female"); ?></a></li>
                   </ul>
                   <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="labReport">
                       <table class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
                         <tr>
-                          <td style="width:15%"><b><?php echo _("Sample Test Date Range");?>&nbsp;:</b></td>
+                          <td style="width:15%"><b><?php echo _("Sample Test Date Range"); ?>&nbsp;:</b></td>
                           <td style="width:20% !important;">
-                            <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Sample Test Date Range');?>" readonly style="background:#eee;font-size:0.9em" />
+                            <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Sample Test Date Range'); ?>" readonly style="background:#eee;font-size:0.9em" />
                           </td>
-                          <!-- <td style=""><b>Sample Collection<br>Date Range&nbsp;:</b></td>
+                          <!-- <td ><b>Sample Collection<br>Date Range&nbsp;:</b></td>
 											<td style="width:20% !important;">
 											  <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Sample Collection Date Range" readonly style="background:#eee;font-size:0.9em"/>
 											</td> -->
-                          <td style="width:8%"><b><?php echo _("VL Lab(s)");?>&nbsp;:</b></td>
+                          <td style="width:8%"><b><?php echo _("VL Lab(s)"); ?>&nbsp;:</b></td>
                           <td style="width:28%;">
-                            <select id="lab" name="lab" class="form-control" title="<?php echo _('Please select lab');?>" multiple>
-                              <option value=""> <?php echo _("-- Select --");?> </option>
+                            <select id="lab" name="lab" class="form-control" title="<?php echo _('Please select lab'); ?>" multiple>
+                              <option value=""> <?php echo _("-- Select --"); ?> </option>
                               <?php
                               foreach ($facilityResult as $lab) {
                               ?>
@@ -78,52 +78,52 @@ $facilityResult = $db->rawQuery($facilityQuery);
                         </tr>
                         <tr>
                           <td colspan="6">
-                            &nbsp;<input type="button" onclick="searchWeeklyData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
-                            &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-                            &nbsp;<button class="btn btn-info btn-sm" type="button" onclick="exportVLWeeklyReport()"><?php echo _("Excel Export");?></button>
+                            &nbsp;<input type="button" onclick="searchWeeklyData();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
+                            &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+                            &nbsp;<button class="btn btn-info btn-sm" type="button" onclick="exportVLWeeklyReport()"><?php echo _("Excel Export"); ?></button>
                           </td>
                         </tr>
                       </table>
                       <table id="vlWeeklyReportDataTable" class="table table-bordered table-striped">
                         <thead>
                           <tr>
-                            <th rowspan="2"><?php echo _("Province/State");?></th>
-                            <th rowspan="2"><?php echo _("District/County");?></th>
-                            <th rowspan="2"><?php echo _("Site Name");?></th>
+                            <th rowspan="2"><?php echo _("Province/State"); ?></th>
+                            <th rowspan="2"><?php echo _("District/County"); ?></th>
+                            <th rowspan="2"><?php echo _("Site Name"); ?></th>
                             <!-- <th rowspan="2">IPSL</th> -->
-                            <th rowspan="2"><?php echo _("No. of Rejections");?></th>
-                            <th colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Peds");?></th>
-                            <th colspan="4" style="text-align:center;"><?php echo _("Viral Load Results - Adults");?></th>
-                            <th colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Pregnant/Breastfeeding Female");?></th>
-                            <th colspan="2" style="text-align:center;"><?php echo _("Age/Sex Unknown");?></th>
-                            <th colspan="2" style="text-align:center;"><?php echo _("Totals");?></th>
-                            <th rowspan="2"><?php echo _("Total Test per Clinic");?></th>
+                            <th rowspan="2"><?php echo _("No. of Rejections"); ?></th>
+                            <th colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Peds"); ?></th>
+                            <th colspan="4" style="text-align:center;"><?php echo _("Viral Load Results - Adults"); ?></th>
+                            <th colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Pregnant/Breastfeeding Female"); ?></th>
+                            <th colspan="2" style="text-align:center;"><?php echo _("Age/Sex Unknown"); ?></th>
+                            <th colspan="2" style="text-align:center;"><?php echo _("Totals"); ?></th>
+                            <th rowspan="2"><?php echo _("Total Test per Clinic"); ?></th>
                           </tr>
                           <tr>
                             <th>
-                            <?php echo _("<= 15 y");?> &amp; <?php echo _("<=1000 cp/ml");?> </th>
+                              <?php echo _("<= 15 y"); ?> &amp; <?php echo _("<=1000 cp/ml"); ?> </th>
                             <th>
-                            <?php echo _("<= 15 y");?> &amp;<?php echo _(">1000 cp/ml");?>
+                              <?php echo _("<= 15 y"); ?> &amp;<?php echo _(">1000 cp/ml"); ?>
                             </th>
-                            <th><?php echo _("> 15 y");?> &amp; <?php echo _("Male <=1000 cp/ml");?> </th>
-                            <th><?php echo _("> 15 y");?> &amp; <?php echo _("Male >1000 cp/ml");?></th>
-                            <th><?php echo _("> 15 y");?> &amp; <?php echo _("Female <=1000 cp/ml");?> </th>
-                            <th><?php echo _("> 15 y");?> &amp; <?php echo _("Female >1000 cp/ml");?></th>
+                            <th><?php echo _("> 15 y"); ?> &amp; <?php echo _("Male <=1000 cp/ml"); ?> </th>
+                            <th><?php echo _("> 15 y"); ?> &amp; <?php echo _("Male >1000 cp/ml"); ?></th>
+                            <th><?php echo _("> 15 y"); ?> &amp; <?php echo _("Female <=1000 cp/ml"); ?> </th>
+                            <th><?php echo _("> 15 y"); ?> &amp; <?php echo _("Female >1000 cp/ml"); ?></th>
                             <th>
-                            <?php echo _("<=1000 cp/ml");?> </th>
-                            <th><?php echo _(">1000 cp/ml");?>
+                              <?php echo _("<=1000 cp/ml"); ?> </th>
+                            <th><?php echo _(">1000 cp/ml"); ?>
                             </th>
-                            <th><?php echo _("Unknown Age/Sex <=1000 cp/ml");?> </th>
-                            <th><?php echo _("Unknown Age/Sex >1000 cp/ml");?></th>
+                            <th><?php echo _("Unknown Age/Sex <=1000 cp/ml"); ?> </th>
+                            <th><?php echo _("Unknown Age/Sex >1000 cp/ml"); ?></th>
                             <th>
-                            <?php echo _("<=1000 cp/ml");?> </th>
-                            <th><?php echo _(">1000 cp/ml");?>
+                              <?php echo _("<=1000 cp/ml"); ?> </th>
+                            <th><?php echo _(">1000 cp/ml"); ?>
                             </th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td colspan="19" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                            <td colspan="19" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                           </tr>
                         </tbody>
                       </table>
@@ -131,18 +131,18 @@ $facilityResult = $db->rawQuery($facilityQuery);
                     <div class="tab-pane fade" id="femaleReport">
                       <table class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
-                          <td style="width:13%"><b><?php echo _("Sample Test Date Range");?>&nbsp;:</b></td>
+                          <td style="width:13%"><b><?php echo _("Sample Test Date Range"); ?>&nbsp;:</b></td>
                           <td style="width:20% !important;">
-                            <input type="text" id="femaleSampleTestDate" name="femaleSampleTestDate" class="form-control daterange" placeholder="<?php echo _('Sample Test Date Range');?>" readonly style="background:#eee;font-size:0.9em" />
+                            <input type="text" id="femaleSampleTestDate" name="femaleSampleTestDate" class="form-control daterange" placeholder="<?php echo _('Sample Test Date Range'); ?>" readonly style="background:#eee;font-size:0.9em" />
                           </td>
                           <!-- <td><b>Sample Collection<br>Date Range&nbsp;:</b></td>
 											<td style="width:20% !important;">
 											  <input type="text" id="femaleSampleCollectionDate" name="femaleSampleCollectionDate" class="form-control" placeholder="Sample Collection Date Range" readonly style="background:#eee;font-size:0.9em"/>
 											</td> -->
-                          <td style="width:8%"><b><?php echo _("VL Lab(s)");?>&nbsp;:</b></td>
+                          <td style="width:8%"><b><?php echo _("VL Lab(s)"); ?>&nbsp;:</b></td>
                           <td style="width:28%;">
-                            <select id="femaleLab" name="femaleLab" class="form-control" title="<?php echo _('Please select lab');?>" multiple>
-                              <option value=""> <?php echo _("-- Select --");?> </option>
+                            <select id="femaleLab" name="femaleLab" class="form-control" title="<?php echo _('Please select lab'); ?>" multiple>
+                              <option value=""> <?php echo _("-- Select --"); ?> </option>
                               <?php
                               foreach ($facilityResult as $lab) {
                               ?>
@@ -155,34 +155,34 @@ $facilityResult = $db->rawQuery($facilityQuery);
                         </tr>
                         <tr>
                           <td colspan="6">
-                            &nbsp;<input type="button" onclick="searchFemaleData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
-                            &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-                            &nbsp;<button class="btn btn-info btn-sm" type="button" onclick="exportFemaleVLWeeklyReport()"><?php echo _("Excel Export");?></button>
+                            &nbsp;<input type="button" onclick="searchFemaleData();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
+                            &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+                            &nbsp;<button class="btn btn-info btn-sm" type="button" onclick="exportFemaleVLWeeklyReport()"><?php echo _("Excel Export"); ?></button>
                           </td>
                         </tr>
                       </table>
                       <table id="vlWeeklyFemaleReportDataTable" class="table table-bordered table-striped">
                         <thead>
                           <tr>
-                            <th><?php echo _("Province/State");?></th>
-                            <th><?php echo _("District/County");?></th>
-                            <th><?php echo _("Site Name");?></th>
-                            <th><?php echo _("Total Female");?></th>
-                            <th><?php echo _("Pregnant <=1000 cp/ml");?> </th>
-                            <th><?php echo _("Pregnant >1000 cp/ml");?></th>
-                            <th><?php echo _("Breastfeeding <=1000 cp/ml");?> </th>
-                            <th><?php echo _("Breastfeeding >1000 cp/ml");?></th>
-                            <th><?php echo _("Age > 15 <=1000 cp/ml");?> </th>
-                            <th><?php echo _("Age > 15 >1000 cp/ml");?></th>
-                            <th><?php echo _("Age Unknown <=1000 cp/ml");?> </th>
-                            <th><?php echo _("Age Unknown >1000 cp/ml");?></th>
-                            <th><?php echo _("Age <=15 <=1000 cp/ml");?> </th>
-                            <th><?php echo _("Age <=15>1000 cp/ml");?></th>
+                            <th><?php echo _("Province/State"); ?></th>
+                            <th><?php echo _("District/County"); ?></th>
+                            <th><?php echo _("Site Name"); ?></th>
+                            <th><?php echo _("Total Female"); ?></th>
+                            <th><?php echo _("Pregnant <=1000 cp/ml"); ?> </th>
+                            <th><?php echo _("Pregnant >1000 cp/ml"); ?></th>
+                            <th><?php echo _("Breastfeeding <=1000 cp/ml"); ?> </th>
+                            <th><?php echo _("Breastfeeding >1000 cp/ml"); ?></th>
+                            <th><?php echo _("Age > 15 <=1000 cp/ml"); ?> </th>
+                            <th><?php echo _("Age > 15 >1000 cp/ml"); ?></th>
+                            <th><?php echo _("Age Unknown <=1000 cp/ml"); ?> </th>
+                            <th><?php echo _("Age Unknown >1000 cp/ml"); ?></th>
+                            <th><?php echo _("Age <=15 <=1000 cp/ml"); ?> </th>
+                            <th><?php echo _("Age <=15>1000 cp/ml"); ?></th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td colspan="13" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                            <td colspan="13" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                           </tr>
                         </tbody>
                       </table>
@@ -212,11 +212,11 @@ $facilityResult = $db->rawQuery($facilityQuery);
   var oTableFemale = null;
   $(document).ready(function() {
     $('#lab').select2({
-      placeholder: "<?php echo _("All Labs");?>"
+      placeholder: "<?php echo _("All Labs"); ?>"
     });
     $('#femaleLab').select2({
       width: '250px',
-      placeholder: "<?php echo _("All Labs");?>"
+      placeholder: "<?php echo _("All Labs"); ?>"
     });
     $('#sampleTestDate,#sampleCollectionDate,#femaleSampleTestDate,#femaleSampleCollectionDate').daterangepicker({
         locale: {
@@ -248,7 +248,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
   });
 
   function loadDataTable() {
-    if(oTable != null) oTable.fnDestroy();
+    if (oTable != null) oTable.fnDestroy();
     oTable = $('#vlWeeklyReportDataTable').dataTable({
       "oLanguage": {
         "sLengthMenu": "_MENU_ records per page"
@@ -358,7 +358,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
   }
 
   function loadFemaleDataTable() {
-    if(oTableFemale != null) oTableFemale.fnDestroy();
+    if (oTableFemale != null) oTableFemale.fnDestroy();
     oTableFemale = $('#vlWeeklyFemaleReportDataTable').dataTable({
       "oLanguage": {
         "sLengthMenu": "_MENU_ records per page"
@@ -446,8 +446,8 @@ $facilityResult = $db->rawQuery($facilityQuery);
           "url": sSource,
           "data": aoData,
           "success": fnCallback
-        }).done(function(){
-          
+        }).done(function() {
+
         });
       }
     });
@@ -458,6 +458,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
     loadDataTable();
     $.unblockUI();
   }
+
   function searchFemaleData() {
     $.blockUI();
     loadFemaleDataTable();
@@ -475,7 +476,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
       function(data) {
         $.unblockUI();
         if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _("Unable to generate the excel file");?>");
+          alert("<?php echo _("Unable to generate the excel file"); ?>");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;
@@ -499,14 +500,13 @@ $facilityResult = $db->rawQuery($facilityQuery);
       function(data) {
         $.unblockUI();
         if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _("Unable to generate the excel file");?>");
+          alert("<?php echo _("Unable to generate the excel file"); ?>");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;
         }
       });
   }
-
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

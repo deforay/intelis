@@ -35,7 +35,7 @@ $batResult = $db->rawQuery($batQuery);
         <div class="box">
           <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
             <tr>
-              <td style=""><b>Sample Collection Date&nbsp;:</b></td>
+              <td><b>Sample Collection Date&nbsp;:</b></td>
               <td>
                 <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
               </td>

@@ -350,7 +350,7 @@ if (sizeof($requestResult) > 0) {
                                         </table>';
         $html .= '</td>';
         $html .= '</tr>';
-        //$html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:70px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ucfirst($result['result']) . '</td><td style="">' . $smileyContent . '</td></tr>';
+        //$html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:70px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ucfirst($result['result']) . '</td><td >' . $smileyContent . '</td></tr>';
         if ($result['reason_for_sample_rejection'] != '') {
             $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
         }
@@ -386,17 +386,17 @@ if (sizeof($requestResult) > 0) {
         $html .= '</tr>';
 
         if ($result['is_sample_rejected'] == 'no') {
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-        $html .= '</tr>';
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+            $html .= '</tr>';
 
-        $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-        $html .= '</tr>';
+            $html .= '<tr>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+            $html .= '</tr>';
         }
 
         $html .= '<tr>';

@@ -309,7 +309,7 @@ $html .= '</tr>';
 // if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
 //     /* Test Result Section */
 //     $html .= '<tr>';
-//     $html .= '<td colspan="4" style="" >';
+//     $html .= '<td colspan="4"  >';
 //     $html .= '<table border="1" style="padding:2px;">
 //                             <tr>
 //                                 <td align="center" width="10%" style="line-height:20px;font-size:11px;font-weight:bold;">S. No.</td>

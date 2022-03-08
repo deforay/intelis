@@ -38,7 +38,7 @@ $srcQuery = "SELECT DISTINCT source_of_request from form_covid19 where source_of
 $srcResults = $db->rawQuery($srcQuery);
 $srcOfReqList = array();
 foreach ($srcResults as $list) {
-	$srcOfReqList[$list['source_of_request']] = ucwords($list['source_of_request']);
+	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
 }
 ?>
 <style>

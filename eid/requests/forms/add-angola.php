@@ -288,7 +288,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
                                 <br><br>
-                                <table class="table" style="">
+                                <table class="table">
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Sample Information</h4>
