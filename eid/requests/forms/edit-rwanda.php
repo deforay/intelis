@@ -26,11 +26,11 @@ $pdQuery = "SELECT * from province_details";
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     //check user exist in user_facility_map table
     $chkUserFcMapQry = "SELECT user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
@@ -74,10 +74,10 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM");?></h1>
+        <h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Add EID Request");?></li>
+            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Add EID Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -352,7 +352,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                 </table>
 
                                 <br><br>
-                                <table class="table" style="">
+                                <table class="table">
                                     <tr>
                                         <th colspan=4 style="border-top:#000 1px solid;">
                                             <h4>Sample Information</h4>
@@ -445,7 +445,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th>Reviewed On</td>
+                                            <th>Reviewed On</td>
                                             <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                             <th>Reviewed By</th>
                                             <td>
@@ -455,7 +455,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th>Approved On</td>
+                                            <th>Approved On</td>
                                             <td><input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th>Approved By</th>
                                             <td>
@@ -632,10 +632,10 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
         $('#labId').select2({
             placeholder: "Select Lab Name"
         });
-		$('#reviewedBy').select2({
+        $('#reviewedBy').select2({
             placeholder: "Select Reviewed By"
         });
-		$('#approvedBy').select2({
+        $('#approvedBy').select2({
             placeholder: "Select Approved By"
         });
         getfacilityProvinceDetails($("#facilityId").val());

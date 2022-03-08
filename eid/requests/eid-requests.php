@@ -31,7 +31,7 @@ $srcQuery = "SELECT DISTINCT source_of_request from eid_form where source_of_req
 $srcResults = $db->rawQuery($srcQuery);
 $srcOfReqList = array();
 foreach ($srcResults as $list) {
-	$srcOfReqList[$list['source_of_request']] = ucwords($list['source_of_request']);
+	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
 }
 ?>
 <style>

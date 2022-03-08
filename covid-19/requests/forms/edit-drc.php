@@ -91,6 +91,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 }
 $geolocation = new \Vlsm\Models\GeoLocations();
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+
+// Province
+$pQuery = "SELECT DISTINCT patient_province FROM form_covid19";
+$pResult = $db->rawQuery($pQuery);
+$patienProvince = array();
+foreach ($pResult as $row) {
+    $patienProvince[$row['patient_province']] = $row['patient_province'];
+}
+$patienProvince["other"] = "Other";
+// District
 $cQuery = "SELECT DISTINCT patient_district FROM form_covid19";
 $cResult = $db->rawQuery($cQuery);
 $pateitnDistrict = array();
@@ -290,8 +300,12 @@ if (!empty($patientData)) {
                                         <th>Adresse du patient</th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Adresse du patient" title="Adresse du patient" style="width:100%;" onchange=""><?php echo $covid19Info['patient_address']; ?></textarea></td>
                                         <th>Province du patient</th>
-                                        <td><input type="text" value="<?php echo $covid19Info['patient_province']; ?>" class="form-control " id="patientProvince" name="patientProvince" placeholder="Province du patient" title="Province du patient" style="width:100%;" /></td>
-
+                                        <td>
+                                            <select class="form-control" id="patientProvince" name="patientProvince" placeholder="Province du patient" style="width:100%;">
+                                                <option value="">-- Sélectionner --</option>
+                                                <?= $general->generateSelectOptions($patienProvince, $covid19Info['patient_province'], '-- Sélectionner --'); ?>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Commune</th>

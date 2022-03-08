@@ -48,7 +48,7 @@ $type = $_GET['type'];
         <div class="box">
           <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:10px;">
             <tr>
-              <td style=""><b>Hub&nbsp;:</b></td>
+              <td><b>Hub&nbsp;:</b></td>
               <td>
                 <input type="text" id="hub" name="hub" class="form-control" placeholder="Enter Hub" style="background:#fff;" />
               </td>
@@ -58,7 +58,7 @@ $type = $_GET['type'];
               </td>
             </tr>
             <tr>
-              <td style=""><b>Province/State&nbsp;:</b></td>
+              <td><b>Province/State&nbsp;:</b></td>
               <td>
                 <input type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State" style="background:#fff;" />
               </td>

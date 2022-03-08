@@ -34,7 +34,7 @@ ob_start();
   </section>
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -48,7 +48,7 @@ ob_start();
               <div class="box">
                 <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;">
                   <tr>
-                    <td style=""><b>Instance/Facility Name&nbsp;<span class="mandatory">*</span></b> <br>
+                    <td><b>Instance/Facility Name&nbsp;<span class="mandatory">*</span></b> <br>
                     </td>
                     <td>
                       <input type="text" class="form-control isRequired" name="fName" id="fName" title="Please enter instance name" placeholder="Instance/Facility Name" />
@@ -59,7 +59,7 @@ ob_start();
                     </td>
                   </tr>
                   <tr>
-                    <td style=""><b>Instance/Facility Type&nbsp;<span class="mandatory">*</span></b></td>
+                    <td><b>Instance/Facility Type&nbsp;<span class="mandatory">*</span></b></td>
                     <td>
                       <select class="form-control isRequired" id="fType" name="fType" title="Please choose instance type">
                         <option value="">-- Select --</option>

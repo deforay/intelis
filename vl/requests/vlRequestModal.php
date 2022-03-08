@@ -40,7 +40,7 @@ $batResult = $db->rawQuery($batQuery);
         <div class="box">
           <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:10px;width: 98%;">
             <tr>
-              <td style=""><b>Sample Collection Date&nbsp;:</b></td>
+              <td><b>Sample Collection Date&nbsp;:</b></td>
               <td>
                 <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
               </td>
@@ -148,17 +148,17 @@ $batResult = $db->rawQuery($batQuery);
         endDate: moment(),
         maxDate: moment(),
         ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-				}
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+          'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+          'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+          'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+        }
       },
       function(start, end) {
         startDate = start.format('YYYY-MM-DD');

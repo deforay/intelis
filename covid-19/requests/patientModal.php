@@ -1,5 +1,5 @@
 <?php
-  
+
 
 
 $general = new \Vlsm\Models\General();
@@ -51,7 +51,7 @@ $pResult = $db->rawQuery($pQuery);
 <script type="text/javascript" src="/assets/js/jquery-ui.1.11.0.js"></script>
 <script src="/assets/js/deforayModal.js"></script>
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper" style="">
+<div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h4 class="pull-left bg-primary" style="width:100%;padding:8px;font-weight:normal;">Results matching your search - <?php echo $artNo; ?></h4>
@@ -72,6 +72,9 @@ $pResult = $db->rawQuery($pQuery);
 									<th>Age</th>
 									<th>Gender</th>
 									<th>Facility</th>
+									<?php if (isset($arr['vl_form']) && $arr['vl_form'] == 1) { ?>
+										<th>Date and Time</th>
+									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
@@ -89,6 +92,9 @@ $pResult = $db->rawQuery($pQuery);
 											<td><?php echo $patient['patient_age']; ?></td>
 											<td><?php echo ucwords(str_replace("_", " ", $patient['patient_gender'])); ?></td>
 											<td><?php echo ucwords($patient['facility_name']); ?></td>
+											<?php if (isset($arr['vl_form']) && $arr['vl_form'] == 1) { ?>
+												<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['request_created_datetime'])); ?></td>
+											<?php } ?>
 										</tr>
 								<?php
 									}

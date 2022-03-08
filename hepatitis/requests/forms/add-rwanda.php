@@ -89,7 +89,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         <?php } ?>
                                         <th style="width:15% !important"><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
-                                        <td style="">
+                                        <td>
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Code" title="Please enter Patient Code" style="width:100%;" onchange="" />
                                         </td>
                                         <td><label for="hepatitisTestType">Type of Hepatitis Test </label><span class="mandatory">*</span></td>

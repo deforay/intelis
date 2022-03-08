@@ -56,10 +56,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM");?></h1>
+        <h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Add EID Request");?></li>
+            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Add EID Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -313,7 +313,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
 
                                 <br><br>
-                                <table class="table" style="">
+                                <table class="table">
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Sample Information</h4>
@@ -397,7 +397,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th>Reviewed On</td>
+                                            <th>Reviewed On</td>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                             <th>Reviewed By</th>
                                             <td>
@@ -407,7 +407,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th>Approved On</td>
+                                            <th>Approved On</td>
                                             <td><input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th>Approved By</th>
                                             <td>
@@ -597,10 +597,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $('#labId').select2({
             placeholder: "Select Lab Name"
         });
-		$('#reviewedBy').select2({
+        $('#reviewedBy').select2({
             placeholder: "Select Reviewed By"
         });
-		$('#approvedBy').select2({
+        $('#approvedBy').select2({
             placeholder: "Select Approved By"
         });
         // $('#district').select2({
