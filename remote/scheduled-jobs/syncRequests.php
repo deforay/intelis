@@ -137,14 +137,17 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
                 $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
                 $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-
+                $dataToUpdate['source_of_request'] = "vlsts";
+                $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('vl_sample_id', $exsvlResult[0]['vl_sample_id']);
                 $id = $db->update('vl_request_form', $dataToUpdate);
             } else {
+                $request['source_of_request'] = 'vlsts';
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
                     $request['request_created_datetime'] = $general->getDateTime();
+                    $request['source_of_request'] = "vlsts";
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
                     /* echo "<pre>";
@@ -256,7 +259,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 $dataToUpdate = array();
                 $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
                 $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-
+                $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('eid_id', $exsvlResult[0]['eid_id']);
                 $id = $db->update('eid_form', $dataToUpdate);
             } else {
@@ -266,6 +269,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     $request['request_created_datetime'] = $general->getDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['source_of_request'] = "vlsts";
                     $id = $db->insert('eid_form', $request);
                 }
             }
@@ -372,7 +376,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                 $dataToUpdate = array();
                 $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
                 $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-
+                $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('covid19_id', $exsvlResult[0]['covid19_id']);
                 $db->update('form_covid19', $dataToUpdate);
                 $id = $exsvlResult[0]['covid19_id'];
@@ -383,6 +387,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     $request['request_created_datetime'] = $general->getDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['source_of_request'] = "vlsts";
                     $db->insert('form_covid19', $request);
                     $id = $db->getInsertId();
                 }
@@ -525,7 +530,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                 $dataToUpdate = array();
                 $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
                 $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-
+                $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('hepatitis_id', $exsvlResult[0]['hepatitis_id']);
                 $db->update('form_hepatitis', $dataToUpdate);
                 $id = $exsvlResult[0]['hepatitis_id'];
@@ -536,6 +541,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     $request['request_created_datetime'] = $general->getDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['source_of_request'] = "vlsts";
                     $db->insert('form_hepatitis', $request);
                     $id = $db->getInsertId();
                 }
@@ -671,7 +677,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
                 $dataToUpdate = array();
                 $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
                 $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-
+                $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('tb_id', $exsvlResult[0]['tb_id']);
                 $db->update('form_tb', $dataToUpdate);
                 $id = $exsvlResult[0]['tb_id'];
@@ -682,6 +688,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
                     $request['request_created_datetime'] = $general->getDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['source_of_request'] = "vlsts";
                     $db->insert('form_tb', $request);
                     $id = $db->getInsertId();
                 }

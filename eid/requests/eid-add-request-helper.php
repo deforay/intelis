@@ -214,15 +214,15 @@ try {
 	// if ($status == 7 && $lock == 'yes') {
 	// 	$eidData['locked'] = 'yes';
 	// }
-	$eidData['source_of_request'] = 'web';
-	if (!empty($_POST['api']) && $_POST['api'] = "yes") {
-		$eidData['source_of_request'] = 'api';
-	}
-	if (isset($_POST['api']) && $_POST['api'] = "yes") {
+	if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == "vluser") {
+		$eidData['source_of_request'] = 'vlsm';
 	} else {
-		$eidData['request_created_by'] =  $_SESSION['userId'];
-		$eidData['last_modified_by'] =  $_SESSION['userId'];
+		$eidData['source_of_request'] = 'web';
 	}
+
+	$eidData['request_created_by'] =  $_SESSION['userId'];
+	$eidData['last_modified_by'] =  $_SESSION['userId'];
+
 
 	// echo "<pre>";
 	// print_r($_POST);die;

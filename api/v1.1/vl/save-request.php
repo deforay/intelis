@@ -393,7 +393,7 @@ try {
             'result_reviewed_by'                    => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
             'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 
-            'source_of_request'                     => "api"
+            'source_of_request'                     => "app"
         );
         if (isset($data['patientFullName']) && $data['patientFullName'] != "") {
             $vlFulldata['patient_first_name'] = $general->crypto('encrypt', $data['patientFullName'], $vlFulldata['patient_art_no']);

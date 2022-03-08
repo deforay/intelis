@@ -62,7 +62,7 @@ if (!empty($covid19RemoteResult) && count($covid19RemoteResult) > 0) {
   }
 
   $covid19Obj = new \Vlsm\Models\Covid19();
-  $symptoms = $covid19Obj->getCovid19SymptomsByFormId($forms,);
+  $symptoms = $covid19Obj->getCovid19SymptomsByFormId($forms);
   $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($forms);
   $testResults = $covid19Obj->getCovid19TestsByFormId($forms);
 

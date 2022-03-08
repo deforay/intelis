@@ -145,13 +145,19 @@ try {
 		'sample_registered_at_lab'            => $general->getDateTime(),
 		'last_modified_by'                    => $_SESSION['userId'],
 		'last_modified_datetime'              => $general->getDateTime(),
-		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
-		'source_of_request'					  => 'web'
+		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
 	);
 	/* $lock = $general->getGlobalConfig('lock_approved_hepatitis_samples');
     if($status == 7 && $lock == 'yes'){
 		$hepatitisData['locked'] = 'yes';
 	} */
+
+	if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == "vluser") {
+		$hepatitisData['source_of_request'] = 'vlsm';
+	} else {
+		$hepatitisData['source_of_request'] = 'web';
+	}
+
 	// echo "<pre>";print_r($hepatitisData);die;
 	// For Save Comorbidity 
 	if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != 0) {

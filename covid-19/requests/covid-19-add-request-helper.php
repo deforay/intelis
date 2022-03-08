@@ -214,9 +214,13 @@ try {
 		'last_modified_datetime'              => $general->getDateTime(),
 		'request_created_by'              	  => $_SESSION['userId'],
 		'last_modified_by'              	  => $_SESSION['userId'],
-		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
-		'source_of_request'                   => "web"
+		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
 	);
+	if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == "vluser") {
+		$covid19Data['source_of_request'] = 'vlsm';
+	} else {
+		$covid19Data['source_of_request'] = 'web';
+	}
 
 	if (!empty($_POST['labId'])) {
 		$facility = $facilityDb->getFacilityById($_POST['labId']);
