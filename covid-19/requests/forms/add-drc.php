@@ -61,13 +61,22 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
 $geolocation = new \Vlsm\Models\GeoLocations();
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+// Province
+$pQuery = "SELECT DISTINCT patient_province FROM form_covid19";
+$pResult = $db->rawQuery($pQuery);
+$patienProvince = array();
+foreach ($pResult as $row) {
+    $patienProvince[$row['patient_province']] = $row['patient_province'];
+}
+$patienProvince["other"] = "Other";
+// District
 $cQuery = "SELECT DISTINCT patient_district FROM form_covid19";
 $cResult = $db->rawQuery($cQuery);
-$pateitnDistrict = array();
+$patienDistrict = array();
 foreach ($cResult as $row) {
-    $pateitnDistrict[$row['patient_district']] = $row['patient_district'];
+    $patienDistrict[$row['patient_district']] = $row['patient_district'];
 }
-$pateitnDistrict["other"] = "Other";
+$patienDistrict["other"] = "Other";
 $generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
 if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
     $patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
@@ -228,21 +237,26 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Numéro de téléphone" title="Numéro de téléphone" style="width:100%;" onchange="" /></td>
 
                                         <th>Courriel du patient</th>
-                                        <td><input type="text" class="form-control " id="patientEmail" name="patientEmail" placeholder="Courriel du patient" title="Province du patient" style="width:100%;" /></td>
+                                        <td><input type="text" class="form-control " id="patientEmail" name="patientEmail" placeholder="Courriel du patient" title="Courriel du patient" style="width:100%;" /></td>
                                     </tr>
 
                                     <tr>
                                         <th>Adresse du patient</th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Adresse du patient" title="Adresse du patient" style="width:100%;" onchange=""></textarea></td>
                                         <th>Province du patient</th>
-                                        <td><input type="text" class="form-control " id="patientProvince" name="patientProvince" placeholder="Province du patient" title="Province du patient" style="width:100%;" /></td>
+                                        <td>
+                                            <select class="form-control" id="patientProvince" name="patientProvince" placeholder="Province du patient" style="width:100%;">
+                                                <option value="">-- Sélectionner --</option>
+                                                <?= $general->generateSelectOptions($patienProvince, null, '-- Sélectionner --'); ?>
+                                            </select>
+                                        </td>
                                     </tr>
 
                                     <tr>
                                         <th>Commune</th>
                                         <td><select class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Commune" style="width:100%;">
                                                 <option value="">-- Sélectionner --</option>
-                                                <?= $general->generateSelectOptions($pateitnDistrict, null, '-- Sélectionner --'); ?>
+                                                <?= $general->generateSelectOptions($patienDistrict, null, '-- Sélectionner --'); ?>
                                             </select>
                                         </td>
                                         <th>Pays de résidence</th>
@@ -1450,7 +1464,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             $.blockUI();
             var pName = $(this).val();
             if ($.trim(pName) != '') {
-                $.post("/covid-19/requests/get-district-list.php", {
+                $.post("/covid-19/requests/get-province-district-list.php", {
                         pName: pName,
                     },
                     function(data) {
