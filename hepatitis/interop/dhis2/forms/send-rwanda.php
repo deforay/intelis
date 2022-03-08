@@ -110,9 +110,9 @@ foreach ($formResults as $row) {
       // echo "</pre>";
 
       $response = $dhis2->post("/api/33/events/", $payload);
-      echo "<br><br><pre>";
-      var_dump($response);
-      echo "</pre>";
+      // echo "<br><br><pre>";
+      // var_dump($response);
+      // echo "</pre>";
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {
@@ -145,5 +145,6 @@ foreach ($formResults as $row) {
 
 
 $response = array('processed' => $counter);
-
+$app = new \Vlsm\Models\App();
+$trackId = $app->addApiTracking(NULL, $processedCounter, 'DHIS2-Hepatitis-Send', 'hepatitis');
 echo (json_encode($response));
