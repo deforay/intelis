@@ -2,10 +2,10 @@
 
 header('Content-Type: application/json');
 
-
 session_unset(); // no need of session in json response
 $general = new \Vlsm\Models\General();
 $jsonResponse = file_get_contents('php://input');
+
 try {
     if (empty($jsonResponse)) {
         throw new Exception("Invalid request. Please check your request parameters.");
@@ -85,7 +85,7 @@ try {
             if (!empty($userId)) {
                 $db->where("user_id", $userId);
             }
-            if (!empty($post['email'])) {
+            else if (!empty($post['email'])) {
                 $db->where("email", $post['email']);
             }
             $aRow = $db->getOne("user_details");
@@ -137,7 +137,7 @@ try {
             $data['status'] = 'inactive';
             $id = $db->insert("user_details", $data);
         }
-        error_log($db->getLastError());
+
         if ($id > 0 && trim($post['selectedFacility']) != '') {
             if ($id > 0 && trim($post['selectedFacility']) != '') {
                 $db = $db->where('user_id', $data['user_id']);
@@ -162,6 +162,7 @@ try {
         'timestamp' => time(),
     );
 
+    error_log($db->getLastError());
     echo json_encode($payload);
 } catch (Exception $exc) {
     $payload = array(

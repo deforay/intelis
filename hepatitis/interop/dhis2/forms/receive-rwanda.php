@@ -125,6 +125,10 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
         $formData = array_merge($singleEventData, $attributesData);
+
+        // if DHIS2 Case ID is not set then skip
+        if(empty(trim($formData['external_sample_code']))) continue;
+
         $formData['source_of_request'] = 'dhis2';
         $formData['source_data_dump'] = json_encode($tracker);
 
@@ -288,5 +292,6 @@ foreach ($trackedEntityInstances as $tracker) {
 }
 
 $response = array('received' => $receivedCounter, 'processed' => $processedCounter);
-
+$app = new \Vlsm\Models\App();
+$trackId = $app->addApiTracking(NULL, $processedCounter, 'DHIS2-Hepatitis-Receive', 'hepatitis');
 echo (json_encode($response));
