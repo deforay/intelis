@@ -547,6 +547,18 @@ class General
         }
     }
 
+    public function getLocaleLists()
+    {
+        $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locale';
+        $localeLists = scandir($path);
+        foreach (array(".", "..", ".DS_Store") as $delVal) {
+            if (($key = array_search($delVal, $localeLists)) !== false) {
+                unset($localeLists[$key]);
+            }
+        }
+        return $localeLists;
+    }
+
     public function activeReportFormats($module = "vl", $countryCode = "southsudan", $format = "", $list = true)
     {
         $list = array();

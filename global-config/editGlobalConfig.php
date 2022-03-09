@@ -4,7 +4,9 @@ $title = _("Edit Global Configuration");
 #require_once('../startup.php');
 require_once(APPLICATION_PATH . '/header.php');
 
-
+$general = new \Vlsm\Models\General();
+// Get locale directory list
+$localeLists = $general->getLocaleLists();
 $instanceQuery = "SELECT * from s_vlsm_instance where vlsm_instance_id='" . $_SESSION['instanceId'] . "'";
 $instanceResult = $db->query($instanceQuery);
 $fType = "SELECT * FROM facility_type";
@@ -40,10 +42,10 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1 class="fa fa-gears"> <?php echo _("Edit General Configuration");?></h1>
+		<h1 class="fa fa-gears"> <?php echo _("Edit General Configuration"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Manage General Config");?></li>
+			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Manage General Config"); ?></li>
 		</ol>
 	</section>
 
@@ -55,7 +57,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 				<div class="pull-right" style="font-size:15px;">
 					<?php if (isset($_SESSION['privileges']) && in_array("editGlobalConfig.php", $_SESSION['privileges']) && !isset($_GET['e'])) { ?>
 						<div class="col-sm-6 pull-right">
-							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <i class="fa fa-pencil"></i> <?php echo _("Edit General Config");?></a>
+							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <i class="fa fa-pencil"></i> <?php echo _("Edit General Config"); ?></a>
 						</div>
 					<?php } ?>
 					<br>
@@ -68,34 +70,34 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 					<div class="box-body">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h3 class="panel-title"><?php echo _("Instance Settings");?></h3>
+								<h3 class="panel-title"><?php echo _("Instance Settings"); ?></h3>
 							</div>
 							<div class="panel-body">
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="fName" class="col-lg-4 control-label"><?php echo _("Instance/Facility Name");?> <span class="mandatory">*</span></label>
+											<label for="fName" class="col-lg-4 control-label"><?php echo _("Instance/Facility Name"); ?> <span class="mandatory">*</span></label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control isRequired readPage" name="fName" id="fName" title="<?php echo _('Please enter instance name');?>" placeholder="<?php echo _('Facility/Instance Name');?>" value="<?php echo $instanceResult[0]['instance_facility_name']; ?>" />
+												<input type="text" class="form-control isRequired readPage" name="fName" id="fName" title="<?php echo _('Please enter instance name'); ?>" placeholder="<?php echo _('Facility/Instance Name'); ?>" value="<?php echo $instanceResult[0]['instance_facility_name']; ?>" />
 											</div>
 										</div>
 									</div>
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="fCode" class="col-lg-4 control-label"><?php echo _("Instance/Facility Code");?> </label>
+											<label for="fCode" class="col-lg-4 control-label"><?php echo _("Instance/Facility Code"); ?> </label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="fCode" name="fCode" placeholder="<?php echo _('Facility Code');?>" title="<?php echo _('Please enter instance/facility code');?>" value="<?php echo $instanceResult[0]['instance_facility_code']; ?>" />
+												<input type="text" class="form-control readPage" id="fCode" name="fCode" placeholder="<?php echo _('Facility Code'); ?>" title="<?php echo _('Please enter instance/facility code'); ?>" value="<?php echo $instanceResult[0]['instance_facility_code']; ?>" />
 											</div>
 										</div>
 									</div>
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="instance_type" class="col-lg-4 control-label"><?php echo _("Instance/Facility Type");?> <span class="mandatory">*</span></label>
+											<label for="instance_type" class="col-lg-4 control-label"><?php echo _("Instance/Facility Type"); ?> <span class="mandatory">*</span></label>
 											<div class="col-lg-8">
-												<select class="form-control isRequired readPage" name="instance_type" id="instance_type" title="<?php echo _('Please select the instance type');?>">
-													<option value="Viral Load Lab" <?php echo ('Viral Load Lab' == $arr['instance_type']) ? "selected='selected'" : "" ?>><?php echo _("Viral Load Lab");?></option>
-													<option value="Clinic/Lab" <?php echo ('Clinic/Lab' == $arr['instance_type']) ? "selected='selected'" : "" ?>><?php echo _("Clinic/Lab");?></option>
-													<option value="Both" <?php echo ('Both' == $arr['instance_type']) ? "selected='selected'" : "" ?>><?php echo _("Both");?></option>
+												<select class="form-control isRequired readPage" name="instance_type" id="instance_type" title="<?php echo _('Please select the instance type'); ?>">
+													<option value="Viral Load Lab" <?php echo ('Viral Load Lab' == $arr['instance_type']) ? "selected='selected'" : "" ?>><?php echo _("Viral Load Lab"); ?></option>
+													<option value="Clinic/Lab" <?php echo ('Clinic/Lab' == $arr['instance_type']) ? "selected='selected'" : "" ?>><?php echo _("Clinic/Lab"); ?></option>
+													<option value="Both" <?php echo ('Both' == $arr['instance_type']) ? "selected='selected'" : "" ?>><?php echo _("Both"); ?></option>
 												</select>
 											</div>
 										</div>
@@ -103,7 +105,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row" style="display:none;">
 										<div class="col-md-7">
 											<div class="form-group">
-												<label for="" class="col-lg-4 control-label"><?php echo _("Logo Image");?> </label>
+												<label for="" class="col-lg-4 control-label"><?php echo _("Logo Image"); ?> </label>
 												<div class="col-lg-8">
 													<div class="fileinput fileinput-new instanceLogo" data-provides="fileinput">
 														<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
@@ -116,19 +118,19 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															<?php } ?>
 														</div>
 														<div>
-															<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select image");?></span><span class="fileinput-exists"><?php echo _("Change");?></span>
-																<input class="readPage" type="file" id="instanceLogo" name="instanceLogo" title="<?php echo _('Please select logo image');?>" onchange="getNewInstanceImage('<?php echo $instanceResult[0]['instance_facility_logo']; ?>');">
+															<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select image"); ?></span><span class="fileinput-exists"><?php echo _("Change"); ?></span>
+																<input class="readPage" type="file" id="instanceLogo" name="instanceLogo" title="<?php echo _('Please select logo image'); ?>" onchange="getNewInstanceImage('<?php echo $instanceResult[0]['instance_facility_logo']; ?>');">
 															</span>
 															<?php
 															if (isset($instanceResult[0]['instance_facility_logo']) && trim($instanceResult[0]['instance_facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $instanceResult[0]['instance_facility_logo'])) {
 															?>
-																<a id="clearInstanceImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearInstanceImage('<?php echo $instanceResult[0]['instance_facility_logo']; ?>')"><?php echo _("Clear");?></a>
+																<a id="clearInstanceImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearInstanceImage('<?php echo $instanceResult[0]['instance_facility_logo']; ?>')"><?php echo _("Clear"); ?></a>
 															<?php } ?>
-															<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _("Remove");?></a>
+															<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _("Remove"); ?></a>
 														</div>
 													</div>
 													<div class="box-body">
-													<?php echo _("Please make sure logo image size of");?>: <code>80x80</code>
+														<?php echo _("Please make sure logo image size of"); ?>: <code>80x80</code>
 													</div>
 												</div>
 											</div>
@@ -139,15 +141,15 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h3 class="panel-title"><?php echo _("Global Settings");?></h3>
+								<h3 class="panel-title"><?php echo _("Global Settings"); ?></h3>
 							</div>
 							<div class="panel-body">
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="vl_form" class="col-lg-4 control-label"><?php echo _("Choose Country of Installation");?> <span class="mandatory">*</span> </label>
+											<label for="vl_form" class="col-lg-4 control-label"><?php echo _("Choose Country of Installation"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
-												<select class="form-control isRequired readPage" name="vl_form" id="vl_form" title="<?php echo _('Please select the viral load form');?>">
+												<select class="form-control isRequired readPage" name="vl_form" id="vl_form" title="<?php echo _('Please select the viral load form'); ?>">
 													<?php
 													foreach ($formResult as $val) {
 													?>
@@ -163,9 +165,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="default_time_zone" class="col-lg-4 control-label"><?php echo _("Default Time Zone");?> </label>
+											<label for="default_time_zone" class="col-lg-4 control-label"><?php echo _("Default Time Zone"); ?> </label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _('eg: Africa/Harare');?>" title="<?php echo _('Please enter default time zone');?>" value="<?php echo $arr['default_time_zone']; ?>" />
+												<input type="text" class="form-control readPage" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _('eg: Africa/Harare'); ?>" title="<?php echo _('Please enter default time zone'); ?>" value="<?php echo $arr['default_time_zone']; ?>" />
 											</div>
 										</div>
 									</div>
@@ -173,9 +175,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="header" class="col-lg-4 control-label"><?php echo _("Header");?> </label>
+											<label for="header" class="col-lg-4 control-label"><?php echo _("Header"); ?> </label>
 											<div class="col-lg-8">
-												<textarea class="form-control readPage" id="header" name="header" placeholder="<?php echo _('Header');?>" title="<?php echo _('Please enter header');?>" style="width:100%;min-height:80px;max-height:100px;"><?php echo $arr['header']; ?></textarea>
+												<textarea class="form-control readPage" id="header" name="header" placeholder="<?php echo _('Header'); ?>" title="<?php echo _('Please enter header'); ?>" style="width:100%;min-height:80px;max-height:100px;"><?php echo $arr['header']; ?></textarea>
 											</div>
 										</div>
 									</div>
@@ -184,7 +186,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="" class="col-lg-4 control-label"><?php echo _("Logo Image");?> </label>
+											<label for="" class="col-lg-4 control-label"><?php echo _("Logo Image"); ?> </label>
 											<div class="col-lg-8">
 												<div class="fileinput fileinput-new logo" data-provides="fileinput">
 													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
@@ -197,19 +199,19 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														<?php } ?>
 													</div>
 													<div>
-														<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select image");?></span><span class="fileinput-exists"><?php echo _("Change");?></span>
-															<input type="file" class="readPage" id="logo" name="logo" title="<?php echo _('Please select logo image');?>" onchange="getNewImage('<?php echo $arr['logo']; ?>');">
+														<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select image"); ?></span><span class="fileinput-exists"><?php echo _("Change"); ?></span>
+															<input type="file" class="readPage" id="logo" name="logo" title="<?php echo _('Please select logo image'); ?>" onchange="getNewImage('<?php echo $arr['logo']; ?>');">
 														</span>
 														<?php
 														if (isset($arr['logo']) && trim($arr['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) {
 														?>
-															<a id="clearImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearImage('<?php echo $arr['logo']; ?>')"><?php echo _("Clear");?></a>
+															<a id="clearImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearImage('<?php echo $arr['logo']; ?>')"><?php echo _("Clear"); ?></a>
 														<?php } ?>
-														<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _("Remove");?></a>
+														<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _("Remove"); ?></a>
 													</div>
 												</div>
 												<div class="box-body">
-												<?php echo _("Please make sure logo image size of");?>: <code>80x80</code>
+													<?php echo _("Please make sure logo image size of"); ?>: <code>80x80</code>
 												</div>
 											</div>
 										</div>
@@ -220,10 +222,10 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="edit_profile" class="col-lg-4 control-label"><?php echo _("Allow users to Edit Profile");?> </label>
+											<label for="edit_profile" class="col-lg-4 control-label"><?php echo _("Allow users to Edit Profile"); ?> </label>
 											<div class="col-lg-8">
-												<input type="radio" class="readPage" id="edit_profile_yes" name="edit_profile" value="yes" <?php echo ($arr['edit_profile'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Yes");?>&nbsp;&nbsp;
-												<input type="radio" class="readPage" id="edit_profile_no" name="edit_profile" value="no" <?php echo ($arr['edit_profile'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("No");?>
+												<input type="radio" class="readPage" id="edit_profile_yes" name="edit_profile" value="yes" <?php echo ($arr['edit_profile'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Yes"); ?>&nbsp;&nbsp;
+												<input type="radio" class="readPage" id="edit_profile_no" name="edit_profile" value="no" <?php echo ($arr['edit_profile'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("No"); ?>
 											</div>
 										</div>
 									</div>
@@ -234,12 +236,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
 										<div class="form-group" style="height:38px;">
-											<label for="barcode_format" class="col-lg-4 control-label"><?php echo _("Barcode Format");?></label>
+											<label for="barcode_format" class="col-lg-4 control-label"><?php echo _("Barcode Format"); ?></label>
 											<div class="col-lg-8">
-												<select class="form-control isRequired readPage" name="barcode_format" id="barcode_format" title="<?php echo _('Please select the Barcode type');?>">
-													<option value="C39" <?php echo ('C39' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _("C39");?></option>
-													<option value="C39+" <?php echo ('C39+' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _("C39+");?></option>
-													<option value="C128" <?php echo ('C128' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _("C128");?></option>
+												<select class="form-control isRequired readPage" name="barcode_format" id="barcode_format" title="<?php echo _('Please select the Barcode type'); ?>">
+													<option value="C39" <?php echo ('C39' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _("C39"); ?></option>
+													<option value="C39+" <?php echo ('C39+' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _("C39+"); ?></option>
+													<option value="C128" <?php echo ('C128' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _("C128"); ?></option>
 												</select>
 											</div>
 										</div>
@@ -252,11 +254,11 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row" style="margin-top:10px;">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="auto_approval" class="col-lg-4 control-label"><?php echo _("Same user can Review and Approve");?> </label>
+											<label for="auto_approval" class="col-lg-4 control-label"><?php echo _("Same user can Review and Approve"); ?> </label>
 											<div class="col-lg-8">
 												<br>
-												<input type="radio" class="readPage" id="user_review_yes" name="user_review_approve" value="yes" <?php echo ($arr['user_review_approve'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Yes");?>&nbsp;&nbsp;
-												<input type="radio" class="readPage" id="user_review_no" name="user_review_approve" value="no" <?php echo ($arr['user_review_approve'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("No");?>
+												<input type="radio" class="readPage" id="user_review_yes" name="user_review_approve" value="yes" <?php echo ($arr['user_review_approve'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Yes"); ?>&nbsp;&nbsp;
+												<input type="radio" class="readPage" id="user_review_no" name="user_review_approve" value="no" <?php echo ($arr['user_review_approve'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("No"); ?>
 											</div>
 										</div>
 									</div>
@@ -264,27 +266,27 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
 										<div class="form-group" style="height:38px;">
-											<label for="manager_email" class="col-lg-4 control-label"><?php echo _("Manager Email");?></label>
+											<label for="manager_email" class="col-lg-4 control-label"><?php echo _("Manager Email"); ?></label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="manager_email" name="manager_email" placeholder="<?php echo _('eg. manager1@example.com, manager2@example.com');?>" title="<?php echo _('Please enter manager email');?>" value="<?php echo $arr['manager_email']; ?>" />
+												<input type="text" class="form-control readPage" id="manager_email" name="manager_email" placeholder="<?php echo _('eg. manager1@example.com, manager2@example.com'); ?>" title="<?php echo _('Please enter manager email'); ?>" value="<?php echo $arr['manager_email']; ?>" />
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-7" style="text-align:center;">
-										<code><?php echo _("You can enter multiple emails by separating them with commas");?></code>
+										<code><?php echo _("You can enter multiple emails by separating them with commas"); ?></code>
 									</div>
 								</div><br />
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="instance_type" class="col-lg-4 control-label"><?php echo _("Sample ID Barcode Label Printing");?> <span class="mandatory">*</span> </label>
+											<label for="instance_type" class="col-lg-4 control-label"><?php echo _("Sample ID Barcode Label Printing"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
-												<select class="form-control isRequired readPage" name="bar_code_printing" id="bar_code_printing" title="<?php echo _('Please select the barcode printing');?>">
-													<option value="off" <?php echo ('off' == $arr['bar_code_printing']) ? "selected='selected'" : "" ?>><?php echo _("Off");?></option>
-													<option value="zebra-printer" <?php echo ('zebra-printer' == $arr['bar_code_printing']) ? "selected='selected'" : "" ?>><?php echo _("Zebra Printer");?></option>
-													<option value="dymo-labelwriter-450" <?php echo ('dymo-labelwriter-450' == $arr['bar_code_printing']) ? "selected='selected'" : "" ?>><?php echo _("Dymo LabelWriter 450");?></option>
+												<select class="form-control isRequired readPage" name="bar_code_printing" id="bar_code_printing" title="<?php echo _('Please select the barcode printing'); ?>">
+													<option value="off" <?php echo ('off' == $arr['bar_code_printing']) ? "selected='selected'" : "" ?>><?php echo _("Off"); ?></option>
+													<option value="zebra-printer" <?php echo ('zebra-printer' == $arr['bar_code_printing']) ? "selected='selected'" : "" ?>><?php echo _("Zebra Printer"); ?></option>
+													<option value="dymo-labelwriter-450" <?php echo ('dymo-labelwriter-450' == $arr['bar_code_printing']) ? "selected='selected'" : "" ?>><?php echo _("Dymo LabelWriter 450"); ?></option>
 												</select>
 											</div>
 										</div>
@@ -293,35 +295,49 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row" style="margin-top:10px;">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="import_non_matching_sample" class="col-lg-4 control-label"><?php echo _("Allow Samples not matching the VLSM Sample IDs while importing results manually");?></label>
+											<label for="import_non_matching_sample" class="col-lg-4 control-label"><?php echo _("Allow Samples not matching the VLSM Sample IDs while importing results manually"); ?></label>
 											<div class="col-lg-8">
 												<br>
 												<br>
-												<input class="readPage" type="radio" id="import_non_matching_sample_yes" name="import_non_matching_sample" value="yes" <?php echo ($arr['import_non_matching_sample'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Yes");?>&nbsp;&nbsp;
-												<input class="readPage" type="radio" id="import_non_matching_sample_no" name="import_non_matching_sample" value="no" <?php echo ($arr['import_non_matching_sample'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("No");?>
-												<br><br> <code><?php echo _("While importing results from CSV/Excel file, should we import results of Sample IDs that do not match the Sample IDs present in VLSM database");?></code>
+												<input class="readPage" type="radio" id="import_non_matching_sample_yes" name="import_non_matching_sample" value="yes" <?php echo ($arr['import_non_matching_sample'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Yes"); ?>&nbsp;&nbsp;
+												<input class="readPage" type="radio" id="import_non_matching_sample_no" name="import_non_matching_sample" value="no" <?php echo ($arr['import_non_matching_sample'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("No"); ?>
+												<br><br> <code><?php echo _("While importing results from CSV/Excel file, should we import results of Sample IDs that do not match the Sample IDs present in VLSM database"); ?></code>
 											</div>
 										</div>
 									</div>
 								</div>
-
+								<div class="row">
+									<div class="col-md-7">
+										<div class="form-group">
+											<label for="app_locale" class="col-lg-4 control-label"><?php echo _("VLSM Locale"); ?> <span class="mandatory">*</span> </label>
+											<div class="col-lg-8">
+												<select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _('Please select the VLSM Locale'); ?>">
+													<option value="">-- Select --</option>
+													<?php foreach ($localeLists as $locale) { ?>
+														<option value="<?php echo $locale; ?>" <?php echo ($arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
+													<?php } ?>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 						<?php if ($systemConfig['modules']['vl']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h3 class="panel-title"><?php echo _("Viral Load Settings");?></h3>
+									<h3 class="panel-title"><?php echo _("Viral Load Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
 
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="show_date" class="col-lg-2 control-label"><?php echo _("Date For Patient ART NO");?>. </label>
+												<label for="show_date" class="col-lg-2 control-label"><?php echo _("Date For Patient ART NO"); ?>. </label>
 												<div class="col-lg-10">
 													<br>
-													<input type="radio" class="readPage" id="show_full_date_yes" name="show_date" value="yes" <?php echo ($arr['show_date'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Full Date");?>&nbsp;&nbsp;
-													<input type="radio" class="readPage" id="show_full_date_no" name="show_date" value="no" <?php echo ($arr['show_date'] == 'no' || $arr['show_date'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Month and Year");?>
+													<input type="radio" class="readPage" id="show_full_date_yes" name="show_date" value="yes" <?php echo ($arr['show_date'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Full Date"); ?>&nbsp;&nbsp;
+													<input type="radio" class="readPage" id="show_full_date_no" name="show_date" value="no" <?php echo ($arr['show_date'] == 'no' || $arr['show_date'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Month and Year"); ?>
 												</div>
 											</div>
 										</div>
@@ -340,11 +356,11 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="viral_load_threshold_limit" class="col-lg-2 control-label"><?php echo _("Viral Load Threshold Limit");?><span class="mandatory">*</span></label>
+												<label for="viral_load_threshold_limit" class="col-lg-2 control-label"><?php echo _("Viral Load Threshold Limit"); ?><span class="mandatory">*</span></label>
 												<div class="col-lg-10">
 													<div class="input-group" style="max-width:200px;">
-														<input type="text" class="form-control readPage forceNumeric isNumeric isRequired" id="viral_load_threshold_limit" name="viral_load_threshold_limit" placeholder="<?php echo _('Viral Load Threshold Limit');?>" title="<?php echo _('Please enter VL threshold limit');?>" value="<?php echo $arr['viral_load_threshold_limit']; ?>" />
-														<span class="input-group-addon"><?php echo _("cp/ml");?></span>
+														<input type="text" class="form-control readPage forceNumeric isNumeric isRequired" id="viral_load_threshold_limit" name="viral_load_threshold_limit" placeholder="<?php echo _('Viral Load Threshold Limit'); ?>" title="<?php echo _('Please enter VL threshold limit'); ?>" value="<?php echo $arr['viral_load_threshold_limit']; ?>" />
+														<span class="input-group-addon"><?php echo _("cp/ml"); ?></span>
 													</div>
 
 												</div>
@@ -355,7 +371,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="auto_approval" class="col-lg-2 control-label"><?php echo _("Sample Code");?><br><?php echo _("Format");?> <span class="mandatory">*</span> </label>
+												<label for="auto_approval" class="col-lg-2 control-label"><?php echo _("Sample Code"); ?><br><?php echo _("Format"); ?> <span class="mandatory">*</span> </label>
 												<div class="col-lg-10">
 													<?php
 													$sPrefixMMYY = '';
@@ -370,12 +386,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														$sPrefixYYDisplay = '';
 													}
 													?>
-													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format');?>" class="isRequired readPage" id="auto_generate_yy" name="sample_code" value="YY" <?php echo ($arr['sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="boxWidth prefixYY readPage" id="prefixYY" name="sample_code_prefix" title="<?php echo _('Enter Prefix');?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format');?>" class="isRequired readPage" id="auto_generate_mmyy" name="sample_code" value="MMYY" <?php echo ($arr['sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="boxWidth prefixMMYY readPage" id="prefixMMYY" name="sample_code_prefix" title="<?php echo _('Enter Prefix');?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format');?>" class="isRequired readPage" id="auto_generate" name="sample_code" value="auto" <?php echo ($arr['sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format');?>" class="isRequired readPage" id="auto_generate2" name="sample_code" value="auto2" <?php echo ($arr['sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto");?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format');?>" class="isRequired readPage" id="numeric" name="sample_code" value="numeric" <?php echo ($arr['sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format');?>" class="isRequired readPage" id="alpha_numeric" name="sample_code" value="alphanumeric" <?php echo ($arr['sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric");?>
+													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format'); ?>" class="isRequired readPage" id="auto_generate_yy" name="sample_code" value="YY" <?php echo ($arr['sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="boxWidth prefixYY readPage" id="prefixYY" name="sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format'); ?>" class="isRequired readPage" id="auto_generate_mmyy" name="sample_code" value="MMYY" <?php echo ($arr['sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="boxWidth prefixMMYY readPage" id="prefixMMYY" name="sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format'); ?>" class="isRequired readPage" id="auto_generate" name="sample_code" value="auto" <?php echo ($arr['sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format'); ?>" class="isRequired readPage" id="auto_generate2" name="sample_code" value="auto2" <?php echo ($arr['sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto"); ?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format'); ?>" class="isRequired readPage" id="numeric" name="sample_code" value="numeric" <?php echo ($arr['sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" title="<?php echo _('Please select the Viral Load Sample Code Format'); ?>" class="isRequired readPage" id="alpha_numeric" name="sample_code" value="alphanumeric" <?php echo ($arr['sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric"); ?>
 												</div>
 											</div>
 										</div>
@@ -384,25 +400,25 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div id="auto-sample-eg" class="row" style="display:<?php echo ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
 										<div class="col-md-12" style="text-align:center;">
 											<code id="auto-sample-code" class="autoSample" style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter");?>
+												<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
 											</code>
 											<code id="auto-sample-code2" class="autoSample" style="display:<?php echo ($arr['sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. R+Year+Province Code+VL+Increment Counter (R18NCDVL0001)");?>
+												<?php echo _("eg. R+Year+Province Code+VL+Increment Counter (R18NCDVL0001)"); ?>
 											</code>
 											<code id="auto-sample-code-MMYY" class="autoSample" style="display:<?php echo ($arr['sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Month+Year+Increment Counter (VL0517999)");?>
+												<?php echo _("eg. Prefix+Month+Year+Increment Counter (VL0517999)"); ?>
 											</code>
 											<code id="auto-sample-code-YY" class="autoSample" style="display:<?php echo ($arr['sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Year+Increment Counter (VL17999)");?>
+												<?php echo _("eg. Prefix+Year+Increment Counter (VL17999)"); ?>
 											</code>
 										</div>
 									</div><br />
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code Length");?> <span class="mandatory " style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="min_length" name="min_length" <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min');?>" title="<?php echo _('Please enter sample code min length');?>" value="<?php echo ($arr['sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="min_length" name="min_length" <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min'); ?>" title="<?php echo _('Please enter sample code min length'); ?>" value="<?php echo ($arr['sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -410,9 +426,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="min_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length");?> <span class="mandatory " style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="min_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="max_length" name="max_length" <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max');?>" title="<?php echo _('Please enter sample code max length');?>" value="<?php echo ($arr['sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="max_length" name="max_length" <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max'); ?>" title="<?php echo _('Please enter sample code max length'); ?>" value="<?php echo ($arr['sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -421,12 +437,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="lockApprovedVlSamples" class="col-lg-2 control-label"><?php echo _("Lock Approved VL Samples");?><span class="mandatory ">*</span></label>
+													<label for="lockApprovedVlSamples" class="col-lg-2 control-label"><?php echo _("Lock Approved VL Samples"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
-														<select id="lockApprovedVlSamples" name="lockApprovedVlSamples" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample');?>">
-															<option value=""><?php echo _("--Select--");?></option>
-															<option value="yes" <?php echo (isset($arr['lock_approved_vl_samples']) && $arr['lock_approved_vl_samples'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes");?></option>
-															<option value="no" <?php echo (isset($arr['lock_approved_vl_samples']) && $arr['lock_approved_vl_samples'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No");?></option>
+														<select id="lockApprovedVlSamples" name="lockApprovedVlSamples" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample'); ?>">
+															<option value=""><?php echo _("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['lock_approved_vl_samples']) && $arr['lock_approved_vl_samples'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+															<option value="no" <?php echo (isset($arr['lock_approved_vl_samples']) && $arr['lock_approved_vl_samples'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
 														</select>
 													</div>
 												</div>
@@ -437,12 +453,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="vl_suppression_target" class="col-lg-2 control-label"><?php echo _("VL Suppression Target");?><span class="mandatory ">*</span></label>
+													<label for="vl_suppression_target" class="col-lg-2 control-label"><?php echo _("VL Suppression Target"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
-														<select id="vl_suppression_target" name="vl_suppression_target" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample');?>">
-															<option value=""><?php echo _("--Select--");?></option>
-															<option value="yes" <?php echo (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Enable");?></option>
-															<option value="no" <?php echo (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("Disable");?></option>
+														<select id="vl_suppression_target" name="vl_suppression_target" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample'); ?>">
+															<option value=""><?php echo _("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Enable"); ?></option>
+															<option value="no" <?php echo (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("Disable"); ?></option>
 														</select>
 													</div>
 												</div>
@@ -453,12 +469,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="vl_monthly_target" class="col-lg-2 control-label"><?php echo _("VL Monthly Target");?><span class="mandatory ">*</span></label>
+													<label for="vl_monthly_target" class="col-lg-2 control-label"><?php echo _("VL Monthly Target"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
-														<select id="vl_monthly_target" name="vl_monthly_target" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample');?>">
-															<option value=""><?php echo _("--Select--");?></option>
-															<option value="yes" <?php echo (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Enable");?></option>
-															<option value="no" <?php echo (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("Disable");?></option>
+														<select id="vl_monthly_target" name="vl_monthly_target" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample'); ?>">
+															<option value=""><?php echo _("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Enable"); ?></option>
+															<option value="no" <?php echo (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("Disable"); ?></option>
 														</select>
 													</div>
 												</div>
@@ -469,9 +485,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="vl_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days");?></label>
+													<label for="vl_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days"); ?></label>
 													<div class="col-lg-4">
-														<input value="<?php echo $arr['vl_sample_expiry_after_days']; ?>" type="text" id="vl_sample_expiry_after_days" name="vl_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days');?>">
+														<input value="<?php echo $arr['vl_sample_expiry_after_days']; ?>" type="text" id="vl_sample_expiry_after_days" name="vl_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days'); ?>">
 													</div>
 												</div>
 											</div>
@@ -480,9 +496,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="vl_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days");?></label>
+												<label for="vl_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days"); ?></label>
 												<div class="col-lg-4">
-													<input value="<?php echo $arr['vl_sample_lock_after_days']; ?>" type="text" id="vl_sample_lock_after_days" name="vl_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days');?>">
+													<input value="<?php echo $arr['vl_sample_lock_after_days']; ?>" type="text" id="vl_sample_lock_after_days" name="vl_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days'); ?>">
 												</div>
 											</div>
 										</div>
@@ -493,13 +509,13 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						if ($systemConfig['modules']['eid']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h3 class="panel-title"><?php echo _("EID Settings");?></h3>
+									<h3 class="panel-title"><?php echo _("EID Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="eid_sample_code" class="col-lg-2 control-label"><?php echo _("Sample Code");?><br><?php echo _("Format");?> <span class="mandatory">*</span> </label>
+												<label for="eid_sample_code" class="col-lg-2 control-label"><?php echo _("Sample Code"); ?><br><?php echo _("Format"); ?> <span class="mandatory">*</span> </label>
 												<div class="col-lg-10">
 													<?php
 													$sPrefixMMYY = 'EID';
@@ -514,12 +530,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														$sPrefixYYDisplay = '';
 													}
 													?>
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format');?>" id="eid_auto_generate_yy" name="eid_sample_code" value="YY" <?php echo ($arr['eid_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="eid_boxWidth eid_prefixYY readPage" id="eid_prefixYY" name="eid_sample_code_prefix" title="<?php echo _('Enter Prefix');?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format');?>" id="eid_auto_generate_mmyy" name="eid_sample_code" value="MMYY" <?php echo ($arr['eid_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="eid_boxWidth eid_prefixMMYY readPage" id="eid_prefixMMYY" name="eid_sample_code_prefix" title="<?php echo _('Enter Prefix');?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format');?>" id="eid_auto_generate" name="eid_sample_code" value="auto" <?php echo ($arr['eid_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="eid_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format');?>" id="eid_auto_generate2" name="eid_sample_code" value="auto2" <?php echo ($arr['eid_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="eid_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto");?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format');?>" id="eid_numeric" name="eid_sample_code" value="numeric" <?php echo ($arr['eid_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format');?>" id="eid_alpha_numeric" name="eid_sample_code" value="alphanumeric" <?php echo ($arr['eid_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric");?>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format'); ?>" id="eid_auto_generate_yy" name="eid_sample_code" value="YY" <?php echo ($arr['eid_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="eid_boxWidth eid_prefixYY readPage" id="eid_prefixYY" name="eid_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format'); ?>" id="eid_auto_generate_mmyy" name="eid_sample_code" value="MMYY" <?php echo ($arr['eid_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="eid_boxWidth eid_prefixMMYY readPage" id="eid_prefixMMYY" name="eid_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format'); ?>" id="eid_auto_generate" name="eid_sample_code" value="auto" <?php echo ($arr['eid_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="eid_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format'); ?>" id="eid_auto_generate2" name="eid_sample_code" value="auto2" <?php echo ($arr['eid_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="eid_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto"); ?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format'); ?>" id="eid_numeric" name="eid_sample_code" value="numeric" <?php echo ($arr['eid_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the EID Sample Code Format'); ?>" id="eid_alpha_numeric" name="eid_sample_code" value="alphanumeric" <?php echo ($arr['eid_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric"); ?>
 												</div>
 											</div>
 										</div>
@@ -528,25 +544,25 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div id="eid_auto-sample-eg" class="row" style="display:<?php echo ($arr['eid_sample_code'] == 'auto' || $arr['eid_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
 										<div class="col-md-12" style="text-align:center;">
 											<code id="eid_auto-sample-code" class="eid_autoSample" style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter");?>
+												<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
 											</code>
 											<code id="eid_auto-sample-code2" class="eid_autoSample" style="display:<?php echo ($arr['eid_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. R+Year+Province Code+EID+Increment Counter (R18NCDEID0001)");?>
+												<?php echo _("eg. R+Year+Province Code+EID+Increment Counter (R18NCDEID0001)"); ?>
 											</code>
 											<code id="eid_auto-sample-code-MMYY" class="eid_autoSample" style="display:<?php echo ($arr['eid_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Month+Year+Increment Counter (EID0517999)");?>
+												<?php echo _("eg. Prefix+Month+Year+Increment Counter (EID0517999)"); ?>
 											</code>
 											<code id="eid_auto-sample-code-YY" class="eid_autoSample" style="display:<?php echo ($arr['eid_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Year+Increment Counter (EID17999)");?>
+												<?php echo _("eg. Prefix+Year+Increment Counter (EID17999)"); ?>
 											</code>
 										</div>
 									</div><br />
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="eid_min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code");?> <?php echo _("Length");?> <span class="mandatory " style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="eid_min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code"); ?> <?php echo _("Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="eid_min_length" name="eid_min_length" <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min');?>" title="<?php echo _('Please enter sample code min length');?>" value="<?php echo ($arr['eid_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="eid_min_length" name="eid_min_length" <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min'); ?>" title="<?php echo _('Please enter sample code min length'); ?>" value="<?php echo ($arr['eid_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -554,9 +570,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="eid_max_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length");?> <span class="mandatory " style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="eid_max_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="eid_max_length" name="eid_max_length" <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max');?>" title="<?php echo _('Please enter sample code max length');?>" value="<?php echo ($arr['eid_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="eid_max_length" name="eid_max_length" <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max'); ?>" title="<?php echo _('Please enter sample code max length'); ?>" value="<?php echo ($arr['eid_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -565,12 +581,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="lockApprovedEidSamples" class="col-lg-2 control-label"><?php echo _("Lock Approved EID Samples");?><span class="mandatory ">*</span></label>
+													<label for="lockApprovedEidSamples" class="col-lg-2 control-label"><?php echo _("Lock Approved EID Samples"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
-														<select id="lockApprovedEidSamples" name="lockApprovedEidSamples" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample');?>">
-															<option value=""><?php echo _("--Select--");?></option>
-															<option value="yes" <?php echo (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes");?></option>
-															<option value="no" <?php echo (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No");?></option>
+														<select id="lockApprovedEidSamples" name="lockApprovedEidSamples" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample'); ?>">
+															<option value=""><?php echo _("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+															<option value="no" <?php echo (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
 														</select>
 													</div>
 												</div>
@@ -581,9 +597,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="eid_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days");?></label>
+													<label for="eid_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days"); ?></label>
 													<div class="col-lg-4">
-														<input value="<?php echo $arr['eid_sample_expiry_after_days']; ?>" type="text" id="eid_sample_expiry_after_days" name="eid_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days');?>">
+														<input value="<?php echo $arr['eid_sample_expiry_after_days']; ?>" type="text" id="eid_sample_expiry_after_days" name="eid_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days'); ?>">
 													</div>
 												</div>
 											</div>
@@ -592,9 +608,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="eid_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days");?></label>
+												<label for="eid_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days"); ?></label>
 												<div class="col-lg-4">
-													<input value="<?php echo $arr['eid_sample_lock_after_days']; ?>" type="text" id="eid_sample_lock_after_days" name="eid_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days');?>">
+													<input value="<?php echo $arr['eid_sample_lock_after_days']; ?>" type="text" id="eid_sample_lock_after_days" name="eid_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days'); ?>">
 												</div>
 											</div>
 										</div>
@@ -605,30 +621,30 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						if ($systemConfig['modules']['covid19']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h3 class="panel-title"><?php echo _("Covid-19 Settings");?></h3>
+									<h3 class="panel-title"><?php echo _("Covid-19 Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
 												<?php if (isset($arr['covid19_report_type']) && $arr['covid19_report_type'] != '') { ?>
-													<label for="covid19ReportType" class="col-lg-2 control-label"><?php echo _("Covid-19 Excel Export Report Format");?><span class="mandatory ">*</span></label>
+													<label for="covid19ReportType" class="col-lg-2 control-label"><?php echo _("Covid-19 Excel Export Report Format"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
-														<select name="covid19ReportType" id="covid19ReportType" class="form-control isRequired readPage" title="<?php echo _('Please select covid19 report type');?>">
-															<option value=""><?php echo _("-- Select --");?></option>
-															<option value='who' <?php echo (empty($arr['covid19_report_type']) || $arr['covid19_report_type'] == 'standard') ? "selected='selected'" : ""; ?>> <?php echo _("Standard");?> </option>
-															<option value='rwanda' <?php echo ($arr['covid19_report_type'] == 'rwanda') ? "selected='selected'" : ""; ?>> <?php echo _("Rwanda");?> </option>
-															<option value='drc' <?php echo ($arr['covid19_report_type'] == 'drc') ? "selected='selected'" : ""; ?>> <?php echo _("DRC");?> </option>
+														<select name="covid19ReportType" id="covid19ReportType" class="form-control isRequired readPage" title="<?php echo _('Please select covid19 report type'); ?>">
+															<option value=""><?php echo _("-- Select --"); ?></option>
+															<option value='who' <?php echo (empty($arr['covid19_report_type']) || $arr['covid19_report_type'] == 'standard') ? "selected='selected'" : ""; ?>> <?php echo _("Standard"); ?> </option>
+															<option value='rwanda' <?php echo ($arr['covid19_report_type'] == 'rwanda') ? "selected='selected'" : ""; ?>> <?php echo _("Rwanda"); ?> </option>
+															<option value='drc' <?php echo ($arr['covid19_report_type'] == 'drc') ? "selected='selected'" : ""; ?>> <?php echo _("DRC"); ?> </option>
 														</select>
 													</div>
 												<?php }
 												if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] != '') { ?>
-													<label for="covid19PositiveConfirmatoryTestsRequiredByCentralLab" class="col-lg-2 control-label"><?php echo _("Covid-19 Positive Confirmatory Tests Required");?><span class="mandatory ">*</span></label>
+													<label for="covid19PositiveConfirmatoryTestsRequiredByCentralLab" class="col-lg-2 control-label"><?php echo _("Covid-19 Positive Confirmatory Tests Required"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
-														<select name="covid19PositiveConfirmatoryTestsRequiredByCentralLab" id="covid19PositiveConfirmatoryTestsRequiredByCentralLab" class="form-control readPage isRequired" title="<?php echo _('Please select covid19 report type');?>">
-															<option value=""><?php echo _("-- Select --");?></option>
-															<option value='yes' <?php echo ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') ? "selected='selected'" : ""; ?>> <?php echo _("Yes");?> </option>
-															<option value='no' <?php echo ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'no') ? "selected='selected'" : ""; ?>> <?php echo _("No");?> </option>
+														<select name="covid19PositiveConfirmatoryTestsRequiredByCentralLab" id="covid19PositiveConfirmatoryTestsRequiredByCentralLab" class="form-control readPage isRequired" title="<?php echo _('Please select covid19 report type'); ?>">
+															<option value=""><?php echo _("-- Select --"); ?></option>
+															<option value='yes' <?php echo ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') ? "selected='selected'" : ""; ?>> <?php echo _("Yes"); ?> </option>
+															<option value='no' <?php echo ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'no') ? "selected='selected'" : ""; ?>> <?php echo _("No"); ?> </option>
 														</select>
 													</div>
 												<?php } ?>
@@ -639,7 +655,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="covid19_sample_code" class="col-lg-2 control-label"><?php echo _("Sample Code");?><br><?php echo _("Format");?> <span class="mandatory">*</span> </label>
+												<label for="covid19_sample_code" class="col-lg-2 control-label"><?php echo _("Sample Code"); ?><br><?php echo _("Format"); ?> <span class="mandatory">*</span> </label>
 												<div class="col-lg-10">
 													<?php
 													$sPrefixMMYY = 'C19';
@@ -668,16 +684,16 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div id="covid19_auto-sample-eg" class="row" style="display:<?php echo ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
 										<div class="col-md-12" style="text-align:center;">
 											<code id="covid19_auto-sample-code" class="covid19_autoSample" style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter");?>
+												<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
 											</code>
 											<code id="covid19_auto-sample-code2" class="covid19_autoSample" style="display:<?php echo ($arr['covid19_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. R+Year+Province Code+covid19+Increment Counter (R18NCDC190001)");?>
+												<?php echo _("eg. R+Year+Province Code+covid19+Increment Counter (R18NCDC190001)"); ?>
 											</code>
 											<code id="covid19_auto-sample-code-MMYY" class="covid19_autoSample" style="display:<?php echo ($arr['covid19_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Month+Year+Increment Counter (C190517999)");?>
+												<?php echo _("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
 											</code>
 											<code id="covid19_auto-sample-code-YY" class="covid19_autoSample" style="display:<?php echo ($arr['covid19_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Year+Increment Counter (C1917999)");?>
+												<?php echo _("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
 											</code>
 										</div>
 									</div><br />
@@ -685,13 +701,13 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="covid19_min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code Length");?> <span class="mandatory " style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="covid19_min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="covid19_min_length" name="covid19_min_length" <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min');?>" title="<?php echo _('Please enter sample code min length');?>" value="<?php echo ($arr['covid19_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="covid19_min_length" name="covid19_min_length" <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min'); ?>" title="<?php echo _('Please enter sample code min length'); ?>" value="<?php echo ($arr['covid19_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
 												</div>
-												<label for="covid19_max_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length");?> <span class="mandatory " style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="covid19_max_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="covid19_max_length" name="covid19_max_length" <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max');?>" title="<?php echo _('Please enter sample code max length');?>" value="<?php echo ($arr['covid19_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="covid19_max_length" name="covid19_max_length" <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max'); ?>" title="<?php echo _('Please enter sample code max length'); ?>" value="<?php echo ($arr['covid19_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
 												</div>
 											</div>
 										</div>
@@ -701,12 +717,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="col-md-12">
 											<div class="form-group">
 												<?php if (isset($arr['covid19_tests_table_in_results_pdf']) && $arr['covid19_tests_table_in_results_pdf'] != '') { ?>
-													<label for="covid19TestsTableInResultsPdf" class="col-lg-2 control-label"><?php echo _("Show Covid19 Tests table in Results PDF");?><span class="mandatory ">*</span></label>
+													<label for="covid19TestsTableInResultsPdf" class="col-lg-2 control-label"><?php echo _("Show Covid19 Tests table in Results PDF"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
-														<select name="covid19TestsTableInResultsPdf" id="covid19TestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _('Please select covid19 Tests method in Results Pdf');?>">
-															<option value=""><?php echo _("-- Select --");?></option>
-															<option value='yes' <?php echo ($arr['covid19_tests_table_in_results_pdf'] == 'yes') ? "selected='selected'" : ""; ?>> <?php echo _("Yes");?> </option>
-															<option value='no' <?php echo ($arr['covid19_tests_table_in_results_pdf'] == 'no') ? "selected='selected'" : ""; ?>> <?php echo _("No");?> </option>
+														<select name="covid19TestsTableInResultsPdf" id="covid19TestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _('Please select covid19 Tests method in Results Pdf'); ?>">
+															<option value=""><?php echo _("-- Select --"); ?></option>
+															<option value='yes' <?php echo ($arr['covid19_tests_table_in_results_pdf'] == 'yes') ? "selected='selected'" : ""; ?>> <?php echo _("Yes"); ?> </option>
+															<option value='no' <?php echo ($arr['covid19_tests_table_in_results_pdf'] == 'no') ? "selected='selected'" : ""; ?>> <?php echo _("No"); ?> </option>
 														</select>
 													</div>
 												<?php } ?>
@@ -717,12 +733,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="col-md-12">
 											<?php if (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] != '') { ?>
 												<div class="form-group">
-													<label for="lockApprovedCovid19Samples" class="col-lg-2 control-label"><?php echo _("Lock Approved Covid19 Samples");?><span class="mandatory ">*</span></label>
+													<label for="lockApprovedCovid19Samples" class="col-lg-2 control-label"><?php echo _("Lock Approved Covid19 Samples"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
-														<select id="lockApprovedCovid19Samples" name="lockApprovedCovid19Samples" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample');?>">
-															<option value=""><?php echo _("--Select--");?></option>
-															<option value="yes" <?php echo (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes");?></option>
-															<option value="no" <?php echo (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No");?></option>
+														<select id="lockApprovedCovid19Samples" name="lockApprovedCovid19Samples" type="text" class="form-control readPage" title="<?php echo _('Please select lock approved sample'); ?>">
+															<option value=""><?php echo _("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+															<option value="no" <?php echo (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
 														</select>
 													</div>
 												</div>
@@ -734,12 +750,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="covid19ReportQrCode" class="col-lg-2 control-label"><?php echo _("Covid-19 Report QR Code");?></label>
+													<label for="covid19ReportQrCode" class="col-lg-2 control-label"><?php echo _("Covid-19 Report QR Code"); ?></label>
 													<div class="col-lg-4">
-														<select id="covid19ReportQrCode" name="covid19ReportQrCode" type="text" class="form-control readPage" title="<?php echo _('Please select report QR code yes/no');?>?">
-															<option value=""><?php echo _("--Select--");?></option>
-															<option value="yes" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes");?></option>
-															<option value="no" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No");?></option>
+														<select id="covid19ReportQrCode" name="covid19ReportQrCode" type="text" class="form-control readPage" title="<?php echo _('Please select report QR code yes/no'); ?>?">
+															<option value=""><?php echo _("--Select--"); ?></option>
+															<option value="yes" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+															<option value="no" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
 														</select>
 													</div>
 												</div>
@@ -750,9 +766,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="covid19_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days");?></label>
+													<label for="covid19_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days"); ?></label>
 													<div class="col-lg-4">
-														<input value="<?php echo $arr['covid19_sample_expiry_after_days']; ?>" type="text" id="covid19_sample_expiry_after_days" name="covid19_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days');?>">
+														<input value="<?php echo $arr['covid19_sample_expiry_after_days']; ?>" type="text" id="covid19_sample_expiry_after_days" name="covid19_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days'); ?>">
 													</div>
 												</div>
 											</div>
@@ -761,9 +777,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="covid19_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days");?></label>
+												<label for="covid19_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days"); ?></label>
 												<div class="col-lg-4">
-													<input value="<?php echo $arr['covid19_sample_lock_after_days']; ?>" type="text" id="covid19_sample_lock_after_days" name="covid19_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days');?>">
+													<input value="<?php echo $arr['covid19_sample_lock_after_days']; ?>" type="text" id="covid19_sample_lock_after_days" name="covid19_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days'); ?>">
 												</div>
 											</div>
 										</div>
@@ -774,13 +790,13 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						if ($systemConfig['modules']['hepatitis'] == true) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h3 class="panel-title"><?php echo _("Hepatitis Settings");?></h3>
+									<h3 class="panel-title"><?php echo _("Hepatitis Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="hepatitis_sample_code" class="col-lg-2 control-label"><?php echo _("Sample Code");?><br><?php echo _("Format");?> <span class="mandatory">*</span> </label>
+												<label for="hepatitis_sample_code" class="col-lg-2 control-label"><?php echo _("Sample Code"); ?><br><?php echo _("Format"); ?> <span class="mandatory">*</span> </label>
 												<div class="col-lg-10">
 													<?php
 													$sPrefixMMYY = 'C19';
@@ -795,12 +811,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														$sPrefixYYDisplay = '';
 													}
 													?>
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format');?>" id="hepatitis_auto_generate_yy" name="hepatitis_sample_code" value="YY" <?php echo ($arr['hepatitis_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="hepatitis_boxWidth hepatitis_prefixYY" id="hepatitis_prefixYY" name="hepatitis_sample_code_prefix" title="<?php echo _('Enter Prefix');?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format');?>" id="hepatitis_auto_generate_mmyy" name="hepatitis_sample_code" value="MMYY" <?php echo ($arr['hepatitis_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="hepatitis_boxWidth hepatitis_prefixMMYY" id="hepatitis_prefixMMYY" name="hepatitis_sample_code_prefix" title="<?php echo _('Enter Prefix');?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format');?>" id="hepatitis_auto_generate" name="hepatitis_sample_code" value="auto" <?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="hepatitis_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format');?>" id="hepatitis_auto_generate2" name="hepatitis_sample_code" value="auto2" <?php echo ($arr['hepatitis_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="hepatitis_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto");?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format');?>" id="hepatitis_numeric" name="hepatitis_sample_code" value="numeric" <?php echo ($arr['hepatitis_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format');?>" id="hepatitis_alpha_numeric" name="hepatitis_sample_code" value="alphanumeric" <?php echo ($arr['hepatitis_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric");?>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format'); ?>" id="hepatitis_auto_generate_yy" name="hepatitis_sample_code" value="YY" <?php echo ($arr['hepatitis_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="hepatitis_boxWidth hepatitis_prefixYY" id="hepatitis_prefixYY" name="hepatitis_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format'); ?>" id="hepatitis_auto_generate_mmyy" name="hepatitis_sample_code" value="MMYY" <?php echo ($arr['hepatitis_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="hepatitis_boxWidth hepatitis_prefixMMYY" id="hepatitis_prefixMMYY" name="hepatitis_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format'); ?>" id="hepatitis_auto_generate" name="hepatitis_sample_code" value="auto" <?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="hepatitis_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format'); ?>" id="hepatitis_auto_generate2" name="hepatitis_sample_code" value="auto2" <?php echo ($arr['hepatitis_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="hepatitis_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto"); ?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format'); ?>" id="hepatitis_numeric" name="hepatitis_sample_code" value="numeric" <?php echo ($arr['hepatitis_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Hepatitis Sample Code Format'); ?>" id="hepatitis_alpha_numeric" name="hepatitis_sample_code" value="alphanumeric" <?php echo ($arr['hepatitis_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric"); ?>
 												</div>
 											</div>
 										</div>
@@ -809,16 +825,16 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div id="hepatitis_auto-sample-eg" class="row" style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto' || $arr['hepatitis_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
 										<div class="col-md-12" style="text-align:center;">
 											<code id="hepatitis_auto-sample-code" class="hepatitis_autoSample" style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter");?>
+												<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
 											</code>
 											<code id="hepatitis_auto-sample-code2" class="hepatitis_autoSample" style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)");?>
+												<?php echo _("eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)"); ?>
 											</code>
 											<code id="hepatitis_auto-sample-code-MMYY" class="hepatitis_autoSample" style="display:<?php echo ($arr['hepatitis_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Month+Year+Increment Counter (C190517999)");?>
+												<?php echo _("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
 											</code>
 											<code id="hepatitis_auto-sample-code-YY" class="hepatitis_autoSample" style="display:<?php echo ($arr['hepatitis_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Year+Increment Counter (C1917999)");?>
+												<?php echo _("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
 											</code>
 										</div>
 									</div><br />
@@ -826,13 +842,13 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="hepatitis_min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code Length");?> <span class="mandatory " style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="hepatitis_min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="hepatitis_min_length" name="hepatitis_min_length" <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min');?>" title="<?php echo _('Please enter sample code min length');?>" value="<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="hepatitis_min_length" name="hepatitis_min_length" <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min'); ?>" title="<?php echo _('Please enter sample code min length'); ?>" value="<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
 												</div>
-												<label for="hepatitis_max_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length");?> <span class="mandatory " style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="hepatitis_max_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="hepatitis_max_length" name="hepatitis_max_length" <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max');?>" title="<?php echo _('Please enter sample code max length');?>" value="<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="hepatitis_max_length" name="hepatitis_max_length" <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max'); ?>" title="<?php echo _('Please enter sample code max length'); ?>" value="<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
 												</div>
 											</div>
 										</div>
@@ -841,9 +857,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="hepatitis_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days");?></label>
+													<label for="hepatitis_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days"); ?></label>
 													<div class="col-lg-4">
-														<input value="<?php echo $arr['hepatitis_sample_expiry_after_days']; ?>" type="text" id="hepatitis_sample_expiry_after_days" name="hepatitis_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days');?>">
+														<input value="<?php echo $arr['hepatitis_sample_expiry_after_days']; ?>" type="text" id="hepatitis_sample_expiry_after_days" name="hepatitis_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days'); ?>">
 													</div>
 												</div>
 											</div>
@@ -852,9 +868,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="hepatitis_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days");?></label>
+												<label for="hepatitis_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days"); ?></label>
 												<div class="col-lg-4">
-													<input value="<?php echo $arr['hepatitis_sample_lock_after_days']; ?>" type="text" id="hepatitis_sample_lock_after_days" name="hepatitis_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days');?>">
+													<input value="<?php echo $arr['hepatitis_sample_lock_after_days']; ?>" type="text" id="hepatitis_sample_lock_after_days" name="hepatitis_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days'); ?>">
 												</div>
 											</div>
 										</div>
@@ -865,13 +881,13 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						if ($systemConfig['modules']['tb']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h3 class="panel-title"><?php echo _("TB Settings");?></h3>
+									<h3 class="panel-title"><?php echo _("TB Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="tb_sample_code" class="col-lg-2 control-label"><?php echo _("Sample Code");?><br><?php echo _("Format");?> <span class="mandatory">*</span> </label>
+												<label for="tb_sample_code" class="col-lg-2 control-label"><?php echo _("Sample Code"); ?><br><?php echo _("Format"); ?> <span class="mandatory">*</span> </label>
 												<div class="col-lg-10">
 													<?php
 													$sPrefixMMYY = 'TB';
@@ -886,12 +902,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														$sPrefixYYDisplay = '';
 													}
 													?>
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format');?>" id="tb_auto_generate_yy" name="tb_sample_code" value="YY" <?php echo ($arr['tb_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixYY readPage" id="tb_prefixYY" name="tb_sample_code_prefix" title="<?php echo _('Enter Prefix');?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format');?>" id="tb_auto_generate_mmyy" name="tb_sample_code" value="MMYY" <?php echo ($arr['tb_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixMMYY readPage" id="tb_prefixMMYY" name="tb_sample_code_prefix" title="<?php echo _('Enter Prefix');?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format');?>" id="tb_auto_generate" name="tb_sample_code" value="auto" <?php echo ($arr['tb_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="tb_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format');?>" id="tb_auto_generate2" name="tb_sample_code" value="auto2" <?php echo ($arr['tb_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="tb_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto");?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format');?>" id="tb_numeric" name="tb_sample_code" value="numeric" <?php echo ($arr['tb_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric");?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format');?>" id="tb_alpha_numeric" name="tb_sample_code" value="alphanumeric" <?php echo ($arr['tb_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric");?>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="tb_auto_generate_yy" name="tb_sample_code" value="YY" <?php echo ($arr['tb_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixYY readPage" id="tb_prefixYY" name="tb_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="tb_auto_generate_mmyy" name="tb_sample_code" value="MMYY" <?php echo ($arr['tb_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="tb_boxWidth tb_prefixMMYY readPage" id="tb_prefixMMYY" name="tb_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="tb_auto_generate" name="tb_sample_code" value="auto" <?php echo ($arr['tb_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="tb_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="tb_auto_generate2" name="tb_sample_code" value="auto2" <?php echo ($arr['tb_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="tb_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto"); ?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="tb_numeric" name="tb_sample_code" value="numeric" <?php echo ($arr['tb_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="tb_alpha_numeric" name="tb_sample_code" value="alphanumeric" <?php echo ($arr['tb_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric"); ?>
 												</div>
 											</div>
 										</div>
@@ -900,16 +916,16 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div id="tb_auto-sample-eg" class="row" style="display:<?php echo ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
 										<div class="col-md-12" style="text-align:center;">
 											<code id="tb_auto-sample-code" class="tb_autoSample" style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter");?>
+												<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
 											</code>
 											<code id="tb_auto-sample-code2" class="tb_autoSample" style="display:<?php echo ($arr['tb_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)");?>
+												<?php echo _("eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)"); ?>
 											</code>
 											<code id="tb_auto-sample-code-MMYY" class="tb_autoSample" style="display:<?php echo ($arr['tb_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Month+Year+Increment Counter (C190517999)");?>
+												<?php echo _("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
 											</code>
 											<code id="tb_auto-sample-code-YY" class="tb_autoSample" style="display:<?php echo ($arr['tb_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-											<?php echo _("eg. Prefix+Year+Increment Counter (C1917999)");?>
+												<?php echo _("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
 											</code>
 										</div>
 									</div><br />
@@ -917,13 +933,13 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="tb_min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code Length");?> <span class="mandatory " style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="tb_min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="tb_min_length" name="tb_min_length" <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min');?>" title="<?php echo _('Please enter sample code min length');?>" value="<?php echo ($arr['tb_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="tb_min_length" name="tb_min_length" <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min'); ?>" title="<?php echo _('Please enter sample code min length'); ?>" value="<?php echo ($arr['tb_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
 												</div>
-												<label for="tb_max_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length");?> <span class="mandatory " style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="tb_max_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="tb_max_length" name="tb_max_length" <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max');?>" title="<?php echo _('Please enter sample code max length');?>" value="<?php echo ($arr['tb_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="tb_max_length" name="tb_max_length" <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max'); ?>" title="<?php echo _('Please enter sample code max length'); ?>" value="<?php echo ($arr['tb_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
 												</div>
 											</div>
 										</div>
@@ -932,9 +948,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label for="tb_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days");?></label>
+													<label for="tb_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days"); ?></label>
 													<div class="col-lg-4">
-														<input value="<?php echo $arr['tb_sample_expiry_after_days']; ?>" type="text" id="tb_sample_expiry_after_days" name="tb_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days');?>">
+														<input value="<?php echo $arr['tb_sample_expiry_after_days']; ?>" type="text" id="tb_sample_expiry_after_days" name="tb_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days'); ?>">
 													</div>
 												</div>
 											</div>
@@ -943,9 +959,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="tb_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days");?></label>
+												<label for="tb_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days"); ?></label>
 												<div class="col-lg-4">
-													<input value="<?php echo $arr['tb_sample_lock_after_days']; ?>" type="text" id="tb_sample_lock_after_days" name="tb_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days');?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days');?>">
+													<input value="<?php echo $arr['tb_sample_lock_after_days']; ?>" type="text" id="tb_sample_lock_after_days" name="tb_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days'); ?>">
 												</div>
 											</div>
 										</div>
@@ -955,15 +971,15 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						<?php } ?>
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h3 class="panel-title"><?php echo _("APP Settings");?></h3>
+								<h3 class="panel-title"><?php echo _("APP Settings"); ?></h3>
 							</div>
 							<div class="panel-body">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
-											<label for="app_menu_name" class="col-lg-2 control-label"><?php echo _("APP Menu Name");?></label>
+											<label for="app_menu_name" class="col-lg-2 control-label"><?php echo _("APP Menu Name"); ?></label>
 											<div class="col-lg-4">
-												<input type="text" class="form-control readPage" id="app_menu_name" name="app_menu_name" placeholder="<?php echo _('Min');?>" title="<?php echo _('Please enter sample code min length');?>" value="<?php echo $arr['app_menu_name']; ?>" />
+												<input type="text" class="form-control readPage" id="app_menu_name" name="app_menu_name" placeholder="<?php echo _('Min'); ?>" title="<?php echo _('Please enter sample code min length'); ?>" value="<?php echo $arr['app_menu_name']; ?>" />
 											</div>
 										</div>
 									</div>
@@ -972,7 +988,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h3 class="panel-title"><?php echo _("Connect");?></h3>
+								<h3 class="panel-title"><?php echo _("Connect"); ?></h3>
 							</div>
 							<div class="panel-body">
 								<!-- <div class="row">
@@ -1017,9 +1033,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
 										<div class="form-group" style="height:38px;">
-											<label for="sync_path" class="col-lg-4 control-label"><?php echo _("Dashboard URL");?></label>
+											<label for="sync_path" class="col-lg-4 control-label"><?php echo _("Dashboard URL"); ?></label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="vldashboard_url" name="vldashboard_url" placeholder="https://dashboard.example.org" title="<?php echo _('Please enter dashboard URL');?>" value="<?php echo $arr['vldashboard_url']; ?>" />
+												<input type="text" class="form-control readPage" id="vldashboard_url" name="vldashboard_url" placeholder="https://dashboard.example.org" title="<?php echo _('Please enter dashboard URL'); ?>" value="<?php echo $arr['vldashboard_url']; ?>" />
 											</div>
 										</div>
 									</div>
@@ -1031,16 +1047,16 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h3 class="panel-title"><?php echo _("Viral Load Result PDF Settings");?></h3>
+								<h3 class="panel-title"><?php echo _("Viral Load Result PDF Settings"); ?></h3>
 							</div>
 							<div class="panel-body">
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="show_smiley" class="col-lg-4 control-label"><?php echo _("Show Emoticon/Smiley");?> </label>
+											<label for="show_smiley" class="col-lg-4 control-label"><?php echo _("Show Emoticon/Smiley"); ?> </label>
 											<div class="col-lg-8">
-												<input type="radio" class="readPage" id="show_smiley_yes" name="show_smiley" value="yes" <?php echo ($arr['show_smiley'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Yes");?>&nbsp;&nbsp;
-												<input type="radio" class="readPage" id="show_smiley_no" name="show_smiley" value="no" <?php echo ($arr['show_smiley'] == 'no' || $arr['show_smiley'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("No");?>
+												<input type="radio" class="readPage" id="show_smiley_yes" name="show_smiley" value="yes" <?php echo ($arr['show_smiley'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("Yes"); ?>&nbsp;&nbsp;
+												<input type="radio" class="readPage" id="show_smiley_no" name="show_smiley" value="no" <?php echo ($arr['show_smiley'] == 'no' || $arr['show_smiley'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _("No"); ?>
 											</div>
 										</div>
 									</div>
@@ -1048,9 +1064,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="h_vl_msg" class="col-lg-4 control-label"><?php echo _("High Viral Load Message");?> </label>
+											<label for="h_vl_msg" class="col-lg-4 control-label"><?php echo _("High Viral Load Message"); ?> </label>
 											<div class="col-lg-8">
-												<textarea class="form-control readPage" id="h_vl_msg" name="h_vl_msg" placeholder="<?php echo _('High Viral Load message that will appear for results >= the VL threshold limit');?>" title="<?php echo _('Please enter high viral load message');?>" style="width:100%;min-height:80px;max-height:100px;"><?php echo $arr['h_vl_msg']; ?></textarea>
+												<textarea class="form-control readPage" id="h_vl_msg" name="h_vl_msg" placeholder="<?php echo _('High Viral Load message that will appear for results >= the VL threshold limit'); ?>" title="<?php echo _('Please enter high viral load message'); ?>" style="width:100%;min-height:80px;max-height:100px;"><?php echo $arr['h_vl_msg']; ?></textarea>
 											</div>
 										</div>
 									</div>
@@ -1058,9 +1074,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="l_vl_msg" class="col-lg-4 control-label"><?php echo _("Low Viral Load Message");?> </label>
+											<label for="l_vl_msg" class="col-lg-4 control-label"><?php echo _("Low Viral Load Message"); ?> </label>
 											<div class="col-lg-8">
-												<textarea class="form-control readPage" id="l_vl_msg" name="l_vl_msg" placeholder="<?php echo _('Low Viral Load message that will appear for results lesser than the VL threshold limit');?>" title="<?php echo _('Please enter low viral load message');?>" style="width:100%;min-height:80px;max-height:100px;"><?php echo $arr['l_vl_msg']; ?></textarea>
+												<textarea class="form-control readPage" id="l_vl_msg" name="l_vl_msg" placeholder="<?php echo _('Low Viral Load message that will appear for results lesser than the VL threshold limit'); ?>" title="<?php echo _('Please enter low viral load message'); ?>" style="width:100%;min-height:80px;max-height:100px;"><?php echo $arr['l_vl_msg']; ?></textarea>
 											</div>
 										</div>
 									</div>
@@ -1068,12 +1084,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="patient_name_pdf" class="col-lg-4 control-label"><?php echo _("Patient Name Format");?></label>
+											<label for="patient_name_pdf" class="col-lg-4 control-label"><?php echo _("Patient Name Format"); ?></label>
 											<div class="col-lg-8">
-												<select type="text" class="form-control readPage" id="patient_name_pdf" name="patient_name_pdf" title="<?php echo _('Choose one option');?>" value="<?php echo $arr['patient_name_pdf']; ?>">
-													<option value="flname" <?php echo ('flname' == $arr['patient_name_pdf']) ? "selected='selected'" : "" ?>><?php echo _("First Name");?> + <?php echo _("Last Name");?></option>
-													<option value="fullname" <?php echo ('fullname' == $arr['patient_name_pdf']) ? "selected='selected'" : "" ?>><?php echo _("Full Name");?></option>
-													<option value="hidename" <?php echo ('hidename' == $arr['patient_name_pdf']) ? "selected='selected'" : "" ?>><?php echo _("Hide Patient Name");?></option>
+												<select type="text" class="form-control readPage" id="patient_name_pdf" name="patient_name_pdf" title="<?php echo _('Choose one option'); ?>" value="<?php echo $arr['patient_name_pdf']; ?>">
+													<option value="flname" <?php echo ('flname' == $arr['patient_name_pdf']) ? "selected='selected'" : "" ?>><?php echo _("First Name"); ?> + <?php echo _("Last Name"); ?></option>
+													<option value="fullname" <?php echo ('fullname' == $arr['patient_name_pdf']) ? "selected='selected'" : "" ?>><?php echo _("Full Name"); ?></option>
+													<option value="hidename" <?php echo ('hidename' == $arr['patient_name_pdf']) ? "selected='selected'" : "" ?>><?php echo _("Hide Patient Name"); ?></option>
 												</select>
 											</div>
 										</div>
@@ -1083,32 +1099,32 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="r_mandatory_fields" class="col-lg-4 control-label"><?php echo _("Mandatory Fields for COMPLETED Result PDF");?>: </label>
+											<label for="r_mandatory_fields" class="col-lg-4 control-label"><?php echo _("Mandatory Fields for COMPLETED Result PDF"); ?>: </label>
 											<div class="col-lg-8">
 												<div class="form-group">
 													<div class="col-md-12">
 														<div class="row">
 															<div class="col-md-12" style="text-align:justify;">
-																<code><?php echo _("If any of the selected fields are incomplete, the Result PDF appears with a");?> <strong><?php echo _("DRAFT");?></strong> <?php echo _("watermark. Leave right block blank (Deselect All) to disable this");?>.</code>
+																<code><?php echo _("If any of the selected fields are incomplete, the Result PDF appears with a"); ?> <strong><?php echo _("DRAFT"); ?></strong> <?php echo _("watermark. Leave right block blank (Deselect All) to disable this"); ?>.</code>
 															</div>
 														</div>
 														<div style="width:100%;margin:10px auto;clear:both;">
-															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
+															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All"); ?></a>
 														</div><br /><br />
 														<select id="r_mandatory_fields" name="r_mandatory_fields[]" multiple="multiple" class="search readPage">
-															<option value="facility_code" <?php echo (in_array('facility_code', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility Code");?></option>
-															<option value="facility_state" <?php echo (in_array('facility_state', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility Province");?></option>
-															<option value="facility_district" <?php echo (in_array('facility_district', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility District");?></option>
-															<option value="facility_name" <?php echo (in_array('facility_name', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility Name");?></option>
-															<option value="sample_code" <?php echo (in_array('sample_code', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Code");?></option>
-															<option value="sample_collection_date" <?php echo (in_array('sample_collection_date', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Collection Date");?></option>
-															<option value="patient_art_no" <?php echo (in_array('patient_art_no', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Patient ART No");?>.</option>
-															<option value="sample_received_at_vl_lab_datetime" <?php echo (in_array('sample_received_at_vl_lab_datetime', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Date Sample Received at Testing Lab");?></option>
-															<option value="sample_tested_datetime" <?php echo (in_array('sample_tested_datetime', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Tested Date");?></option>
-															<option value="sample_name" <?php echo (in_array('sample_name', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Type");?></option>
-															<option value="vl_test_platform" <?php echo (in_array('vl_test_platform', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("VL Testing Platform");?></option>
-															<option value="result" <?php echo (in_array('result', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("VL Result");?></option>
-															<option value="approvedBy" <?php echo (in_array('approvedBy', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Approved By");?></option>
+															<option value="facility_code" <?php echo (in_array('facility_code', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility Code"); ?></option>
+															<option value="facility_state" <?php echo (in_array('facility_state', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility Province"); ?></option>
+															<option value="facility_district" <?php echo (in_array('facility_district', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility District"); ?></option>
+															<option value="facility_name" <?php echo (in_array('facility_name', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility Name"); ?></option>
+															<option value="sample_code" <?php echo (in_array('sample_code', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Code"); ?></option>
+															<option value="sample_collection_date" <?php echo (in_array('sample_collection_date', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Collection Date"); ?></option>
+															<option value="patient_art_no" <?php echo (in_array('patient_art_no', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Patient ART No"); ?>.</option>
+															<option value="sample_received_at_vl_lab_datetime" <?php echo (in_array('sample_received_at_vl_lab_datetime', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Date Sample Received at Testing Lab"); ?></option>
+															<option value="sample_tested_datetime" <?php echo (in_array('sample_tested_datetime', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Tested Date"); ?></option>
+															<option value="sample_name" <?php echo (in_array('sample_name', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Type"); ?></option>
+															<option value="vl_test_platform" <?php echo (in_array('vl_test_platform', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("VL Testing Platform"); ?></option>
+															<option value="result" <?php echo (in_array('result', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("VL Result"); ?></option>
+															<option value="approvedBy" <?php echo (in_array('approvedBy', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Approved By"); ?></option>
 														</select>
 
 													</div>
@@ -1130,8 +1146,8 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						<div class="box-footer hideFooter">
 							<input type="hidden" class="readPage" name="removedLogoImage" id="removedLogoImage" />
 							<input type="hidden" class="readPage" name="removedInstanceLogoImage" id="removedInstanceLogoImage" />
-							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
-							<a href="editGlobalConfig.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
+							<a href="editGlobalConfig.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 						</div>
 						<!-- /.box-footer -->
 				</form>
@@ -1158,8 +1174,8 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 			$(".hideFooter").css('display', 'none');
 		}
 		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Field Name");?>'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Field Name");?>'>",
+			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Field Name"); ?>'>",
+			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Field Name"); ?>'>",
 			afterInit: function(ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
