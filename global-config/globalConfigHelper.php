@@ -122,6 +122,7 @@ try {
             if ($fieldName == 'r_mandatory_fields') {
                 $fieldValue = implode(',', $fieldValue);
             }
+            unset($_SESSION['APP_LOCALE']);
             $data = array('value' => $fieldValue);
             $db = $db->where('name', $fieldName);
             $id = $db->update($tableName, $data);
@@ -168,7 +169,7 @@ try {
         }
     }
 
-   
+
     /* For Lock approve sample updates */
     if (isset($_POST['lockApprovedVlSamples']) && trim($_POST['lockApprovedVlSamples']) != "") {
         $data = array('value' => trim($_POST['lockApprovedVlSamples']));
