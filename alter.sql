@@ -2954,3 +2954,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 -- Thana 04-Mar-2022
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'api-sync-history.php', 'API Sync History');
+
+-- Thana 10-Mar-2022
+ALTER TABLE `user_details` DROP `user_alpnum_id`;
+ALTER TABLE `user_details` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `data_sync`;

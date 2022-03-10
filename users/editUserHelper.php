@@ -50,7 +50,7 @@ try {
                 mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['userSignature']['name'], PATHINFO_EXTENSION));
-            $imageName = "usign-" . $userId . "." .$extension;
+            $imageName = "usign-" . $userId . "." . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
                 $resizeObj = new \Vlsm\Helpers\ImageResize($signatureImagePath);
@@ -107,7 +107,8 @@ try {
             $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array(
                 'post' => json_encode($_POST),
-                'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18)
+                'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null,
+                'x-api-key' => $general->generateRandomString(18)
             );
 
             $ch = curl_init();

@@ -13,14 +13,15 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 /* Get un synced user details */
 $userResult = $db->rawQuery("SELECT *, 'yes' as sync FROM `user_details` WHERE data_sync = 0 GROUP BY `user_id`");
 foreach ($userResult as $key => $user) {
-    $mapF = $db->rawQuery("SELECT facility_id FROM vl_user_facility_map WHERE user_id = '" . $user['user_id'] ."'");
+    $mapF = $db->rawQuery("SELECT facility_id FROM vl_user_facility_map WHERE user_id = '" . $user['user_id'] . "'");
     $map = array();
     foreach ($mapF as $m) {
         $map[] = $m['facility_id'];
     }
-    if(!empty($map)){
+    if (!empty($map)) {
         $userResult[$key]['selectedFacility'] = implode(",", $map);
     }
+    $userId[] = $user['user_id'];
 }
 $url = $systemConfig['remoteURL'] . '/api/v1.1/user/save-user-profile.php';
 $data = array(
@@ -47,14 +48,14 @@ $curl_response = curl_exec($ch);
 //close connection
 curl_close($ch);
 $result = json_decode($curl_response, true);
-
-/* if (!empty($result) && count($result) > 0) {
-    $db = $db->where('user_id', $result, 'IN');
-    $id = $db->update('user_details', array('data_sync' => 1));
-}*/
+if (!empty($userId) && count($userId) > 0) {
+    $db = $db->where('user_id', $userId, 'IN');
+    $id = $db->update('user_details', array('data_sync' => 1, 'updated_datetime' => $general->getDateTime()));
+}
 if (count($userResult) > 0) {
     $trackId = $app->addApiTracking(null, count($userResult), 'common-data', 'user', $url, null, 'sync-api');
 }
+
 $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
 $headers = @get_headers($systemConfig['remoteURL'] . '/vlsts-icons/favicon-16x16.png');
 if (strpos($headers[0], '200') === false) {

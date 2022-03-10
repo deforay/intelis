@@ -16,12 +16,6 @@ try {
         throw new Exception("Invalid request. Please check your request parameters.");
     }
 
-    /* 
-    ob_start();
-    var_dump($decode);
-    echo (ob_get_clean());
-    die; */
-
     if (isset($decode['api-type']) && $decode['api-type'] == "sync") {
         $postData = $decode['result'];
         foreach ($postData as $post) {
@@ -104,7 +98,7 @@ try {
                 mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777);
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['sign']['name'], PATHINFO_EXTENSION));
-            $string = ((!empty($userId) && $userId != "") ? $userId : $general->generateUUID()) . ".";
+            $string = $userId . ".";
             $imageName = "usign-" . $string . $extension;
 
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
