@@ -21,7 +21,6 @@ foreach ($userResult as $key => $user) {
     if (!empty($map)) {
         $userResult[$key]['selectedFacility'] = implode(",", $map);
     }
-    $userId[] = $user['user_id'];
 }
 $url = $systemConfig['remoteURL'] . '/api/v1.1/user/save-user-profile.php';
 $data = array(
@@ -48,14 +47,14 @@ $curl_response = curl_exec($ch);
 //close connection
 curl_close($ch);
 $result = json_decode($curl_response, true);
-if (!empty($userId) && count($userId) > 0) {
-    $db = $db->where('user_id', $userId, 'IN');
-    $id = $db->update('user_details', array('data_sync' => 1, 'updated_datetime' => $general->getDateTime()));
-}
+
+/* if (!empty($result) && count($result) > 0) {
+    $db = $db->where('user_id', $result, 'IN');
+    $id = $db->update('user_details', array('data_sync' => 1));
+}*/
 if (count($userResult) > 0) {
     $trackId = $app->addApiTracking(null, count($userResult), 'common-data', 'user', $url, null, 'sync-api');
 }
-
 $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
 $headers = @get_headers($systemConfig['remoteURL'] . '/vlsts-icons/favicon-16x16.png');
 if (strpos($headers[0], '200') === false) {
