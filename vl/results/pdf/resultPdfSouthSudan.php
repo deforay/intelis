@@ -92,9 +92,9 @@ if (sizeof($requestResult) > 0) {
           // create new PDF document
           $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
           if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
-               $logoPrintInPdf = $result['facilityLogo'];
+               $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
           } else {
-               $logoPrintInPdf = $arr['logo'];
+               $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
           }
           $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
           // set document information
@@ -244,7 +244,7 @@ if (sizeof($requestResult) > 0) {
                          $showMessage = ($arr['l_vl_msg']);
                     }
                } else {
-                    if (in_array(strtolower($vlResult), array("below detection limit", "below detection level", 'bdl', 'BDL'))) {
+                    if (in_array(strtolower($vlResult), array("below detection limit", "below detection level", 'bdl', 'BDL', 'not detected'))) {
                          $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
                          $showMessage = ucfirst($arr['l_vl_msg']);
                     } else if (in_array(strtolower($vlResult), array("tnd", "target not detected", 'ldl'))) {
@@ -262,7 +262,7 @@ if (sizeof($requestResult) > 0) {
                          $smileyContent = '';
                          $showMessage = '';
                          $messageTextSize = '14px';
-                    } else if (in_array($vlResult, array("<20", "< 20", "<40", "< 40"))) {
+                    } else if (in_array($vlResult, array("<20", "< 20", "<40", "< 40", "< 839", "<839"))) {
                          $vlResult = str_replace("<", "&lt;", $vlResult);
                          $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
                          $showMessage = ($arr['l_vl_msg']);

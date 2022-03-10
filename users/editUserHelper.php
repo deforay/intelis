@@ -51,7 +51,7 @@ try {
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['userSignature']['name'], PATHINFO_EXTENSION));
             $string = ((!empty($userId) && $userId != "") ? $userId : $general->generateUUID()) . ".";
-            $imageName = "usign-" . $string . $extension;
+            $imageName = "usign-" . $string . "." .$extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
                 $resizeObj = new \Vlsm\Helpers\ImageResize($signatureImagePath);

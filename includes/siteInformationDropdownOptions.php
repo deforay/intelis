@@ -81,19 +81,20 @@ function getProvinceDropdown($selectedProvince = null)
 	global $facilityMap;
 
 	if (!empty($facilityMap)) {
-		$db->join("facility_details f", "f.facility_state=p.province_name", "INNER");
+		$db->join("facility_details f", "f.facility_state=p.geo_name", "INNER");
 		//$db->joinWhere("facility_details f", "h.test_type", $testType);
 		$db->where("f.facility_id IN (" . $facilityMap . ")");
 	}
 
-	$pdResult = $db->get('province_details p');
+	$db->where("p.geo_parent = 0");
+	$pdResult = $db->get('geographical_divisions p');
 	$state = $option;
 	foreach ($pdResult as $pdRow) {
 		$selected = '';
-		if (strtolower($selectedProvince) == strtolower($pdRow['province_name'])) {
+		if (strtolower($selectedProvince) == strtolower($pdRow['geo_name'])) {
 			$selected = "selected='selected'";
 		}
-		$state .= "<option data-code='" . $pdRow['province_code'] . "' data-province-id='" . $pdRow['province_id'] . "' data-name='" . $pdRow['province_name'] . "' value='" . $pdRow['province_name'] . "##" . $pdRow['province_code'] . "' $selected>" . ($pdRow['province_name']) . "</option>";
+		$state .= "<option data-code='" . $pdRow['geo_code'] . "' data-province-id='" . $pdRow['geo_id'] . "' data-name='" . $pdRow['geo_name'] . "' value='" . $pdRow['geo_name'] . "##" . $pdRow['geo_code'] . "' $selected>" . ($pdRow['geo_name']) . "</option>";
 	}
 	return $state;
 }
