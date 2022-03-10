@@ -29,7 +29,7 @@ $selectedQuery = "SELECT * FROM vl_user_facility_map as vlfm join user_details a
 $selectedResult = $db->rawQuery($selectedQuery);
 
 //province Stratt
-$pdQuery = "SELECT * from province_details";
+$pdQuery = "SELECT * from geographical_divisions WHERE geo_parent = 0";
 $pdResult = $db->query($pdQuery);
 $province = '';
 $province .= "<option value=''> -- Select -- </option>";

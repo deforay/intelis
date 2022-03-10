@@ -50,7 +50,7 @@ try {
                 mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['userSignature']['name'], PATHINFO_EXTENSION));
-            $string = $general->generateRandomString(10) . ".";
+            $string = ((!empty($userId) && $userId != "") ? $userId : $general->generateUUID()) . ".";
             $imageName = "usign-" . $string . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
@@ -107,19 +107,21 @@ try {
             $_POST['status'] = null; // so that we can retain whatever status is on server
             $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array(
-                'post' => ($_POST),
+                'post' => json_encode($_POST),
                 'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null, 'x-api-key' => $general->generateRandomString(18)
             );
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $apiUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, ($post));
             $result = curl_exec($ch);
             curl_close($ch);
 
             $deResult = json_decode($result, true);
-            // echo "<pre>";print_r($deResult);die;
+            /* echo "<pre>";
+            var_dump($deResult);
+            die; */
         }
     }
 

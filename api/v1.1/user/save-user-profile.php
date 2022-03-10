@@ -7,11 +7,20 @@ $general = new \Vlsm\Models\General();
 $jsonResponse = file_get_contents('php://input');
 
 try {
-    if (empty($jsonResponse)) {
+    if (!empty($jsonResponse)) {
+        $decode = json_decode($jsonResponse, true);
+    } else if (!empty($_REQUEST)) {
+        $decode = $_REQUEST;
+        $decode['post'] = json_decode($decode['post'], true);
+    } else {
         throw new Exception("Invalid request. Please check your request parameters.");
     }
-    $decode = json_decode($jsonResponse, true);
 
+    /* 
+    ob_start();
+    var_dump($decode);
+    echo (ob_get_clean());
+    die; */
 
     if (isset($decode['api-type']) && $decode['api-type'] == "sync") {
         $postData = $decode['result'];
@@ -84,8 +93,7 @@ try {
         if (!empty($userId) || !empty($post['email'])) {
             if (!empty($userId)) {
                 $db->where("user_id", $userId);
-            }
-            else if (!empty($post['email'])) {
+            } else if (!empty($post['email'])) {
                 $db->where("email", $post['email']);
             }
             $aRow = $db->getOne("user_details");
@@ -96,7 +104,7 @@ try {
                 mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777);
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['sign']['name'], PATHINFO_EXTENSION));
-            $string = $general->generateRandomString(10) . ".";
+            $string = ((!empty($userId) && $userId != "") ? $userId : $general->generateUUID()) . ".";
             $imageName = "usign-" . $string . $extension;
 
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
@@ -124,13 +132,13 @@ try {
         if (!empty($post['password'])) {
             $data['password'] = sha1($post['password'] . $systemConfig['passwordSalt']);
         }
+        if (!empty($post['role'])) {
+            $data['role_id'] = $post['role'];
+        }
 
         $id = 0;
         if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
 
-            if (!empty($post['role'])) {
-                $data['role_id'] = $post['role'];
-            }
             $db = $db->where('user_id', $aRow['user_id']);
             $id = $db->update("user_details", $data);
         } else {
