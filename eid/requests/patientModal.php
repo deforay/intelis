@@ -72,9 +72,7 @@ $pResult = $db->rawQuery($pQuery);
 									<th>Age</th>
 									<th>Gender</th>
 									<th>Facility</th>
-									<?php if (isset($arr['vl_form']) && $arr['vl_form'] == 1) { ?>
-										<th>Date and Time</th>
-									<?php } ?>
+									<th>Date and Time</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -93,9 +91,7 @@ $pResult = $db->rawQuery($pQuery);
 											<td><?php echo $patient['child_age']; ?></td>
 											<td><?php echo ucwords(str_replace("_", " ", $patient['child_gender'])); ?></td>
 											<td><?php echo ucwords($patient['facility_name']); ?></td>
-											<?php if (isset($arr['vl_form']) && $arr['vl_form'] == 1) { ?>
-												<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['request_created_datetime'])); ?></td>
-											<?php } ?>
+											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['request_created_datetime'])); ?></td>
 										</tr>
 								<?php
 									}

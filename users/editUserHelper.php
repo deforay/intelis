@@ -119,9 +119,6 @@ try {
             curl_close($ch);
 
             $deResult = json_decode($result, true);
-            /* echo "<pre>";
-            var_dump($deResult);
-            die; */
         }
     }
 
