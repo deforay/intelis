@@ -208,6 +208,10 @@ try {
         $where[] = " vl.facility_id IN ('$facilityId') ";
     }
 
+    if (!empty($input['lastModifiedDateTime'])) {
+        $where[] = " DATE(vl.request_created_datetime) >= '" . date('Y-m-d', strtotime($input['lastModifiedDateTime'])) . "'";
+    }
+
     if (!empty($input['patientArtNo'])) {
         $patientArtNo = implode("','", $input['patientArtNo']);
         $where[] = " vl.patient_art_no IN ('" . $patientArtNo . "') ";

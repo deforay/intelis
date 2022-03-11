@@ -154,6 +154,10 @@ try {
         $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
     }
 
+    if (!empty($input['lastModifiedDateTime'])) {
+        $where[] = " DATE(vl.request_created_datetime) >= '" . date('Y-m-d', strtotime($input['lastModifiedDateTime'])) . "'";
+    }
+
     $facilityId = $input['facility'];
     if (!empty($facilityId)) {
         $facilityId = implode("','", $facilityId);
