@@ -67,7 +67,7 @@ $pResult = $db->rawQuery($pQuery);
 							<thead>
 								<tr>
 									<th style="width:10%;">Select</th>
-									<th>Infant Code</th>
+									<th>Infant Code/ID</th>
 									<th>Infant Name</th>
 									<th>Age</th>
 									<th>Gender</th>

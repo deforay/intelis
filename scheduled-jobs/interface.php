@@ -84,7 +84,11 @@ if (count($interfaceInfo) > 0) {
 
 
 
-                if ($vlResult == "< INF") {
+                if ($vlResult == "Not Detected") {
+                    $absVal = $absDecimalVal = null;
+                    $vlResult = $txtVal = "Below Detection Level";
+                    $logVal = null;
+                } else if ($vlResult == "< INF") {
                     $absDecimalVal = 839;
                     $vlResult = $absVal = 839;
                     $logVal = 2.92;

@@ -23,6 +23,13 @@ class Vl
         'below detection level',
         'bdl',
         'suppressed',
+        '< 20',
+        '<20',
+        '< 40',
+        '<40',
+        '< 839',
+        '<839',
+        '< Titer min',
         'negative',
         'negat'
     );

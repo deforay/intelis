@@ -122,7 +122,7 @@ try {
         'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedOn'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
-        'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
+        'result_dispatched_datetime' => !empty($_POST['resultDispatchedOn']) ? $_POST['resultDispatchedOn'] : null,
         'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  NULL,
         'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
@@ -148,7 +148,6 @@ try {
         'manual_result_entry' => 'yes',
         'data_sync' => 0,
         'result_printed_datetime' => NULL,
-        'result_dispatched_datetime' => NULL,
         'vl_result_category' => $vl_result_category
     );
     /* Updating the high and low viral load data */
