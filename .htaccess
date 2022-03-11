@@ -1,4 +1,8 @@
 Options -Indexes
+
+Header always edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
+
+
 Header set X-Content-Type-Options "nosniff"
 
 Header set Access-Control-Allow-Origin "*"

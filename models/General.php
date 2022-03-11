@@ -799,4 +799,9 @@ class General
             yield $i;
         }
     }
+
+    public function fileExists($filePath)
+    {
+        return (file_exists($filePath) && !is_dir($filePath));
+    }
 }

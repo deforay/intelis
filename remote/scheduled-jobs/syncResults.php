@@ -13,12 +13,12 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 /* Get un synced user details */
 $userResult = $db->rawQuery("SELECT *, 'yes' as sync FROM `user_details` WHERE data_sync = 0 GROUP BY `user_id`");
 foreach ($userResult as $key => $user) {
-    $mapF = $db->rawQuery("SELECT facility_id FROM vl_user_facility_map WHERE user_id = '" . $user['user_id'] . "'");
+    $mapF = $db->rawQuery("SELECT facility_id FROM vl_user_facility_map WHERE user_id = '" . $user['user_id'] ."'");
     $map = array();
     foreach ($mapF as $m) {
         $map[] = $m['facility_id'];
     }
-    if (!empty($map)) {
+    if(!empty($map)){
         $userResult[$key]['selectedFacility'] = implode(",", $map);
     }
 }
