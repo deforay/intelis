@@ -40,7 +40,6 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 }
 
-
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
 
@@ -77,7 +76,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -98,17 +97,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere .= $sWhereSub;
+     $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          if ($sWhere == "") {
-               $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          } else {
-               $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          }
+          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -136,170 +131,51 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 }
 
-if (isset($sWhere) && $sWhere != "") {
-     $sWhere = ' WHERE ' . $sWhere;
-     //$sQuery = $sQuery.' '.$sWhere;
-     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-          $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
-     }
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+}
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+     if (isset($setWhr)) {
           if (trim($start_date) == trim($end_date)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-          } else {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+               $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
           }
-     }
-
-     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-          $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
-     }
-     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-          $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-     }
-     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-          $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-     }
-     /* VL lab id filter */
-     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
-          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
-     }
-     /* Gender filter */
-     if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-          if (trim($_POST['gender']) == "not_recorded") {
-               $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-          } else {
-               $sWhere = $sWhere . ' AND vl.patient_gender ="' . $_POST['gender'] . '"';
-          }
-     }
-     /* Show only recorded sample filter */
-     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
-          $sWhere = $sWhere . ' AND vl.sample_reordered ="yes"';
-     }
-     /* Funding src filter */
-     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-          $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-     }
-     /* Implemening partner filter */
-     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-          $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-     }
-     if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
-          $sWhere = $sWhere . " AND vl.source_of_request LIKE '" . $_POST['srcOfReq'] . "' ";
-     }
-} else {
-     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-          $setWhr = 'where';
-          $sWhere = ' where ' . $sWhere;
-          $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
-     }
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          if (isset($setWhr)) {
-               if (trim($start_date) == trim($end_date)) {
-                    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-                         $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                    } else {
-                         $sWhere = ' where ' . $sWhere;
-                         $sWhere = $sWhere . ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                    }
-               }
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
-     }
-
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-          }
-     }
-     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-          }
-     }
-     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-          } else {
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-          }
-     }
-     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
-          }
-     }
-     if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-          if (trim($_POST['gender']) == "not_recorded") {
-               if (isset($setWhr)) {
-                    $sWhere = $sWhere . ' AND (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
-               } else {
-                    $setWhr = 'where';
-                    $sWhere = ' where ' . $sWhere;
-                    $sWhere = $sWhere . ' vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
-               }
-          } else {
-               if (isset($setWhr)) {
-                    $sWhere = $sWhere . ' AND vl.patient_gender IN ("' . $_POST['gender'] . '")';
-               } else {
-                    $setWhr = 'where';
-                    $sWhere = ' where ' . $sWhere;
-                    $sWhere = $sWhere . ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
-               }
-          }
-     }
-     if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
-          }
-     }
-     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
-          }
-     }
-     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
-          }
-     }
-     if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
-          }
+     } else {
+          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
+
+if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+     $sWhere = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+}
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
+     $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+}
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+     $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+}
+if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+     $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
+}
+if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
+     if (trim($_POST['gender']) == "not_recorded") {
+          $sWhere[] = ' (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+     } else {
+          $sWhere[] = ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
+     }
+}
+if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
+     $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
+}
+if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+     $sWhere[] = ' vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
+}
+if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+     $sWhere = ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
+}
+if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
+     $sWhere = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
+}
+
 $whereResult = '';
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
      $whereResult = 'vl.hcv_vl_count!= "" AND vl.hbv_vl_count != "" AND ';
@@ -309,33 +185,21 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
 
 
 if (isset($_POST['source']) && trim($_POST['source']) == 'dhis2') {
-
-     if (empty($sWhere) || $sWhere == "") {
-          $sWhere = ' WHERE ' . $sWhere;
-     }
-     $sWhere = $sWhere . ' `source_of_request` like "dhis2%" ';
+     $sWhere[] = ' `source_of_request` like "dhis2%" ';
 }
 
-if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} else {
-     $sWhere = $sWhere . ' where ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-}
-$sFilter = '';
+$sWhere[] = ' ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     //$sWhere = $sWhere.' AND vl.request_created_by="'.$_SESSION['userId'].'"';
-     //$sFilter = ' AND request_created_by="'.$_SESSION['userId'].'"';
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
      if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-          $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+          $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
 } else {
-     $sWhere = $sWhere . ' AND vl.result_status!=9';
-     $sFilter = ' AND result_status!=9';
+     $sWhere[] = ' vl.result_status!=9';
 }
-$sQuery = $sQuery . ' ' . $sWhere;
+$sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
 //error_log($sQuery);
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

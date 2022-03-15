@@ -345,7 +345,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3">
             <br><br><b>Fait à Kinshasa, le: </b>' . $general->humanDateFormat($result['result_approved_datetime']) .
-        '<br><span style="font-size:8;font-weight:normal;">(Done in Kinshasa, on)</span></td>';
+    '<br><span style="font-size:8;font-weight:normal;">(Done in Kinshasa, on)</span></td>';
 $html .= '</tr>';
 
 
