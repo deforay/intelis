@@ -182,6 +182,10 @@ try {
             $status = 4;
         }
 
+        if (isset($data['result']) && $data['result'] != '' && isset($data['approvedBy']) && $data['approvedBy'] != "") {
+            $status = 7;
+        }
+
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
             $approvedOn = explode(" ", $data['approvedOn']);
             $data['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];

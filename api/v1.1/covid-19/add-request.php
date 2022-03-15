@@ -181,6 +181,10 @@ try {
             $status = 4;
         }
 
+        if (isset($data['result']) && $data['result'] != '' && isset($data['approvedBy']) && $data['approvedBy'] != "") {
+            $status = 7;
+        }
+
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
             $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
