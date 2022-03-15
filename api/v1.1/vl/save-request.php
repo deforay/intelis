@@ -183,9 +183,7 @@ try {
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') {
             $data['result'] = null;
             $status = 4;
-        }
-
-        if (isset($data['result']) && $data['result'] != '' && isset($data['approvedBy']) && $data['approvedBy'] != "") {
+        } else if ($data['isSampleRejected'] == 'no' && isset($data['result']) && !empty($data['result']) && isset($data['approvedBy']) && !empty($data['approvedBy'])) {
             $status = 7;
         }
 
