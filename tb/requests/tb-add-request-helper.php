@@ -181,7 +181,7 @@ try {
     //     $tbData['locked'] = 'yes';
     // }
 
-    if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == "vluser") {
+    if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
         $tbData['source_of_request'] = 'vlsm';
     } else {
         $tbData['source_of_request'] = 'web';

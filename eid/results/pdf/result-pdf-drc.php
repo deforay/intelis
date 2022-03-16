@@ -425,7 +425,7 @@ if (sizeof($requestResult) > 0) {
         $resultPdf->setPrintFooter(false);
         $resultPdf->concat();
         $resultFilename = 'VLSM-EID-Test-Result-' . date('d-M-Y-H-i-s') . '.pdf';
-        $resultPdf->Output(UPLOAD_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+        $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
         $general->removeDirectory($pathFront);
         unset($_SESSION['rVal']);
     }

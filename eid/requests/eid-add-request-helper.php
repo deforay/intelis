@@ -214,7 +214,7 @@ try {
 	// if ($status == 7 && $lock == 'yes') {
 	// 	$eidData['locked'] = 'yes';
 	// }
-	if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == "vluser") {
+	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
 		$eidData['source_of_request'] = 'vlsm';
 	} else {
 		$eidData['source_of_request'] = 'web';

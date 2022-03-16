@@ -489,7 +489,7 @@ if (count($pages) > 0) {
     $resultPdf->setPrintFooter(false);
     $resultPdf->concat();
     $resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . '.pdf';
-    $resultPdf->Output(UPLOAD_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+    $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
     $general->removeDirectory($pathFront);
     unset($_SESSION['rVal']);
 }

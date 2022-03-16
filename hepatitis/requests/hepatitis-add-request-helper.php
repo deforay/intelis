@@ -152,7 +152,7 @@ try {
 		$hepatitisData['locked'] = 'yes';
 	} */
 
-	if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == "vluser") {
+	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
 		$hepatitisData['source_of_request'] = 'vlsm';
 	} else {
 		$hepatitisData['source_of_request'] = 'web';
