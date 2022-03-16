@@ -320,11 +320,11 @@ $disable = "disabled = 'disabled'";
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
-                                                       <div class="form-group">
-                                                            <label for="">Sample Dispatched On <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" title="Please select sample dispatched on" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" <?php echo $disable; ?>>
-                                                       </div>
-                                                  </div>
+										<div class="form-group">
+											<label for="">Sample Dispatched On <span class="mandatory">*</span></label>
+											<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" title="Please select sample dispatched on" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" <?php echo $disable; ?>>
+										</div>
+									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="specimenType">Sample Type <span class="mandatory">*</span></label>
@@ -686,8 +686,8 @@ $disable = "disabled = 'disabled'";
 														<div class="col-lg-7">
 															<input type="text" class="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'no' && $vlQueryInfo['result'] != 'Target Not Detected' && $vlQueryInfo['result'] == 'Below Detection Level') ? 'isRequired' : ''; ?> form-control labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result_value_absolute']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 
-															<input type="checkbox" class="labSection" id="tnd" name="tnd" value="yes" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'checked="checked"' : '';
-																																		echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'disabled="disabled"' : '' ?> title="Please check tnd"> Target Not Detected<br>
+															<span style="display: none;"><input type="hidden" class="labSection" id="tnd" name="tnd" value="yes" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'checked="checked"' : '';
+																																									echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'disabled="disabled"' : '' ?> title="Please check tnd"> Target Not Detected<br></span>
 															<input type="checkbox" class="labSection" id="bdl" name="bdl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'checked="checked"' : '';
 																																		echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'disabled="disabled"' : '' ?> title="Please check bdl"> Below Detection Level
 														</div>
@@ -894,7 +894,7 @@ $disable = "disabled = 'disabled'";
 			$('#tnd,#bdl').attr('disabled', true);
 		} else {
 			$('#tnd,#bdl').attr('disabled', false);
-		} 
+		}
 	});
 
 	$("#vlRequestFormSudan .labSection").on("change", function() {

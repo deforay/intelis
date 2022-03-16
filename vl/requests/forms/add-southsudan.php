@@ -240,8 +240,8 @@ $sFormat = '';
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="patientFirstName">Patient Name (First Name, Last Name) </label>
-                                                       <input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" />
+                                                       <label for="patientFirstName">Patient Name (First Name, Last Name) <span class="mandatory">*</span></label>
+                                                       <input type="text" name="patientFirstName" id="patientFirstName" class="form-control isRequired" placeholder="Enter Patient Name" title="Enter patient name" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -615,7 +615,7 @@ $sFormat = '';
                                                                       <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copiesl/ml) </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" style="width:100%;" onchange="calculateLogValue(this)" />
-                                                                           <input type="checkbox" class="" id="tnd" name="tnd" value="yes" title="Please check tnd"> Target Not Detected<br>
+                                                                           <span style="display: none;"><input type="hidden" class="" id="tnd" name="tnd" value="yes" title="Please check tnd"> Target Not Detected<br></span>
                                                                            <input type="checkbox" class="" id="bdl" name="bdl" value="yes" title="Please check bdl"> Below Detection Level
                                                                       </div>
                                                                  </div>
@@ -767,7 +767,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                dateFormat: 'dd-M-yy',
                timeFormat: "HH:mm",
                minDate: "Today",
-               yearRange:"-100:+100",
+               yearRange: "-100:+100",
           });
           $('#labId').select2({
                width: '100%',
