@@ -211,6 +211,33 @@ class Vl
         }
     }
 
+    public function interpretViralLoadTextResult($result)
+    {
+
+        // If result is blank, then return null
+        if (empty(trim($result))) return null;
+
+        // If result is numeric, then return it as is
+        if (is_numeric($result)) return $result;
+
+        $result = strtolower($result);
+        if ($result == 'bdl') {
+            $output = 'Below Detection Limit';
+        } else if ($result == 'target not detected') {
+            $output = 'Target Not Detected';
+        } else if ($result == 'tnd') {
+            $output = 'Target Not Detected';
+        } else if ($result == '< titer min') {
+            $output = '< 20';
+        } else if ($result == '> titer max"') {
+            $output = '> 1000000';
+        } else {
+            $output = $result;
+        }
+
+        return $output;
+    }
+
     public function insertSampleCode($params)
     {
         try {
@@ -241,16 +268,16 @@ class Vl
             $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $params['sampleCollectionDate'] = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sameplCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
-            if (!isset($params['countryId']) || $params['countryId'] == '') {
+            if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
             }
             $vlData = array();
 
             $vlData = array(
                 'vlsm_country_id' => $params['countryId'],
-                'sample_collection_date' => $params['sampleCollectionDate'],
+                'sample_collection_date' => $sameplCollectionDate,
                 'vlsm_instance_id' => $_SESSION['instanceId'],
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
@@ -282,16 +309,19 @@ class Vl
 
             $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM vl_request_form ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
-                $sQuery .= "where (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
+                $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
-            $sQuery .= "limit 1";
+            $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
 
             $id = 0;
             if ($rowData) {
-                $this->db = $this->db->where('vl_sample_id', $rowData['vl_sample_id']);
-                $id = $this->db->update("vl_request_form", $vlData);
-                $params['vlSampleId'] = $rowData['vl_sample_id'];
+                // $this->db = $this->db->where('vl_sample_id', $rowData['vl_sample_id']);
+                // $id = $this->db->update("vl_request_form", $vlData);
+                // $params['vlSampleId'] = $rowData['vl_sample_id'];
+
+                // If this sample code exists, let us regenerate
+                return $this->insertSampleCode($params);
             } else {
                 if (isset($params['api']) && $params['api'] = "yes") {
                     $id = $this->db->insert("vl_request_form", $vlData);
@@ -309,7 +339,7 @@ class Vl
             } else {
                 return 0;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log('Insert VL Sample : ' . $this->db->getLastError());
             error_log('Insert VL Sample : ' . $e->getMessage());
         }

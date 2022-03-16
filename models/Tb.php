@@ -300,14 +300,14 @@ class Tb
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
 
-            $params['sampleCollectionDate'] = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
-            if (!isset($params['countryId']) || $params['countryId'] == '') {
-                $params['countryId'] = '';
+            $sampleCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            if (!isset($params['countryId']) || empty($params['countryId'])) {
+                $params['countryId'] = null;
             }
 
             $tbData = array(
                 'vlsm_country_id' => $params['countryId'],
-                'sample_collection_date' => $params['sampleCollectionDate'],
+                'sample_collection_date' => $sampleCollectionDate,
                 'vlsm_instance_id' => $_SESSION['instanceId'],
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
@@ -340,15 +340,19 @@ class Tb
 
             $sQuery = "SELECT tb_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
-                $sQuery .= "where (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
+                $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
-            $sQuery .= "limit 1";
+            $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
 
             $id = 0;
             if ($rowData) {
-                $this->db = $this->db->where('tb_id', $rowData['tb_id']);
-                $id = $this->db->update("form_tb", $tbData);
+                // $this->db = $this->db->where('tb_id', $rowData['tb_id']);
+                // $id = $this->db->update("form_tb", $tbData);
+
+                // If this sample code exists, let us regenerate
+                return $this->insertSampleCode($params);
+
             } else {
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                     $tbData['unique_id'] = $general->generateRandomString(32);

@@ -382,16 +382,18 @@ class Eid
             $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $params['sampleCollectionDate'] = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
-            if (!isset($params['countryId']) || $params['countryId'] == '')
-                $params['countryId'] = '';
+            if (!isset($params['countryId']) || empty($params['countryId'])) {
+                $params['countryId'] = null;
+            }
+
 
             $eidData = array();
             if (isset($params['api']) && $params['api'] = "yes") {
                 $eidData = array(
                     'vlsm_country_id' => $params['formId'],
-                    'sample_collection_date' => $params['sampleCollectionDate'],
+                    'sample_collection_date' => $sampleCollectionDate,
                     'vlsm_instance_id' => $params['instanceId'],
                     'province_id' => $provinceId,
                     'request_created_by' => '',
@@ -402,7 +404,7 @@ class Eid
             } else {
                 $eidData = array(
                     'vlsm_country_id' => $params['countryId'],
-                    'sample_collection_date' => $params['sampleCollectionDate'],
+                    'sample_collection_date' => $sampleCollectionDate,
                     'province_id' => $provinceId,
                     'vlsm_instance_id' => $_SESSION['instanceId'],
                     'request_created_by' => $_SESSION['userId'],
@@ -433,15 +435,18 @@ class Eid
             }
             $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM eid_form ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
-                $sQuery .= "where (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
+                $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
-            $sQuery .= "limit 1";
+            $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
             $id = 0;
             if ($rowData) {
-                $this->db = $this->db->where('eid_id', $rowData['eid_id']);
-                $id = $this->db->update("eid_form", $eidData);
-                $params['eidSampleId'] = $rowData['eid_id'];
+                // $this->db = $this->db->where('eid_id', $rowData['eid_id']);
+                // $id = $this->db->update("eid_form", $eidData);
+                // $params['eidSampleId'] = $rowData['eid_id'];
+
+                // If this sample code exists, let us regenerate
+                return $this->insertSampleCode($params);
             } else {
 
                 if (isset($params['api']) && $params['api'] = "yes") {
@@ -459,7 +464,7 @@ class Eid
             } else {
                 return 0;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log('Insert EID Sample : ' . $this->db->getLastError());
             error_log('Insert EID Sample : ' . $e->getMessage());
         }
