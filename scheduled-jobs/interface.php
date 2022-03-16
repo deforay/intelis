@@ -84,7 +84,7 @@ if (count($interfaceInfo) > 0) {
 
 
 
-                if ($vlResult == "Not Detected") {
+                if (strtolower($vlResult) == "not detected") {
                     $absVal = $absDecimalVal = null;
                     $vlResult = $txtVal = "Below Detection Level";
                     $logVal = null;
@@ -157,12 +157,23 @@ if (count($interfaceInfo) > 0) {
                 // }
             }
 
-            $userId = $usersModel->addUserIfNotExists($result['tested_by']);
+            $testedByUserId = $approvedByUserId = NULL;
+            // if ^ exists it means the Operator Name has both tester and approver name
+            if (strpos(strtolower($result['tested_by']), '^') !== false) {
+                $operatorArray = explode("^", $result['tested_by']);
+                $tester = $operatorArray[0];
+                $approver = $operatorArray[1];
+                $testedByUserId = $usersModel->addUserIfNotExists($tester);
+                $approvedByUserId = $usersModel->addUserIfNotExists($approver);
+            } else {
+                $result['approved_by'] = $result['tested_by'];
+                $approvedByUserId = $testedByUserId = $usersModel->addUserIfNotExists($result['tested_by']);
+            }
 
             $data = array(
                 'lab_id' => $labId,
-                'tested_by' => $userId,
-                'result_approved_by' => $userId,
+                'tested_by' => $testedByUserId,
+                'result_approved_by' => $approvedByUserId,
                 'result_approved_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
                 'result_value_log' => $logVal,
