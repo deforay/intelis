@@ -746,19 +746,6 @@ $disable = "disabled = 'disabled'";
 															<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 														</div>
 													</div>
-													<div class="col-md-4" style="<?php echo (($_SESSION['accessType'] == 'collection-site')) ? 'display:none;' : ''; ?>">
-														<label class="col-lg-5 control-label" for="status">Status <span class="mandatory">*</span></label>
-														<div class="col-lg-7">
-															<select class="form-control labSection  <?php echo (($_SESSION['accessType'] != 'collection-site')) ? 'isRequired' : ''; ?>" id="status" name="status" title="Please select test status">
-																<option value="">-- Select --</option>
-																<?php
-																foreach ($statusResult as $status) {
-																?>
-																	<option value="<?php echo $status['status_id']; ?>" <?php echo ($vlQueryInfo['result_status'] == $status['status_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($status['status_name']); ?></option>
-																<?php } ?>
-															</select>
-														</div>
-													</div>
 												</div>
 												<br>
 												<div class="row">
