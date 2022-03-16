@@ -2958,3 +2958,6 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 -- Thana 10-Mar-2022
 ALTER TABLE `user_details` DROP `user_alpnum_id`;
 ALTER TABLE `user_details` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `data_sync`;
+
+-- Thana 16-Mar-2022
+ALTER TABLE `track_api_requests` CHANGE `api_params` `api_params` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
