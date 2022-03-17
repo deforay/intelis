@@ -11,6 +11,7 @@ $db  = MysqliDb::getInstance();
 
 $usersModel = new \Vlsm\Models\Users();
 $general = new \Vlsm\Models\General();
+$vlDb = new \Vlsm\Models\Vl();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
@@ -31,6 +32,7 @@ $db->addConnection('interface', array(
 
 //get the value from interfacing DB
 $interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1 AND `lims_sync_status`= 0";
+$interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1";
 
 $interfaceInfo = $db->connection('interface')->rawQuery($interfaceQuery);
 
@@ -41,27 +43,24 @@ if (count($interfaceInfo) > 0) {
 
     if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
         $availableModules['vl_sample_id'] = 'vl_request_form';
-        $vlLock = $general->getGlobalConfig('lock_approved_vl_samples');
     }
 
     if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
         $availableModules['eid_id'] = 'eid_form';
-        $eidlock = $general->getGlobalConfig('lock_approved_eid_samples');
     }
 
     if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
         $availableModules['covid19_id'] = 'form_covid19';
-        $covid19Lock = null;
     }
 
     if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
         $availableModules['hepatitis_id'] = 'form_hepatitis';
-        $hepatitisLock = null;
     }
 
-
     foreach ($interfaceInfo as $key => $result) {
+
         if (empty($result['test_id']))  continue;
+
         $tableInfo = array();
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
             $tableQuery = "SELECT * FROM $individualTableName WHERE sample_code = '" . $result['test_id'] . "'";
@@ -70,6 +69,8 @@ if (count($interfaceInfo) > 0) {
                 break;
             }
         }
+
+
 
         if (isset($tableInfo['vl_sample_id'])) {
             $absDecimalVal = null;
@@ -82,79 +83,17 @@ if (count($interfaceInfo) > 0) {
                 $vlResult = trim($result['results']);
                 $unit = trim($result['test_unit']);
 
-
-
-                if (strtolower($vlResult) == "not detected") {
-                    $absVal = $absDecimalVal = null;
-                    $vlResult = $txtVal = "Below Detection Level";
-                    $logVal = null;
-                } else if ($vlResult == "< INF") {
-                    $absDecimalVal = 839;
-                    $vlResult = $absVal = 839;
-                    $logVal = 2.92;
-                } else if ($vlResult == "< Titer min") {
-                    $absDecimalVal = 20;
-                    $txtVal = $vlResult = $absVal = "< 20";
-                } else if ($vlResult == "> Titer max") {
-                    $absDecimalVal = 10000000;
-                    $txtVal = $vlResult = $absVal = "> 1000000";
-                } else if (strpos($vlResult, "<") !== false) {
-                    $logVal = str_replace("<", "", $vlResult);
-                    $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                    $txtVal = $vlResult = $absVal = "< " . trim($absDecimalVal);
-                } else if (strpos($vlResult, ">") !== false) {
-                    $logVal = str_replace(">", "", $vlResult);
-                    $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                    $txtVal = $vlResult = $absVal = "> " . trim($absDecimalVal);
-                } else if (strpos($unit, '10') !== false) {
-                    $unitArray = explode(".", $unit);
-                    $exponentArray = explode("*", $unitArray[0]);
-                    $multiplier = pow($exponentArray[0], $exponentArray[1]);
-                    $vlResult = $vlResult * $multiplier;
-                    $unit = $unitArray[1];
-                } else if (strpos($unit, 'Log') !== false && is_numeric($vlResult)) {
-                    $logVal = $vlResult;
-                    $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                } else if (strpos($vlResult, 'E+') !== false || strpos($vlResult, 'E-') !== false) {
-                    if (strpos($vlResult, '< 2.00E+1') !== false) {
-                        $vlResult = "< 20";
-                        //$vlResultCategory = 'Suppressed';
-                    } else {
-                        $resultArray = explode("(", $vlResult);
-                        $exponentArray = explode("E", $resultArray[0]);
-                        $vlResult = (float) $resultArray[0];
-                        $absDecimalVal = (float) trim($vlResult);
-                        $logVal = round(log10($absDecimalVal), 2);
-                    }
+                if (!is_numeric($vlResult)) {
+                    $interpretedResults = $vlDb->interpretViralLoadTextResult($vlResult, $unit);
                 } else {
-                    $vlResult = $txtVal = trim($result['results']);
+                    $interpretedResults = $vlDb->interpretViralLoadNumericResult($vlResult, $unit);
                 }
 
-                // if (is_numeric($vlResult)) {
-                //     $absVal = (float) trim($vlResult);
-                //     $absDecimalVal = (float) trim($vlResult);
-                //     $logVal = round(log10($absDecimalVal), 2);
-                // } else {
-                //     if ($vlResult == "< Titer min") {
-                //         $absDecimalVal = 20;
-                //         $txtVal = $vlResult = $absVal = "< 20";
-                //     } else if ($vlResult == "> Titer max") {
-                //         $absDecimalVal = 10000000;
-                //         $txtVal = $vlResult = $absVal = ">1000000";
-                //     } else if (strpos($vlResult, "<") !== false) {
-                //         $vlResult = str_replace("<", "", $vlResult);
-                //         $absDecimalVal = (float) trim($vlResult);
-                //         $logVal = round(log10($absDecimalVal), 2);
-                //         $absVal = "< " . (float) trim($vlResult);
-                //     } else if (strpos($vlResult, ">") !== false) {
-                //         $vlResult = str_replace(">", "", $vlResult);
-                //         $absDecimalVal = (float) trim($vlResult);
-                //         $logVal = round(log10($absDecimalVal), 2);
-                //         $absVal = "> " . (float) trim($vlResult);
-                //     } else {
-                //         $txtVal = trim($result['results']);
-                //     }
-                // }
+                $logVal = $interpretedResults['logVal'];
+                $vlResult = $interpretedResults['result'];
+                $absDecimalVal = $interpretedResults['absDecimalVal'];
+                $absVal = $interpretedResults['absVal'];
+                $txtVal = $interpretedResults['txtVal'];
             }
 
             $testedByUserId = $approvedByUserId = NULL;
@@ -185,16 +124,16 @@ if (count($interfaceInfo) > 0) {
                 'result_status' => 7,
                 'result_printed_datetime' => NULL,
                 'result_dispatched_datetime' => NULL,
+                'last_modified_datetime' => $db->now(),
                 'data_sync' => 0
             );
-            /* Updating the high and low viral load data */
-            if ($data['result_status'] == 4 || $data['result_status'] == 7) {
-                $vlDb = new \Vlsm\Models\Vl();
-                $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+
+            if (strtolower($vlResult) == 'failed' || strtolower($vlResult) == 'fail' || strtolower($vlResult) == 'invalid' || strtolower($vlResult) == 'inconclusive') {
+                $data['result_status'] = 5; // Invalid
             }
-            if ($vlLock == 'yes' && $data['result_status'] == 7) {
-                $data['locked'] = 'yes';
-            }
+
+            $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+
             $db = $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
             $vlUpdateId = $db->update('vl_request_form', $data);
             $numberOfResults++;
@@ -234,11 +173,10 @@ if (count($interfaceInfo) > 0) {
                 'result_status' => 7,
                 'result_printed_datetime' => NULL,
                 'result_dispatched_datetime' => NULL,
+                'last_modified_datetime' => $db->now(),
                 'data_sync' => 0
             );
-            if ($eidlock == 'yes' && $data['result_status'] == 7) {
-                $data['locked'] = 'yes';
-            }
+
             $db = $db->where('eid_id', $tableInfo['eid_id']);
             $eidUpdateId = $db->update('eid_form', $data);
             $numberOfResults++;
@@ -360,12 +298,10 @@ if (count($interfaceInfo) > 0) {
                 'result_status' => 7,
                 'result_printed_datetime' => NULL,
                 'result_dispatched_datetime' => NULL,
+                'last_modified_datetime' => $db->now(),
                 'data_sync' => 0
             );
 
-            if ($hepatitisLock == 'yes' && $data['result_status'] == 7) {
-                $data['locked'] = 'yes';
-            }
             $db = $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
             $vlUpdateId = $db->update('form_hepatitis', $data);
             $numberOfResults++;

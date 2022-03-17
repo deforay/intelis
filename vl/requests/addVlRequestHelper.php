@@ -284,9 +284,9 @@ try {
         'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : NULL,
         'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : NULL,
         // 'request_created_by' => $_SESSION['userId'],
-        'request_created_datetime' => $general->getDateTime(),
+        'request_created_datetime' => $db->now(),
         // 'last_modified_by' => $_SESSION['userId'],
-        'last_modified_datetime' => $general->getDateTime(),
+        'last_modified_datetime' => $db->now(),
         'manual_result_entry' => 'yes',
         'vl_result_category' => $vl_result_category
     );

@@ -176,6 +176,8 @@ class Vl
         $vlResultCategory = null;
         if ($resultStatus == 4) {
             $vlResultCategory = 'rejected';
+        } else if ($resultStatus == 5) {
+            $vlResultCategory = 'invalid';
         } else if ($resultStatus == 7) {
             if (is_numeric($finalResult) && $finalResult > 0 && $finalResult == round($finalResult, 0)) {
                 $finalResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
@@ -203,15 +205,13 @@ class Vl
             }
         }
         if (!empty($vlResultCategory)) {
-            // $this->db->where('vl_sample_id', $sampleId);
-            // return $this->db->update($this->table, $dataForUpdate);
             return $vlResultCategory;
         } else {
             return null;
         }
     }
 
-    public function interpretViralLoadTextResult($result)
+    public function interpretViralLoadTextResult($result, $unit = false)
     {
 
         // If result is blank, then return null
@@ -220,22 +220,108 @@ class Vl
         // If result is numeric, then return it as is
         if (is_numeric($result)) return $result;
 
+        $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
+
         $result = strtolower($result);
-        if ($result == 'bdl') {
-            $output = 'Below Detection Limit';
-        } else if ($result == 'target not detected') {
-            $output = 'Target Not Detected';
-        } else if ($result == 'tnd') {
-            $output = 'Target Not Detected';
+        if ($result == 'bdl' || $result == 'not detected') {
+            $vlResult = $txtVal = 'Below Detection Limit';
+        } else if ($result == 'target not detected' || $result == 'tnd') {
+            $vlResult = $txtVal = 'Target Not Detected';
+        } else if ($result == '< 2.00E+1') {
+            $absDecimalVal = 20;
+            $txtVal = $vlResult = $absVal = "< 20";
         } else if ($result == '< titer min') {
-            $output = '< 20';
+            $absDecimalVal = 20;
+            $txtVal = $vlResult = $absVal = "< 20";
         } else if ($result == '> titer max"') {
-            $output = '> 1000000';
+            $absDecimalVal = 10000000;
+            $txtVal = $vlResult = $absVal = "> 1000000";
+        } else if ($result == '< inf') {
+            $absDecimalVal = 839;
+            $vlResult = $absVal = 839;
+            $logVal = 2.92;
+            $txtVal = null;
+        } else if (strpos($result, "<") !== false) {
+            if (!empty($unit)) {
+                if (strpos($unit, 'Log') !== false) {
+                    $logVal = (float) trim(str_replace("<", "", $result));
+                    $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                } else {
+                    $absDecimalVal = (float) trim(str_replace("<", "", $result));
+                    $logVal = round(log10($absDecimalVal), 2);
+                }
+            }
+
+            $txtVal = $vlResult = $absVal = "< " . trim($absDecimalVal);
+        } else if (strpos($result, ">") !== false) {
+            if (!empty($unit)) {
+                if (strpos($unit, 'Log') !== false) {
+                    $logVal = (float) trim(str_replace(">", "", $result));
+                    $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                } else {
+                    $absDecimalVal = (float) trim(str_replace(">", "", $result));
+                    $logVal = round(log10($absDecimalVal), 2);
+                }
+            }
+            $txtVal = $vlResult = $absVal = "> " . trim($absDecimalVal);
         } else {
-            $output = $result;
+            $vlResult = $txtVal = $result;
         }
 
-        return $output;
+        return array(
+            'logVal' => $logVal,
+            'result' => $vlResult,
+            'absDecimalVal' => $absDecimalVal,
+            'absVal' => $absVal,
+            'txtVal' => $txtVal
+        );
+    }
+
+    public function interpretViralLoadNumericResult($result, $unit = null)
+    {
+
+
+        // If result is blank, then return null
+        if (empty(trim($result))) return null;
+
+        // If result is NOT numeric, then return it as is
+        if (!is_numeric($result)) return $result;
+
+        $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
+
+        if (strpos($unit, '10') !== false) {
+            $unitArray = explode(".", $unit);
+            $exponentArray = explode("*", $unitArray[0]);
+            $multiplier = pow($exponentArray[0], $exponentArray[1]);
+            $vlResult = $result * $multiplier;
+            $unit = $unitArray[1];
+        } else if (strpos($unit, 'Log') !== false && is_numeric($result)) {
+            $logVal = $result;
+            $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+        } else if (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
+            if (strpos($result, '< 2.00E+1') !== false) {
+                $vlResult = "< 20";
+            } else {
+                $resultArray = explode("(", $result);
+                $exponentArray = explode("E", $resultArray[0]);
+                $vlResult = (float) $resultArray[0];
+                $absDecimalVal = (float) trim($vlResult);
+                $logVal = round(log10($absDecimalVal), 2);
+            }
+        } else {
+            $absDecimalVal = (float) trim($result);
+            $logVal = round(log10($absDecimalVal), 2);
+            $txtVal = null;
+            $vlResult = $absDecimalVal;
+        }
+
+        return array(
+            'logVal' => $logVal,
+            'result' => $vlResult,
+            'absDecimalVal' => $absDecimalVal,
+            'absVal' => $absVal,
+            'txtVal' => $txtVal
+        );
     }
 
     public function insertSampleCode($params)
@@ -281,9 +367,9 @@ class Vl
                 'vlsm_instance_id' => $_SESSION['instanceId'],
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $general->getDateTime(),
+                'request_created_datetime' => $db->now(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $general->getDateTime()
+                'last_modified_datetime' => $db->now()
             );
 
             if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {

@@ -134,6 +134,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.result_printed_datetime,	
                         vl.last_modified_datetime,
                         vl.result_status,
+                        vl.locked,
+                        vl.data_sync,
                         s.sample_name,
                         b.batch_code,
                         ts.status_name,

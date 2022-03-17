@@ -275,7 +275,7 @@ try {
         'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
         'last_modified_by' => $_SESSION['userId'],
         'data_sync' => 0,
-        'last_modified_datetime' => $general->getDateTime(),
+        'last_modified_datetime' => $db->now(),
         'vl_result_category' => $vl_result_category
     );
 

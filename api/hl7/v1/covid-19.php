@@ -417,9 +417,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         'vlsm_instance_id' => $_POST['instanceId'],
         'province_id' => $provinceId,
         'request_created_by' => '',
-        'request_created_datetime' => $general->getDateTime(),
+        'request_created_datetime' => $db->now(),
         'last_modified_by' => '',
-        'last_modified_datetime' => $general->getDateTime()
+        'last_modified_datetime' => $db->now()
     );
 
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -475,7 +475,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'province_id'                         => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
             'lab_id'                              => !empty($_POST['labId']) ? $_POST['labId'] : null,
             'implementing_partner'                => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
-            'source_of_alert'                      => !empty($_POST['sourceOfAlertPOE']) ? $_POST['sourceOfAlertPOE'] : null,
+            'source_of_alert'                     => !empty($_POST['sourceOfAlertPOE']) ? $_POST['sourceOfAlertPOE'] : null,
             'funding_source'                      => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
             'patient_id'                          => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
             'patient_name'                        => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
@@ -488,17 +488,17 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'patient_address'                     => !empty($_POST['patientAddress']) ? $_POST['patientAddress'] : null,
             'patient_province'                    => !empty($_POST['patientProvince']) ? $_POST['patientProvince'] : null,
             'patient_district'                    => !empty($_POST['patientDistrict']) ? $_POST['patientDistrict'] : null,
-            'patient_city'                          => !empty($_POST['patientCity']) ? $_POST['patientCity'] : null,
+            'patient_city'                        => !empty($_POST['patientCity']) ? $_POST['patientCity'] : null,
             'patient_occupation'                  => !empty($_POST['patientOccupation']) ? $_POST['patientOccupation'] : null,
             'does_patient_smoke'                  => !empty($_POST['doesPatientSmoke']) ? $_POST['doesPatientSmoke'] : null,
             'patient_nationality'                 => !empty($_POST['patientNationality']) ? $_POST['patientNationality'] : null,
             'patient_passport_number'             => !empty($_POST['patientPassportNumber']) ? $_POST['patientPassportNumber'] : null,
-            'flight_airline'                       => !empty($_POST['airline']) ? $_POST['airline'] : null,
-            'flight_seat_no'                       => !empty($_POST['seatNo']) ? $_POST['seatNo'] : null,
+            'flight_airline'                      => !empty($_POST['airline']) ? $_POST['airline'] : null,
+            'flight_seat_no'                      => !empty($_POST['seatNo']) ? $_POST['seatNo'] : null,
             'flight_arrival_datetime'             => !empty($_POST['arrivalDateTime']) ? $_POST['arrivalDateTime'] : null,
             'flight_airport_of_departure'         => !empty($_POST['airportOfDeparture']) ? $_POST['airportOfDeparture'] : null,
-            'flight_transit'                        => !empty($_POST['transit']) ? $_POST['transit'] : null,
-            'reason_of_visit'                        => !empty($_POST['reasonOfVisit']) ? $_POST['reasonOfVisit'] : null,
+            'flight_transit'                      => !empty($_POST['transit']) ? $_POST['transit'] : null,
+            'reason_of_visit'                     => !empty($_POST['reasonOfVisit']) ? $_POST['reasonOfVisit'] : null,
             'is_sample_collected'                 => !empty($_POST['isSampleCollected']) ? $_POST['isSampleCollected'] : null,
             'reason_for_covid19_test'             => !empty($_POST['reasonForCovid19Test']) ? $_POST['reasonForCovid19Test'] : null,
             'type_of_test_requested'              => !empty($_POST['testTypeRequested']) ? $_POST['testTypeRequested'] : null,
@@ -510,13 +510,13 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'date_of_symptom_onset'               => !empty($_POST['dateOfSymptomOnset']) ? $general->dateFormat($_POST['dateOfSymptomOnset']) : null,
             'date_of_initial_consultation'        => !empty($_POST['dateOfInitialConsultation']) ? $general->dateFormat($_POST['dateOfInitialConsultation']) : null,
             'fever_temp'                          => !empty($_POST['feverTemp']) ? $_POST['feverTemp'] : null,
-            'medical_history'                      => !empty($_POST['medicalHistory']) ? $_POST['medicalHistory'] : null,
-            'recent_hospitalization'                 => !empty($_POST['recentHospitalization']) ? $_POST['recentHospitalization'] : null,
-            'patient_lives_with_children'          => !empty($_POST['patientLivesWithChildren']) ? $_POST['patientLivesWithChildren'] : null,
+            'medical_history'                     => !empty($_POST['medicalHistory']) ? $_POST['medicalHistory'] : null,
+            'recent_hospitalization'              => !empty($_POST['recentHospitalization']) ? $_POST['recentHospitalization'] : null,
+            'patient_lives_with_children'         => !empty($_POST['patientLivesWithChildren']) ? $_POST['patientLivesWithChildren'] : null,
             'patient_cares_for_children'          => !empty($_POST['patientCaresForChildren']) ? $_POST['patientCaresForChildren'] : null,
-            'temperature_measurement_method'       => !empty($_POST['temperatureMeasurementMethod']) ? $_POST['temperatureMeasurementMethod'] : null,
-            'respiratory_rate'                         => !empty($_POST['respiratoryRate']) ? $_POST['respiratoryRate'] : null,
-            'oxygen_saturation'                        => !empty($_POST['oxygenSaturation']) ? $_POST['oxygenSaturation'] : null,
+            'temperature_measurement_method'      => !empty($_POST['temperatureMeasurementMethod']) ? $_POST['temperatureMeasurementMethod'] : null,
+            'respiratory_rate'                    => !empty($_POST['respiratoryRate']) ? $_POST['respiratoryRate'] : null,
+            'oxygen_saturation'                   => !empty($_POST['oxygenSaturation']) ? $_POST['oxygenSaturation'] : null,
             'close_contacts'                      => !empty($_POST['closeContacts']) ? $_POST['closeContacts'] : null,
             'contact_with_confirmed_case'         => !empty($_POST['contactWithConfirmedCase']) ? $_POST['contactWithConfirmedCase'] : null,
             'has_recent_travel_history'           => !empty($_POST['hasRecentTravelHistory']) ? $_POST['hasRecentTravelHistory'] : null,
@@ -531,8 +531,8 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
             'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : $general->getDateTime(),
-            'sample_registered_at_lab'            => $general->getDateTime(),
-            'last_modified_datetime'              => $general->getDateTime()
+            'sample_registered_at_lab'            => $db->now(),
+            'last_modified_datetime'              => $db->now()
         );
         // $lock = $general->getGlobalConfig('lock_approved_covid19_samples');
         // if ($status == 7 && $lock == 'yes') {

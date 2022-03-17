@@ -10,7 +10,7 @@ try {
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'funding_source_status' => $_POST['status'],
-            'updated_datetime'     =>  $general->getDateTime(),
+            'updated_datetime'     =>  $db->now(),
         );
         $db = $db->where('funding_source_id', $id[$i]);
         $db->update($tableName, $status);

@@ -19,7 +19,7 @@ try {
                 'batch_code_key' => $_POST['batchCodeKey'],
                 'position_type' => $_POST['positions'],
                 'test_type' => 'eid',
-                'request_created_datetime' => $general->getDateTime()
+                'request_created_datetime' => $db->now()
             );
 
             $db->insert($tableName1, $data);

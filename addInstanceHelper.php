@@ -63,8 +63,8 @@ try {
       'instance_facility_name' => $_POST['fName'],
       'instance_facility_code' => $_POST['fCode'],
       'instance_facility_type' => $_POST['fType'],
-      'instance_added_on' => $general->getDateTime(),
-      'instance_update_on' => $general->getDateTime(),
+      'instance_added_on' => $db->now(),
+      'instance_update_on' => $db->now()
     );
     if (PHP_OS == 'Linux') {
       $data['instance_mac_address'] = getMacLinux();

@@ -351,9 +351,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         'vlsm_instance_id' => $_POST['instanceId'],
         'province_id' => $provinceId,
         'request_created_by' => '',
-        'request_created_datetime' => $general->getDateTime(),
+        'request_created_datetime' => $db->now(),
         'last_modified_by' => '',
-        'last_modified_datetime' => $general->getDateTime()
+        'last_modified_datetime' => $db->now()
     );
 
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -452,8 +452,8 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result' => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] :  NULL,
             'result_status' => $status,
             'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : NULL,
-            'request_created_datetime' => $general->getDateTime(),
-            'last_modified_datetime' => $general->getDateTime(),
+            'request_created_datetime' => $db->now(),
+            'last_modified_datetime' => $db->now(),
             'manual_result_entry' => 'yes',
             'vl_result_category' => $vl_result_category
         );

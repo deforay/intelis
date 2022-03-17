@@ -10,7 +10,7 @@ try {
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'riskfactor_status' => $_POST['status'],
-            'updated_datetime'     =>  $general->getDateTime(),
+            'updated_datetime'     =>  $db->now(),
         );
         $db = $db->where('riskfactor_id', $id[$i]);
         $db->update($tableName, $status);

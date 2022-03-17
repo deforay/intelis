@@ -293,7 +293,7 @@ try {
           'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : NULL,
           'reason_for_vl_result_changes' => $reasonForChanges,
           // 'last_modified_by' => $_SESSION['userId'],
-          'last_modified_datetime' => $general->getDateTime(),
+          'last_modified_datetime' => $db->now(),
           'manual_result_entry' => 'yes',
           'data_sync' => 0,
           'vl_result_category' => $vl_result_category

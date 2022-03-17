@@ -142,9 +142,9 @@ try {
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'request_created_by'                  => $_SESSION['userId'],
 		'request_created_datetime'            => $general->getDateTime(),
-		'sample_registered_at_lab'            => $general->getDateTime(),
+		'sample_registered_at_lab'            => $db->now(),
 		'last_modified_by'                    => $_SESSION['userId'],
-		'last_modified_datetime'              => $general->getDateTime(),
+		'last_modified_datetime'              => $db->now(),
 		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
 	);
 	/* $lock = $general->getGlobalConfig('lock_approved_hepatitis_samples');

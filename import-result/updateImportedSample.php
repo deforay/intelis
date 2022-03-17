@@ -13,7 +13,7 @@ try {
             $data = array(
                 'machine' => 0,
                 'batch_code' => trim($_POST['batchCode']),
-                'request_created_datetime' => $general->getDateTime()
+                'request_created_datetime' => $db->now()
             );
             $db->insert("batch_details", $data);
         }

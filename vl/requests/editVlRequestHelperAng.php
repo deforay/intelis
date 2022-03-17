@@ -227,7 +227,7 @@ try {
           'approver_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
           'reason_for_vl_result_changes' => $allChange,
           'last_modified_by' => $_SESSION['userId'],
-          'last_modified_datetime' => $general->getDateTime(),
+          'last_modified_datetime' => $db->now(),
           'data_sync' => 0,
           'vl_result_category' => $vl_result_category
      );

@@ -288,9 +288,9 @@ try {
         'approver_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
         'result_status' => $status,
         'request_created_by' => $_SESSION['userId'],
-        'request_created_datetime' => $general->getDateTime(),
+        'request_created_datetime' => $db->now(),
         'last_modified_by' => $_SESSION['userId'],
-        'last_modified_datetime' => $general->getDateTime(),
+        'last_modified_datetime' => $db->now(),
         'manual_result_entry' => 'yes',
         'vl_result_category' => $vl_result_category
     );

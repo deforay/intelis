@@ -307,9 +307,9 @@ try {
         'date_dispatched_from_clinic_to_lab' => $_POST['dateDispatchedFromClinicToLab'],
         //'result_printed_datetime'=>$_POST['sampleTestingDateAtLab'],
         'request_created_by' => $_SESSION['userId'],
-        'request_created_datetime' => $general->getDateTime(),
+        'request_created_datetime' => $db->now(),
         'last_modified_by' => $_SESSION['userId'],
-        'last_modified_datetime' => $general->getDateTime(),
+        'last_modified_datetime' => $db->now(),
         'vl_result_category' => $vl_result_category
     );
     // print_r($vldata);die;

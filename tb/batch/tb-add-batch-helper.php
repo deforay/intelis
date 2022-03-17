@@ -21,7 +21,7 @@ try {
                 'batch_code' => $_POST['batchCode'],
                 'batch_code_key' => $_POST['batchCodeKey'],
                 'test_type' => 'tb',
-                'request_created_datetime' => $general->getDateTime()
+                'request_created_datetime' => $db->now()
             );
 
             $db->insert($tableName1, $data);

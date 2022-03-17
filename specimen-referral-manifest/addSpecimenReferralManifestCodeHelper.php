@@ -27,7 +27,7 @@ try {
                     'sample_package_id' => $lastId,
                     'sample_package_code' => $_POST['packageCode'],
                     'lab_id'    => $_POST['testingLab'],
-                    'last_modified_datetime' => $general->getDateTime(),
+                    'last_modified_datetime' => $db->now(),
                     'data_sync' => 0
                 );
                 if ($_POST['module'] == 'vl') {

@@ -10,7 +10,7 @@ try {
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'art_status' => $_POST['status'],
-            'updated_datetime'     =>  $general->getDateTime(),
+            'updated_datetime'     =>  $db->now(),
         );
         $db = $db->where('art_id', $id[$i]);
         $db->update($tableName, $status);
