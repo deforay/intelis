@@ -20,13 +20,13 @@ try {
     //remove instance table data
     if (isset($_POST['removedInstanceLogoImage']) && trim($_POST['removedInstanceLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $_POST['removedInstanceLogoImage'])) {
         unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $_POST['removedInstanceLogoImage']);
-        $data = array('instance_facility_logo' => '');
+        $data = array('instance_facility_logo' => null);
         $db = $db->where('vlsm_instance_id', $_SESSION['instanceId']);
         $db->update($instanceTableName, $data);
     }
     if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage'])) {
         unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
-        $data = array('value' => '');
+        $data = array('value' => null);
         $db = $db->where('name', 'logo');
         $id = $db->update($tableName, $data);
         if ($id) {

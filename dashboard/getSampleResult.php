@@ -588,7 +588,7 @@ if ($table == "form_covid19") {
             xAxis: {
                 categories: [<?php
                                 foreach ($collectionResult as $tRow) {
-                                    echo "'" . ucwords($tRow['facility_name']) . "',";
+                                    echo "'" . addslashes($tRow['facility_name']) . "',";
                                 }
                                 ?>],
                 crosshair: true,

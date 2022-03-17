@@ -396,9 +396,9 @@ class Eid
                     'sample_collection_date' => $sampleCollectionDate,
                     'vlsm_instance_id' => $params['instanceId'],
                     'province_id' => $provinceId,
-                    'request_created_by' => '',
+                    'request_created_by' => null,
                     'request_created_datetime' => $db->now(),
-                    'last_modified_by' => '',
+                    'last_modified_by' => null,
                     'last_modified_datetime' => $db->now()
                 );
             } else {
