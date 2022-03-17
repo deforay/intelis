@@ -475,7 +475,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 				if (data == "" || data == null || data == undefined) {
 					alert("<?php echo _("Unable to generate download"); ?>");
 				} else {
-					window.open('/uploads/' + data, '_blank');
+					window.open('/temporary/' + data, '_blank');
 				}
 			});
 	}

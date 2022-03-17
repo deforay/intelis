@@ -81,8 +81,8 @@ unset($_SESSION['controllertrack']);
                                 <tr>
                                     <th style="width: 13%;">No. of Results imported</th>
                                     <th style="width: 11%;">No. of <?php echo $covid19Results['positive']; ?></th>
-                                    <th style="width: 18%;">No. of  <?php echo $covid19Results['negative']; ?></th>
-                                    <th style="width: 18%;">No. of  <?php echo $covid19Results['indeterminate']; ?></th>
+                                    <th style="width: 18%;">No. of <?php echo $covid19Results['negative']; ?></th>
+                                    <th style="width: 18%;">No. of <?php echo $covid19Results['indeterminate']; ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,7 +98,7 @@ unset($_SESSION['controllertrack']);
                     <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 75%;">
                         <tr>
                             <td>
-                            <a href="/covid-19/results/covid-19-print-results.php" class="btn btn-success btn-sm">Continue to Print Results</a>
+                                <a href="/covid-19/results/covid-19-print-results.php" class="btn btn-success btn-sm">Continue to Print Results</a>
                             </td>
                         </tr>
 
@@ -130,7 +130,7 @@ unset($_SESSION['controllertrack']);
                     alert('Unable to generate download');
                 } else {
                     $.unblockUI();
-                    window.open('/uploads/' + data, '_blank');
+                    window.open('/temporary/' + data, '_blank');
                     window.location.href = "/covid-19/results/covid-19-print-results.php";
                 }
 

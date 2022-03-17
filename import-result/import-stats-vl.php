@@ -114,7 +114,7 @@ unset($_SESSION['controllertrack']);
                     alert('Unable to generate download');
                 } else {
                     $.unblockUI();
-                    window.open('/uploads/' + data, '_blank');
+                    window.open('/temporary/' + data, '_blank');
                     // window.location.href = "/vl/results/vlPrintResult.php";
                 }
 
