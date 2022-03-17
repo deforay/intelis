@@ -420,7 +420,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<a href="/facilities/facilities.php"><i class="fa fa-hospital-o"></i> <?php echo _("Facilities"); ?></a>
 									</li>
 								<?php }
-								if (isset($_SESSION['privileges']) && (in_array("audit-trail.php", $_SESSION['privileges']) || in_array("api-sync-history.php", $_SESSION['privileges']))) { ?>
+								if (isset($_SESSION['privileges']) && ((in_array("audit-trail.php", $_SESSION['privileges']) || in_array("api-sync-history.php", $_SESSION['privileges'])) || (in_array("source-of-requests-reports.php", $_SESSION['privileges'])))) { ?>
 									<li class="treeview monitoring-menu">
 										<a href="#">
 											<i class="fa fa-bullseye"></i>
@@ -438,6 +438,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											if (isset($_SESSION['privileges']) && in_array("api-sync-history.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview api-sync-history-menu">
 													<a href="/admin/monitoring/api-sync-history.php"><i class="fa fa-cloud" aria-hidden="true"></i> <?php echo _("API Sync History"); ?></a>
+												</li>
+											<?php }
+											if (isset($_SESSION['privileges']) && in_array("source-of-requests-reports.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu treeview source-of-requests-report-menu">
+													<a href="/admin/monitoring/source-of-requests-reports.php"><i class="fa fa-circle-o-notch" aria-hidden="true"></i> <?php echo _("Source of Requests"); ?></a>
 												</li>
 											<?php } ?>
 										</ul>

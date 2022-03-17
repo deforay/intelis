@@ -229,6 +229,10 @@
 		$(".allMenu").removeClass('active');
 		$(".audit-trail-menu, .manage, .monitoring-menu").addClass('active');
 		$(".facilityMenu").addClass('active');
+	} else if (splitsUrl == 'source-of-requests-reports.php') {
+		$(".allMenu").removeClass('active');
+		$(".source-of-requests-report-menu, .manage, .monitoring-menu").addClass('active');
+		$(".facilityMenu").addClass('active');
 	} else if (splitsUrl == 'api-sync-history.php') {
 		$(".allMenu").removeClass('active');
 		$(".api-sync-history-menu, .manage, .monitoring-menu").addClass('active');

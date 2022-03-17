@@ -31,7 +31,7 @@ $general = new \Vlsm\Models\General();
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped">
+						<table id="auditTrailDataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
 									<th><?php echo _("Audit Log"); ?></th>
@@ -94,7 +94,7 @@ $general = new \Vlsm\Models\General();
 
 	function loadVlRequestData() {
 		$.blockUI();
-		oTable = $('#vlRequestDataTable').dataTable({
+		oTable = $('#auditTrailDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
