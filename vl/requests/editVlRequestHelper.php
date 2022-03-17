@@ -179,10 +179,10 @@ try {
           $_POST['vlLog'] = '';
      }
 
-     if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
-          $_POST['vlResult'] = 'Target Not Detected';
-          $_POST['vlLog'] = '';
-     }
+     // if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
+     //      $_POST['vlResult'] = 'Target Not Detected';
+     //      $_POST['vlLog'] = '';
+     // }
      if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejection == false) {
           $_POST['vlResult'] = 'Below Detection Level';
           $_POST['vlLog'] = '';

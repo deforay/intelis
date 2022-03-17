@@ -82,10 +82,12 @@ try {
         $finalResult = $_POST['vlResult'] = $_POST['vlLog'] = null;
     }
 
-    if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
-        $finalResult = $textResult = 'Target Not Detected';
-        $_POST['vlResult'] = $_POST['vlLog'] = null;
-    } else if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
+    // if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
+    //     $finalResult = $textResult = 'Target Not Detected';
+    //     $_POST['vlResult'] = $_POST['vlLog'] = null;
+    // } else 
+    
+    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
         $finalResult = $textResult = 'Below Detection Level';
         $_POST['vlResult'] = $_POST['vlLog'] = null;
     } else if (!empty($_POST['vlResult'])) {

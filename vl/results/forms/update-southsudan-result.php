@@ -686,8 +686,8 @@ $disable = "disabled = 'disabled'";
 														<div class="col-lg-7">
 															<input type="text" class="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'no' && $vlQueryInfo['result'] != 'Target Not Detected' && $vlQueryInfo['result'] == 'Below Detection Level') ? 'isRequired' : ''; ?> form-control labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result_value_absolute']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 
-															<span style="display: none;"><input type="hidden" class="labSection" id="tnd" name="tnd" value="yes" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'checked="checked"' : '';
-																																									echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'disabled="disabled"' : '' ?> title="Please check tnd"> Target Not Detected<br></span>
+															<!-- <span style="display: none;"><input type="hidden" class="labSection" id="tnd" name="tnd" value="yes" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'checked="checked"' : '';
+																																									echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'disabled="disabled"' : '' ?> title="Please check tnd"> Target Not Detected<br></span> -->
 															<input type="checkbox" class="labSection" id="bdl" name="bdl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'checked="checked"' : '';
 																																		echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'disabled="disabled"' : '' ?> title="Please check bdl"> Below Detection Level
 														</div>
@@ -695,7 +695,7 @@ $disable = "disabled = 'disabled'";
 												</div>
 												<div class="row">
 													<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-														<label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
+														<label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
 														<div class="col-lg-7">
 															<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 														</div>

@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
- 
+
 $general = new \Vlsm\Models\General();
 $tableName = "vl_request_form";
 $tableName1 = "activity_log";
@@ -181,14 +181,15 @@ try {
         $_POST['vlLog'] = '';
     }
 
-    if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = 'Target Not Detected';
-        $_POST['vlLog'] = '';
-    }
+
     if (isset($_POST['bdl']) && $_POST['bdl'] == 'bdl' && $isRejection == false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = '';
-    }
+    } 
+    // else if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
+    //     $_POST['vlResult'] = 'Target Not Detected';
+    //     $_POST['vlLog'] = '';
+    // }
 
     $_POST['result'] = '';
     if (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') {

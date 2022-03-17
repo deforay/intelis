@@ -38,7 +38,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
      $rKey = '';
 }
 //check user exist in user_facility_map table
-$chkUserFcMapQry = "Select user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
      $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
@@ -615,7 +615,7 @@ $sFormat = '';
                                                                       <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copiesl/ml) </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" style="width:100%;" onchange="calculateLogValue(this)" />
-                                                                           <span style="display: none;"><input type="hidden" class="" id="tnd" name="tnd" value="yes" title="Please check tnd"> Target Not Detected<br></span>
+                                                                           <!-- <span style="display: none;"><input type="hidden" class="" id="tnd" name="tnd" value="yes" title="Please check tnd"> Target Not Detected<br></span> -->
                                                                            <input type="checkbox" class="" id="bdl" name="bdl" value="yes" title="Please check bdl"> Below Detection Level
                                                                       </div>
                                                                  </div>
