@@ -119,7 +119,7 @@ $general = new \Vlsm\Models\General();
             "aaSorting": [3, "desc"],
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "/admin/monitoring/get-source-of-requests-reports-list.php",
+            "sAjaxSource": "/admin/monitoring/get-sources-of-requests.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "dateRange",

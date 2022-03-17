@@ -2963,4 +2963,4 @@ ALTER TABLE `user_details` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURR
 ALTER TABLE `track_api_requests` CHANGE `api_params` `api_params` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
 -- Thana 17-Mar-2022
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'source-of-requests-reports.php', 'Source of Requests Reports');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'sources-of-requests.php', 'Sources of Requests Report');
