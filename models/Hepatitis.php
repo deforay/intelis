@@ -250,9 +250,9 @@ class Hepatitis
                 'hepatitis_test_type' => $prefix,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $db->now(),
+                'request_created_datetime' => $this->db->now(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $db->now()
+                'last_modified_datetime' => $this->db->now()
             );
 
             if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -293,7 +293,7 @@ class Hepatitis
             } else {
                 return 0;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log('Insert Hepatitis Sample : ' . $this->db->getLastError());
             error_log('Insert Hepatitis Sample : ' . $e->getMessage());
         }

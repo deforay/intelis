@@ -397,9 +397,9 @@ class Eid
                     'vlsm_instance_id' => $params['instanceId'],
                     'province_id' => $provinceId,
                     'request_created_by' => null,
-                    'request_created_datetime' => $db->now(),
+                    'request_created_datetime' => $this->db->now(),
                     'last_modified_by' => null,
-                    'last_modified_datetime' => $db->now()
+                    'last_modified_datetime' => $this->db->now()
                 );
             } else {
                 $eidData = array(
@@ -408,9 +408,9 @@ class Eid
                     'province_id' => $provinceId,
                     'vlsm_instance_id' => $_SESSION['instanceId'],
                     'request_created_by' => $_SESSION['userId'],
-                    'request_created_datetime' => $db->now(),
+                    'request_created_datetime' => $this->db->now(),
                     'last_modified_by' => $_SESSION['userId'],
-                    'last_modified_datetime' => $db->now()
+                    'last_modified_datetime' => $this->db->now()
                 );
             }
 
