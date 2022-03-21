@@ -511,14 +511,14 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 											</td>
 										</tr>
 										<tr>
-											<th>Reviewed By</th>
+											<th>Revu par</th>
 											<td>
 												<select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose Revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th>Revisado Em</td>
-											<td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
+											<th>Date de Revu</td>
+											<td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Date de revu" title="Date de revu" /></td>
 										</tr>
 										<tr class="change-reason">
 											<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></td>
