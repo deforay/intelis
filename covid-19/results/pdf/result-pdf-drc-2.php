@@ -239,7 +239,7 @@ $patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], 
 $html .= '<tr>';
 $html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Noms<br><span style="font-size:10px;font-weight:normal;">Full Name</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $patientFname . ' ' . $patientLname . '</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . $patientLname . ' ' . $patientFname . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';

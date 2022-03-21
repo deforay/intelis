@@ -163,7 +163,7 @@ $html .= '<tr>';
 $patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
 $patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
 
-$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientFname . ' ' . $patientLname . '</td>';
+$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientLname . ' ' . $patientFname . '</td>';
 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_name']) . '</td>';
 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_state']) . '</td>';
 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_district']) . '</td>';

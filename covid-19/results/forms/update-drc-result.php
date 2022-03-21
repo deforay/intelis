@@ -186,13 +186,13 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                             <table class="table" style="width:100%">
 
                                 <tr>
-                                    <th style="width:15% !important"><label for="firstName">Prénom <span class="mandatory">*</span> </label></th>
+                                    <th style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
                                     <td style="width:35% !important">
-                                        <input type="text" class="form-control isRequired" id="firstName" name="firstName" placeholder="Prénom" title="Prénom" style="width:100%;" value="<?php echo $covid19Info['patient_name']; ?>" />
+                                        <input type="text" class="form-control isRequired" id="lastName" name="lastName" placeholder="Nom de famille" title="Nom de famille" style="width:100%;" value="<?php echo $covid19Info['patient_surname']; ?>" />
                                     </td>
-                                    <th style="width:15% !important"><label for="lastName">Nom de famille</label></th>
+                                    <th style="width:15% !important"><label for="firstName">Prénom </label></th>
                                     <td style="width:35% !important">
-                                        <input type="text" class="form-control " id="lastName" name="lastName" placeholder="Nom de famille" title="Nom de famille" style="width:100%;" value="<?php echo $covid19Info['patient_surname']; ?>" />
+                                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Prénom" title="Prénom" style="width:100%;" value="<?php echo $covid19Info['patient_name']; ?>" />
                                     </td>
                                 </tr>
                                 <tr>
