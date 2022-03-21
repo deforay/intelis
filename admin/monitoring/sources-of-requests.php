@@ -3,6 +3,8 @@ $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
+$facilityDb = new \Vlsm\Models\Facilities();
+$labNameList = $facilityDb->getTestingLabs();
 ?>
 <style>
     .select2-selection__choice {
@@ -29,12 +31,47 @@ $general = new \Vlsm\Models\General();
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
+                    <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+                        <tr>
+                            <td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
+                            <td>
+                                <input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" onchange="getSourceOfRequest()" />
+                            </td>
+                            <td><b><?php echo _("Test Types"); ?>&nbsp;:</b></td>
+                            <td>
+                                <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>" onchange="getSourceOfRequest()">
+                                    <?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
+                                        <option value="vl"><?php echo _("Viral Load"); ?></option>
+                                    <?php }
+                                    if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
+                                        <option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+                                    <?php }
+                                    if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
+                                        <option value="covid19"><?php echo _("Covid-19"); ?></option>
+                                    <?php }
+                                    if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
+                                        <option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
+                                    <?php }
+                                    if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
+                                        <option value='tb'><?php echo _("TB"); ?></option>
+                                    <?php } ?>
+                                </select>
+                            </td>
+                            <td><b><?php echo _("Lab Name"); ?>&nbsp;:</b></td>
+                            <td>
+                                <select style="width:220px;" class="form-control" id="labName" name="labName" title="<?php echo _('Please select the Lab name'); ?>" onchange="getSourceOfRequest()">
+                                    <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
                     <!-- /.box-header -->
                     <div class="box-body">
                         <table id="sampleReportsDataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th><?php echo _("Lab Name"); ?></th>
+                                    <th><?php echo _("Test Type"); ?></th>
                                     <th><?php echo _("No. of Samples Collected"); ?></th>
                                     <th><?php echo _("No. of Samples with Test Result"); ?></th>
                                     <th><?php echo _("No. of Samples Rejected"); ?></th>
@@ -43,7 +80,7 @@ $general = new \Vlsm\Models\General();
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="5" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                                    <td colspan="6" class="dataTables_empty"><?php echo _("Please select the date range and test type to see the source of requests"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -93,7 +130,17 @@ $general = new \Vlsm\Models\General();
 
     });
 
+    function getSourceOfRequest() {
+        if ($("#dateRange").val() == "" || $("#testType").val() == "") {
+            alert("Please select the date range and test type to see the source of requests");
+            return false;
+        } else {
+            oTable.fnDraw();
+        }
+    }
+
     function loadVlRequestData() {
+
         $.blockUI();
         oTable = $('#sampleReportsDataTable').dataTable({
             "oLanguage": {
@@ -115,6 +162,8 @@ $general = new \Vlsm\Models\General();
                 "sClass": "center"
             }, {
                 "sClass": "center"
+            }, {
+                "sClass": "center"
             }],
             "aaSorting": [3, "desc"],
             "bProcessing": true,
@@ -124,6 +173,14 @@ $general = new \Vlsm\Models\General();
                 aoData.push({
                     "name": "dateRange",
                     "value": $("#dateRange").val()
+                });
+                aoData.push({
+                    "name": "testType",
+                    "value": $("#testType").val()
+                });
+                aoData.push({
+                    "name": "labName",
+                    "value": $("#labName").val()
                 });
                 $.ajax({
                     "dataType": 'json',

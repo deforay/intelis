@@ -5,9 +5,27 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new \Vlsm\Models\General();
 $table = "vl_request_form";
-if (isset($_GET['table']) && !empty($_GET['table'])) {
-    $table = $_GET['table'];
+$testType = 'vl';
+if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+    $testType = $_POST['testType'];
 }
+
+if (isset($testType) && $testType == 'vl') {
+    $table = "vl_request_form";
+}
+if (isset($testType) && $testType == 'eid') {
+    $table = "eid_form";
+}
+if (isset($testType) && $testType == 'covid19') {
+    $table = "form_covid19";
+}
+if (isset($testType) && $testType == 'hepatitis') {
+    $table = "form_hepatitis";
+}
+if (isset($testType) && $testType == 'tb') {
+    $table = "form_tb";
+}
+
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
@@ -106,6 +124,9 @@ if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
     $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
+if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
+    $sWhere[] = ' vl.lab_id IN (' . $_POST['labName'] . ')';
+}
 
 /* Implode all the where fields for filtering the data */
 if (sizeof($sWhere) > 0) {
@@ -141,6 +162,7 @@ $output = array(
 foreach ($rResult as $key => $aRow) {
     $row = array();
     $row[] = $aRow['labname'];
+    $row[] = strtoupper($testType);
     $row[] = $aRow['samples'];
     $row[] = $aRow['samplesWithResults'];
     $row[] = $aRow['rejected'];

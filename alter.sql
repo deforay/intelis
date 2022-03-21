@@ -2964,3 +2964,6 @@ ALTER TABLE `track_api_requests` CHANGE `api_params` `api_params` TEXT CHARACTER
 
 -- Thana 17-Mar-2022
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'sources-of-requests.php', 'Sources of Requests Report');
+
+-- Thana 21-Mar-2022
+UPDATE `privileges` SET `privilege_name` = 'sources-of-requests.php' WHERE `privileges`.`privilege_id` = 223;
