@@ -40,7 +40,6 @@ $labNameList = $facilityDb->getTestingLabs();
                             <td><b><?php echo _("Test Types"); ?>&nbsp;:</b></td>
                             <td>
                                 <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
-                                    <option value="">--Select--</option>
                                     <?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
@@ -109,6 +108,9 @@ $labNameList = $facilityDb->getTestingLabs();
 <script type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
+        $('#labName').select2({
+            placeholder: "Select Lab to filter"
+        });
 
         loadVlRequestData();
         $('#dateRange').daterangepicker({
