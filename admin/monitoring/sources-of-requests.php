@@ -178,7 +178,7 @@ $labNameList = $facilityDb->getTestingLabs();
             }, {
                 "sClass": "center"
             }],
-            "aaSorting": [3, "desc"],
+            "aaSorting": [1, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-sources-of-requests.php",
@@ -212,7 +212,6 @@ $labNameList = $facilityDb->getTestingLabs();
     }
 
     function getSrcList() {
-        $.blockUI();
         $.post("/admin/monitoring/get-src-of-requests-list.php", {
                 testType: $("#testType").val(),
                 format: "html"
@@ -221,7 +220,6 @@ $labNameList = $facilityDb->getTestingLabs();
                 if (data != '') {
                     $("#srcRequest").html(data);
                 }
-                $.unblockUI();
             });
     }
 </script>

@@ -122,7 +122,7 @@ if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
 }
 
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
-    $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+    $sWhere[] = ' DATE(vl.sample_collection_date) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
     $sWhere[] = ' vl.lab_id IN (' . $_POST['labName'] . ')';
@@ -136,7 +136,7 @@ if (sizeof($sWhere) > 0) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' GROUP BY source_of_request';
+$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id';
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
