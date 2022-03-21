@@ -127,6 +127,9 @@ if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
 if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
     $sWhere[] = ' vl.lab_id IN (' . $_POST['labName'] . ')';
 }
+if (isset($_POST['srcRequest']) && trim($_POST['srcRequest']) != '') {
+    $sWhere[] = ' vl.source_of_request = "' . $_POST['srcRequest'] . '"';
+}
 
 /* Implode all the where fields for filtering the data */
 if (sizeof($sWhere) > 0) {
