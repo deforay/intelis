@@ -35,11 +35,12 @@ $labNameList = $facilityDb->getTestingLabs();
                         <tr>
                             <td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
                             <td>
-                                <input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" onchange="getSourceOfRequest()" />
+                                <input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
                             </td>
                             <td><b><?php echo _("Test Types"); ?>&nbsp;:</b></td>
                             <td>
-                                <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>" onchange="getSourceOfRequest()">
+                                <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                    <option value="">--Select--</option>
                                     <?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
@@ -59,10 +60,19 @@ $labNameList = $facilityDb->getTestingLabs();
                             </td>
                             <td><b><?php echo _("Lab Name"); ?>&nbsp;:</b></td>
                             <td>
-                                <select style="width:220px;" class="form-control" id="labName" name="labName" title="<?php echo _('Please select the Lab name'); ?>" onchange="getSourceOfRequest()">
+                                <select style="width:220px;" class="form-control select2" id="labName" name="labName" title="<?php echo _('Please select the Lab name'); ?>">
                                     <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
+                        </tr>
+                        <tr>
+                            <td><b><?php echo _("Source of Requets"); ?>&nbsp;:</b></td>
+                            <td>
+                                <select style="width:220px;" class="form-control" id="srcRequest" name="srcRequest" title="<?php echo _('Source of Requests'); ?>">
+                                    <?php echo $general->generateSelectOptions(array('api' => 'api', 'app' => 'app', 'web' => 'web', 'hl7' => 'hl7'), null, '--All--'); ?>
+                                </select>
+                            </td>
+                            <td><button onclick="getSourceOfRequest();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button></td>
                         </tr>
                     </table>
                     <!-- /.box-header -->
@@ -107,7 +117,7 @@ $labNameList = $facilityDb->getTestingLabs();
                 },
                 format: 'DD-MMM-YYYY',
                 separator: ' to ',
-                startDate: moment().subtract(29, 'days'),
+                startDate: moment().subtract(12, 'months'),
                 endDate: moment(),
                 maxDate: moment(),
                 ranges: {
@@ -128,6 +138,9 @@ $labNameList = $facilityDb->getTestingLabs();
                 endDate = end.format('YYYY-MM-DD');
             });
 
+        $("#testType").change(function() {
+            getSrcList();
+        });
     });
 
     function getSourceOfRequest() {
@@ -165,7 +178,7 @@ $labNameList = $facilityDb->getTestingLabs();
             }, {
                 "sClass": "center"
             }],
-            "aaSorting": [3, "desc"],
+            "aaSorting": [1, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-sources-of-requests.php",
@@ -182,6 +195,10 @@ $labNameList = $facilityDb->getTestingLabs();
                     "name": "labName",
                     "value": $("#labName").val()
                 });
+                aoData.push({
+                    "name": "srcRequest",
+                    "value": $("#srcRequest").val()
+                });
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
@@ -192,6 +209,18 @@ $labNameList = $facilityDb->getTestingLabs();
             }
         });
         $.unblockUI();
+    }
+
+    function getSrcList() {
+        $.post("/admin/monitoring/get-src-of-requests-list.php", {
+                testType: $("#testType").val(),
+                format: "html"
+            },
+            function(data) {
+                if (data != '') {
+                    $("#srcRequest").html(data);
+                }
+            });
     }
 </script>
 <?php
