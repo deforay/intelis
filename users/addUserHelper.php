@@ -28,7 +28,7 @@ try {
             'user_name'     => $_POST['userName'],
             'interface_user_name'     => $_POST['interfaceUserName'],
             'email'         => $_POST['email'],
-            'login_id'      => $_POST['loginId'],
+            //'login_id'      => $_POST['loginId'],
             'phone_number'  => $_POST['phoneNo'],
             'password'      => $password,
             'role_id'       => $_POST['role'],
