@@ -148,9 +148,7 @@ try {
                     'last_modified_by'                                  => $_SESSION['userId'],
                     'last_modified_datetime'                            => $general->getDateTime()
                 );
-	            // if ($status == 7 && $lock == 'yes') {
-                //     $eidData['locked'] = 'yes';
-                // }
+
                 // echo "<pre>";print_r($sampleCode);die;
                 if (!$sampleCode) {
                     $lastId = $db->insert($tableName, $eidData);

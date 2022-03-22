@@ -176,15 +176,13 @@ try {
         'last_modified_by'                    => $_SESSION['userId'],
         'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
     );
-    // $lock = $general->getGlobalConfig('lock_approved_tb_samples');
-    // if ($status == 7 && $lock == 'yes') {
-    //     $tbData['locked'] = 'yes';
-    // }
 
     if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
         $tbData['source_of_request'] = 'vlsm';
-    } else {
-        $tbData['source_of_request'] = 'web';
+    } else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+        $tbData['source_of_request'] = 'vlsts';
+    } else if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+        $tbData['source_of_request'] = 'api';
     }
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {

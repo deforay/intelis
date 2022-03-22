@@ -534,10 +534,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'sample_registered_at_lab'            => $db->now(),
             'last_modified_datetime'              => $db->now()
         );
-        // $lock = $general->getGlobalConfig('lock_approved_covid19_samples');
-        // if ($status == 7 && $lock == 'yes') {
-        //     $covid19Data['locked'] = 'yes';
-        // }
+
         $covid19Data['source_of_request'] = 'hl7';
         $id = 0;
         $covid19Data['source_of_request'] = 'hl7';

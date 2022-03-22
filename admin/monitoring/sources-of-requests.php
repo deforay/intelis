@@ -185,7 +185,7 @@ $labNameList = $facilityDb->getTestingLabs();
             }, {
                 "sClass": "center"
             }],
-            "aaSorting": [1, "desc"],
+            "aaSorting": [2, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-sources-of-requests.php",

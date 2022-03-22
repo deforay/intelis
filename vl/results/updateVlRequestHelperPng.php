@@ -117,10 +117,6 @@ try {
     //print_r($vldata);die;
     if (isset($_POST['status']) && trim($_POST['status']) != '') {
         $vldata['result_status'] = $_POST['status'];
-        $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-        if ($_POST['status'] == 7 && $lock == 'yes') {
-            $vldata['locked'] = 'yes';
-        }
     }
     /* Updating the high and low viral load data */
     if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {

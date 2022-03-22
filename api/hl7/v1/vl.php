@@ -457,10 +457,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'manual_result_entry' => 'yes',
             'vl_result_category' => $vl_result_category
         );
-        $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-        if ($lock == 'yes' && $status == 7) {
-            $vldata['locked'] = 'yes';
-        }
+
         $vldata['source_of_request'] = 'hl7';
         if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
             $db = $db->where('vl_sample_id', $_POST['vlSampleId']);

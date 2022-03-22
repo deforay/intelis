@@ -210,14 +210,13 @@ try {
 		// 'last_modified_by' 									=> $_SESSION['userId'],
 		'last_modified_datetime' 							=> $general->getDateTime()
 	);
-	// $lock = $general->getGlobalConfig('lock_approved_eid_samples');
-	// if ($status == 7 && $lock == 'yes') {
-	// 	$eidData['locked'] = 'yes';
-	// }
+
 	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
 		$eidData['source_of_request'] = 'vlsm';
-	} else {
-		$eidData['source_of_request'] = 'web';
+	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+		$eidData['source_of_request'] = 'vlsts';
+	} else if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+		$eidData['source_of_request'] = 'api';
 	}
 
 	$eidData['request_created_by'] =  $_SESSION['userId'];

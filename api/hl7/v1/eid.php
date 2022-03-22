@@ -456,10 +456,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'sample_registered_at_lab'                             => $general->getDateTime(),
             'last_modified_datetime'                             => $general->getDateTime()
         );
-        // $lock = $general->getGlobalConfig('lock_approved_eid_samples');
-        // if ($status == 7 && $lock == 'yes') {
-        //     $eidData['locked'] = 'yes';
-        // }
+
         $eidData['source_of_request'] = 'hl7';
         if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
             $db = $db->where('eid_id', $_POST['eidSampleId']);

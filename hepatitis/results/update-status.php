@@ -7,7 +7,7 @@ $general = new \Vlsm\Models\General();
 $tableName = "form_hepatitis";
 try {
     $id = explode(",", $_POST['id']);
-    // $lock = $general->getGlobalConfig('lock_approved_hepatitis_samples');
+    
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'result_status'         => $_POST['status'],
@@ -32,9 +32,7 @@ try {
             $status['is_sample_rejected'] = 'no';
             $status['reason_for_sample_rejection'] = null;
         }
-        /* if($status['result_status'] == 7 && $lock == 'yes'){
-            $status['locked'] = 'yes';
-        } */
+
         $db = $db->where('hepatitis_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];

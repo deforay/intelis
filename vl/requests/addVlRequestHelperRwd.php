@@ -294,11 +294,16 @@ try {
         'manual_result_entry' => 'yes',
         'vl_result_category' => $vl_result_category
     );
-    // print_r($vldata);die;
-    $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-    if ($status == 7  && $lock == 'yes') {
-        $vldata['locked'] = 'yes';
+
+
+    if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
+        $vldata['source_of_request'] = 'vlsm';
+    } else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+        $vldata['source_of_request'] = 'vlsts';
+    } else if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+        $vldata['source_of_request'] = 'api';
     }
+
     /* Updating the high and low viral load data */
     if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
         $vlDb = new \Vlsm\Models\Vl();
