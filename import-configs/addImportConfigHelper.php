@@ -43,7 +43,7 @@ try {
             'max_no_of_samples_in_a_batch' => !empty($_POST['maxNOfSamplesInBatch']) ? $_POST['maxNOfSamplesInBatch'] : null,
             'low_vl_result_text' => !empty($_POST['lowVlResultText']) ? $_POST['lowVlResultText'] : null,
             'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
-            'approve_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
+            'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
             'status' => 'active'
         );
         $id = $db->insert($tableName, $data);

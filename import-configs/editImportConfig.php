@@ -20,7 +20,7 @@ if (!empty($sInfo['reviewed_by'])) {
 }
 
 if (!empty($sInfo['supported_tests'])) {
-	$sInfo['approve_by'] = json_decode($sInfo['approve_by'], true);
+	$sInfo['approved_by'] = json_decode($sInfo['approved_by'], true);
 }
 
 $configMachineQuery = "SELECT * from import_config_machines where config_id=$id";
@@ -189,7 +189,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</td>
 												<td>
 													<select name="approvedBy[]" id="approvedByVl" class="form-control select2" title='<?php echo _("Please enter Approved By for VL Test"); ?>'>
-														<?php echo $general->generateSelectOptions($userList, $sInfo['approve_by']['vl'], '--Select--'); ?>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['vl'], '--Select--'); ?>
 													</select>
 												</td>
 											</tr>

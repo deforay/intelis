@@ -46,7 +46,7 @@ try {
             'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'],
             'low_vl_result_text' => $_POST['lowVlResultText'],
             'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
-            'approve_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
+            'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
             'status' => $_POST['status']
         );
         //print_r($importConfigData);die;
