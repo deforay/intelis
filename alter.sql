@@ -2988,4 +2988,4 @@ UPDATE form_tb SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (
 UPDATE form_tb SET source_of_request = 'app' WHERE (source_of_request like 'api');
 
 -- Thana 22-Mar-2022
-ALTER TABLE `import_config` ADD `approve_by` JSON NULL DEFAULT NULL AFTER `low_vl_result_text`, ADD `reviewed_by` JSON NULL DEFAULT NULL AFTER `approve_by`;
+ALTER TABLE `import_config` ADD `approved_by` JSON NULL DEFAULT NULL AFTER `low_vl_result_text`, ADD `reviewed_by` JSON NULL DEFAULT NULL AFTER `approved_by`;

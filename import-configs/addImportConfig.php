@@ -136,8 +136,8 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 									<thead>
 										<tr>
 											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
-											<th style="text-align:center;"><?php echo _("Reviewed By"); ?></th>
-											<th style="text-align:center;"><?php echo _("Approved By"); ?></th>
+											<th style="text-align:center;"><?php echo _("Default Reviewer"); ?></th>
+											<th style="text-align:center;"><?php echo _("Default Approver"); ?></th>
 										</tr>
 									</thead>
 									<tbody>

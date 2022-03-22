@@ -16,6 +16,7 @@ $processedCounter = 0;
 
 $data = array();
 $data[] = "lastUpdatedDuration=90m";
+//$data[] = "lastUpdatedDuration=5d";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=LEhPhsbgfFB";
@@ -127,7 +128,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData = array_merge($singleEventData, $attributesData);
 
         // if DHIS2 Case ID is not set then skip
-        if(empty(trim($formData['external_sample_code']))) continue;
+        if(!isset($formData['external_sample_code']) || empty(trim($formData['external_sample_code']))) continue;
 
         $formData['source_of_request'] = 'dhis2';
         $formData['source_data_dump'] = json_encode($tracker);
@@ -284,7 +285,7 @@ foreach ($trackedEntityInstances as $tracker) {
         //$db->onDuplicate($updateColumns, 'unique_id');
 
         $id = $db->insert("form_hepatitis", $formData);
-        error_log("Error in Receive Rwanda DHIS2 Script : " . $db->getLastError() . PHP_EOL);
+        //error_log("Error in Receive Rwanda DHIS2 Script : " . $db->getLastError() . PHP_EOL);
         if ($id != false) {
             $processedCounter++;
         }
