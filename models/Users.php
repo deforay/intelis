@@ -217,7 +217,7 @@ class Users
         return $this->db->rawQueryOne($uQuery);
     }
 
-    public function getAllUsers($facilityMap = null, $status = null)
+    public function getAllUsers($facilityMap = null, $status = null, $type = null)
     {
         if (!empty($facilityMap)) {
             $facilityMap = explode(",", $facilityMap);
@@ -227,8 +227,16 @@ class Users
         if ($status == 'active') {
             $this->db->where("status='active'");
         }
-
-        return $this->db->get('user_details u');
+        if (isset($type) && $type == 'drop-down') {
+            $result =  $this->db->get('user_details u');
+            $userDetails = array();
+            foreach ($result as $user) {
+                $userDetails[$user['user_id']] = ucwords($user['user_name']);
+            }
+            return $userDetails;
+        } else {
+            return $this->db->get('user_details u');
+        }
     }
 
     public function getActiveUsers($facilityMap = null)

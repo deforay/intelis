@@ -4,12 +4,23 @@ ob_start();
 require_once(APPLICATION_PATH . '/header.php');
 //#require_once('../startup.php');  
 
+$userDb = new \Vlsm\Models\Users();
+$general = new \Vlsm\Models\General();
+
 $id = base64_decode($_GET['id']);
 $sQuery = "SELECT * from import_config where config_id=?";
 $sInfo = $db->rawQueryOne($sQuery, array($id));
 
 if (!empty($sInfo['supported_tests'])) {
 	$sInfo['supported_tests'] = json_decode($sInfo['supported_tests'], true);
+}
+
+if (!empty($sInfo['reviewed_by'])) {
+	$sInfo['reviewed_by'] = json_decode($sInfo['reviewed_by'], true);
+}
+
+if (!empty($sInfo['supported_tests'])) {
+	$sInfo['approve_by'] = json_decode($sInfo['approve_by'], true);
 }
 
 $configMachineQuery = "SELECT * from import_config_machines where config_id=$id";
@@ -31,6 +42,7 @@ $lowerText = "";
 if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['supported_tests'])) {
 	$lowerText = "style='display:none;'";
 }
+$userList = $userDb->getAllUsers(null, null, 'drop-down');
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -45,6 +57,7 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 
 	<!-- Main content -->
 	<section class="content">
+		<pre><?php print_r($sInfo); ?></pre>
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
@@ -72,16 +85,16 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
 											<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
-												<option value='vl' <?php echo (in_array('vl', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Viral Load");?></option>
+												<option value='vl' <?php echo (in_array('vl', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Viral Load"); ?></option>
 											<?php }
 											if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
-												<option value='eid' <?php echo (in_array('eid', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("EID");?></option>
+												<option value='eid' <?php echo (in_array('eid', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("EID"); ?></option>
 											<?php }
 											if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
-												<option value='covid19' <?php echo (in_array('covid19', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Covid-19");?></option>
+												<option value='covid19' <?php echo (in_array('covid19', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Covid-19"); ?></option>
 											<?php }
 											if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
-												<option value='hepatitis' <?php echo (in_array('hepatitis', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Hepatitis");?></option>
+												<option value='hepatitis' <?php echo (in_array('hepatitis', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Hepatitis"); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -93,7 +106,7 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 								<div class="form-group">
 									<label for="configurationName" class="col-lg-4 control-label"><?php echo _("Instrument File Name"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _('eg. roche.php or abbott.php'); ?>" title="<?php echo _('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" onblur="checkNameValidation('import_config','import_machine_file_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo("This file name already exists.Try another name");?>',null)" />
+										<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder="<?php echo _('eg. roche.php or abbott.php'); ?>" title="<?php echo _('Please enter file name'); ?>" value="<?php echo $sInfo['import_machine_file_name']; ?>" onblur="checkNameValidation('import_config','import_machine_file_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo ("This file name already exists.Try another name"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -146,8 +159,8 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?></label>
 									<div class="col-lg-7">
 										<select class="form-control" id="status" name="status" title="<?php echo _('Please select import config status'); ?>">
-											<option value="active" <?php echo ($sInfo['status'] == 'active') ? 'selected="selected"' : ''; ?>><?php echo _("Active");?></option>
-											<option value="inactive" <?php echo ($sInfo['status'] == 'inactive') ? 'selected="selected"' : ''; ?>><?php echo _("Inactive");?></option>
+											<option value="active" <?php echo ($sInfo['status'] == 'active') ? 'selected="selected"' : ''; ?>><?php echo _("Active"); ?></option>
+											<option value="inactive" <?php echo ($sInfo['status'] == 'inactive') ? 'selected="selected"' : ''; ?>><?php echo _("Inactive"); ?></option>
 										</select>
 									</div>
 								</div>
@@ -155,6 +168,94 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 						</div>
 						<?php if ($systemConfig['modules']['vl'] || $systemConfig['modules']['eid'] || $systemConfig['modules']['covid19']) { ?>
 							<div class="box-body">
+								<table cellpadding="0" cellspacing="0" border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;display:none;">
+									<thead>
+										<tr>
+											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
+											<th style="text-align:center;"><?php echo _("Reviewed By"); ?></th>
+											<th style="text-align:center;"><?php echo _("Approved By"); ?></th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php if ($systemConfig['modules']['vl']) { ?>
+											<tr class="vl-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("VL"); ?><input type="hidden" name="testType[]" id="testType1" value="vl" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByVl" class="form-control select2" title='<?php echo _("Please enter Reviewed By for VL Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['vl'], '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByVl" class="form-control select2" title='<?php echo _("Please enter Approved By for VL Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['approve_by']['vl'], '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }
+										if ($systemConfig['modules']['eid']) { ?>
+											<tr class="eid-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("EID"); ?><input type="hidden" name="testType[]" id="testType1" value="vl" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByEid" class="form-control select2" title='<?php echo _("Please enter Reviewed By for EID Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['eid'], '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByEid" class="form-control select2" title='<?php echo _("Please enter Approved By for EID Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['eid'], '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }
+										if ($systemConfig['modules']['covid19']) { ?>
+											<tr class="covid19-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("Covid-19"); ?><input type="hidden" name="testType[]" id="testType1" value="covid19" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Covid19 Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['covid19'], '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByCovid19" class="form-control select2" title='<?php echo _("Please enter Approved By for Covid19 Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['covid19'], '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }
+										if ($systemConfig['modules']['hepatitis']) { ?>
+											<tr class="hepatitis-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("Hepatitis"); ?><input type="hidden" name="testType[]" id="testType1" value="hepatitis" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Hepatitis Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['hepatitis'], '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Approved By for Hepatitis Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['hepatitis'], '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }
+										if ($systemConfig['modules']['tb']) { ?>
+											<tr class="tb-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("TB"); ?><input type="hidden" name="testType[]" id="testType1" value="tb" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByTb" class="form-control select2" title='<?php echo _("Please enter Reviewed By for TB Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['tb'], '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _("Please enter Approved By for TB Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['tb'], '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php } ?>
+									</tbody>
+								</table>
+								<br>
+								<hr>
 								<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
 									<thead>
 										<tr>
@@ -309,18 +410,26 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 	tableRowId = '<?php echo $i; ?>';
 
 	$(document).ready(function() {
+		$(".select2").select2({
+			width: '100%',
+			placeholder: '<?php echo _("Select the options"); ?>'
+		});
+
 		$("#supportedTests").select2({
 			placeholder: '<?php echo _("Select Test Types"); ?>'
 		});
 
 		$('#supportedTests').on('select2:select', function(e) {
 			var data = $('#supportedTests').val();
-			$(".ctlCalibrator, .lowVlResultText").hide();
+			$(".ctlCalibrator, .lowVlResultText, .user-access-form").hide();
 			$.each(data, function(key, value) {
+				if (value != "") {
+					$(".user-access").show();
+				}
 				if (value == "vl" || value == "hepatitis") {
 					$(".lowVlResultText").show();
 				}
-				$("#" + value + "Table").show();
+				$("#" + value + "Table, ." + value + "-access").show();
 			});
 		});
 	});

@@ -2964,3 +2964,6 @@ ALTER TABLE `track_api_requests` CHANGE `api_params` `api_params` TEXT CHARACTER
 
 -- Thana 17-Mar-2022
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'sources-of-requests.php', 'Sources of Requests Report');
+
+-- Thana 22-Mar-2022
+ALTER TABLE `import_config` ADD `approve_by` JSON NULL DEFAULT NULL AFTER `low_vl_result_text`, ADD `reviewed_by` JSON NULL DEFAULT NULL AFTER `approve_by`;

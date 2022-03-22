@@ -2,6 +2,11 @@
 ob_start();
 #require_once('../startup.php');
 require_once(APPLICATION_PATH . '/header.php');
+
+$userDb = new \Vlsm\Models\Users();
+$general = new \Vlsm\Models\General();
+
+$userList = $userDb->getAllUsers(null, null, 'drop-down');
 ?>
 <style>
 	.tooltip-inner {
@@ -51,19 +56,19 @@ require_once(APPLICATION_PATH . '/header.php');
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
 											<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
-												<option value='vl'><?php echo _("Viral Load");?></option>
+												<option value='vl'><?php echo _("Viral Load"); ?></option>
 											<?php }
 											if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
-												<option value='eid'><?php echo _("EID");?></option>
+												<option value='eid'><?php echo _("EID"); ?></option>
 											<?php }
 											if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
-												<option value='covid19'><?php echo _("Covid-19");?></option>
+												<option value='covid19'><?php echo _("Covid-19"); ?></option>
 											<?php }
 											if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
-												<option value='hepatitis'><?php echo _("Hepatitis");?></option>
+												<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
 											<?php }
 											if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
-												<option value='tb'><?php echo _("TB");?></option>
+												<option value='tb'><?php echo _("TB"); ?></option>
 											<?php } ?> ?>
 										</select>
 									</div>
@@ -127,6 +132,94 @@ require_once(APPLICATION_PATH . '/header.php');
 						</div> -->
 						<?php if ($systemConfig['modules']['vl'] || $systemConfig['modules']['eid'] || $systemConfig['modules']['covid19']) { ?>
 							<div class="box-body">
+								<table cellpadding="0" cellspacing="0" border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;display:none;">
+									<thead>
+										<tr>
+											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
+											<th style="text-align:center;"><?php echo _("Reviewed By"); ?></th>
+											<th style="text-align:center;"><?php echo _("Approved By"); ?></th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php if ($systemConfig['modules']['vl']) { ?>
+											<tr class="vl-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("VL"); ?><input type="hidden" name="userTestType[]" id="userTestTypeVl" value="vl" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByVl" class="form-control select2" title='<?php echo _("Please enter Reviewed By for VL Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByVl" class="form-control select2" title='<?php echo _("Please enter Approved By for VL Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }
+										if ($systemConfig['modules']['eid']) { ?>
+											<tr class="eid-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("EID"); ?><input type="hidden" name="userTestType[]" id="userTestTypeEid" value="eid" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByEid" class="form-control select2" title='<?php echo _("Please enter Reviewed By for EID Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByEid" class="form-control select2" title='<?php echo _("Please enter Approved By for EID Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }
+										if ($systemConfig['modules']['covid19']) { ?>
+											<tr class="covid19-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("Covid-19"); ?><input type="hidden" name="userTestType[]" id="userTestTypeCovid19" value="covid-19" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Covid19 Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByCovid19" class="form-control select2" title='<?php echo _("Please enter Approved By for Covid19 Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }
+										if ($systemConfig['modules']['hepatitis']) { ?>
+											<tr class="hepatitis-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("Hepatitis"); ?><input type="hidden" name="userTestType[]" id="userTestTypeHepatitis" value="hepatitis" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Hepatitis Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Approved By for Hepatitis Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php }
+										if ($systemConfig['modules']['tb']) { ?>
+											<tr class="tb-access user-access-form" style="display: none;">
+												<td align="left" style="text-align:center;"><?php echo _("TB"); ?><input type="hidden" name="userTestType[]" id="userTestTypeTb" value="tb" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByTb" class="form-control select2" title='<?php echo _("Please enter Reviewed By for TB Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _("Please enter Approved By for TB Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php } ?>
+									</tbody>
+								</table>
+								<br>
+								<hr>
 								<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
 									<thead>
 										<tr>
@@ -139,7 +232,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									<tbody id="testTypesTable">
 										<?php if ($systemConfig['modules']['vl']) { ?>
 											<tr id="vlTable" class="ctlCalibrator">
-												<td align="left"><?php echo _("VL"); ?><input type="hidden" name="testType[]" id="testType1" value="vl" /></td>
+												<td align="left" style="text-align:center;"><?php echo _("VL"); ?><input type="hidden" name="testType[]" id="testType1" value="vl" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in vl"); ?>' title='<?php echo _("Please enter No of In-House Controls in vl"); ?>' /></td>
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in vl"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in vl"); ?>' /></td>
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in vl"); ?>' title='<?php echo _("Please enter No of Calibrators in vl"); ?>' /></td>
@@ -147,7 +240,7 @@ require_once(APPLICATION_PATH . '/header.php');
 										<?php }
 										if ($systemConfig['modules']['eid']) { ?>
 											<tr id="eidTable" class="ctlCalibrator">
-												<td align="left"><?php echo _("EID"); ?><input type="hidden" name="testType[]" id="testType1" value="eid" /></td>
+												<td align="left" style="text-align:center;"><?php echo _("EID"); ?><input type="hidden" name="testType[]" id="testType1" value="eid" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in eid"); ?>' title='<?php echo _("Please enter No of In-House Controls in eid"); ?>' /></td>
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in eid"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in eid"); ?>' /></td>
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in eid"); ?>' title='<?php echo _("Please enter No of Calibrators in eid"); ?>' /></td>
@@ -155,7 +248,7 @@ require_once(APPLICATION_PATH . '/header.php');
 										<?php }
 										if ($systemConfig['modules']['covid19']) { ?>
 											<tr id="covid19Table" class="ctlCalibrator">
-												<td align="left"><?php echo _("Covid-19"); ?><input type="hidden" name="testType[]" id="testType1" value="covid-19" /></td>
+												<td align="left" style="text-align:center;"><?php echo _("Covid-19"); ?><input type="hidden" name="testType[]" id="testType1" value="covid19" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in covid-19"); ?>' title='<?php echo _("Please enter No of In-House Controls in covid-19"); ?>' /></td>
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in covid-19"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in covid-19"); ?>' /></td>
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in covid-19"); ?>' title='<?php echo _("Please enter No of Calibrators in covid-19"); ?>' /></td>
@@ -163,7 +256,7 @@ require_once(APPLICATION_PATH . '/header.php');
 										<?php }
 										if ($systemConfig['modules']['hepatitis']) { ?>
 											<tr id="hepatitisTable" class="ctlCalibrator">
-												<td align="left"><?php echo _("Hepatitis"); ?><input type="hidden" name="testType[]" id="testType1" value="hepatitis" /></td>
+												<td align="left" style="text-align:center;"><?php echo _("Hepatitis"); ?><input type="hidden" name="testType[]" id="testType1" value="hepatitis" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in Hepatitis"); ?>' title='<?php echo _("Please enter No of In-House Controls in Hepatitis"); ?>' /></td>
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in Hepatitis"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in Hepatitis"); ?>' /></td>
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in Hepatitis"); ?>' title='<?php echo _("Please enter No of Calibrators in Hepatitis"); ?>' /></td>
@@ -171,7 +264,7 @@ require_once(APPLICATION_PATH . '/header.php');
 										<?php }
 										if ($systemConfig['modules']['tb']) { ?>
 											<tr id="tbTable" class="ctlCalibrator">
-												<td align="left"><?php echo _("TB"); ?><input type="hidden" name="testType[]" id="testType1" value="tb" /></td>
+												<td align="left" style="text-align:center;"><?php echo _("TB"); ?><input type="hidden" name="testType[]" id="testType1" value="tb" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in TB"); ?>' title='<?php echo _("Please enter No of In-House Controls in TB"); ?>' /></td>
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in TB"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in TB"); ?>' /></td>
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in TB"); ?>' title='<?php echo _("Please enter No of Calibrators in TB"); ?>' /></td>
@@ -241,6 +334,11 @@ require_once(APPLICATION_PATH . '/header.php');
 	tableRowId = 2;
 
 	$(document).ready(function() {
+		$(".select2").select2({
+			width: '100%',
+			placeholder: '<?php echo _("Select the options"); ?>'
+		});
+
 		$("#supportedTests").select2({
 			placeholder: '<?php echo _("Select Test Types"); ?>'
 		});
@@ -248,12 +346,15 @@ require_once(APPLICATION_PATH . '/header.php');
 
 		$('#supportedTests').on('select2:select', function(e) {
 			var data = $('#supportedTests').val();
-			$(".ctlCalibrator, .lowVlResultText").hide();
+			$(".ctlCalibrator, .lowVlResultText, .user-access-form").hide();
 			$.each(data, function(key, value) {
+				if (value != "") {
+					$(".user-access").show();
+				}
 				if (value == "vl" || value == "hepatitis") {
 					$(".lowVlResultText").show();
 				}
-				$("#" + value + "Table").show();
+				$("#" + value + "Table, ." + value + "-access").show();
 			});
 		});
 	});

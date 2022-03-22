@@ -34,6 +34,9 @@ try {
         }
 
         $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
+        $_POST['reviewedBy'] = !empty($_POST['reviewedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy'])) : null;
+        $_POST['approvedBy'] = !empty($_POST['approvedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy'])) : null;
+
         $importConfigData = array(
             'machine_name' => $_POST['configurationName'],
             'supported_tests' => $_POST['supportedTests'],
@@ -42,6 +45,8 @@ try {
             'higher_limit' => $_POST['higherLimit'],
             'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'],
             'low_vl_result_text' => $_POST['lowVlResultText'],
+            'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
+            'approve_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
             'status' => $_POST['status']
         );
         //print_r($importConfigData);die;

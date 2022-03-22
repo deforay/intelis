@@ -9,7 +9,9 @@ $general = new \Vlsm\Models\General();
 $tableName = "import_config";
 $importMachineTable = "import_config_machines";
 $importControlTable = "import_config_controls";
-// print_r($_POST);die;
+/* echo "<pre>";
+print_r($_POST);
+die; */
 $_POST['configurationName'] = trim($_POST['configurationName']);
 try {
     if (!empty($_POST['configurationName'])) {
@@ -28,8 +30,9 @@ try {
                 }
             }
         }
-
         $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
+        $_POST['reviewedBy'] = !empty($_POST['reviewedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy'])) : null;
+        $_POST['approvedBy'] = !empty($_POST['approvedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy'])) : null;
 
         $data = array(
             'machine_name' => $_POST['configurationName'],
@@ -39,9 +42,10 @@ try {
             'higher_limit' => !empty($_POST['higherLimit']) ? $_POST['higherLimit'] : null,
             'max_no_of_samples_in_a_batch' => !empty($_POST['maxNOfSamplesInBatch']) ? $_POST['maxNOfSamplesInBatch'] : null,
             'low_vl_result_text' => !empty($_POST['lowVlResultText']) ? $_POST['lowVlResultText'] : null,
+            'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
+            'approve_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
             'status' => 'active'
         );
-        //print_r($data);die;
         $id = $db->insert($tableName, $data);
         if ($id > 0 && count($_POST['configMachineName']) > 0) {
             for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
