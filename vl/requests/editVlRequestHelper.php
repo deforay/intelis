@@ -298,10 +298,7 @@ try {
           'data_sync' => 0,
           'vl_result_category' => $vl_result_category
      );
-     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-     if ($lock == 'yes' && $_POST['status'] == 7) {
-          $vldata['locked'] = 'yes';
-     }
+
      if (isset($_POST['api']) && $_POST['api'] = "yes") {
      } else
           $vldata['last_modified_by'] =  $_SESSION['userId'];

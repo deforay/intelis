@@ -134,11 +134,11 @@ try {
           $_POST['reviewedOn'] = NULL;
      }
      if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
-		$approvedOn = explode(" ", $_POST['approvedOn']);
-		$_POST['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
-	} else {
-		$_POST['approvedOn'] = NULL;
-	}
+          $approvedOn = explode(" ", $_POST['approvedOn']);
+          $_POST['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+     } else {
+          $_POST['approvedOn'] = NULL;
+     }
      $instanceId = '';
      if (isset($_SESSION['instanceId'])) {
           $instanceId = $_SESSION['instanceId'];
@@ -203,8 +203,8 @@ try {
           'result' => (isset($_POST['finalViralResult']) && trim($_POST['finalViralResult']) != '') ? $_POST['finalViralResult'] : NULL,
           'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
           'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-          'result_approved_by' 	   => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
-		'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  NULL,
+          'result_approved_by'         => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
+          'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  NULL,
           'qc_tech_name' => (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : NULL),
           'qc_tech_sign' => (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : NULL),
           'qc_date' => $_POST['qcDate'],
@@ -218,11 +218,15 @@ try {
           'data_sync' => 0,
           'vl_result_category' => $vl_result_category
      );
-     // print_r($vldata);die;
-     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-     if ($status == 7  && $lock == 'yes') {
-          $vldata['locked'] = 'yes';
+
+     if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
+          $vldata['source_of_request'] = 'vlsm';
+     } else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+          $vldata['source_of_request'] = 'vlsts';
+     } else if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+          $vldata['source_of_request'] = 'api';
      }
+
      //$vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFname'], $vldata['patient_art_no']);
      //$vldata['patient_last_name'] = $general->crypto('encrypt', $_POST['surName'], $vldata['patient_art_no']);
 

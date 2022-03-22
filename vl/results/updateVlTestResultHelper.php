@@ -157,10 +157,7 @@ try {
         $vlDb = new \Vlsm\Models\Vl();
         $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
-    $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-    if ($_POST['status'] == 7 && $lock == 'yes') {
-        $vldata['locked'] = 'yes';
-    }
+
     //echo "<pre>";var_dump($vldata);die;
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);

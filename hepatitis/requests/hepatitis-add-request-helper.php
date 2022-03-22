@@ -147,16 +147,14 @@ try {
 		'last_modified_datetime'              => $db->now(),
 		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
 	);
-	/* $lock = $general->getGlobalConfig('lock_approved_hepatitis_samples');
-    if($status == 7 && $lock == 'yes'){
-		$hepatitisData['locked'] = 'yes';
-	} */
 
 	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
 		$hepatitisData['source_of_request'] = 'vlsm';
-	} else {
-		$hepatitisData['source_of_request'] = 'web';
-	}
+	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+		$hepatitisData['source_of_request'] = 'vlsts';
+	} else if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+        $hepatitisData['source_of_request'] = 'api';
+    }
 
 	// echo "<pre>";print_r($hepatitisData);die;
 	// For Save Comorbidity 

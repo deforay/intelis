@@ -249,10 +249,7 @@ try {
           'manual_result_entry' => 'yes',
           'vl_result_category' => $vl_result_category
      );
-     $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-     if ($lock == 'yes' && $status == 7) {
-          $vldata['locked'] = 'yes';
-     }
+     
      /* Updating the high and low viral load data */
      if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
           $vlDb = new \Vlsm\Models\Vl();

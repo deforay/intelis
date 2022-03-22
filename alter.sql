@@ -2965,5 +2965,27 @@ ALTER TABLE `track_api_requests` CHANGE `api_params` `api_params` TEXT CHARACTER
 -- Thana 17-Mar-2022
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'sources-of-requests.php', 'Sources of Requests Report');
 
+
+-- Amit 22-Mar-2022
+UPDATE vl_request_form SET source_of_request = 'vlsm' WHERE remote_sample = 'no' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web');
+UPDATE vl_request_form SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web' OR source_of_request like 'vlsm');
+UPDATE vl_request_form SET source_of_request = 'app' WHERE (source_of_request like 'api');
+
+UPDATE eid_form SET source_of_request = 'vlsm' WHERE remote_sample = 'no' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web');
+UPDATE eid_form SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web' OR source_of_request like 'vlsm');
+UPDATE eid_form SET source_of_request = 'app' WHERE (source_of_request like 'api');
+
+UPDATE form_covid19 SET source_of_request = 'vlsm' WHERE remote_sample = 'no' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web');
+UPDATE form_covid19 SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web' OR source_of_request like 'vlsm');
+UPDATE form_covid19 SET source_of_request = 'app' WHERE (source_of_request like 'api');
+
+UPDATE form_hepatitis SET source_of_request = 'vlsm' WHERE remote_sample = 'no' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web');
+UPDATE form_hepatitis SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web' OR source_of_request like 'vlsm');
+UPDATE form_hepatitis SET source_of_request = 'app' WHERE (source_of_request like 'api');
+
+UPDATE form_tb SET source_of_request = 'vlsm' WHERE remote_sample = 'no' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web');
+UPDATE form_tb SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web' OR source_of_request like 'vlsm');
+UPDATE form_tb SET source_of_request = 'app' WHERE (source_of_request like 'api');
+
 -- Thana 22-Mar-2022
 ALTER TABLE `import_config` ADD `approve_by` JSON NULL DEFAULT NULL AFTER `low_vl_result_text`, ADD `reviewed_by` JSON NULL DEFAULT NULL AFTER `approve_by`;

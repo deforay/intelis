@@ -321,10 +321,7 @@ try {
         $vlDb = new \Vlsm\Models\Vl();
         $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
-    $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-    if ($_POST['status'] == 7 && $lock == 'yes') {
-        $vldata['locked'] = 'yes';
-    }
+    
     if ($_SESSION['instanceType'] == 'remoteuser') {
         $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;
     } else {

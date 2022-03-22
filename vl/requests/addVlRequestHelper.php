@@ -185,7 +185,7 @@ try {
     if (isset($_POST['bdl']) && $_POST['bdl'] == 'bdl' && $isRejection == false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = '';
-    } 
+    }
     // else if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
     //     $_POST['vlResult'] = 'Target Not Detected';
     //     $_POST['vlLog'] = '';
@@ -291,12 +291,12 @@ try {
         'manual_result_entry' => 'yes',
         'vl_result_category' => $vl_result_category
     );
-    $lock = $general->getGlobalConfig('lock_approved_vl_samples');
-    if ($lock == 'yes' && $status == 7) {
-        $vldata['locked'] = 'yes';
-    }
-    $vldata['source_of_request'] = 'web';
-    if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+    
+    if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
+        $vldata['source_of_request'] = 'vlsm';
+    } else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+        $vldata['source_of_request'] = 'vlsts';
+    } else if (!empty($_POST['api']) && $_POST['api'] = "yes") {
         $vldata['source_of_request'] = 'api';
     }
     if (isset($_POST['api']) && $_POST['api'] = "yes") {

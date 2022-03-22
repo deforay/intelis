@@ -168,10 +168,6 @@ try {
 		'last_modified_datetime'              => $db->now(),
 		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
 	);
-	/* $lock = $general->getGlobalConfig('lock_approved_hepatitis_samples');
-    if($status == 7 && $lock == 'yes'){
-		$hepatitisData['locked'] = 'yes';
-	} */
 
 	// For Save Comorbidity 
 	if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != 0) {

@@ -6,7 +6,7 @@ ob_start();
 $general = new \Vlsm\Models\General();
 $tableName = "vl_request_form";
 try {
-    $lock = $general->getGlobalConfig('lock_approved_vl_samples');
+    
     $id = explode(",", $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
@@ -36,9 +36,6 @@ try {
             $status['is_sample_rejected'] = 'no';
         }
 
-        if ($status['result_status'] == 7 && $lock == 'yes') {
-            $status['locked'] = 'yes';
-        }
         /* Updating the high and low viral load data */
         if ($status['result_status'] == 4 || $status['result_status'] == 7) {
             $vlDb = new \Vlsm\Models\Vl();
