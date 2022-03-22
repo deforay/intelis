@@ -3476,7 +3476,7 @@ msgstr "ບໍ່"
 #: hepatitis/requests/hepatitis-requests.php:148 hepatitis/results/hepatitis-failed-results.php:91
 #: tb/requests/tb-requests.php:154 tb/results/tb-failed-results.php:91 vl/requests/vlRequest.php:180
 #: vl/results/vl-failed-results.php:103
-msgid "Hide Advanced Search"
+msgid "Hide Advanced Search Options"
 msgstr "ເຊື່ອງ ການ ຄົ້ນ ຄ້ວາ ຂັ້ນ ສູງ"
 
 #: covid-19/requests/covid-19-requests.php:165 hepatitis/requests/hepatitis-requests.php:151
@@ -4275,7 +4275,7 @@ msgstr "ຄໍາຮ້ອງຂໍການນໍາເຂົ້າBulk EID"
 
 #: eid/requests/eid-requests.php:173 hepatitis/requests/hepatitis-requests.php:166
 #: tb/requests/tb-requests.php:171 vl/requests/vlRequest.php:205
-msgid "Show Advanced Search"
+msgid "Show Advanced Search Options"
 msgstr "ສະ ແດງ ໃຫ້ ເຫັນ ການ ຄົ້ນ ຫາ ທີ່ ກ້າວ ຫນ້າ"
 
 #: eid/requests/eid-requests.php:215 eid/results/eid-failed-results.php:148
@@ -6884,11 +6884,11 @@ msgid "Please enter the password"
 msgstr "ກະລຸນາໃສ່ລະຫັດຜ່ານ"
 
 #: users/addUser.php:191 users/editUser.php:235
-msgid "Show Advanced Filter"
-msgstr "Show Advanced Filter"
+msgid "Show Advanced Search Options"
+msgstr "Show Advanced Search Options"
 
 #: users/addUser.php:192 users/editUser.php:236
-msgid "Hide Advanced Filter"
+msgid "Hide Advanced Search Options"
 msgstr "ເຊື່ອງ Advanced Filter"
 
 #: users/addUser.php:195 users/editUser.php:239

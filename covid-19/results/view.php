@@ -13,12 +13,11 @@ $decryption = openssl_decrypt(
     $decryption_iv
 );
 $data = explode('&&&', urldecode($decryption));
-/* if ($data[1] != "qr")
-    require_once(APPLICATION_PATH . '/header.php'); */
+
 $uniqueId = $data[0];
 $db = MysqliDb::getInstance();
 $db->where("unique_id", $uniqueId);
-$res = $db->getOne("form_covid19","covid19_id");
+$res = $db->getOne("form_covid19", "covid19_id");
 $id = $res['covid19_id'];
 ?>
 <style>
@@ -31,20 +30,16 @@ $id = $res['covid19_id'];
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
 
-
 <canvas id="the-canvas"></canvas>
-
 
 <script type="text/javascript">
     $(document).ready(function() {
-
         convertSearchResultToPdf(<?php echo ($id); ?>);
     });
 
     function convertSearchResultToPdf(id) {
 
         <?php
-        $path = '';
         $path = '/covid-19/results/generate-result-pdf.php';
         ?>
 
@@ -55,9 +50,9 @@ $id = $res['covid19_id'];
             },
             function(data) {
                 if (data == "" || data == null || data == undefined) {
-                    alert('Unable to generate download');
+                    alert('Unable to generate result PDF');
                 } else {
-                    var url = './../../uploads/' + data;
+                    var url = '/temporary/' + data;
                     // Loaded via <script> tag, create shortcut to access PDF.js exports.
                     var pdfjsLib = window['pdfjs-dist/build/pdf'];
 

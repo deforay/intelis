@@ -101,10 +101,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT l.facility_name as 'labname', vl.source_of_request,
+$sQuery = "SELECT l.facility_name as 'labname',
+        vl.source_of_request,
         count(*) as 'samples',
-        SUM( CASE WHEN (vl.result is not null AND vl.result not like '') THEN 1 ELSE 0 END) AS 'samplesWithResults',
-        SUM( CASE WHEN (vl.is_sample_rejected is not null AND vl.is_sample_rejected like 'yes') THEN 1 ELSE 0 END) AS 'rejected'
+        SUM(CASE WHEN (vl.result is not null AND vl.result not like '' AND result_status = 7) THEN 1 ELSE 0 END) AS 'samplesWithResults',
+        SUM(CASE WHEN (vl.is_sample_rejected is not null AND vl.is_sample_rejected like 'yes') THEN 1 ELSE 0 END) AS 'rejected',
+        MAX(request_created_datetime) AS 'lastRequest'
         FROM $table as vl 
         LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id";
 
@@ -120,6 +122,9 @@ if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
         $end_date = $general->dateFormat(trim($s_c_date[1]));
     }
 }
+
+$sWhere[] = " (lab_id is not null AND lab_id not like '' AND lab_id > 0) ";
+
 
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
     $sWhere[] = ' DATE(vl.sample_collection_date) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
@@ -170,6 +175,7 @@ foreach ($rResult as $key => $aRow) {
     $row[] = $aRow['samplesWithResults'];
     $row[] = $aRow['rejected'];
     $row[] = strtoupper($aRow['source_of_request']);
+    $row[] = $general->humanDateFormat($aRow['lastRequest']);
 
     $output['aaData'][] = $row;
 }

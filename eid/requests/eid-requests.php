@@ -158,7 +158,7 @@ foreach ($srcResults as $list) {
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search"); ?></span></button>
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
 							</td>
 							<td colspan="4">
 								<?php
@@ -189,7 +189,7 @@ foreach ($srcResults as $list) {
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
-								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search"); ?></span></button>
+								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
 							</td>
 						</tr>
 					</table>

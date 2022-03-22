@@ -163,7 +163,7 @@ foreach ($srcResults as $list) {
                         <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
-                                &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search"); ?></span></button>
+                                &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
                             </td>
                             <td colspan="4">
                                 <?php if (isset($_SESSION['privileges']) && in_array("tb-add-request.php", $_SESSION['privileges'])) { ?>
@@ -180,7 +180,7 @@ foreach ($srcResults as $list) {
                                 if (isset($_SESSION['privileges']) && in_array("tb-add-request.php", $_SESSION['privileges'])) { ?>
                                     <a style=" margin: 0px 5px; " href="/tb/requests/tb-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new TB Request"); ?></a>
                                 <?php } ?>
-                                <button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search"); ?></span></button>
+                                <button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
                             </td>
                         </tr>
                     </table>

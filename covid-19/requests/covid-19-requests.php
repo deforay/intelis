@@ -175,7 +175,7 @@ foreach ($srcResults as $list) {
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search"); ?></span></button>
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
 							</td>
 							<td colspan="4">
 								<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
@@ -200,18 +200,18 @@ foreach ($srcResults as $list) {
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
 									<?php if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Quick Add Covid-19 Request</a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?= _("Quick Add Covid-19 Request"); ?></a>
 									<?php } ?>
 
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Add new Covid-19 Request</a>
+									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?= _("Add new Covid-19 Request"); ?></a>
 									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Bulk Import Covid-19 Request</a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?= _("Bulk Import Covid-19 Requests"); ?></a>
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
-									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllPendingCovid19Requests();"><span>Export Request</span></button>
+									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllPendingCovid19Requests();"><span><?= _("Export Requests"); ?></span></button>
 								<?php } ?>
-								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>Show Advanced Search</span></button>
+								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?= _("Show Advanced Search Options"); ?></span></button>
 							</td>
 						</tr>
 					</table>

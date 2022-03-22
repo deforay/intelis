@@ -19,10 +19,10 @@ $labNameList = $facilityDb->getTestingLabs();
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("Source of Requests Reports"); ?></h1>
+        <h1><i class="fa fa-edit"></i> <?php echo _("Sources of Requests Report"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Source of Requests Reports"); ?></li>
+            <li class="active"><?php echo _("Sources of Requests Report"); ?></li>
         </ol>
     </section>
 
@@ -40,7 +40,6 @@ $labNameList = $facilityDb->getTestingLabs();
                             <td><b><?php echo _("Test Types"); ?>&nbsp;:</b></td>
                             <td>
                                 <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
-                                    <option value="">--Select--</option>
                                     <?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
@@ -72,7 +71,7 @@ $labNameList = $facilityDb->getTestingLabs();
                                     <?php echo $general->generateSelectOptions(array('api' => 'api', 'app' => 'app', 'web' => 'web', 'hl7' => 'hl7'), null, '--All--'); ?>
                                 </select>
                             </td>
-                            <td><button onclick="getSourceOfRequest();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button></td>
+                            <td><button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button></td>
                         </tr>
                     </table>
                     <!-- /.box-header -->
@@ -86,11 +85,12 @@ $labNameList = $facilityDb->getTestingLabs();
                                     <th><?php echo _("No. of Samples with Test Result"); ?></th>
                                     <th><?php echo _("No. of Samples Rejected"); ?></th>
                                     <th><?php echo _("Source of Request"); ?></th>
+                                    <th><?php echo _("Last Request Created On"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="6" class="dataTables_empty"><?php echo _("Please select the date range and test type to see the source of requests"); ?></td>
+                                    <td colspan="7" class="dataTables_empty"><?php echo _("Please select the date range and test type to see the source of requests"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -110,7 +110,9 @@ $labNameList = $facilityDb->getTestingLabs();
     var oTable = null;
     $(document).ready(function() {
 
-        loadVlRequestData();
+        getSourcesOfRequestReport();
+        getSrcList();
+
         $('#dateRange').daterangepicker({
                 locale: {
                     cancelLabel: 'Clear'
@@ -143,16 +145,16 @@ $labNameList = $facilityDb->getTestingLabs();
         });
     });
 
-    function getSourceOfRequest() {
-        if ($("#dateRange").val() == "" || $("#testType").val() == "") {
-            alert("Please select the date range and test type to see the source of requests");
-            return false;
-        } else {
-            oTable.fnDraw();
-        }
-    }
+    // function getSourcesOfRequestReport() {
+    //     if ($("#dateRange").val() == "" || $("#testType").val() == "") {
+    //         alert("Please select the date range and test type to see the source of requests");
+    //         return false;
+    //     } else {
+    //         oTable.fnDraw();
+    //     }
+    // }
 
-    function loadVlRequestData() {
+    function getSourcesOfRequestReport() {
 
         $.blockUI();
         oTable = $('#sampleReportsDataTable').dataTable({
@@ -166,6 +168,8 @@ $labNameList = $facilityDb->getTestingLabs();
             //"bStateSave" : true,
             "bRetrieve": true,
             "aoColumns": [{
+                "sClass": "center"
+            }, {
                 "sClass": "center"
             }, {
                 "sClass": "center"

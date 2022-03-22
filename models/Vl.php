@@ -15,7 +15,7 @@ class Vl
     protected $db = null;
     protected $table = 'vl_request_form';
     protected $shortCode = 'VL';
-    protected $suppressedArray = array(
+    public $suppressedArray = array(
         'target not detected',
         'tnd',
         'not detected',

@@ -4140,7 +4140,7 @@ msgstr "Non"
 #: hepatitis/results/hepatitis-failed-results.php:91
 #: tb/requests/tb-requests.php:154 tb/results/tb-failed-results.php:91
 #: vl/requests/vlRequest.php:180 vl/results/vl-failed-results.php:103
-msgid "Hide Advanced Search"
+msgid "Hide Advanced Search Options"
 msgstr "Cacher la recherche avancée"
 
 #: covid-19/requests/covid-19-requests.php:166
@@ -4789,7 +4789,7 @@ msgstr "EID-Import de résultats en bloc"
 #: eid/requests/eid-requests.php:173
 #: hepatitis/requests/hepatitis-requests.php:165
 #: tb/requests/tb-requests.php:171 vl/requests/vlRequest.php:205
-msgid "Show Advanced Search"
+msgid "Show Advanced Search Options"
 msgstr "Afficher la recherche avancée"
 
 #: eid/requests/eid-requests.php:215 eid/results/eid-failed-results.php:148

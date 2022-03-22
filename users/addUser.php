@@ -188,8 +188,8 @@ $ftResult = $db->rawQuery($fQuery);
                               </div>
                               <div class="row" style=<?php echo $display; ?>>
                                    <div class="col-md-12">
-                                        <a href="javascript:void(0);" id="showFilter" class="btn btn-primary"><?php echo _("Show Advanced Filter"); ?></a>
-                                        <a href="javascript:void(0);" style="display:none;" id="hideFilter" class="btn btn-danger"><?php echo _("Hide Advanced Filter"); ?></a>
+                                        <a href="javascript:void(0);" id="showFilter" class="btn btn-primary"><?php echo _("Show Advanced Search Options"); ?></a>
+                                        <a href="javascript:void(0);" style="display:none;" id="hideFilter" class="btn btn-danger"><?php echo _("Hide Advanced Search Options"); ?></a>
                                    </div>
                                    <div id="facilityFilter" style="display:none;">
                                         <h4 style="padding:36px 0px 0px 14px;"> <?php echo _("Filter Facilities by Province & Districts"); ?></h4>

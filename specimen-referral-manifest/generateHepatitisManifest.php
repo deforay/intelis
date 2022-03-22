@@ -73,7 +73,7 @@ class MYPDF extends TCPDF
 
 if (trim($id) != '') {
 
-    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,CONCAT(patient_name,patient_surname) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_hepatitis as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
+    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,CONCAT(patient_name,' ',patient_surname) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_hepatitis as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
     $result = $db->query($sQuery);
 
 
@@ -179,7 +179,7 @@ if (trim($id) != '') {
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
             // $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords($sample['facility_district']) . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords($sample['clinic_name']) . ', ' . $sample['facility_district'] . '</td>';
-            $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords($sample['patient_fullname']) . '</td>';
+            $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['patient_fullname']) . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['patient_id'] . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $patientDOB . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords(str_replace("_", " ", $sample['patient_gender'])) . '</td>';

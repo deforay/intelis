@@ -4,6 +4,8 @@
 
 $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
+$hepatitisModel = new \Vlsm\Models\Hepatitis();
+
 $query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7 AND result_sent_to_source NOT LIKE 'sent'";
 //$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7";// AND result_sent_to_source NOT LIKE 'sent'";
 $formResults = $db->rawQuery($query);
@@ -67,18 +69,30 @@ foreach ($formResults as $row) {
 
   $dataValues = array();
   if ($row['reason_for_vl_test'] == 'Initial HBV VL') {
+    if (in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
+      $row['hbv_vl_count'] = 10;
+    }
     $dataValues[$programStagesVariables['labResultHbvVlCount']]  = $row['hbv_vl_count'];
     $dataValues[$programStagesVariables['dateHbvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
   } else if ($row['reason_for_vl_test'] == 'Initial HCV VL') {
+    if (in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
+      $row['hcv_vl_count'] = 10;
+    }
     $dataValues[$programStagesVariables['labResultHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
   } else if ($row['reason_for_vl_test'] == 'Follow up HBV VL') {
+    if (in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
+      $row['hbv_vl_count'] = 10;
+    }
     $dataValues[$programStagesVariables['followUpHbvVlCount']]  = $row['hbv_vl_count'];
     $dataValues[$programStagesVariables['dateHbvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
   } else if ($row['reason_for_vl_test'] == 'SVR12 HCV VL') {
+    if (in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
+      $row['hcv_vl_count'] = 10;
+    }
     $dataValues[$programStagesVariables['finalConfirmationHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];

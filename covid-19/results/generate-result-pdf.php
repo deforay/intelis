@@ -114,10 +114,7 @@ class MYPDF extends TCPDF
 	public function Header()
 	{
 		// Logo
-		//$image_file = K_PATH_IMAGES.'logo_example.jpg';
-		//$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		// Set font
-		// $this->Image("https://www.shaadidukaan.com/vogue/wp-content/uploads/2019/08/hug-kiss-images.jpg", 16, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+		
 		if ($this->htitle != '') {
 			if (trim($this->logo) != '') {
 				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {

@@ -14,6 +14,24 @@ class Hepatitis
     protected $db = null;
     protected $table = 'form_hepatitis';
     protected $shortCode = 'H';
+    public $suppressedArray = array(
+        'target not detected',
+        'tnd',
+        'not detected',
+        'below detection limit',
+        'below detection level',
+        'bdl',
+        'suppressed',
+        '< 20',
+        '<20',
+        '< 40',
+        '<40',
+        '< 839',
+        '<839',
+        '< Titer min',
+        'negative',
+        'negat'
+    );
 
     public function __construct($db = null)
     {
