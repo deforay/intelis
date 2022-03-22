@@ -204,7 +204,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</td>
 												<td>
 													<select name="approvedBy[]" id="approvedByEid" class="form-control select2" title='<?php echo _("Please enter Approved By for EID Test"); ?>'>
-														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['eid'], '--Select--'); ?>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['eid'], '--Select--'); ?>
 													</select>
 												</td>
 											</tr>
@@ -219,7 +219,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</td>
 												<td>
 													<select name="approvedBy[]" id="approvedByCovid19" class="form-control select2" title='<?php echo _("Please enter Approved By for Covid19 Test"); ?>'>
-														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['covid19'], '--Select--'); ?>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['covid19'], '--Select--'); ?>
 													</select>
 												</td>
 											</tr>
@@ -234,7 +234,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</td>
 												<td>
 													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Approved By for Hepatitis Test"); ?>'>
-														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['hepatitis'], '--Select--'); ?>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['hepatitis'], '--Select--'); ?>
 													</select>
 												</td>
 											</tr>
@@ -249,7 +249,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</td>
 												<td>
 													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _("Please enter Approved By for TB Test"); ?>'>
-														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['tb'], '--Select--'); ?>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['tb'], '--Select--'); ?>
 													</select>
 												</td>
 											</tr>
