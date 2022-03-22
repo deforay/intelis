@@ -32,8 +32,6 @@ $db->addConnection('interface', array(
 
 //get the value from interfacing DB
 $interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1 AND `lims_sync_status`= 0";
-$interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1";
-
 $interfaceInfo = $db->connection('interface')->rawQuery($interfaceQuery);
 
 $numberOfResults = 0;
@@ -43,20 +41,27 @@ if (count($interfaceInfo) > 0) {
 
     if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
         $availableModules['vl_sample_id'] = 'vl_request_form';
+        $platform["vl_sample_id"] = "vl_test_platform";
     }
 
     if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
         $availableModules['eid_id'] = 'eid_form';
+        $platform["eid_id"] = "eid_test_platform";
     }
 
     if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
         $availableModules['covid19_id'] = 'form_covid19';
+        $platform["covid19_id"] = "covid19_test_platform";
     }
 
     if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
         $availableModules['hepatitis_id'] = 'form_hepatitis';
+        $platform["hepatitis_id"] = "hepatitis_test_platform";
     }
-
+    if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+        $availableModules['tb_id'] = 'form_tb';
+        $platform["tb_id"] = "tb_test_platform";
+    }
     foreach ($interfaceInfo as $key => $result) {
 
         if (empty($result['test_id']))  continue;
@@ -70,7 +75,10 @@ if (count($interfaceInfo) > 0) {
             }
         }
 
-
+        //Getting Approved By and Reviewed By from Instruments table
+        $machineDetils = $db->rawQueryOne("SELECT * from import_config where machine_name like '" . $result['machine_used'] . "'");
+        $approved = json_decode($machineDetils['approve_by'], true);
+        $reviewed = json_decode($machineDetils['reviewed_by'], true);
 
         if (isset($tableInfo['vl_sample_id'])) {
             $absDecimalVal = null;
@@ -103,15 +111,8 @@ if (count($interfaceInfo) > 0) {
                 $tester = $operatorArray[1];
                 $testedByUserId = $usersModel->addUserIfNotExists($tester);
             } else {
-                $testedByUserId = $usersModel->addUserIfNotExists($result['tested_by']);      
+                $testedByUserId = $usersModel->addUserIfNotExists($result['tested_by']);
             }
-
-            //Getting Approved By and Reviewed By from Instruments table
-
-
-
-
-            
 
             $data = array(
                 'lab_id' => $labId,
@@ -128,6 +129,8 @@ if (count($interfaceInfo) > 0) {
                 'result' => $vlResult,
                 'vl_test_platform' => $result['machine_used'],
                 'result_status' => 7,
+                'result_approved_by' => (isset($approved['vl']) && $approved['vl'] != "") ? $approved['vl'] : null,
+                'result_reviewed_by' => (isset($reviewed['vl']) && $reviewed['vl'] != "") ? $reviewed['vl'] : null,
                 'result_printed_datetime' => NULL,
                 'result_dispatched_datetime' => NULL,
                 'last_modified_datetime' => $db->now(),
@@ -177,6 +180,8 @@ if (count($interfaceInfo) > 0) {
                 'result' => $eidResult,
                 'eid_test_platform' => $result['machine_used'],
                 'result_status' => 7,
+                'result_approved_by' => (isset($approved['eid']) && $approved['eid'] != "") ? $approved['eid'] : null,
+                'result_reviewed_by' => (isset($reviewed['eid']) && $reviewed['eid'] != "") ? $reviewed['eid'] : null,
                 'result_printed_datetime' => NULL,
                 'result_dispatched_datetime' => NULL,
                 'last_modified_datetime' => $db->now(),
@@ -302,6 +307,8 @@ if (count($interfaceInfo) > 0) {
                 $otherField => $otherFieldResult,
                 'hepatitis_test_platform' => $result['machine_used'],
                 'result_status' => 7,
+                'result_approved_by' => (isset($approved['hepatitis']) && $approved['hepatitis'] != "") ? $approved['hepatitis'] : null,
+                'result_reviewed_by' => (isset($reviewed['hepatitis']) && $reviewed['hepatitis'] != "") ? $reviewed['hepatitis'] : null,
                 'result_printed_datetime' => NULL,
                 'result_dispatched_datetime' => NULL,
                 'last_modified_datetime' => $db->now(),
