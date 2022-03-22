@@ -1,5 +1,5 @@
 <?php
-$title = _("Audit Trail");
+$title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();

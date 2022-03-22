@@ -96,24 +96,27 @@ if (count($interfaceInfo) > 0) {
                 $txtVal = $interpretedResults['txtVal'];
             }
 
-            $testedByUserId = $approvedByUserId = NULL;
-            // if ^ exists it means the Operator Name has both tester and approver name
+            $testedByUserId = $approvedByUserId = $reviewedByUserId = NULL;
+            // if ^ exists it means the Operator Name has both tester and releaser name
             if (strpos(strtolower($result['tested_by']), '^') !== false) {
                 $operatorArray = explode("^", $result['tested_by']);
-                $tester = $operatorArray[0];
-                $approver = $operatorArray[1];
+                $tester = $operatorArray[1];
                 $testedByUserId = $usersModel->addUserIfNotExists($tester);
-                $approvedByUserId = $usersModel->addUserIfNotExists($approver);
             } else {
-                $result['approved_by'] = $result['tested_by'];
-                $approvedByUserId = $testedByUserId = $usersModel->addUserIfNotExists($result['tested_by']);
+                $testedByUserId = $usersModel->addUserIfNotExists($result['tested_by']);      
             }
+
+            //Getting Approved By and Reviewed By from Instruments table
+
+            
 
             $data = array(
                 'lab_id' => $labId,
                 'tested_by' => $testedByUserId,
                 'result_approved_by' => $approvedByUserId,
                 'result_approved_datetime' => $result['authorised_date_time'],
+                'result_reviewed_by' => $reviewedByUserId,
+                'result_reviewed_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
                 'result_value_log' => $logVal,
                 'result_value_absolute' => $absVal,
