@@ -6,24 +6,38 @@ if (session_status() == PHP_SESSION_NONE) {
 $general = new \Vlsm\Models\General();
 $table = "vl_request_form";
 $testType = 'vl';
+
+$sources = array(
+    'vlsm' => 'VLSM',
+    'vlsts' => 'VLSTS',
+    'app' => 'Tablet',
+    'api' => 'API',
+    'dhis2' => 'DHIS2'
+);
+
 if (isset($_POST['testType']) && !empty($_POST['testType'])) {
     $testType = $_POST['testType'];
 }
 
 if (isset($testType) && $testType == 'vl') {
     $table = "vl_request_form";
+    $testName = 'Viral Load';
 }
 if (isset($testType) && $testType == 'eid') {
     $table = "eid_form";
+    $testName = 'EID';
 }
 if (isset($testType) && $testType == 'covid19') {
     $table = "form_covid19";
+    $testName = 'Covid-19';
 }
 if (isset($testType) && $testType == 'hepatitis') {
     $table = "form_hepatitis";
+    $testName = 'Hepatitis';
 }
 if (isset($testType) && $testType == 'tb') {
     $table = "form_tb";
+    $testName = 'TB';
 }
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -170,11 +184,11 @@ $output = array(
 foreach ($rResult as $key => $aRow) {
     $row = array();
     $row[] = $aRow['labname'];
-    $row[] = strtoupper($testType);
+    $row[] = $testName;
     $row[] = $aRow['samples'];
     $row[] = $aRow['samplesWithResults'];
     $row[] = $aRow['rejected'];
-    $row[] = strtoupper($aRow['source_of_request']);
+    $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper($aRow['source_of_request']);
     $row[] = $general->humanDateFormat($aRow['lastRequest']);
 
     $output['aaData'][] = $row;

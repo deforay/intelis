@@ -5,6 +5,15 @@ require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $facilityDb = new \Vlsm\Models\Facilities();
 $labNameList = $facilityDb->getTestingLabs();
+
+$sources = array(
+    'vlsm' => 'VLSM',
+    'vlsts' => 'VLSTS',
+    'app' => 'Tablet',
+    'api' => 'API',
+    'dhis2' => 'DHIS2'
+);
+
 ?>
 <style>
     .select2-selection__choice {
@@ -65,7 +74,7 @@ $labNameList = $facilityDb->getTestingLabs();
                             </td>
                         </tr>
                         <tr>
-                            <td><b><?php echo _("Source of Requets"); ?>&nbsp;:</b></td>
+                            <td><b><?php echo _("Source of Request"); ?>&nbsp;:</b></td>
                             <td>
                                 <select style="width:220px;" class="form-control" id="srcRequest" name="srcRequest" title="<?php echo _('Source of Requests'); ?>">
                                     <?php echo $general->generateSelectOptions(array('api' => 'api', 'app' => 'app', 'web' => 'web', 'hl7' => 'hl7'), null, '--All--'); ?>
