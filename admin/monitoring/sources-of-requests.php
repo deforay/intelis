@@ -109,6 +109,9 @@ $labNameList = $facilityDb->getTestingLabs();
 <script type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
+        $('#labName').select2({
+            placeholder: "Select Lab to filter"
+        });
 
         getSourcesOfRequestReport();
         getSrcList();
