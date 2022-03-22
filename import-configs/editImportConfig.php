@@ -183,12 +183,12 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 											<tr class="vl-access user-access-form" style="<?php echo in_array('vl', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
 												<td align="left" style="text-align:center;"><?php echo _("VL"); ?><input type="hidden" name="userTestType[]" id="testType1" value="vl" /></td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByVl" class="form-control select2" title='<?php echo _("Please enter Reviewed By for VL Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByVl" class="form-control user-vl select2" title='<?php echo _("Please enter Reviewed By for VL Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['vl'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByVl" class="form-control select2" title='<?php echo _("Please enter Approved By for VL Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByVl" class="form-control user-vl select2" title='<?php echo _("Please enter Approved By for VL Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['vl'], '--Select--'); ?>
 													</select>
 												</td>
@@ -196,14 +196,14 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 										<?php }
 										if ($systemConfig['modules']['eid']) { ?>
 											<tr class="eid-access user-access-form" style="<?php echo in_array('eid', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
-												<td align="left" style="text-align:center;"><?php echo _("EID"); ?><input type="hidden" name="userTestType[]" id="testType1" value="vl" /></td>
+												<td align="left" style="text-align:center;"><?php echo _("EID"); ?><input type="hidden" name="userTestType[]" id="testType1" value="eid" /></td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByEid" class="form-control select2" title='<?php echo _("Please enter Reviewed By for EID Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByEid" class="form-control user-eid select2" title='<?php echo _("Please enter Reviewed By for EID Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['eid'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByEid" class="form-control select2" title='<?php echo _("Please enter Approved By for EID Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByEid" class="form-control user-eid select2" title='<?php echo _("Please enter Approved By for EID Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['eid'], '--Select--'); ?>
 													</select>
 												</td>
@@ -213,12 +213,12 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 											<tr class="covid19-access user-access-form" style="<?php echo in_array('covid19', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
 												<td align="left" style="text-align:center;"><?php echo _("Covid-19"); ?><input type="hidden" name="userTestType[]" id="testType1" value="covid19" /></td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Covid19 Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control user-covid19 select2" title='<?php echo _("Please enter Reviewed By for Covid19 Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['covid19'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByCovid19" class="form-control select2" title='<?php echo _("Please enter Approved By for Covid19 Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByCovid19" class="form-control user-covid19 select2" title='<?php echo _("Please enter Approved By for Covid19 Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['covid19'], '--Select--'); ?>
 													</select>
 												</td>
@@ -228,12 +228,12 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 											<tr class="hepatitis-access user-access-form" style="<?php echo in_array('hepatitis', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
 												<td align="left" style="text-align:center;"><?php echo _("Hepatitis"); ?><input type="hidden" name="userTestType[]" id="testType1" value="hepatitis" /></td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Hepatitis Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control user-hepatitis select2" title='<?php echo _("Please enter Reviewed By for Hepatitis Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['hepatitis'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Approved By for Hepatitis Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control user-hepatitis select2" title='<?php echo _("Please enter Approved By for Hepatitis Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['hepatitis'], '--Select--'); ?>
 													</select>
 												</td>
@@ -243,12 +243,12 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 											<tr class="tb-access user-access-form" style="<?php echo in_array('tb', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
 												<td align="left" style="text-align:center;"><?php echo _("TB"); ?><input type="hidden" name="userTestType[]" id="testType1" value="tb" /></td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByTb" class="form-control select2" title='<?php echo _("Please enter Reviewed By for TB Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByTb" class="form-control user-tb select2" title='<?php echo _("Please enter Reviewed By for TB Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['tb'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _("Please enter Approved By for TB Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control user-tb select2" title='<?php echo _("Please enter Approved By for TB Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['tb'], '--Select--'); ?>
 													</select>
 												</td>
@@ -423,6 +423,13 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 
 		$('#supportedTests').on('select2:select', function(e) {
 			var data = $('#supportedTests').val();
+			/* var arr = ['vl', 'eid', 'covid19', 'hepatitis', 'tb'];
+			$.each(arr, function(index, value) {
+				if (jQuery.inArray(value, data) === -1) {
+					$(".user-" + value).val('');
+				}
+			}); */
+
 			$(".ctlCalibrator, .lowVlResultText, .user-access-form").hide();
 			$.each(data, function(key, value) {
 				if (value != "") {

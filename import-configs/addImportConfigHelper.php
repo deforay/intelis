@@ -30,9 +30,15 @@ try {
                 }
             }
         }
-        $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
+        $matchedTests = array_diff($_POST['userTestType'], $_POST['supportedTests']);
+        foreach ($matchedTests as $key => $row) {
+            $_POST['reviewedBy'][$key] = "";
+            $_POST['approvedBy'][$key] = "";
+        }
         $_POST['reviewedBy'] = !empty($_POST['reviewedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy'])) : null;
         $_POST['approvedBy'] = !empty($_POST['approvedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy'])) : null;
+
+        $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
 
         $data = array(
             'machine_name' => $_POST['configurationName'],

@@ -143,7 +143,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 									<tbody>
 										<?php if ($systemConfig['modules']['vl']) { ?>
 											<tr class="vl-access user-access-form" style="display: none;">
-												<td align="left" style="text-align:center;"><?php echo _("VL"); ?><input type="hidden" name="userTestType[]" id="userTestTypeVl" value="vl" /></td>
+												<td style="text-align:center;"><?php echo _("VL"); ?><input type="hidden" name="userTestType[]" id="userTestTypeVl" value="vl" /></td>
 												<td>
 													<select name="reviewedBy[]" id="reviewedByVl" class="form-control select2" title='<?php echo _("Please enter Reviewed By for VL Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
@@ -158,7 +158,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 										<?php }
 										if ($systemConfig['modules']['eid']) { ?>
 											<tr class="eid-access user-access-form" style="display: none;">
-												<td align="left" style="text-align:center;"><?php echo _("EID"); ?><input type="hidden" name="userTestType[]" id="userTestTypeEid" value="eid" /></td>
+												<td style="text-align:center;"><?php echo _("EID"); ?><input type="hidden" name="userTestType[]" id="userTestTypeEid" value="eid" /></td>
 												<td>
 													<select name="reviewedBy[]" id="reviewedByEid" class="form-control select2" title='<?php echo _("Please enter Reviewed By for EID Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
@@ -173,7 +173,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 										<?php }
 										if ($systemConfig['modules']['covid19']) { ?>
 											<tr class="covid19-access user-access-form" style="display: none;">
-												<td align="left" style="text-align:center;"><?php echo _("Covid-19"); ?><input type="hidden" name="userTestType[]" id="userTestTypeCovid19" value="covid-19" /></td>
+												<td style="text-align:center;"><?php echo _("Covid-19"); ?><input type="hidden" name="userTestType[]" id="userTestTypeCovid19" value="covid19" /></td>
 												<td>
 													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Covid19 Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
@@ -188,7 +188,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 										<?php }
 										if ($systemConfig['modules']['hepatitis']) { ?>
 											<tr class="hepatitis-access user-access-form" style="display: none;">
-												<td align="left" style="text-align:center;"><?php echo _("Hepatitis"); ?><input type="hidden" name="userTestType[]" id="userTestTypeHepatitis" value="hepatitis" /></td>
+												<td style="text-align:center;"><?php echo _("Hepatitis"); ?><input type="hidden" name="userTestType[]" id="userTestTypeHepatitis" value="hepatitis" /></td>
 												<td>
 													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Hepatitis Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
@@ -203,7 +203,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 										<?php }
 										if ($systemConfig['modules']['tb']) { ?>
 											<tr class="tb-access user-access-form" style="display: none;">
-												<td align="left" style="text-align:center;"><?php echo _("TB"); ?><input type="hidden" name="userTestType[]" id="userTestTypeTb" value="tb" /></td>
+												<td style="text-align:center;"><?php echo _("TB"); ?><input type="hidden" name="userTestType[]" id="userTestTypeTb" value="tb" /></td>
 												<td>
 													<select name="reviewedBy[]" id="reviewedByTb" class="form-control select2" title='<?php echo _("Please enter Reviewed By for TB Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>

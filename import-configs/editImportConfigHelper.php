@@ -33,9 +33,15 @@ try {
             }
         }
 
-        $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
+        $matchedTests = array_diff($_POST['userTestType'], $_POST['supportedTests']);
+        foreach ($matchedTests as $key => $row) {
+            $_POST['reviewedBy'][$key] = "";
+            $_POST['approvedBy'][$key] = "";
+        }
         $_POST['reviewedBy'] = !empty($_POST['reviewedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy'])) : null;
         $_POST['approvedBy'] = !empty($_POST['approvedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy'])) : null;
+
+        $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
 
         $importConfigData = array(
             'machine_name' => $_POST['configurationName'],
@@ -49,7 +55,6 @@ try {
             'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
             'status' => $_POST['status']
         );
-        //print_r($importConfigData);die;
         $db = $db->where('config_id', $configId);
         //print_r($vldata);die;
         $db->update($tableName, $importConfigData);
