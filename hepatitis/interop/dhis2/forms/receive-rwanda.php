@@ -35,7 +35,11 @@ $dhis2GenderOptions = array('Male' => 'male', '1' => 'male', 'Female' => 'female
 $dhis2SocialCategoryOptions = array('1' => 'A', '2' => 'B', '3' => 'C', '4' => 'D');
 //$dhis2VlTestReasonOptions = array('I_VL001' => 'Initial HBV VL', 'HBV_F0012' => 'Follow up HBV VL', 'SVR12_HCV01' => 'SVR12 HCV VL');
 
-$dhis2VlTestReasonOptions = array('Initial Viral Load Test' => 'Initial HBV VL', 'HBV Follow-up Test' => 'Follow up HBV VL', 'SVR12 HCV Viral Load Test' => 'SVR12 HCV VL');
+$dhis2VlTestReasonOptions = array(
+    'Initial Viral Load Test' => 'Initial HBV VL',
+    'HBV Follow-up Test' => 'Follow up HBV VL',
+    'SVR12 HCV Viral Load Test' => 'SVR12 HCV VL'
+);
 
 $attributesDataElementMapping = [
     'iwzGzKTlYGR' => 'external_sample_code', //dhis2 case id
@@ -128,7 +132,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData = array_merge($singleEventData, $attributesData);
 
         // if DHIS2 Case ID is not set then skip
-        if(!isset($formData['external_sample_code']) || empty(trim($formData['external_sample_code']))) continue;
+        if (!isset($formData['external_sample_code']) || empty(trim($formData['external_sample_code']))) continue;
 
         $formData['source_of_request'] = 'dhis2';
         $formData['source_data_dump'] = json_encode($tracker);
@@ -162,7 +166,7 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
 
-        if (($formData['hbsag_result'] == null && $formData['anti_hcv_result'] == null) || ($formData['hbsag_result'] != 'positive' && $formData['anti_hcv_result'] != 'positive')) {
+        if ($formData['hbsag_result'] == 'negative' && $formData['anti_hcv_result'] == 'negative') {
             continue;
         }
 
@@ -237,6 +241,14 @@ foreach ($trackedEntityInstances as $tracker) {
         if (isset($formData['hepatitis_test_type']) && stripos($formData['hepatitis_test_type'], "hcv") !== FALSE) {
             $formData['hepatitis_test_type'] = "HCV";
         } else {
+            $formData['hepatitis_test_type'] = "HBV";
+        }
+
+        if($formData['reason_for_vl_test'] == 'Initial HBV VL'){
+            $formData['hepatitis_test_type'] = "HBV";
+        }else if($formData['reason_for_vl_test'] == 'Follow up HBV VL'){
+            $formData['hepatitis_test_type'] = "HBV";
+        }else if($formData['reason_for_vl_test'] == 'SVR12 HCV VL'){
             $formData['hepatitis_test_type'] = "HBV";
         }
 
