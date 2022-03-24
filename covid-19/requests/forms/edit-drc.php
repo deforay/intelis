@@ -1589,12 +1589,12 @@ if (!empty($patientData)) {
         });
 
         $("#patientDistrict").select2({
-            placeholder: "Entrez le commune du patient",
+            placeholder: "Entrez le Zone de Santé du patient",
             minimumInputLength: 0,
             width: '100%',
             allowClear: true,
             ajax: {
-                placeholder: "Tapez le nom du commune à rechercher",
+                placeholder: "Tapez le Zone de Santé à rechercher",
                 url: "/covid-19/requests/get-province-district-list.php",
                 dataType: 'json',
                 delay: 250,

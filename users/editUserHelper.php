@@ -26,7 +26,7 @@ try {
             'interface_user_name'     => $_POST['interfaceUserName'],
             'email'         => $_POST['email'],
             'phone_number'  => $_POST['phoneNo'],
-            //'login_id'      => $_POST['loginId'],
+            'login_id'      => $_POST['loginId'],
             'role_id'       => $_POST['role'],
             'status'        => $_POST['status'],
             'app_access'    => $_POST['appAccessable']

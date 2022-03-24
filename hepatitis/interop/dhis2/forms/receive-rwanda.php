@@ -232,8 +232,6 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['patient_gender'] = (!empty($formData['patient_gender']) ? $dhis2GenderOptions[$formData['patient_gender']] : null);
         //$formData['specimen_quality'] = (!empty($formData['specimen_quality']) ? strtolower($formData['specimen_quality']) : null);
 
-        $formData['reason_for_vl_test'] = (!empty($formData['reason_for_vl_test']) ?  $dhis2VlTestReasonOptions[$_SESSION['DHIS2_VL_TEST_REASONS'][$formData['reason_for_vl_test']]] : null);
-
 
 
         $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ?  $formData['sample_collection_date'] : $enrollmentDate);
@@ -244,13 +242,24 @@ foreach ($trackedEntityInstances as $tracker) {
             $formData['hepatitis_test_type'] = "HBV";
         }
 
-        if($formData['reason_for_vl_test'] == 'Initial HBV VL'){
+        $formData['reason_for_vl_test'] = (!empty($formData['reason_for_vl_test']) ?  $dhis2VlTestReasonOptions[$_SESSION['DHIS2_VL_TEST_REASONS'][$formData['reason_for_vl_test']]] : null);
+
+        if($formData['reason_for_vl_test'] == 'Initial HBV VL' && $formData['hepatitis_test_type'] != 'HBV'){
+            $formData['reason_for_vl_test'] == 'Initial HCV VL';
+        }
+
+        if ($formData['reason_for_vl_test'] == 'Initial HBV VL') {
             $formData['hepatitis_test_type'] = "HBV";
-        }else if($formData['reason_for_vl_test'] == 'Follow up HBV VL'){
+        } elseif ($formData['reason_for_vl_test'] == 'Initial HCV VL') {
+            $formData['hepatitis_test_type'] = "HCV";
+        } else if ($formData['reason_for_vl_test'] == 'Follow up HBV VL') {
             $formData['hepatitis_test_type'] = "HBV";
-        }else if($formData['reason_for_vl_test'] == 'SVR12 HCV VL'){
+        } else if ($formData['reason_for_vl_test'] == 'SVR12 HCV VL') {
             $formData['hepatitis_test_type'] = "HBV";
         }
+
+
+
 
 
 

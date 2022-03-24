@@ -28,7 +28,7 @@ try {
             'user_name'     => $_POST['userName'],
             'interface_user_name'     => $_POST['interfaceUserName'],
             'email'         => $_POST['email'],
-            //'login_id'      => $_POST['loginId'],
+            'login_id'      => $_POST['loginId'],
             'phone_number'  => $_POST['phoneNo'],
             'password'      => $password,
             'role_id'       => $_POST['role'],
@@ -79,6 +79,7 @@ try {
     }
     $userType = $general->getSystemConfig('sc_user_type');
     if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $userType == 'vluser') {
+        $_POST['login_id'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['role'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['password'] = $general->generateRandomString();
         $_POST['status'] = 'inactive';

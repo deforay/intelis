@@ -693,7 +693,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<li class="allMenu vlFailedResultMenu"><a href="/vl/results/vl-failed-results.php"><i class="fa fa-caret-right"></i> <?php echo _("Failed/Hold Samples"); ?></a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("vlResultApproval.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlResultApprovalMenu"><a href="/vl/results/vlResultApproval.php"><i class="fa fa-caret-right"></i> <?php echo _("Approve Results"); ?></a></li>
+										<li class="allMenu vlResultApprovalMenu"><a href="/vl/results/vlResultApproval.php"><i class="fa fa-caret-right"></i> <?php echo _("Manage Results Status"); ?></a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("vlResultMail.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu vlResultMailMenu"><a href="/mail/vlResultMail.php"><i class="fa fa-caret-right"></i> <?php echo _("E-mail Test Result"); ?></a></li>

@@ -304,7 +304,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:10px;font-size:11px;text-align:left;font-weight:bold;">Commune<br><span style="font-size:8;font-weight:normal;">(Patient District)</span></td>';
 $html .= '<td width="5%" style="line-height:10px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . $result['patient_district'] . '</td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . $result['patient_zone'] . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
