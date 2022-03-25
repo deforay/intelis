@@ -6,7 +6,7 @@ $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 $hepatitisModel = new \Vlsm\Models\Hepatitis();
 
-$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7 AND (result_sent_to_source IS NULL OR result_sent_to_source NOT LIKE 'sent')";
+$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7 AND result_sent_to_source NOT LIKE 'sent'";
 //$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7";// AND result_sent_to_source NOT LIKE 'sent'";
 $formResults = $db->rawQuery($query);
 //var_dump($formResults);die;
@@ -25,14 +25,14 @@ foreach ($formResults as $row) {
   );
 
   if (!empty($row['reason_for_vl_test'])) {
-    $stage = $programStages[$row['reason_for_vl_test']];
+    $pStage = $programStages[$row['reason_for_vl_test']];
   } else {
-    $stage = 'KPBuhvFV5bK';
+    $pStage = 'KPBuhvFV5bK';
   }
 
   $urlData = array();
   $urlData[] = "trackedEntityInstance=$trackedEntityInstance";
-  $urlData[] = "programStage=" . $stage;
+  $urlData[] = "programStage=" . $pStage;
   $urlData[] = "paging=false";
   //$urlData[] = "status=ACTIVE";
 
@@ -43,6 +43,7 @@ foreach ($formResults as $row) {
   $dhis2Response = $dhis2->get($url, $urlData);
 
   $dhis2Response = json_decode($dhis2Response, true);
+
 
   $strategy = null;
   $eventId = null;
@@ -74,51 +75,37 @@ foreach ($formResults as $row) {
 
   $dataValues = array();
   if ($row['reason_for_vl_test'] == 'Initial HBV VL') {
-    if (in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
+    if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
       $row['hbv_vl_count'] = 10;
     }
     $dataValues[$programStagesVariables['labResultHbvVlCount']]  = $row['hbv_vl_count'];
     $dataValues[$programStagesVariables['dateHbvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
   } else if ($row['reason_for_vl_test'] == 'Initial HCV VL') {
-    if (in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
+    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
       $row['hcv_vl_count'] = 10;
     }
     $dataValues[$programStagesVariables['labResultHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
   } else if ($row['reason_for_vl_test'] == 'Follow up HBV VL') {
-    if (in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
+    if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
       $row['hbv_vl_count'] = 10;
     }
     $dataValues[$programStagesVariables['followUpHbvVlCount']]  = $row['hbv_vl_count'];
     $dataValues[$programStagesVariables['dateHbvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
   } else if ($row['reason_for_vl_test'] == 'SVR12 HCV VL') {
-    if (in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
+    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
       $row['hcv_vl_count'] = 10;
     }
     $dataValues[$programStagesVariables['finalConfirmationHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
-  } else {
-
-    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
-      $row['hcv_vl_count'] = 10;
-    }
-
-    if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
-      $row['hbv_vl_count'] = 10;
-    }
-
-    $dataValues[$programStagesVariables['labResultHbvVlCount']]  = $row['hbv_vl_count'];
-    $dataValues[$programStagesVariables['dateHbvResultsAvailable']] =  $row['sample_tested_datetime'];
-    $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
-    $dataValues[$programStagesVariables['labResultHcvVlCount']] = $row['hcv_vl_count'];
-    $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
-    $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
   }
 
+
+  //var_dump($dataValues);
 
   if (count($dhis2Response['events']) == 0) {
     $idGeneratorApi = $dhis2->get("/api/system/id?limit=1");
@@ -130,44 +117,39 @@ foreach ($formResults as $row) {
       "eventDate" => $eventDate,
       "program" => "LEhPhsbgfFB",
       "orgUnit" => $facResult['other_id'],
-      "programStage" => $stage,
+      "programStage" => $pStage,
       "status" => "ACTIVE",
       "trackedEntityInstance" => $trackedEntityInstance,
       "dataValues" => array()
     );
-
-    
-    if (!empty($eventPayload)) {
+    if (!empty($dataValues)) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
       $payload = json_encode($eventPayload);
-      // echo "<br><br><pre>";
-      // var_dump($payload);
-      // echo "</pre>";
+      echo "<br><br><pre>";
+      var_dump($payload);
+      echo "</pre>";
 
       $response = $dhis2->post("/api/33/events/", $payload);
-      // echo "<br><br><pre>";
-      // var_dump($response);
-      // echo "</pre>";
+      echo "<br><br><pre>";
+      var_dump($response);
+      echo "</pre>";
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {
-      // echo "<br><br><pre>";
-      // var_dump($dataValues);
-      // echo "</pre>";
       if (!empty($dataValues)) {
         $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
         $payload = json_encode($eventPayload);
-        // echo "<br><br><pre>";
-        // var_dump($payload);
-        // echo "</pre>";
+        echo "<br><br><pre>";
+        var_dump($payload);
+        echo "</pre>";
         $urlParams = array();
         $urlParams[] = "mergeMode=REPLACE";
         $urlParams[] = "strategy=UPDATE";
         $urlParams[] = "importStrategy=CREATE_AND_UPDATE";
         $response = $dhis2->post("/api/33/events/", $payload, $urlParams);
-        // echo "<br><br><pre>";
-        // var_dump($response);
-        // echo "</pre>";
+        echo "<br><br><pre>";
+        var_dump($response);
+        echo "</pre>";
       }
     }
   }
@@ -175,9 +157,9 @@ foreach ($formResults as $row) {
 
 
 
-  // $updateData = array('result_sent_to_source' => 'sent');
-  // $db = $db->where('hepatitis_id', $row['hepatitis_id']);
-  // $db->update('form_hepatitis', $updateData);
+  $updateData = array('result_sent_to_source' => 'sent');
+  $db = $db->where('hepatitis_id', $row['hepatitis_id']);
+  $db->update('form_hepatitis', $updateData);
   $counter++;
 }
 

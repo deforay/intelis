@@ -342,7 +342,12 @@ class Dhis2
 			);
 		}
 
-		$eventPayload['dataValues'] = array_merge($eventPayload['dataValues'], $dataValues);
+		if(!empty($eventPayload['dataValues'])){
+			$eventPayload['dataValues'] = array_merge($eventPayload['dataValues'], $dataValues);
+		}else{
+			$eventPayload['dataValues'] = $dataValues;
+		}
+		
 		return $eventPayload;
 	}
 }

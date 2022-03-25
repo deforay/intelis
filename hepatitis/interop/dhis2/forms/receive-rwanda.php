@@ -36,9 +36,9 @@ $dhis2SocialCategoryOptions = array('1' => 'A', '2' => 'B', '3' => 'C', '4' => '
 //$dhis2VlTestReasonOptions = array('I_VL001' => 'Initial HBV VL', 'HBV_F0012' => 'Follow up HBV VL', 'SVR12_HCV01' => 'SVR12 HCV VL');
 
 $dhis2VlTestReasonOptions = array(
-    'Initial Viral Load Test' => 'Initial HBV VL',
-    'HBV Follow-up Test' => 'Follow up HBV VL',
-    'SVR12 HCV Viral Load Test' => 'SVR12 HCV VL'
+    'I_VL001' => 'Initial HBV VL',
+    'HBV_F0012' => 'Follow up HBV VL',
+    'SVR12_HCV01' => 'SVR12 HCV VL'
 );
 
 $attributesDataElementMapping = [

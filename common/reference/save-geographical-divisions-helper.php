@@ -18,32 +18,33 @@ try {
 			'geo_code' 			=> $_POST['geoCode'],
 			'geo_parent' 		=> (isset($_POST['geoParent']) && trim($_POST['geoParent']) != "") ? $_POST['geoParent'] : 0,
 			'geo_status' 		=> $_POST['geoStatus'],
-			'updated_datetime'	=> $general->getDateTime()
+			'updated_datetime'	=> $db->now()
 		);
 		if (isset($_POST['geoId']) && $_POST['geoId'] != "") {
 			$db = $db->where("geo_id", base64_decode($_POST['geoId']));
 			$lastId = $db->update("geographical_divisions", $data);
+			$geoId = base64_decode($_POST['geoId']);
 		} else {
 			$data['created_by'] = $_SESSION['userId'];
 			$data['created_on'] = $general->getDateTime();
 			$data['data_sync'] = 0;
 			$db->insert("geographical_divisions", $data);
 			$lastId = $db->getInsertId();
+			$geoId = $lastId;
 		}
 		if (!isset($data['geo_parent']) || $data['geo_parent'] == 0) {
-			$provinceQuery = "SELECT province_name from province_details where province_name='" . $_POST['geoName'] . "'";
-			$provinceInfo = $db->rawQueryOne($provinceQuery);
-			$pdata = array(
+
+			$provinceData = array(
+				'province_id' => $geoId,
 				'province_name' => $_POST['geoName'],
 				'province_code' => $_POST['geoCode'],
-				'updated_datetime' => $general->getDateTime(),
+				'updated_datetime' => $db->now()
 			);
-			if ($provinceInfo && $provinceInfo['province_id'] > 0) {
-				$db->where("province_id", $provinceInfo['province_id']);
-				$db->update($provinceTable, $pdata);
-			} else {
-				$db->insert($provinceTable, $pdata);
-			}
+
+			$updateColumns = array_keys($provinceData);
+			$lastInsertId = "province_id";
+			$db->onDuplicate($updateColumns, $lastInsertId);
+			$id = $db->insert($provinceTable, $provinceData);
 		}
 		if ($lastId > 0) {
 
@@ -64,7 +65,7 @@ try {
 			$db->update("facility_details", $facilityData);
 
 			$_SESSION['alertMsg'] = _("Geographical Divisions details saved successfully");
-			$general->activityLog('Geographical Divisions details', $_SESSION['userName'] . ' added new geographical divisions for ' . $_POST['geoName'], 'common-reference');
+			$general->activityLog('Geographical Divisions details', $_SESSION['userName'] . ' saved geographical division - ' . $_POST['geoName'], 'common-reference');
 		}
 	}
 	header("location:geographical-divisions-details.php");
