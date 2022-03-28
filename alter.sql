@@ -2990,3 +2990,6 @@ UPDATE form_tb SET source_of_request = 'app' WHERE (source_of_request like 'api'
 -- Thana 22-Mar-2022
 ALTER TABLE `import_config` ADD `approved_by` JSON NULL DEFAULT NULL AFTER `low_vl_result_text`, 
 ADD `reviewed_by` JSON NULL DEFAULT NULL AFTER `approved_by`;
+
+-- Amit 25-Mar-2022
+ALTER TABLE `province_details` ADD UNIQUE(`province_name`);

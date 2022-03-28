@@ -18,33 +18,34 @@ try {
 			'geo_code' 			=> $_POST['geoCode'],
 			'geo_parent' 		=> (isset($_POST['geoParent']) && trim($_POST['geoParent']) != "") ? $_POST['geoParent'] : 0,
 			'geo_status' 		=> $_POST['geoStatus'],
-			'updated_datetime'	=> $db->now()
+			'updated_datetime'	=> $general->getDateTime()
 		);
 		if (isset($_POST['geoId']) && $_POST['geoId'] != "") {
 			$db = $db->where("geo_id", base64_decode($_POST['geoId']));
-			$lastId = $db->update("geographical_divisions", $data);
 			$geoId = base64_decode($_POST['geoId']);
+			$lastId = $db->update("geographical_divisions", $data);
+			
 		} else {
 			$data['created_by'] = $_SESSION['userId'];
 			$data['created_on'] = $general->getDateTime();
 			$data['data_sync'] = 0;
 			$db->insert("geographical_divisions", $data);
-			$lastId = $db->getInsertId();
-			$geoId = $lastId;
+			$geoId = $lastId = $db->getInsertId();
 		}
 		if (!isset($data['geo_parent']) || $data['geo_parent'] == 0) {
-
-			$provinceData = array(
-				'province_id' => $geoId,
+			$provinceQuery = "SELECT province_name FROM province_details WHERE province_name='" . $_POST['geoName'] . "'";
+			$provinceInfo = $db->rawQueryOne($provinceQuery);
+			$pdata = array(
 				'province_name' => $_POST['geoName'],
 				'province_code' => $_POST['geoCode'],
-				'updated_datetime' => $db->now()
+				'updated_datetime' => $general->getDateTime(),
 			);
-
-			$updateColumns = array_keys($provinceData);
-			$lastInsertId = "province_id";
-			$db->onDuplicate($updateColumns, $lastInsertId);
-			$id = $db->insert($provinceTable, $provinceData);
+			if ($provinceInfo && $provinceInfo['province_id'] > 0) {
+				$db->where("province_id", $provinceInfo['province_id']);
+				$db->update($provinceTable, $pdata);
+			} else {
+				$db->insert($provinceTable, $pdata);
+			}
 		}
 		if ($lastId > 0) {
 

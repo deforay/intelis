@@ -108,7 +108,7 @@ if (count($interfaceInfo) > 0) {
             // if ^ exists it means the Operator Name has both tester and releaser name
             if (strpos(strtolower($result['tested_by']), '^') !== false) {
                 $operatorArray = explode("^", $result['tested_by']);
-                $tester = $operatorArray[1];
+                $tester = $operatorArray[0];
                 $testedByUserId = $usersModel->addUserIfNotExists($tester);
             } else {
                 $testedByUserId = $usersModel->addUserIfNotExists($result['tested_by']);

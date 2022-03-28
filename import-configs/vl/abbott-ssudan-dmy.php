@@ -118,7 +118,7 @@ try {
                     } else if (strpos($sheetData[$resultCol], 'IU/mL') !== false) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                     } else {
-                        if (strpos(strtolower($sheetData[$resultCol]), 'not detected') !== false || strtolower($sheetData[$resultCol]) == 'target not detected') {
+                        if (strpos(strtolower($sheetData[$resultCol]), 'not detected') !== false || strtolower($sheetData[$resultCol]) == 'target not detected' || (int)($sheetData[$resultCol]) == 0) {
                             $txtVal = "Below Detection Level";
                             $resultFlag = "";
                             $absVal = "";
