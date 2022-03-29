@@ -2993,3 +2993,6 @@ ADD `reviewed_by` JSON NULL DEFAULT NULL AFTER `approved_by`;
 
 -- Amit 25-Mar-2022
 ALTER TABLE `province_details` ADD UNIQUE(`province_name`);
+
+-- Amit 29-Mar-2022 version 4.4.9
+UPDATE `system_config` SET `value` = '4.4.9' WHERE `system_config`.`name` = 'sc_version';

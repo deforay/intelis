@@ -37,7 +37,7 @@ $general = new \Vlsm\Models\General();
 									<th><?php echo _("Number of Records Synced"); ?></th>
 									<th><?php echo _("Sync Type"); ?></th>
 									<th><?php echo _("Test Type"); ?></th>
-									<th><?php echo _("Url"); ?></th>
+									<th><?php echo _("URL"); ?></th>
 									<th><?php echo _("Synced On"); ?></th>
 								</tr>
 							</thead>

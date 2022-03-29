@@ -9,19 +9,11 @@ ob_start();
 
 $general = new \Vlsm\Models\General();
 
-
 //Add event log
 $eventType = 'log-out';
-$action = ucwords($_SESSION['userName']) . ' logged out';
-$resource = 'user-log-out';
-$data = array(
-    'event_type' => $eventType,
-    'action' => $action,
-    'resource' => $resource,
-    'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
-    'date_time' => $general->getDateTime()
-);
-$db->insert("activity_log", $data);
+$action = ucwords($admin[0]['user_name']) . ' logged out';
+$resource = 'user';
+$general->activityLog($eventType, $action, $resource);
 
 // Unset all of the session variables.
 $_SESSION = array();

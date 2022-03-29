@@ -50,6 +50,7 @@ if (isset($_POST['iSortCol_0'])) {
 */
 
 $sWhere = array();
+$sWhere[] = ' number_of_records > 0 ';
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -135,9 +136,9 @@ foreach ($rResult as $key => $aRow) {
      $row = array();
      $row[] = $aRow['number_of_records'];
      $row[] = str_replace("-", " ", ucwords($aRow['request_type']));
-     $row[] = ucwords($aRow['test_type']);
+     $row[] = strtoupper($aRow['test_type']);
      $row[] = $aRow['api_url'];
-     $row[] = date("d-M-Y, h:i:s", strtotime($aRow['requested_on']));
+     $row[] = date("d-M-Y h:i:s", strtotime($aRow['requested_on']));
 
      $output['aaData'][] = $row;
 }

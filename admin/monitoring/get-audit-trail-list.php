@@ -83,7 +83,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS a.*, r.display_name, DATE_FORMAT(a.date_time,'%d-%b-%Y') AS createdOn FROM activity_log as a 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS a.*, r.display_name, 
+               DATE_FORMAT(a.date_time,'%d-%b-%Y %H:%i:%s') AS createdOn FROM activity_log as a 
           LEFT JOIN resources as r ON a.resource = r.resource_id";
 
 //echo $sQuery;die;
@@ -97,9 +98,7 @@ if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
           $end_date = $general->dateFormat(trim($s_c_date[1]));
      }
-}
 
-if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
      $sWhere[] = ' DATE(a.date_time) >= "' . $start_date . '" AND DATE(a.date_time) <= "' . $end_date . '"';
 }
 
@@ -108,7 +107,7 @@ if (sizeof($sWhere) > 0) {
      $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' GROUP BY action';
+//$sQuery = $sQuery . ' GROUP BY action';
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -117,7 +116,7 @@ $_SESSION['auditLogQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// echo $sQuery;die;
+//echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */

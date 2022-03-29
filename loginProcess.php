@@ -118,12 +118,7 @@ try {
                         $data = array('vlsm_instance_id' => $id);
                         $db->update('facility_details', $data);
                     }
-                    //Add event log
-                    $eventType = 'login';
-                    $action = ucwords($admin[0]['user_name']) . ' logged in';
-                    $resource = 'user-login';
 
-                    $general->activityLog($eventType, $action, $resource);
 
                     $_SESSION['userId'] = $admin[0]['user_id'];
                     $_SESSION['userName'] = ucwords($admin[0]['user_name']);
@@ -132,6 +127,12 @@ try {
                     $_SESSION['accessType'] = $admin[0]['access_type'];
                     $_SESSION['email'] = $admin[0]['email'];
                     $_SESSION['forcePasswordReset'] = $admin[0]['force_password_reset'];
+
+                    //Add event log
+                    $eventType = 'login';
+                    $action = ucwords($admin[0]['user_name']) . ' logged in';
+                    $resource = 'user-login';
+                    $general->activityLog($eventType, $action, $resource);
 
                     $redirect = '/error/401.php';
                     //set role and privileges

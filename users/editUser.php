@@ -1,15 +1,16 @@
 <?php
 ob_start();
-$title = _("Edit user");
+$title = _("Edit User");
 
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
-$userQuery = "SELECT * from user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id where user_id='" . $id . "'";
-$userInfo = $db->query($userQuery);
+
+$userInfo = $db->rawQueryOne('SELECT * from user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id where user_id= ?', Array ($id));
+
 
 $interfaceUsers = "";
-if (!empty($userInfo[0]['interface_user_name'])) {
-     $interfaceUsers = implode(", ", json_decode($userInfo[0]['interface_user_name'], true));
+if (!empty($userInfo['interface_user_name'])) {
+     $interfaceUsers = implode(", ", json_decode($userInfo['interface_user_name'], true));
 }
 
 $query = "SELECT * FROM roles WHERE status='active'";
@@ -38,7 +39,7 @@ foreach ($pdResult as $provinceName) {
 }
 
 //Province Details  Ends
-$fQuery = "SELECT * FROM facility_type where facility_type_id IN(1,2)";
+$fQuery = "SELECT * FROM facility_type";
 $ftResult = $db->rawQuery($fQuery);
 ?>
 
@@ -72,8 +73,8 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="userName" class="col-lg-4 control-label"><?php echo _("User Name"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter user name'); ?>" value="<?php echo $userInfo[0]['user_name']; ?>" />
-                                                  <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode($userInfo[0]['user_id']); ?>" />
+                                                  <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter user name'); ?>" value="<?php echo $userInfo['user_name']; ?>" />
+                                                  <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode($userInfo['user_id']); ?>" />
                                              </div>
                                         </div>
                                    </div>
@@ -81,7 +82,7 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="email" class="col-lg-4 control-label"><?php echo _("Email"); ?> </label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('Email'); ?>" title="<?php echo _('Please enter email'); ?>" value="<?php echo $userInfo[0]['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo[0]['user_id']; ?>','<?php echo _("This email id that you entered already exists.Try another email id"); ?>',null)" />
+                                                  <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('Email'); ?>" title="<?php echo _('Please enter email'); ?>" value="<?php echo $userInfo['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _("This email id that you entered already exists.Try another email id"); ?>',null)" />
                                              </div>
                                         </div>
                                    </div>
@@ -91,7 +92,7 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="phoneNo" class="col-lg-4 control-label"><?php echo _("Phone Number"); ?></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?php echo _('Phone Number'); ?>" title="<?php echo _('Please enter phone number'); ?>" value="<?php echo $userInfo[0]['phone_number']; ?>" />
+                                                  <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?php echo _('Phone Number'); ?>" title="<?php echo _('Please enter phone number'); ?>" value="<?php echo $userInfo['phone_number']; ?>" />
                                              </div>
                                         </div>
                                    </div>
@@ -103,9 +104,9 @@ $ftResult = $db->rawQuery($fQuery);
                                                   <select class="form-control isRequired" name='role' id='role' title="<?php echo _('Please select the role'); ?>">
                                                        <option value=""><?php echo _("--Select--"); ?></option>
                                                        <?php foreach ($result as $row) {
-                                                            $roleCode = (isset($userInfo[0]['role_id']) && $userInfo[0]['role_id'] == $row['role_id']) ? $row['role_code'] : ""
+                                                            $roleCode = (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? $row['role_code'] : ""
                                                        ?>
-                                                            <option value="<?php echo $row['role_id']; ?>" data-code="<?php echo $row['role_code']; ?>" <?php echo (isset($userInfo[0]['role_id']) && $userInfo[0]['role_id'] == $row['role_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords(($row['role_name'])); ?></option>
+                                                            <option value="<?php echo $row['role_id']; ?>" data-code="<?php echo $row['role_code']; ?>" <?php echo (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords(($row['role_name'])); ?></option>
                                                        <?php } ?>
                                                   </select>
                                              </div>
@@ -113,12 +114,12 @@ $ftResult = $db->rawQuery($fQuery);
                                    </div>
                               </div>
 
-                              <div class="row show-token" style="display: <?php echo ($userInfo[0]['role_code'] != "" && $userInfo[0]['role_code'] == "API") ? 'block' : 'none'; ?>;">
+                              <div class="row show-token" style="display: <?php echo ($userInfo['role_code'] != "" && $userInfo['role_code'] == "API") ? 'block' : 'none'; ?>;">
                                    <div class="col-md-6">
                                         <div class="form-group">
                                              <label for="authToken" class="col-lg-4 control-label"><?php echo _("AuthToken"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" value="<?php echo $userInfo[0]['api_token']; ?>" class="form-control" id="authToken" name="authToken" placeholder="<?php echo _('Auth Token'); ?>" title="<?php echo _('Please Generate the auth token'); ?>" readonly>
+                                                  <input type="text" value="<?php echo $userInfo['api_token']; ?>" class="form-control" id="authToken" name="authToken" placeholder="<?php echo _('Auth Token'); ?>" title="<?php echo _('Please Generate the auth token'); ?>" readonly>
                                              </div>
                                         </div>
                                    </div>
@@ -143,8 +144,8 @@ $ftResult = $db->rawQuery($fQuery);
                                              <div class="col-lg-7">
                                                   <select class="form-control" name='appAccessable' id='appAccessable' title="<?php echo _('Please select the mobile App access or not'); ?>?">
                                                        <option value=""><?php echo _("--Select--"); ?></option>
-                                                       <option value="yes" <?php echo ($userInfo[0]['app_access'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _("Yes"); ?></option>
-                                                       <option value="no" <?php echo ($userInfo[0]['app_access'] == 'no') ? "selected='selected'" : "" ?>><?php echo _("No"); ?></option>
+                                                       <option value="yes" <?php echo ($userInfo['app_access'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _("Yes"); ?></option>
+                                                       <option value="no" <?php echo ($userInfo['app_access'] == 'no') ? "selected='selected'" : "" ?>><?php echo _("No"); ?></option>
                                                   </select>
                                              </div>
                                         </div>
@@ -159,21 +160,21 @@ $ftResult = $db->rawQuery($fQuery);
                                                   <div class="fileinput fileinput-new userSignature" data-provides="fileinput">
                                                        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
                                                             <?php
-                                                            if (isset($userInfo[0]['user_signature']) && trim($userInfo[0]['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo[0]['user_signature'])) {
+                                                            if (isset($userInfo['user_signature']) && trim($userInfo['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
                                                             ?>
-                                                                 <img src="/uploads/users-signature/<?php echo $userInfo[0]['user_signature']; ?>" alt="Signature image">
+                                                                 <img src="/uploads/users-signature/<?php echo $userInfo['user_signature']; ?>" alt="Signature image">
                                                             <?php } else { ?>
                                                                  <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
                                                             <?php } ?>
                                                        </div>
                                                        <div>
                                                             <span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select Signature Image"); ?></span><span class="fileinput-exists"><?php echo _("Change"); ?></span>
-                                                                 <input type="file" id="userSignature" name="userSignature" accept="image/png,image/gpg,image/jpeg" title="<?php echo _('Please select user signature'); ?>" onchange="getNewSignatureImage('<?php echo $userInfo[0]['user_signature']; ?>');">
+                                                                 <input type="file" id="userSignature" name="userSignature" accept="image/png,image/gpg,image/jpeg" title="<?php echo _('Please select user signature'); ?>" onchange="getNewSignatureImage('<?php echo $userInfo['user_signature']; ?>');">
                                                             </span>
                                                             <?php
-                                                            if (isset($userInfo[0]['user_signature']) && trim($userInfo[0]['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo[0]['user_signature'])) {
+                                                            if (isset($userInfo['user_signature']) && trim($userInfo['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
                                                             ?>
-                                                                 <a id="clearUserSignature" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearUserSignature('<?php echo $userInfo[0]['user_signature']; ?>')"><?php echo _("Clear"); ?></a>
+                                                                 <a id="clearUserSignature" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearUserSignature('<?php echo $userInfo['user_signature']; ?>')"><?php echo _("Clear"); ?></a>
                                                             <?php } ?>
                                                             <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _("Remove"); ?></a>
                                                        </div>
@@ -190,7 +191,7 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="loginId" class="col-lg-4 control-label"><?php echo _("Login Id"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control isRequired" id="loginId" name="loginId" placeholder="<?php echo _('Login Id'); ?>" title="<?php echo _('Please enter login id'); ?>" value="<?php echo $userInfo[0]['login_id']; ?>" onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo[0]['user_id']; ?>','<?php echo _("This login id that you entered already exists.Try another login id"); ?>',null)" />
+                                                  <input type="text" class="form-control isRequired" id="loginId" name="loginId" placeholder="<?php echo _('Login Id'); ?>" title="<?php echo _('Please enter login id'); ?>" value="<?php echo $userInfo['login_id']; ?>" onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _("This login id that you entered already exists.Try another login id"); ?>',null)" />
                                              </div>
                                         </div>
                                    </div>
@@ -222,8 +223,8 @@ $ftResult = $db->rawQuery($fQuery);
                                              <div class="col-lg-7">
                                                   <select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status'); ?>">
                                                        <option value=""> <?php echo _("-- Select --"); ?> </option>
-                                                       <option value="active" <?php echo ($userInfo[0]['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _("Active"); ?></option>
-                                                       <option value="inactive" <?php echo ($userInfo[0]['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _("Inactive"); ?></option>
+                                                       <option value="active" <?php echo ($userInfo['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _("Active"); ?></option>
+                                                       <option value="inactive" <?php echo ($userInfo['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _("Inactive"); ?></option>
                                                   </select>
                                              </div>
                                         </div>
