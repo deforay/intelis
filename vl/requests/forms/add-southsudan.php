@@ -951,7 +951,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
      $('#vlResult,#vlLog').on('input', function(e) {
-          if (this.value != '') {
+          if (this.value == 0) {
+               $('#bdl').attr('checked', true);
+          } else if (this.value > 0) {
+               $('#bdl').attr('checked', false);
+          }
+          if (this.value != '' && this.value != 0) {
                $('#tnd,#bdl').attr('disabled', true);
           } else {
                $('#tnd,#bdl').attr('disabled', false);
