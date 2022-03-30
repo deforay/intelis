@@ -3,6 +3,16 @@ $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
+$userDb = new \Vlsm\Models\Users();
+$userNameList = $userDb->getAllUsers(null, null, 'drop-down');
+
+$actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");
+
+$actionList = array();
+foreach ($actions as $list) {
+	$actionList[$list['event_type']] = ucwords(str_replace("-", " ", $list['event_type']));
+}
+
 ?>
 <style>
 	.select2-selection__choice {
@@ -29,6 +39,32 @@ $general = new \Vlsm\Models\General();
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
+					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+						<tr>
+							<td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
+							<td>
+								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
+							</td>
+							<td><b><?php echo _("Users"); ?>&nbsp;:</b></td>
+							<td>
+								<select style="width:220px;" class="form-control select2" id="userName" name="userName" title="<?php echo _('Please select the user name'); ?>">
+									<?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td><b><?php echo _("Type of Action"); ?>&nbsp;:</b></td>
+							<td>
+								<select style="width:220px;" class="form-control" id="typeOfAction" name="typeOfAction" title="<?php echo _('Type of Action'); ?>">
+									<?php echo $general->generateSelectOptions($actionList, null, '--All--'); ?>
+								</select>
+							</td>
+							<td style=" display: contents; ">
+								<button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
+								<a href="/admin/monitoring/audit-trail.php" class="btn btn-danger btn-sm" style=" margin-left: 15px; "><span><?php echo _("Clear"); ?></span></button>
+							</td>
+						</tr>
+					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
 						<table id="auditTrailDataTable" class="table table-bordered table-striped">
@@ -61,6 +97,13 @@ $general = new \Vlsm\Models\General();
 <script type="text/javascript">
 	var oTable = null;
 	$(document).ready(function() {
+		$('#userName').select2({
+			placeholder: "Select user to filter"
+		});
+
+		$('#typeOfAction').select2({
+			placeholder: "Select action to filter"
+		});
 
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
@@ -121,6 +164,14 @@ $general = new \Vlsm\Models\General();
 				aoData.push({
 					"name": "dateRange",
 					"value": $("#dateRange").val()
+				});
+				aoData.push({
+					"name": "userName",
+					"value": $("#userName").val()
+				});
+				aoData.push({
+					"name": "typeOfAction",
+					"value": $("#typeOfAction").val()
 				});
 				$.ajax({
 					"dataType": 'json',

@@ -98,10 +98,17 @@ if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
           $end_date = $general->dateFormat(trim($s_c_date[1]));
      }
-
-     $sWhere[] = ' DATE(a.date_time) >= "' . $start_date . '" AND DATE(a.date_time) <= "' . $end_date . '"';
+}
+if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
+     $sWhere[] = ' DATE(date_time) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
+}
+if (isset($_POST['userName']) && trim($_POST['userName']) != '') {
+     $sWhere[] = ' user_id like "' . $_POST['userName'] . '"';
 }
 
+if (isset($_POST['typeOfAction']) && trim($_POST['typeOfAction']) != '') {
+     $sWhere[] = ' event_type like "' . $_POST['typeOfAction'] . '"';
+}
 /* Implode all the where fields for filtering the data */
 if (sizeof($sWhere) > 0) {
      $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
