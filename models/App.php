@@ -374,11 +374,11 @@ class App
             'request_type'          => $type,
             'test_type'             => $testType,
             'api_url'               => $url,
-            'api_params'            => (isset($params) && sizeof($params) > 0) ? json_encode($params) : null,
+            'api_params'            => (isset($params) && sizeof($params) > 0) ? $params : null,
             'data_format'           => $format
         );
         if ($format == 'sync-api') {
-            $data['facility_id'] = (isset($params) && count($params) > 0) ? json_encode($params) : null;
+            $data['facility_id'] = (isset($params['date'][0]['facilityId']) && count($params['date'][0]['facilityId']) > 0) ? $params['date'][0]['facilityId'] : null;
         }
         return $this->db->insert("track_api_requests", $data);
     }
