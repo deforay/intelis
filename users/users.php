@@ -55,6 +55,7 @@ require_once(APPLICATION_PATH . '/header.php');
               <thead>
                 <tr>
                   <th><?php echo _("User Name");?></th>
+                  <th><?php echo _("Login ID");?></th>
                   <th><?php echo _("Email");?></th>
                   <th><?php echo _("Role");?></th>
                   <th><?php echo _("Status");?></th>
@@ -65,7 +66,7 @@ require_once(APPLICATION_PATH . '/header.php');
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="5" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
                 </tr>
               </tbody>
 
@@ -100,6 +101,9 @@ require_once(APPLICATION_PATH . '/header.php');
       "bStateSave": true,
       "bRetrieve": true,
       "aoColumns": [{
+          "sClass": "center"
+        },
+        {
           "sClass": "center"
         },
         {

@@ -238,8 +238,6 @@ try {
     //Add event log
 
     
-
-
     //Add event log
     $eventType = 'result-import';
     $action = ucwords($_SESSION['userName']) . ' imported test results for Roche VL';

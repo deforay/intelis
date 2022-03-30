@@ -11,7 +11,7 @@ $primaryKey = "user_id";
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('ud.user_name', 'ud.email', 'r.role_name', 'ud.status');
+$aColumns = array('ud.user_name','ud.login_id', 'ud.email', 'r.role_name', 'ud.status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -90,12 +90,13 @@ for ($i = 0; $i < count($aColumns); $i++) {
         */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS ud.user_id,
                             ud.user_name,
+                            ud.login_id,
                             ud.interface_user_name,
                             ud.email,
                             ud.status,
                             r.role_name 
                             FROM user_details as ud 
-                            INNER JOIN roles as r ON ud.role_id=r.role_id ";
+                            LEFT JOIN roles as r ON ud.role_id=r.role_id ";
 
 if (isset($sWhere) && $sWhere != "") {
     $sWhere = ' where ' . $sWhere;
@@ -139,6 +140,7 @@ foreach ($rResult as $aRow) {
     }
     $row = array();
     $row[] = ($aRow['user_name']);
+    $row[] = ($aRow['login_id']);
     $row[] = $aRow['email'];
     $row[] = ucwords($aRow['role_name']);
     $row[] = ucwords($aRow['status']);
