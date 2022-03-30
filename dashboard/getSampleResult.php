@@ -777,7 +777,7 @@ if ($table == "form_covid19") {
                 enabled: false
             },
             xAxis: {
-                categories: ["<?= _("Samples Registered"); ?>",
+                categories: [
                     "<?= _("Samples Tested"); ?>",
                     "<?= _("Samples Rejected"); ?>",
                     "<?= _("Samples on Hold"); ?>",
@@ -817,10 +817,6 @@ if ($table == "form_covid19") {
                 name: 'Sample',
                 showInLegend: false,
                 data: [{
-                        y: <?php echo (isset($aggregateResult['totalCollected'])) ? $aggregateResult['totalCollected'] : 0; ?>,
-                        color: '#6e6e9e'
-                    },
-                    {
                         y: <?php echo (isset($aggregateResult['tested'])) ? $aggregateResult['tested'] : 0; ?>,
                         color: '#039BE6'
                     },
