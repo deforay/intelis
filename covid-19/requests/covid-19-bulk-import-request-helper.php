@@ -14,7 +14,7 @@ $testTableName = 'covid19_tests';
 // echo "<pre>";print_r($_FILES);die;
 try {
     $arr = $general->getGlobalConfig();
-    
+
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
@@ -34,73 +34,104 @@ try {
         $sheetData   = $spreadsheet->getActiveSheet();
         $sheetData   = $sheetData->toArray(null, true, true, true);
         $returnArray = array();
-        $resultArray = array_slice($sheetData,1);
+        $resultArray = array_slice($sheetData, 1);
 
         foreach ($resultArray as $rowIndex => $rowData) {
             // echo "<pre>";print_r($rowData);die;
             if (isset($rowData['A']) && !empty($rowData['A'])) {
-                $sampleCode = $general->getDuplicateDataFromField('form_covid19', 'sample_code', $rowData['A']);
+                $sampleCode         = $general->getDuplicateDataFromField('form_covid19', 'sample_code', $rowData['A']);
+                $provinceId         = $general->getDuplicateDataFromField('geographical_divisions', 'geo_name', $rowData['D']);
+                $facility           = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['F']);
+                $testReason         = $general->getDuplicateDataFromField('r_covid19_test_reasons', 'test_reason_name', $rowData['AT']);
+                $sampleType         = $general->getDuplicateDataFromField('r_covid19_sample_type', 'sample_name', $rowData['AV']);
+                $labName            = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['AY'], 'facility_type');
+                $rejectionReason    = $general->getDuplicateDataFromField('r_covid19_sample_rejection_reasons', 'rejection_reason_name', $rowData['BA']);
+                $result             = $general->getDuplicateDataFromField('r_covid19_results', 'result', $rowData['BK']);
+                $resultStatus       = $general->getDuplicateDataFromField('r_sample_status', 'status_name', $rowData['BO']);
+                $labTechnician      = $usersModel->addUserIfNotExists($rowData['BR']);
 
-                $facility = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['D']);
-                $testReason = $general->getDuplicateDataFromField('r_covid19_test_reasons', 'test_reason_name', $rowData['R']);
-                $sampleType = $general->getDuplicateDataFromField('r_covid19_sample_type', 'sample_name', $rowData['T']);
-                $labName = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['W'], 'facility_type');
-                $rejectionReason = $general->getDuplicateDataFromField('r_covid19_sample_rejection_reasons', 'rejection_reason_name', $rowData['Y']);
+                $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
+                $instanceId = $db->rawQueryOne($sQuery);
 
-                $result = $general->getDuplicateDataFromField('r_covid19_results', 'result', $rowData['AI']);
-                $resultStatus = $general->getDuplicateDataFromField('r_sample_status', 'status_name', $rowData['AM']);
-                $labTechnician = $usersModel->addUserIfNotExists($rowData['AP']);
-
-                if (trim($rowData['S']) != '') {
-                    $sampleCollectionDate = date('Y-m-d H:i:s', strtotime($rowData['S']));
+                if (trim($rowData['AU']) != '') {
+                    $sampleCollectionDate = date('Y-m-d H:i:s', strtotime($rowData['AU']));
                 } else {
                     $sampleCollectionDate = null;
                 }
 
-                if (trim($rowData['V']) != '') {
-                    $sampleReceivedDate = date('Y-m-d H:i:s', strtotime($rowData['V']));
+                if (trim($rowData['AX']) != '') {
+                    $sampleReceivedDate = date('Y-m-d H:i:s', strtotime($rowData['AX']));
                 } else {
                     $sampleReceivedDate = null;
                 }
 
+
                 $data = array(
+                    'vlsm_instance_id'                      => $instanceId['vlsm_instance_id'],
                     'sample_code'                           => $rowData['A'],
+                    'unique_id'                             => $general->generateRandomString(32),
                     'vlsm_country_id'                       => $arr['vl_form'],
-                    'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "")?strtolower(str_replace(" ","-",$rowData['B'])):null,
+                    'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "") ? strtolower(str_replace(" ", "-", $rowData['B'])) : null,
                     'source_of_alert_other'                 => $rowData['C'],
-                    'facility_id'                           => isset($facility['facility_id'])?$facility['facility_id']:null,
-                    'patient_name'                          => $rowData['E'],
-                    'patient_id'                            => $rowData['F'],
-                    'external_sample_code'                  => $rowData['G'],
-                    'patient_dob'                           => date('Y-m-d',strtotime($rowData['H'])),
-                    'patient_age'                           => $rowData['I'],
-                    'patient_gender'                        => strtolower($rowData['J']),
-                    'patient_phone_number'                  => $rowData['K'],
-                    'patient_address'                       => $rowData['L'],
-                    'patient_province'                      => $rowData['M'],
-                    'patient_district'                      => $rowData['N'],
-                    'patient_city'                          => $rowData['O'],
-                    'patient_nationality'                   => $rowData['P'],
-                    'type_of_test_requested'                => $rowData['Q'],
-                    'reason_for_covid19_test'               => isset($testReason['test_reason_id'])?$testReason['test_reason_id']:null,
+                    'province_id'                           => $provinceId['geo_id'],
+                    'facility_id'                           => isset($facility['facility_id']) ? $facility['facility_id'] : null,
+                    'patient_name'                          => $rowData['G'],
+                    'patient_id'                            => $rowData['H'],
+                    'external_sample_code'                  => $rowData['I'],
+                    'patient_dob'                           => date('Y-m-d', strtotime($rowData['J'])),
+                    'patient_age'                           => $rowData['K'],
+                    'patient_gender'                        => strtolower($rowData['L']),
+                    'patient_phone_number'                  => $rowData['M'],
+                    'patient_email'                         => $rowData['N'],
+                    'patient_address'                       => $rowData['O'],
+                    'is_patient_pregnant'                   => $rowData['P'],
+                    'patient_province'                      => $rowData['Q'],
+                    'patient_district'                      => $rowData['R'],
+                    'patient_city'                          => $rowData['S'],
+                    'patient_nationality'                   => $rowData['T'],
+                    'testing_point'                         => $rowData['U'],
+                    // 'testing_point'                   => $rowData['V'],
+                    'fever_temp'                            => $rowData['W'],
+                    'temperature_measurement_method'        => $rowData['X'],
+                    // 'testing_point'                   => $rowData['Y'],
+                    'medical_history'                       => strtolower($rowData['Z']),
+                    'recent_hospitalization'                => $rowData['AB'],
+                    'patient_lives_with_children'           => $rowData['AC'],
+                    'patient_cares_for_children'            => $rowData['AD'],
+                    'close_contacts'                        => $rowData['AE'],
+                    'has_recent_travel_history'             => $rowData['AF'],
+                    'travel_country_names'                  => $rowData['AG'],
+                    'travel_return_date'                    => $rowData['AH'],
+                    'flight_airline'                        => $rowData['AI'],
+                    'flight_seat_no'                        => $rowData['AJ'],
+                    'flight_arrival_datetime'               => $rowData['AK'],
+                    'flight_airport_of_departure'           => $rowData['AL'],
+                    'flight_transit'                        => $rowData['AM'],
+                    'reason_of_visit'                       => $rowData['AN'],
+                    'number_of_days_sick'                   => $rowData['AO'],
+                    'date_of_symptom_onset'                 => date('Y-m-d', strtotime($rowData['AP'])),
+                    'date_of_initial_consultation'          => date('Y-m-d', strtotime($rowData['AQ'])),
+                    'sample_registered_at_lab'              => date('Y-m-d', strtotime($rowData['AR'])),
+                    'type_of_test_requested'                => $rowData['AS'],
+                    'reason_for_covid19_test'               => isset($testReason['test_reason_id']) ? $testReason['test_reason_id'] : null,
                     'sample_collection_date'                => $sampleCollectionDate,
-                    'specimen_type'                         => isset($sampleType['sample_id'])?$sampleType['sample_id']:null,
-                    'test_number'                           => $rowData['U'],
+                    'specimen_type'                         => isset($sampleType['sample_id']) ? $sampleType['sample_id'] : null,
+                    'test_number'                           => $rowData['AW'],
                     'sample_received_at_vl_lab_datetime'    => $sampleReceivedDate,
-                    'lab_id'                                => isset($labName['facility_id'])?$labName['facility_id']:null,
-                    'is_sample_rejected'                    => strtolower($rowData['X']),
-                    'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "")?$rejectionReason['rejection_reason_id']:9999,
-                    'rejection_on'                          => date('Y-m-d',strtotime($rowData['Z'])),
+                    'lab_id'                                => isset($labName['facility_id']) ? $labName['facility_id'] : null,
+                    'is_sample_rejected'                    => strtolower($rowData['AZ']),
+                    'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "") ? $rejectionReason['rejection_reason_id'] : 9999,
+                    'rejection_on'                          => date('Y-m-d', strtotime($rowData['BB'])),
                     'result'                                => $result['result_id'],
-                    'is_result_authorised'                  => strtolower($rowData['AJ']),
-                    'authorized_by'                         => ucwords($rowData['AK']),
-                    'authorized_on'                         => date('Y-m-d',strtotime($rowData['AL'])),
+                    'is_result_authorised'                  => strtolower($rowData['BL']),
+                    'authorized_by'                         => ucwords($rowData['BM']),
+                    'authorized_on'                         => date('Y-m-d', strtotime($rowData['BN'])),
                     'last_modified_datetime'                => $general->getDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],
-                    'result_status'                         => isset($resultStatus['status_id'])?$resultStatus['status_id']:null,
-                    'sample_condition'                      => strtolower($rowData['AN']),
-                    'patient_passport_number'               => $rowData['A0'],
-                    'lab_technician'                        => isset($labTechnician)?$labTechnician:null,
+                    'result_status'                         => isset($resultStatus['status_id']) ? $resultStatus['status_id'] : null,
+                    'sample_condition'                      => strtolower($rowData['BP']),
+                    'patient_passport_number'               => $rowData['BQ'],
+                    'lab_technician'                        => isset($labTechnician) ? $labTechnician : null,
                 );
 
                 // echo "<pre>";print_r($data);die;
@@ -120,11 +151,11 @@ try {
                 $testData[1]['testDate']        = $rowData['AF'];
                 $testData[1]['testingPlatform'] = $rowData['AG'];
                 $testData[1]['testResult']      = $rowData['AH'];
-                if(count($testData) > 0){
+                if (count($testData) > 0) {
                     /* Delete if already exist */
                     $db = $db->where('covid19_id', $lastId);
                     $db->delete($testTableName);
-                    
+
                     foreach ($testData as $testKitName) {
                         if (trim($testKitName['testDate']) != '') {
                             $testDate = date('Y-m-d H:i', strtotime($testKitName['testDate']));
@@ -135,9 +166,9 @@ try {
                         $covid19TestData = array(
                             'covid19_id'            => $lastId,
                             'test_name'             => $testKitName['testRequest'],
-                            'facility_id'           => isset($labName['facility_id'])?$labName['facility_id']:null,
+                            'facility_id'           => isset($labName['facility_id']) ? $labName['facility_id'] : null,
                             'testing_platform'      => $testKitName['testingPlatform'],
-                            'sample_tested_datetime'=> date('Y-m-d H:i:s', strtotime($testDate)),
+                            'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($testDate)),
                             'result'                => strtolower($testKitName['testResult']),
                         );
                         $db->insert($testTableName, $covid19TestData);
