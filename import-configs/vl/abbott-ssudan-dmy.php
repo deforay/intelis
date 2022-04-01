@@ -97,11 +97,16 @@ try {
                     $resultFlag = $sheetData[$flagCol];
                     //$reviewBy = $sheetData[$reviewByCol];
 
+                    if (isset($infoFromFile[$sampleCode])) {
+                        continue;
+                    }
+
                     // //Changing date to European format for strtotime - https://stackoverflow.com/a/5736255
                     if (strpos($sheetData[$resultCol], 'Log') !== false) {
                         $sheetData[$resultCol] = str_replace(",", ".", $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
                         $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                        error_log($sheetData[$resultCol]. " --- ". $absDecimalVal);
                         if (strpos($sheetData[$resultCol], "<") !== false) {
                             $txtVal = $absVal = "< " . trim($absDecimalVal);
                         } else {

@@ -392,7 +392,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sFilter = ' AND result_status!=9';
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-// error_log($sQuery);
+
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -401,6 +401,9 @@ $_SESSION['vlRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
+
+//echo($sQuery);die;
+
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */

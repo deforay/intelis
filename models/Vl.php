@@ -223,7 +223,7 @@ class Vl
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
 
         $result = strtolower($result);
-        if ($result == 'bdl' || $result == 'not detected') {
+        if ($result == 'bdl' || $result == 'not detected' || $result == '< 839') {
             $vlResult = $txtVal = 'Below Detection Limit';
         } else if ($result == 'target not detected' || $result == 'tnd') {
             $vlResult = $txtVal = 'Target Not Detected';

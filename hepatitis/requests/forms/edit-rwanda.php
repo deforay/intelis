@@ -358,7 +358,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th>Rejection Date<span class="mandatory">*</span></th>
                                             <td><input value="<?php echo $general->humanDateFormat($hepatitisInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
-                                        <tr>
+                                        <!-- <tr>
                                             <th class="hcvFields"><label for="hcv">HCV VL Result</label></th>
                                             <td class="hcvFields">
                                                 <select class="hcvFields result-focus labSecInput form-control rejected-input" name="hcv" id="hcv" title="Please select HCV VL Result">
@@ -371,7 +371,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hbv_vl_result'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
+                                        </tr> -->
                                         <tr>
                                             <th class="hcvFields"><label for="hcvCount">HCV VL Count</label></th>
                                             <td class="hcvFields">

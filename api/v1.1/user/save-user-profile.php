@@ -57,21 +57,6 @@ try {
         $aRow = $db->getOne("user_details");
     }
 
-    if (isset($_FILES['sign']['name']) && $_FILES['sign']['name'] != "") {
-        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
-            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777);
-        }
-        $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['sign']['name'], PATHINFO_EXTENSION));
-        $imageName = "usign-" . $userId . "." . $extension;
-
-        $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
-        if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
-            $resizeObj = new \Vlsm\Helpers\ImageResize($signatureImagePath);
-            $resizeObj->resizeToWidth(100);
-            $resizeObj->save($signatureImagePath);
-            $data['user_signature'] = $imageName;
-        }
-    }
     $data = array(
         'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
         'user_name' => $post['userName'],
@@ -92,6 +77,22 @@ try {
     if (!empty($post['role'])) {
         $data['role_id'] = $post['role'];
     }
+
+    if (isset($_FILES['sign']['name']) && $_FILES['sign']['name'] != "") {
+        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
+            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777);
+        }
+        $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['sign']['name'], PATHINFO_EXTENSION));
+        $imageName = "usign-" . $userId . "." . $extension;
+
+        $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
+        if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
+            $resizeObj = new \Vlsm\Helpers\ImageResize($signatureImagePath);
+            $resizeObj->resizeToWidth(100);
+            $resizeObj->save($signatureImagePath);
+            $data['user_signature'] = $imageName;
+        }
+    }    
 
     $id = 0;
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
