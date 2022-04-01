@@ -3037,5 +3037,5 @@ CREATE TABLE `qc_covid19_tests` (
   `test_label` varchar(256) NOT NULL,
   `test_result` varchar(256) NOT NULL,
   PRIMARY KEY (`qc_test_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
  
