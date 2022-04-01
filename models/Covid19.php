@@ -469,7 +469,6 @@ class Covid19
 
                 // If this sample code exists, let us regenerate
                 return $this->insertSampleCode($params);
-                
             } else {
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                     $covid19Data['unique_id'] = $general->generateRandomString(32);
@@ -486,5 +485,17 @@ class Covid19
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastError());
             error_log('Insert Covid-19 Sample : ' . $e->getMessage());
         }
+    }
+
+    public function generateCovid19QcCode()
+    {
+        $exist = $this->db->rawQueryOne("SELECT DISTINCT qc_code_key from qc_covid19 order by qc_id desc limit 1");
+        if (!isset($exist['qc_code_key']) && empty($exist['qc_code_key'])) {
+            $number = 001;
+        } else if (isset($exist['qc_code_key']) && !empty($exist['qc_code_key'])) {
+            $number = ($exist['qc_code_key'] + 1);
+        }
+        $sCodeKey = "C19QC" . substr(date("Y"), -2) . date("md") . substr(str_repeat(0, 3) . $number, -3);
+        return array("code" => $sCodeKey, "key" => substr(str_repeat(0, 3) . $number, -3));
     }
 }

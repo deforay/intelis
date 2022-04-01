@@ -3034,3 +3034,5 @@ CREATE TABLE `qc_covid19_tests` (
   `test_result` varchar(256) NOT NULL,
   PRIMARY KEY (`qc_test_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-results', 'covid-19-qc-data.php', 'Covid-19 QC Data'), (NULL, 'covid-19-results', 'add-covid-19-qc-data.php', 'Add Covid-19 QC Data'), (NULL, 'covid-19-results', 'edit-covid-19-qc-data.php', 'Edit Covid-19 QC Data');

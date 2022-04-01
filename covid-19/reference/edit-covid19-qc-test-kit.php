@@ -2,11 +2,15 @@
 ob_start();
 #require_once('../startup.php');
 require_once(APPLICATION_PATH . '/header.php');
+$generalObj = new \Vlsm\Models\General();
+$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Results = $covid19Obj->getCovid19Results();
+
 $id = base64_decode($_GET['id']);
 $resultQuery = "SELECT * from r_covid19_qc_testkits where tetskit_id = '" . $id . "' ";
 $resultInfo = $db->rawQueryOne($resultQuery);
-
 $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
+
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -59,7 +63,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                     <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
                         <thead>
                             <tr>
-                                <th style="text-align:center;"><?php echo _("QC Test Labele"); ?> <span class="mandatory">*</span></th>
+                                <th style="text-align:center;"><?php echo _("QC Test Label"); ?> <span class="mandatory">*</span></th>
                                 <th style="text-align:center;"><?php echo _("Expected Result"); ?> <span class="mandatory">*</span></th>
                                 <th style="text-align:center;"><?php echo _("Action"); ?></th>
                             </tr>
@@ -70,10 +74,12 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                                 foreach ($subResult['label'] as $key => $row) { ?>
                                     <tr>
                                         <td>
-                                            <input type="text" value="<?php echo $subResult['label'][$key]; ?>" name=" qcTestLable[]" id="qcTestLable1" class="form-control isRequired" placeholder='<?php echo _("QC Test Label"); ?>' title='<?php echo _("Please enter QC test label"); ?>' onblur="checkLabelName(this);" />
+                                            <input type="text" value="<?php echo $subResult['label'][$key]; ?>" name=" qcTestLable[]" id="qcTestLable<?php echo ($key + 1); ?>" class="form-control isRequired" placeholder='<?php echo _("QC Test Label"); ?>' title='<?php echo _("Please enter QC test label"); ?>' onblur="checkLabelName(this);" />
                                         </td>
                                         <td>
-                                            <input type="text" value="<?php echo $subResult['expected'][$key]; ?>" id=" expectedResult1" name="expectedResult[]" class="isRequired form-control" placeholder="Expected results" title="Please enter the expected results">
+                                            <select id="expectedResult<?php echo ($key + 1); ?>" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results">
+                                                <?= $generalObj->generateSelectOptions($covid19Results, $subResult['expected'][$key], "--Select--"); ?>
+                                            </select>
                                         </td>
                                         <td align="center" style="vertical-align:middle;">
                                             <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
@@ -86,7 +92,9 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                                         <input type="text" name=" qcTestLable[]" id="qcTestLable1" class="form-control isRequired" placeholder='<?php echo _("QC Test Label"); ?>' title='<?php echo _("Please enter QC test label"); ?>' onblur="checkLabelName(this);" />
                                     </td>
                                     <td>
-                                        <input type="text" id=" expectedResult1" name="expectedResult[]" class="isRequired form-control" placeholder="Expected results" title="Please enter the expected results">
+                                        <select id="expectedResult1" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results">
+                                            <?= $generalObj->generateSelectOptions($covid19Results, null, "--Select--"); ?>
+                                        </select>
                                     </td>
                                     <td align="center" style="vertical-align:middle;">
                                         <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
@@ -159,7 +167,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
         d.setAttribute("style", "vertical-align:middle");
 
         b.innerHTML = '<input type="text" name="qcTestLable[]" id="qcTestLable' + tableRowId + '" class="isRequired form-control" placeholder="<?php echo _('QC Test Label'); ?>" title="<?php echo _('Please enter qc test label'); ?>" onblur="checkLabelName(this);"/ >';
-        c.innerHTML = '<input type="text" id="expectedResult' + tableRowId + '" class="isRequired form-control" name="expectedResult[]" placeholder="Expected results" title="Please enter the expected results">';
+        c.innerHTML = '<select id="expectedResult' + tableRowId + '" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results"><option value="">--Select--</option><?php foreach ($covid19Results as $key => $row) { ?><option value="<?php echo $key; ?>"><?php echo $row; ?></option><?php } ?></select>';
         d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>';
         $(a).fadeIn(800);
         tableRowId++;

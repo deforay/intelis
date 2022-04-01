@@ -213,6 +213,7 @@
 	str = $(location).attr('pathname');
 	splitsUrl = str.substr(str.lastIndexOf('/') + 1);
 	splitsUrlCheck = str.split("/", 4);
+	// console.log(splitsUrl);
 	if (splitsUrl == 'users.php' || splitsUrl == 'addUser.php' || splitsUrl == 'editUser.php') {
 		$(".access-control-menu,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
@@ -491,6 +492,10 @@
 		$(".allMenu").removeClass('active');
 		$(".covid19Results").addClass('active');
 		$(".covid19ResultMailMenu").addClass('active');
+	} else if (splitsUrl == 'covid-19-qc-data.php' || splitsUrl == 'add-covid-19-qc-data.php' || splitsUrl == 'edit-covid-19-qc-data.php') {
+		$(".allMenu").removeClass('active');
+		$(".covid19Results").addClass('active');
+		$(".covid19QcDataMenu").addClass('active');
 	} else if (splitsUrl == 'covid-19-sample-status.php') {
 		$(".allMenu").removeClass('active');
 		$(".covid19ProgramMenu").addClass('active');
@@ -600,7 +605,7 @@
 		$(".covid19-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".covid19-results").addClass('active');
-	} else if (splitsUrl == 'covid19-qc-test-kits.php') {
+	} else if (splitsUrl == 'covid19-qc-test-kits.php' || splitsUrl == 'add-covid19-qc-test-kit.php' || splitsUrl == 'edit-covid19-qc-test-kit.php') {
 		$(".manage").addClass('active');
 		$(".covid19-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');

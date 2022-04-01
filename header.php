@@ -920,6 +920,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("mail-covid-19-results.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu covid19ResultMailMenu"><a href="/covid-19/mail/mail-covid-19-results.php"><i class="fa fa-caret-right"></i> <?php echo _("E-mail Test Result"); ?></a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu covid19QcDataMenu"><a href="/covid-19/results/covid-19-qc-data.php"><i class="fa fa-caret-right"></i> <?php echo _("Covid-19 QC Data"); ?></a></li>
 									<?php }  ?>
 								</ul>
 							</li>
