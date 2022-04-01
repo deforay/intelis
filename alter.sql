@@ -3039,3 +3039,9 @@ CREATE TABLE `qc_covid19_tests` (
   PRIMARY KEY (`qc_test_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
  
+
+ -- Amit 31-Mar-2022
+ALTER TABLE `vl_request_form` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `eid_form` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_hepatitis` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
