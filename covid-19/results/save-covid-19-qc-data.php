@@ -9,10 +9,10 @@ $tableName = "qc_covid19";
 $tableName1 = "qc_covid19_tests";
 $primaryKey = "qc_id";
 $primaryKey1 = "qc_test_id";
-
-// echo "<pre>";print_r($_POST);die;
 try {
     if (isset($_POST['qcCode']) && trim($_POST['qcCode']) != "") {
+        $exist = $db->rawQueryOne("SELECT testkit FROM $tableName WHERE testkit = " . base64_decode($_POST['testKit']));
+
         $data = array(
             'unique_id'             => $general->generateRandomString(32),
             'qc_code'               => $_POST['qcCode'],
@@ -37,7 +37,13 @@ try {
 
         if ($lastId > 0) {
             foreach ($_POST['testLabel'] as $key => $row) {
+                /* Suppose while edit they can change the testkit means prev data not needed so we can rease it from DB */
+                if (!isset($exist) && empty($exist['testkit'])) {
+                    $db = $db->where("qc_id", $lastId);
+                    $db->delete($tableName1);
+                }
                 if (isset($_POST['testResults'][$key]) && $_POST['testResults'][$key] != "") {
+                    /* If ID already exist we can update */
                     if (isset($_POST['qcTestId'][$key]) && !empty($_POST['qcTestId'][$key])) {
                         $db = $db->where($primaryKey1, $_POST['qcTestId'][$key]);
                         $db->update($tableName1, array(
