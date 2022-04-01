@@ -2996,3 +2996,41 @@ ALTER TABLE `province_details` ADD UNIQUE(`province_name`);
 
 -- Amit 29-Mar-2022 version 4.4.9
 UPDATE `system_config` SET `value` = '4.4.9' WHERE `system_config`.`name` = 'sc_version';
+
+-- Thana 01-04-2022
+CREATE TABLE `r_covid19_qc_testkits` (
+  `tetskit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `testkit_name` varchar(256) DEFAULT NULL,
+  `no_of_tests` int(11) DEFAULT NULL,
+  `labels_and_expected_results` json DEFAULT NULL,
+  `status` varchar(256) NOT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`tetskit_id`),
+  UNIQUE KEY `testkit_name` (`testkit_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `qc_covid19` (
+  `qc_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unique_id` varchar(500) NOT NULL,
+  `qc_code` varchar(256) NOT NULL,
+  `qc_code_key` int(11) NOT NULL,
+  `testkit` int(11) NOT NULL,
+  `lot_no` varchar(256) NOT NULL,
+  `expiry_date` date NOT NULL,
+  `lab_id` int(11) NOT NULL,
+  `tested_by` text NOT NULL,
+  `qc_tested_datetime` datetime NOT NULL,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`qc_id`),
+  UNIQUE KEY `qc_code` (`qc_code`),
+  UNIQUE KEY `unique_id` (`unique_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `qc_covid19_tests` (
+  `qc_test_id` int(11) NOT NULL AUTO_INCREMENT,
+  `qc_id` int(11) NOT NULL,
+  `test_label` varchar(256) NOT NULL,
+  `test_result` varchar(256) NOT NULL,
+  PRIMARY KEY (`qc_test_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

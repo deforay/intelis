@@ -131,12 +131,15 @@ class Users
                 'edit-covid19-test-reasons.php'             => 'covid19-sample-type.php',
                 'covid19-results.php'                       => 'covid19-sample-type.php',
                 'add-covid19-results.php'                   => 'covid19-sample-type.php',
-                'edit-covid19-results.php'                   => 'covid19-sample-type.php',
+                'edit-covid19-results.php'                  => 'covid19-sample-type.php',
                 'covid19TestingTargetReport.php'            => 'covid19MonthlyThresholdReport.php',
                 'covid19SuppressedTargetReport.php'         => 'covid19MonthlyThresholdReport.php',
                 'covid-19-init.php'                         => 'covid-19-dhis2.php',
                 'covid-19-send.php'                         => 'covid-19-dhis2.php',
-                'covid-19-receive.php'                      => 'covid-19-dhis2.php'
+                'covid-19-receive.php'                      => 'covid-19-dhis2.php',
+                'covid19-qc-test-kits.php'                          => 'covid19-sample-type.php',
+                'add-covid19-qc-test-kit.php'               => 'covid19-sample-type.php',
+                'edit-covid19-qc-test-kit.php'              => 'covid19-sample-type.php'
             );
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedCovid19Privileges);
         }
