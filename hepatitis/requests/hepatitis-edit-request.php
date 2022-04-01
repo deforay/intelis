@@ -63,7 +63,7 @@ foreach ($riskFactorsResult as $riskFactors) {
 $riskFactorsInfo = $hepatitisDb->getRiskFactorsByHepatitisId($id);
 
 //$id = ($_GET['id']);
-$hepatitisQuery = "SELECT * from form_hepatitis where hepatitis_id=?";
+$hepatitisQuery = "SELECT * FROM form_hepatitis where hepatitis_id=?";
 $hepatitisInfo = $db->rawQueryOne($hepatitisQuery, array($id));
 
 if ($arr['hepatitis_sample_code'] == 'auto' || $arr['hepatitis_sample_code'] == 'auto2' || $arr['hepatitis_sample_code'] == 'alphanumeric') {

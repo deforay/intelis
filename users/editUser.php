@@ -5,7 +5,7 @@ $title = _("Edit User");
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 
-$userInfo = $db->rawQueryOne('SELECT * from user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id where user_id= ?', Array ($id));
+$userInfo = $db->rawQueryOne('SELECT ud.*, r.role_id, r.role_name from user_details as ud LEFT JOIN roles as r ON ud.role_id=r.role_id where user_id= ?', Array ($id));
 
 
 $interfaceUsers = "";

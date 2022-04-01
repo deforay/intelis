@@ -29,7 +29,6 @@ $db->addConnection('interface', array(
     'charset' => (!empty($systemConfig['interfacing']['dbCharset']) ? $systemConfig['interfacing']['dbCharset'] : 'utf8mb4')
 ));
 
-
 //get the value from interfacing DB
 $interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1 AND `lims_sync_status`= 0";
 $interfaceInfo = $db->connection('interface')->rawQuery($interfaceQuery);
@@ -62,9 +61,17 @@ if (count($interfaceInfo) > 0) {
         $availableModules['tb_id'] = 'form_tb';
         $platform["tb_id"] = "tb_test_platform";
     }
+
+    $processedResults = array();
+    $allowRepeatedTests = false;
+
     foreach ($interfaceInfo as $key => $result) {
 
         if (empty($result['test_id']))  continue;
+
+        if ($allowRepeatedTests == false && in_array($result['test_id'], $processedResults)) {
+            continue;
+        }
 
         $tableInfo = array();
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
@@ -144,12 +151,13 @@ if (count($interfaceInfo) > 0) {
             $db = $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
             $vlUpdateId = $db->update('vl_request_form', $data);
             $numberOfResults++;
+            $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
                 $interfaceData = array(
                     'lims_sync_status' => 1,
                     'lims_sync_date_time' => date('Y-m-d H:i:s'),
                 );
-                $db->connection('interface')->where('id', $result['id']);
+                $db->connection('interface')->where('test_id', $result['test_id']);
                 $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
             }
         } else if (isset($tableInfo['eid_id'])) {
@@ -189,12 +197,13 @@ if (count($interfaceInfo) > 0) {
             $db = $db->where('eid_id', $tableInfo['eid_id']);
             $eidUpdateId = $db->update('eid_form', $data);
             $numberOfResults++;
+            $processedResults[] = $result['test_id'];
             if ($eidUpdateId) {
                 $interfaceData = array(
                     'lims_sync_status' => 1,
                     'lims_sync_date_time' => date('Y-m-d H:i:s'),
                 );
-                $db->connection('interface')->where('id', $result['id']);
+                $db->connection('interface')->where('test_id', $result['test_id']);
                 $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
             }
         } else if (isset($tableInfo['covid19_id'])) {
@@ -222,75 +231,12 @@ if (count($interfaceInfo) > 0) {
                 $hepatitisResult = trim($result['results']);
                 $unit = trim($result['test_unit']);
 
-                if (strpos($unit, 'Log') !== false) {
-                    if (is_numeric($hepatitisResult)) {
-                        $logVal = $hepatitisResult;
-                        $hepatitisResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                    } else {
-                        if ($hepatitisResult == "< Titer min") {
-                            $absDecimalVal = 20;
-                            $txtVal = $hepatitisResult = $absVal = "< 20";
-                        } else if ($hepatitisResult == "> Titer max") {
-                            $absDecimalVal = 10000000;
-                            $txtVal = $hepatitisResult = $absVal = ">1000000";
-                        } else if (strpos($hepatitisResult, "<") !== false) {
-                            $logVal = str_replace("<", "", $hepatitisResult);
-                            $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                            $txtVal = $hepatitisResult = $absVal = "< " . trim($absDecimalVal);
-                        } else if (strpos($hepatitisResult, ">") !== false) {
-                            $logVal = str_replace(">", "", $hepatitisResult);
-                            $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                            $txtVal = $hepatitisResult = $absVal = "> " . trim($absDecimalVal);
-                        } else {
-                            $hepatitisResult = $txtVal = trim($result['results']);
-                        }
-                    }
-                } else if (strpos($unit, '10') !== false) {
-                    $unitArray = explode(".", $unit);
-                    $exponentArray = explode("*", $unitArray[0]);
-                    $multiplier = pow($exponentArray[0], $exponentArray[1]);
-                    $hepatitisResult = $hepatitisResult * $multiplier;
-                    $unit = $unitArray[1];
-                } else if (strpos($hepatitisResult, 'E+') !== false || strpos($hepatitisResult, 'E-') !== false) {
-                    if (strpos($hepatitisResult, '< 2.00E+1') !== false) {
-                        $hepatitisResult = "< 20";
-                        //$vlResultCategory = 'Suppressed';
-                    } else if (strpos($hepatitisResult, '>') !== false) {
-                        $hepatitisResult = str_replace(">", "", $hepatitisResult);
-                        $absDecimalVal = (float) $hepatitisResult;
-                        $txtVal = $hepatitisResult = $absVal = "> " . trim($absDecimalVal);
-                    } else {
-                        $resultArray = explode("(", $hepatitisResult);
-                        $exponentArray = explode("E", $resultArray[0]);
-                        $hepatitisResult = (float) $resultArray[0];
-                        $absDecimalVal = (float) trim($hepatitisResult);
-                        $logVal = round(log10($absDecimalVal), 2);
-                    }
-                } else if (is_numeric($hepatitisResult)) {
-                    $absVal = (float) trim($hepatitisResult);
-                    $absDecimalVal = (float) trim($hepatitisResult);
-                    $logVal = round(log10($absDecimalVal), 2);
+                if (!is_numeric($hepatitisResult)) {
+                    $interpretedResults = $vlDb->interpretViralLoadTextResult($hepatitisResult, $unit);
                 } else {
-                    if ($hepatitisResult == "< Titer min") {
-                        $absDecimalVal = 20;
-                        $txtVal = $hepatitisResult = $absVal = "< 20";
-                    } else if ($hepatitisResult == "> Titer max") {
-                        $absDecimalVal = 10000000;
-                        $txtVal = $hepatitisResult = $absVal = ">1000000";
-                    } else if (strpos($hepatitisResult, "<") !== false) {
-                        $hepatitisResult = str_replace("<", "", $hepatitisResult);
-                        $absDecimalVal = (float) trim($hepatitisResult);
-                        $logVal = round(log10($absDecimalVal), 2);
-                        $absVal = "< " . (float) trim($hepatitisResult);
-                    } else if (strpos($hepatitisResult, ">") !== false) {
-                        $hepatitisResult = str_replace(">", "", $hepatitisResult);
-                        $absDecimalVal = (float) trim($hepatitisResult);
-                        $logVal = round(log10($absDecimalVal), 2);
-                        $absVal = "> " . (float) trim($hepatitisResult);
-                    } else {
-                        $txtVal = trim($result['results']);
-                    }
+                    $interpretedResults = $vlDb->interpretViralLoadNumericResult($hepatitisResult, $unit);
                 }
+                $hepatitisResult = $interpretedResults['result'];
             }
 
             $userId = $usersModel->addUserIfNotExists($result['tested_by']);
@@ -316,12 +262,13 @@ if (count($interfaceInfo) > 0) {
             $db = $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
             $vlUpdateId = $db->update('form_hepatitis', $data);
             $numberOfResults++;
+            $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
                 $interfaceData = array(
                     'lims_sync_status' => 1,
                     'lims_sync_date_time' => date('Y-m-d H:i:s'),
                 );
-                $db->connection('interface')->where('id', $result['id']);
+                $db->connection('interface')->where('test_id', $result['test_id']);
                 $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
             }
         } else {
@@ -329,7 +276,7 @@ if (count($interfaceInfo) > 0) {
                 'lims_sync_status' => 2,
                 'lims_sync_date_time' => date('Y-m-d H:i:s'),
             );
-            $db->connection('interface')->where('id', $result['id']);
+            $db->connection('interface')->where('test_id', $result['test_id']);
             $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
         }
     }

@@ -18,6 +18,7 @@ foreach ($formResults as $row) {
 
   $programStages = array(
     'Screening' => 'ZBWBirHgmE6',
+    'Lab Tests Request' => 'ODgOyrbLkvv',
     'Initial HBV VL' => 'KPBuhvFV5bK',
     'Initial HCV VL' => 'KPBuhvFV5bK',
     'Follow up HBV VL' => 'WAyPhFAJLdv',
@@ -74,6 +75,9 @@ foreach ($formResults as $row) {
 
 
   $dataValues = array();
+
+  $row['sample_code'] = $row['sample_code'] . (!empty($row['remote_sample_code']) ? '/' . $row['remote_sample_code'] : '');
+
   if ($row['reason_for_vl_test'] == 'Initial HBV VL') {
     if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
       $row['hbv_vl_count'] = 10;
@@ -125,37 +129,34 @@ foreach ($formResults as $row) {
     if (!empty($dataValues)) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
       $payload = json_encode($eventPayload);
-      echo "<br><br><pre>";
-      var_dump($payload);
-      echo "</pre>";
+      // echo "<br><br><pre>";
+      // var_dump($payload);
+      // echo "</pre>";
 
       $response = $dhis2->post("/api/33/events/", $payload);
-      echo "<br><br><pre>";
-      var_dump($response);
-      echo "</pre>";
+      // echo "<br><br><pre>";
+      // var_dump($response);
+      // echo "</pre>";
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {
       if (!empty($dataValues)) {
         $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
         $payload = json_encode($eventPayload);
-        echo "<br><br><pre>";
-        var_dump($payload);
-        echo "</pre>";
+        // echo "<br><br><pre>";
+        // var_dump($payload);
+        // echo "</pre>";
         $urlParams = array();
         $urlParams[] = "mergeMode=REPLACE";
         $urlParams[] = "strategy=UPDATE";
         $urlParams[] = "importStrategy=CREATE_AND_UPDATE";
         $response = $dhis2->post("/api/33/events/", $payload, $urlParams);
-        echo "<br><br><pre>";
-        var_dump($response);
-        echo "</pre>";
+        // echo "<br><br><pre>";
+        // var_dump($response);
+        // echo "</pre>";
       }
     }
   }
-
-
-
 
   $updateData = array('result_sent_to_source' => 'sent');
   $db = $db->where('hepatitis_id', $row['hepatitis_id']);

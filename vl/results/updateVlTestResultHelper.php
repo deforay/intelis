@@ -86,7 +86,7 @@ try {
     //     $finalResult = $textResult = 'Target Not Detected';
     //     $_POST['vlResult'] = $_POST['vlLog'] = null;
     // } else 
-    
+
     if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
         $finalResult = $textResult = 'Below Detection Level';
         $_POST['vlResult'] = $_POST['vlLog'] = null;
@@ -141,10 +141,9 @@ try {
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
         'result_approved_datetime' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
         'approver_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
-        'result_status' => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] :  NULL,
         'reason_for_vl_result_changes' => $allChange,
-        'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
+        'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : NULL,
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : NULL,
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => $db->now(),
         'manual_result_entry' => 'yes',
@@ -152,15 +151,21 @@ try {
         'result_printed_datetime' => NULL,
         'vl_result_category' => $vl_result_category
     );
+
+
+    if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
+        $vldata['result_status'] = 4;
+    }
     /* Updating the high and low viral load data */
     if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
         $vlDb = new \Vlsm\Models\Vl();
         $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     }
 
-    //echo "<pre>";var_dump($vldata);die;
+    //echo "<pre>";var_dump($vldata);
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);
+    //var_dump($db->getLastError());die;
     if ($id > 0) {
         $_SESSION['alertMsg'] = _("VL request updated successfully");
         //Log result updates
@@ -171,6 +176,7 @@ try {
             'updated_on' => $general->getDateTime()
         );
         $db->insert($tableName2, $data);
+
         header("location:vlTestResult.php");
     } else {
         $_SESSION['alertMsg'] = _("Please try again later");

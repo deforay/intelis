@@ -2996,3 +2996,6 @@ ALTER TABLE `province_details` ADD UNIQUE(`province_name`);
 
 -- Amit 29-Mar-2022 version 4.4.9
 UPDATE `system_config` SET `value` = '4.4.9' WHERE `system_config`.`name` = 'sc_version';
+
+-- Amit 31-Mar-2022
+ALTER TABLE `form_hepatitis` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;

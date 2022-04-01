@@ -67,8 +67,9 @@ $eventsDataElementMapping = [
     'szTAjn4r7yM' => 'anti_hcv_result',
     'Di17rUJDIWZ' => 'hbv_vl_count',
     'Oem0BXNDPWL' => 'hcv_vl_count',
-    'Mpc3ftVuSvK' => 'hepatitis_test_type',
+    //'Mpc3ftVuSvK' => 'hepatitis_test_type',
     'DMQSNcqWRvI' => 'lab_id',
+    'G8K0RLiK9lu' => 'hepatitis_test_type',
     'KPFLSlmiY89' => 'reason_for_vl_test'
 ];
 
@@ -81,7 +82,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
 
     $formData = array();
-    $screeningEventIds = array();
+    $labTestEventIds = array();
     $enrollmentDate = null;
     //echo "<pre>";var_dump(array_keys($tracker['enrollments']));echo "</pre>";;
     //echo "<pre>";var_dump(($tracker['enrollments']));echo "</pre>";
@@ -89,9 +90,9 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $allProgramStages = array_column($enrollments['events'], 'programStage', 'event');
 
-        $screeningEventIds = array_keys($allProgramStages, 'ZBWBirHgmE6'); // screening programStage
+        $labTestEventIds = array_keys($allProgramStages, 'ODgOyrbLkvv'); // Lab Test Request programStage
 
-        if (count($screeningEventIds) == 0)  continue 2; // if no screening stage, skip this tracker entirely
+        if (count($labTestEventIds) == 0)  continue 2; // if no lab test request stage, skip this tracker entirely
 
         //echo "<pre>";var_dump($enrollments['events']);echo "</pre>";
 
@@ -99,18 +100,53 @@ foreach ($trackedEntityInstances as $tracker) {
         $enrollmentDate = $enrollmentDate[0];
 
         $eventsData = array();
+        $screeningData = array();
+        //$labTestRequestData = array();
+        $event = array();
         foreach ($enrollments['events'] as $event) {
 
-            if ($event['programStage'] != 'ZBWBirHgmE6') continue;
+            $requestProgramStages = array('ODgOyrbLkvv', 'ZBWBirHgmE6');
 
-            foreach ($event['dataValues'] as $dV) {
-                if (empty($eventsDataElementMapping[$dV['dataElement']])) continue;
-                $eventsData["dhis2::" . $tracker['trackedEntityInstance'] . "::" . $event['event']][$eventsDataElementMapping[$dV['dataElement']]] = $dV['value'];
+            if (in_array($event['programStage'], $requestProgramStages)) {
+                foreach ($event['dataValues'] as $dV) {
+                    if (empty($eventsDataElementMapping[$dV['dataElement']])) continue;
+                    if ($event['programStage'] == 'ODgOyrbLkvv') {
+                        $eventsData["dhis2::" . $tracker['trackedEntityInstance'] . "::" . $event['event']][$eventsDataElementMapping[$dV['dataElement']]] = $dV['value'];
+                    } else {
+                        $screeningEventData["dhis2::" . $tracker['trackedEntityInstance'] . "::" . $event['event']][$eventsDataElementMapping[$dV['dataElement']]] = $dV['value'];
+                    }
+                }
             }
         }
     }
 
+    $screeningStageData = array();
+    foreach ($screeningEventData as $sID => $sData) {
 
+        if (!empty($sData['anti_hcv_result'])) {
+            if ($sData['anti_hcv_result'] == 'Reactive') {
+                $screeningStageData['anti_hcv_result'] = 'positive';
+            } else if ($sData['anti_hcv_result'] == 'NonReactive') {
+                $screeningStageData['anti_hcv_result'] = 'negative';
+            } else if ($sData['anti_hcv_result'] == 'Indeterminate') {
+                $screeningStageData['anti_hcv_result'] = 'indeterminate';
+            }
+        } else {
+            $screeningStageData['anti_hcv_result'] = null;
+        }
+
+        if (!empty($sData['hbsag_result'])) {
+            if ($sData['hbsag_result'] == 'Reactive') {
+                $screeningStageData['hbsag_result'] = 'positive';
+            } else if ($sData['hbsag_result'] == 'NonReactive') {
+                $screeningStageData['hbsag_result'] = 'negative';
+            } else if ($sData['hbsag_result'] == 'Indeterminate') {
+                $screeningStageData['hbsag_result'] = 'indeterminate';
+            }
+        } else {
+            $screeningStageData['hbsag_result'] = null;
+        }
+    }
 
 
     $attributesData = array();
@@ -129,73 +165,28 @@ foreach ($trackedEntityInstances as $tracker) {
             continue;
         }
 
-        $formData = array_merge($singleEventData, $attributesData);
+        $formData = array_merge($singleEventData, $attributesData, $screeningStageData);
 
         // if DHIS2 Case ID is not set then skip
         if (!isset($formData['external_sample_code']) || empty(trim($formData['external_sample_code']))) continue;
-
-        $formData['source_of_request'] = 'dhis2';
-        $formData['source_data_dump'] = json_encode($tracker);
-
-
-        $facility = $tracker['orgUnit'];
-
-
-        if (!empty($formData['anti_hcv_result'])) {
-            if ($formData['anti_hcv_result'] == 'Reactive') {
-                $formData['anti_hcv_result'] = 'positive';
-            } else if ($formData['anti_hcv_result'] == 'NonReactive') {
-                $formData['anti_hcv_result'] = 'negative';
-            } else if ($formData['anti_hcv_result'] == 'Indeterminate') {
-                $formData['anti_hcv_result'] = 'indeterminate';
-            }
-        } else {
-            $formData['anti_hcv_result'] = null;
-        }
-
-        if (!empty($formData['hbsag_result'])) {
-            if ($formData['hbsag_result'] == 'Reactive') {
-                $formData['hbsag_result'] = 'positive';
-            } else if ($formData['hbsag_result'] == 'NonReactive') {
-                $formData['hbsag_result'] = 'negative';
-            } else if ($formData['hbsag_result'] == 'Indeterminate') {
-                $formData['hbsag_result'] = 'indeterminate';
-            }
-        } else {
-            $formData['hbsag_result'] = null;
-        }
-
 
         if ($formData['hbsag_result'] == 'negative' && $formData['anti_hcv_result'] == 'negative') {
             continue;
         }
 
+        $formData['source_of_request'] = 'dhis2';
+        $formData['source_data_dump'] = json_encode($tracker);
 
         //$formData['patient_province'] = $_SESSION['DHIS2_HEP_PROVINCES'][$formData['patient_province']];
         //$formData['patient_district'] = $_SESSION['DHIS2_HEP_DISTRICTS'][$formData['patient_district']];
 
-
-
-        if (!empty($formData['reason_for_hepatitis_test'])) {
-            $db->where("test_reason_name", $formData['reason_for_hepatitis_test']);
-            $reason = $db->getOne("r_hepatitis_test_reasons");
-            $formData['reason_for_hepatitis_test'] = $reason['test_reason_id'];
-        } else {
-            $formData['reason_for_hepatitis_test'] = null;
-        }
-
-        if ($formData['reason_for_hepatitis_test'] == null) {
-            //continue;
-        }
-
-
         if (!empty($formData['patient_nationality'])) {
-
             $db->where("iso3", $formData['patient_nationality']);
             $country = $db->getOne("r_countries");
             $formData['patient_nationality'] = $country['id'];
         }
 
+        //var_dump($formData['lab_id']);
         if (!empty($formData['lab_id'])) {
             $db->where("facility_name", $formData['lab_id']);
             $db->orWhere("other_id", $formData['lab_id']);
@@ -204,12 +195,15 @@ foreach ($trackedEntityInstances as $tracker) {
             // echo "<pre>";var_dump($lab);echo "</pre>";
             if (!empty($lab)) {
                 $formData['lab_id'] = $lab['facility_id'];
+            }else{
+                $formData['lab_id'] = null;
             }
         } else {
-            $formData['lab_id'] = null;
+            //$formData['lab_id'] = null;
             continue;
         }
 
+        $facility = $tracker['orgUnit'];
 
         $db->where("other_id", $facility);
         $db->orWhere("other_id", $facility);
@@ -223,50 +217,34 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $formData['province_id'] = !empty($prov['province_id']) ? $prov['province_id'] : 1;
 
-
         $formData['specimen_type'] = 1; // Always Whole Blood
         $formData['result_status'] = 6;
-
 
         $formData['social_category'] = (!empty($formData['social_category']) ? $dhis2SocialCategoryOptions[$formData['social_category']] : null);
         $formData['patient_gender'] = (!empty($formData['patient_gender']) ? $dhis2GenderOptions[$formData['patient_gender']] : null);
         //$formData['specimen_quality'] = (!empty($formData['specimen_quality']) ? strtolower($formData['specimen_quality']) : null);
 
-
-
         $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ?  $formData['sample_collection_date'] : $enrollmentDate);
         $formData['reason_for_hepatitis_test'] = (!empty($formData['reason_for_hepatitis_test']) ?  $formData['reason_for_hepatitis_test'] : 1);
-        if (isset($formData['hepatitis_test_type']) && stripos($formData['hepatitis_test_type'], "hcv") !== FALSE) {
-            $formData['hepatitis_test_type'] = "HCV";
+
+
+        //Initial HBV OR HCV VL
+        if ($formData['reason_for_vl_test'] == 'I_VL001') {
+            if ($formData['hepatitis_test_type'] == 'HCV') {
+                $formData['reason_for_vl_test'] = 'Initial HCV VL';
+            } else if ($formData['hepatitis_test_type'] == 'HBV') {
+                $formData['reason_for_vl_test'] = 'Initial HBV VL';
+            } else {
+                $formData['reason_for_vl_test'] = 'Initial HBV VL';
+            }
         } else {
-            $formData['hepatitis_test_type'] = "HBV";
+            $formData['reason_for_vl_test'] = (!empty($formData['reason_for_vl_test']) ?  $dhis2VlTestReasonOptions[$formData['reason_for_vl_test']] : null);
         }
-
-        $formData['reason_for_vl_test'] = (!empty($formData['reason_for_vl_test']) ?  $dhis2VlTestReasonOptions[$_SESSION['DHIS2_VL_TEST_REASONS'][$formData['reason_for_vl_test']]] : null);
-
-        if($formData['reason_for_vl_test'] == 'Initial HBV VL' && $formData['hepatitis_test_type'] != 'HBV'){
-            $formData['reason_for_vl_test'] == 'Initial HCV VL';
-        }
-
-        if ($formData['reason_for_vl_test'] == 'Initial HBV VL') {
-            $formData['hepatitis_test_type'] = "HBV";
-        } elseif ($formData['reason_for_vl_test'] == 'Initial HCV VL') {
-            $formData['hepatitis_test_type'] = "HCV";
-        } else if ($formData['reason_for_vl_test'] == 'Follow up HBV VL') {
-            $formData['hepatitis_test_type'] = "HBV";
-        } else if ($formData['reason_for_vl_test'] == 'SVR12 HCV VL') {
-            $formData['hepatitis_test_type'] = "HBV";
-        }
-
-
-
-
-
-
 
         // echo "<pre>";
-        // var_dump($formData);
-        // continue;
+        //var_dump($uniqueID . " -- " . $formData['reason_for_vl_test']);
+        //var_dump($uniqueID . " -- " . $formData['hepatitis_test_type']);
+        //continue;
 
         $formData['request_created_datetime'] = $general->getDateTime();
         $updateColumns = array_keys($formData);
@@ -274,7 +252,6 @@ foreach ($trackedEntityInstances as $tracker) {
 
 
         $formData['unique_id'] = $uniqueID;
-
 
         $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, $general->humanDateFormat($formData['sample_collection_date']));
 
