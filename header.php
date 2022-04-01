@@ -566,6 +566,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<li class="allMenu covid19-results">
 												<a href="/covid-19/reference/covid19-results.php"><i class="fa fa-caret-right"></i><?php echo _("Results"); ?></a>
 											</li>
+											<li class="allMenu covid19-qc-test-kits">
+												<a href="/covid-19/reference/covid19-qc-test-kits.php"><i class="fa fa-caret-right"></i><?php echo _("QC Test Kits"); ?></a>
+											</li>
 										</ul>
 									</li>
 								<?php }

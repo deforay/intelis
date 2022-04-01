@@ -600,6 +600,11 @@
 		$(".covid19-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".covid19-results").addClass('active');
+	} else if (splitsUrl == 'covid19-qc-test-kits.php') {
+		$(".manage").addClass('active');
+		$(".covid19-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".covid19-qc-test-kits").addClass('active');
 	} else if (splitsUrl == 'hepatitis-requests.php' || splitsUrl == 'hepatitis-edit-request') {
 		$(".hepatitisRequest").addClass('active');
 		$(".allMenu").removeClass('active');
