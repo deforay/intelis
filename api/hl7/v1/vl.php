@@ -50,87 +50,44 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
             LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
             LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
             LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
-    $where = "";
+    $where = array();
     if (!empty($dateRange[1])) {
         $date = $dateRange[1];
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= "(DATE(sample_collection_date) between '$date[0]' AND '$date[1]')";
+        $where[] = " (DATE(sample_collection_date) between '$date[0]' AND '$date[1]')";
     }
     if (!empty($pidF[2])) {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " vl.patient_art_no IN ('" . $pidF[2] . "') ";
+        $where[] = " vl.patient_art_no LIKE '" . $pidF[2] . "' ";
     }
 
     if (!empty($spmF[4])) {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " rst.sample_name IN ('" . $spmF[4] . "') ";
+        $where[] = " rst.sample_name LIKE'" . $spmF[4] . "' ";
     }
 
     if (!empty($mshF[4])) {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " f.facility_name IN ('" . $mshF[4] . "') ";
+        $where[] = " f.facility_name LIKE'" . $mshF[4] . "' ";
     }
 
     if (!empty($mshF[6])) {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " l_f.facility_name IN ('" . $mshF[6] . "') ";
+        $where[] = " l_f.facility_name LIKE '" . $mshF[6] . "' ";
     }
 
     if (!empty($search[2])) {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " vl.is_sample_rejected ='" . $search[2] . "' ";
+        $where[] = " vl.is_sample_rejected ='" . $search[2] . "' ";
     }
 
     if (!empty($search[3]) && $search[3] == "yes") {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " (vl.sample_tested_datetime != null AND vl.sample_tested_datetime not like '') ";
+        $where[] = " (vl.sample_tested_datetime != null AND vl.sample_tested_datetime not like '') ";
     }
     if (!empty($spmF[2]) && $spmF[2] != "") {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " (vl.sample_code like '" . $spmF[2] . "%' OR vl.remote_sample_code like '" . $spmF[2] . "%') ";
+        $where[] = " (vl.sample_code like '" . $spmF[2] . "' OR vl.remote_sample_code like '" . $spmF[2] . "') ";
     }
     if ($type[1] == 'QRY') {
-        if (isset($where) && trim($where) != "") {
-            $where .= " AND ";
-        } else {
-            $where .= " WHERE ";
-        }
-        $where .= " (vl.result ='' OR vl.result IS NULL OR vl.result LIKE '')";
-        $where .= " AND (vl.is_sample_rejected ='no' OR vl.is_sample_rejected IS NULL OR vl.is_sample_rejected LIKE 'no' OR vl.is_sample_rejected like '')";
+        $where[] = " (vl.result ='' OR vl.result IS NULL OR vl.result LIKE '')";
+        $where[] = " (vl.is_sample_rejected ='no' OR vl.is_sample_rejected IS NULL OR vl.is_sample_rejected LIKE 'no' OR vl.is_sample_rejected like '')";
     }
-    $sQuery .= $where;
+    if (sizeof($where) > 0) {
+        $sQuery .= ' WHERE ' . implode(" AND ", $where);
+    }
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
     if ($rowData && count($rowData) > 0) {
@@ -329,11 +286,26 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $provinceCode = (isset($_POST['provinceCode']) && !empty($_POST['provinceCode'])) ? $_POST['provinceCode'] : null;
     $provinceId = (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] : null;
     $sampleCollectionDate = (isset($_POST['sampleCollectionDate']) && !empty($_POST['sampleCollectionDate'])) ? $_POST['sampleCollectionDate'] : null;
+    $where = array();
+    $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM vl_request_form";
+    if (isset($_POST['sampleCode']) && $_POST['sampleCode'] != "") {
+        $where[] =  " (sample_code like '" . $_POST['sampleCode'] . "' or remote_sample_code like '" . $_POST['sampleCode'] . "')";
+    }
+    if (isset($_POST['artNo']) && $_POST['artNo'] != "") {
+        $where[] =  " patient_art_no like '" . $_POST['artNo'] . "'";
+    }
+    if (isset($_POST['dob']) && $_POST['dob'] != "") {
+        $where[] =  " patient_dob like '" . $_POST['dob'] . "'";
+    }
+    if (isset($_POST['gender']) && $_POST['gender'] != "") {
+        $where[] =  " patient_gender like '" . $_POST['gender'] . "'";
+    }
 
-    $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM vl_request_form 
-                where 
-                    (sample_code like '%" . $_POST['sampleCode'] . "%' or remote_sample_code like '%" . $_POST['sampleCode'] . "%')
-                    AND (patient_art_no like '%" . $_POST['artNo'] . "%' AND patient_dob like '%" . $_POST['dob'] . "%' AND patient_gender like '%" . $_POST['gender'] . "%') limit 1";
+    if (sizeof($where) > 0) {
+        $sQuery .= " where  " . implode(" AND ", $where) . "  limit 1";
+    } else {
+        $sQuery .= " limit 1";
+    }
     // die($sQuery);
     $vlDuplicateData = $db->rawQueryOne($sQuery);
     if ($vlDuplicateData) {
@@ -350,9 +322,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         'sample_collection_date' => $_POST['sampleCollectionDate'],
         'vlsm_instance_id' => $_POST['instanceId'],
         'province_id' => $provinceId,
-        'request_created_by' => null,
+        'request_created_by' => $user['user_id'],
         'request_created_datetime' => $db->now(),
-        'last_modified_by' => null,
+        'last_modified_by' => $user['user_id'],
         'last_modified_datetime' => $db->now()
     );
 
@@ -369,6 +341,10 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $vlData['remote_sample'] = 'no';
         $vlData['result_status'] = 6;
     }
+    /* echo "<pre>";
+    print_r($vlDuplicateData);
+    print_r($vlData);
+    die; */
     $id = 0;
     if ($vlDuplicateData) {
         $db = $db->where('vl_sample_id', $vlDuplicateData['vl_sample_id']);
