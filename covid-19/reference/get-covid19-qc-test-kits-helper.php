@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 #require_once('../startup.php');  
 
 $tableName = "r_covid19_qc_testkits";
-$primaryKey = "tetskit_id";
+$primaryKey = "testkit_id";
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
@@ -121,7 +121,7 @@ $aResultFilterTotal = $db->rawQuery("SELECT * FROM r_covid19_qc_testkits $sWhere
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(tetskit_id) as total FROM r_covid19_qc_testkits");
+$aResultTotal =  $db->rawQuery("select COUNT(testkit_id) as total FROM r_covid19_qc_testkits");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = $aResultTotal[0]['total'];
@@ -137,11 +137,11 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['tetskit_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['testkit_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
                <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
-    $edit = '<a href="edit-covid19-qc-test-kit.php?id=' . base64_encode($aRow['tetskit_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>';
+    $edit = '<a href="edit-covid19-qc-test-kit.php?id=' . base64_encode($aRow['testkit_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>';
     $row = array();
     $row[] = ucwords($aRow['testkit_name']);
     $row[] = date("d-m-Y H:i:s", strtotime($aRow['updated_datetime']));

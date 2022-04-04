@@ -130,7 +130,13 @@ if ($data['Key'] == 'vlsm-get-remote') {
         }
         $response['covid19ReasonForTesting'] = $general->fetchDataFromTable('r_covid19_test_reasons', $condition);
 
-        $count = (count($response['covid19RejectionReasons']) + count($response['covid19SampleTypes']) + count($response['covid19Comorbidities']) + count($response['covid19Results']) + count($response['covid19Symptoms']) + count($response['covid19ReasonForTesting']));
+        $condition = null;
+        if (isset($data['covid19QCTestKitsLastModified']) && !empty($data['covid19QCTestKitsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['covid19QCTestKitsLastModified'] . "'";
+        }
+        $response['covid19QCTestKits'] = $general->fetchDataFromTable('r_covid19_test_reasons', $condition);
+
+        $count = (count($response['covid19RejectionReasons']) + count($response['covid19SampleTypes']) + count($response['covid19Comorbidities']) + count($response['covid19Results']) + count($response['covid19Symptoms']) + count($response['covid19ReasonForTesting']) + count($response['covid19QCTestKits']));
         if ($count > 0) {
             $trackId = $app->addApiTracking(null, $count, 'common-data', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
         }

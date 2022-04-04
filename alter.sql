@@ -3003,7 +3003,7 @@ ALTER TABLE `form_hepatitis` CHANGE `is_sample_rejected` `is_sample_rejected` VA
 
 -- Thana 01-04-2022
 CREATE TABLE `r_covid19_qc_testkits` (
-  `tetskit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `testkit_id` int(11) NOT NULL AUTO_INCREMENT,
   `testkit_name` varchar(256) DEFAULT NULL,
   `no_of_tests` int(11) DEFAULT NULL,
   `labels_and_expected_results` json DEFAULT NULL,

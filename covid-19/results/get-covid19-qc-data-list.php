@@ -96,7 +96,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
     * Get data to display
 */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS qc.*, kit.*, l_f.facility_name, u_d.user_name FROM $tableName as qc 
-            INNER JOIN r_covid19_qc_testkits as kit ON kit.tetskit_id=qc.testkit 
+            INNER JOIN r_covid19_qc_testkits as kit ON kit.testkit_id=qc.testkit 
             LEFT JOIN user_details as u_d ON u_d.user_id=qc.tested_by 
             LEFT JOIN facility_details as l_f ON qc.lab_id=l_f.facility_id";
 

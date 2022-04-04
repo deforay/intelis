@@ -15,7 +15,7 @@ $users = $userDb->getAllUsers(null, null, "drop-down");
 $testKitInfo = $db->rawQuery("SELECT * from r_covid19_qc_testkits");
 $testKitsList = array();
 foreach ($testKitInfo as $kits) {
-    $testKitsList[base64_encode($kits['tetskit_id'])] = $kits['testkit_name'];
+    $testKitsList[base64_encode($kits['testkit_id'])] = $kits['testkit_name'];
 }
 
 $id = base64_decode($_GET['id']);
