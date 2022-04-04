@@ -351,8 +351,19 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $id = $db->update("vl_request_form", $vlData);
         $_POST['vlSampleId'] = $vlDuplicateData['vl_sample_id'];
     } else {
-        $id = $db->insert("vl_request_form", $vlData);
-        $_POST['vlSampleId'] = $id;
+        if ($type[1] == 'UPI') {
+            $msh = new MSH();
+            $ack = new ACK($msg, $msh);
+            $ack->setAckCode('AR', "Existing data not found.");
+            $returnString = $ack->toString(true);
+            echo $returnString;
+            // http_response_code(204);
+            unset($ack);
+            exit(0);
+        } else {
+            $id = $db->insert("vl_request_form", $vlData);
+            $_POST['vlSampleId'] = $id;
+        }
     }
     // print_r($vlData);die;
     if (isset($vlData) && count($vlData) > 0) {
@@ -450,9 +461,6 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
                     $maxId = $zeros . $sCode;
                     $_POST['sampleCode'] = $_POST['sampleCodeFormat'] . $maxId;
                     $_POST['sampleCodeKey'] = $maxId;
-                } else {
-                    $_SESSION['alertMsg'] = "Please check your sample ID";
-                    header("location:addVlRequest.php");
                 }
             }
             // print_r($_POST['sampleCode']);die;
