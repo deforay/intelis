@@ -11,7 +11,6 @@ $primaryKey = "qc_id";
 $primaryKey1 = "qc_test_id";
 try {
     if (isset($_POST['qcCode']) && trim($_POST['qcCode']) != "") {
-        $exist = $db->rawQueryOne("SELECT testkit FROM $tableName WHERE testkit = " . base64_decode($_POST['testKit']));
 
         $data = array(
             'unique_id'             => $general->generateRandomString(32),
@@ -24,10 +23,18 @@ try {
             'qc_tested_datetime'    => date("Y-m-d H:s:i", strtotime($_POST['testedOn'])),
             'created_on'            => $general->getDateTime()
         );
-
+        $exist = false;
         if (isset($_POST['qcDataId']) && $_POST['qcDataId'] != "") {
+            /* Suppose while edit they can change the testkit means prev data not needed so we can rease it from DB */
+            $exist = $db->rawQueryOne("SELECT qc_id FROM $tableName1 WHERE qc_id = " . base64_decode($_POST['qcDataId']));
+            if (isset($exist) && !empty($exist['qc_id'])) {
+                $db = $db->where("qc_id", $exist['qc_id']);
+                $db->delete($tableName1);
+            }
+
             $db = $db->where($primaryKey, base64_decode($_POST['qcDataId']));
-            $lastId = $db->update($tableName, $data);
+            $db->update($tableName, $data);
+            $lastId = base64_decode($_POST['qcDataId']);
         } else {
             if (isset($_POST['qcKey']) && !empty($_POST['qcKey'])) {
                 $data['qc_code_key'] = $_POST['qcKey'];
@@ -37,26 +44,19 @@ try {
 
         if ($lastId > 0) {
             foreach ($_POST['testLabel'] as $key => $row) {
-                /* Suppose while edit they can change the testkit means prev data not needed so we can rease it from DB */
-                if (!isset($exist) && empty($exist['testkit'])) {
-                    $db = $db->where("qc_id", $lastId);
-                    $db->delete($tableName1);
-                }
                 if (isset($_POST['testResults'][$key]) && $_POST['testResults'][$key] != "") {
+                    $subData = array(
+                        "qc_id"         => $lastId,
+                        "test_label"    => $row,
+                        "test_result"   => $_POST['testResults'][$key],
+                    );
+
                     /* If ID already exist we can update */
                     if (isset($_POST['qcTestId'][$key]) && !empty($_POST['qcTestId'][$key])) {
                         $db = $db->where($primaryKey1, $_POST['qcTestId'][$key]);
-                        $db->update($tableName1, array(
-                            "qc_id"         => $lastId,
-                            "test_label"    => $row,
-                            "test_result"   => $_POST['testResults'][$key],
-                        ));
+                        $db->update($tableName1, $subData);
                     } else {
-                        $db->insert($tableName1, array(
-                            "qc_id"         => $lastId,
-                            "test_label"    => $row,
-                            "test_result"   => $_POST['testResults'][$key],
-                        ));
+                        $db->insert($tableName1, $subData);
                     }
                 }
             }
