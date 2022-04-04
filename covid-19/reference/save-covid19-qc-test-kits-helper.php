@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 #require_once('../startup.php');  
 $general = new \Vlsm\Models\General();
 $tableName = "r_covid19_qc_testkits";
-$primaryKey = "tetskit_id";
+$primaryKey = "testkit_id";
 try {
     if (isset($_POST['testKitName']) && trim($_POST['testKitName']) != "") {
         $data = array(

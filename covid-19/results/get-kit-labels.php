@@ -5,7 +5,7 @@ $generalObj = new \Vlsm\Models\General();
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
-$testKitInfo = $db->rawQueryOne("SELECT * from r_covid19_qc_testkits where tetskit_id = " . base64_decode($_POST['kitId']));
+$testKitInfo = $db->rawQueryOne("SELECT * from r_covid19_qc_testkits where testkit_id = " . base64_decode($_POST['kitId']));
 $result = "";
 if (isset($testKitInfo) && !empty($testKitInfo['labels_and_expected_results'])) {
     $json = json_decode($testKitInfo['labels_and_expected_results'], true);

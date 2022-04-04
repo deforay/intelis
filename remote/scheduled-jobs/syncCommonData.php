@@ -151,6 +151,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $data['covid19ResultsLastModified'] = $general->getLastModifiedDateTime('r_covid19_results');
     $data['covid19SymptomsLastModified'] = $general->getLastModifiedDateTime('r_covid19_symptoms');
     $data['covid19ReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_covid19_test_reasons');
+    $data['covid19QCTestKitsLastModified'] = $general->getLastModifiedDateTime('r_covid19_qc_testkits');
 
 
 
@@ -179,6 +180,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         'covid19ReasonForTesting' => array(
             'primaryKey' => 'test_reason_id',
             'tableName' => 'r_covid19_test_reasons',
+        ),
+        'covid19QCTestKits' => array(
+            'primaryKey' => 'testkit_id',
+            'tableName' => 'r_covid19_qc_testkits',
         )
     );
 }
