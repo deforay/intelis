@@ -34,11 +34,11 @@ if (empty($user) || empty($user['user_id'])) {
     exit(0);
 }
 
-$sampleCode = !empty($_REQUEST['s']) ? explode(",", filter_var($_REQUEST['s'], FILTER_SANITIZE_STRING)) : null;
-$recencyId = !empty($_REQUEST['r']) ? explode(",", filter_var($_REQUEST['r'], FILTER_SANITIZE_STRING)) : null;
-$from = !empty($_REQUEST['f']) ? filter_var($_REQUEST['f'], FILTER_SANITIZE_STRING) : null;
-$to = !empty($_REQUEST['t']) ? filter_var($_REQUEST['t'], FILTER_SANITIZE_STRING) : null;;
-$orderSortType = !empty($_REQUEST['orderSortType']) ? filter_var($_REQUEST['orderSortType'], FILTER_SANITIZE_STRING) : null;;
+$sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
+$recencyId = !empty($_REQUEST['r']) ? explode(",", $db->escape($_REQUEST['r'])) : null;
+$from = !empty($_REQUEST['f']) ? $db->escape($_REQUEST['f']) : null;
+$to = !empty($_REQUEST['t']) ? $db->escape($_REQUEST['t']) : null;;
+$orderSortType = !empty($_REQUEST['orderSortType']) ? $db->escape($_REQUEST['orderSortType']) : null;;
 
 if (!$sampleCode && !$recencyId && (!$from || !$to)) {
     $response = array(

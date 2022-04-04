@@ -150,9 +150,9 @@ try {
      if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
           $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
           $_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
-      } else {
+     } else {
           $_POST['sampleDispatchedDate'] = NULL;
-      }
+     }
 
      if (isset($_POST['newRejectionReason']) && trim($_POST['newRejectionReason']) != "") {
           $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_vl_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . ucfirst(strtolower($_POST['newRejectionReason'])) . "'";
@@ -299,6 +299,8 @@ try {
           'vl_result_category' => $vl_result_category
      );
 
+
+
      if (isset($_POST['api']) && $_POST['api'] = "yes") {
      } else
           $vldata['last_modified_by'] =  $_SESSION['userId'];
@@ -306,6 +308,10 @@ try {
           $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
      } else if ($_POST['sampleCodeCol'] != '') {
           $vldata['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] :  NULL;
+     }
+
+     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
+          $vldata['result_status'] = 4;
      }
      /* Updating the high and low viral load data */
      if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {

@@ -95,7 +95,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
     * SQL queries
     * Get data to display
 */
-$sQuery = "SELECT qc.*, kit.*, l_f.facility_name, u_d.user_name FROM $tableName as qc 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS qc.*, kit.*, l_f.facility_name, u_d.user_name FROM $tableName as qc 
             INNER JOIN r_covid19_qc_testkits as kit ON kit.tetskit_id=qc.testkit 
             LEFT JOIN user_details as u_d ON u_d.user_id=qc.tested_by 
             LEFT JOIN facility_details as l_f ON qc.lab_id=l_f.facility_id";
@@ -115,14 +115,9 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
-$iTotal = $aResultTotal[0]['total'];
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
     * Output
@@ -135,17 +130,18 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $edit = '<a href="edit-covid-19-qc-data.php?id=' . base64_encode($aRow['qc_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>';
+
     $row = array();
 
     $row[] = $aRow['qc_code'];
-    $row[] = ucwords($aRow['testkit_name']);
+    $row[] = ($aRow['testkit_name']);
     $row[] = $aRow['lot_no'];
     $row[] = date("d-m-Y", strtotime($aRow['expiry_date']));
-    $row[] = ucwords($aRow['facility_name']);
-    $row[] = ucwords($aRow['user_name']);
+    $row[] = ($aRow['facility_name']);
+    $row[] = ($aRow['user_name']);
     $row[] = date("d-m-Y H:i:s", strtotime($aRow['qc_tested_datetime']));
     if (isset($_SESSION['privileges']) && in_array("edit-covid-19-qc-data.php", $_SESSION['privileges'])) {
+        $edit = '<a href="edit-covid-19-qc-data.php?id=' . base64_encode($aRow['qc_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>';
         $row[] = $edit;
     }
     $output['aaData'][] = $row;
