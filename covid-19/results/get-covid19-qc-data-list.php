@@ -18,7 +18,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('qc_code', 'testkit_name', 'lot_no', 'expiry_date', 'facility_name', 'user_name', 'qc_tested_datetime');
+$aColumns = array('qc_code', 'testkit_name', 'lot_no', 'expiry_date', 'facility_name', 'user_name', 'qc_tested_datetime', 'qc.updated_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -95,7 +95,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
     * SQL queries
     * Get data to display
 */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS qc.*, kit.*, l_f.facility_name, u_d.user_name FROM $tableName as qc 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS qc.*, kit.testkit_name, l_f.facility_name, u_d.user_name FROM $tableName as qc 
             INNER JOIN r_covid19_qc_testkits as kit ON kit.testkit_id=qc.testkit 
             LEFT JOIN user_details as u_d ON u_d.user_id=qc.tested_by 
             LEFT JOIN facility_details as l_f ON qc.lab_id=l_f.facility_id";
@@ -107,13 +107,13 @@ if (isset($sWhere) && $sWhere != "") {
 
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' order by ' . $sOrder;
+    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
+//die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
@@ -136,10 +136,11 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['qc_code'];
     $row[] = ($aRow['testkit_name']);
     $row[] = $aRow['lot_no'];
-    $row[] = date("d-m-Y", strtotime($aRow['expiry_date']));
+    $row[] = date("d-M-Y", strtotime($aRow['expiry_date']));
     $row[] = ($aRow['facility_name']);
     $row[] = ($aRow['user_name']);
     $row[] = date("d-m-Y H:i:s", strtotime($aRow['qc_tested_datetime']));
+    $row[] = date("d-m-Y H:i:s", strtotime($aRow['updated_datetime']));
     if (isset($_SESSION['privileges']) && in_array("edit-covid-19-qc-data.php", $_SESSION['privileges'])) {
         $edit = '<a href="edit-covid-19-qc-data.php?id=' . base64_encode($aRow['qc_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>';
         $row[] = $edit;

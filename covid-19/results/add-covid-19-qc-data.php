@@ -64,17 +64,17 @@ foreach ($testKitInfo as $kits) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="lotNo" class="col-lg-4 control-label"><?php echo _("Lot number"); ?></label>
+                                    <label for="lotNo" class="col-lg-4 control-label"><?php echo _("Lot number"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="lotNo" name="lotNo" placeholder="<?php echo _('Lot no'); ?>" title="<?php echo _('Please enter lot no'); ?>" />
+                                        <input type="text" class="form-control isRequired" id="lotNo" name="lotNo" placeholder="<?php echo _('Lot number'); ?>" title="<?php echo _('Please enter lot no'); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="expiryDate" class="col-lg-4 control-label"><?php echo _("Expiry Date"); ?></label>
+                                    <label for="expiryDate" class="col-lg-4 control-label"><?php echo _("Expiry Date"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control date" id="expiryDate" name="expiryDate" placeholder="<?php echo _('Expiry date'); ?>" title="<?php echo _('Please enter expiry date'); ?>" />
+                                        <input type="text" class="form-control date isRequired" id="expiryDate" name="expiryDate" placeholder="<?php echo _('Expiry date'); ?>" title="<?php echo _('Please enter expiry date'); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -82,10 +82,19 @@ foreach ($testKitInfo as $kits) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="labName" class="col-lg-4 control-label"><?php echo _("Lab Name"); ?> <span class="mandatory">*</span></label>
+                                    <label for="labName" class="col-lg-4 control-label"><?php echo _("Testing Lab"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control select2 isRequired" id="labName" name="labName" title="<?php echo _('Please select lab name'); ?>">
+                                        <select class="form-control select2 isRequired" id="labName" name="labName" title="<?php echo _('Please select lab name'); ?>" onchange="getTestingPoints();">
                                             <?= $generalDb->generateSelectOptions($testingLabs, null, "--Select--"); ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="testingPoint" class="col-lg-4 control-label"><?php echo _("Testing Point"); ?></label>
+                                    <div class="col-lg-7">
+                                        <select class="form-control select2" id="testingPoint" name="testingPoint" title="<?php echo _('Please select testing point'); ?>">
                                         </select>
                                     </div>
                                 </div>
@@ -100,13 +109,20 @@ foreach ($testKitInfo as $kits) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
+
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testedOn" class="col-lg-4 control-label"><?php echo _("Tested On"); ?></label>
+                                    <label for="receivedOn" class="col-lg-4 control-label"><?php echo _("Received On"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control date-time" id="testedOn" name="testedOn" placeholder="<?php echo _('Tested on'); ?>" title="<?php echo _('Please enter tested on'); ?>" />
+                                        <input type="text" class="form-control date-time isRequired" id="receivedOn" name="receivedOn" placeholder="<?php echo _('Received on'); ?>" title="<?php echo _('Please enter received on'); ?>" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="testedOn" class="col-lg-4 control-label"><?php echo _("Tested On"); ?> <span class="mandatory">*</span></label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control date-time isRequired" id="testedOn" name="testedOn" placeholder="<?php echo _('Tested on'); ?>" title="<?php echo _('Please enter tested on'); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -117,7 +133,7 @@ foreach ($testKitInfo as $kits) {
                         <thead>
                             <tr>
                                 <th style="text-align:center;"><?php echo _("QC Test Label"); ?></th>
-                                <th style="text-align:center;"><?php echo _("Expected Result"); ?></th>
+                                <th style="text-align:center;"><?php echo _("Test Result"); ?></th>
                             </tr>
                         </thead>
                         <tbody id="qcTestTable">
@@ -143,17 +159,17 @@ foreach ($testKitInfo as $kits) {
 <script type="text/javascript">
     $('#labName').select2({
         width: '100%',
-        placeholder: "Select lab name"
+        placeholder: "Select testing lab name"
     });
 
     $('#testerName').select2({
         width: '100%',
-        placeholder: "Select tester name"
+        placeholder: "Select Tester name"
     });
 
     $('#testKit').select2({
         width: '100%',
-        placeholder: "Select test kit name"
+        placeholder: "Select Test Kit name"
     });
 
     $(document).ready(function() {
@@ -249,6 +265,24 @@ foreach ($testKitInfo as $kits) {
                 });
         } else {
             $("#qcTestTableRoot").hide();
+        }
+    }
+
+    function getTestingPoints() {
+        var labId = $("#labName").val();
+        var selectedTestingPoint = null;
+        if (labId) {
+            $.post("/includes/getTestingPoints.php", {
+                    labId: labId,
+                    selectedTestingPoint: selectedTestingPoint
+                },
+                function(data) {
+                    if (data != "") {
+                        $("#testingPoint").html(data);
+                    } else {
+                        $("#testingPoint").html('');
+                    }
+                });
         }
     }
 </script>
