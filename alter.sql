@@ -3068,6 +3068,7 @@ ALTER TABLE `form_vl` DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 
 RENAME TABLE `vl_user_facility_map` TO `user_facility_map`;
 RENAME TABLE `vl_facility_map` TO `testing_lab_health_facilities_map`;
+RENAME TABLE `contact_notes_details` TO `vl_contact_notes`;
 
 
 
