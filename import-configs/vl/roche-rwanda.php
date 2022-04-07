@@ -225,7 +225,7 @@ try {
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
-            $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal,result_status from vl_request_form where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
+            $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal,result_status from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             //insert sample controls
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";

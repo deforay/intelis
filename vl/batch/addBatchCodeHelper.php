@@ -7,7 +7,7 @@ $general = new \Vlsm\Models\General();
 
 
 $tableName1 = "batch_details";
-$tableName2 = "vl_request_form";
+$tableName2 = "form_vl";
 try {
     $exist = $general->existBatchCode($_POST['batchCode']);
     if ($exist) {

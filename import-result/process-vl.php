@@ -155,7 +155,7 @@ try {
                         $data['sample_batch_id'] = $db->getInsertId();
                     }
 
-                    $query = "SELECT vl_sample_id,result FROM vl_request_form WHERE sample_code='" . $sampleVal . "'";
+                    $query = "SELECT vl_sample_id,result FROM form_vl WHERE sample_code='" . $sampleVal . "'";
                     $vlResult = $db->rawQuery($query);
                     $data['result_status'] = $status[$i];
                     /* Updating the high and low viral load data */
@@ -169,7 +169,7 @@ try {
                         $data['data_sync'] = 0;
 
                         $db = $db->where('sample_code', $rResult[0]['sample_code']);
-                        $result = $db->update('vl_request_form', $data);
+                        $result = $db->update('form_vl', $data);
 
                         $vlSampleId = $vlResult[0]['vl_sample_id'];
                     } else {
@@ -177,7 +177,7 @@ try {
                         $data['sample_code'] = $rResult[0]['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
-                        $vlSampleId = $db->insert('vl_request_form', $data);
+                        $vlSampleId = $db->insert('form_vl', $data);
                     }
 
                     $printSampleCode[] = "'" . $rResult[0]['sample_code'] . "'";
@@ -201,7 +201,7 @@ try {
         }
     }
     //get all accepted data result
-    $accQuery = "SELECT * FROM temp_sample_import as tsr LEFT JOIN vl_request_form as vl ON vl.sample_code=tsr.sample_code where  imported_by ='$importedBy' AND tsr.result_status='7'";
+    $accQuery = "SELECT * FROM temp_sample_import as tsr LEFT JOIN form_vl as vl ON vl.sample_code=tsr.sample_code where  imported_by ='$importedBy' AND tsr.result_status='7'";
     $accResult = $db->rawQuery($accQuery);
     if ($accResult) {
         for ($i = 0; $i < count($accResult); $i++) {
@@ -275,7 +275,7 @@ try {
             }
             $data['data_sync'] = 0;
             $db = $db->where('sample_code', $accResult[$i]['sample_code']);
-            $result = $db->update('vl_request_form', $data);
+            $result = $db->update('form_vl', $data);
 
             $numberOfResults++;
 
@@ -291,10 +291,10 @@ try {
         }
     }
     $sCode = implode(', ', $printSampleCode);
-    $samplePrintQuery = "SELECT vl.*,s.sample_name,b.*,ts.*,f.facility_name,l_f.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,acd.art_code,rst.sample_name as routineSampleName,fst.sample_name as failureSampleName,sst.sample_name as suspectedSampleName,u_d.user_name as reviewedBy,a_u_d.user_name as approvedBy ,rs.rejection_reason_name FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as acd ON acd.art_id=vl.current_regimen LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.last_vl_sample_type_routine LEFT JOIN r_vl_sample_type as fst ON fst.sample_id=vl.last_vl_sample_type_failure_ac LEFT JOIN r_vl_sample_type as sst ON sst.sample_id=vl.last_vl_sample_type_failure LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
+    $samplePrintQuery = "SELECT vl.*,s.sample_name,b.*,ts.*,f.facility_name,l_f.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,acd.art_code,rst.sample_name as routineSampleName,fst.sample_name as failureSampleName,sst.sample_name as suspectedSampleName,u_d.user_name as reviewedBy,a_u_d.user_name as approvedBy ,rs.rejection_reason_name FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as acd ON acd.art_id=vl.current_regimen LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.last_vl_sample_type_routine LEFT JOIN r_vl_sample_type as fst ON fst.sample_id=vl.last_vl_sample_type_failure_ac LEFT JOIN r_vl_sample_type as sst ON sst.sample_id=vl.last_vl_sample_type_failure LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
     $samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
     $_SESSION['vlRequestSearchResultQuery'] = $samplePrintQuery;
-    $stQuery = "SELECT * FROM temp_sample_import as tsr LEFT JOIN vl_request_form as vl ON vl.sample_code=tsr.sample_code where imported_by ='$importedBy' AND tsr.sample_type='s'";
+    $stQuery = "SELECT * FROM temp_sample_import as tsr LEFT JOIN form_vl as vl ON vl.sample_code=tsr.sample_code where imported_by ='$importedBy' AND tsr.sample_type='s'";
     $stResult = $db->rawQuery($stQuery);
 
     if ($numberOfResults > 0) {

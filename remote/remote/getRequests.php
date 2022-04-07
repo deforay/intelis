@@ -28,7 +28,7 @@ if (trim($sarr['sc_testing_lab_id']) == '') {
 }
 
 //get facility map id
-$facilityMapQuery = "SELECT facility_id FROM vl_facility_map where vl_lab_id= ?";
+$facilityMapQuery = "SELECT facility_id FROM testing_lab_health_facilities_map where vl_lab_id= ?";
 $fMapResult = $db->rawQuery($facilityMapQuery, $labId);
 if ($db->count > 0) {
   $fMapResult = array_map('current', $fMapResult);
@@ -43,7 +43,7 @@ if (!empty($fMapResult)) {
   $condition = "lab_id =" . $labId;
 }
 
-$vlQuery = "SELECT * FROM vl_request_form 
+$vlQuery = "SELECT * FROM form_vl 
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {

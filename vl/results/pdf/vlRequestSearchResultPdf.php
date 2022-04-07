@@ -12,7 +12,7 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 
 
 $tableName1 = "activity_log";
-$tableName2 = "vl_request_form";
+$tableName2 = "form_vl";
 $general = new \Vlsm\Models\General();
 $users = new \Vlsm\Models\Users();
 
@@ -55,7 +55,7 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
                   r_r_b.user_name as revised,
                   l.facility_logo as facilityLogo,
                   rsrr.rejection_reason_name 
-                  FROM vl_request_form as vl 
+                  FROM form_vl as vl 
                   LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id 
                   LEFT JOIN facility_details as f ON vl.facility_id = f.facility_id 
                   LEFT JOIN r_vl_sample_type as rst ON rst.sample_id = vl.sample_type 

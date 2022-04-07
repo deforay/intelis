@@ -19,7 +19,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 
@@ -27,7 +27,7 @@ $sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%Y-%b') as month
 SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected,
 SUM(CASE WHEN (vl_result_category IS NOT NULL AND vl_result_category LIKE 'suppressed%') THEN 1 ELSE 0 END) as totalSuppressed,
 SUM(IF(vl_result_category LIKE 'suppressed%', (((IF(vl_result_category LIKE 'suppressed%',1,0))/tl.suppressed_monthly_target) * 100), 0)) as supp_percent
- FROM testing_labs as tl INNER JOIN vl_request_form as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
+ FROM testing_labs as tl INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
 
 $sWhere = ' WHERE  vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
 if (isset($_POST['facilityName']) && count($_POST['facilityName']) > 0) {

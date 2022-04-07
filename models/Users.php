@@ -224,7 +224,7 @@ class Users
     {
         if (!empty($facilityMap)) {
             $facilityMap = explode(",", $facilityMap);
-            $this->db->join("vl_user_facility_map map", "map.user_id=u.user_id", "INNER");
+            $this->db->join("user_facility_map map", "map.user_id=u.user_id", "INNER");
             $this->db->where('map.facility_id', $facilityMap, 'IN');
         }
         if ($status == 'active') {

@@ -26,7 +26,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $display = 'display:block';
 }
 
-$selectedQuery = "SELECT * FROM vl_user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id where vlfm.user_id = '" . $id . "'";
+$selectedQuery = "SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id where vlfm.user_id = '" . $id . "'";
 $selectedResult = $db->rawQuery($selectedQuery);
 
 //province Stratt

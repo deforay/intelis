@@ -39,7 +39,7 @@ function var_error_log($object = null)
 }
 
 
-$allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='vl_request_form'";
+$allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_vl'";
 $allColResult = $db->rawQuery($allColumns);
 $oneDimensionalArray = array_map('current', $allColResult);
 
@@ -101,10 +101,10 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
         if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
             //error_log("INSIDE REMOTE");
-            $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key FROM vl_request_form WHERE remote_sample_code='" . $lab['remote_sample_code'] . "'";
+            $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key FROM form_vl WHERE remote_sample_code='" . $lab['remote_sample_code'] . "'";
         } else if (isset($lab['sample_code']) && $lab['sample_code'] != '') {
             //error_log("INSIDE LOCAL");
-            $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key FROM vl_request_form WHERE sample_code='" . $lab['sample_code'] . "' AND facility_id = " . $lab['facility_id'];
+            $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key FROM form_vl WHERE sample_code='" . $lab['sample_code'] . "' AND facility_id = " . $lab['facility_id'];
             //error_log($sQuery);
         }
 
@@ -115,9 +115,9 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             //$lab['result_printed_datetime'] = null;            
             if ($sResult) {
                 $db = $db->where('vl_sample_id', $sResult[0]['vl_sample_id']);
-                $id = $db->update('vl_request_form', $lab);
+                $id = $db->update('form_vl', $lab);
             } else {
-                $id = $db->insert('vl_request_form', $lab);
+                $id = $db->insert('form_vl', $lab);
             }
         } catch (Exception $e) {
             continue;

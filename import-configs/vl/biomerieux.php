@@ -169,7 +169,7 @@ try {
                 $data['batch_code'] = $batchCode;
             }
 
-            $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from vl_request_form where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
+            $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             if ($vlResult && $sampleCode != '') {
                 if ($vlResult[0]['result_value_log'] != '' || $vlResult[0]['result_value_absolute'] != '' || $vlResult[0]['result_value_text'] != '' || $vlResult[0]['result_value_absolute_decimal'] != '') {

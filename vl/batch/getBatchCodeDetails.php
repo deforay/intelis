@@ -10,12 +10,12 @@ $general = new \Vlsm\Models\General();
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {
-    $refTable = "vl_request_form";
+    $refTable = "form_vl";
     $refPrimaryColumn = "vl_sample_id";
     $editFileName = 'editBatch.php';
     $editPositionFileName = 'editBatchControlsPosition.php';
 } else if (isset($_POST['type']) && $_POST['type'] == 'eid') {
-    $refTable = "eid_form";
+    $refTable = "form_eid";
     $refPrimaryColumn = "eid_id";
     $editFileName = 'eid-edit-batch.php';
     $editPositionFileName = 'eid-edit-batch-position.php';

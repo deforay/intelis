@@ -16,10 +16,10 @@
   
   $id = base64_decode($_GET['id']);
   $general = new \Vlsm\Models\General();
-  $contactInfo = "SELECT * from contact_notes_details where treament_contact_id=$id";
+  $contactInfo = "SELECT * from vl_contact_notes where treament_contact_id=$id";
   $contact = $db->query($contactInfo);
   //get patient info
-  $vlInfo = "SELECT sample_code,patient_first_name,patient_last_name,patient_art_no,sample_collection_date from vl_request_form where vl_sample_id=$id";
+  $vlInfo = "SELECT sample_code,patient_first_name,patient_last_name,patient_art_no,sample_collection_date from form_vl where vl_sample_id=$id";
   $vlResult = $db->query($vlInfo);
 
   if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_collection_date']) != '' && $vlResult[0]['sample_collection_date'] != '0000-00-00 00:00:00') {

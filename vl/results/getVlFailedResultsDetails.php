@@ -9,7 +9,7 @@ $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -115,7 +115,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
     s.sample_name, 
     ts.status_name, 
     b.batch_code 
-    FROM vl_request_form as vl    
+    FROM form_vl as vl    
     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
     LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 

@@ -35,7 +35,7 @@ try {
 
     $db->orderBy("last_modified_datetime", "ASC");
 
-    $rResult = $db->get('vl_request_form', 5000);
+    $rResult = $db->get('form_vl', 5000);
 
     if (empty($rResult)) {
         exit(0);

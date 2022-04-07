@@ -156,7 +156,7 @@ try {
         vl.result_reviewed_datetime                          as reviewedOn,
         vl.reason_for_vl_result_changes                      as reasonForVlResultChanges
         
-        FROM vl_request_form as vl 
+        FROM form_vl as vl 
         LEFT JOIN province_details as p ON vl.province_id=p.province_id
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
         LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 

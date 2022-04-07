@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 $country = $general->getGlobalConfig('vl_form');
 
@@ -144,7 +144,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
              WHEN ((patient_age_in_years ='' OR patient_age_in_years IS NULL)  AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' AND DATE(sample_tested_datetime) !='0000-00-00') THEN 1
              ELSE 0
            END) AS ltUnKnownAgeNotSuppressed  
-		FROM vl_request_form as vl RIGHT JOIN facility_details as f ON f.facility_id=vl.facility_id where vl.patient_gender IN ('f','female','F','FEMALE')";
+		FROM form_vl as vl RIGHT JOIN facility_details as f ON f.facility_id=vl.facility_id where vl.patient_gender IN ('f','female','F','FEMALE')";
 $start_date = '';
 $end_date = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
@@ -189,7 +189,7 @@ if (isset($_POST['lab']) && trim($_POST['lab']) != '') {
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
 
-  $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+  $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
   $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
   if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
     $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";

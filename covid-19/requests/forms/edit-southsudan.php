@@ -63,10 +63,10 @@ if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collect
     $rKey = '';
 }
 //check user exist in user_facility_map table
-$chkUserFcMapQry = "SELECT user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+$chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+    $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
 }
 $pdResult = $db->query($pdQuery);
 $provinceInfo = array();

@@ -11,13 +11,13 @@ $dName = $_POST['dName'];
 $fName = $_POST['fName'];
 $scDate = $_POST['scDate'];
 
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 if ($testType == "vl") {
-	$tableName = "vl_request_form";
+	$tableName = "form_vl";
 	$primaryKey = "vl_sample_id";
 } else if ($testType == "eid") {
-	$tableName = "eid_form";
+	$tableName = "form_eid";
 	$primaryKey = "eid_id";
 } else if ($testType == "covid19") {
 	$tableName = "form_covid19";

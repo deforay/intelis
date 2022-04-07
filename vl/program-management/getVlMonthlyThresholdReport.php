@@ -18,7 +18,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
@@ -107,10 +107,10 @@ $sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as month
           SUM(CASE WHEN (is_sample_rejected IS NOT NULL AND is_sample_rejected LIKE 'yes%') THEN 1 ELSE 0 END) as totalRejected, 
           SUM(CASE WHEN (sample_tested_datetime IS NULL AND sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalReceived, 
           SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected
-          FROM testing_labs as tl INNER JOIN vl_request_form as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-          RIGHT JOIN vl_facility_map as fm ON vl.lab_id=fm.vl_lab_id";
+          FROM testing_labs as tl INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+          RIGHT JOIN testing_lab_health_facilities_map as fm ON vl.lab_id=fm.vl_lab_id";
 
-// vl_request_form
+// form_vl
 // health_facilities
 $start_date = '';
 $end_date = '';

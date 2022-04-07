@@ -7,7 +7,7 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "eid_form";
+$tableName = "form_eid";
 $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";
 

@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 #require_once('../startup.php');  
 
-$tableName="vl_facility_map";
+$tableName="testing_lab_health_facilities_map";
 $primaryKey="facility_map_id";
 //system config
     $systemConfigQuery ="SELECT * from system_config";
@@ -96,7 +96,7 @@ $primaryKey="facility_map_id";
          * Get data to display
         */
         
-       $sQuery="SELECT vlfm.*,fd.facility_name,GROUP_CONCAT(DISTINCT fds.facility_name ORDER BY fds.facility_name ASC SEPARATOR ',') as healthCenterName FROM vl_facility_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.vl_lab_id JOIN facility_details as fds ON fds.facility_id=vlfm.facility_id";
+       $sQuery="SELECT vlfm.*,fd.facility_name,GROUP_CONCAT(DISTINCT fds.facility_name ORDER BY fds.facility_name ASC SEPARATOR ',') as healthCenterName FROM testing_lab_health_facilities_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.vl_lab_id JOIN facility_details as fds ON fds.facility_id=vlfm.facility_id";
         
         if (isset($sWhere) && $sWhere != "") {
             $sWhere=' where '.$sWhere;
@@ -117,11 +117,11 @@ $primaryKey="facility_map_id";
        // print_r($rResult);
         /* Data set length after filtering */
         
-        $aResultFilterTotal =$db->rawQuery("SELECT vlfm.*,fd.facility_name,GROUP_CONCAT(DISTINCT fds.facility_name ORDER BY fds.facility_name ASC SEPARATOR ',') as healthCenterName FROM vl_facility_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.vl_lab_id JOIN facility_details as fds ON fds.facility_id=vlfm.facility_id $sWhere  group by vl_lab_id order by $sOrder");
+        $aResultFilterTotal =$db->rawQuery("SELECT vlfm.*,fd.facility_name,GROUP_CONCAT(DISTINCT fds.facility_name ORDER BY fds.facility_name ASC SEPARATOR ',') as healthCenterName FROM testing_lab_health_facilities_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.vl_lab_id JOIN facility_details as fds ON fds.facility_id=vlfm.facility_id $sWhere  group by vl_lab_id order by $sOrder");
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $aResultTotal =  $db->rawQuery("SELECT vlfm.*,fd.facility_name,GROUP_CONCAT(DISTINCT fds.facility_name ORDER BY fds.facility_name ASC SEPARATOR ',') as healthCenterName FROM vl_facility_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.vl_lab_id JOIN facility_details as fds ON fds.facility_id=vlfm.facility_id group by vl_lab_id");
+        $aResultTotal =  $db->rawQuery("SELECT vlfm.*,fd.facility_name,GROUP_CONCAT(DISTINCT fds.facility_name ORDER BY fds.facility_name ASC SEPARATOR ',') as healthCenterName FROM testing_lab_health_facilities_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.vl_lab_id JOIN facility_details as fds ON fds.facility_id=vlfm.facility_id group by vl_lab_id");
        // $aResultTotal = $countResult->fetch_row();
        //print_r($aResultTotal);
         $iTotal = count($aResultTotal);

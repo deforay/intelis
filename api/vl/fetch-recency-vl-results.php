@@ -74,7 +74,7 @@ try {
                     testreason.test_reason_name as `reason_for_testing`,
                     rejreason.rejection_reason_name as `rejection_reason`
 
-                    FROM vl_request_form as vl 
+                    FROM form_vl as vl 
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
                     LEFT JOIN facility_details as lab ON vl.lab_id=lab.facility_id 
                     LEFT JOIN r_vl_sample_type as samptype ON samptype.sample_id=vl.sample_type 

@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 $country = $general->getGlobalConfig('vl_form');
 
@@ -156,7 +156,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
           ELSE 0
           END) AS totalGreaterThan1000,
 		COUNT(result) as total
-        FROM vl_request_form as vl 
+        FROM form_vl as vl 
         INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
         INNER JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id ";
 

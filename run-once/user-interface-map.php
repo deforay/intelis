@@ -13,8 +13,8 @@ $sql = "SELECT u.user_id, u.user_name, i.user_id as interface_user_id, i.user_na
 
 
 $testTables = array(
-    "vl_request_form",
-    "eid_form",
+    "form_vl",
+    "form_eid",
     "form_covid19",
     "form_hepatitis",
     "form_tb",

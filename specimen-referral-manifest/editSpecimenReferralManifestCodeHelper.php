@@ -25,10 +25,10 @@ try {
 
             if ($_POST['module'] == 'vl') {
                 $db = $db->where('sample_package_id', $lastId);
-                $db->update('vl_request_form', $value);
+                $db->update('form_vl', $value);
             } else if ($_POST['module'] == 'eid') {
                 $db = $db->where('sample_package_id', $lastId);
-                $db->update('eid_form', $value);
+                $db->update('form_eid', $value);
             } else if ($_POST['module'] == 'covid19') {
                 $db = $db->where('covid19_id', $_POST['sampleCode'][$j]);
                 $db->update('form_covid19', $value);
@@ -50,10 +50,10 @@ try {
                 );
                 if ($_POST['module'] == 'vl') {
                     $db = $db->where('vl_sample_id', $_POST['sampleCode'][$j]);
-                    $db->update('vl_request_form', $value);
+                    $db->update('form_vl', $value);
                 } else if ($_POST['module'] == 'eid') {
                     $db = $db->where('eid_id', $_POST['sampleCode'][$j]);
-                    $db->update('eid_form', $value);
+                    $db->update('form_eid', $value);
                 } else if ($_POST['module'] == 'covid19') {
                     $db = $db->where('covid19_id', $_POST['sampleCode'][$j]);
                     $db->update('form_covid19', $value);

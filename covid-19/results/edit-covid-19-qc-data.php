@@ -28,10 +28,10 @@ if (isset($qcResultDataInfo) && sizeof($qcResultDataInfo) > 0) {
 }
 
 $pdQuery = "SELECT * from province_details";
-$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+    $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
 }
 $pdResult = $db->query($pdQuery);
 $province = "";

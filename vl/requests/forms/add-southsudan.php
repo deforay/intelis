@@ -38,10 +38,10 @@ if ($_SESSION['accessType'] == 'collection-site') {
      $rKey = '';
 }
 //check user exist in user_facility_map table
-$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
-     $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
+     $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
 }
 $pdResult = $db->query($pdQuery);
 $province = '';
@@ -102,7 +102,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
+                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-4 col-md-4">
@@ -215,7 +215,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
-                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('vl_request_form','patient_art_no',this,null)" />
+                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -819,7 +819,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     data: function(params) {
                          return {
                               fieldName: 'request_clinician_name',
-                              tableName: 'vl_request_form',
+                              tableName: 'form_vl',
                               q: params.term, // search term
                               page: params.page
                          };
@@ -846,7 +846,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                if ($.trim(search) != '') {
                     $.get("/includes/get-data-list.php", {
                               fieldName: 'request_clinician_name',
-                              tableName: 'vl_request_form',
+                              tableName: 'form_vl',
                               returnField: 'request_clinician_phone_number',
                               limit: 1,
                               q: search,
@@ -876,7 +876,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     data: function(params) {
                          return {
                               fieldName: 'vl_focal_person',
-                              tableName: 'vl_request_form',
+                              tableName: 'form_vl',
                               q: params.term, // search term
                               page: params.page
                          };
@@ -903,7 +903,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                if ($.trim(search) != '') {
                     $.get("/includes/get-data-list.php", {
                               fieldName: 'vl_focal_person',
-                              tableName: 'vl_request_form',
+                              tableName: 'form_vl',
                               returnField: 'vl_focal_person_phone_number',
                               limit: 1,
                               q: search,
@@ -985,7 +985,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          $("#sampleCodeInText").html(sCodeKey.sampleCode);
                          $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
                          $("#sampleCodeKey").val(sCodeKey.maxId);
-                         checkSampleNameValidation('vl_request_form', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
+                         checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
                     });
           }
      }

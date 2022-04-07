@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
@@ -319,7 +319,7 @@ try {
     } else {
         //check existing sample code
 
-        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM vl_request_form where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
+        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_vl where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
         $existResult = $db->rawQuery($existSampleQuery);
         if (isset($existResult[0][$sampleCodeKey]) && $existResult[0][$sampleCodeKey] != '') {
             if ($existResult[0][$sampleCodeKey] != '') {

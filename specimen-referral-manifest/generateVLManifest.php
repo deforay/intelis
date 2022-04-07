@@ -73,7 +73,7 @@ class MYPDF extends TCPDF
 
 if (trim($id) != '') {
 
-    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,patient_first_name,patient_middle_name,patient_last_name,patient_dob,patient_age_in_years,sample_name,sample_collection_date,patient_gender,patient_art_no,pd.package_code, l.facility_name as lab_name from package_details as pd Join vl_request_form as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id Join r_vl_sample_type as st ON st.sample_id=vl.sample_type where pd.package_id IN($id)";
+    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,patient_first_name,patient_middle_name,patient_last_name,patient_dob,patient_age_in_years,sample_name,sample_collection_date,patient_gender,patient_art_no,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_vl as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id Join r_vl_sample_type as st ON st.sample_id=vl.sample_type where pd.package_id IN($id)";
     $result = $db->query($sQuery);
 
 

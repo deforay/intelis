@@ -293,7 +293,7 @@ try {
     $samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
 
     $_SESSION['covid19PrintQuery'] = $samplePrintQuery;
-    $stQuery = "SELECT * FROM temp_sample_import as tsr LEFT JOIN eid_form as vl ON vl.sample_code=tsr.sample_code where imported_by ='$importedBy' AND tsr.sample_type='s'";
+    $stQuery = "SELECT * FROM temp_sample_import as tsr LEFT JOIN form_eid as vl ON vl.sample_code=tsr.sample_code where imported_by ='$importedBy' AND tsr.sample_type='s'";
     $stResult = $db->rawQuery($stQuery);
 
     if ($numberOfResults > 0) {

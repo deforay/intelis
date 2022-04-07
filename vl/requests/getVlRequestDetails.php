@@ -9,7 +9,7 @@ $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
 
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -100,7 +100,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 $aWhere = '';
-//$sQuery="SELECT vl.vl_sample_id,vl.facility_id,vl.patient_name,f.facility_name,f.facility_code,art.art_code,s.sample_name FROM vl_request_form as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id INNER JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type";
+//$sQuery="SELECT vl.vl_sample_id,vl.facility_id,vl.patient_name,f.facility_name,f.facility_code,art.art_code,s.sample_name FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id INNER JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type";
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS 
                         vl.vl_sample_id,
                         vl.sample_code,
@@ -151,7 +151,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         r_f_s.funding_source_name,
                         r_i_p.i_partner_name 
                         
-                        FROM vl_request_form as vl 
+                        FROM form_vl as vl 
                         
                         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
                         LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
@@ -412,7 +412,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
 // /* Total data set length */
-// $aResultTotal =  $db->rawQueryOne("SELECT COUNT(vl_sample_id) as totalCount FROM vl_request_form as vl WHERE vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
+// $aResultTotal =  $db->rawQueryOne("SELECT COUNT(vl_sample_id) as totalCount FROM form_vl as vl WHERE vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
 // $iTotal = $aResultTotal['totalCount'];
 
 /*

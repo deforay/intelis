@@ -24,7 +24,7 @@ if (trim($sarr['sc_testing_lab_id']) == '') {
 }
 
 //get facility map id
-$facilityMapQuery = "SELECT facility_id FROM vl_facility_map where vl_lab_id=" . $labId;
+$facilityMapQuery = "SELECT facility_id FROM testing_lab_health_facilities_map where vl_lab_id=" . $labId;
 $fMapResult = $db->query($facilityMapQuery);
 if (count($fMapResult) > 0) {
   $fMapResult = array_map('current', $fMapResult);

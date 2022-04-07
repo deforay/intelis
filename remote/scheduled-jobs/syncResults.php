@@ -86,7 +86,7 @@ if (!empty($forceSyncModule)) {
 // VIRAL LOAD TEST RESULTS
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
     $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
-            FROM `vl_request_form` AS vl 
+            FROM `form_vl` AS vl 
             LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
             WHERE result_status NOT IN (9) 
             AND (facility_id != '' AND facility_id is not null) 
@@ -130,7 +130,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
     if (!empty($result) && count($result) > 0) {
         $db = $db->where('sample_code', $result, 'IN');
-        $id = $db->update('vl_request_form', array('data_sync' => 1));
+        $id = $db->update('form_vl', array('data_sync' => 1));
     }
     if (count($vlLabResult) > 0) {
         $trackId = $app->addApiTracking(null, count($vlLabResult), 'results', 'vl', $url, $sarr['sc_testing_lab_id'], 'sync-api');
@@ -142,7 +142,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
     $eidQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
-                    FROM `eid_form` AS vl 
+                    FROM `form_eid` AS vl 
                     LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
                     WHERE result_status NOT IN (9) 
                     AND sample_code !='' 
@@ -181,7 +181,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
     if (!empty($result) && count($result) > 0) {
         $db = $db->where('sample_code', $result, 'IN');
-        $id = $db->update('eid_form', array('data_sync' => 1));
+        $id = $db->update('form_eid', array('data_sync' => 1));
     }
     if (count($eidLabResult) > 0) {
         $trackId = $app->addApiTracking(null, count($eidLabResult), 'results', 'eid', $url, $sarr['sc_testing_lab_id'], 'sync-api');

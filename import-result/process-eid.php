@@ -3,7 +3,7 @@
 // this file is included in /import-result/procesImportedResults.php
 
 $tableName = "temp_sample_import";
-$tableName1 = "eid_form";
+$tableName1 = "form_eid";
 $fileName = null;
 $importedBy = $_SESSION['userId'];
 
@@ -139,7 +139,7 @@ try {
                         $data['sample_batch_id'] = $db->getInsertId();
                     }
 
-                    $query = "select eid_id, result from eid_form where sample_code='" . $sampleVal . "'";
+                    $query = "select eid_id, result from form_eid where sample_code='" . $sampleVal . "'";
                     $vlResult = $db->rawQuery($query);
                     $data['result_status'] = $status[$i];
                     $data['sample_code'] = $rResult[0]['sample_code'];
@@ -178,7 +178,7 @@ try {
         }
     }
     //get all accepted data result
-    $accQuery = "SELECT tsr.* FROM temp_sample_import as tsr LEFT JOIN eid_form as vl ON vl.sample_code=tsr.sample_code where imported_by ='$importedBy' AND tsr.result_status=7";
+    $accQuery = "SELECT tsr.* FROM temp_sample_import as tsr LEFT JOIN form_eid as vl ON vl.sample_code=tsr.sample_code where imported_by ='$importedBy' AND tsr.result_status=7";
     $accResult = $db->rawQuery($accQuery);
     if ($accResult) {
         for ($i = 0; $i < count($accResult); $i++) {
@@ -241,10 +241,10 @@ try {
         }
     }
     $sCode = implode(', ', $printSampleCode);
-    $samplePrintQuery = "SELECT vl.*,s.sample_name,b.*,ts.*,f.facility_name,l_f.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,u_d.user_name as reviewedBy,a_u_d.user_name as approvedBy ,rs.rejection_reason_name FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
+    $samplePrintQuery = "SELECT vl.*,s.sample_name,b.*,ts.*,f.facility_name,l_f.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,u_d.user_name as reviewedBy,a_u_d.user_name as approvedBy ,rs.rejection_reason_name FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
     $samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
     $_SESSION['vlRequestSearchResultQuery'] = $samplePrintQuery;
-    $stQuery = "SELECT * FROM temp_sample_import as tsr LEFT JOIN eid_form as vl ON vl.sample_code=tsr.sample_code where imported_by ='$importedBy' AND tsr.sample_type='s'";
+    $stQuery = "SELECT * FROM temp_sample_import as tsr LEFT JOIN form_eid as vl ON vl.sample_code=tsr.sample_code where imported_by ='$importedBy' AND tsr.sample_type='s'";
     $stResult = $db->rawQuery($stQuery);
 
     if ($numberOfResults > 0) {

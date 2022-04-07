@@ -80,7 +80,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
         $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='vl_request_form'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_vl'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
 
@@ -123,13 +123,13 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
             //check wheather sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
-            //     $sQuery = "SELECT vl_sample_id FROM vl_request_form WHERE sample_code='" . $request['sample_code'] . "'";
+            //     $sQuery = "SELECT vl_sample_id FROM form_vl WHERE sample_code='" . $request['sample_code'] . "'";
             //     $sResult = $db->rawQuery($sQuery);
             //     $db = $db->where('vl_sample_id', $sResult[0]['vl_sample_id']);
-            //     $id = $db->update('vl_request_form', $request);
+            //     $id = $db->update('form_vl', $request);
             // } else {
             //check exist remote
-            $exsvlQuery = "SELECT vl_sample_id,sample_code FROM vl_request_form AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
+            $exsvlQuery = "SELECT vl_sample_id,sample_code FROM form_vl AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
@@ -140,7 +140,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
                 $dataToUpdate['source_of_request'] = "vlsts";
                 $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('vl_sample_id', $exsvlResult[0]['vl_sample_id']);
-                $id = $db->update('vl_request_form', $dataToUpdate);
+                $id = $db->update('form_vl', $dataToUpdate);
             } else {
                 $request['source_of_request'] = 'vlsts';
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
@@ -153,7 +153,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
                     /* echo "<pre>";
                         print_r($request);
                         die; */
-                    $id = $db->insert('vl_request_form', $request);
+                    $id = $db->insert('form_vl', $request);
                 }
             }
             //}
@@ -206,7 +206,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
 
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='eid_form'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_eid'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
 
@@ -246,13 +246,13 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
             //check whether sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
-            //     $sQuery = "SELECT eid_id FROM eid_form WHERE sample_code='" . $request['sample_code'] . "'";
+            //     $sQuery = "SELECT eid_id FROM form_eid WHERE sample_code='" . $request['sample_code'] . "'";
             //     $sResult = $db->rawQuery($sQuery);
             //     $db = $db->where('eid_id', $sResult[0]['eid_id']);
-            //     $id = $db->update('eid_form', $request);
+            //     $id = $db->update('form_eid', $request);
             // } else {
             //check exist remote
-            $exsvlQuery = "SELECT eid_id,sample_code FROM eid_form AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
+            $exsvlQuery = "SELECT eid_id,sample_code FROM form_eid AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
@@ -261,7 +261,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
                 $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('eid_id', $exsvlResult[0]['eid_id']);
-                $id = $db->update('eid_form', $dataToUpdate);
+                $id = $db->update('form_eid', $dataToUpdate);
             } else {
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $request['request_created_by'] = 0;
@@ -270,7 +270,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
-                    $id = $db->insert('eid_form', $request);
+                    $id = $db->insert('form_eid', $request);
                 }
             }
             //}
@@ -362,10 +362,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
             //check whether sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
-            //     $sQuery = "SELECT eid_id FROM eid_form WHERE sample_code='" . $request['sample_code'] . "'";
+            //     $sQuery = "SELECT eid_id FROM form_eid WHERE sample_code='" . $request['sample_code'] . "'";
             //     $sResult = $db->rawQuery($sQuery);
             //     $db = $db->where('eid_id', $sResult[0]['eid_id']);
-            //     $id = $db->update('eid_form', $request);
+            //     $id = $db->update('form_eid', $request);
             // } else {
             //check exist remote
             $exsvlQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";

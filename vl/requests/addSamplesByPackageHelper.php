@@ -9,7 +9,7 @@ $general = new \Vlsm\Models\General();
 $vlObj = new \Vlsm\Models\Vl();
 
 
-$sampleQuery = "SELECT vl_sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM vl_request_form where vl_sample_id IN (" . $_POST['sampleId'].")";
+$sampleQuery = "SELECT vl_sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_vl where vl_sample_id IN (" . $_POST['sampleId'].")";
 $sampleResult = $db->query($sampleQuery);
 $status = 0;
 foreach($sampleResult as $sampleRow){
@@ -34,7 +34,7 @@ foreach($sampleResult as $sampleRow){
         $vldata['result_status'] = 6;
 
         $db = $db->where('vl_sample_id', $sampleRow['vl_sample_id']);
-        $id = $db->update('vl_request_form', $vldata);
+        $id = $db->update('form_vl', $vldata);
         if($id > 0){
             $status = $id;
         }

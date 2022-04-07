@@ -21,7 +21,7 @@ try {
 
     $db->orderBy("last_modified_datetime", "ASC");
 
-    $rResult = $db->get('eid_form', 5000);
+    $rResult = $db->get('form_eid', 5000);
 
     if (empty($rResult)) {
         exit(0);

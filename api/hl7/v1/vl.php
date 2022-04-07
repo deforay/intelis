@@ -34,7 +34,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
             c.iso3 as country_code2,
             r_i_p.i_partner_name 
             
-            FROM vl_request_form as vl 
+            FROM form_vl as vl 
             
             LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
@@ -287,7 +287,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $provinceId = (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] : null;
     $sampleCollectionDate = (isset($_POST['sampleCollectionDate']) && !empty($_POST['sampleCollectionDate'])) ? $_POST['sampleCollectionDate'] : null;
     $where = array();
-    $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM vl_request_form";
+    $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl";
     if (isset($_POST['sampleCode']) && $_POST['sampleCode'] != "") {
         $where[] =  " (sample_code like '" . $_POST['sampleCode'] . "' or remote_sample_code like '" . $_POST['sampleCode'] . "')";
     }
@@ -348,7 +348,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $id = 0;
     if ($vlDuplicateData) {
         $db = $db->where('vl_sample_id', $vlDuplicateData['vl_sample_id']);
-        $id = $db->update("vl_request_form", $vlData);
+        $id = $db->update("form_vl", $vlData);
         $_POST['vlSampleId'] = $vlDuplicateData['vl_sample_id'];
     } else {
         if ($type[1] == 'UPI') {
@@ -361,13 +361,13 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             unset($ack);
             exit(0);
         } else {
-            $id = $db->insert("vl_request_form", $vlData);
+            $id = $db->insert("form_vl", $vlData);
             $_POST['vlSampleId'] = $id;
         }
     }
     // print_r($vlData);die;
     if (isset($vlData) && count($vlData) > 0) {
-        $tableName = "vl_request_form";
+        $tableName = "form_vl";
         $tableName1 = "activity_log";
         $vlTestReasonTable = "r_vl_test_reasons";
         $fDetails = "facility_details";
@@ -451,7 +451,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $id = $db->update($tableName, $vldata);
         } else {
             //check existing sample code
-            $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM vl_request_form where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
+            $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_vl where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
             $existResult = $db->rawQuery($existSampleQuery);
             if (isset($existResult[0][$sampleCodeKey]) && $existResult[0][$sampleCodeKey] != '') {
                 if ($existResult[0][$sampleCodeKey] != '') {
@@ -477,7 +477,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  NULL;
             $id = $db->insert($tableName, $vldata);
         }
-        $sQuery = "SELECT vl_sample_id, sample_code, remote_sample_code FROM vl_request_form where vl_sample_id = " . $_POST['vlSampleId'];
+        $sQuery = "SELECT vl_sample_id, sample_code, remote_sample_code FROM form_vl where vl_sample_id = " . $_POST['vlSampleId'];
         $savedSamples = $db->rawQueryOne($sQuery);
     }
     if ($id > 0 && isset($vlData) && count($vlData) > 0) {

@@ -4,7 +4,7 @@ $rKey = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
-	$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
+	$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
 	$rKey = 'R';
 } else {
 	$sampleCodeKey = 'sample_code_key';
@@ -137,7 +137,7 @@ $sFormat = '';
 											</td>
 											<td style="width:14%;"><label for="patientArtNo">Nº Processo Clínico </label></td>
 											<td style="width:14%;">
-												<input type="text" class="form-control " id="patientArtNo" name="patientArtNo" placeholder="Nº Processo Clínico" title="Please enter Nº Processo Clínico" style="width:100%;" onchange="checkPatientDetails('vl_request_form','patient_art_no',this,null)" />
+												<input type="text" class="form-control " id="patientArtNo" name="patientArtNo" placeholder="Nº Processo Clínico" title="Please enter Nº Processo Clínico" style="width:100%;" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
 											</td>
 											<td><label for="sex">Género </label></td>
 											<td style="width:16%;">
@@ -407,7 +407,7 @@ $sFormat = '';
 										<tr>
 											<td style="width:14%;"><label for="sampleCode"> Nº de amostra </label><span class="mandatory">*</span></td>
 											<td style="width:14%;">
-												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Nº de amostra" title="Please enter Nº de amostra" style="width:100%;" onblur="checkSampleNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this.id,null,'The sample number that you entered already exists. Please try another number',null)" />
+												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Nº de amostra" title="Please enter Nº de amostra" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'The sample number that you entered already exists. Please try another number',null)" />
 											</td>
 										</tr>
 										<tr>
@@ -617,12 +617,12 @@ $sFormat = '';
 						$("#sampleCode").val('<?php echo $rKey; ?>' + pNameVal[1] + sCode + sCodeKey.maxId);
 						$("#sampleCodeFormat").val('<?php echo $rKey; ?>' + pNameVal[1] + sCode);
 						$("#sampleCodeKey").val(sCodeKey.maxId);
-						checkSampleNameValidation('vl_request_form', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The sample number that you entered already exists. Please try another number', null);
+						checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The sample number that you entered already exists. Please try another number', null);
 					<?php } else if ($arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
 						$("#sampleCode").val('<?php echo $rKey . $prefix; ?>' + sCodeKey.mnthYr + sCodeKey.maxId);
 						$("#sampleCodeFormat").val('<?php echo $rKey . $prefix; ?>' + sCodeKey.mnthYr);
 						$("#sampleCodeKey").val(sCodeKey.maxId);
-						checkSampleNameValidation('vl_request_form', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The sample number that you entered already exists. Please try another number', null)
+						checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The sample number that you entered already exists. Please try another number', null)
 					<?php } ?>
 				});
 		}

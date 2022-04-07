@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $general = new \Vlsm\Models\General();
-$table = "vl_request_form";
+$table = "form_vl";
 $testType = 'vl';
 
 $sources = array(
@@ -20,11 +20,11 @@ if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 }
 
 if (isset($testType) && $testType == 'vl') {
-    $table = "vl_request_form";
+    $table = "form_vl";
     $testName = 'Viral Load';
 }
 if (isset($testType) && $testType == 'eid') {
-    $table = "eid_form";
+    $table = "form_eid";
     $testName = 'EID';
 }
 if (isset($testType) && $testType == 'covid19') {

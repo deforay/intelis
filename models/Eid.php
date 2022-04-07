@@ -12,7 +12,7 @@ class Eid
 {
 
     protected $db = null;
-    protected $table = 'eid_form';
+    protected $table = 'form_eid';
     protected $shortCode = 'EID';
 
     public function __construct($db = null)
@@ -433,7 +433,7 @@ class Eid
                 $eidData['remote_sample'] = 'no';
                 $eidData['result_status'] = 6;
             }
-            $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM eid_form ";
+            $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
@@ -442,7 +442,7 @@ class Eid
             $id = 0;
             if ($rowData) {
                 // $this->db = $this->db->where('eid_id', $rowData['eid_id']);
-                // $id = $this->db->update("eid_form", $eidData);
+                // $id = $this->db->update("form_eid", $eidData);
                 // $params['eidSampleId'] = $rowData['eid_id'];
 
                 // If this sample code exists, let us regenerate
@@ -450,12 +450,12 @@ class Eid
             } else {
 
                 if (isset($params['api']) && $params['api'] = "yes") {
-                    $id = $this->db->insert("eid_form", $eidData);
+                    $id = $this->db->insert("form_eid", $eidData);
                     $params['eidSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                         $eidData['unique_id'] = $general->generateRandomString(32);
-                        $id = $this->db->insert("eid_form", $eidData);
+                        $id = $this->db->insert("form_eid", $eidData);
                     }
                 }
             }

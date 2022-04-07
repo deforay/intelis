@@ -12,7 +12,7 @@ $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
@@ -148,7 +148,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         r_f_s.funding_source_name,
                         r_i_p.i_partner_name 
                         
-                        FROM vl_request_form as vl 
+                        FROM form_vl as vl 
                         
                         INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
                         INNER JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
@@ -324,7 +324,7 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 // /* Total data set length */
-// $aResultTotal =  $db->rawQueryOne("SELECT COUNT(vl_sample_id) as total FROM vl_request_form as vl where result_status!=9 $cWhere");
+// $aResultTotal =  $db->rawQueryOne("SELECT COUNT(vl_sample_id) as total FROM form_vl as vl where result_status!=9 $cWhere");
 // // $aResultTotal = $countResult->fetch_row();
 // $iTotal = $aResultTotal['total'];
 

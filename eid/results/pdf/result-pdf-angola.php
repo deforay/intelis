@@ -529,7 +529,7 @@ if (sizeof($requestResult) > 0) {
             );
             $db->insert($tableName1, $data);
             //Update print datetime in VL tbl.
-            $vlQuery = "SELECT result_printed_datetime FROM eid_form as vl WHERE vl.eid_id ='" . $result['eid_id'] . "'";
+            $vlQuery = "SELECT result_printed_datetime FROM form_eid as vl WHERE vl.eid_id ='" . $result['eid_id'] . "'";
             $vlResult = $db->query($vlQuery);
             if ($vlResult[0]['result_printed_datetime'] == NULL || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                 $db = $db->where('eid_id', $result['eid_id']);

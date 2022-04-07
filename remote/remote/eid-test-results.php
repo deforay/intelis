@@ -33,7 +33,7 @@ if (trim($sarr['sc_testing_lab_id']) == '') {
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
 
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='eid_form'";
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_eid'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
     $sampleCode = array();
@@ -88,9 +88,9 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
         if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-            $sQuery = "SELECT eid_id,sample_code,remote_sample_code,remote_sample_code_key FROM eid_form WHERE remote_sample_code='" . $lab['remote_sample_code'] . "'";
+            $sQuery = "SELECT eid_id,sample_code,remote_sample_code,remote_sample_code_key FROM form_eid WHERE remote_sample_code='" . $lab['remote_sample_code'] . "'";
         } else if (isset($lab['sample_code']) && !empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
-            $sQuery = "SELECT eid_id,sample_code,remote_sample_code,remote_sample_code_key FROM eid_form WHERE sample_code='" . $lab['sample_code'] . "' AND facility_id = " . $lab['facility_id'];
+            $sQuery = "SELECT eid_id,sample_code,remote_sample_code,remote_sample_code_key FROM form_eid WHERE sample_code='" . $lab['sample_code'] . "' AND facility_id = " . $lab['facility_id'];
         } else {
 
             $sampleCode[] = $lab['sample_code'];
@@ -100,9 +100,9 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         $sResult = $db->rawQuery($sQuery);
         if ($sResult) {
             $db = $db->where('eid_id', $sResult[0]['eid_id']);
-            $id = $db->update('eid_form', $lab);
+            $id = $db->update('form_eid', $lab);
         } else {
-            $id = $db->insert('eid_form', $lab);
+            $id = $db->insert('form_eid', $lab);
         }
 
         if ($id > 0 && isset($lab['sample_code'])) {

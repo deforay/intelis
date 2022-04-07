@@ -13,7 +13,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 //Get active machines
 $testPlatformResult = $general->getTestingPlatforms('eid');
-// $query = "SELECT vl.sample_code,vl.eid_id,vl.facility_id,f.facility_name,f.facility_code FROM eid_form as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id where sample_batch_id is NULL OR sample_batch_id='' ORDER BY f.facility_name ASC";
+// $query = "SELECT vl.sample_code,vl.eid_id,vl.facility_id,f.facility_name,f.facility_code FROM form_eid as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id where sample_batch_id is NULL OR sample_batch_id='' ORDER BY f.facility_name ASC";
 // $result = $db->rawQuery($query);
 
 

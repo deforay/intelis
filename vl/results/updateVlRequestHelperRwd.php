@@ -10,7 +10,7 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $tableName2 = "log_result_updates";
 $vl_result_category = NULL;
 try {

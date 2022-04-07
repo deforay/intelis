@@ -13,10 +13,10 @@ $importedBy = $_SESSION['userId'];
 $module = $_POST['module'];
 
 if ($module == 'vl') {
-    $mainTableName = "vl_request_form";
+    $mainTableName = "form_vl";
     $rejectionTableName = 'r_vl_sample_rejection_reasons';
 } else if ($module == 'eid') {
-    $mainTableName = "eid_form";
+    $mainTableName = "form_eid";
     $rejectionTableName = 'r_eid_sample_rejection_reasons';
     $eidResults = $general->getEidResults();
 } else if ($module == 'covid19') {

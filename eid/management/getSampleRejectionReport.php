@@ -11,7 +11,7 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 
 
-$tableName = "eid_form";
+$tableName = "form_eid";
 $primaryKey = "eid_id";
 //config  query
 $configQuery = "SELECT * from global_config";
@@ -117,7 +117,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName,rsrr.rejection_reason_name FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection where vl.is_sample_rejected='yes' AND vl.vlsm_country_id='" . $arr['vl_form'] . "'";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName,rsrr.rejection_reason_name FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection where vl.is_sample_rejected='yes' AND vl.vlsm_country_id='" . $arr['vl_form'] . "'";
 $start_date = '';
 $end_date = '';
 if (isset($_POST['rjtBatchCode']) && trim($_POST['rjtBatchCode']) != '') {

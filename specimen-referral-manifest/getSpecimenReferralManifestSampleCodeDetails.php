@@ -27,9 +27,9 @@ $module = $_POST['module'];
 
 $query = "";
 if ($module == 'vl') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM vl_request_form as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 } else if ($module == 'eid') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id FROM eid_form as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id FROM form_eid as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 } else if ($module == 'covid19') {
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 } else if ($module == 'hepatitis') {

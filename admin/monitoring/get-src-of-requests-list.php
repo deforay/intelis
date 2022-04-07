@@ -11,7 +11,7 @@ $sources = array(
 );
 
 
-$table = "vl_request_form";
+$table = "form_vl";
 $testType = 'vl';
 
 if (isset($_POST['testType']) && !empty($_POST['testType'])) {
@@ -19,10 +19,10 @@ if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 }
 
 if (isset($testType) && $testType == 'vl') {
-    $table = "vl_request_form";
+    $table = "form_vl";
 }
 if (isset($testType) && $testType == 'eid') {
-    $table = "eid_form";
+    $table = "form_eid";
 }
 if (isset($testType) && $testType == 'covid19') {
     $table = "form_covid19";

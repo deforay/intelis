@@ -8,7 +8,7 @@ $general = new \Vlsm\Models\General();
 $eidObj = new \Vlsm\Models\Eid();
 
 
-$sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM eid_form where eid_id IN (" . $_POST['sampleId'] . ") ORDER BY eid_id";
+$sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_eid where eid_id IN (" . $_POST['sampleId'] . ") ORDER BY eid_id";
 $sampleResult = $db->query($sampleQuery);
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
@@ -35,7 +35,7 @@ foreach ($sampleResult as $sampleRow) {
         $eidData['last_modified_datetime'] = $general->getDateTime();
 
         $db = $db->where('eid_id', $sampleRow['eid_id']);
-        $id = $db->update('eid_form', $eidData);
+        $id = $db->update('form_eid', $eidData);
         if ($id > 0) {
             $status = $id;
         }

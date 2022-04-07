@@ -10,7 +10,7 @@ try {
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
         $status = 9;
     }
-    $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, vl_sample_id FROM vl_request_form";
+    $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, vl_sample_id FROM form_vl";
     if ($_POST['bulkIds'] && is_array($_POST['vlId'])) {
         $query .= " WHERE vl_sample_id IN (" . implode(",", $_POST['vlId']) . ")";
     } else {
@@ -23,7 +23,7 @@ try {
     } else {
         $db = $db->where('vl_sample_id', base64_decode($_POST['vlId']));
     }
-    $id = $db->update("vl_request_form", array(
+    $id = $db->update("form_vl", array(
         "result_value_log"              => null,
         "result_value_absolute"         => null,
         "result_value_text"             => null,

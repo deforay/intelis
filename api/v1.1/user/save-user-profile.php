@@ -107,7 +107,7 @@ try {
     if ($id > 0 && trim($post['selectedFacility']) != '') {
         if ($id > 0 && trim($post['selectedFacility']) != '') {
             $db = $db->where('user_id', $data['user_id']);
-            $delId = $db->delete("vl_user_facility_map");
+            $delId = $db->delete("user_facility_map");
             $selectedFacility = explode(",", $post['selectedFacility']);
             $uniqueFacilityId = array_unique($selectedFacility);
             for ($j = 0; $j <= count($selectedFacility); $j++) {
@@ -116,7 +116,7 @@ try {
                         'facility_id' => $selectedFacility[$j],
                         'user_id' => $data['user_id'],
                     );
-                    $db->insert("vl_user_facility_map", $data);
+                    $db->insert("user_facility_map", $data);
                 }
             }
         }

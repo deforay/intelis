@@ -216,7 +216,7 @@ $disable = "disabled = 'disabled'";
 											</td>
 											<td style="width:14%;"><label for="patientArtNo">Nº Processo Clínico </label></td>
 											<td style="width:14%;">
-												<input type="text" class="form-control " id="patientArtNo" name="patientArtNo" placeholder="Nº Processo Clínico" title="Please enter Nº Processo Clínico" style="width:100%;" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_art_no']; ?>" onchange="checkNameValidation('vl_request_form','patient_art_no',this,null)" />
+												<input type="text" class="form-control " id="patientArtNo" name="patientArtNo" placeholder="Nº Processo Clínico" title="Please enter Nº Processo Clínico" style="width:100%;" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_art_no']; ?>" onchange="checkNameValidation('form_vl','patient_art_no',this,null)" />
 											</td>
 											<td><label for="sex">Género </label></td>
 											<td style="width:16%;">

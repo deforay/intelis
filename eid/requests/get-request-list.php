@@ -22,7 +22,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 $general = new \Vlsm\Models\General();
-$tableName = "eid_form";
+$tableName = "form_eid";
 $primaryKey = "eid_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -132,7 +132,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*,
      r_f_s.funding_source_name,
      r_i_p.i_partner_name 
 
-     FROM eid_form as vl 
+     FROM form_eid as vl 
 
      INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
      INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
@@ -338,7 +338,7 @@ $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere.' AND vl.request_created_by="'.$_SESSION['userId'].'"';
      //$sFilter = ' AND request_created_by="'.$_SESSION['userId'].'"';
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
      if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
           $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";

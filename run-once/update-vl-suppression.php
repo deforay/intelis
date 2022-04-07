@@ -6,7 +6,7 @@ $vlDb = new \Vlsm\Models\Vl();
 
 $sql = "SELECT vl_sample_id,result_value_absolute_decimal, result_value_text, result, result_status
 				
-		FROM vl_request_form
+		FROM form_vl
 
 		WHERE (result_status = 4 OR result_status = 7)
         
@@ -23,7 +23,7 @@ foreach ($result as $aRow) {
     if (!empty($vlResultCategory) && $vlResultCategory !== false) {
         
         $db->where('vl_sample_id', $aRow['vl_sample_id']);
-        $res = $db->update("vl_request_form", array('vl_result_category' => $vlResultCategory));
+        $res = $db->update("form_vl", array('vl_result_category' => $vlResultCategory));
 
     }
 }

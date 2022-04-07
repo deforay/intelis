@@ -46,7 +46,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         SUM(CASE WHEN (patient_age_in_years = 'yes' AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtPatientPregnant1000,
         SUM(CASE WHEN (is_patient_breastfeeding = 'yes' AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltPatientBreastFeeding1000,
         SUM(CASE WHEN (is_patient_breastfeeding = 'yes' AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtPatientBreastFeeding1000
-		FROM vl_request_form as vl JOIN facility_details as f ON vl.facility_id=f.facility_id
+		FROM form_vl as vl JOIN facility_details as f ON vl.facility_id=f.facility_id
         WHERE reason_for_vl_testing != 9999";
     $start_date = '';
     $end_date = '';
@@ -108,7 +108,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                 f.facility_code,
                                 f.facility_state,
                                 f.facility_district 
-                                FROM vl_request_form as vl 
+                                FROM form_vl as vl 
                                 JOIN facility_details as f ON vl.facility_id=f.facility_id";
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
@@ -141,7 +141,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                                 f.facility_code,
                                                 f.facility_state,
                                                 f.facility_district 
-                                                FROM vl_request_form as vl 
+                                                FROM form_vl as vl 
                                                 JOIN facility_details as f ON vl.facility_id=f.facility_id 
                                                 WHERE vl.sample_tested_datetime IS NULL 
                                                 AND vl.sample_type="' . $sample['sample_id'] . '" 
@@ -194,7 +194,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                 f.facility_state,
                                 f.facility_district,
                                 DATEDIFF(sample_tested_datetime,sample_collection_date) as diff 
-                                FROM vl_request_form as vl 
+                                FROM form_vl as vl 
                                 JOIN facility_details as f ON vl.facility_id=f.facility_id 
                                 WHERE vl.sample_tested_datetime IS NOT NULL 
                                 AND MONTH(sample_collection_date)='$mnth' 
@@ -679,7 +679,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                     f.facility_state,
                     f.facility_district,
                     SUM(CASE WHEN (result!='' AND result!='Target Not Detected') AND (result > 10000000 OR result < 20) THEN 1 ELSE 0 END) AS invalidTotal
-                    FROM vl_request_form as vl 
+                    FROM form_vl as vl 
                     JOIN facility_details as f ON vl.facility_id=f.facility_id 
                     WHERE MONTH(sample_collection_date)='$mnth' 
                     AND YEAR(sample_collection_date)='$year'";

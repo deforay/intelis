@@ -5,7 +5,7 @@ ob_start();
 
 $general = new \Vlsm\Models\General();
 
-$tableName = "contact_notes_details";
+$tableName = "vl_contact_notes";
 
 try {
     $result = '';

@@ -12,10 +12,10 @@ $tableName2    = "move_samples_map";
 $testTableName = "";
 $primaryKey = "";
 if ($testType == "vl") {
-    $testTableName = "vl_request_form";
+    $testTableName = "form_vl";
     $primaryKey = "vl_sample_id";
 } else if ($testType == "eid") {
-    $testTableName = "eid_form";
+    $testTableName = "form_eid";
     $primaryKey = "eid_id";
 } else if ($testType == "covid19") {
     $testTableName = "form_covid19";

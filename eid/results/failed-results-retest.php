@@ -10,7 +10,7 @@ try {
         $status = 9;
     }
 
-    $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, eid_id FROM eid_form";
+    $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, eid_id FROM form_eid";
     if ($_POST['bulkIds'] && is_array($_POST['eidId'])) {
         $query .= " WHERE eid_id IN (" . implode(",", $_POST['eidId']) . ")";
     } else {
@@ -24,7 +24,7 @@ try {
     } else {
         $db = $db->where('eid_id', base64_decode($_POST['eidId']));
     }
-    $id = $db->update("eid_form", array(
+    $id = $db->update("form_eid", array(
         "result"            => null,
         "sample_batch_id"   => null,
         "result_status"     => $status

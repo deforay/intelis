@@ -23,10 +23,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sampleCode = 'sample_code';
 	}
 	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
+		$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
 	}
 }
 //sample rejection reason
@@ -176,7 +176,7 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="sampleCode">Laboratory ID </label>
-										<input type="text" class="form-control sampleCode" id="sampleCode" name="sampleCode" <?php echo $disable; ?> placeholder="Enter Laboratory ID" title="Please enter laboratory ID" style="width:100%;" value="<?php echo (isset($sCode) && $sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" onblur="checkNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The Laboratory ID that you entered already exists. Please try another ID',null)" />
+										<input type="text" class="form-control sampleCode" id="sampleCode" name="sampleCode" <?php echo $disable; ?> placeholder="Enter Laboratory ID" title="Please enter laboratory ID" style="width:100%;" value="<?php echo (isset($sCode) && $sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" onblur="checkNameValidation('form_vl','<?php echo $sampleCode; ?>',this,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The Laboratory ID that you entered already exists. Please try another ID',null)" />
 									</div>
 								</div>
 							</div>

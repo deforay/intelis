@@ -3057,5 +3057,17 @@ ALTER TABLE `vl_request_form` CHANGE `source_data_dump` `source_data_dump` TEXT 
 -- Amit 06-Apr-2022
 ALTER TABLE `qc_covid19` ADD `testing_point` VARCHAR(256) NULL DEFAULT NULL AFTER `lab_id`;
 ALTER TABLE `qc_covid19` ADD `qc_received_datetime` DATETIME NULL DEFAULT NULL AFTER `testing_point`;
+ALTER TABLE `qc_covid19` ADD `updated_datetime` DATETIME NULL DEFAULT NULL AFTER `created_on`;
+
+
+-- Amit 07-Apr-2022
+RENAME TABLE `vl_request_form` TO `form_vl`;
+RENAME TABLE `eid_form` TO `form_eid`;
+ALTER TABLE `form_eid` DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
+ALTER TABLE `form_vl` DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
+
+RENAME TABLE `vl_user_facility_map` TO `user_facility_map`;
+RENAME TABLE `vl_facility_map` TO `testing_lab_health_facilities_map`;
+
 
 

@@ -97,10 +97,10 @@ $facilityQuery = '';
 
 // in case module is not set, we pick vl as the default one
 if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
-    $tableName = "vl_request_form";
+    $tableName = "form_vl";
     $primaryKey = "vl_sample_id";
 } else if ($_POST['module'] == 'eid') {
-    $tableName = "eid_form";
+    $tableName = "form_eid";
     $primaryKey = "eid_id";
 } else if ($_POST['module'] == 'C19' || $_POST['module'] == 'covid19') {
     $tableName = "form_covid19";

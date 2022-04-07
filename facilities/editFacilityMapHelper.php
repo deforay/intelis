@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 #require_once('../startup.php');  
 
-$tableName="vl_facility_map";
+$tableName="testing_lab_health_facilities_map";
 try {
     if(isset($_POST['vlLab']) && trim($_POST['vlLab'])!="" && trim($_POST['facilityTo']!='')){
 		$db=$db->where('vl_lab_id',$_POST['vlLab']);

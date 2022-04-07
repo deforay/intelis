@@ -23,10 +23,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCodeKey = 'remote_sample_code_key';
      $sampleCode = 'remote_sample_code';
      //check user exist in user_facility_map table
-     $chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+     $chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
      $chkUserFcMapResult = $db->query($chkUserFcMapQry);
      if ($chkUserFcMapResult) {
-          $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id WHERE user_id='" . $_SESSION['userId'] . "' group by province_name";
+          $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id WHERE user_id='" . $_SESSION['userId'] . "' group by province_name";
      }
      $rKey = 'R';
 } else {
@@ -104,7 +104,7 @@ $sFormat = '';
                                                             <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" />
                                                        <?php } else { ?>
                                                             <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" onblur="checkSampleNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Try another',null)" />
+                                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Try another',null)" />
                                                        <?php } ?>
                                                   </div>
                                              </div>
@@ -191,7 +191,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
-                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('vl_request_form','patient_art_no',this,null)" />
+                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -794,7 +794,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          $("#sampleCodeInText").html(sCodeKey.sampleCode);
                          $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
                          $("#sampleCodeKey").val(sCodeKey.maxId);
-                         checkSampleNameValidation('vl_request_form', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
+                         checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
                     });
           }
      }

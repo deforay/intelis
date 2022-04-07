@@ -2,11 +2,11 @@
 
 // imported in importedStatistics.php
 
-$tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, SUM(CASE WHEN tsr.result = 'Target Not Detected' OR tsr.result = 'target not detected' THEN 1 ELSE 0 END) AS TargetNotDetected, SUM(CASE WHEN tsr.result > 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS HighViralLoad, SUM(CASE WHEN tsr.result < 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS LowViralLoad,SUM(CASE WHEN tsr.result = 'Invalid' OR tsr.result = 'invalid' THEN 1 ELSE 0 END) AS invalid FROM temp_sample_import as tsr $import_decided vl_request_form as vl ON vl.sample_code=tsr.sample_code WHERE  imported_by ='$importedBy' ";
+$tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, SUM(CASE WHEN tsr.result = 'Target Not Detected' OR tsr.result = 'target not detected' THEN 1 ELSE 0 END) AS TargetNotDetected, SUM(CASE WHEN tsr.result > 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS HighViralLoad, SUM(CASE WHEN tsr.result < 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS LowViralLoad,SUM(CASE WHEN tsr.result = 'Invalid' OR tsr.result = 'invalid' THEN 1 ELSE 0 END) AS invalid FROM temp_sample_import as tsr $import_decided form_vl as vl ON vl.sample_code=tsr.sample_code WHERE  imported_by ='$importedBy' ";
 $tsResult = $db->rawQuery($tsQuery);
 
 //set print query
-$hQuery = "SELECT hsr.sample_code FROM hold_sample_import as hsr $import_decided vl_request_form as vl ON vl.sample_code=hsr.sample_code";
+$hQuery = "SELECT hsr.sample_code FROM hold_sample_import as hsr $import_decided form_vl as vl ON vl.sample_code=hsr.sample_code";
 $hResult = $db->rawQuery($hQuery);
 $holdSample = array();
 if ($hResult) {
@@ -14,7 +14,7 @@ if ($hResult) {
         $holdSample[] = $sample['sample_code'];
     }
 }
-$saQuery = "SELECT tsr.sample_code FROM temp_sample_import as tsr $import_decided vl_request_form as vl ON vl.sample_code=tsr.sample_code WHERE  imported_by ='$importedBy' ";
+$saQuery = "SELECT tsr.sample_code FROM temp_sample_import as tsr $import_decided form_vl as vl ON vl.sample_code=tsr.sample_code WHERE  imported_by ='$importedBy' ";
 $saResult = $db->rawQuery($saQuery);
 $sampleCode = array();
 foreach ($saResult as $sample) {
@@ -23,7 +23,7 @@ foreach ($saResult as $sample) {
     }
 }
 $sCode = implode(', ', $sampleCode);
-$samplePrintQuery = "SELECT vl.*,s.sample_name,b.*,ts.*,f.facility_name,l_f.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,acd.art_code,rst.sample_name as routineSampleName,fst.sample_name as failureSampleName,sst.sample_name as suspectedSampleName,u_d.user_name as reviewedBy,a_u_d.user_name as approvedBy ,rs.rejection_reason_name FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as acd ON acd.art_id=vl.current_regimen LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.last_vl_sample_type_routine LEFT JOIN r_vl_sample_type as fst ON fst.sample_id=vl.last_vl_sample_type_failure_ac LEFT JOIN r_vl_sample_type as sst ON sst.sample_id=vl.last_vl_sample_type_failure LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
+$samplePrintQuery = "SELECT vl.*,s.sample_name,b.*,ts.*,f.facility_name,l_f.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,acd.art_code,rst.sample_name as routineSampleName,fst.sample_name as failureSampleName,sst.sample_name as suspectedSampleName,u_d.user_name as reviewedBy,a_u_d.user_name as approvedBy ,rs.rejection_reason_name FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as acd ON acd.art_id=vl.current_regimen LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.last_vl_sample_type_routine LEFT JOIN r_vl_sample_type as fst ON fst.sample_id=vl.last_vl_sample_type_failure_ac LEFT JOIN r_vl_sample_type as sst ON sst.sample_id=vl.last_vl_sample_type_failure LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
 $samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
 $_SESSION['vlRequestSearchResultQuery'] = $samplePrintQuery;
 

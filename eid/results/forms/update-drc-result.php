@@ -24,10 +24,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sampleCode = 'sample_code';
 	}
 	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "Select user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+	$chkUserFcMapQry = "Select user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+		$pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
 	}
 	$rKey = 'R';
 } else {
@@ -89,7 +89,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 									<?php } else { ?>
 										<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 										<td>
-											<input type="text" readonly value="<?php echo $eidInfo['sample_code'] ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('eid_form','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
+											<input type="text" readonly value="<?php echo $eidInfo['sample_code'] ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
 										</td>
 									<?php } ?>
 									<td></td>

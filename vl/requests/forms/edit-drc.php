@@ -16,11 +16,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sampleCode = 'sample_code';
 	}
 	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-		//$pdQuery="SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='".$_SESSION['userId']."'";
-		$pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+		//$pdQuery="SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='".$_SESSION['userId']."'";
+		$pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
 	}
 } else {
 	$sampleCode = 'sample_code';
@@ -135,7 +135,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 											<td>
-												<input type="text" class="form-control isRequired" readonly id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The échantillon id that you entered already exists. Please try another échantillon id',null)" />
+												<input type="text" class="form-control isRequired" readonly id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The échantillon id that you entered already exists. Please try another échantillon id',null)" />
 											</td>
 										<?php } ?>
 
@@ -523,7 +523,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<!-- <tr>
                                 <td><label for="sampleCode">Code Labo </label> <span class="mandatory">*</span></td>
                                 <td colspan="3">
-                                    <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Code Labo" title="Please enter code labo" value="< ?php echo (isset($sCode) && $sCode!='') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:30%;" onchange="checkSampleNameValidation('vl_request_form','< ?php echo $sampleCode;?>',this.id,'< ?php echo "vl_sample_id##".$vlQueryInfo["vl_sample_id"];?>','The sample number that you entered already exists. Please try another number',null)"/>
+                                    <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Code Labo" title="Please enter code labo" value="< ?php echo (isset($sCode) && $sCode!='') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:30%;" onchange="checkSampleNameValidation('form_vl','< ?php echo $sampleCode;?>',this.id,'< ?php echo "vl_sample_id##".$vlQueryInfo["vl_sample_id"];?>','The sample number that you entered already exists. Please try another number',null)"/>
                                     <input type="hidden" name="sampleCodeCol" value="< ?php echo $vlQueryInfo['sample_code'];?>"/>
                                 </td>
                             </tr> -->

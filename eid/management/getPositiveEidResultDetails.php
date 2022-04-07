@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $general=new \Vlsm\Models\General();
-$tableName="eid_form";
+$tableName="form_eid";
 $primaryKey="eid_id";
 //config  query
 $configQuery="SELECT * from global_config";
@@ -116,7 +116,7 @@ $thresholdLimit = $arr['viral_load_threshold_limit'];
          * Get data to display
         */
 	$aWhere = '';
-	$sQuery="SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > ".$thresholdLimit;
+	$sQuery="SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > ".$thresholdLimit;
 	$start_date = '';
 	$end_date = '';
     
@@ -166,7 +166,7 @@ $thresholdLimit = $arr['viral_load_threshold_limit'];
     if($sarr['sc_user_type']=='remoteuser'){
         //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
         //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
-        $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='".$_SESSION['userId']."'";
+        $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='".$_SESSION['userId']."'";
         $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
         if($userfacilityMapresult[0]['facility_id']!=null && $userfacilityMapresult[0]['facility_id']!=''){
             $sWhere = $sWhere." AND vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].")   ";
@@ -192,11 +192,11 @@ $thresholdLimit = $arr['viral_load_threshold_limit'];
        // print_r($rResult);
         /* Data set length after filtering */
         
-        $aResultFilterTotal =$db->rawQuery("SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > $thresholdLimit $sWhere group by vl.eid_id order by $sOrder");
+        $aResultFilterTotal =$db->rawQuery("SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > $thresholdLimit $sWhere group by vl.eid_id order by $sOrder");
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $aResultTotal =  $db->rawQuery("select COUNT(eid_id) as total FROM eid_form as vl where result_status=7 AND result > $thresholdLimit AND vlsm_country_id='".$arr['vl_form']."' $dWhere");
+        $aResultTotal =  $db->rawQuery("select COUNT(eid_id) as total FROM form_eid as vl where result_status=7 AND result > $thresholdLimit AND vlsm_country_id='".$arr['vl_form']."' $dWhere");
         $iTotal = $aResultTotal[0]['total'];
         /*
          * Output

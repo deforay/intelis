@@ -348,7 +348,7 @@ class General
         $facilityWhereCondition = '';
 
         if (!empty($userId)) {
-            $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` SEPARATOR ',') as `facility_id` FROM vl_user_facility_map WHERE user_id='" . $userId . "'";
+            $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $userId . "'";
             $userfacilityMapresult = $this->db->rawQuery($userfacilityMapQuery);
             if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
                 $facilityWhereCondition = " AND facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";

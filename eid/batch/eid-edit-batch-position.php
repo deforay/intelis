@@ -34,7 +34,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 		$displayOrder[] = $jsonToArray[$j];
 		$xplodJsonToArray = explode("_", $jsonToArray[$j]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-			$sampleQuery = "SELECT sample_code from eid_form where eid_id=$xplodJsonToArray[1]";
+			$sampleQuery = "SELECT sample_code from form_eid where eid_id=$xplodJsonToArray[1]";
 			$sampleResult = $db->query($sampleQuery);
 			$label = $sampleResult[0]['sample_code'];
 		} else {
@@ -63,7 +63,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT eid_id,sample_code from eid_form where sample_batch_id=$id ORDER BY sample_code ASC";
+	$samplesQuery = "SELECT eid_id,sample_code from form_eid where sample_batch_id=$id ORDER BY sample_code ASC";
 	$samplesInfo = $db->query($samplesQuery);
 	foreach ($samplesInfo as $sample) {
 		$displayOrder[] = "s_" . $sample['eid_id'];

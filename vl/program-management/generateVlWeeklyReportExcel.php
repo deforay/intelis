@@ -169,7 +169,7 @@ $sQuery = "SELECT
 		COUNT(result) as total
 
 
-        FROM vl_request_form as vl 
+        FROM form_vl as vl 
         INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
         INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id
         WHERE vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";

@@ -19,7 +19,7 @@ $sarr = $general->getSystemConfig();
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
 
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -144,7 +144,7 @@ $sQuery = 	 "SELECT 		vl.vl_sample_id,
 							vl.result_printed_datetime,							
             				rs.rejection_reason_name 
 							
-							FROM vl_request_form as vl 
+							FROM form_vl as vl 
 							LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
 							LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
 							INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -357,7 +357,7 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT vl_sample_id FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+$aResultFilterTotal = $db->rawQuery("SELECT vl_sample_id FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
 																		LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
 																		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
 																		LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id 
@@ -368,7 +368,7 @@ $aResultFilterTotal = $db->rawQuery("SELECT vl_sample_id FROM vl_request_form as
 																		$sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(vl_sample_id) as total FROM vl_request_form as vl $dWhere");
+$aResultTotal =  $db->rawQuery("select COUNT(vl_sample_id) as total FROM form_vl as vl $dWhere");
 $iTotal = $aResultTotal[0]['total'];
 
 /*

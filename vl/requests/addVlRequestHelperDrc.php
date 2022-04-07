@@ -7,7 +7,7 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $tableName1 = "activity_log";
 $vl_result_category = NULL;
 try {
@@ -27,7 +27,7 @@ try {
     //  //Set Lab ID
     //  $start_date = date('Y-m-01');
     //  $end_date = date('Y-m-31');
-    //  $labVlQuery='select MAX(lab_code) FROM vl_request_form as vl where vl.vlsm_country_id="3" AND DATE(vl.request_created_datetime) >= "'.$start_date.'" AND DATE(vl.request_created_datetime) <= "'.$end_date.'"';
+    //  $labVlQuery='select MAX(lab_code) FROM form_vl as vl where vl.vlsm_country_id="3" AND DATE(vl.request_created_datetime) >= "'.$start_date.'" AND DATE(vl.request_created_datetime) <= "'.$end_date.'"';
     //  $labVlResult = $db->rawQuery($labVlQuery);
     //  if(isset($labVlResult) && trim($labVlResult[0]['MAX(lab_code)'])!='' && $labVlResult[0]['MAX(lab_code)']!=NULL){
     //     $_POST['labNo'] = $labVlResult[0]['MAX(lab_code)']+1;
@@ -333,7 +333,7 @@ try {
         $id = $db->update($tableName, $vldata);
     } else {
         //check existing sample code
-        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM vl_request_form where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
+        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_vl where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
         $existResult = $db->rawQuery($existSampleQuery);
         if (isset($existResult[0][$sampleCodeKey]) && $existResult[0][$sampleCodeKey] != '') {
             if ($existResult[0][$sampleCodeKey] != '') {

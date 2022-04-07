@@ -12,7 +12,7 @@ $general = new \Vlsm\Models\General();
 // die;
 
 
-$tableName = "eid_form";
+$tableName = "form_eid";
 $tableName1 = "activity_log";
 
 try {

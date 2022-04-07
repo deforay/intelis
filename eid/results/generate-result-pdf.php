@@ -13,7 +13,7 @@ ini_set('max_execution_time', -1);
 
 
 $tableName1 = "activity_log";
-$tableName2 = "eid_form";
+$tableName2 = "form_eid";
 $general = new \Vlsm\Models\General();
 $users = new \Vlsm\Models\Users();
 
@@ -62,7 +62,7 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
                   a_u_d.user_signature as approvedBySignature,
                   r_r_b.user_name as revised,
                   tp.config_machine_name as testingPlatform
-                  FROM eid_form as vl 
+                  FROM form_eid as vl 
                   LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                   LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id 
                   LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 

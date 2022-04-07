@@ -123,7 +123,7 @@ try {
         vl.revised_on                                        as revisedOn,
         vl.reason_for_changing                               as reasonForEidResultChanges
         
-        FROM eid_form as vl 
+        FROM form_eid as vl 
         LEFT JOIN province_details as p ON vl.province_id=p.province_id
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
         LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 

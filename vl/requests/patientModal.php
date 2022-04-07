@@ -12,7 +12,7 @@ $arr = array();
 for ($i = 0; $i < sizeof($cResult); $i++) {
 	$arr[$cResult[$i]['name']] = $cResult[$i]['value'];
 }
-$pQuery = "SELECT * FROM vl_request_form as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id where vlsm_country_id='" . $arr['vl_form'] . "' AND (patient_art_no like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%')";
+$pQuery = "SELECT * FROM form_vl as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id where vlsm_country_id='" . $arr['vl_form'] . "' AND (patient_art_no like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%')";
 $pResult = $db->rawQuery($pQuery);
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.1.11.0.css" />

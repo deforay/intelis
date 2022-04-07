@@ -415,12 +415,12 @@ class App
             } else if ($testType == "eid") {
                 $confSampleCode = 'eid_sample_code';
                 $confSampleCodePrefix = 'eid_sample_code_prefix';
-                $table = "eid_form";
+                $table = "form_eid";
                 $shortCode = 'EID';
             } else if ($testType == "vl") {
                 $confSampleCode = 'sample_code';
                 $confSampleCodePrefix = 'sample_code_prefix';
-                $table = "vl_request_form";
+                $table = "form_vl";
                 $shortCode = 'VL';
             } else if ($testType == "tb") {
                 $confSampleCode = 'sample_code';

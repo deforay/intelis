@@ -11,7 +11,7 @@ $general = new \Vlsm\Models\General();
 //#require_once('../startup.php'); 
 // require_once(APPLICATION_PATH . '/header.php');
 $tableName = "user_details";
-$tableName2 = "vl_user_facility_map";
+$tableName2 = "user_facility_map";
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
 

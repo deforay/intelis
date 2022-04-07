@@ -10,7 +10,7 @@ $arr = array();
 $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
 
-$tableName = "eid_form";
+$tableName = "form_eid";
 // echo "<pre>";print_r($_FILES);die;
 try {
     $lock = $general->getGlobalConfig('lock_approved_eid_samples');
@@ -47,7 +47,7 @@ try {
 
         foreach ($resultArray as $rowIndex => $rowData) {
             if (isset($rowData['B']) && !empty($rowData['B'])) {
-                $sampleCode = $general->getDuplicateDataFromField('eid_form', 'sample_code', $rowData['B']);
+                $sampleCode = $general->getDuplicateDataFromField('form_eid', 'sample_code', $rowData['B']);
 
                 // NOT ADDED
                 // $testReason = $general->getDuplicateDataFromField('r_covid19_test_reasons', 'test_reason_name', $rowData['P']);

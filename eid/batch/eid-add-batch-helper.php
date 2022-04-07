@@ -4,7 +4,7 @@ ob_start();
 $general = new \Vlsm\Models\General();
 
 $tableName1 = "batch_details";
-$tableName2 = "eid_form";
+$tableName2 = "form_eid";
 try {
     $exist = $general->existBatchCode($_POST['batchCode']);
     if ($exist) {

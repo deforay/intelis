@@ -197,7 +197,7 @@ try {
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
-            $query = "select facility_id,eid_id,result from eid_form where sample_code='" . $sampleCode . "'";
+            $query = "select facility_id,eid_id,result from form_eid where sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             //insert sample controls
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";

@@ -39,12 +39,12 @@ if (count($interfaceInfo) > 0) {
     $availableModules = array();
 
     if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
-        $availableModules['vl_sample_id'] = 'vl_request_form';
+        $availableModules['vl_sample_id'] = 'form_vl';
         $platform["vl_sample_id"] = "vl_test_platform";
     }
 
     if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
-        $availableModules['eid_id'] = 'eid_form';
+        $availableModules['eid_id'] = 'form_eid';
         $platform["eid_id"] = "eid_test_platform";
     }
 
@@ -149,7 +149,7 @@ if (count($interfaceInfo) > 0) {
             $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
 
             $db = $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
-            $vlUpdateId = $db->update('vl_request_form', $data);
+            $vlUpdateId = $db->update('form_vl', $data);
             $numberOfResults++;
             $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
@@ -195,7 +195,7 @@ if (count($interfaceInfo) > 0) {
             );
 
             $db = $db->where('eid_id', $tableInfo['eid_id']);
-            $eidUpdateId = $db->update('eid_form', $data);
+            $eidUpdateId = $db->update('form_eid', $data);
             $numberOfResults++;
             $processedResults[] = $result['test_id'];
             if ($eidUpdateId) {

@@ -49,10 +49,10 @@ $vlTestReasonQuery = "SELECT * FROM r_vl_test_reasons WHERE test_reason_status =
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 //get suspected treatment failure at
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM vl_request_form where vlsm_country_id='" . $arr['vl_form'] . "'";
+$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $arr['vl_form'] . "'";
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
 
-$vlQuery = "SELECT * FROM vl_request_form WHERE vl_sample_id=?";
+$vlQuery = "SELECT * FROM form_vl WHERE vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, array($id));
 if (isset($vlQueryInfo['patient_dob']) && trim($vlQueryInfo['patient_dob']) != '' && $vlQueryInfo['patient_dob'] != '0000-00-00') {
      $vlQueryInfo['patient_dob'] = $general->humanDateFormat($vlQueryInfo['patient_dob']);

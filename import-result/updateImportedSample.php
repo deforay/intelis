@@ -20,7 +20,7 @@ try {
         $db = $db->where('temp_sample_id', $_POST['tempsampleId']);
         $result = $db->update($tableName, array('batch_code' => $_POST['batchCode']));
     } else if (isset($_POST['sampleCode']) && trim($_POST['sampleCode']) != '') {
-        $sampleResult = $db->rawQuery("select sample_code from vl_request_form where sample_code='" . trim($_POST['sampleCode']) . "'");
+        $sampleResult = $db->rawQuery("select sample_code from form_vl where sample_code='" . trim($_POST['sampleCode']) . "'");
         if ($sampleResult) {
             $sampleDetails = 'Result already exists';
         } else {

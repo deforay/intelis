@@ -29,10 +29,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sampleCode = 'sample_code';
 	}
 	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "Select user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+	$chkUserFcMapQry = "Select user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+		$pdQuery = "SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
 	}
 	$rKey = 'R';
 } else {
@@ -115,7 +115,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID <span class="mandatory">*</span></label></td>
 											<td>
-												<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $eidInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('eid_form','<?php echo $sampleCode; ?>',this.id,'<?php echo "eid_id##" . $eidInfo["eid_id"]; ?>','This sample number already exists.Try another number',null)" />
+												<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $eidInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,'<?php echo "eid_id##" . $eidInfo["eid_id"]; ?>','This sample number already exists.Try another number',null)" />
 												<input type="hidden" name="sampleCodeCol" value="<?php echo $eidInfo['sample_code']; ?>" />
 											</td>
 										<?php } ?>

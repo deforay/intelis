@@ -58,7 +58,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	}
 	//Get display sample only
 	$displaySampleOrderArray = array();
-	$samplesQuery = "SELECT vl_sample_id,sample_code from vl_request_form where sample_batch_id=$id ORDER BY sample_code ASC";
+	$samplesQuery = "SELECT vl_sample_id,sample_code from form_vl where sample_batch_id=$id ORDER BY sample_code ASC";
 	$samplesInfo = $db->query($samplesQuery);
 	foreach ($samplesInfo as $sample) {
 		$displaySampleOrderArray[] = $sample['vl_sample_id'];
@@ -74,7 +74,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 				if ($sCount <= $prevDisplaySampleArray) {
 					$displayOrder[] = 's_' . $displaySampleOrderArray[$sCount];
 					$displaySampleArray[] = $displaySampleOrderArray[$sCount];
-					$sampleQuery = "SELECT sample_code from vl_request_form where vl_sample_id=$displaySampleOrderArray[$sCount]";
+					$sampleQuery = "SELECT sample_code from form_vl where vl_sample_id=$displaySampleOrderArray[$sCount]";
 					$sampleResult = $db->query($sampleQuery);
 					$label = $sampleResult[0]['sample_code'];
 					$content .= '<li class="ui-state-default" id="s_' . $displaySampleOrderArray[$sCount] . '">' . $label . '</li>';
@@ -106,7 +106,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	//For new samples
 	for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
 		$displayOrder[] = 's_' . $remainSampleNewArray[$ns];
-		$sampleQuery = "SELECT sample_code from vl_request_form where vl_sample_id=$remainSampleNewArray[$ns]";
+		$sampleQuery = "SELECT sample_code from form_vl where vl_sample_id=$remainSampleNewArray[$ns]";
 		$sampleResult = $db->query($sampleQuery);
 		$label = $sampleResult[0]['sample_code'];
 		$newContent .= '<li class="ui-state-default" id="s_' . $remainSampleNewArray[$ns] . '">' . $label . '</li>';
@@ -130,7 +130,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT vl_sample_id,sample_code from vl_request_form where sample_batch_id=$id ORDER BY sample_code ASC";
+	$samplesQuery = "SELECT vl_sample_id,sample_code from form_vl where sample_batch_id=$id ORDER BY sample_code ASC";
 	$samplesInfo = $db->query($samplesQuery);
 	foreach ($samplesInfo as $sample) {
 		$displayOrder[] = "s_" . $sample['vl_sample_id'];

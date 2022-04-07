@@ -12,10 +12,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'sample_code';
   }
   //check user exist in user_facility_map table
-  $chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+  $chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
   $chkUserFcMapResult = $db->query($chkUserFcMapQry);
   if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
+    $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
   }
 } else {
   $sampleCode = 'sample_code';
@@ -517,7 +517,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                     <tr>
                       <td style="width:14%;"><label for="sampleCode"> Nº de amostra </label><span class="mandatory">*</span></td>
                       <td style="width:14%;">
-                        <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Nº de amostra" title="Please enter Nº de amostra" style="width:100%;" value="<?php echo (isset($sCode) && trim($sCode) != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" onchange="checkSampleNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The sample number that you entered already exists. Please try another number',null)" />
+                        <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Nº de amostra" title="Please enter Nº de amostra" style="width:100%;" value="<?php echo (isset($sCode) && trim($sCode) != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The sample number that you entered already exists. Please try another number',null)" />
                         <input type="hidden" name="sampleCodeCol" value="<?php echo $vlQueryInfo['sample_code']; ?>" />
                       </td>
                     </tr>

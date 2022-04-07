@@ -4,7 +4,7 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "eid_form";
+$tableName = "form_eid";
 $result = "";
 try {
 

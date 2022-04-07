@@ -10,10 +10,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
+		$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
 	}
 }
 $bQuery = "SELECT * FROM batch_details";
@@ -60,7 +60,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="sampleCode">Laboratory ID <span class="mandatory">*</span></label>
-											<input type="text" class="form-control sampleCode isRequired" id="sampleCode" name="sampleCode" placeholder="Enter Laboratory ID" title="Please enter laboratory ID" style="width:100%;" onblur="checkSampleNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Please try another Sample Code.',null)" readonly="readonly" />
+											<input type="text" class="form-control sampleCode isRequired" id="sampleCode" name="sampleCode" placeholder="Enter Laboratory ID" title="Please enter laboratory ID" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Please try another Sample Code.',null)" readonly="readonly" />
 										</div>
 									</div>
 
@@ -834,7 +834,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 					$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
 					$("#sampleCodeKey").val(sCodeKey.maxId);
 					$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-					checkSampleNameValidation('vl_request_form', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The laboratory ID that you entered already exists. Please try another ID', null)
+					checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'The laboratory ID that you entered already exists. Please try another ID', null)
 					// $.unblockUI();
 				});
 		}

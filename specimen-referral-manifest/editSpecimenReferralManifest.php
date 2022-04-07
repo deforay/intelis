@@ -33,12 +33,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 if ($module == 'vl') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM vl_request_form as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 	$m = ($module == 'vl') ? 'vl' : $module;
 	$vlDb = new \Vlsm\Models\Vl($db);
 	$sampleTypes = $vlDb->getVlSampleTypes();
 } else if ($module == 'eid') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.sample_package_id FROM eid_form as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.sample_package_id FROM form_eid as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 	$m = ($module == 'eid') ? 'eid' : $module;
 	$eidDb = new \Vlsm\Models\Eid($db);
 	$sampleTypes = $eidDb->getEidSampleTypes();

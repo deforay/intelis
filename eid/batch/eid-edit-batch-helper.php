@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $general = new \Vlsm\Models\General();
 
 $tableName1 = "batch_details";
-$tableName2 = "eid_form";
+$tableName2 = "form_eid";
 try {
 	if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
 		$id = intval($_POST['batchId']);
@@ -58,7 +58,7 @@ try {
 				}
 				if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
 					//Get display sample only
-					$samplesQuery = "SELECT eid_id,sample_code from eid_form where sample_batch_id=$id ORDER BY sample_code ASC";
+					$samplesQuery = "SELECT eid_id,sample_code from form_eid where sample_batch_id=$id ORDER BY sample_code ASC";
 					$samplesInfo = $db->query($samplesQuery);
 					foreach ($samplesInfo as $sample) {
 						$displaySampleOrderArray[] = $sample['eid_id'];

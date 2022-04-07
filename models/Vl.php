@@ -13,7 +13,7 @@ class Vl
 {
 
     protected $db = null;
-    protected $table = 'vl_request_form';
+    protected $table = 'form_vl';
     protected $shortCode = 'VL';
     protected $suppressedArray = array(
         'target not detected',
@@ -393,7 +393,7 @@ class Vl
                 $vlData['result_status'] = 6;
             }
 
-            $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM vl_request_form ";
+            $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
@@ -403,19 +403,19 @@ class Vl
             $id = 0;
             if ($rowData) {
                 // $this->db = $this->db->where('vl_sample_id', $rowData['vl_sample_id']);
-                // $id = $this->db->update("vl_request_form", $vlData);
+                // $id = $this->db->update("form_vl", $vlData);
                 // $params['vlSampleId'] = $rowData['vl_sample_id'];
 
                 // If this sample code exists, let us regenerate
                 return $this->insertSampleCode($params);
             } else {
                 if (isset($params['api']) && $params['api'] = "yes") {
-                    $id = $this->db->insert("vl_request_form", $vlData);
+                    $id = $this->db->insert("form_vl", $vlData);
                     $params['vlSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                         $vlData['unique_id'] = $general->generateRandomString(32);
-                        $id = $this->db->insert("vl_request_form", $vlData);
+                        $id = $this->db->insert("form_vl", $vlData);
                     }
                 }
             }

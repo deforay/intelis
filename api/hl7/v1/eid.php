@@ -32,7 +32,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
             r_f_s.funding_source_name,
             r_i_p.i_partner_name 
             
-            FROM eid_form as vl 
+            FROM form_eid as vl 
             
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
             LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
@@ -300,7 +300,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $sampleCollectionDate = (isset($_POST['sampleCollectionDate']) && !empty($_POST['sampleCollectionDate'])) ? $_POST['sampleCollectionDate'] : null;
     $where = array();
     $eidDuplicateData = false;
-    $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM eid_form";
+    $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid";
     if (isset($_POST['sampleCode']) && $_POST['sampleCode'] != "") {
         $where[] =  " (sample_code like '" . $_POST['sampleCode'] . "' or remote_sample_code like '" . $_POST['sampleCode'] . "')";
     }
@@ -360,7 +360,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $id = 0;
     if ($eidDuplicateData) {
         $db = $db->where('eid_id', $eidDuplicateData['eid_id']);
-        $id = $db->update("eid_form", $eidData);
+        $id = $db->update("form_eid", $eidData);
         $_POST['eidSampleId'] = $eidDuplicateData['eid_id'];
     } else {
         if ($type[1] == 'UPI') {
@@ -373,12 +373,12 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             unset($ack);
             exit(0);
         } else {
-            $id = $db->insert("eid_form", $eidData);
+            $id = $db->insert("form_eid", $eidData);
             $_POST['eidSampleId'] = $id;
         }
     }
     if (isset($eidData) && count($eidData) > 0) {
-        $tableName = "eid_form";
+        $tableName = "form_eid";
         $tableName1 = "activity_log";
         $instanceId = $_POST['instanceId'];
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -450,7 +450,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $db = $db->where('eid_id', $_POST['eidSampleId']);
             $id = $db->update($tableName, $eidData);
         }
-        $sQuery = "SELECT eid_id, sample_code, remote_sample_code FROM eid_form where eid_id = " . $_POST['eidSampleId'];
+        $sQuery = "SELECT eid_id, sample_code, remote_sample_code FROM form_eid where eid_id = " . $_POST['eidSampleId'];
         $savedSamples = $db->rawQueryOne($sQuery);
     }
     if ($id > 0 && isset($eidData) && count($eidData) > 0) {

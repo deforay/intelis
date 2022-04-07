@@ -20,7 +20,7 @@ $sarr = $general->getSystemConfig();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 
 
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -166,7 +166,7 @@ vl.result_approved_by,
 a_u_d.user_name as approvedBy,							
 rs.rejection_reason_name 
 
-FROM vl_request_form as vl 
+FROM form_vl as vl 
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
 LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -419,7 +419,7 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
-// $aResultFilterTotal = $db->rawQueryOne("SELECT count(vl_sample_id) as sampleCount FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+// $aResultFilterTotal = $db->rawQueryOne("SELECT count(vl_sample_id) as sampleCount FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
 // 																		LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
 // 																		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
 // 																		LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id 
@@ -430,7 +430,7 @@ $rResult = $db->rawQuery($sQuery);
 // 																		$sWhere");
 // $iFilteredTotal = ($aResultFilterTotal['sampleCount']);
 // /* Total data set length */
-// $aResultTotal =  $db->rawQuery("SELECT * FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere order by $sOrder");
+// $aResultTotal =  $db->rawQuery("SELECT * FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere order by $sOrder");
 // $iTotal = count($aResultTotal);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");

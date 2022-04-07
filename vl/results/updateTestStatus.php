@@ -4,7 +4,7 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 try {
     
     $id = explode(",", $_POST['id']);

@@ -62,7 +62,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $id = base64_decode($_GET['id']);
 //$id = ($_GET['id']);
-$eidQuery = "SELECT * from eid_form where eid_id=?";
+$eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 
 

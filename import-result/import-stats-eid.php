@@ -8,12 +8,12 @@ $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount,
             SUM(CASE WHEN tsr.result = 'positive' THEN 1 ELSE 0 END) AS positive, 
             SUM(CASE WHEN tsr.result = 'negative' THEN 1 ELSE 0 END) AS negative,
             SUM(CASE WHEN tsr.result = 'indeterminate' THEN 1 ELSE 0 END) AS indeterminate 
-            FROM temp_sample_import as tsr $import_decided eid_form as vl ON vl.sample_code=tsr.sample_code 
+            FROM temp_sample_import as tsr $import_decided form_eid as vl ON vl.sample_code=tsr.sample_code 
             WHERE  imported_by ='$importedBy' ";
 $tsResult = $db->rawQuery($tsQuery);
 
 //set print query
-$hQuery = "SELECT hsr.sample_code FROM hold_sample_import as hsr $import_decided eid_form as vl ON vl.sample_code=hsr.sample_code";
+$hQuery = "SELECT hsr.sample_code FROM hold_sample_import as hsr $import_decided form_eid as vl ON vl.sample_code=hsr.sample_code";
 $hResult = $db->rawQuery($hQuery);
 $holdSample = array();
 if ($hResult) {
@@ -22,7 +22,7 @@ if ($hResult) {
     }
 }
 $saQuery = "SELECT tsr.sample_code 
-            FROM temp_sample_import as tsr $import_decided eid_form as vl ON vl.sample_code=tsr.sample_code 
+            FROM temp_sample_import as tsr $import_decided form_eid as vl ON vl.sample_code=tsr.sample_code 
                 WHERE  imported_by ='$importedBy' ";
 $saResult = $db->rawQuery($saQuery);
 $sampleCode = array();
@@ -39,7 +39,7 @@ $samplePrintQuery = "SELECT vl.*, b.*, ts.*, f.facility_name, l_f.facility_name 
                         u_d.user_name as reviewedBy,
                         a_u_d.user_name as approvedBy,
                         rs.rejection_reason_name
-                        FROM eid_form as vl 
+                        FROM form_eid as vl 
                         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
                         LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
                         INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 

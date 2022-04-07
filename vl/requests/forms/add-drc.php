@@ -16,10 +16,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "SELECT user_id from vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+	$chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+		$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
 	}
 	$rKey = 'R';
 } else {
@@ -94,7 +94,7 @@ $sFormat = '';
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 											<td>
-												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('vl_request_form','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
+												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
 											</td>
 										<?php } ?>
 										<td><label for="serialNo">Recency ID</label></td>
@@ -218,7 +218,7 @@ $sFormat = '';
 									<tr>
 										<td><label for="patientArtNo">Code du patient <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control isRequired" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="Please enter code du patient" style="width:100%;" onchange="checkPatientDetails('vl_request_form','patient_art_no',this,null)" />
+											<input type="text" class="form-control isRequired" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="Please enter code du patient" style="width:100%;" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
 										</td>
 										<td colspan="2"><label for="isPatientNew">Si S/ARV </label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui</label>
@@ -646,7 +646,7 @@ $sFormat = '';
 					$("#sampleCodeInText").html(sCodeKey.sampleCode);
 					$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
 					$("#sampleCodeKey").val(sCodeKey.maxId);
-					checkSampleNameValidation('vl_request_form', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
+					checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
 				});
 		}
 	}

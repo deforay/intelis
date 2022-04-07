@@ -17,7 +17,7 @@ $userType = $general->getSystemConfig('sc_user_type');
 $whereCondition = '';
 
 if ($userType == 'remoteuser') {
-	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` ORDER BY `facility_id` SEPARATOR ',') as `facility_id` FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` ORDER BY `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 	$userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
 	if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
 		$userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
@@ -60,7 +60,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 $tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name 
-                FROM eid_form as vl 
+                FROM form_eid as vl 
                 JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                 JOIN facility_details as f ON vl.lab_id=f.facility_id 
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
@@ -100,7 +100,7 @@ $vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
 		status_id,
 		status_name 
 		
-		FROM eid_form as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+		FROM form_eid as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
 
 $sWhere = " AND (vl.result!='' and vl.result is not null) ";
 
@@ -136,7 +136,7 @@ $tatSampleQuery = "SELECT
 		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
 		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
 
-		FROM eid_form as vl 
+		FROM form_eid as vl 
 		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
 		JOIN facility_details as f ON vl.lab_id=f.facility_id 
 		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 

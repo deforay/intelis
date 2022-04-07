@@ -93,7 +93,7 @@ try {
         $update = "no";
         $rowData = false;
         if ((isset($data['sampleCode']) && !empty($data['sampleCode'])) || (isset($data['remoteSampleCode']) && !empty($data['uniqueId'])) || (isset($data['uniqueId']) && !empty($data['uniqueId']))) {
-            $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM vl_request_form ";
+            $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $sQuery .= "where unique_id like '" . $data['uniqueId'] . "'";
             } else if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
@@ -157,13 +157,13 @@ try {
         $id = 0;
         if ($rowData) {
             $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
-            $id = $db->update("vl_request_form", $vlData);
+            $id = $db->update("form_vl", $vlData);
             $data['vlSampleId'] = $rowData['vl_sample_id'];
         } else {
-            $id = $db->insert("vl_request_form", $vlData);
+            $id = $db->insert("form_vl", $vlData);
             $data['vlSampleId'] = $id;
         }
-        $tableName = "vl_request_form";
+        $tableName = "form_vl";
         $tableName1 = "activity_log";
 
         $instanceId = '';

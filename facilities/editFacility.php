@@ -22,11 +22,11 @@ $fResult = $db->rawQuery($fQuery);
 $pQuery = "SELECT * FROM province_details";
 $pResult = $db->rawQuery($pQuery);
 
-$chkvlLabResult = $db->rawQuery('SELECT * from vl_facility_map as vlfm where vl_lab_id = ?', Array ($id));
-$chkHcResult = $db->rawQuery('SELECT * from vl_facility_map as vlfm where facility_id = ?', Array ($id));
+$chkvlLabResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where vl_lab_id = ?', Array ($id));
+$chkHcResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where facility_id = ?', Array ($id));
 
 $fType = $facilityInfo['facility_type'];
-$vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId FROM vl_user_facility_map as vlfm join facility_details as fd ON fd.facility_id=vlfm.facility_id where facility_type = " . $fType;
+$vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId FROM user_facility_map as vlfm join facility_details as fd ON fd.facility_id=vlfm.facility_id where facility_type = " . $fType;
 $vlfmResult = $db->rawQuery($vlfmQuery);
 
 $uQuery = "SELECT * FROM user_details";
@@ -40,7 +40,7 @@ if (isset($vlfmResult[0]['userId'])) {
 }
 $uResult = $db->rawQuery($uQuery);
 
-$selectedResult = $db->rawQuery('SELECT * FROM vl_user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id WHERE vlfm.facility_id = ?', Array ($id));
+$selectedResult = $db->rawQuery('SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id WHERE vlfm.facility_id = ?', Array ($id));
 
 $testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', Array ($id));
 

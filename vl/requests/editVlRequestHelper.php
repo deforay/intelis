@@ -6,7 +6,7 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";

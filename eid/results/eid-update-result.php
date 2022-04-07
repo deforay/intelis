@@ -46,7 +46,7 @@ $vlTestReasonQuery = "SELECT * from r_eid_test_reasons where test_reason_status 
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 $id = base64_decode($_GET['id']);
-$eidQuery = "SELECT * from eid_form where eid_id=?";
+$eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 
 

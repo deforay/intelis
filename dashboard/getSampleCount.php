@@ -15,12 +15,12 @@ $start_date = date('Y-m-d', strtotime('-7 days'));
 
 $u = $general->getSystemConfig('sc_user_type');
 if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
-    $table = "eid_form";
+    $table = "form_eid";
     $requestCountDataTable = "eidRequestCountDataTable";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
 
     $recencyWhere = " AND reason_for_vl_testing != 9999";
-    $table = "vl_request_form";
+    $table = "form_vl";
     $requestCountDataTable = "vlRequestCountDataTable";
 }
 
@@ -28,7 +28,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
 
 else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $recencyWhere = " AND reason_for_vl_testing = 9999";
-    $table = "vl_request_form";
+    $table = "form_vl";
     $requestCountDataTable = "recencyRequestCountDataTable";
 }
 
@@ -43,7 +43,7 @@ if ($u != 'remoteuser') {
 } else {
     $whereCondition = "";
     //get user facility map ids
-    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
@@ -65,7 +65,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $end_date = $general->dateFormat(trim($s_c_date[1]));
     }
 }
-if ($table == "eid_form") {
+if ($table == "form_eid") {
     $sQuery = "SELECT
 		eid.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
 		COUNT(*) AS totalCount,

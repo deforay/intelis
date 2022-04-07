@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 $vlsmFormId = $general->getGlobalConfig('vl_form');
@@ -104,8 +104,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 $aWhere = '';
-//$sQuery="SELECT vl.vl_sample_id,vl.facility_id,vl.patient_name,f.facility_name,f.facility_code,art.art_code,s.sample_name FROM vl_request_form as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id INNER JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type";
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
+//$sQuery="SELECT vl.vl_sample_id,vl.facility_id,vl.patient_name,f.facility_name,f.facility_code,art.art_code,s.sample_name FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id INNER JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 
 //echo $sQuery;die;
 $start_date = '';

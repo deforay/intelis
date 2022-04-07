@@ -8,7 +8,7 @@ $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 //config  query
 $configQuery = "SELECT * from global_config";
@@ -118,7 +118,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
         */
 $aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.facility_name, b.batch_code,fd.facility_name as labName 
-    FROM vl_request_form as vl 
+    FROM form_vl as vl 
     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
     INNER JOIN facility_details as fd ON fd.facility_id=vl.lab_id  
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 

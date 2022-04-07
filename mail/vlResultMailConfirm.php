@@ -7,7 +7,7 @@ $general = new \Vlsm\Models\General();
 
 $global = $general->getGlobalConfig();
 
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE `type` = 'result'";
 $geResult = $db->rawQuery($geQuery);
@@ -115,7 +115,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
       }
       $pdfContent .= '</tr>';
       for ($s = 0; $s < count($selectedSamplesArray); $s++) {
-         $sampleQuery = "SELECT sample_code FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
+         $sampleQuery = "SELECT sample_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
          $sampleResult = $db->rawQuery($sampleQuery);
          if (isset($sampleResult[0]['sample_code'])) {
             $pdfContent .= '<tr>';
@@ -201,13 +201,13 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
                   continue;
                }
                if ($field ==  'result_reviewed_by') {
-                  $fValueQuery = "SELECT u.user_name as reviewedBy FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s_type ON s_type.sample_id=vl.sample_type LEFT JOIN r_vl_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_reviewed_by where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "'";
+                  $fValueQuery = "SELECT u.user_name as reviewedBy FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s_type ON s_type.sample_id=vl.sample_type LEFT JOIN r_vl_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_reviewed_by where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "'";
                } elseif ($field ==  'result_approved_by') {
-                  $fValueQuery = "SELECT u.user_name as approvedBy FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s_type ON s_type.sample_id=vl.sample_type LEFT JOIN r_vl_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_approved_by where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "'";
+                  $fValueQuery = "SELECT u.user_name as approvedBy FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s_type ON s_type.sample_id=vl.sample_type LEFT JOIN r_vl_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_approved_by where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "'";
                } elseif ($field ==  'lab_id') {
-                  $fValueQuery = "SELECT f.facility_name as labName FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "'";
+                  $fValueQuery = "SELECT f.facility_name as labName FROM form_vl as vl LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "'";
                } else {
-                  $fValueQuery = "SELECT $field FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s_type ON s_type.sample_id=vl.sample_type LEFT JOIN r_vl_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN r_sample_status as t_s ON t_s.status_id=vl.result_status where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "'";
+                  $fValueQuery = "SELECT $field FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s_type ON s_type.sample_id=vl.sample_type LEFT JOIN r_vl_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN r_sample_status as t_s ON t_s.status_id=vl.result_status where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "'";
                }
                $fValueResult = $db->rawQuery($fValueQuery);
                $fieldValue = '';
@@ -282,7 +282,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
                         <?php
                         $resultOlySamples = array();
                         for ($s = 0; $s < count($selectedSamplesArray); $s++) {
-                           $sampleQuery = "SELECT vl_sample_id,sample_code FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
+                           $sampleQuery = "SELECT vl_sample_id,sample_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
                            $sampleResult = $db->rawQuery($sampleQuery);
                            if (isset($sampleResult[0]['sample_code'])) {
                               $resultOlySamples[] = $sampleResult[0]['vl_sample_id'];

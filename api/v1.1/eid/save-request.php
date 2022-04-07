@@ -76,7 +76,7 @@ try {
         $rowData = false;
 
         if ((isset($data['sampleCode']) && !empty($data['sampleCode'])) || (isset($data['remoteSampleCode']) && !empty($data['uniqueId'])) || (isset($data['uniqueId']) && !empty($data['uniqueId']))) {
-            $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM eid_form ";
+            $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
             $sWhere = array();
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $sWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
@@ -152,15 +152,15 @@ try {
         $id = 0;
         if (isset($rowData) && $rowData['eid_id'] > 0) {
             $db = $db->where('eid_id', $rowData['eid_id']);
-            $id = $db->update("eid_form", $eidData);
+            $id = $db->update("form_eid", $eidData);
             $data['eidSampleId'] = $rowData['eid_id'];
         } else {
-            $id = $db->insert("eid_form", $eidData);
+            $id = $db->insert("form_eid", $eidData);
             $data['eidSampleId'] = $id;
         }
         /* print_r($db->getLastError());
         die; */
-        $tableName = "eid_form";
+        $tableName = "form_eid";
         $tableName1 = "activity_log";
 
         $instanceId = '';

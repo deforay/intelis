@@ -114,7 +114,7 @@ try {
                         $_SESSION['instanceId'] = $id;
                         $_SESSION['instanceFacilityName'] = null;
 
-                        //Update instance ID in facility and vl_request_form tbl
+                        //Update instance ID in facility and form_vl tbl
                         $data = array('vlsm_instance_id' => $id);
                         $db->update('facility_details', $data);
                     }
@@ -195,7 +195,7 @@ try {
                             $_SESSION['instanceId'] = $id;
                             $_SESSION['instanceFacilityName'] = null;
 
-                            //Update instance ID in facility and vl_request_form tbl
+                            //Update instance ID in facility and form_vl tbl
                             $data = array('vlsm_instance_id' => $id);
                             $db->update('facility_details', $data);
                         }

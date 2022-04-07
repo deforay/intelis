@@ -79,7 +79,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
     //get value by rejection reason id
     $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`
-                FROM eid_form as vl
+                FROM form_eid as vl
                 INNER JOIN r_eid_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";

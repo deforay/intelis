@@ -19,7 +19,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 $general = new \Vlsm\Models\General();
-$tableName = "vl_request_form";
+$tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
@@ -120,7 +120,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     acd.art_code,
                     rs.rejection_reason_name,
                     tr.test_reason_name 
-                    FROM vl_request_form as vl 
+                    FROM form_vl as vl 
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
                     LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
                     LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 

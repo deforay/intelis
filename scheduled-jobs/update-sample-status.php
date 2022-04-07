@@ -12,8 +12,8 @@ $primaryKey = array(
     "tb" => "tb_id"
 );
 $tableName = array(
-    "vl" => "vl_request_form",
-    "eid" => "eid_form",
+    "vl" => "form_vl",
+    "eid" => "form_eid",
     "covid19" => "form_covid19",
     "hepatitis" => "form_hepatitis",
     "tb" => "form_tb"

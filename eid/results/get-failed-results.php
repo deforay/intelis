@@ -21,7 +21,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 $general = new \Vlsm\Models\General();
-$tableName = "eid_form";
+$tableName = "form_eid";
 $primaryKey = "eid_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -117,7 +117,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 $aWhere = '';
 
-$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM eid_form as vl 
+$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_eid as vl 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
@@ -219,7 +219,7 @@ if ($sWhere != '') {
 }
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
-    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM vl_user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
@@ -245,11 +245,11 @@ if (isset($sLimit) && isset($sOffset)) {
 // echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT vl.eid_id FROM eid_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
+$aResultFilterTotal = $db->rawQuery("SELECT vl.eid_id FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT COUNT(eid_id) as total FROM eid_form as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
+$aResultTotal =  $db->rawQuery("SELECT COUNT(eid_id) as total FROM form_eid as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
 $iTotal = $aResultTotal[0]['total'];
 
 $output = array(

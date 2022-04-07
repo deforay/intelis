@@ -15,9 +15,9 @@ $fQuery = "SELECT * FROM facility_details WHERE facility_type=2";
 $fResult = $db->rawQuery($fQuery);
 
 if ($type == 'vl') {
-	$lastQuery = "SELECT lab_id FROM vl_request_form WHERE lab_id is not NULL ORDER BY vl_sample_id DESC LIMIT 1";
+	$lastQuery = "SELECT lab_id FROM form_vl WHERE lab_id is not NULL ORDER BY vl_sample_id DESC LIMIT 1";
 } else if ($type == 'eid') {
-	$lastQuery = "SELECT lab_id FROM eid_form WHERE lab_id is not NULL ORDER BY eid_id DESC LIMIT 1";
+	$lastQuery = "SELECT lab_id FROM form_eid WHERE lab_id is not NULL ORDER BY eid_id DESC LIMIT 1";
 } else if ($type == 'covid19') {
 	$lastQuery = "SELECT lab_id FROM form_covid19 WHERE lab_id is not NULL ORDER BY covid19_id DESC LIMIT 1";
 } else if ($type == 'hepatitis') {

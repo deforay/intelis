@@ -10,14 +10,14 @@ $id = base64_decode($_GET['id']);
 
 $showPatientName = false;
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-    $refTable = "vl_request_form";
+    $refTable = "form_vl";
     $refPrimaryColumn = "vl_sample_id";
     $patientIdColumn = 'patient_art_no';
     $patientFirstName = 'patient_first_name';
     $patientLastName = 'patient_last_name';
     $worksheetName = 'Viral Load Test Worksheet';
 } else if (isset($_GET['type']) && $_GET['type'] == 'eid') {
-    $refTable = "eid_form";
+    $refTable = "form_eid";
     $refPrimaryColumn = "eid_id";
     $patientIdColumn = 'child_id';
     $patientFirstName = 'child_name';

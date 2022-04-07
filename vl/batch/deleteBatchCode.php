@@ -5,15 +5,15 @@
 $general = new \Vlsm\Models\General();
 
 $tableName1 = "batch_details";
-$tableName2 = "vl_request_form";
+$tableName2 = "form_vl";
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {
-    $tableName2 = "vl_request_form";
+    $tableName2 = "form_vl";
     $table2PrimaryColumn = "vl_sample_id";
     $editFileName = 'editBatch.php';
 } else if (isset($_POST['type']) && $_POST['type'] == 'eid') {
-    $tableName2 = "eid_form";
+    $tableName2 = "form_eid";
     $table2PrimaryColumn = "eid_id";
 } else if (isset($_POST['type']) && $_POST['type'] == 'covid19') {
     $tableName2 = "form_covid19";

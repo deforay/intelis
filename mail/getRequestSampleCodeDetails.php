@@ -42,7 +42,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 $query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code 
-        FROM vl_request_form as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+        FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
         WHERE sample_code is not null ";
 if (!empty($facility)) {
   $query = $query . " AND vl.facility_id = $facility";

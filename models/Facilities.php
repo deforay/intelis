@@ -93,7 +93,7 @@ class Facilities
         } */
 
         $this->db->where("user_id", $userId);
-        $response = $this->db->getValue("vl_user_facility_map", "facility_id",  null);
+        $response = $this->db->getValue("user_facility_map", "facility_id",  null);
         if ($this->db->count > 0) {
             return implode(",", $response);
         } else {

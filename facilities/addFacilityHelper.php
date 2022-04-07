@@ -12,7 +12,7 @@ $geolocation = new \Vlsm\Models\GeoLocations();
 /* For reference we define the table names */
 $facilityTable = "facility_details";
 $provinceTable = "province_details";
-$vlUserFacilityMapTable = "vl_user_facility_map";
+$vlUserFacilityMapTable = "user_facility_map";
 $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
 $labSignTable = "lab_report_signatories";

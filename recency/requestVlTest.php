@@ -54,7 +54,7 @@ try {
     }
 
     $data = array();
-    $vlReqFromTable = "vl_request_form";
+    $vlReqFromTable = "form_vl";
     
     if (isset($result) && count($result) > 0 && $result[0] != "") {
 
@@ -88,8 +88,8 @@ try {
         $data['patient_gender'] = $result[11];
 
         /* Check if request data already placed or not */
-        // $vlFormReqQuery ="SELECT vl_sample_id from vl_request_form WHERE remote_sample_code ='".$result[0]."' AND patient_art_no ='".$result[1]."' AND facility_id ='".$result[2]."' AND patient_province ='".$facilityResult[0]['facility_state']."' AND patient_district ='".$facilityResult[0]['facility_district']."' AND sample_collection_date ='".date('Y-m-d',strtotime($result[5]))."' AND sample_type ='".$result[6]."'";
-        $vlFormReqQuery = "SELECT vl_sample_id from vl_request_form WHERE remote_sample_code ='" . $result[0] . "'";
+        // $vlFormReqQuery ="SELECT vl_sample_id from form_vl WHERE remote_sample_code ='".$result[0]."' AND patient_art_no ='".$result[1]."' AND facility_id ='".$result[2]."' AND patient_province ='".$facilityResult[0]['facility_state']."' AND patient_district ='".$facilityResult[0]['facility_district']."' AND sample_collection_date ='".date('Y-m-d',strtotime($result[5]))."' AND sample_type ='".$result[6]."'";
+        $vlFormReqQuery = "SELECT vl_sample_id from form_vl WHERE remote_sample_code ='" . $result[0] . "'";
         $vlFormReqResult = $db->query($vlFormReqQuery);
 
         /* If request data not requested then process otherwise send msg */
