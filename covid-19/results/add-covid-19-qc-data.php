@@ -15,6 +15,19 @@ $testKitsList = array();
 foreach ($testKitInfo as $kits) {
     $testKitsList[base64_encode($kits['testkit_id'])] = $kits['testkit_name'];
 }
+$pdQuery = "SELECT * from province_details";
+$chkUserFcMapQry = "SELECT user_id FROM vl_user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+$chkUserFcMapResult = $db->query($chkUserFcMapQry);
+if ($chkUserFcMapResult) {
+    $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN vl_user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+}
+$pdResult = $db->query($pdQuery);
+$province = "";
+$province .= "<option value=''> -- Select -- </option>";
+foreach ($pdResult as $provinceName) {
+    $province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
+}
+
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -75,6 +88,29 @@ foreach ($testKitInfo as $kits) {
                                     <label for="expiryDate" class="col-lg-4 control-label"><?php echo _("Expiry Date"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <input type="text" class="form-control date isRequired" id="expiryDate" name="expiryDate" placeholder="<?php echo _('Expiry date'); ?>" title="<?php echo _('Please enter expiry date'); ?>" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="province" class="col-lg-4 control-label"><?php echo _("State / Province"); ?></label>
+                                    <div class="col-lg-7">
+                                        <select class="form-control select2" name="province" id="province" title="Please choose State / province" onchange="getDistrictDetails(this);" style="width:100%;">
+                                            <?php echo $province; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="district" class="col-lg-4 control-label"><?php echo _("District / County"); ?></label>
+                                    <div class="col-lg-7">
+                                        <select class="form-control select2" name="district" id="district" title="Please choose district / county" style="width:100%;" onchange="getLabsDistrictWise(this);">
+                                            <option value=""> -- Select -- </option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -170,6 +206,16 @@ foreach ($testKitInfo as $kits) {
     $('#testKit').select2({
         width: '100%',
         placeholder: "Select Test Kit name"
+    });
+
+    $('#province').select2({
+        width: '100%',
+        placeholder: "Select province name"
+    });
+
+    $('#district').select2({
+        width: '100%',
+        placeholder: "Select district name"
     });
 
     $(document).ready(function() {
@@ -284,6 +330,53 @@ foreach ($testKitInfo as $kits) {
                     }
                 });
         }
+    }
+
+    function getDistrictDetails(obj) {
+
+        // $.blockUI();
+        var pName = $("#province").val();
+        if ($.trim(pName) != '') {
+            $.post("/includes/siteInformationDropdownOptions.php", {
+                    pName: pName,
+                    fType: 2,
+                    testType: 'covid19'
+                },
+                function(data) {
+                    if (data != "") {
+                        details = data.split("###");
+                        $("#labName").html(details[0]);
+                        $("#district").html(details[1]);
+                    }
+                });
+        } else if (pName == '') {
+            $("#province").html("<?php echo $province; ?>");
+            $("#labName").html("<?= $generalDb->generateSelectOptions($testingLabs, null, "--Select--"); ?>");
+            $("#labName").select2("val", "");
+            $("#district").html("<option value=''> -- Select -- </option>");
+        }
+        $.unblockUI();
+    }
+
+    function getLabsDistrictWise(obj) {
+        // $.blockUI();
+        var dName = $("#district").val();
+        if (dName != '') {
+            $.post("/includes/siteInformationDropdownOptions.php", {
+                    dName: dName,
+                    fType: 2,
+                    testType: 'covid19'
+                },
+                function(data) {
+                    if (data != "") {
+                        details = data.split("###");
+                        $("#labName").html(details[1]);
+                    }
+                });
+        } else {
+            $("#labName").html("<?= $generalDb->generateSelectOptions($testingLabs, null, "--Select--"); ?>");
+        }
+        $.unblockUI();
     }
 </script>
 
