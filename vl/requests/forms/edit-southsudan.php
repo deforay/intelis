@@ -578,7 +578,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4">
 													<label for="reqClinician" class="col-lg-5 control-label">Request Clinician</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" />
+														<input type="text" class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -625,7 +625,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4">
 													<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control labSection" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?php echo $vlQueryInfo['vl_focal_person']; ?>" />
+														<input type="text" class="form-control labSection ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?php echo $vlQueryInfo['vl_focal_person']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -883,6 +883,120 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 		reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 		result = ($("#vlResult").length) ? $("#vlResult").val() : '';
 		checkPatientReceivesms('<?php echo $vlQueryInfo['consent_to_receive_sms']; ?>');
+
+		$("#reqClinician").select2({
+			placeholder: "Enter Request Clinician name",
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function(bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "Type one or more character tp search",
+				url: "/includes/get-data-list.php",
+				dataType: 'json',
+				delay: 250,
+				data: function(params) {
+					return {
+						fieldName: 'request_clinician_name',
+						tableName: 'vl_request_form',
+						q: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function(data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function(markup) {
+				return markup;
+			}
+		});
+
+		$("#reqClinician").change(function() {
+			$.blockUI();
+			var search = $(this).val();
+			if ($.trim(search) != '') {
+				$.get("/includes/get-data-list.php", {
+						fieldName: 'request_clinician_name',
+						tableName: 'vl_request_form',
+						returnField: 'request_clinician_phone_number',
+						limit: 1,
+						q: search,
+					},
+					function(data) {
+						if (data != "") {
+							$("#reqClinicianPhoneNumber").val(data);
+						}
+					});
+			}
+			$.unblockUI();
+		});
+
+		$("#vlFocalPerson").select2({
+			placeholder: "Enter Request Focal name",
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function(bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "Type one or more character tp search",
+				url: "/includes/get-data-list.php",
+				dataType: 'json',
+				delay: 250,
+				data: function(params) {
+					return {
+						fieldName: 'vl_focal_person',
+						tableName: 'vl_request_form',
+						q: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function(data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function(markup) {
+				return markup;
+			}
+		});
+
+		$("#vlFocalPerson").change(function() {
+			$.blockUI();
+			var search = $(this).val();
+			if ($.trim(search) != '') {
+				$.get("/includes/get-data-list.php", {
+						fieldName: 'vl_focal_person',
+						tableName: 'vl_request_form',
+						returnField: 'vl_focal_person_phone_number',
+						limit: 1,
+						q: search,
+					},
+					function(data) {
+						if (data != "") {
+							$("#vlFocalPersonPhoneNumber").val(data);
+						}
+					});
+			}
+			$.unblockUI();
+		});
 	});
 
 	function showTesting(chosenClass) {

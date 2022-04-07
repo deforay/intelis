@@ -264,22 +264,22 @@ $patienZones["other"] = "Other";
                                 </tr>
                                 <tr>
                                     <th>Adresse du patient</th>
-                                    <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Adresse du patient" title="Adresse du patient" style="width:100%;" onchange=""><?php echo $covid19Info['patient_address']; ?></textarea></td>
+                                    <td><textarea class="form-control" id="patientAddress" name="patientAddress" placeholder="Adresse du patient" title="Adresse du patient" style="width:100%;" onchange=""><?php echo $covid19Info['patient_address']; ?></textarea></td>
                                     <th>Province du patient</th>
                                     <td>
-                                        <select class="form-control" id="patientProvince" name="patientProvince" placeholder="Province du patient" style="width:100%;">
+                                        <select class="form-control ajax-select2" id="patientProvince" name="patientProvince" placeholder="Province du patient" style="width:100%;">
                                             <?= $general->generateSelectOptions($patienProvince, $covid19Info['patient_province'], '-- Sélectionner --'); ?>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Commune</th>
-                                    <td><select class="form-control" id="patientZone" name="patientZone" placeholder="Commune" style="width:100%;">
+                                    <td><select class="form-control ajax-select2" id="patientZone" name="patientZone" placeholder="Commune" style="width:100%;">
                                             <?= $general->generateSelectOptions($patienZones, $covid19Info['patient_zone'], '-- Sélectionner --'); ?>
                                         </select>
                                     </td>
                                     <th>Zone de Santé du Patient</th>
-                                    <td><select class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Zone de Santé du Patient" style="width:100%;">
+                                    <td><select class="form-control ajax-select2" id="patientDistrict" name="patientDistrict" placeholder="Zone de Santé du Patient" style="width:100%;">
                                             <?= $general->generateSelectOptions($pateitnDistrict, $covid19Info['patient_district'], '-- Sélectionner --'); ?>
                                         </select>
                                     </td>
