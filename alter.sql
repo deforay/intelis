@@ -3071,4 +3071,9 @@ RENAME TABLE `vl_facility_map` TO `testing_lab_health_facilities_map`;
 RENAME TABLE `contact_notes_details` TO `vl_contact_notes`;
 
 
+ALTER TABLE `form_vl` DROP INDEX `status`;
+ALTER TABLE `form_vl` CHANGE `result_approved_by` `result_approved_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` ADD INDEX(`result_approved_by`);
+ALTER TABLE `form_vl` CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` ADD INDEX(`result_reviewed_by`);
 
