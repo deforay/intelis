@@ -900,7 +900,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 				data: function(params) {
 					return {
 						fieldName: 'request_clinician_name',
-						tableName: 'vl_request_form',
+						tableName: 'form_vl',
 						q: params.term, // search term
 						page: params.page
 					};
@@ -927,7 +927,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
 						fieldName: 'request_clinician_name',
-						tableName: 'vl_request_form',
+						tableName: 'form_vl',
 						returnField: 'request_clinician_phone_number',
 						limit: 1,
 						q: search,
@@ -957,7 +957,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 				data: function(params) {
 					return {
 						fieldName: 'vl_focal_person',
-						tableName: 'vl_request_form',
+						tableName: 'form_vl',
 						q: params.term, // search term
 						page: params.page
 					};
@@ -984,7 +984,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
 						fieldName: 'vl_focal_person',
-						tableName: 'vl_request_form',
+						tableName: 'form_vl',
 						returnField: 'vl_focal_person_phone_number',
 						limit: 1,
 						q: search,

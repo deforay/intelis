@@ -405,6 +405,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $sampleCodeKey = 'sample_code_key';
         }
         $vldata = array(
+            'unique_id' => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateRandomString(32),
             'vlsm_instance_id' => $instanceId,
             'vlsm_country_id' => 1,
             'sample_code_format' => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  NULL,

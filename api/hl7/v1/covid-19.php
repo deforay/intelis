@@ -352,12 +352,31 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $provinceCode = (isset($_POST['provinceCode']) && !empty($_POST['provinceCode'])) ? $_POST['provinceCode'] : null;
     $provinceId = (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] : null;
     $sampleCollectionDate = (isset($_POST['sampleCollectionDate']) && !empty($_POST['sampleCollectionDate'])) ? $_POST['sampleCollectionDate'] : null;
-
+    $where = array();
     $c19DuplicateData = false;
-    $sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 
-                where 
-                    (sample_code like '%" . $_POST['sampleCode'] . "%' or remote_sample_code like '%" . $_POST['sampleCode'] . "%')
-                    AND (patient_id like '%" . $_POST['patientId'] . "%' AND patient_dob like '%" . $_POST['patientDob'] . "%' AND patient_gender like '%" . $_POST['patientGender'] . "%' AND patient_district like '%" . $_POST['patientDistrict'] . "%') limit 1";
+    $sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
+
+    if (isset($_POST['sampleCode']) && $_POST['sampleCode'] != "") {
+        $where[] =  " (sample_code like '" . $_POST['sampleCode'] . "' or remote_sample_code like '" . $_POST['sampleCode'] . "')";
+    }
+    if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
+        $where[] =  " patient_id like '" . $_POST['patientId'] . "'";
+    }
+    if (isset($_POST['patientDob']) && $_POST['patientDob'] != "") {
+        $where[] =  " patient_dob like '" . $_POST['patientDob'] . "'";
+    }
+    if (isset($_POST['patientGender']) && $_POST['patientGender'] != "") {
+        $where[] =  " patient_gender like '" . $_POST['patientGender'] . "'";
+    }
+    if (isset($_POST['patientDistrict']) && $_POST['patientDistrict'] != "") {
+        $where[] =  " patient_district like '" . $_POST['patientDistrict'] . "'";
+    }
+
+    if (sizeof($where) > 0) {
+        $sQuery .= " where  " . implode(" AND ", $where) . "  limit 1";
+    } else {
+        $sQuery .= " limit 1";
+    }
     // die($sQuery);
     $c19DuplicateData = $db->rawQueryOne($sQuery);
     if ($c19DuplicateData) {
@@ -437,6 +456,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $status = 4;
         }
         $covid19Data = array(
+            'unique_id'                           => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateRandomString(32),
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $_POST['formId'],
             'external_sample_code'                => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
