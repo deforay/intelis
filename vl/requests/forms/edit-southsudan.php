@@ -578,7 +578,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4">
 													<label for="reqClinician" class="col-lg-5 control-label">Request Clinician</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" />
+														<select class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>">
+															<option value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" selected='selected'> <?php echo $vlQueryInfo['request_clinician_name']; ?></option>
+														</select>
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -625,7 +627,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4">
 													<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control labSection ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?php echo $vlQueryInfo['vl_focal_person']; ?>" />
+														<select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" title="Please enter VL Focal Person">
+															<option value="<?php echo $vlQueryInfo['vl_focal_person']; ?>" selected='selected'> <?php echo $vlQueryInfo['vl_focal_person']; ?></option>
+														</select>
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -822,6 +826,18 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	provinceName = true;
 	facilityName = true;
 	$(document).ready(function() {
+
+		$(document).on('select2:open', (e) => {
+			const selectId = e.target.id
+
+			$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
+				key,
+				value,
+			) {
+				value.focus();
+			})
+		});
+
 		$("#sampleCollectionDate").datetimepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1229,11 +1245,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	}
 
 	function autoFillFocalDetails() {
-		labId = $("#labId").val();
-		if ($.trim(labId) != '') {
-			$("#vlFocalPerson").val($('#labId option:selected').attr('data-focalperson'));
-			$("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
-		}
+		// labId = $("#labId").val();
+		// if ($.trim(labId) != '') {
+		// 	$("#vlFocalPerson").val($('#labId option:selected').attr('data-focalperson')).trigger('change');
+		// 	$("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
+		// }
 	}
 
 	function calculateLogValue(obj) {
