@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
+
 
 
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
@@ -168,17 +168,17 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $end_date = $general->dateFormat(trim($s_c_date[1]));
      }
 }
-/* Sample recieved date filter */
-$rstart_date = '';
-$rend_date = '';
-if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
-     $s_r_date = explode("to", $_POST['sampleRecievedDate']);
-     //print_r($s_r_date);die;
-     if (isset($s_r_date[0]) && trim($s_r_date[0]) != "") {
-          $rstart_date = $general->dateFormat(trim($s_r_date[0]));
+
+/* Sample recevied date filter */
+$sSampleReceivedDate = '';
+$eSampleReceivedDate = '';
+if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
+     $s_p_date = explode("to", $_POST['sampleReceivedDate']);
+     if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
+          $sSampleReceivedDate = $general->dateFormat(trim($s_p_date[0]));
      }
-     if (isset($s_r_date[1]) && trim($s_r_date[1]) != "") {
-          $rend_date = $general->dateFormat(trim($s_r_date[1]));
+     if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
+          $eSampleReceivedDate = $general->dateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample tested date filter */
@@ -204,6 +204,10 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
           $ePrintDate = $general->dateFormat(trim($s_p_date[1]));
      }
+}
+/* Sample type filter */
+if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+     $sWhere = $sWhere . ' AND vl.specimen_type IN (' . $_POST['sampleType'] . ')';
 }
 /* Facility Id filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
@@ -261,6 +265,13 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
           $sWhere[] = ' DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
+     }
+}
+if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
+     if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
+          $sWhere = $sWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) = "' . $sSampleReceivedDate . '"';
+     } else {
+          $sWhere = $sWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
      }
 }
 
@@ -322,9 +333,9 @@ foreach ($rResult as $aRow) {
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
      if ($aRow['is_result_authorised'] == 'yes') {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("View").'" onclick="convertSearchResultToPdf(' . $aRow['tb_id'] . ');"><i class="fa fa-file-text"></i> '. _("Result PDF").'</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['tb_id'] . ');"><i class="fa fa-file-text"></i> ' . _("Result PDF") . '</a>';
      } else {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="'. _("View").'"><i class="fa fa-ban"></i> '. _("Not Authorized").'</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="' . _("View") . '"><i class="fa fa-ban"></i> ' . _("Not Authorized") . '</a>';
      }
 
      $output['aaData'][] = $row;

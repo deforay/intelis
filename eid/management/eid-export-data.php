@@ -62,6 +62,22 @@ $eidResults = $general->getEidResults();
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
+							<td><b><?php echo _("Sample Received at Lab Date"); ?>&nbsp;:</b></td>
+							<td>
+								<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _('Select Received Date'); ?>" style="width:220px;background:#fff;" />
+							</td>
+
+							<td><b><?php echo _("Sample Type"); ?>&nbsp;:</b></td>
+							<td>
+								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<?php foreach ($sResult as $type) { ?>
+										<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+									<?php } ?>
+								</select>
+							</td>
+						</tr>
+						<tr>
 							<th><?php echo _("Facility Name"); ?></th>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
@@ -74,13 +90,13 @@ $eidResults = $general->getEidResults();
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Sample Test Date"); ?></th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 
+						</tr>
+						<tr>
 							<th><?php echo _("Result"); ?> </th>
 							<td>
 								<select class="form-control" id="result" name="result" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
@@ -95,8 +111,6 @@ $eidResults = $general->getEidResults();
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Status"); ?></th>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
@@ -108,6 +122,8 @@ $eidResults = $general->getEidResults();
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
+						</tr>
+						<tr>
 							<td><b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
@@ -132,8 +148,6 @@ $eidResults = $general->getEidResults();
 									<?php } ?>
 								</select>
 							</td>
-						</tr>
-						<tr>"
 							<th><?php echo _("Implementing Partners"); ?></th>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
@@ -283,9 +297,41 @@ $eidResults = $general->getEidResults();
 				endDate = end.format('YYYY-MM-DD');
 			});
 
+		$('.daterangefield').daterangepicker({
+				locale: {
+					cancelLabel: 'Clear'
+				},
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
+				startDate: moment().subtract(29, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+				}
+			},
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
+
+		$('.daterangefield').on('cancel.daterangepicker', function(ev, picker) {
+			$(this).val('');
+		});
+
 		$('#printDate').val("");
 		$('#sampleCollectionDate').val("");
 		//$('#sampleTestDate').val("");
+		$('#sampleReceivedDate').val("");
 		loadVlRequestData();
 
 		$(".showhideCheckBox").change(function() {
@@ -379,6 +425,14 @@ $eidResults = $general->getEidResults();
 				aoData.push({
 					"name": "sampleCollectionDate",
 					"value": $("#sampleCollectionDate").val()
+				});
+				aoData.push({
+					"name": "sampleReceivedDate",
+					"value": $("#sampleReceivedDate").val()
+				});
+				aoData.push({
+					"name": "sampleType",
+					"value": $("#sampleType").val()
 				});
 				aoData.push({
 					"name": "sampleTestDate",
