@@ -488,7 +488,7 @@ $sFormat = '';
                                                             <div class="col-md-4">
                                                                  <label for="reqClinician" class="col-lg-5 control-label">Request Clinician</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician" />
+                                                                      <input type="text" class="form-control select2" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -802,7 +802,132 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
           ?>
           // BARCODESTUFF END
+
+          $("#reqClinician").select2({
+               placeholder: "Enter Request Clinician name",
+               minimumInputLength: 0,
+               width: '100%',
+               allowClear: true,
+               id: function(bond) {
+                    return bond._id;
+               },
+               ajax: {
+                    placeholder: "Type one or more character tp search",
+                    url: "/includes/get-data-list.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                         return {
+                              fieldName: 'request_clinician_name',
+                              tableName: 'vl_request_form',
+                              q: params.term, // search term
+                              page: params.page
+                         };
+                    },
+                    processResults: function(data, params) {
+                         params.page = params.page || 1;
+                         return {
+                              results: data.result,
+                              pagination: {
+                                   more: (params.page * 30) < data.total_count
+                              }
+                         };
+                    },
+                    //cache: true
+               },
+               escapeMarkup: function(markup) {
+                    return markup;
+               }
+          });
+
+          $("#reqClinician").change(function() {
+               $.blockUI();
+               var search = $(this).val();
+               if ($.trim(search) != '') {
+                    $.get("/includes/get-data-list.php", {
+                              fieldName: 'request_clinician_name',
+                              tableName: 'vl_request_form',
+                              returnField: 'request_clinician_phone_number',
+                              limit: 1,
+                              q: search,
+                         },
+                         function(data) {
+                              if (data != "") {
+                                   $("#reqClinicianPhoneNumber").val(data);
+                              }
+                         });
+               }
+               $.unblockUI();
+          });
+
+          $("#vlFocalPerson").select2({
+               placeholder: "Enter Request Focal name",
+               minimumInputLength: 0,
+               width: '100%',
+               allowClear: true,
+               id: function(bond) {
+                    return bond._id;
+               },
+               ajax: {
+                    placeholder: "Type one or more character tp search",
+                    url: "/includes/get-data-list.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                         return {
+                              fieldName: 'vl_focal_person',
+                              tableName: 'vl_request_form',
+                              q: params.term, // search term
+                              page: params.page
+                         };
+                    },
+                    processResults: function(data, params) {
+                         params.page = params.page || 1;
+                         return {
+                              results: data.result,
+                              pagination: {
+                                   more: (params.page * 30) < data.total_count
+                              }
+                         };
+                    },
+                    //cache: true
+               },
+               escapeMarkup: function(markup) {
+                    return markup;
+               }
+          });
+
+          $("#vlFocalPerson").change(function() {
+               $.blockUI();
+               var search = $(this).val();
+               if ($.trim(search) != '') {
+                    $.get("/includes/get-data-list.php", {
+                              fieldName: 'vl_focal_person',
+                              tableName: 'vl_request_form',
+                              returnField: 'vl_focal_person_phone_number',
+                              limit: 1,
+                              q: search,
+                         },
+                         function(data) {
+                              if (data != "") {
+                                   $("#vlFocalPersonPhoneNumber").val(data);
+                              }
+                         });
+               }
+               $.unblockUI();
+          });
      });
+
+     $(document).on('select2:open', (e) => {
+          const selectId = e.target.id
+
+          $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
+               key,
+               value,
+          ) {
+               value.focus();
+          })
+     })
 
      function showTesting(chosenClass) {
           $(".viralTestData").val('');
