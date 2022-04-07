@@ -1,9 +1,9 @@
 -- Version 3.0 ---------- Pal 21-Mar-2017
 -- Version 3.2 ---------- Amit 29-Mar-2017
 
-ALTER TABLE `form_vl` ADD `consultation` VARCHAR(255) NULL DEFAULT NULL AFTER `manual_result_entry`, ADD `first_line` VARCHAR(255) NULL DEFAULT NULL AFTER `consultation`, ADD `second_line` VARCHAR(255) NULL DEFAULT NULL AFTER `first_line`, ADD `first_viral_load` VARCHAR(255) NULL DEFAULT NULL AFTER `second_line`, ADD `collection_type` VARCHAR(255) NULL DEFAULT NULL AFTER `first_viral_load`, ADD `sample_processed` VARCHAR(255) NULL DEFAULT NULL AFTER `collection_type`;
-ALTER TABLE `form_vl` ADD `vl_result_category` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_processed`;
-ALTER TABLE `form_vl` ADD `sample_received_at_hub_datetime` DATETIME NULL DEFAULT NULL AFTER `vl_focal_person_phone_number`;
+ALTER TABLE `vl_request_form` ADD `consultation` VARCHAR(255) NULL DEFAULT NULL AFTER `manual_result_entry`, ADD `first_line` VARCHAR(255) NULL DEFAULT NULL AFTER `consultation`, ADD `second_line` VARCHAR(255) NULL DEFAULT NULL AFTER `first_line`, ADD `first_viral_load` VARCHAR(255) NULL DEFAULT NULL AFTER `second_line`, ADD `collection_type` VARCHAR(255) NULL DEFAULT NULL AFTER `first_viral_load`, ADD `sample_processed` VARCHAR(255) NULL DEFAULT NULL AFTER `collection_type`;
+ALTER TABLE `vl_request_form` ADD `vl_result_category` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_processed`;
+ALTER TABLE `vl_request_form` ADD `sample_received_at_hub_datetime` DATETIME NULL DEFAULT NULL AFTER `vl_focal_person_phone_number`;
 
 UPDATE `privileges` SET `privilege_name` = 'vlWeeklyReport.php' WHERE `privilege_name` = 'monthlyReport.php'; 
 
@@ -23,28 +23,28 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`) VALUES ('Edit Prof
 
 -- saravanan 26-july-2018
 
-ALTER TABLE `form_vl` ADD `cphl_vl_result` VARCHAR(255) NULL DEFAULT NULL AFTER `vl_test_platform`; -- for png form
+ALTER TABLE `vl_request_form` ADD `cphl_vl_result` VARCHAR(255) NULL DEFAULT NULL AFTER `vl_test_platform`; -- for png form
 
 ALTER TABLE `temp_sample_import` CHANGE `sample_review_by` `sample_review_by` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
 
 
 -- saravanana 02-Aug-2018
 
-  ALTER TABLE `form_vl` CHANGE `remote_sample_code_key` `remote_sample_code_key` INT NULL DEFAULT NULL, CHANGE `sample_code_key` `sample_code_key` INT NULL DEFAULT NULL;
+  ALTER TABLE `vl_request_form` CHANGE `remote_sample_code_key` `remote_sample_code_key` INT NULL DEFAULT NULL, CHANGE `sample_code_key` `sample_code_key` INT NULL DEFAULT NULL;
 
 -- saravanan 16-aug-2018
-ALTER TABLE `form_vl` ADD `province_id` VARCHAR(255) NULL DEFAULT NULL AFTER `facility_id`;
+ALTER TABLE `vl_request_form` ADD `province_id` VARCHAR(255) NULL DEFAULT NULL AFTER `facility_id`;
 -- Version 3.8 ---------- Amit 28-Aug-2018
 
 -- saravanan 03-sep-2018
-ALTER TABLE `form_vl` ADD `reason_for_vl_testing_other` VARCHAR(255) NULL DEFAULT NULL AFTER `reason_for_vl_testing`;
+ALTER TABLE `vl_request_form` ADD `reason_for_vl_testing_other` VARCHAR(255) NULL DEFAULT NULL AFTER `reason_for_vl_testing`;
 
 
 -- Amit 05 Sep 2018
 
-UPDATE form_vl INNER JOIN r_vl_test_reasons
-    ON form_vl.reason_for_vl_testing = r_vl_test_reasons.test_reason_name
-SET form_vl.reason_for_vl_testing = r_vl_test_reasons.test_reason_id;
+UPDATE vl_request_form INNER JOIN r_vl_test_reasons
+    ON vl_request_form.reason_for_vl_testing = r_vl_test_reasons.test_reason_name
+SET vl_request_form.reason_for_vl_testing = r_vl_test_reasons.test_reason_id;
 
 
 -- Version 3.9 ---------- Amit 14-Sep-2018
@@ -74,7 +74,7 @@ ALTER TABLE `facility_details` ADD `header_text` VARCHAR(255) NULL DEFAULT NULL 
 
 -- saravanan 21-jan-2019
 ALTER TABLE `activity_log` ADD `ip_address` VARCHAR(255) NULL DEFAULT NULL AFTER `date_time`;
-UPDATE form_vl SET result_status = 7 WHERE result_status=6 AND (result is NOT null AND result != '');
+UPDATE vl_request_form SET result_status = 7 WHERE result_status=6 AND (result is NOT null AND result != '');
 
 
 -- Version 3.10 ---------- Amit 11-Feb-2018
@@ -91,17 +91,17 @@ UPDATE `r_sample_status` SET `status_name` = 'Awaiting Approval' WHERE `r_sample
 -- Version 3.10.4 ---------- Amit 24-Feb-2018
 
 
-ALTER TABLE `form_vl` ADD INDEX(`sample_collection_date`);
-ALTER TABLE `form_vl` ADD INDEX(`sample_tested_datetime`);
-ALTER TABLE `form_vl` ADD INDEX(`lab_id`);
-ALTER TABLE `form_vl` ADD INDEX(`result_status`);
+ALTER TABLE `vl_request_form` ADD INDEX(`sample_collection_date`);
+ALTER TABLE `vl_request_form` ADD INDEX(`sample_tested_datetime`);
+ALTER TABLE `vl_request_form` ADD INDEX(`lab_id`);
+ALTER TABLE `vl_request_form` ADD INDEX(`result_status`);
 
 
 -- Version 3.10.5 ---------- Amit 28-Feb-2018
 -- Version 3.10.6 ---------- Amit 04-Mar-2019
-ALTER TABLE `form_vl` ADD `sample_registered_at_lab` DATETIME NULL AFTER `lab_phone_number`;
-UPDATE `form_vl` set sample_registered_at_lab = request_created_datetime where sample_registered_at_lab is NULL;
-UPDATE `form_vl` set sample_received_at_vl_lab_datetime = request_created_datetime where sample_received_at_vl_lab_datetime is NULL;
+ALTER TABLE `vl_request_form` ADD `sample_registered_at_lab` DATETIME NULL AFTER `lab_phone_number`;
+UPDATE `vl_request_form` set sample_registered_at_lab = request_created_datetime where sample_registered_at_lab is NULL;
+UPDATE `vl_request_form` set sample_received_at_vl_lab_datetime = request_created_datetime where sample_received_at_vl_lab_datetime is NULL;
 
 
 CREATE TABLE `move_samples` (
@@ -291,11 +291,11 @@ ALTER TABLE `eid_form` ADD `result_approved_by` VARCHAR(255) NULL DEFAULT NULL A
 
 
 -- Thanaseelan 30-May-2019 For Betwwn Recency and VLSM API integration while Assay outcome is Assay Recent(VL lab test request)
-ALTER TABLE `form_vl` ADD `recency_vl` VARCHAR(255) NOT NULL DEFAULT 'no' AFTER `remote_sample`;
+ALTER TABLE `vl_request_form` ADD `recency_vl` VARCHAR(255) NOT NULL DEFAULT 'no' AFTER `remote_sample`;
 
 -- Thanaseelan 03-May-2019 Create vl test resilt data send to recnecy or not status
-ALTER TABLE `form_vl` ADD `recency_sync` INT(11) NULL DEFAULT NULL AFTER `recency_vl`;
-ALTER TABLE `form_vl` CHANGE `recency_sync` `recency_sync` INT(11) NULL DEFAULT '0';
+ALTER TABLE `vl_request_form` ADD `recency_sync` INT(11) NULL DEFAULT NULL AFTER `recency_vl`;
+ALTER TABLE `vl_request_form` CHANGE `recency_sync` `recency_sync` INT(11) NULL DEFAULT '0';
 
 
 INSERT INTO `resources` (`resource_id`, `module`, `resource_name`, `display_name`) VALUES (27, 'eid', 'eid-results', 'EID Result Management');
@@ -468,7 +468,7 @@ UPDATE `package_details` SET module = 'vl' where module is NULL;
 
 
 -- Amit 19 August 2019
-ALTER TABLE `form_vl` ADD `vldash_sync` INT NOT NULL DEFAULT '0' AFTER `vl_result_category`;
+ALTER TABLE `vl_request_form` ADD `vldash_sync` INT NOT NULL DEFAULT '0' AFTER `vl_result_category`;
 
 -- Version 3.14
 
@@ -520,13 +520,13 @@ ALTER TABLE `eid_form` ADD `province_id` INT NULL DEFAULT NULL AFTER `facility_i
 
 -- Amit 15 Nov 2019
 
-ALTER TABLE `form_vl` ADD `sample_package_code` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_package_id`;
+ALTER TABLE `vl_request_form` ADD `sample_package_code` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_package_id`;
 ALTER TABLE `eid_form` ADD `sample_package_code` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_package_id`;
 
-UPDATE form_vl INNER JOIN package_details
-    ON form_vl.sample_package_id = package_details.package_id
-SET form_vl.sample_package_code = package_details.package_code 
-WHERE form_vl.sample_package_code is NULL;
+UPDATE vl_request_form INNER JOIN package_details
+    ON vl_request_form.sample_package_id = package_details.package_id
+SET vl_request_form.sample_package_code = package_details.package_code 
+WHERE vl_request_form.sample_package_code is NULL;
 
 UPDATE eid_form INNER JOIN package_details
     ON eid_form.sample_package_id = package_details.package_id
@@ -966,8 +966,8 @@ ALTER TABLE `r_covid19_test_reasons` ADD `parent_reason` INT(11) NULL DEFAULT NU
 
 
   -- Amit 28-Jul-2020
-  ALTER TABLE `form_vl` ADD `remote_sample_code_format` VARCHAR(255) NULL DEFAULT NULL AFTER `remote_sample_code_key`;
-  UPDATE `form_vl` SET serial_no = null;
+  ALTER TABLE `vl_request_form` ADD `remote_sample_code_format` VARCHAR(255) NULL DEFAULT NULL AFTER `remote_sample_code_key`;
+  UPDATE `vl_request_form` SET serial_no = null;
 
 
 -- Version 4.0.3 -- Amit -- 28-July-2020
@@ -1003,7 +1003,7 @@ ALTER TABLE `r_covid19_test_reasons` ADD `updated_datetime` DATETIME NULL DEFAUL
 
 -- Amit 17 August 2020
 
-ALTER TABLE `form_vl` ADD `tested_by` VARCHAR(255) NULL DEFAULT NULL AFTER `lot_expiration_date`;
+ALTER TABLE `vl_request_form` ADD `tested_by` VARCHAR(255) NULL DEFAULT NULL AFTER `lot_expiration_date`;
 ALTER TABLE `eid_form` ADD `tested_by` VARCHAR(255) NULL DEFAULT NULL AFTER `result`;
 -- ALTER TABLE `form_covid19` ADD `final_result_entered_by` VARCHAR(255) NULL DEFAULT NULL AFTER `result`;
 ALTER TABLE `covid19_tests` ADD `tested_by` VARCHAR(255) NULL DEFAULT NULL AFTER `test_name`;
@@ -1015,7 +1015,7 @@ CREATE TABLE `covid19_reasons_for_testing` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- Amit 24 August 2020
-ALTER TABLE `form_vl` ADD INDEX(`last_modified_datetime`);
+ALTER TABLE `vl_request_form` ADD INDEX(`last_modified_datetime`);
 ALTER TABLE `eid_form` ADD INDEX(`last_modified_datetime`);
 ALTER TABLE `form_covid19` ADD INDEX(`last_modified_datetime`);
 
@@ -1048,8 +1048,8 @@ UPDATE `system_config` SET `value` = '4.0.5' WHERE `system_config`.`name` = 'ver
 
 -- Amit 02-Sep-2020
 
-ALTER TABLE `form_vl` ADD INDEX( `sample_code_key`);
-ALTER TABLE `form_vl` ADD INDEX( `remote_sample_code_key`);
+ALTER TABLE `vl_request_form` ADD INDEX( `sample_code_key`);
+ALTER TABLE `vl_request_form` ADD INDEX( `remote_sample_code_key`);
 ALTER TABLE `eid_form` ADD INDEX( `sample_code_key`);
 ALTER TABLE `eid_form` ADD INDEX( `remote_sample_code_key`);
 ALTER TABLE `form_covid19` ADD INDEX( `sample_code_key`);
@@ -1776,7 +1776,7 @@ VALUES
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'vl-test-request', 'edit-locked-vl-samples', 'Edit Locked VL Samples'), (NULL, 'eid-requests', 'edit-locked-eid-samples', 'Edit Locked EID Samples'), (NULL, 'covid-19-requests', 'edit-locked-covid19-samples', 'Edit Locked Covid-19 Samples');
 
-ALTER TABLE `form_vl` ADD `locked` VARCHAR(50) NOT NULL DEFAULT 'no' AFTER `result_status`;
+ALTER TABLE `vl_request_form` ADD `locked` VARCHAR(50) NOT NULL DEFAULT 'no' AFTER `result_status`;
 ALTER TABLE `eid_form` ADD `locked` VARCHAR(50) NOT NULL DEFAULT 'no' AFTER `result_status`;
 ALTER TABLE `form_covid19` ADD `locked` VARCHAR(50) NOT NULL DEFAULT 'no' AFTER `result_status`;
 
@@ -2075,7 +2075,7 @@ UPDATE `system_config` SET `value` = '4.3.0' WHERE `system_config`.`name` = 'ver
 -- Version 4.3.0  -- Amit -- 24-Feb-2021
 
 -- Amit 01-Mar-2021
-ALTER TABLE `form_vl` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
 ALTER TABLE `eid_form` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
 ALTER TABLE `form_covid19` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
 ALTER TABLE `form_hepatitis` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
@@ -2099,7 +2099,7 @@ ALTER TABLE `form_hepatitis` ADD `imported_date_time` DATETIME NULL DEFAULT NULL
 
 -- Thana 26-Mar-2021
 ALTER TABLE `eid_form` ADD `source_of_request` VARCHAR(50) NULL DEFAULT NULL AFTER `lot_number`;
-ALTER TABLE `form_vl` ADD `source_of_request` VARCHAR(50) NULL DEFAULT NULL AFTER `vldash_sync`;
+ALTER TABLE `vl_request_form` ADD `source_of_request` VARCHAR(50) NULL DEFAULT NULL AFTER `vldash_sync`;
 
 -- Thana 05-Apr-2021
 CREATE TABLE `lab_report_signatories` (
@@ -2149,12 +2149,12 @@ ALTER TABLE `form_hepatitis` ADD `source_of_request` TEXT NULL DEFAULT NULL AFTE
 ALTER TABLE `form_hepatitis` ADD `source_data_dump` TEXT NULL DEFAULT NULL AFTER `source_of_request`;
 ALTER TABLE `form_covid19` ADD `source_data_dump` TEXT NULL DEFAULT NULL AFTER `source_of_request`;
 ALTER TABLE `eid_form` ADD `source_data_dump` TEXT NULL DEFAULT NULL AFTER `source_of_request`;
-ALTER TABLE `form_vl` ADD `source_data_dump` TEXT NULL DEFAULT NULL AFTER `source_of_request`;
+ALTER TABLE `vl_request_form` ADD `source_data_dump` TEXT NULL DEFAULT NULL AFTER `source_of_request`;
 
 ALTER TABLE `form_hepatitis` ADD `result_sent_to_source` TEXT NULL DEFAULT NULL AFTER `source_data_dump`;
 ALTER TABLE `form_covid19` ADD `result_sent_to_source` TEXT NULL DEFAULT NULL AFTER `source_data_dump`;
 ALTER TABLE `eid_form` ADD `result_sent_to_source` TEXT NULL DEFAULT NULL AFTER `source_data_dump`;
-ALTER TABLE `form_vl` ADD `result_sent_to_source` TEXT NULL DEFAULT NULL AFTER `source_data_dump`;
+ALTER TABLE `vl_request_form` ADD `result_sent_to_source` TEXT NULL DEFAULT NULL AFTER `source_data_dump`;
 
 
 
@@ -2290,11 +2290,11 @@ UPDATE `global_config` SET `remote_sync_needed` = 'yes', `value` = 'no' WHERE `n
 
 
 -- Thana 22-Sep-2021
-ALTER TABLE `form_vl` ADD `app_local_test_req_id` VARCHAR(256) NULL DEFAULT NULL AFTER `is_result_mail_sent`;
+ALTER TABLE `vl_request_form` ADD `app_local_test_req_id` VARCHAR(256) NULL DEFAULT NULL AFTER `is_result_mail_sent`;
 
 -- Amit 24 Sep 2021
-ALTER TABLE `form_vl` CHANGE `vldash_sync` `vldash_sync` INT(11) NULL DEFAULT '0';
-ALTER TABLE `form_vl` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `vldash_sync` `vldash_sync` INT(11) NULL DEFAULT '0';
+ALTER TABLE `vl_request_form` CHANGE `vlsm_country_id` `vlsm_country_id` INT(11) NULL DEFAULT NULL;
 
 UPDATE `system_config` SET `value` = '4.4.1' WHERE `system_config`.`name` = 'sc_version';
 
@@ -2335,10 +2335,10 @@ ALTER TABLE `form_covid19` CHANGE `clinician_phone` `clinician_phone` TEXT CHARA
 ALTER TABLE `form_covid19` ADD `covid19_test_name` VARCHAR(500) NULL DEFAULT NULL AFTER `covid19_test_platform`;
 
 -- Amit 06-Oct-2021
-ALTER TABLE `form_vl` ADD `unique_id` VARCHAR(500) NULL AFTER `vl_sample_id`;
-UPDATE `form_vl` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null and unique_id is null;
-UPDATE `form_vl` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null and unique_id is null;
-ALTER TABLE `form_vl` ADD UNIQUE(`unique_id`);
+ALTER TABLE `vl_request_form` ADD `unique_id` VARCHAR(500) NULL AFTER `vl_sample_id`;
+UPDATE `vl_request_form` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null and unique_id is null;
+UPDATE `vl_request_form` set unique_id = sha1(CONCAT(`facility_id`, `sample_code`)) WHERE remote_sample_code is null and sample_code is not null and unique_id is null;
+ALTER TABLE `vl_request_form` ADD UNIQUE(`unique_id`);
 
 ALTER TABLE `eid_form` ADD `unique_id` VARCHAR(500) NULL AFTER `eid_id`;
 UPDATE `eid_form` set unique_id = sha1(remote_sample_code) WHERE remote_sample_code is not null and unique_id is null;
@@ -2364,7 +2364,7 @@ ALTER TABLE `form_hepatitis` DROP INDEX `source_of_request`;
 
 
 -- Thana 06-Oct-2021
-ALTER TABLE `form_vl` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
+ALTER TABLE `vl_request_form` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
 ALTER TABLE `eid_form` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
 ALTER TABLE `form_covid19` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
 ALTER TABLE `form_hepatitis` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
@@ -2376,17 +2376,17 @@ UPDATE `system_config` SET `value` = '4.4.2' WHERE `system_config`.`name` = 'sc_
 
 -- Thana 19-Oct-2021
 ALTER TABLE `failed_result_retest_tracker` ADD `sample_data` TEXT NOT NULL AFTER `sample_code`;
--- ALTER TABLE `form_vl` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
+-- ALTER TABLE `vl_request_form` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
 ALTER TABLE `eid_form` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
 ALTER TABLE `form_covid19` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
 ALTER TABLE `form_hepatitis` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
 
 -- Thana 21-Oct-2021
-ALTER TABLE `form_vl` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `vl_request_form` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 ALTER TABLE `eid_form` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 
 -- Amit 23-Oct-2021
-UPDATE form_vl set vl_result_category = null;
+UPDATE vl_request_form set vl_result_category = null;
 
 -- Amit 25-Oct-2021
 ALTER TABLE `geographical_divisions` ADD UNIQUE( `geo_name`, `geo_parent`);
@@ -2396,8 +2396,8 @@ UPDATE `system_config` SET `value` = '4.4.3' WHERE `system_config`.`name` = 'sc_
 
 
 
-ALTER TABLE `form_vl` ADD UNIQUE( `remote_sample_code`); 
-ALTER TABLE `form_vl` ADD UNIQUE( `sample_code`, `lab_id`); 
+ALTER TABLE `vl_request_form` ADD UNIQUE( `remote_sample_code`); 
+ALTER TABLE `vl_request_form` ADD UNIQUE( `sample_code`, `lab_id`); 
 ALTER TABLE `eid_form` ADD UNIQUE( `remote_sample_code`); 
 ALTER TABLE `eid_form` ADD UNIQUE( `sample_code`, `lab_id`); 
 ALTER TABLE `form_covid19` ADD UNIQUE( `remote_sample_code`); 
@@ -2413,7 +2413,7 @@ ALTER TABLE `move_samples_map` ADD `test_type` VARCHAR(256) NULL DEFAULT NULL AF
 ALTER TABLE `move_samples_map` CHANGE `vl_sample_id` `test_type_sample_id` INT NULL DEFAULT NULL;
 
 -- Thana 01-Nov-2021
-ALTER TABLE `form_vl` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 ALTER TABLE `eid_form` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 ALTER TABLE `form_covid19` CHANGE `app_local_test_req_id` `app_sample_code` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 
@@ -2662,7 +2662,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 -- Sakthivel 25-Nov-2021
 
-ALTER TABLE `form_vl` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `vl_request_form` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
 ALTER TABLE `eid_form` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
 ALTER TABLE `form_covid19` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
 ALTER TABLE `form_tb` ADD `sample_dispatched_datetime` datetime DEFAULT NULL AFTER `sample_collection_date`;
@@ -2749,12 +2749,12 @@ ALTER TABLE `form_hepatitis` CHANGE `hepatitis_test_type` `hepatitis_test_type` 
 ALTER TABLE `form_hepatitis` CHANGE `unique_id` `unique_id` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_hepatitis` CHANGE `remote_sample_code` `remote_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_hepatitis` CHANGE `sample_code` `sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_vl` CHANGE `unique_id` `unique_id` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_vl` CHANGE `remote_sample_code` `remote_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_vl` CHANGE `sample_code` `sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `unique_id` `unique_id` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `remote_sample_code` `remote_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `sample_code` `sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `user_details` CHANGE `user_name` `user_name` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_vl` CHANGE `sample_package_code` `sample_package_code` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_first_name` `patient_first_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_middle_name` `patient_middle_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_last_name` `patient_last_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_responsible_person` `patient_responsible_person` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_province` `patient_province` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_district` `patient_district` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_group` `patient_group` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_gender` `patient_gender` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_mobile_number` `patient_mobile_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_location` `patient_location` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_receiving_therapy` `patient_receiving_therapy` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_drugs_transmission` `patient_drugs_transmission` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_tb` `patient_tb` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `line_of_treatment_ref_type` `line_of_treatment_ref_type` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `current_regimen` `current_regimen` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `is_adherance_poor` `is_adherance_poor` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `number_of_enhanced_sessions` `number_of_enhanced_sessions` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_routine` `last_vl_result_routine` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_failure_ac` `last_vl_result_failure_ac` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_failure` `last_vl_result_failure` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_ecd` `last_vl_result_ecd` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_cf` `last_vl_result_cf` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_if` `last_vl_result_if` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `request_clinician_name` `request_clinician_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_modified_by` `last_modified_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lab_name` `lab_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lab_technician` `lab_technician` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lab_contact_person` `lab_contact_person` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result_value_text` `result_value_text` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result` `result` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `tested_by` `tested_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result_approved_by` `result_approved_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `revised_by` `revised_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result_reviewed_by` `result_reviewed_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `test_methods` `test_methods` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_category` `requesting_category` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_person` `requesting_person` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_result_category` `vl_result_category` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `source_of_request` `source_of_request` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_vl` CHANGE `patient_tb_yes` `patient_tb_yes` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `treatment_initiation` `treatment_initiation` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `is_patient_pregnant` `is_patient_pregnant` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `is_patient_breastfeeding` `is_patient_breastfeeding` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `arv_adherance_percentage` `arv_adherance_percentage` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `consent_to_receive_sms` `consent_to_receive_sms` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_focal_person` `vl_focal_person` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_focal_person_phone_number` `vl_focal_person_phone_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `request_created_by` `request_created_by` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL, CHANGE `patient_other_id` `patient_other_id` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_sample_suspected_treatment_failure_at` `vl_sample_suspected_treatment_failure_at` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lab_phone_number` `lab_phone_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lot_number` `lot_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `contact_complete_status` `contact_complete_status` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_viral_load_result` `last_viral_load_result` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_in_log` `last_vl_result_in_log` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `reason_for_vl_testing` `reason_for_vl_testing` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `reason_for_vl_testing_other` `reason_for_vl_testing_other` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `drug_substitution` `drug_substitution` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_collected_by` `sample_collected_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_test_platform` `vl_test_platform` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `facility_support_partner` `facility_support_partner` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `reason_for_regimen_change` `reason_for_regimen_change` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_conservation_duration` `plasma_conservation_duration` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `physician_name` `physician_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_test_number` `vl_test_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no', CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no', CHANGE `import_machine_file_name` `import_machine_file_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `tech_name_png` `tech_name_png` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `qc_tech_name` `qc_tech_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `qc_tech_sign` `qc_tech_sign` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `qc_date` `qc_date` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `whole_blood_ml` `whole_blood_ml` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `whole_blood_vial` `whole_blood_vial` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_ml` `plasma_ml` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_vial` `plasma_vial` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_process_time` `plasma_process_time` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_process_tech` `plasma_process_tech` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `batch_quality` `batch_quality` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_test_quality` `sample_test_quality` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `repeat_sample_collection` `repeat_sample_collection` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_to_transport` `sample_to_transport` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_professional_number` `requesting_professional_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_vl_service_sector` `requesting_vl_service_sector` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_phone` `requesting_phone` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `recency_vl` `recency_vl` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no', CHANGE `consultation` `consultation` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `sample_package_code` `sample_package_code` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_first_name` `patient_first_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_middle_name` `patient_middle_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_last_name` `patient_last_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_responsible_person` `patient_responsible_person` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_province` `patient_province` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_district` `patient_district` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_group` `patient_group` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_gender` `patient_gender` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_mobile_number` `patient_mobile_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_location` `patient_location` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_receiving_therapy` `patient_receiving_therapy` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_drugs_transmission` `patient_drugs_transmission` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_tb` `patient_tb` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `line_of_treatment_ref_type` `line_of_treatment_ref_type` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `current_regimen` `current_regimen` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `is_adherance_poor` `is_adherance_poor` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `number_of_enhanced_sessions` `number_of_enhanced_sessions` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_routine` `last_vl_result_routine` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_failure_ac` `last_vl_result_failure_ac` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_failure` `last_vl_result_failure` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_ecd` `last_vl_result_ecd` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_cf` `last_vl_result_cf` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_if` `last_vl_result_if` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `request_clinician_name` `request_clinician_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_modified_by` `last_modified_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lab_name` `lab_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lab_technician` `lab_technician` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lab_contact_person` `lab_contact_person` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result_value_text` `result_value_text` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result` `result` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `tested_by` `tested_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result_approved_by` `result_approved_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `revised_by` `revised_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result_reviewed_by` `result_reviewed_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `test_methods` `test_methods` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_category` `requesting_category` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_person` `requesting_person` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_result_category` `vl_result_category` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `source_of_request` `source_of_request` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `patient_tb_yes` `patient_tb_yes` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `treatment_initiation` `treatment_initiation` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `is_patient_pregnant` `is_patient_pregnant` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `is_patient_breastfeeding` `is_patient_breastfeeding` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `arv_adherance_percentage` `arv_adherance_percentage` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `consent_to_receive_sms` `consent_to_receive_sms` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_focal_person` `vl_focal_person` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_focal_person_phone_number` `vl_focal_person_phone_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `request_created_by` `request_created_by` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL, CHANGE `patient_other_id` `patient_other_id` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_sample_suspected_treatment_failure_at` `vl_sample_suspected_treatment_failure_at` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lab_phone_number` `lab_phone_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `lot_number` `lot_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `contact_complete_status` `contact_complete_status` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_viral_load_result` `last_viral_load_result` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_vl_result_in_log` `last_vl_result_in_log` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `reason_for_vl_testing` `reason_for_vl_testing` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `reason_for_vl_testing_other` `reason_for_vl_testing_other` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `drug_substitution` `drug_substitution` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_collected_by` `sample_collected_by` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_test_platform` `vl_test_platform` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `facility_support_partner` `facility_support_partner` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `reason_for_regimen_change` `reason_for_regimen_change` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_conservation_duration` `plasma_conservation_duration` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `physician_name` `physician_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vl_test_number` `vl_test_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `is_request_mail_sent` `is_request_mail_sent` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no', CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no', CHANGE `import_machine_file_name` `import_machine_file_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `tech_name_png` `tech_name_png` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `qc_tech_name` `qc_tech_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `qc_tech_sign` `qc_tech_sign` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `qc_date` `qc_date` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `whole_blood_ml` `whole_blood_ml` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `whole_blood_vial` `whole_blood_vial` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_ml` `plasma_ml` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_vial` `plasma_vial` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_process_time` `plasma_process_time` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `plasma_process_tech` `plasma_process_tech` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `batch_quality` `batch_quality` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_test_quality` `sample_test_quality` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `repeat_sample_collection` `repeat_sample_collection` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_to_transport` `sample_to_transport` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_professional_number` `requesting_professional_number` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_vl_service_sector` `requesting_vl_service_sector` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `requesting_phone` `requesting_phone` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `recency_vl` `recency_vl` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'no', CHANGE `consultation` `consultation` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
 
 ALTER DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -2839,7 +2839,7 @@ ALTER TABLE `user_details`  COLLATE utf8mb4_general_ci;
 ALTER TABLE `user_login_history`  COLLATE utf8mb4_general_ci;
 ALTER TABLE `vl_facility_map`  COLLATE utf8mb4_general_ci;
 ALTER TABLE `vl_imported_controls`  COLLATE utf8mb4_general_ci;
-ALTER TABLE `form_vl`  COLLATE utf8mb4_general_ci;
+ALTER TABLE `vl_request_form`  COLLATE utf8mb4_general_ci;
 ALTER TABLE `vl_user_facility_map`  COLLATE utf8mb4_general_ci;
 
 -- Thana 17-Dec-2021
@@ -2967,9 +2967,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 
 -- Amit 22-Mar-2022
-UPDATE form_vl SET source_of_request = 'vlsm' WHERE remote_sample = 'no' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web');
-UPDATE form_vl SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web' OR source_of_request like 'vlsm');
-UPDATE form_vl SET source_of_request = 'app' WHERE (source_of_request like 'api');
+UPDATE vl_request_form SET source_of_request = 'vlsm' WHERE remote_sample = 'no' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web');
+UPDATE vl_request_form SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web' OR source_of_request like 'vlsm');
+UPDATE vl_request_form SET source_of_request = 'app' WHERE (source_of_request like 'api');
 
 UPDATE eid_form SET source_of_request = 'vlsm' WHERE remote_sample = 'no' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web');
 UPDATE eid_form SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web' OR source_of_request like 'vlsm');
@@ -3043,15 +3043,15 @@ CREATE TABLE `qc_covid19_tests` (
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-results', 'covid-19-qc-data.php', 'Covid-19 QC Data'), (NULL, 'covid-19-results', 'add-covid-19-qc-data.php', 'Add Covid-19 QC Data'), (NULL, 'covid-19-results', 'edit-covid-19-qc-data.php', 'Edit Covid-19 QC Data');
 
  -- Amit 31-Mar-2022
-ALTER TABLE `form_vl` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `eid_form` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_covid19` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_hepatitis` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
 -- Amit 03-Apr-2022
-ALTER TABLE `form_vl` CHANGE `serial_no` `external_sample_code` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_vl` CHANGE `patient_art_no` `patient_art_no` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_vl` CHANGE `source_data_dump` `source_data_dump` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result_sent_to_source` `result_sent_to_source` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'pending', CHANGE `ward` `ward` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `art_cd_cells` `art_cd_cells` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `who_clinical_stage` `who_clinical_stage` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_test_tech` `failed_test_tech` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_vl_result` `failed_vl_result` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_batch_quality` `failed_batch_quality` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_sample_test_quality` `failed_sample_test_quality` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_batch_id` `failed_batch_id` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `serial_no` `external_sample_code` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `patient_art_no` `patient_art_no` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `vl_request_form` CHANGE `source_data_dump` `source_data_dump` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result_sent_to_source` `result_sent_to_source` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'pending', CHANGE `ward` `ward` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `art_cd_cells` `art_cd_cells` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `who_clinical_stage` `who_clinical_stage` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_test_tech` `failed_test_tech` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_vl_result` `failed_vl_result` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_batch_quality` `failed_batch_quality` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_sample_test_quality` `failed_sample_test_quality` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_batch_id` `failed_batch_id` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
 
 -- Amit 06-Apr-2022
@@ -3060,8 +3060,9 @@ ALTER TABLE `qc_covid19` ADD `qc_received_datetime` DATETIME NULL DEFAULT NULL A
 ALTER TABLE `qc_covid19` ADD `updated_datetime` DATETIME NULL DEFAULT NULL AFTER `created_on`;
 
 
+
 -- Amit 07-Apr-2022
-RENAME TABLE `form_vl` TO `form_vl`;
+RENAME TABLE `vl_request_form` TO `form_vl`;
 RENAME TABLE `eid_form` TO `form_eid`;
 ALTER TABLE `form_eid` DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 ALTER TABLE `form_vl` DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
@@ -3071,4 +3072,9 @@ RENAME TABLE `vl_facility_map` TO `testing_lab_health_facilities_map`;
 RENAME TABLE `contact_notes_details` TO `vl_contact_notes`;
 
 
+ALTER TABLE `form_vl` DROP INDEX `status`;
+ALTER TABLE `form_vl` CHANGE `result_approved_by` `result_approved_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` ADD INDEX(`result_approved_by`);
+ALTER TABLE `form_vl` CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` ADD INDEX(`result_reviewed_by`);
 
