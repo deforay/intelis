@@ -400,8 +400,19 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $id = $db->update("form_covid19", $covid19Data);
         $_POST['covid19SampleId'] = $c19DuplicateData['covid19_id'];
     } else {
-        $id = $db->insert("form_covid19", $covid19Data);
-        $_POST['covid19SampleId'] = $id;
+        if ($type[1] == 'UPI') {
+            $msh = new MSH();
+            $ack = new ACK($msg, $msh);
+            $ack->setAckCode('AR', "Existing data not found.");
+            $returnString = $ack->toString(true);
+            echo $returnString;
+            // http_response_code(204);
+            unset($ack);
+            exit(0);
+        } else {
+            $id = $db->insert("form_covid19", $covid19Data);
+            $_POST['covid19SampleId'] = $id;
+        }
     }
     if (isset($covid19Data) && count($covid19Data) > 0) {
         $tableName = "form_covid19";
