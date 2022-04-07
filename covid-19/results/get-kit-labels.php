@@ -12,7 +12,7 @@ if (isset($testKitInfo) && !empty($testKitInfo['labels_and_expected_results'])) 
     foreach ($json['label'] as $key => $row) {
         $result .= '<tr>';
         $result .= '<td>' . ucwords($json['label'][$key]) . '<input type="hidden" value="' . $json['label'][$key] . '" id="testLabel" name="testLabel[]"/></td>';
-        $result .= '<td><select class="form-control" id="testResults' . ($key + 1) . '" name="testResults[]" class="form-control" title="Please enter the expected results">' . $generalObj->generateSelectOptions($covid19Results, $subResult['expected'][$key], "--Select--") . '</select>';
+        $result .= '<td><select class="form-control" id="testResults' . ($key + 1) . '" name="testResults[]" class="form-control" title="Please enter the test results">' . $generalObj->generateSelectOptions($covid19Results, $subResult['expected'][$key], "--Select--") . '</select>';
         $result .= '</td>';
         $result .= '</tr>';
     }

@@ -3001,6 +3001,7 @@ UPDATE `system_config` SET `value` = '4.4.9' WHERE `system_config`.`name` = 'sc_
 -- Amit 31-Mar-2022
 ALTER TABLE `form_hepatitis` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
+
 -- Thana 01-04-2022
 CREATE TABLE `r_covid19_qc_testkits` (
   `testkit_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -3009,7 +3010,7 @@ CREATE TABLE `r_covid19_qc_testkits` (
   `labels_and_expected_results` json DEFAULT NULL,
   `status` varchar(256) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`tetskit_id`),
+  PRIMARY KEY (`testkit_id`),
   UNIQUE KEY `testkit_name` (`testkit_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -3051,3 +3052,10 @@ ALTER TABLE `form_hepatitis` CHANGE `is_sample_rejected` `is_sample_rejected` VA
 ALTER TABLE `vl_request_form` CHANGE `serial_no` `external_sample_code` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `vl_request_form` CHANGE `patient_art_no` `patient_art_no` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `vl_request_form` CHANGE `source_data_dump` `source_data_dump` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `result_sent_to_source` `result_sent_to_source` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'pending', CHANGE `ward` `ward` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `art_cd_cells` `art_cd_cells` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `who_clinical_stage` `who_clinical_stage` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_test_tech` `failed_test_tech` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_vl_result` `failed_vl_result` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_batch_quality` `failed_batch_quality` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_sample_test_quality` `failed_sample_test_quality` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `failed_batch_id` `failed_batch_id` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+
+-- Amit 06-Apr-2022
+ALTER TABLE `qc_covid19` ADD `testing_point` VARCHAR(256) NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `qc_covid19` ADD `qc_received_datetime` DATETIME NULL DEFAULT NULL AFTER `testing_point`;
+
+

@@ -3,12 +3,15 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../startup.php');  
+
 $general = new \Vlsm\Models\General();
 $tableName = "qc_covid19";
 $tableName1 = "qc_covid19_tests";
 $primaryKey = "qc_id";
 $primaryKey1 = "qc_test_id";
+
+//var_dump($_POST);
+
 try {
     if (isset($_POST['qcCode']) && trim($_POST['qcCode']) != "") {
 
@@ -19,9 +22,12 @@ try {
             'lot_no'                => $_POST['lotNo'],
             'expiry_date'           => $general->dateFormat($_POST['expiryDate']),
             'lab_id'                => $_POST['labName'],
+            'testing_point'                => $_POST['testingPoint'],
             'tested_by'             => $_POST['testerName'],
+            'qc_received_datetime'    => date("Y-m-d H:s:i", strtotime($_POST['receivedOn'])),
             'qc_tested_datetime'    => date("Y-m-d H:s:i", strtotime($_POST['testedOn'])),
-            'created_on'            => $general->getDateTime()
+            'created_on'            => $db->now(),
+            'updated_datetime'            => $db->now()
         );
         $exist = false;
         if (isset($_POST['qcDataId']) && $_POST['qcDataId'] != "") {
@@ -31,6 +37,9 @@ try {
                 $db = $db->where("qc_id", $exist['qc_id']);
                 $db->delete($tableName1);
             }
+
+            unset($data['unique_id']);
+            unset($data['created_on']);
 
             $db = $db->where($primaryKey, base64_decode($_POST['qcDataId']));
             $db->update($tableName, $data);
@@ -42,6 +51,7 @@ try {
             $lastId = $db->insert($tableName, $data);
         }
 
+        //var_dump($lastId);die;
         if ($lastId > 0) {
             foreach ($_POST['testLabel'] as $key => $row) {
                 if (isset($_POST['testResults'][$key]) && $_POST['testResults'][$key] != "") {
@@ -51,13 +61,15 @@ try {
                         "test_result"   => $_POST['testResults'][$key],
                     );
 
+                    $db->insert($tableName1, $subData);
+
                     /* If ID already exist we can update */
-                    if (isset($_POST['qcTestId'][$key]) && !empty($_POST['qcTestId'][$key])) {
-                        $db = $db->where($primaryKey1, $_POST['qcTestId'][$key]);
-                        $db->update($tableName1, $subData);
-                    } else {
-                        $db->insert($tableName1, $subData);
-                    }
+                    // if (isset($_POST['qcTestId'][$key]) && !empty($_POST['qcTestId'][$key])) {
+                    //     $db = $db->where($primaryKey1, $_POST['qcTestId'][$key]);
+                    //     $db->update($tableName1, $subData);
+                    // } else {
+                    //     $db->insert($tableName1, $subData);
+                    // }
                 }
             }
 

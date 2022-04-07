@@ -87,6 +87,7 @@ require_once(APPLICATION_PATH . '/header.php');
                                     <th><?php echo _("Testing Lab"); ?></th>
                                     <th><?php echo _("Tester Name"); ?></th>
                                     <th><?php echo _("Tested On"); ?></th>
+                                    <th><?php echo _("Last Modified On"); ?></th>
                                     <?php if (isset($_SESSION['privileges']) && in_array("edit-covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
                                         <th><?php echo _("Action"); ?></th>
                                     <?php } ?>
@@ -94,7 +95,7 @@ require_once(APPLICATION_PATH . '/header.php');
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="8" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                                    <td colspan="9" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                                 </tr>
                             </tbody>
 
@@ -121,42 +122,13 @@ require_once(APPLICATION_PATH . '/header.php');
                 "sLengthMenu": "_MENU_ records per page"
             },
             "bJQueryUI": false,
-            "bAutoWidth": false,
-            "bInfo": true,
-            "bScrollCollapse": true,
-            "bStateSave": true,
-            "bRetrieve": true,
-            // "aoColumns": [
-            //     {
-            //         "sClass": "center"
-            //     },
-            //     {
-            //         "sClass": "center"
-            //     }, ,
-            //     {
-            //         "sClass": "center"
-            //     },
-            //     {
-            //         "sClass": "center"
-            //     }, ,
-            //     {
-            //         "sClass": "center"
-            //     },
-            //     {
-            //         "sClass": "center"
-            //     },
-            //     {
-            //         "sClass": "center"
-            //     },
-            //     <?php if (isset($_SESSION['privileges']) && in_array("edit-covid-19-qc-data.php", $_SESSION['privileges'])) { ?> 
-            //     {
-            //         "sClass": "center action",
-            //         "bSortable": false
-            //     }
-            //     <?php } ?>
-            // ],
+			"bAutoWidth": false,
+			"bInfo": true,
+			"bScrollCollapse": true,
+			//"bStateSave" : true,
+			"bRetrieve": true,
             "aaSorting": [
-                [6, "desc"]
+                [7, "desc"]
             ],
             "bProcessing": true,
             "bServerSide": true,
