@@ -40,10 +40,19 @@ try {
     }
 
     $hl7Msg = file_get_contents("php://input");
+    if (!isset($hl7Msg) && !empty($hl7Msg)) {
+        $msh = new MSH();
+        $ack = new ACK($msg, $msh);
+        $ack->setAckCode('AR', "Message Type not found");
+        $returnString = $ack->toString(true);
+        echo $returnString;
+        // http_response_code(204);
+        unset($ack);
+    }
     // print_r(explode("MSH", $hl7Msg));die;
-    foreach(explode("MSH", $hl7Msg) as $hl7){
-        if(isset($hl7) && !empty($hl7) && trim($hl7) != ""){
-            $hl7 = 'MSH'.$hl7;
+    foreach (explode("MSH", $hl7Msg) as $hl7) {
+        if (isset($hl7) && !empty($hl7) && trim($hl7) != "") {
+            $hl7 = 'MSH' . $hl7;
             $msg = new Message($hl7);
             // To get the type of test
             $msh = $msg->getSegmentByIndex(0);
@@ -65,13 +74,13 @@ try {
                 $dateRange = (array)$msg->getSegmentsByName('ZFL')[0];
                 $dateRange = array_shift($dateRange);
             }
-            
+
             // print_r($mshF);
             // print_r($pidF);
             // print_r($spmF);
             // print_r($dateRange);
             // die;
-            if(isset($type) && count($type) > 0 && in_array($type[0], array("COVID-19", "VL", "EID"))){
+            if (isset($type) && count($type) > 0 && in_array($type[0], array("COVID-19", "VL", "EID"))) {
 
                 if ($type[0] == "COVID-19") {
                     include("covid-19.php");
@@ -82,7 +91,7 @@ try {
                 if ($type[0] == "EID") {
                     include("eid.php");
                 }
-            }else{
+            } else {
                 $msh = new MSH();
                 $ack = new ACK($msg, $msh);
                 $ack->setAckCode('AR', "Message Type not found");
