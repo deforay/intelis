@@ -3,17 +3,13 @@ $title = _("Print EID Results");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
-
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-
 
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
-
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'eid' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
@@ -26,10 +22,6 @@ $batResult = $db->rawQuery($batQuery);
 <style>
     .select2-selection__choice {
         color: #000000 !important;
-    }
-
-    .center {
-        /*text-align:left;*/
     }
 </style>
 <!-- Content Wrapper. Contains page content -->
