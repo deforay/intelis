@@ -11,6 +11,7 @@ $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = NULL;
+
 try {
      if (isset($_POST['api']) && $_POST['api'] = "yes") {
      } else {

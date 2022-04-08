@@ -486,9 +486,9 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-4">
-                                                                 <label for="reqClinician" class="col-lg-5 control-label">Request Clinician</label>
+                                                                 <label for="reqClinician" class="col-lg-5 control-label">Requesting Clinician</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician" />
+                                                                      <select class="form-control ajax-select2" id="reqClinician" name="reqClinician" placeholder="Request Clinician" title="Please enter request clinician"></select>
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -535,7 +535,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" />
+                                                                           <select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name"></select>
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
@@ -927,7 +927,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ) {
                value.focus();
           })
-     })
+     });
 
      function showTesting(chosenClass) {
           $(".viralTestData").val('');
