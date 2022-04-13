@@ -191,18 +191,15 @@ if (isset($_POST['state']) && trim($_POST['state']) != '') {
      $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
 }
 
-$whereResult = '';
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-     $whereResult = ' vl.result != "" ';
+     $sWhere[] = ' vl.result != "" ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-     $whereResult = ' (vl.result IS NULL OR vl.result = "") ';
+     $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
 }
 if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
-     $whereResult = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '" ';
+     $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '" ';
 }
-if ($whereResult != '') {
-     $sWhere[] = $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-}
+
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      if (!empty($facilityMap)) {
@@ -219,7 +216,7 @@ if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-$_SESSION['vlRequestSearchResultQuery'] = $sQuery;
+// $_SESSION['vlRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
