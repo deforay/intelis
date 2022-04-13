@@ -258,7 +258,7 @@ try {
         'vlsm_country_id' => 3,
         //'sample_code_title'=>(isset($_POST['sampleCodeTitle']) && $_POST['sampleCodeTitle']!='' ? $_POST['sampleCodeTitle'] :  'auto'),
 
-        'serial_no' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
+        'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
         'facility_id' => $_POST['clinicName'],
         'province_id' => (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  NULL,
         'request_clinician_name' => $_POST['clinicianName'],

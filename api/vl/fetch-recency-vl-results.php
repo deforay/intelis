@@ -2,10 +2,10 @@
 
 session_unset(); // no need of session in json response
 
-// PURPOSE : Fetch Results using serial_no field which is used to
+// PURPOSE : Fetch Results using external_sample_code field which is used to
 // store the recency id from third party apps (for eg. in DRC)
 
-// serial_no field in db was unused so we decided to use it to store recency id
+// external_sample_code field in db was unused so we decided to use it to store recency id
 
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
@@ -59,7 +59,7 @@ try {
 
     $sQuery = "SELECT vl.sample_code, 
                     vl.remote_sample_code,
-                    vl.serial_no as `recency_id`,
+                    vl.external_sample_code as `recency_id`,
                     vl.sample_collection_date,
                     vl.sample_received_at_vl_lab_datetime,
                     vl.sample_registered_at_lab,
@@ -82,13 +82,13 @@ try {
                     LEFT JOIN r_vl_test_reasons as testreason ON testreason.test_reason_id=vl.reason_for_vl_testing 
                     LEFT JOIN r_vl_sample_rejection_reasons as rejreason ON rejreason.rejection_reason_id=vl.reason_for_sample_rejection
                     
-                    WHERE (serial_no is not null)";
+                    WHERE (external_sample_code is not null)";
 
 
 
     if (!empty($recencyId)) {
         $recencyId = implode("','", $recencyId);
-        $sQuery .= " AND serial_no IN ('$recencyId') ";
+        $sQuery .= " AND external_sample_code IN ('$recencyId') ";
     }
 
     if (!empty($sampleCode)) {

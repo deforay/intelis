@@ -231,7 +231,7 @@ try {
     }
     $vldata = array(
         'facility_id' => $_POST['clinicName'],
-        'serial_no' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
+        'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
         'request_clinician_name' => $_POST['clinicianName'],
         'request_clinician_phone_number' => $_POST['clinicanTelephone'],
         'facility_support_partner' => $_POST['supportPartner'],

@@ -140,7 +140,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<?php } ?>
 
 										<td><label for="serialNo">Recency ID</label></td>
-										<td><input type="text" class="form-control" id="serialNo" name="serialNo" placeholder="Recency ID" title="Please enter recency id" style="width:100%;" value="<?php echo $vlQueryInfo['serial_no']; ?>" /></td>
+										<td><input type="text" class="form-control" id="serialNo" name="serialNo" placeholder="Recency ID" title="Please enter recency id" style="width:100%;" value="<?php echo $vlQueryInfo['external_sample_code']; ?>" /></td>
 
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>"><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>">

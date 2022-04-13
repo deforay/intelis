@@ -64,7 +64,7 @@ try {
 
         /* Prepare the values to insert */
         $data['remote_sample_code'] = $result[0];
-        $data['serial_no'] = $result[0];
+        $data['external_sample_code'] = $result[0];
         $data['sample_code'] = null;
         $data['patient_art_no'] = $result[1];
         $data['facility_id'] = $facilityResult[0]['facility_id'];
