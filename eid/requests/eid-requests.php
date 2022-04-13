@@ -1,8 +1,6 @@
 <?php
 $title = _("EID | View All Requests");
 
-
-
 // echo "<pre>";
 // var_dump($_SESSION['privileges']);die;
 
