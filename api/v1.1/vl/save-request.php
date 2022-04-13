@@ -383,7 +383,7 @@ try {
             'manual_result_entry'                   => 'yes',
             'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
 
-            'serial_no'                             => isset($data['serialNo']) ? $data['serialNo'] : null,
+            'external_sample_code'                             => isset($data['serialNo']) ? $data['serialNo'] : null,
             'is_patient_new'                        => (isset($data['isPatientNew']) && $data['isPatientNew'] != '') ? $data['isPatientNew'] :  NULL,
             'has_patient_changed_regimen'           => (isset($data['hasChangedRegimen']) && $data['hasChangedRegimen'] != '') ? $data['hasChangedRegimen'] :  NULL,
             'date_dispatched_from_clinic_to_lab'    => (isset($data['dateDispatchedFromClinicToLab']) && $data['dateDispatchedFromClinicToLab'] != '') ? $data['specimenType'] :  NULL,
