@@ -644,7 +644,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                     $.unblockUI();
                     oTable.fnDraw();
                     opTable.fnDraw();
-                    window.open('/temporary/' + data, '_blank');
+                    window.location.href = '/download.php?f=' + data;
                 }
             });
     }
@@ -697,7 +697,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                         $("#checkPrintedRowsData").prop('checked', false);
                     }
 
-                    window.open('/temporary/' + data, '_blank');
+                    window.location.href = '/download.php?f=' + data;
                 }
             });
     }

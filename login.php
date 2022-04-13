@@ -257,48 +257,7 @@ function generate_token()
 			} ?>
 		});
 
-		$('#download-form').click(function() {
-			$('#download-form').hide(400);
-			$('#country').show(400);
-		});
-
-		$('#country').change(function() {
-			if ($('#country').val() != '') {
-				$('#download').show(400);
-				if ($('#country').val() == 3) {
-					$('#download').attr('onclick', 'downloadVLForm("drc")');
-				} else if ($('#country').val() == 4) {
-					$('#download').attr('onclick', 'downloadVLForm("zambia")');
-				} else if ($('#country').val() == 5) {
-					$('#download').attr('onclick', 'downloadVLForm("rwanda")');
-				} else if ($('#country').val() == 6) {
-					$('#download').attr('onclick', 'downloadVLForm("south-sudan")');
-				} else {
-					$('#download').removeAttr('onclick');
-				}
-			} else {
-				$('#download').hide(400);
-				$('#download').removeAttr('onclick');
-			}
-		});
-
-		function downloadVLForm(country) {
-			$.blockUI();
-			var downloadURL = '#';
-			if (country == 'drc') {
-				$.unblockUI();
-				window.open('/uploads/vl-drc-form.pdf', '_blank');
-			} else if (country == 'zambia') {
-				$.unblockUI();
-				window.open('/uploads/vl-zambia-form.pdf', '_blank');
-			} else if (country == 'rwanda') {
-				$.unblockUI();
-				window.open('/uploads/vl-rwanda-form.pdf', '_blank');
-			} else if (country == 'south-sudan') {
-				$.unblockUI();
-				window.open('/uploads/vl-south-sudan-form.pdf', '_blank');
-			}
-		}
+		
 
 		function checkNameValidation(tableName, fieldName, id, fnct) {
 			if ($.trim($("#" + id).val()) != '') {

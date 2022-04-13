@@ -4,11 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-   
-
-
-
-
 $general = new \Vlsm\Models\General();
 
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
@@ -135,4 +130,4 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
 $filename = 'VLSM-COVID-19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-echo $filename;
+echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

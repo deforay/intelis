@@ -244,7 +244,6 @@ foreach ($tatResult as $sRow) {
 				point: {
 					events: {
 						click: function(e) {
-							//console.log(e.point.url);
 							window.open(e.point.url, '_blank');
 							e.preventDefault();
 						}

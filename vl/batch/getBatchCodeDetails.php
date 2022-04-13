@@ -127,7 +127,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS  SUM(CASE WHEN vl.sample_tested_datetime i
                 COUNT(vl.sample_code) AS total_samples 
                 FROM $refTable vl, batch_details b";
 
-if(!empty($sWhere)){
+if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
@@ -174,7 +174,7 @@ foreach ($rResult as $aRow) {
 
     $row = array();
     $printBarcode = '<a href="/vl/batch/generateBarcode.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><i class="fa fa-barcode"> ' . _("Print Batch") . '</i></a>';
-    $printQrcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print qr code") . '" onclick="generateQRcode(\'' . base64_encode($aRow['batch_id']) . '\');"><i class="fa fa-qrcode"> ' . _("Print QR code") . '</i></a>';
+
     $editPosition = '<a href="' . $editPositionFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><i class="fa fa-sort-numeric-desc"> ' . _("Edit Position") . '</i></a>';
 
     $deleteBatch = '';
@@ -196,13 +196,11 @@ foreach ($rResult as $aRow) {
     //		    <option value="pending" ' . ($aRow['batch_status'] == "pending" ? "selected=selected" : "") . '>Pending</option>
     //		    <option value="completed" ' . ($aRow['batch_status'] == "completed" ? "selected=selected" : "") . '>Completed</option>
     //	    </select>';
-    if (isset($_POST['fromSource']) && $_POST['fromSource'] == 'qr') {
-        $row[] = $printQrcode;
-    } else {
-        if ($batch) {
-            $row[] = '<a href="' . $editFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
-        }
+
+    if ($batch) {
+        $row[] = '<a href="' . $editFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
     }
+
     $output['aaData'][] = $row;
 }
 echo json_encode($output);

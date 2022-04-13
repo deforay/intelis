@@ -153,32 +153,6 @@ require_once(APPLICATION_PATH . '/header.php');
 			});
 	}
 
-	function generateQRcode(bId) {
-		$.blockUI();
-		$.post("/qr-code/generateQRcode.php", {
-				id: bId
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					alert("<?php echo _("Unable to generate QR code");?>");
-				} else {
-					window.open('/uploads/qrcode/' + data, '_blank');
-				}
-				$.unblockUI();
-			});
-	}
-	//  function updateStatus(id,value){
-	//    conf = confirm("Do you wisht to change the status?");
-	//    if(conf){
-	//    $.post("updateBatchStatus.php",{id:id,value:value},
-	//      function(data){
-	//	  alert("Status updated successfully");
-	//	  oTable.fnDraw();
-	//      });
-	//    }else{
-	//	   oTable.fnDraw();
-	//	}
-	//  }
 
 	function deleteBatchCode(bId, batchCode) {
 		var conf = confirm("<?php echo _("Are you sure you want to delete Batch");?> : " + batchCode + "?\n<?php echo _("This action cannot be undone");?>.");

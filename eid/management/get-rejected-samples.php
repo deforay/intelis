@@ -138,8 +138,6 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 point: {
                     events: {
                         click: function(e) {
-                            //console.log(e.point.url);
-                            // window.open(e.point.url, '_blank');
                             e.preventDefault();
                         }
                     }
@@ -195,8 +193,6 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 point: {
                     events: {
                         click: function(e) {
-                            //console.log(e.point.url);
-                            // window.open(e.point.url, '_blank');
                             e.preventDefault();
                         }
                     }

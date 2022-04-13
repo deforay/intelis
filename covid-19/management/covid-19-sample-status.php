@@ -266,7 +266,7 @@ $batResult = $db->rawQuery($batQuery);
           alert("<?php echo _("Unable to generate the excel file");?>");
         } else {
           $.unblockUI();
-          location.href = '/temporary/' + data;
+          location.href = '/download.php?f=' + data;
         }
       });
 

@@ -525,17 +525,7 @@ foreach ($rejectionTypeResult as $type) {
   function hideReasonDiv(id) {
     $("#" + id).hide();
   }
-  //  
-  //  function printBarcode(tId) {
-  //    $.post("printBarcode.php",{id:tId},
-  //      function(data){
-  //	  if(data == "" || data == null || data == undefined){
-  //	    alert('Unable to generate download');
-  //	  }else{
-  //	    window.open('/uploads/barcode/'+data,'_blank');
-  //	  }
-  //    });
-  //  }
+  
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

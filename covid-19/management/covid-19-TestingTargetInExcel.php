@@ -3,9 +3,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-   
-
-
 
 $general = new \Vlsm\Models\General();
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
@@ -256,5 +253,5 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
     $filename = 'VLSM-covid19-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xls';
     ob_end_clean();
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo $filename;
+    echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 }

@@ -447,7 +447,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 				if (data == "" || data == null || data == undefined) {
 					alert("<?php echo _("Unable to generate download"); ?>");
 				} else {
-					window.open('/temporary/' + data, '_blank');
+					window.location.href = '/download.php?f=' + data;
 				}
 			});
 	}

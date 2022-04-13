@@ -423,7 +423,11 @@ $batResult = $db->rawQuery($batQuery);
 					'Today': [moment(), moment()],
 					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
 					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+										'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 60 Days': [moment().subtract(59, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
 					'This Month': [moment().startOf('month'), moment().endOf('month')],
 					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
 				}
@@ -817,7 +821,7 @@ $batResult = $db->rawQuery($batQuery);
 					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
+					location.href = '/download.php?f=' + data;
 				}
 			});
 	}
@@ -837,7 +841,7 @@ $batResult = $db->rawQuery($batQuery);
 					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
+					location.href = '/download.php?f=' + data;
 				}
 			});
 	}
@@ -857,7 +861,7 @@ $batResult = $db->rawQuery($batQuery);
 					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
+					location.href = '/download.php?f=' + data;
 				}
 			});
 	}
@@ -874,7 +878,7 @@ $batResult = $db->rawQuery($batQuery);
 					alert("<?php echo _("Unable to generate the excel file");?>");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
+					location.href = '/download.php?f=' + data;
 				}
 			});
 	}

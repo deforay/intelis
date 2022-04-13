@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 ob_start();
-  
+
 
 
 
@@ -121,5 +121,5 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
      $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
      $filename = 'VLSM-COVID19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-     echo $filename;
+     echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 }

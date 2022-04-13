@@ -319,5 +319,5 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
     $filename = 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo $filename;
+    echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 }

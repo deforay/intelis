@@ -115,7 +115,7 @@ unset($_SESSION['controllertrack']);
                     alert('Unable to generate download');
                 } else {
                     $.unblockUI();
-                    window.open('/temporary/' + data, '_blank');
+                    window.location.href = '/download.php?f=' + data;
                     window.location.href = "/hepatitis/results/hepatitis-print-results.php";
                 }
 

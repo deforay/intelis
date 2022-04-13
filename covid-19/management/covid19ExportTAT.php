@@ -125,5 +125,5 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
   $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
   $filename = 'COVID-19-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
   $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-  echo $filename;
+  echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 }
