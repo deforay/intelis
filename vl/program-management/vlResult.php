@@ -545,7 +545,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 				if (data == "" || data == null || data == undefined) {
 					alert("<?php echo _("Unable to generate download"); ?>");
 				} else {
-					window.open('/download.php?f=' + data, '_blank');
+					window.location.href = '/download.php?f=' + data;
 				}
 			});
 	}
