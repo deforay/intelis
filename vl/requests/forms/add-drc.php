@@ -33,8 +33,6 @@ $province .= "<option value=''> -- Sélectionner -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
-
-
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
 
 //get ART list
