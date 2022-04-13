@@ -462,13 +462,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             series: [{
                 colorByPoint: false,
                 point: {
-                    /* events: {
-                        click: function(e) {
-                            //console.log(e.point.url);
-                            window.open(e.point.url, '_blank');
-                            e.preventDefault();
-                        }
-                    } */
+                
                 },
                 data: [
                     <?php

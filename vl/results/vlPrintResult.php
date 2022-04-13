@@ -745,7 +745,7 @@ $batResult = $db->rawQuery($batQuery);
 					$.unblockUI();
 					oTable.fnDraw();
 					opTable.fnDraw();
-					window.open('/temporary/' + data, '_blank');
+					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}
@@ -798,7 +798,7 @@ $batResult = $db->rawQuery($batQuery);
 						$("#checkPrintedRowsData").prop('checked', false);
 					}
 
-					window.open('/temporary/' + data, '_blank');
+					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}

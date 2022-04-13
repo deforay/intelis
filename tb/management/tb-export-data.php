@@ -473,7 +473,7 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 				if (data == "" || data == null || data == undefined) {
 					alert("<?php echo _("Unable to generate download"); ?>");
 				} else {
-					window.open('/temporary/' + data, '_blank');
+					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}

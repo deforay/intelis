@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 ob_start();
-  
+
 
 $general = new \Vlsm\Models\General();
 
@@ -148,7 +148,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           }
      }
      $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
-     $filename = 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.xlsx';
+     $filename = 'VLSM-Covid-19-Report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-     echo $filename;
+     echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 }

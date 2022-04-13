@@ -126,7 +126,6 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
      $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
      $filename = 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-     echo $filename;
+     echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 
 }
-?>

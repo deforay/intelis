@@ -475,7 +475,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 				if (data == "" || data == null || data == undefined) {
 					alert("<?php echo _("Unable to generate download"); ?>");
 				} else {
-					window.open('/temporary/' + data, '_blank');
+					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}
@@ -501,7 +501,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 					alert("<?php echo _("Unable to generate excel."); ?>");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
+					location.href = '/download.php?f=' + data;
 				}
 			});
 	}

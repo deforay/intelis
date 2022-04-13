@@ -129,7 +129,7 @@ unset($_SESSION['controllertrack']);
                     alert('Unable to generate download');
                 } else {
                     $.unblockUI();
-                    window.open('/temporary/' + data, '_blank');
+                    window.open('/download.php?f=' + data, '_blank');
                     window.location.href = "/eid/results/eid-print-results.php";
                 }
 

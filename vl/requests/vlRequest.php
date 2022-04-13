@@ -702,17 +702,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			});
 	}
 
-	//  
-	//  function printBarcode(tId) {
-	//    $.post("printBarcode.php",{id:tId},
-	//      function(data){
-	//	  if(data == "" || data == null || data == undefined){
-	//	    alert('Unable to generate download');
-	//	  }else{
-	//	    window.open('/uploads/barcode/'+data,'_blank');
-	//	  }
-	//    });
-	//  }
+	
 	function hideAdvanceSearch(hideId, showId) {
 		$("#" + hideId).hide();
 		$("#" + showId).show();
