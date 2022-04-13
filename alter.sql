@@ -3057,7 +3057,7 @@ ALTER TABLE `vl_request_form` CHANGE `source_data_dump` `source_data_dump` TEXT 
 -- Amit 06-Apr-2022
 ALTER TABLE `qc_covid19` ADD `testing_point` VARCHAR(256) NULL DEFAULT NULL AFTER `lab_id`;
 ALTER TABLE `qc_covid19` ADD `qc_received_datetime` DATETIME NULL DEFAULT NULL AFTER `testing_point`;
-ALTER TABLE `qc_covid19` ADD `updated_datetime` DATETIME NULL DEFAULT NULL AFTER `created_on`;
+-- ALTER TABLE `qc_covid19` ADD `updated_datetime` DATETIME NULL DEFAULT NULL AFTER `created_on`;
 
 
 
@@ -3078,3 +3078,6 @@ ALTER TABLE `form_vl` ADD INDEX(`result_approved_by`);
 ALTER TABLE `form_vl` CHANGE `result_reviewed_by` `result_reviewed_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_vl` ADD INDEX(`result_reviewed_by`);
 
+
+-- Amit 12-Apr-2022 version 4.5.0
+UPDATE `system_config` SET `value` = '4.5.0' WHERE `system_config`.`name` = 'sc_version';
