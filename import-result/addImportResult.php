@@ -8,7 +8,7 @@ $title = _("Import ") . strtoupper($type) . _(" Test Results From File");
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
-$query = "SELECT config_id,machine_name,import_machine_file_name FROM import_config WHERE status='active'";
+$query = "SELECT config_id,machine_name,import_machine_file_name FROM import_config WHERE status='active' ORDER BY machine_name ASC";
 $iResult = $db->rawQuery($query);
 
 $fQuery = "SELECT * FROM facility_details WHERE facility_type=2";

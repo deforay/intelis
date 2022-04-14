@@ -97,16 +97,11 @@ try {
                     $resultFlag = $sheetData[$flagCol];
                     //$reviewBy = $sheetData[$reviewByCol];
 
-                    if (isset($infoFromFile[$sampleCode])) {
-                        continue;
-                    }
-
                     // //Changing date to European format for strtotime - https://stackoverflow.com/a/5736255
                     if (strpos($sheetData[$resultCol], 'Log') !== false) {
                         $sheetData[$resultCol] = str_replace(",", ".", $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
                         $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                        error_log($sheetData[$resultCol]. " --- ". $absDecimalVal);
                         if (strpos($sheetData[$resultCol], "<") !== false) {
                             $txtVal = $absVal = "< " . trim($absDecimalVal);
                         } else {
@@ -123,7 +118,7 @@ try {
                     } else if (strpos($sheetData[$resultCol], 'IU/mL') !== false) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                     } else {
-                        if (strpos(strtolower($sheetData[$resultCol]), 'not detected') !== false || strtolower($sheetData[$resultCol]) == 'target not detected' || (int)($sheetData[$resultCol]) == 0) {
+                        if (strpos(strtolower($sheetData[$resultCol]), 'not detected') !== false || strtolower($sheetData[$resultCol]) == 'target not detected') {
                             $txtVal = "Below Detection Level";
                             $resultFlag = "";
                             $absVal = "";
@@ -143,7 +138,7 @@ try {
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
                     if (trim($sheetData[$lotExpirationDateCol]) != '') {
-                        $timestamp = DateTime::createFromFormat('!m/d/Y', $sheetData[$lotExpirationDateCol]);
+                        $timestamp = DateTime::createFromFormat('!d/m/Y', $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
                             $lotExpirationDateVal = date('Y-m-d H:i', $timestamp);

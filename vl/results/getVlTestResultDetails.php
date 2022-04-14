@@ -147,29 +147,19 @@ vl.patient_gender,
 vl.locked,
 b.batch_code, 
 ts.status_name,
-imp.i_partner_name,
-u_d.user_name as reviewedBy,
-a_u_d.user_name as approvedBy,
 vl.result_approved_datetime,
 vl.result_reviewed_datetime,
 vl.sample_received_at_hub_datetime, 
 vl.sample_received_at_vl_lab_datetime, 
 vl.result_dispatched_datetime, 
 vl.result_printed_datetime,
-vl.result_approved_by,
-a_u_d.user_name as approvedBy, 
-rs.rejection_reason_name 
+vl.result_approved_by
 
 FROM form_vl as vl 
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
 LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id 
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner
-LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $start_date = '';
 $end_date = '';

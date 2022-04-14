@@ -116,7 +116,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$sQuery = 	 "SELECT 		vl.vl_sample_id,
+$sQuery = 	 "SELECT 		SQL_CALC_FOUND_ROWS
+							vl.vl_sample_id,
 							vl.sample_code,
 							vl.remote_sample,
 							vl.remote_sample_code,
@@ -133,27 +134,19 @@ $sQuery = 	 "SELECT 		vl.vl_sample_id,
 							vl.last_modified_datetime,
 							b.batch_code, 
 							ts.status_name,
-							imp.i_partner_name,
-							u_d.user_name as reviewedBy,
-            				a_u_d.user_name as approvedBy,
 							vl.sample_received_at_hub_datetime,							
 							vl.sample_received_at_vl_lab_datetime,
 							vl.result_approved_datetime,
 							vl.result_reviewed_datetime,
 							vl.result_dispatched_datetime,							
-							vl.result_printed_datetime,							
-            				rs.rejection_reason_name 
+							vl.result_printed_datetime
 							
 							FROM form_vl as vl 
 							LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
 							LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
 							INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-							LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id 
 							LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-							LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-							LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner
-							LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-            				LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
+							";
 $start_date = '';
 $end_date = '';
 $t_start_date = '';
@@ -352,24 +345,14 @@ $_SESSION['vlPrintRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//error_log($sQuery);
+error_log($sQuery);
 //die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT vl_sample_id FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-																		LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
-																		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-																		LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id 
-																		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-																		LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-																		LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
-																		LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner 
-																		$sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(vl_sample_id) as total FROM form_vl as vl $dWhere");
-$iTotal = $aResultTotal[0]['total'];
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
 
 /*
          * Output
@@ -391,7 +374,7 @@ foreach ($rResult as $aRow) {
 	//}
 
 	$row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
-	$print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Print").'" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ',\'printData\');"><i class="fa fa-print"> '. _("Print").'</i></a>';
+	$print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ',\'printData\');"><i class="fa fa-print"> ' . _("Print") . '</i></a>';
 
 	if ($aRow['remote_sample'] == 'yes') {
 		$decrypt = 'remote_sample_code';

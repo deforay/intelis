@@ -38,7 +38,7 @@ try {
     }
     $apiKey = isset($decode['x-api-key']) && !empty($decode['x-api-key']) ? $decode['x-api-key'] : null;
 
-    if (!$decode['post']) {
+    if (empty($decode['post']) || $decode['post'] === false) {
         throw new Exception("Invalid request. Please check your request parameters.");
     } else {
         $post = ($decode['post']);
@@ -92,7 +92,7 @@ try {
             $resizeObj->save($signatureImagePath);
             $data['user_signature'] = $imageName;
         }
-    }    
+    }
 
     $id = 0;
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
@@ -137,6 +137,8 @@ try {
     );
 
     echo json_encode($payload);
+    error_log( print_r($data['post'], TRUE) );
+
     error_log("Save User Profile API : " . $exc->getMessage());
     error_log($exc->getTraceAsString());
 }

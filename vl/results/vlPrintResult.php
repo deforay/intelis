@@ -198,7 +198,7 @@ $batResult = $db->rawQuery($batQuery);
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+														<td colspan="12" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -266,10 +266,8 @@ $batResult = $db->rawQuery($batQuery);
 													<td>
 														<input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
-													<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
-													<td>
-														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
-													</td>
+													<td></td>
+													<td></td>
 													<td></td>
 													<td></td>
 
@@ -345,7 +343,7 @@ $batResult = $db->rawQuery($batQuery);
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+														<td colspan="12" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
