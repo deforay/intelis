@@ -241,8 +241,10 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
 }
 $dWhere = '';
 // Only approved results can be printed
-if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
-     if (!isset($_POST['status']) || trim($_POST['status']) == '') {
+if (!isset($_POST['status']) || trim($_POST['status']) == '') {
+     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
+          $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND result_printed_datetime is NOT NULL AND result_printed_datetime not like ''";
+     } else {
           $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
      }
 } else {
@@ -287,7 +289,7 @@ $output = array(
 
 foreach ($rResult as $aRow) {
      $row = array();
-     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
+     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
           $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedRow(this);"  />';
           $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ',\'\');"><i class="fa fa-print"> ' . _("Print") . '</i></a>';
      } else {

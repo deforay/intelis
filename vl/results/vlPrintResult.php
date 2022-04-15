@@ -549,7 +549,7 @@ $batResult = $db->rawQuery($batQuery);
 				});
 				aoData.push({
 					"name": "vlPrint",
-					"value": 'print'
+					"value": 'not-print'
 				});
 				aoData.push({
 					"name": "gender",
@@ -655,7 +655,7 @@ $batResult = $db->rawQuery($batQuery);
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/vl/results/getPrintedVltestResultDetails.php",
+			"sAjaxSource": "/vl/results/getVlTestResultDetails.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
