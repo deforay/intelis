@@ -71,7 +71,7 @@ try {
                     $row++;
                     if ($row < $skip) {
                         if ($row == 8) {
-                            $timestamp = DateTime::createFromFormat('!d/m/Y h:i:s A', $sheetData[1]);
+                            $timestamp = DateTime::createFromFormat('!d/m/Y h:i', $sheetData[1]);
                             if (!empty($timestamp)) {
                                 $timestamp = $timestamp->getTimestamp();
                                 $testingDate = date('Y-m-d H:i', ($timestamp));

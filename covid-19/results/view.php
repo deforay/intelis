@@ -52,7 +52,9 @@ $id = $res['covid19_id'];
                 if (data == "" || data == null || data == undefined) {
                     alert('Unable to generate result PDF');
                 } else {
-                    var url = '/temporary/' + data;
+                    var url = atob(data);
+                    url = url.split('\\').pop().split('/').pop();
+                    url = '/temporary/' + url;
                     // Loaded via <script> tag, create shortcut to access PDF.js exports.
                     var pdfjsLib = window['pdfjs-dist/build/pdf'];
 

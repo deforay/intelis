@@ -20,7 +20,7 @@ if (!class_exists('DRC_PDF')) {
                 $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C', true);
                 //if (trim($this->lab) != '') {
                 $this->SetFont('helvetica', 'B', 11);
-                $this->writeHTMLCell(0, 0, 0, 17, "Centre Hospitalier Mère et Enfant MONKOLE", 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 17, $this->lab, 0, 0, 0, true, 'C', true);
                 //}
 
                 //$this->SetFont('helvetica', 'U', 11);
@@ -88,7 +88,7 @@ if (isset($result['result_printed_datetime']) && trim($result['result_printed_da
     $resultPrintedDate = $general->humanDateFormat($expStr[0]);
     $resultPrintedTime = $expStr[1];
 }
-$pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $resultPrintedDate);
+$pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labHeaderText'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $resultPrintedDate);
 // set document information
 $pdf->SetCreator('VLSM');
 $pdf->SetTitle('Covid-19 Rapport du patient');
