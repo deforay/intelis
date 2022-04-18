@@ -558,10 +558,10 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                 },
             ],
             <?php if ($sarr['sc_user_type'] != 'standalone') { ?> "aaSorting": [
-                    [9, "desc"]
+                    [09, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
-                    [8, "desc"]
+                    [10, "desc"]
                 ],
             <?php } ?> "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chkPrinted[]");

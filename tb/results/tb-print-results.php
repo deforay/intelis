@@ -461,7 +461,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                 });
                 aoData.push({
                     "name": "vlPrint",
-                    "value": 'print'
+                    "value": 'not-print'
                 });
                 aoData.push({
                     "name": "sampleTestDate",
@@ -549,7 +549,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
             },
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "/tb/results/get-printed-results-for-print.php",
+            "sAjaxSource": "/tb/results/get-results-for-print.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "batchCode",

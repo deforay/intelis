@@ -217,9 +217,9 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
 
 if (!isset($_POST['status']) || trim($_POST['status']) == '') {
     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
-        $sWhere = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !='' OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ='' OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
+        $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !='' OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ='' OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
     } else {
-        $sWhere = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !='' OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ='' OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  =''))) AND (result_printed_datetime is not NULL OR result_printed_datetime not like '')";
+        $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !='' OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ='' OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  =''))) AND (result_printed_datetime is not NULL OR result_printed_datetime not like '')";
     }
 } else {
     $sWhere[] = " vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
