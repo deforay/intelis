@@ -1,6 +1,6 @@
 <?php
 ob_start();
-  
+
 
 
 $general = new \Vlsm\Models\General();
@@ -14,7 +14,6 @@ try {
         $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
         header("location:/vl/batch/batchcode.php");
     } else {
-
         if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
             $data = array(
                 'machine' => $_POST['platform'],

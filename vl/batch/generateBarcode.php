@@ -477,10 +477,10 @@ if ($id > 0) {
 
         $pdf->writeHTML($tbl, true, false, false, false, '');
         //$pdf->writeHTMLCell('', '', 12,$pdf->getY(),$tbl, 0, 1, 0, true, 'C', true);
-        $filename = "VLSM-" . trim($bResult[0]['batch_code']) . '-' . date('d-m-Y-h-i-s') . '.pdf';
-        $pdf->Output($filename, 'I');
+        $filename = "VLSM-" . trim($bResult[0]['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . $general->generateRandomString() . '.pdf';
+        // $pdf->Output($filename, 'I');
+        $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'barcode' . DIRECTORY_SEPARATOR . $filename, "I");
         exit;
-        /* $pdf->Output(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'barcode' . DIRECTORY_SEPARATOR . $filename, "F");
-        echo $filename; */
+        // echo $filename;
     }
 }
