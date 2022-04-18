@@ -27,11 +27,11 @@ $pdQuery = "SELECT * from province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
@@ -62,10 +62,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM");?></h1>
+        <h1><i class="fa fa-edit"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Edit EID Request");?></li>
+            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Edit EID Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -470,6 +470,12 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <td style="width:25%;">
                                             <input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="form-control dateTime isRequired" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter approved on" <?php echo $labFieldDisabled; ?> style="width:100%;" />
                                         </td>
+                                        <td style="width:25%;"><label for="">Lab Tech Comments </label></td>
+                                        <td style="width:25%;">
+                                            <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Enter the lab technician commands" title="Please enter the lab technician commands"><?php echo $eidInfo['lab_tech_cmds']; ?></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr class="change-reason">
                                         <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
                                         <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                     </tr>

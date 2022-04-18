@@ -356,7 +356,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" />
                                         </td>
                                     </tr>
-                                        <tr>
+                                    <tr>
                                         <th>Sample Requestor Phone</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
@@ -463,6 +463,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td style="width:25%;"><label for="">Approved On </label></td>
                                             <td style="width:25%;">
                                                 <input type="text" value="<?php $general->humanDateFormat($general->getDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on" />
+                                            </td>
+                                            <td style="width:25%;"><label for="">Lab Tech Comments </label></td>
+                                            <td style="width:25%;">
+                                                <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Enter the lab technician commands" title="Please enter the lab technician commands"></textarea>
                                             </td>
                                         </tr>
                                     </table>
@@ -656,31 +660,31 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     $(document).ready(function() {
         $("#sampleCollectionDate").datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               onSelect: function(date) {
-                    var dt2 = $('#sampleDispatchedDate');
-                    var startDate = $(this).datetimepicker('getDate');
-                    var minDate = $(this).datetimepicker('getDate');
-                    dt2.datetimepicker('setDate', minDate);
-                    startDate.setDate(startDate.getDate() + 1000000);
-                    //sets dt2 maxDate to the last day of 30 days window
-                    dt2.datetimepicker('option', 'maxDate', startDate);
-                    dt2.datetimepicker('option', 'minDate', minDate);
-                    dt2.datetimepicker('option', 'minDateTime', minDate);
-               }
-          });
-          $('#sampleDispatchedDate').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               minDate: "Today",
-               yearRange:"-100:+100",
-          });
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                //sets dt2 maxDate to the last day of 30 days window
+                dt2.datetimepicker('option', 'maxDate', startDate);
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+            }
+        });
+        $('#sampleDispatchedDate').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            minDate: "Today",
+            yearRange: "-100:+100",
+        });
         $('.select2').select2();
         $('#labId').select2({
             width: '100%',

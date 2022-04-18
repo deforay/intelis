@@ -3081,3 +3081,7 @@ ALTER TABLE `form_vl` ADD INDEX(`result_reviewed_by`);
 
 -- Amit 12-Apr-2022 version 4.5.0
 UPDATE `system_config` SET `value` = '4.5.0' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Thana 18-Apr-2022 version 4.5.0
+ALTER TABLE `form_eid` ADD `lab_tech_cmds` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;

@@ -25,11 +25,11 @@ $pdQuery = "SELECT * FROM province_details";
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
@@ -360,8 +360,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" value="<?php echo date('d-M-Y H:i:s', strtotime($eidInfo['sample_dispatched_datetime'])); ?>" />
                                         </td>
-                                        </tr>
-                                        <tr>
+                                    </tr>
+                                    <tr>
                                         <th style="width:15% !important">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
@@ -372,8 +372,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?php echo $eidInfo['sample_requestor_name']; ?>" />
                                         </td>
-                                        </tr>
-                                        <tr>
+                                    </tr>
+                                    <tr>
                                         <th>Sample Requestor Phone</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
@@ -488,6 +488,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <td style="width:25%;"><label for="">Approved On </label></td>
                                             <td style="width:25%;">
                                                 <input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on" />
+                                            </td>
+                                            <td style="width:25%;"><label for="">Lab Tech Comments </label></td>
+                                            <td style="width:25%;">
+                                                <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Enter the lab technician commands" title="Please enter the lab technician commands"><?php echo $eidInfo['lab_tech_cmds']; ?></textarea>
                                             </td>
                                         </tr>
                                         <tr class="change-reason">
@@ -661,31 +665,31 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
     $(document).ready(function() {
         $("#sampleCollectionDate").datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               onSelect: function(date) {
-                    var dt2 = $('#sampleDispatchedDate');
-                    var startDate = $(this).datetimepicker('getDate');
-                    var minDate = $(this).datetimepicker('getDate');
-                    dt2.datetimepicker('setDate', minDate);
-                    startDate.setDate(startDate.getDate() + 1000000);
-                    //sets dt2 maxDate to the last day of 30 days window
-                    dt2.datetimepicker('option', 'maxDate', startDate);
-                    dt2.datetimepicker('option', 'minDate', minDate);
-                    dt2.datetimepicker('option', 'minDateTime', minDate);
-               }
-          });
-          $('#sampleDispatchedDate').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               minDate: "Today",
-               yearRange:"-100:+100",
-          });
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                //sets dt2 maxDate to the last day of 30 days window
+                dt2.datetimepicker('option', 'maxDate', startDate);
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+            }
+        });
+        $('#sampleDispatchedDate').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            minDate: "Today",
+            yearRange: "-100:+100",
+        });
         $('#labId').select2({
             width: '100%',
             placeholder: "Select Testing Lab"
