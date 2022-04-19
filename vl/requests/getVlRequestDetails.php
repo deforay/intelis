@@ -200,20 +200,24 @@ if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '" ';
 }
 
-$sFilter = '';
+
 if ($_SESSION['instanceType'] == 'remoteuser') {
      if (!empty($facilityMap)) {
           $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")  ";
-          $sFilter = " AND vl.facility_id IN (" . $facilityMap . ") ";
      }
 } else {
      $sWhere[] = ' vl.result_status!=9';
-     $sFilter = ' AND result_status!=9';
 }
-$sQuery = $sQuery . ' where' . implode(" AND ", $sWhere);
+
+if(!empty($sWhere)) {
+     $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
+     $sQuery = $sQuery . ' WHERE ' . $sWhere;
+}
+
+
 
 if (isset($sOrder) && $sOrder != "") {
-     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+     $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 // $_SESSION['vlRequestSearchResultQuery'] = $sQuery;
@@ -229,10 +233,6 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-
-// /* Total data set length */
-// $aResultTotal =  $db->rawQueryOne("SELECT COUNT(vl_sample_id) as totalCount FROM form_vl as vl WHERE vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-// $iTotal = $aResultTotal['totalCount'];
 
 /*
           * Output
