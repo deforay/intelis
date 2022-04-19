@@ -199,7 +199,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
      $sWhere[] = ' vl.result_status!=9';
 }
-$sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
+if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
+     $sQuery = $sQuery . ' where ' . implode(" AND ", $sWhere);
+}
 //error_log($sQuery);
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
