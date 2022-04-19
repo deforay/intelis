@@ -196,7 +196,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
 if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
 }
-$whereResult = '';
+
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
      $sWhere[] = ' vl.result != "" ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {

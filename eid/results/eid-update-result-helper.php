@@ -52,7 +52,7 @@ try {
     'lab_id'                            => isset($_POST['labId']) ? $_POST['labId'] : null,
     'result'                            => isset($_POST['result']) ? $_POST['result'] : null,
     'tested_by'                         => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
-    'lab_tech_cmds'                     => (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  NULL,
+    'lab_tech_comments'                     => (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  NULL,
     'result_approved_by'                => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
     'result_approved_datetime'          => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
     'revised_by'                        => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",

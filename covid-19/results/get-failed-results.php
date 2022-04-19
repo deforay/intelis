@@ -208,14 +208,14 @@ if (isset($sWhere) && $sWhere != "") {
 }
 $whereResult = '';
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-    $whereResult = 'vl.result != "" AND ';
+    $whereResult = ' vl.result != "" AND ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-    $whereResult = '(vl.result IS NULL OR vl.result = "") AND ';
+    $whereResult = ' (vl.result IS NULL OR vl.result = "") AND ';
 }
 if ($sWhere != '') {
     $sWhere = $sWhere . ' AND ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 } else {
-    $sWhere = $sWhere . ' where ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+    $sWhere = $sWhere . ' WHERE ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 }
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {

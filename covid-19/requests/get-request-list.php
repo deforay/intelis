@@ -30,13 +30,13 @@ $primaryKey = "covid19_id";
 */
 $sampleCode = 'sample_code';
 
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
      $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
 
@@ -87,10 +87,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
           for ($i = 0; $i < $colSize; $i++) {
                if ($i < $colSize - 1) {
-                    if ($aColumns[$i] == "CONCAT(vl.patient_name, vl.patient_surname)")
-                         $sWhereSub .= "vl.patient_name LIKE '%" . ($search) . "%' OR vl.patient_surname LIKE '%" . ($search) . "%' OR ";
-                    else
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                } else {
                     $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                }
@@ -200,15 +197,13 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
 if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
 }
-$whereResult = '';
+
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-     $whereResult = 'vl.result != "" AND ';
+     $sWhere[] = ' vl.result != ""  ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-     $whereResult = '(vl.result IS NULL OR vl.result = "") AND ';
+     $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
 }
-if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) != '') {
-     $sWhere[] = $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-}
+
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);

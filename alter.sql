@@ -3084,4 +3084,4 @@ UPDATE `system_config` SET `value` = '4.5.0' WHERE `system_config`.`name` = 'sc_
 
 
 -- Thana 18-Apr-2022 version 4.5.0
-ALTER TABLE `form_eid` ADD `lab_tech_cmds` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;
+ALTER TABLE `form_eid` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;

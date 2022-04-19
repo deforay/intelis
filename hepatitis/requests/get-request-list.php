@@ -30,13 +30,13 @@ $primaryKey = "hepatitis_id";
 */
 $sampleCode = 'sample_code';
 
-$aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(vl.patient_name, vl.patient_surname)', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
      $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 }
 
@@ -170,19 +170,19 @@ if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
      $sWhere[] = ' vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
 }
 if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere = ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
+     $sWhere[] = ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
 }
 if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
-     $sWhere = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
+     $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
 }
 
-$whereResult = '';
+
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-     $whereResult = 'vl.hcv_vl_count!= "" AND vl.hbv_vl_count != "" AND ';
+     $sWhere[] = ' vl.hcv_vl_count!= "" OR vl.hbv_vl_count != "" ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-     $whereResult = '((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = "") OR (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = "")) AND ';
+     $sWhere[] = ' ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = "") AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = "")) ';
 }
-$sWhere[] = $whereResult;
+
 
 
 if (isset($_POST['source']) && trim($_POST['source']) == 'dhis2') {
@@ -200,7 +200,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sWhere[] = ' vl.result_status!=9';
 }
 if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
-     $sQuery = $sQuery . ' where ' . implode(" AND ", $sWhere);
+     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 //error_log($sQuery);
 if (isset($sOrder) && $sOrder != "") {

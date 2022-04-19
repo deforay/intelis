@@ -491,7 +491,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                             <td style="width:25%;"><label for="">Lab Tech Comments </label></td>
                                             <td style="width:25%;">
-                                                <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Enter the lab technician commands" title="Please enter the lab technician commands"><?php echo $eidInfo['lab_tech_cmds']; ?></textarea>
+                                                <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Enter the lab technician commands" title="Please enter the lab technician commands"><?php echo $eidInfo['lab_tech_comments']; ?></textarea>
                                             </td>
                                         </tr>
                                         <tr class="change-reason">
