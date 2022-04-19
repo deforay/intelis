@@ -208,7 +208,7 @@ try {
     }
 
     if (!empty($input['patientName'])) {
-        $where[] = " CONCAT(vl.patient_first_name, ' ', vl.patient_last_name) like '%" . $input['patientName'] . "%'";
+        $where[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) like '%" . $input['patientName'] . "%'";
     }
 
     $sampleStatus = $input['sampleStatus'];

@@ -177,7 +177,7 @@ try {
     }
 
     if (!empty($input['childName'])) {
-        $where[] = " CONCAT(vl.child_name, ' ', vl.child_surname) like '%" . $input['childName'] . "%'";
+        $where[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $input['childName'] . "%'";
     }
 
     if (!empty($input['sampleStatus'])) {
