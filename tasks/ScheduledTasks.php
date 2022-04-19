@@ -40,7 +40,7 @@ if (!empty($systemConfig['remoteURL'])) {
         ->description('Syncing common/reference data from remote system');
 
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/syncRequests.php")
-        ->cron("0 */15 * * *")
+        ->everyFifteenMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing requests from remote system');
@@ -59,7 +59,7 @@ if (!empty($systemConfig['remoteURL'])) {
 
 if (!empty($vldashboardUrl)) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-reference-tables.php")
-        ->cron("0 */30 * * *")
+        ->cron('*/20 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing VLSM Reference data from local database to Dashboard');
@@ -68,7 +68,7 @@ if (!empty($vldashboardUrl)) {
 
 if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-vl.php")
-        ->cron("0 */35 * * *")
+        ->cron('*/25 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing VL data from local database to Dashboard');
@@ -76,14 +76,14 @@ if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['vl']) && $system
 
 if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-eid.php")
-        ->cron("0 */40 * * *")
+        ->cron('*/30 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing EID data from local database to Dashboard');
 }
 if (!empty($vldashboardUrl) && !empty($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-covid19.php")
-        ->cron("0 */45 * * *")
+        ->cron('*/35 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing Covid-19 data from local database to Dashboard');
