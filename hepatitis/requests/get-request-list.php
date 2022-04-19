@@ -170,14 +170,25 @@ if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
      $sWhere[] = ' vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
 }
 if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere[] = ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
+     $sWhere = ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
 }
 if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
-     $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
+     $sWhere = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
 }
+
+$whereResult = '';
+if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
+     $whereResult = 'vl.hcv_vl_count!= "" AND vl.hbv_vl_count != "" AND ';
+} else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
+     $whereResult = '((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = "") OR (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = "")) AND ';
+}
+$sWhere[] = $whereResult;
+
+
 if (isset($_POST['source']) && trim($_POST['source']) == 'dhis2') {
      $sWhere[] = ' `source_of_request` like "dhis2%" ';
 }
+
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
