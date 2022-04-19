@@ -199,7 +199,7 @@ if (trim($id) != '') {
         //$tbl.='<br/><br/><b style="text-align:left;">Printed On:  </b>'.date('d/m/Y H:i:s');
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C', true);
 
-        $filename = trim($bResult[0]['package_code']) . '-' . date('d-M-Y') . '-Manifest.pdf';
+        $filename = trim($bResult[0]['package_code']) . '-' . date('Ymd') . '-' . $general->generateRandomString(6) . '-Manifest.pdf';
         $pdf->Output(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'package_barcode' . DIRECTORY_SEPARATOR . $filename, "F");
         echo $filename;
     }
