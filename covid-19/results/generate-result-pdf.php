@@ -32,11 +32,7 @@ $mFieldArray = array();
 if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
 	$mFieldArray = explode(',', $arr['r_mandatory_fields']);
 }
-//set print time
-$printedTime = date('Y-m-d H:i:s');
-$expStr = explode(" ", $printedTime);
-$printDate = $general->humanDateFormat($expStr[0]);
-$printDateTime = $expStr[1];
+
 //set query
 if (isset($_POST['newData']) && $_POST['newData'] != '') {
 	$query = $_SESSION['covid19PrintedResultsQuery'];
@@ -307,6 +303,12 @@ if (sizeof($requestResult) > 0) {
 	$page = 1;
 
 	foreach ($requestResult as $result) {
+
+		//set print time
+		$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
+		$expStr = explode(" ", $printedTime);
+		$printDate = $general->humanDateFormat($expStr[0]);
+		$printDateTime = $expStr[1];
 		$covid19Results = $general->getCovid19Results();
 		$countryFormId = $general->getGlobalConfig('vl_form');
 
