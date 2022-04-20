@@ -96,7 +96,7 @@ if (isset($result['result_printed_datetime']) && trim($result['result_printed_da
     $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
     $sampleDispatchTime = $expStr[1];
 } else {
-    $expStr = explode(" ", $currentTime);
+    $expStr = explode(" ", $currentDateTime);
     $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
     $sampleDispatchTime = $expStr[1];
 }
@@ -450,7 +450,7 @@ if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
         'event_type' => $eventType,
         'action' => $action,
         'resource' => $resource,
-        'date_time' => $currentTime
+        'date_time' => $currentDateTime
     );
     $db->insert($tableName1, $data);
     //Update print datetime in VL tbl.
@@ -458,6 +458,6 @@ if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
     $vlResult = $db->query($vlQuery);
     if ($vlResult[0]['result_printed_datetime'] == NULL || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
         $db = $db->where('covid19_id', $result['covid19_id']);
-        $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
+        $db->update($tableName2, array('result_printed_datetime' => $currentDateTime, 'result_dispatched_datetime' => $currentDateTime));
     }
 }

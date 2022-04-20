@@ -158,16 +158,16 @@ if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample
     $sampleReceivedDate = $general->humanDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
 }
-$sampleDispatchDate = '';
-$sampleDispatchTime = '';
+$resultPrintedDate = '';
+$resultPrintedTime = '';
 if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['result_printed_datetime']);
-    $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
-    $sampleDispatchTime = $expStr[1];
+    $resultPrintedDate = $general->humanDateFormat($expStr[0]);
+    $resultPrintedTime = $expStr[1];
 } else {
-    $expStr = explode(" ", $currentTime);
-    $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
-    $sampleDispatchTime = $expStr[1];
+    $expStr = explode(" ", $currentDateTime);
+    $resultPrintedDate = $general->humanDateFormat($expStr[0]);
+    $resultPrintedTime = $expStr[1];
 }
 
 if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
@@ -374,7 +374,7 @@ if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
         'event_type' => $eventType,
         'action' => $action,
         'resource' => $resource,
-        'date_time' => $currentTime
+        'date_time' => $currentDateTime
     );
     $db->insert($tableName1, $data);
     //Update print datetime in VL tbl.
@@ -382,6 +382,6 @@ if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
     $vlResult = $db->query($vlQuery);
     if ($vlResult[0]['result_printed_datetime'] == NULL || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
         $db = $db->where('covid19_id', $result['covid19_id']);
-        $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
+        $db->update($tableName2, array('result_printed_datetime' => $currentDateTime, 'result_dispatched_datetime' => $currentDateTime));
     }
 }
