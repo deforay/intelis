@@ -183,8 +183,6 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
      $sWhere[] = ' ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = "") AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = "")) ';
 }
 
-
-
 if (isset($_POST['source']) && trim($_POST['source']) == 'dhis2') {
      $sWhere[] = ' `source_of_request` like "dhis2%" ';
 }
@@ -200,11 +198,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sWhere[] = ' vl.result_status!=9';
 }
 if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
-     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
+     $_SESSION['hepatitisRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
+     $sQuery = $sQuery . ' where ' . $sWhere;
 }
-//error_log($sQuery);
+// die($sQuery);
 if (isset($sOrder) && $sOrder != "") {
-     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+     $_SESSION['hepatitisRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['hepatitisRequestSearchResultQuery'] = $sQuery;

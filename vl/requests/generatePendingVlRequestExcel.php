@@ -59,18 +59,6 @@ $sQuery = "SELECT
                         LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
                         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = $general->dateFormat(trim($s_c_date[0]));
-	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = $general->dateFormat(trim($s_c_date[1]));
-	}
-}
-
 if (isset($_SESSION['vlRequestData']['sWhere']) && !empty($_SESSION['vlRequestData']['sWhere'])) {
 	$sQuery = $sQuery . ' WHERE ' . $_SESSION['vlRequestData']['sWhere'];
 }
@@ -85,7 +73,7 @@ $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 
-$headings = array("No.", "Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+$headings = array("No.", "Sample Code", "Remote Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 $colNo = 1;
 
 $styleArray = array(
@@ -223,12 +211,6 @@ foreach ($rResult as $aRow) {
 	// } else if ($aRow['result_value_absolute'] != NULL && trim($aRow['result_value_absolute']) != '' && $aRow['result_value_absolute'] > 0) {
 	// 	$logVal = round(log10((float)$aRow['result_value_absolute']), 1);
 	// }
-	if ($_SESSION['instanceType'] == 'remoteuser') {
-		$sampleCode = 'remote_sample_code';
-	} else {
-		$sampleCode = 'sample_code';
-	}
-
 	if ($aRow['patient_first_name'] != '') {
 		$patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
 	} else {
@@ -246,7 +228,8 @@ foreach ($rResult as $aRow) {
 	}
 
 	$row[] = $no;
-	$row[] = $aRow[$sampleCode];
+	$row[] = $aRow["sample_code"];
+	$row[] = $aRow["remote_sample_code"];
 	$row[] = $aRow['lab_name'];
 	$row[] = $aRow['facility_name'];
 	$row[] = $aRow['facility_code'];

@@ -169,6 +169,9 @@ foreach ($srcResults as $list) {
                                 <?php if (isset($_SESSION['privileges']) && in_array("tb-add-request.php", $_SESSION['privileges'])) { ?>
                                     <a style=" margin: 0px 5px; " href="/tb/requests/tb-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new TB Request"); ?></a>
                                 <?php } ?>
+                                <?php if (isset($_SESSION['privileges']) && in_array("export-tb-requests.php", $_SESSION['privileges'])) { ?>
+                                    <a class="btn btn-success btn-sm pull-right" href="javascript:void(0);" onclick="exportAllPendingTbRequest();"><span><?php echo _("Export Requests"); ?></span></a>
+                                <?php } ?>
                             </td>
                         </tr>
                     </table>
@@ -179,6 +182,9 @@ foreach ($srcResults as $list) {
                                 <?php
                                 if (isset($_SESSION['privileges']) && in_array("tb-add-request.php", $_SESSION['privileges'])) { ?>
                                     <a style=" margin: 0px 5px; " href="/tb/requests/tb-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new TB Request"); ?></a>
+                                <?php } ?>
+                                <?php if (isset($_SESSION['privileges']) && in_array("export-tb-requests.php", $_SESSION['privileges'])) { ?>
+                                    <a class="btn btn-success btn-sm pull-right" href="javascript:void(0);" onclick="exportAllPendingTbRequest();"><span><?php echo _("Export Requests"); ?></span></a>
                                 <?php } ?>
                                 <button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
                             </td>
@@ -506,6 +512,20 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         $("#checkedTests").val(selectedTests.join());
     }
 
+    function exportAllPendingTbRequest() {
+        // $.blockUI();
+        $.post("/tb/requests/generate-pending-tb-request-excel.php", {
+                reqSampleType: $('#requestSampleType').val()
+            },
+            function(data) {
+                $.unblockUI();
+                if (data === "" || data === null || data === undefined) {
+                    alert("<?php echo _("Unable to generate the excel file"); ?>");
+                } else {
+                    window.location.href = '/download.php?f=' + data;
+                }
+            });
+    }
 
     function hideAdvanceSearch(hideId, showId) {
         $("#" + hideId).hide();

@@ -3,8 +3,6 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-
-
 $formConfigQuery = "SELECT * FROM global_config";
 $configResult = $db->query($formConfigQuery);
 $gconfig = array();
@@ -213,10 +211,13 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
      $sWhere[] = 'vl.result_status!=9 ';
 }
-/* Implode all the where fields for filtering the data */
-$sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
+if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
+     $_SESSION['covid19RequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
+     $sQuery = $sQuery . ' where ' . $sWhere;
+}
+// die($sQuery);
 if (isset($sOrder) && $sOrder != "") {
-     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+     $_SESSION['covid19RequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['covid19RequestSearchResultQuery'] = $sQuery;

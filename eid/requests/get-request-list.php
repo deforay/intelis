@@ -215,11 +215,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sFilter = ' AND result_status!=9';
 }
 if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
-     $sQuery = $sQuery . ' where ' . implode(" AND ", $sWhere);
+     $_SESSION['eidRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
+     $sQuery = $sQuery . ' where ' . $sWhere;
 }
 // die($sQuery);
 if (isset($sOrder) && $sOrder != "") {
-     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+     $_SESSION['eidRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['eidRequestSearchResultQuery'] = $sQuery;

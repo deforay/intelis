@@ -677,20 +677,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$.blockUI();
 		$.post("generatePendingVlRequestExcel.php", {
 				reqSampleType: $('#requestSampleType').val(),
-				batchCode: $("#batchCode").val(),
-				sampleCollectionDate: $("#sampleCollectionDate").val(),
-				facilityName: $("#facilityName").val(),
-				sampleType: $("#sampleType").val(),
-				district: $("#district").val(),
-				vlLab: $("#vlLab").val(),
-				gender: $("#gender").val(),
-				showReordSample: $("#showReordSample").val(),
-				patientPregnant: $("#patientPregnant").val(),
-				fundingSource: $("#fundingSource").val(),
-				implementingPartner: $("#implementingPartner").val(),
-				state: $("#state").val(),
-				reqSampleType: $("#requestSampleType").val(),
-				srcOfReq: $("#srcOfReq").val(),
 			},
 			function(data) {
 				$.unblockUI();
@@ -703,7 +689,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			});
 	}
 
-	
+
 	function hideAdvanceSearch(hideId, showId) {
 		$("#" + hideId).hide();
 		$("#" + showId).show();

@@ -540,17 +540,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	<?php } ?>
 
 	function exportAllPendingHepatitisRequest() {
-		$.blockUI();
-		var requestSampleType = $('#requestSampleType').val();
-		$.post("/hepatitis/management/generate-export-data.php", {
-				reqSampleType: requestSampleType
+		// $.blockUI();
+		$.post("/hepatitis/requests/generate-pending-hepatitis-request-excel.php", {
+				reqSampleType: $('#requestSampleType').val()
 			},
 			function(data) {
 				$.unblockUI();
 				if (data === "" || data === null || data === undefined) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
-					location.href = '/temporary/' + data;
+					window.location.href = '/download.php?f=' + data;
 				}
 			});
 	}
