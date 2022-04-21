@@ -130,7 +130,7 @@ unset($_SESSION['controllertrack']);
                     alert('Unable to generate download');
                 } else {
                     $.unblockUI();
-                    window.location.href = '/download.php?f=' + data;
+                    window.open('/download.php?f=' + data, '_blank');
                     window.location.href = "/covid-19/results/covid-19-print-results.php";
                 }
 

@@ -38,7 +38,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
-if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
+if (isset($_POST['vlPrint'])) {
     array_unshift($orderColumns, "vl.tb_id");
 }
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -260,7 +260,7 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     $row = array();
-    if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
+    if (isset($_POST['vlPrint'])) {
         $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['tb_id'] . '"  value="' . $aRow['tb_id'] . '" onclick="checkedRow(this);"  />';
         $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="resultPDF(' . $aRow['tb_id'] . ',\'\');"><i class="fa fa-print"> ' . _("Print") . '</i></a>';
     }

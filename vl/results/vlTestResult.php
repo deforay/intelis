@@ -420,7 +420,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
         if (data == "" || data == null || data == undefined) {
           alert("<?php echo _("Unable to generate download"); ?>");
         } else {
-          window.location.href = '/download.php?f=' + data;
+          window.open('/download.php?f=' + data, '_blank');
         }
       });
     $.unblockUI();

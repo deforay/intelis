@@ -620,7 +620,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                     oTable.fnDraw();
                     opTable.fnDraw();
                     console.log(data);
-                    window.location.href = '/download.php?f=' + data;
+                    window.open('/download.php?f=' + data, '_blank');
                 }
             });
     }
@@ -631,15 +631,18 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
         $path = '';
         $path = '/tb/results/generate-result-pdf.php';
         ?>
-        if (newData == null) {
-            var rowsLength = selectedRows.length;
+        // if (newData == null) {
+        //     var rowsLength = selectedRows.length;
+        //     var totalCount = $("#totalSamplesList").val();
+        //     var checkedRow = $("#checkedRows").val();
+        // } else {
+        //     var rowsLength = selectedPrintedRows.length;
+        //     var totalCount = $("#totalSamplesPrintedList").val();
+        //     var checkedRow = $("#checkedPrintedRows").val();
+        // }
+        var rowsLength = selectedRows.length;
             var totalCount = $("#totalSamplesList").val();
-            var checkedRow = $("#checkedRows").val();
-        } else {
-            var rowsLength = selectedPrintedRows.length;
-            var totalCount = $("#totalSamplesPrintedList").val();
-            var checkedRow = $("#checkedPrintedRows").val();
-        }
+            var checkedRow = $("#checkedRows").val();        
         if (rowsLength != 0 && rowsLength > 100) {
             $.unblockUI();
             alert("<?php echo _("You have selected"); ?> " + rowsLength + " <?php echo _("results out of the maximum allowed 100 at a time"); ?>");
@@ -672,7 +675,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                         $(".checkPrintedRows").prop('checked', false);
                         $("#checkPrintedRowsData").prop('checked', false);
                     }
-                    window.location.href = '/download.php?f=' + data;
+                    window.open('/download.php?f=' + data, '_blank');
                 }
             });
     }

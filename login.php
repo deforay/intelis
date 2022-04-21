@@ -33,7 +33,7 @@ if (isset($systemConfig['instanceName']) && !empty($systemConfig['instanceName']
 
 $shortName = _('Sample Management System');
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
+if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
 	$shortName = 'Sample Tracking';
 	$systemType = "Remote Sample Tracking Module";
 	$path = '/assets/img/remote-bg.jpg';
@@ -243,7 +243,7 @@ function generate_token()
 		}
 
 		$(document).ready(function() {
-			<?php if ($systemConfig['recency']['crosslogin']) { ?>
+			<?php if (isset($systemConfig['recency']) && $systemConfig['recency']['crosslogin']) { ?>
 				if (sessionStorage.getItem("crosslogin") == "true") {
 					<?php $_SESSION['logged'] = false; ?>
 					sessionStorage.setItem("crosslogin", "false");

@@ -2318,8 +2318,8 @@ CREATE TABLE `failed_result_retest_tracker` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Amit 30 Sep 2021
-ALTER TABLE `form_hepatitis` CHANGE `source_of_request` `source_of_request` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_covid19` CHANGE `source_of_request` `source_of_request` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_hepatitis` CHANGE `source_of_request` `source_of_request` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `source_of_request` `source_of_request` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 -- ALTER TABLE `form_hepatitis` ADD UNIQUE(`source_of_request`);
 -- ALTER TABLE `form_covid19` ADD UNIQUE(`source_of_request`);
 

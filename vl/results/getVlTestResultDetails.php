@@ -289,7 +289,7 @@ $output = array(
 
 foreach ($rResult as $aRow) {
      $row = array();
-     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
+     if (isset($_POST['vlPrint'])) {
           $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedRow(this);"  />';
           $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ',\'\');"><i class="fa fa-print"> ' . _("Print") . '</i></a>';
      } else {
