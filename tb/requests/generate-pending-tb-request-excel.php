@@ -27,9 +27,11 @@ $rResult = $db->rawQuery($sQuery);
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
-
-$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-
+if ($_SESSION['instanceType'] == 'standalone') {
+    $headings = array("S. No.", "Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+} else {
+    $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+}
 
 $colNo = 1;
 
@@ -156,8 +158,12 @@ foreach ($rResult as $aRow) {
 
 
     $row[] = $no;
-    $row[] = $aRow["sample_code"];
-    $row[] = $aRow["remote_sample_code"];
+    if ($_SESSION['instanceType'] == 'standalone') {
+        $row[] = $aRow["sample_code"];
+    } else {
+        $row[] = $aRow["sample_code"];
+        $row[] = $aRow["remote_sample_code"];
+    }
     $row[] = ucwords($aRow['lab_name']);
     $row[] = ucwords($aRow['labTechnician']);
     $row[] = ucwords($aRow['facility_district']);
