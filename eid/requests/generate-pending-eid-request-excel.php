@@ -62,8 +62,11 @@ $rResult = $db->rawQuery($sQuery);
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
-
-$headings = array("S.No.", "Sample Code",  "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+if ($_SESSION['instanceType'] == 'standalone') {
+    $headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+} else {
+    $headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+}
 $colNo = 1;
 
 $styleArray = array(
@@ -187,8 +190,12 @@ foreach ($rResult as $aRow) {
     }
 
     $row[] = $no;
-    $row[] = $aRow["sample_code"];
-    $row[] = $aRow["remote_sample_code"];
+    if ($_SESSION['instanceType'] == 'standalone') {
+        $row[] = $aRow["sample_code"];
+    } else {
+        $row[] = $aRow["sample_code"];
+        $row[] = $aRow["remote_sample_code"];
+    }
     $row[] = ucwords($aRow['facility_name']);
     $row[] = $aRow['facility_code'];
     $row[] = ucwords($aRow['facility_district']);

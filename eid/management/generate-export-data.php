@@ -24,8 +24,11 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
-
-	$headings = array("S.No.","Sample Code", "Health Facility","Health Facility Code","District/County","Province/State", "Testing Lab Name (Hub)","Child ID","Child Name","Mother ID","Child Date of Birth","Child Age","Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date","Is Sample Rejected?","Sample Tested On","Result","Sample Received On","Date Result Dispatched","Comments","Funding Source","Implementing Partner");
+	if ($_SESSION['instanceType'] == 'standalone') {
+		$headings = array("S.No.", "Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	} else {
+		$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	}
 	$colNo = 1;
 
 	$styleArray = array(
@@ -106,7 +109,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		if ($aRow['sample_tested_datetime'] != NULL && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
 			$sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
 		}
-		
+
 		if ($aRow['sample_received_at_vl_lab_datetime'] != NULL && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00') {
 			$sampleReceivedOn =  date("d-m-Y", strtotime($aRow['sample_received_at_vl_lab_datetime']));
 		}
@@ -138,11 +141,6 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		} else if ($aRow['result_value_absolute'] != NULL && trim($aRow['result_value_absolute']) != '' && $aRow['result_value_absolute'] > 0) {
 			$logVal = round(log10((float)$aRow['result_value_absolute']), 1);
 		}
-		if ($_SESSION['instanceType'] == 'remoteuser') {
-			$sampleCode = 'remote_sample_code';
-		} else {
-			$sampleCode = 'sample_code';
-		}
 
 		if ($aRow['patient_first_name'] != '') {
 			$patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
@@ -159,9 +157,14 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		} else {
 			$patientLname = '';
 		}
-		
+
 		$row[] = $no;
-		$row[] = $aRow[$sampleCode];
+		if ($_SESSION['instanceType'] == 'standalone') {
+			$row[] = $aRow["sample_code"];
+		} else {
+			$row[] = $aRow["sample_code"];
+			$row[] = $aRow["remote_sample_code"];
+		}
 		$row[] = ($aRow['facility_name']);
 		$row[] = $aRow['facility_code'];
 		$row[] = ucwords($aRow['facility_district']);
