@@ -316,7 +316,7 @@ $_SESSION['vlResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 

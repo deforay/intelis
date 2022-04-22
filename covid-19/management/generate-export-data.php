@@ -21,9 +21,11 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
-
-	$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-
+	if ($_SESSION['instanceType'] == 'standalone') {
+		$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+	} else {
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+	}
 
 	$colNo = 1;
 
@@ -129,12 +131,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
-		if ($_SESSION['instanceType'] == 'remoteuser') {
-			$sampleCode = 'remote_sample_code';
-		} else {
-			$sampleCode = 'sample_code';
-		}
-
 		if ($aRow['patient_name'] != '') {
 			$patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
 		} else {
@@ -155,7 +151,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
 
 		$row[] = $no;
-		$row[] = $aRow[$sampleCode];
+		if ($_SESSION['instanceType'] == 'standalone') {
+			$row[] = $aRow["sample_code"];
+		} else {
+			$row[] = $aRow["sample_code"];
+			$row[] = $aRow["remote_sample_code"];
+		}
 		$row[] = ucwords($aRow['lab_name']);
 		$row[] = ucwords($aRow['testing_point']);
 		$row[] = ucwords($aRow['labTechnician']);

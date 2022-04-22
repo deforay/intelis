@@ -29,10 +29,18 @@ $rResult = $db->rawQuery($sQuery);
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
-if ($arr['vl_form'] == 1) {
-    $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
+if ($_SESSION['instanceType'] == 'standalone') {
+    if ($arr['vl_form'] == 1) {
+        $headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
+    } else {
+        $headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+    }
 } else {
-    $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+    if ($arr['vl_form'] == 1) {
+        $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
+    } else {
+        $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+    }
 }
 
 $colNo = 1;
@@ -159,8 +167,12 @@ foreach ($rResult as $aRow) {
     if ($arr['vl_form'] == 1) {
 
         $row[] = $no;
-        $row[] = $aRow["sample_code"];
-        $row[] = $aRow["remote_sample_code"];
+        if ($_SESSION['instanceType'] == 'standalone') {
+            $row[] = $aRow["sample_code"];
+        } else {
+            $row[] = $aRow["sample_code"];
+            $row[] = $aRow["remote_sample_code"];
+        }
         $row[] = ucwords($aRow['labName']);
         $row[] = ucwords($aRow['testing_point']);
         $row[] = ucwords($aRow['labTechnician']);
@@ -193,7 +205,12 @@ foreach ($rResult as $aRow) {
     } else {
 
         $row[] = $no;
-        $row[] = $aRow[$sampleCode];
+        if ($_SESSION['instanceType'] == 'standalone') {
+            $row[] = $aRow["sample_code"];
+        } else {
+            $row[] = $aRow["sample_code"];
+            $row[] = $aRow["remote_sample_code"];
+        }
         $row[] = ucwords($aRow['facility_name']);
         $row[] = $aRow['facility_code'];
         $row[] = ucwords($aRow['facility_district']);
