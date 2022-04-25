@@ -639,15 +639,15 @@ $batResult = $db->rawQuery($batQuery);
         $path = '';
         $path = '/eid/results/generate-result-pdf.php';
         ?>
-        if (newData == null) {
-            var rowsLength = selectedRows.length;
-            var totalCount = $("#totalSamplesList").val();
-            var checkedRow = $("#checkedRows").val();
-        } else {
-            var rowsLength = selectedPrintedRows.length;
-            var totalCount = $("#totalSamplesPrintedList").val();
-            var checkedRow = $("#checkedPrintedRows").val();
-        }
+        // if (newData == null) {
+        //     var rowsLength = selectedRows.length;
+        //     var totalCount = $("#totalSamplesList").val();
+        //     var checkedRow = $("#checkedRows").val();
+        // } else {
+        //     var rowsLength = selectedPrintedRows.length;
+        //     var totalCount = $("#totalSamplesPrintedList").val();
+        //     var checkedRow = $("#checkedPrintedRows").val();
+        // }
         var rowsLength = selectedRows.length;
         var totalCount = $("#totalSamplesList").val();
         var checkedRow = $("#checkedRows").val();
