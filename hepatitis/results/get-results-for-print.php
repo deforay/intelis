@@ -264,7 +264,11 @@ $output = array(
 foreach ($rResult as $aRow) {
     $row = array();
     if (isset($_POST['vlPrint'])) {
-        $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['hepatitis_id'] . '"  value="' . $aRow['hepatitis_id'] . '" onclick="checkedRow(this);"  />';
+        if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
+            $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['hepatitis_id'] . '"  value="' . $aRow['hepatitis_id'] . '" onclick="checkedRow(this);"  />';
+        } else {
+            $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['hepatitis_id'] . '"  value="' . $aRow['hepatitis_id'] . '" onclick="checkedPrintedRow(this);"  />';
+        }
         $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="resultPDF(' . $aRow['hepatitis_id'] . ',\'\');"><i class="fa fa-print"> ' . _("Print") . '</i></a>';
     }
 
