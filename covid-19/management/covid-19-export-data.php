@@ -501,7 +501,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 					alert("<?php echo _("Unable to generate excel."); ?>");
 				} else {
 					$.unblockUI();
-					location.href = '/download.php?f=' + data;
+					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}

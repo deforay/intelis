@@ -111,7 +111,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT vl.*,b.*,ts.*,imp.*,
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             f.facility_name,
             l_f.facility_name as labName,
             l_f.facility_logo as facilityLogo,
@@ -219,7 +219,7 @@ if (!isset($_POST['status']) || trim($_POST['status']) == '') {
         $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NOT NULL OR result_printed_datetime NOT like '')";
     }
 } else {
-    $sWhere[] = " vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
+    $sWhere[] = " vl.result_status!=9 ";
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
