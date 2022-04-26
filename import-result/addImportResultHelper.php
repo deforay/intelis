@@ -16,6 +16,8 @@ die; */
 
 $type = $_POST['type'];
 
+//var_dump($confFileName);die;
+
 if ($type == 'vl') {
     require_once(APPLICATION_PATH . DIRECTORY_SEPARATOR . "import-configs" . DIRECTORY_SEPARATOR . "vl" . DIRECTORY_SEPARATOR . $confFileName);
 } else if ($type == 'eid') {
