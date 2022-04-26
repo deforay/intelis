@@ -494,20 +494,10 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
         $html .= '</table>';
-
-        $showQR = false;
         if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($systemConfig['remoteURL'])) {
             $showQR = true;
-            if (isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser') && $result['data_sync'] == 0) {
-                // If this is a vluser instance and the data is not yet synced, then dont print QR
-                $showQR = false;
-            } else if (isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'standalone')) {
-                // No need to show QR code for standalone instance
-                $showQR = false;
-            }
         }
-
-        if ($showQR && (!empty($result['result']) || $result['result_status'] == '4')) {
+        if ($showQR && !empty($result['result']) || ($result['result'] == '' && $result['result_status'] == '4')) {
             $ciphering = "AES-128-CTR";
             $iv_length = openssl_cipher_iv_length($ciphering);
             $options = 0;
@@ -523,20 +513,20 @@ if (sizeof($requestResult) > 0) {
             );
             $pdf->writeHTML($html);
             $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-
-            $h = 175;
-            if (isset($signResults) && !empty($signResults)) {
-                if (isset($facilityInfo['address']) && $facilityInfo['address'] != "") {
-                    $h = 185;
+            if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
+                $h = 175;
+                if (isset($signResults) && !empty($signResults)) {
+                    if (isset($facilityInfo['address']) && $facilityInfo['address'] != "") {
+                        $h = 185;
+                    }
+                } else {
+                    $h = 148.5;
                 }
-            } else {
-                $h = 148.5;
+                if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($systemConfig['remoteURL'])) {
+                    $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
+                    $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+                }
             }
-
-            $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-            $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
-
-
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
             $pdf->Output($filename, "F");

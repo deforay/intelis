@@ -3,9 +3,9 @@
 A simple, open source Sample Management System for Viral Load, EID, Covid-19 and Hepatitis testing.
 
 #### Pre-requisites
-* Apache2
+* Apache 2
 * MySQL 5+
-* PHP 7+
+* PHP 7.4+
 
 
 #### How do I get started?

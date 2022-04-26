@@ -115,7 +115,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT l.facility_name as 'labname',
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
         vl.source_of_request,
         count(*) as 'samples',
         SUM(CASE WHEN (vl.result is not null AND vl.result not like '' AND result_status = 7) THEN 1 ELSE 0 END) AS 'samplesWithResults',

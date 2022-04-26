@@ -116,7 +116,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * SQL queries
 * Get data to display
 */
-$sQuery = "SELECT vl.*,b.*,ts.*,imp.*,
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             f.facility_name,
             l_f.facility_name as labName,
             l_f.facility_logo as facilityLogo,
