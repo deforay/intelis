@@ -34,13 +34,7 @@ $expStr = explode(" ", $printedTime);
 $printDate = $general->humanDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
-if (isset($_POST['newData']) && $_POST['newData'] != '') {
-  //$query = $_SESSION['vlPrintResultQuery'];
-  $searchQuery = $_SESSION['vlPrintRequestSearchResultQuery'];
-} else if (!empty($_SESSION['vlRequestSearchResultQuery'])) {
-  //$query = isset($_SESSION['vlResultQuery']) ? $_SESSION['vlResultQuery'] : null;
-  $searchQuery = $_SESSION['vlRequestSearchResultQuery'];
-}
+$searchQuery = $_SESSION['vlRequestSearchResultQuery'];
 
 if (isset($_POST['id']) && trim($_POST['id']) != '') {
   //if(isset($_POST['resultMail'])){
@@ -73,7 +67,6 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 }
 //error_log($searchQuery);
 
-// die($searchQuery);
 $requestResult = $db->query($searchQuery);
 $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;

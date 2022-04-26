@@ -34,13 +34,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 }
 
 //set query
-if (isset($_POST['newData']) && $_POST['newData'] != '') {
-	$query = $_SESSION['covid19PrintedResultsQuery'];
-	$allQuery = $_SESSION['covid19PrintedSearchResultQuery'];
-} else {
-	$query = $_SESSION['covid19PrintQuery'];
-	$allQuery = $_SESSION['covid19PrintSearchResultQuery'];
-}
+$allQuery = $_SESSION['covid19PrintQuery'];
 if (isset($_POST['id']) && trim($_POST['id']) != '') {
 
 	$searchQuery = "SELECT vl.*,f.*,
