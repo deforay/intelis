@@ -631,18 +631,15 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
         $path = '';
         $path = '/tb/results/generate-result-pdf.php';
         ?>
-        // if (newData == null) {
-        //     var rowsLength = selectedRows.length;
-        //     var totalCount = $("#totalSamplesList").val();
-        //     var checkedRow = $("#checkedRows").val();
-        // } else {
-        //     var rowsLength = selectedPrintedRows.length;
-        //     var totalCount = $("#totalSamplesPrintedList").val();
-        //     var checkedRow = $("#checkedPrintedRows").val();
-        // }
-        var rowsLength = selectedRows.length;
+        if (newData == null) {
+            var rowsLength = selectedRows.length;
             var totalCount = $("#totalSamplesList").val();
-            var checkedRow = $("#checkedRows").val();        
+            var checkedRow = $("#checkedRows").val();
+        } else {
+            var rowsLength = selectedPrintedRows.length;
+            var totalCount = $("#totalSamplesPrintedList").val();
+            var checkedRow = $("#checkedPrintedRows").val();
+        }      
         if (rowsLength != 0 && rowsLength > 100) {
             $.unblockUI();
             alert("<?php echo _("You have selected"); ?> " + rowsLength + " <?php echo _("results out of the maximum allowed 100 at a time"); ?>");

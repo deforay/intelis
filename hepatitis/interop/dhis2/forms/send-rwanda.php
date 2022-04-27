@@ -6,7 +6,7 @@ $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 $hepatitisModel = new \Vlsm\Models\Hepatitis();
 
-$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7 AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')";
+$query = "SELECT * FROM form_hepatitis WHERE (source_of_request LIKE 'dhis2' OR unique_id like 'dhis2%') AND result_status = 7 AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')";
 //$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7";// AND result_sent_to_source NOT LIKE 'sent'";
 $formResults = $db->rawQuery($query);
 //var_dump($formResults);die;
