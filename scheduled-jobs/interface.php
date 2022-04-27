@@ -98,8 +98,12 @@ if (count($interfaceInfo) > 0) {
                 $vlResult = trim($result['results']);
                 $unit = trim($result['test_unit']);
 
+                if($vlResult == "-1.00"){
+                    $vlResult = "Not Detected";
+                }
+
                 if (!is_numeric($vlResult)) {
-                    $interpretedResults = $vlDb->interpretViralLoadTextResult($vlResult, $unit);
+                    $interpretedResults = $vlDb->interpretViralLoadTextResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
                 } else {
                     $interpretedResults = $vlDb->interpretViralLoadNumericResult($vlResult, $unit);
                 }

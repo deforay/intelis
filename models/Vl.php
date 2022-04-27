@@ -211,7 +211,7 @@ class Vl
         }
     }
 
-    public function interpretViralLoadTextResult($result, $unit = false)
+    public function interpretViralLoadTextResult($result, $unit = false, $lowVlResultText= null)
     {
 
         // If result is blank, then return null
@@ -220,13 +220,18 @@ class Vl
         // If result is numeric, then return it as is
         if (is_numeric($result)) return $result;
 
+        $defaultVLTextResult = "Target Not Detected";
+        if(!empty($lowVlResultText)){
+            $defaultVLTextResult = $lowVlResultText;
+        }
+
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
 
         $result = strtolower($result);
-        if ($result == 'bdl' || $result == 'not detected' || $result == '< 839') {
+        if ($result == 'bdl' || $result == '< 839') {
             $vlResult = $txtVal = 'Below Detection Limit';
-        } else if ($result == 'target not detected' || $result == 'tnd') {
-            $vlResult = $txtVal = 'Target Not Detected';
+        } else if ($result == 'target not detected' || $result == 'not detected' || $result == 'tnd') {
+            $vlResult = $txtVal = $defaultVLTextResult;
         } else if ($result == '< 2.00E+1') {
             $absDecimalVal = 20;
             $txtVal = $vlResult = $absVal = "< 20";
