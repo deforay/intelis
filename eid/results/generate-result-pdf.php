@@ -40,13 +40,7 @@ $expStr = explode(" ", $printedTime);
 $printDate = $general->humanDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
-if (isset($_POST['newData']) && $_POST['newData'] != '') {
-  $query = $_SESSION['eidPrintedResultsQuery'];
-  $allQuery = $_SESSION['eidPrintedSearchResultQuery'];
-} else {
-  $query = $_SESSION['eidPrintQuery'];
-  $allQuery = $_SESSION['eidPrintSearchResultQuery'];
-}
+$allQuery = $_SESSION['eidPrintQuery'];
 if (isset($_POST['id']) && trim($_POST['id']) != '') {
 
   $searchQuery = "SELECT vl.*,f.*,l.facility_name as labName,

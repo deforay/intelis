@@ -38,13 +38,7 @@ $expStr = explode(" ", $printedTime);
 $printDate = $general->humanDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
-if (isset($_POST['newData']) && $_POST['newData'] != '') {
-	$query = $_SESSION['hepatitisPrintedResultsQuery'];
-	$allQuery = $_SESSION['hepatitisPrintedSearchResultQuery'];
-} else {
-	$query = $_SESSION['hepatitisPrintQuery'];
-	$allQuery = $_SESSION['hepatitisPrintSearchResultQuery'];
-}
+$allQuery = $_SESSION['hepatitisPrintQuery'];
 if (isset($_POST['id']) && trim($_POST['id']) != '') {
 
 	$searchQuery = "SELECT vl.*,f.*,

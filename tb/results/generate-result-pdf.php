@@ -39,13 +39,7 @@ $expStr = explode(" ", $printedTime);
 $printDate = $general->humanDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
-if (isset($_POST['newData']) && $_POST['newData'] != '') {
-    $query = $_SESSION['tbPrintedResultsQuery'];
-    $allQuery = $_SESSION['tbPrintedSearchResultQuery'];
-} else {
-    $query = $_SESSION['tbPrintQuery'];
-    $allQuery = $_SESSION['tbPrintSearchResultQuery'];
-}
+$allQuery = $_SESSION['tbPrintQuery'];
 if (isset($_POST['id']) && trim($_POST['id']) != '') {
 
     $searchQuery = "SELECT tb.*,f.*,
@@ -388,7 +382,7 @@ if (sizeof($requestResult) > 0) {
         $resultPdf->setPrintHeader(false);
         $resultPdf->setPrintFooter(false);
         $resultPdf->concat();
-        $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6). '.pdf';
+        $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
         $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
         $general->removeDirectory($pathFront);
         unset($_SESSION['rVal']);

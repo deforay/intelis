@@ -234,13 +234,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 if (isset($sWhere) && sizeof($sWhere) > 0) {
     $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
 }
-$_SESSION['hepatitisPrintQuery'] = $sQuery;
-
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
-$_SESSION['hepatitisPrintSearchResultQuery'] = $sQuery;
+$_SESSION['hepatitisPrintQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
