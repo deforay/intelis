@@ -161,6 +161,16 @@ foreach ($srcResults as $list) {
                             </td>
                         </tr>
                         <tr>
+                            <td><b><?php echo _("Select Sample Received Date At Lab"); ?> :</b></td>
+                            <td>
+                                <input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
+                            </td>
+                            <td><b><?php echo _("Sample Tested Date"); ?> :</b></td>
+                            <td>
+                                <input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
@@ -306,7 +316,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             placeholder: "<?php echo _("Select Batch Code"); ?>"
         });
         loadVlRequestData();
-        $('#sampleCollectionDate').daterangepicker({
+        $('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
                 locale: {
                     cancelLabel: 'Clear'
                 },
@@ -328,7 +338,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
-        $('#sampleCollectionDate').val("");
+        $('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
 
         $(".showhideCheckBox").change(function() {
             if ($(this).attr('checked')) {
@@ -459,6 +469,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 aoData.push({
                     "name": "implementingPartner",
                     "value": $("#implementingPartner").val()
+                });
+                aoData.push({
+                    "name": "sampleReceivedDateAtLab",
+                    "value": $("#sampleReceivedDateAtLab").val()
+                });
+                aoData.push({
+                    "name": "sampleTestedDate",
+                    "value": $("#sampleTestedDate").val()
                 });
                 aoData.push({
                     "name": "srcOfReq",

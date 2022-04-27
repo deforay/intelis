@@ -152,6 +152,29 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $end_date = $general->dateFormat(trim($s_c_date[1]));
      }
 }
+$labStartDate = '';
+$labEndDate = '';
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+     $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
+     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+          $labStartDate = $general->dateFormat(trim($s_c_date[0]));
+     }
+     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+          $labEnddate = $general->dateFormat(trim($s_c_date[1]));
+     }
+}
+
+$testedStartDate = '';
+$testedEndDate = '';
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+     $s_c_date = explode("to", $_POST['sampleTestedDate']);
+     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+          $testedStartDate = $general->dateFormat(trim($s_c_date[0]));
+     }
+     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+          $testedEndDate = $general->dateFormat(trim($s_c_date[1]));
+     }
+}
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -161,6 +184,22 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+     }
+}
+
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+     if (trim($labStartDate) == trim($labEnddate)) {
+          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $labStartDate . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEnddate . '"';
+     }
+}
+
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+     if (trim($testedStartDate) == trim($testedEndDate)) {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
      }
 }
 
