@@ -173,7 +173,7 @@ msgstr "Pas enregistré"
 #: vl/program-management/highViralLoad.php:436
 #: vl/program-management/vl-sample-status.php:129
 #: vl/program-management/vlMonitoringReport.php:243
-#: vl/program-management/vlResult.php:284
+#: vl/program-management/vl-export-data.php:284
 #: vl/program-management/vlWeeklyReport.php:126
 #: vl/program-management/vlWeeklyReport.php:185 vl/requests/vlRequest.php:286
 #: vl/results/vl-failed-results.php:195 vl/results/vlPrintResult.php:201
@@ -421,14 +421,14 @@ msgstr ""
 #: vl/program-management/vl-sample-status.php:79
 #: vl/program-management/vlControlReport.php:39
 #: vl/program-management/vlMonitoringReport.php:200
-#: vl/program-management/vlResult.php:70 vl/program-management/vlResult.php:103
-#: vl/program-management/vlResult.php:118
-#: vl/program-management/vlResult.php:140
-#: vl/program-management/vlResult.php:150
-#: vl/program-management/vlResult.php:158
-#: vl/program-management/vlResult.php:170
-#: vl/program-management/vlResult.php:183
-#: vl/program-management/vlResult.php:194
+#: vl/program-management/vl-export-data.php:70 vl/program-management/vl-export-data.php:103
+#: vl/program-management/vl-export-data.php:118
+#: vl/program-management/vl-export-data.php:140
+#: vl/program-management/vl-export-data.php:150
+#: vl/program-management/vl-export-data.php:158
+#: vl/program-management/vl-export-data.php:170
+#: vl/program-management/vl-export-data.php:183
+#: vl/program-management/vl-export-data.php:194
 #: vl/program-management/vlWeeklyReport.php:68
 #: vl/program-management/vlWeeklyReport.php:145 vl/requests/vlRequest.php:58
 #: vl/requests/vlRequest.php:71 vl/requests/vlRequest.php:108
@@ -498,7 +498,7 @@ msgstr "Structures sanitaire"
 #: vl/program-management/highViralLoad.php:315
 #: vl/program-management/vl-sample-status.php:92
 #: vl/program-management/vlMonitoringReport.php:191
-#: vl/program-management/vlResult.php:84 vl/requests/vlRequest.php:85
+#: vl/program-management/vl-export-data.php:84 vl/requests/vlRequest.php:85
 #: vl/results/vl-failed-results.php:77 vl/results/vlPrintResult.php:93
 #: vl/results/vlPrintResult.php:246 vl/results/vlResultApproval.php:129
 #: vl/results/vlTestResult.php:98
@@ -584,7 +584,7 @@ msgstr ""
 #: vl/program-management/vl-sample-status.php:57
 #: vl/program-management/vl-sample-status.php:120
 #: vl/program-management/vlMonitoringReport.php:176
-#: vl/program-management/vlResult.php:58 vl/requests/vlRequest.php:51
+#: vl/program-management/vl-export-data.php:58 vl/requests/vlRequest.php:51
 #: vl/requests/vlRequest.php:223 vl/results/vl-failed-results.php:43
 #: vl/results/vl-failed-results.php:131 vl/results/vlPrintResult.php:58
 #: vl/results/vlPrintResult.php:211 vl/results/vlResultApproval.php:95
@@ -622,7 +622,7 @@ msgstr "Date de prélèvement de l'échantillon"
 #: tb/batch/tb-add-batch.php:76 tb/requests/tb-requests.php:61
 #: vl/batch/addBatch.php:124 vl/program-management/sampleRejectionReport.php:50
 #: vl/program-management/vl-sample-status.php:59
-#: vl/program-management/vlResult.php:60 vl/requests/vlRequest.php:53
+#: vl/program-management/vl-export-data.php:60 vl/requests/vlRequest.php:53
 #: vl/results/vl-failed-results.php:45 vl/results/vlPrintResult.php:60
 #: vl/results/vlPrintResult.php:213 vl/results/vlResultApproval.php:97
 #: vl/results/vlTestResult.php:65
@@ -793,9 +793,9 @@ msgstr ""
 #: vl/program-management/highViralLoad.php:423
 #: vl/program-management/vl-sample-status.php:61
 #: vl/program-management/vlMonitoringReport.php:230
-#: vl/program-management/vlResult.php:167
-#: vl/program-management/vlResult.php:230
-#: vl/program-management/vlResult.php:269
+#: vl/program-management/vl-export-data.php:167
+#: vl/program-management/vl-export-data.php:230
+#: vl/program-management/vl-export-data.php:269
 #: vl/requests/addSamplesFromManifest.php:65 vl/requests/vlRequest.php:55
 #: vl/requests/vlRequest.php:226 vl/requests/vlRequest.php:269
 #: vl/results/vl-failed-results.php:47 vl/results/vl-failed-results.php:134
@@ -899,7 +899,7 @@ msgstr ""
 #: hepatitis/results/hepatitis-result-status.php:207 mail/vlResultMail.php:277
 #: tb/batch/tb-add-batch.php:153 tb/requests/tb-requests.php:282
 #: vl/batch/addBatch.php:240 vl/program-management/highViralLoad.php:462
-#: vl/program-management/vlResult.php:316 vl/requests/vlRequest.php:361
+#: vl/program-management/vl-export-data.php:316 vl/requests/vlRequest.php:361
 #: vl/results/vl-failed-results.php:270 vl/results/vlPrintResult.php:380
 #: vl/results/vlResultApproval.php:220 vl/results/vlTestResult.php:227
 msgid "Select Facilities"
@@ -1069,9 +1069,9 @@ msgstr "Créé le"
 #: vl/program-management/highViralLoad.php:403
 #: vl/program-management/highViralLoad.php:431
 #: vl/program-management/vlMonitoringReport.php:238
-#: vl/program-management/vlResult.php:126
-#: vl/program-management/vlResult.php:248
-#: vl/program-management/vlResult.php:276
+#: vl/program-management/vl-export-data.php:126
+#: vl/program-management/vl-export-data.php:248
+#: vl/program-management/vl-export-data.php:276
 #: vl/requests/addSamplesFromManifest.php:74 vl/requests/vlRequest.php:253
 #: vl/requests/vlRequest.php:278 vl/results/vl-failed-results.php:161
 #: vl/results/vl-failed-results.php:187 vl/results/vlPrintResult.php:173
@@ -1136,7 +1136,7 @@ msgstr "Date du dernier test"
 #: tb/requests/tb-requests.php:201 tb/results/tb-failed-results.php:130
 #: tb/results/tb-manual-results.php:175 tb/results/tb-print-results.php:148
 #: tb/results/tb-print-results.php:264 vl/batch/batchcode.php:59
-#: vl/program-management/vlResult.php:279 vl/requests/vlRequest.php:280
+#: vl/program-management/vl-export-data.php:279 vl/requests/vlRequest.php:280
 #: vl/results/vl-failed-results.php:189 vl/results/vlPrintResult.php:196
 #: vl/results/vlPrintResult.php:343 vl/results/vlTestResult.php:197
 msgid "Action"
@@ -1316,7 +1316,7 @@ msgstr "Vérification de la qualité des données"
 #: vl/program-management/highViralLoad.php:58
 #: vl/program-management/highViralLoad.php:176
 #: vl/program-management/vl-sample-status.php:122
-#: vl/program-management/vlResult.php:94 vl/results/vlPrintResult.php:112
+#: vl/program-management/vl-export-data.php:94 vl/results/vlPrintResult.php:112
 #: vl/results/vlPrintResult.php:265 vl/results/vlPrintResult.php:269
 msgid "Sample Test Date"
 msgstr "Date du test de l'échantillon"
@@ -1340,7 +1340,7 @@ msgstr "Date du test de l'échantillon"
 #: hepatitis/results/hepatitis-print-results.php:201
 #: vl/program-management/highViralLoad.php:60
 #: vl/program-management/highViralLoad.php:178
-#: vl/program-management/vlResult.php:96 vl/results/vlPrintResult.php:114
+#: vl/program-management/vl-export-data.php:96 vl/results/vlPrintResult.php:114
 #: vl/results/vlPrintResult.php:267 vl/results/vlPrintResult.php:271
 #, fuzzy
 #| msgid "Sample Test Date"
@@ -1383,7 +1383,7 @@ msgstr "Date du test de l'échantillon"
 #: vl/program-management/highViralLoad.php:182
 #: vl/program-management/highViralLoad.php:287
 #: vl/program-management/vl-sample-status.php:63
-#: vl/program-management/vlResult.php:169 vl/requests/vlRequest.php:57
+#: vl/program-management/vl-export-data.php:169 vl/requests/vlRequest.php:57
 #: vl/results/vl-failed-results.php:49 vl/results/vlPrintResult.php:64
 #: vl/results/vlPrintResult.php:217 vl/results/vlResultApproval.php:101
 #: vl/results/vlTestResult.php:69
@@ -1430,8 +1430,8 @@ msgstr "Selectioner le code du batch"
 #: vl/program-management/sampleRejectionReport.php:60
 #: vl/program-management/vl-sample-status.php:76
 #: vl/program-management/vlMonitoringReport.php:236
-#: vl/program-management/vlResult.php:67 vl/program-management/vlResult.php:242
-#: vl/program-management/vlResult.php:274
+#: vl/program-management/vl-export-data.php:67 vl/program-management/vl-export-data.php:242
+#: vl/program-management/vl-export-data.php:274
 #: vl/requests/addSamplesFromManifest.php:71 vl/requests/vlRequest.php:68
 #: vl/requests/vlRequest.php:244 vl/requests/vlRequest.php:275
 #: vl/results/vl-failed-results.php:60 vl/results/vl-failed-results.php:152
@@ -1459,7 +1459,7 @@ msgstr "Type d'échantillon"
 #: vl/program-management/highViralLoad.php:300
 #: vl/program-management/sampleRejectionReport.php:62
 #: vl/program-management/vl-sample-status.php:78
-#: vl/program-management/vlResult.php:69 vl/requests/vlRequest.php:70
+#: vl/program-management/vl-export-data.php:69 vl/requests/vlRequest.php:70
 #: vl/results/vl-failed-results.php:62 vl/results/vlPrintResult.php:78
 #: vl/results/vlPrintResult.php:231 vl/results/vlResultApproval.php:116
 #: vl/results/vlTestResult.php:83
@@ -1547,7 +1547,7 @@ msgstr "Tout"
 #: vl/program-management/highViralLoad.php:112
 #: vl/program-management/highViralLoad.php:221
 #: vl/program-management/highViralLoad.php:326
-#: vl/program-management/vlResult.php:115 vl/requests/vlRequest.php:105
+#: vl/program-management/vl-export-data.php:115 vl/requests/vlRequest.php:105
 #: vl/results/vlPrintResult.php:97 vl/results/vlPrintResult.php:250
 #: vl/results/vlTestResult.php:104
 msgid "Gender"
@@ -1568,7 +1568,7 @@ msgstr "Sexe"
 #: vl/program-management/highViralLoad.php:114
 #: vl/program-management/highViralLoad.php:223
 #: vl/program-management/highViralLoad.php:328
-#: vl/program-management/vlResult.php:117 vl/requests/vlRequest.php:107
+#: vl/program-management/vl-export-data.php:117 vl/requests/vlRequest.php:107
 #: vl/results/vlPrintResult.php:99 vl/results/vlPrintResult.php:252
 msgid "Please choose gender"
 msgstr ""
@@ -1590,7 +1590,7 @@ msgstr ""
 #: vl/batch/addBatch.php:142 vl/program-management/highViralLoad.php:116
 #: vl/program-management/highViralLoad.php:225
 #: vl/program-management/highViralLoad.php:330
-#: vl/program-management/vlResult.php:119 vl/requests/vlRequest.php:109
+#: vl/program-management/vl-export-data.php:119 vl/requests/vlRequest.php:109
 #: vl/results/vlPrintResult.php:101 vl/results/vlPrintResult.php:254
 #: vl/results/vlTestResult.php:108
 msgid "Male"
@@ -1613,7 +1613,7 @@ msgstr "Homme"
 #: vl/batch/addBatch.php:143 vl/program-management/highViralLoad.php:117
 #: vl/program-management/highViralLoad.php:226
 #: vl/program-management/highViralLoad.php:331
-#: vl/program-management/vlResult.php:120 vl/requests/vlRequest.php:110
+#: vl/program-management/vl-export-data.php:120 vl/requests/vlRequest.php:110
 #: vl/results/vlPrintResult.php:102 vl/results/vlPrintResult.php:255
 #: vl/results/vlTestResult.php:109
 msgid "Female"
@@ -1636,7 +1636,7 @@ msgstr "Femme"
 #: vl/batch/addBatch.php:144 vl/program-management/highViralLoad.php:118
 #: vl/program-management/highViralLoad.php:227
 #: vl/program-management/highViralLoad.php:332
-#: vl/program-management/vlResult.php:121 vl/requests/vlRequest.php:111
+#: vl/program-management/vl-export-data.php:121 vl/requests/vlRequest.php:111
 #: vl/results/vlPrintResult.php:103 vl/results/vlPrintResult.php:256
 #: vl/results/vlTestResult.php:110
 msgid "Not Recorded"
@@ -1698,7 +1698,7 @@ msgstr "Pas enregistré"
 #: vl/program-management/vl-sample-status.php:99
 #: vl/program-management/vlControlReport.php:51
 #: vl/program-management/vlMonitoringReport.php:217
-#: vl/program-management/vlResult.php:205
+#: vl/program-management/vl-export-data.php:205
 #: vl/program-management/vlWeeklyReport.php:81
 #: vl/program-management/vlWeeklyReport.php:158 vl/requests/vlRequest.php:178
 #: vl/results/vl-failed-results.php:101 vl/results/vlPrintResult.php:130
@@ -1863,8 +1863,8 @@ msgstr "Exporter vers Excel"
 #: vl/program-management/highViralLoad.php:393
 #: vl/program-management/highViralLoad.php:418
 #: vl/program-management/vlMonitoringReport.php:229
-#: vl/program-management/vlResult.php:220
-#: vl/program-management/vlResult.php:265
+#: vl/program-management/vl-export-data.php:220
+#: vl/program-management/vl-export-data.php:265
 #: vl/requests/addSamplesFromManifest.php:60 vl/requests/vlRequest.php:213
 #: vl/requests/vlRequest.php:264 vl/results/vl-failed-results.php:121
 #: vl/results/vl-failed-results.php:173 vl/results/vlPrintResult.php:142
@@ -1919,7 +1919,7 @@ msgstr "Code d'échantillon"
 #: vl/program-management/highViralLoad.php:261
 #: vl/program-management/highViralLoad.php:366
 #: vl/program-management/highViralLoad.php:420
-#: vl/program-management/vlResult.php:267
+#: vl/program-management/vl-export-data.php:267
 #: vl/requests/addSamplesFromManifest.php:62 vl/requests/vlRequest.php:266
 #: vl/results/vl-failed-results.php:175 vl/results/vlPrintResult.php:186
 #: vl/results/vlPrintResult.php:333 vl/results/vlResultApproval.php:177
@@ -1972,7 +1972,7 @@ msgstr "Échantillon prélevé à l'extérieur du labo"
 #: vl/program-management/highViralLoad.php:261
 #: vl/program-management/highViralLoad.php:366
 #: vl/program-management/highViralLoad.php:420
-#: vl/program-management/vlResult.php:267
+#: vl/program-management/vl-export-data.php:267
 #: vl/requests/addSamplesFromManifest.php:62
 #: vl/results/vl-failed-results.php:175 vl/results/vlPrintResult.php:186
 #: vl/results/vlPrintResult.php:333 vl/results/vlResultApproval.php:177
@@ -2075,8 +2075,8 @@ msgstr "Code"
 #: vl/program-management/highViralLoad.php:398
 #: vl/program-management/highViralLoad.php:426
 #: vl/program-management/vlMonitoringReport.php:233
-#: vl/program-management/vlResult.php:82 vl/program-management/vlResult.php:239
-#: vl/program-management/vlResult.php:272
+#: vl/program-management/vl-export-data.php:82 vl/program-management/vl-export-data.php:239
+#: vl/program-management/vl-export-data.php:272
 #: vl/requests/addSamplesFromManifest.php:68 vl/requests/vlRequest.php:83
 #: vl/requests/vlRequest.php:235 vl/requests/vlRequest.php:272
 #: vl/results/vl-failed-results.php:75 vl/results/vl-failed-results.php:143
@@ -2128,8 +2128,8 @@ msgstr "No Patient"
 #: vl/program-management/highViralLoad.php:157
 #: vl/program-management/highViralLoad.php:425
 #: vl/program-management/vlMonitoringReport.php:232
-#: vl/program-management/vlResult.php:236
-#: vl/program-management/vlResult.php:271
+#: vl/program-management/vl-export-data.php:236
+#: vl/program-management/vl-export-data.php:271
 #: vl/requests/addSamplesFromManifest.php:67 vl/requests/vlRequest.php:232
 #: vl/requests/vlRequest.php:271 vl/results/vl-failed-results.php:140
 #: vl/results/vl-failed-results.php:180 vl/results/vlPrintResult.php:158
@@ -2167,7 +2167,7 @@ msgstr "Date de test de l'échantillon"
 #: tb/management/tb-clinic-report.php:146 tb/management/tb-export-data.php:84
 #: tb/management/tb-sample-status.php:69 tb/requests/tb-requests.php:103
 #: vl/program-management/vl-sample-status.php:90
-#: vl/program-management/vlResult.php:88 vl/requests/vlRequest.php:99
+#: vl/program-management/vl-export-data.php:88 vl/requests/vlRequest.php:99
 msgid "Testing Lab"
 msgstr "Labo de test"
 
@@ -2221,8 +2221,8 @@ msgstr "Labo de test"
 #: vl/program-management/highViralLoad.php:402
 #: vl/program-management/highViralLoad.php:430
 #: vl/program-management/vlMonitoringReport.php:237
-#: vl/program-management/vlResult.php:245
-#: vl/program-management/vlResult.php:275
+#: vl/program-management/vl-export-data.php:245
+#: vl/program-management/vl-export-data.php:275
 #: vl/requests/addSamplesFromManifest.php:72 vl/requests/vlRequest.php:247
 #: vl/requests/vlRequest.php:276 vl/results/getVlTestResultDetails.php:457
 #: vl/results/vl-failed-results.php:155 vl/results/vl-failed-results.php:185
@@ -2434,7 +2434,7 @@ msgstr ""
 #: eid/management/eid-export-data.php:2 eid/management/eid-export-data.php:46
 #: hepatitis/management/hepatitis-export-data.php:2
 #: hepatitis/management/hepatitis-export-data.php:53
-#: tb/management/tb-export-data.php:52 vl/program-management/vlResult.php:2
+#: tb/management/tb-export-data.php:52 vl/program-management/vl-export-data.php:2
 msgid "Export Data"
 msgstr "Exporter les données"
 
@@ -2453,7 +2453,7 @@ msgstr "Date de réception de l'échantillon au labo"
 #: covid-19/requests/covid-19-requests.php:109 eid/requests/eid-requests.php:98
 #: hepatitis/management/hepatitis-export-data.php:81
 #: hepatitis/requests/hepatitis-requests.php:99 tb/requests/tb-requests.php:105
-#: vl/program-management/vlResult.php:90 vl/requests/vlRequest.php:101
+#: vl/program-management/vl-export-data.php:90 vl/requests/vlRequest.php:101
 #, fuzzy
 #| msgid "Select Vl Lab"
 msgid "Please select vl lab"
@@ -2462,14 +2462,14 @@ msgstr "Selectioner la Labo CV"
 #: covid-19/management/covid-19-export-data.php:108
 #: eid/management/eid-export-data.php:94
 #: hepatitis/management/hepatitis-export-data.php:146
-#: tb/management/tb-export-data.php:106 vl/program-management/vlResult.php:111
+#: tb/management/tb-export-data.php:106 vl/program-management/vl-export-data.php:111
 msgid "Last Print Date"
 msgstr "Date de la dernière impression"
 
 #: covid-19/management/covid-19-export-data.php:110
 #: eid/management/eid-export-data.php:96
 #: hepatitis/management/hepatitis-export-data.php:148
-#: vl/program-management/vlResult.php:113
+#: vl/program-management/vl-export-data.php:113
 #, fuzzy
 #| msgid "Sample Print Date"
 msgid "Select Print Date"
@@ -2478,13 +2478,13 @@ msgstr "Date d'impression de l'échantillon"
 #: covid-19/management/covid-19-export-data.php:114
 #: eid/management/eid-export-data.php:102
 #: hepatitis/management/hepatitis-export-data.php:114
-#: vl/program-management/vlResult.php:128
+#: vl/program-management/vl-export-data.php:128
 msgid "Please choose status"
 msgstr ""
 
 #: covid-19/management/covid-19-export-data.php:115
 #: eid/management/eid-export-data.php:103 tb/management/tb-export-data.php:113
-#: vl/program-management/vlResult.php:129
+#: vl/program-management/vl-export-data.php:129
 msgid "All Status"
 msgstr "Tous les statuts"
 
@@ -2497,7 +2497,7 @@ msgstr "Tous les statuts"
 #: hepatitis/results/get-hepatitis-result-status.php:276
 #: hepatitis/results/hepatitis-result-status.php:143 mail/vlResultMail.php:193
 #: tb/management/tb-export-data.php:114 tb/results/tb-result-status.php:143
-#: vl/program-management/vlResult.php:130
+#: vl/program-management/vl-export-data.php:130
 #: vl/results/getVlResultsForApproval.php:280
 #: vl/results/vlResultApproval.php:156
 msgid "Accepted"
@@ -2513,7 +2513,7 @@ msgstr "Accepté"
 #: hepatitis/results/get-hepatitis-result-status.php:277
 #: hepatitis/results/hepatitis-result-status.php:144 mail/vlResultMail.php:194
 #: tb/management/tb-export-data.php:115 tb/results/tb-result-status.php:144
-#: vl/program-management/vlResult.php:131
+#: vl/program-management/vl-export-data.php:131
 #: vl/results/getVlResultsForApproval.php:281
 #: vl/results/vlResultApproval.php:157
 msgid "Rejected"
@@ -2521,19 +2521,19 @@ msgstr "Rejeté"
 
 #: covid-19/management/covid-19-export-data.php:118
 #: eid/management/eid-export-data.php:106 tb/management/tb-export-data.php:116
-#: vl/program-management/vlResult.php:132
+#: vl/program-management/vl-export-data.php:132
 msgid "Awaiting Approval"
 msgstr "En attente d'approbation"
 
 #: covid-19/management/covid-19-export-data.php:119
 #: eid/management/eid-export-data.php:107 tb/management/tb-export-data.php:117
-#: vl/program-management/vlResult.php:133
+#: vl/program-management/vl-export-data.php:133
 msgid "Registered At Testing Lab"
 msgstr "Enregistré au laboratoire de test"
 
 #: covid-19/management/covid-19-export-data.php:120
 #: eid/management/eid-export-data.php:108 tb/management/tb-export-data.php:118
-#: vl/program-management/vlResult.php:134
+#: vl/program-management/vl-export-data.php:134
 msgid "Expired"
 msgstr "Expiré"
 
@@ -2543,7 +2543,7 @@ msgstr "Expiré"
 #: header.php:457 hepatitis/management/hepatitis-export-data.php:121
 #: hepatitis/requests/hepatitis-requests.php:122
 #: tb/management/tb-export-data.php:136 tb/requests/tb-requests.php:128
-#: vl/program-management/vlResult.php:180 vl/requests/vlRequest.php:144
+#: vl/program-management/vl-export-data.php:180 vl/requests/vlRequest.php:144
 msgid "Funding Sources"
 msgstr "Sources de financement"
 
@@ -2552,7 +2552,7 @@ msgstr "Sources de financement"
 #: eid/management/eid-export-data.php:126 eid/requests/eid-requests.php:123
 #: hepatitis/management/hepatitis-export-data.php:123
 #: hepatitis/requests/hepatitis-requests.php:124
-#: tb/requests/tb-requests.php:130 vl/program-management/vlResult.php:182
+#: tb/requests/tb-requests.php:130 vl/program-management/vl-export-data.php:182
 #: vl/requests/vlRequest.php:146
 msgid "Please choose funding source"
 msgstr ""
@@ -2563,7 +2563,7 @@ msgstr ""
 #: hepatitis/management/hepatitis-export-data.php:132
 #: hepatitis/requests/hepatitis-requests.php:133
 #: tb/management/tb-export-data.php:147 tb/requests/tb-requests.php:139
-#: vl/program-management/vlResult.php:191 vl/requests/vlRequest.php:155
+#: vl/program-management/vl-export-data.php:191 vl/requests/vlRequest.php:155
 msgid "Implementing Partners"
 msgstr "Partenaires opérationnels"
 
@@ -2572,7 +2572,7 @@ msgstr "Partenaires opérationnels"
 #: eid/management/eid-export-data.php:139 eid/requests/eid-requests.php:134
 #: hepatitis/management/hepatitis-export-data.php:134
 #: hepatitis/requests/hepatitis-requests.php:135
-#: tb/requests/tb-requests.php:141 vl/program-management/vlResult.php:193
+#: tb/requests/tb-requests.php:141 vl/program-management/vl-export-data.php:193
 #: vl/requests/vlRequest.php:157
 #, fuzzy
 #| msgid "Implementing Partner"
@@ -2582,14 +2582,14 @@ msgstr "Partenaire"
 #: covid-19/management/covid-19-export-data.php:166
 #: eid/management/eid-export-data.php:153
 #: hepatitis/management/hepatitis-export-data.php:153
-#: tb/management/tb-export-data.php:164 vl/program-management/vlResult.php:207
+#: tb/management/tb-export-data.php:164 vl/program-management/vl-export-data.php:207
 msgid "Clear Search"
 msgstr "Effacer la recherche"
 
 #: covid-19/management/covid-19-export-data.php:168
 #: eid/management/eid-export-data.php:155
 #: hepatitis/management/hepatitis-export-data.php:155
-#: tb/management/tb-export-data.php:166 vl/program-management/vlResult.php:209
+#: tb/management/tb-export-data.php:166 vl/program-management/vl-export-data.php:209
 msgid "Download"
 msgstr "Télécharger"
 
@@ -2605,7 +2605,7 @@ msgstr "Télécharger"
 #: hepatitis/results/hepatitis-print-results.php:221
 #: tb/management/tb-export-data.php:168 tb/results/tb-manual-results.php:103
 #: tb/results/tb-print-results.php:86 tb/results/tb-print-results.php:203
-#: vl/program-management/vlResult.php:211 vl/requests/vlRequest.php:188
+#: vl/program-management/vl-export-data.php:211 vl/requests/vlRequest.php:188
 #: vl/requests/vlRequest.php:203 vl/results/vlPrintResult.php:133
 #: vl/results/vlPrintResult.php:281 vl/results/vlTestResult.php:127
 msgid "Manage Columns"
@@ -2624,7 +2624,7 @@ msgstr "Gérer les colonnes"
 #: hepatitis/results/hepatitis-print-results.php:236
 #: tb/management/tb-export-data.php:183 tb/results/tb-manual-results.php:117
 #: tb/results/tb-print-results.php:101 tb/results/tb-print-results.php:218
-#: vl/program-management/vlResult.php:226 vl/requests/vlRequest.php:219
+#: vl/program-management/vl-export-data.php:226 vl/requests/vlRequest.php:219
 #: vl/results/vl-failed-results.php:127 vl/results/vlPrintResult.php:148
 #: vl/results/vlPrintResult.php:296 vl/results/vlTestResult.php:141
 msgid "Remote Sample Code"
@@ -2662,8 +2662,8 @@ msgstr "Nom du patient"
 #: hepatitis/management/hepatitis-export-data.php:194
 #: hepatitis/management/hepatitis-export-data.php:219
 #: tb/management/tb-export-data.php:205 tb/management/tb-export-data.php:230
-#: vl/program-management/vlResult.php:251
-#: vl/program-management/vlResult.php:277
+#: vl/program-management/vl-export-data.php:251
+#: vl/program-management/vl-export-data.php:277
 msgid "Funding Source"
 msgstr "Sources de financement"
 
@@ -2674,8 +2674,8 @@ msgstr "Sources de financement"
 #: hepatitis/management/hepatitis-export-data.php:197
 #: hepatitis/management/hepatitis-export-data.php:220
 #: tb/management/tb-export-data.php:208 tb/management/tb-export-data.php:231
-#: vl/program-management/vlResult.php:254
-#: vl/program-management/vlResult.php:278
+#: vl/program-management/vl-export-data.php:254
+#: vl/program-management/vl-export-data.php:278
 msgid "Implementing Partner"
 msgstr "Partenaire"
 
@@ -2692,7 +2692,7 @@ msgstr "Partenaire"
 #: tb/management/tb-export-data.php:227
 #: vl/program-management/getRejectionResult.php:72
 #: vl/program-management/vlMonitoringReport.php:189
-#: vl/program-management/vlResult.php:273
+#: vl/program-management/vl-export-data.php:273
 msgid "Lab Name"
 msgstr "Nom du Labo"
 
@@ -2708,7 +2708,7 @@ msgstr ""
 #: hepatitis/management/hepatitis-export-data.php:448
 #: hepatitis/results/hepatitis-print-results.php:642
 #: hepatitis/results/hepatitis-print-results.php:686
-#: vl/program-management/vlResult.php:546 vl/results/vlPrintResult.php:743
+#: vl/program-management/vl-export-data.php:546 vl/results/vlPrintResult.php:743
 #: vl/results/vlPrintResult.php:787 vl/results/vlTestResult.php:421
 #, fuzzy
 #| msgid "Unable to generate the excel file"
@@ -2723,7 +2723,7 @@ msgstr "Impossible de générer le fichier excel"
 
 #: covid-19/management/covid-19-export-data.php:511
 #: eid/management/eid-export-data.php:479
-#: vl/program-management/vlResult.php:595
+#: vl/program-management/vl-export-data.php:595
 #, fuzzy
 #| msgid "Sample Collection Date"
 msgid "Please select Sample Collection Date Range"
@@ -2731,7 +2731,7 @@ msgstr "Date de prélèvement de l'échantillon"
 
 #: covid-19/management/covid-19-export-data.php:513
 #: eid/management/eid-export-data.php:481
-#: vl/program-management/vlResult.php:597
+#: vl/program-management/vl-export-data.php:597
 #, fuzzy
 #| msgid "Sample Test Date"
 msgid "Please select Sample Test Date Range"
@@ -2796,7 +2796,7 @@ msgstr "Sélectionnez les structures"
 #: hepatitis/management/hepatitis-sample-rejection-report.php:146
 #: vl/program-management/sampleRejectionReport.php:167
 #: vl/program-management/vl-sample-status.php:285
-#: vl/program-management/vlResult.php:573
+#: vl/program-management/vl-export-data.php:573
 #, fuzzy
 #| msgid "Unable to generate the excel file"
 msgid "Unable to generate excel"
@@ -3184,7 +3184,7 @@ msgstr ""
 #: eid/management/get-data-export.php:287
 #: hepatitis/management/get-data-export.php:439
 #: hepatitis/management/get-data-export.php:442
-#: vl/program-management/getVlResultDetails.php:362
+#: vl/program-management/get-data-export.php:362
 msgid "View"
 msgstr ""
 
@@ -3197,7 +3197,7 @@ msgstr ""
 #: hepatitis/results/hepatitis-print-results.php:102
 #: hepatitis/results/hepatitis-print-results.php:220
 #: tb/results/tb-print-results.php:85 tb/results/tb-print-results.php:202
-#: vl/program-management/getVlResultDetails.php:362
+#: vl/program-management/get-data-export.php:362
 #: vl/results/vlPrintResult.php:132 vl/results/vlPrintResult.php:280
 #: vl/results/vlTestResult.php:125
 msgid "Result PDF"
@@ -4083,7 +4083,7 @@ msgstr "Veuillez saisir le code manifeste puis soumettre"
 #: covid-19/requests/covid-19-requests.php:128
 #: eid/requests/eid-requests.php:111
 #: hepatitis/requests/hepatitis-requests.php:112
-#: tb/requests/tb-requests.php:118 vl/program-management/vlResult.php:137
+#: tb/requests/tb-requests.php:118 vl/program-management/vl-export-data.php:137
 #: vl/requests/vlRequest.php:114
 msgid "Show only Reordered Samples"
 msgstr "N'afficher que les échantillons réorganisés"
@@ -4091,7 +4091,7 @@ msgstr "N'afficher que les échantillons réorganisés"
 #: covid-19/requests/covid-19-requests.php:130
 #: eid/requests/eid-requests.php:113
 #: hepatitis/requests/hepatitis-requests.php:114
-#: tb/requests/tb-requests.php:120 vl/program-management/vlResult.php:139
+#: tb/requests/tb-requests.php:120 vl/program-management/vl-export-data.php:139
 msgid "Please choose record sample"
 msgstr ""
 
@@ -4107,9 +4107,9 @@ msgstr ""
 #: vl/program-management/highViralLoad.php:244
 #: vl/program-management/highViralLoad.php:339
 #: vl/program-management/highViralLoad.php:349
-#: vl/program-management/vlResult.php:141
-#: vl/program-management/vlResult.php:151
-#: vl/program-management/vlResult.php:159 vl/requests/vlRequest.php:118
+#: vl/program-management/vl-export-data.php:141
+#: vl/program-management/vl-export-data.php:151
+#: vl/program-management/vl-export-data.php:159 vl/requests/vlRequest.php:118
 #: vl/requests/vlRequest.php:130 vl/requests/vlRequest.php:138
 msgid "Yes"
 msgstr "Oui"
@@ -4126,9 +4126,9 @@ msgstr "Oui"
 #: vl/program-management/highViralLoad.php:245
 #: vl/program-management/highViralLoad.php:340
 #: vl/program-management/highViralLoad.php:350
-#: vl/program-management/vlResult.php:142
-#: vl/program-management/vlResult.php:152
-#: vl/program-management/vlResult.php:160 vl/requests/vlRequest.php:119
+#: vl/program-management/vl-export-data.php:142
+#: vl/program-management/vl-export-data.php:152
+#: vl/program-management/vl-export-data.php:160 vl/requests/vlRequest.php:119
 #: vl/requests/vlRequest.php:131 vl/requests/vlRequest.php:139
 msgid "No"
 msgstr "Non"
@@ -4194,7 +4194,7 @@ msgstr "Imprimante:"
 #: covid-19/requests/covid-19-requests.php:306
 #: eid/requests/eid-requests.php:285
 #: hepatitis/requests/hepatitis-requests.php:276
-#: tb/requests/tb-requests.php:285 vl/program-management/vlResult.php:319
+#: tb/requests/tb-requests.php:285 vl/program-management/vl-export-data.php:319
 #: vl/requests/vlRequest.php:364
 msgid "Select Vl Lab"
 msgstr "Selectioner la Labo CV"
@@ -4202,7 +4202,7 @@ msgstr "Selectioner la Labo CV"
 #: covid-19/requests/covid-19-requests.php:309
 #: eid/requests/eid-requests.php:288
 #: hepatitis/requests/hepatitis-requests.php:279
-#: tb/requests/tb-requests.php:288 vl/program-management/vlResult.php:322
+#: tb/requests/tb-requests.php:288 vl/program-management/vl-export-data.php:322
 msgid "Select Batch Code"
 msgstr "Selectioner le code du batch"
 
@@ -4341,7 +4341,7 @@ msgstr "Covid-19-Saisir le résultat manuellement"
 #: hepatitis/results/hepatitis-print-results.php:125
 #: hepatitis/results/hepatitis-print-results.php:243
 #: tb/results/tb-manual-results.php:124 tb/results/tb-print-results.php:108
-#: tb/results/tb-print-results.php:225 vl/program-management/vlResult.php:233
+#: tb/results/tb-print-results.php:225 vl/program-management/vl-export-data.php:233
 #: vl/requests/vlRequest.php:229 vl/results/vl-failed-results.php:137
 #: vl/results/vlPrintResult.php:155 vl/results/vlPrintResult.php:303
 #: vl/results/vlTestResult.php:148
@@ -5970,7 +5970,7 @@ msgstr ""
 #: mail/vlResultMail.php:147 vl/program-management/highViralLoad.php:123
 #: vl/program-management/highViralLoad.php:230
 #: vl/program-management/highViralLoad.php:335
-#: vl/program-management/vlResult.php:148 vl/requests/vlRequest.php:127
+#: vl/program-management/vl-export-data.php:148 vl/requests/vlRequest.php:127
 msgid "Pregnant"
 msgstr "Enceinte"
 
@@ -6255,8 +6255,8 @@ msgstr "CV-Demande de test"
 #: vl/program-management/highViralLoad.php:125
 #: vl/program-management/highViralLoad.php:232
 #: vl/program-management/highViralLoad.php:337
-#: vl/program-management/vlResult.php:149
-#: vl/program-management/vlResult.php:157 vl/requests/vlRequest.php:128
+#: vl/program-management/vl-export-data.php:149
+#: vl/program-management/vl-export-data.php:157 vl/requests/vlRequest.php:128
 #: vl/requests/vlRequest.php:136
 msgid "Please choose pregnant option"
 msgstr ""
@@ -6264,7 +6264,7 @@ msgstr ""
 #: vl/program-management/highViralLoad.php:131
 #: vl/program-management/highViralLoad.php:240
 #: vl/program-management/highViralLoad.php:345
-#: vl/program-management/vlResult.php:156 vl/requests/vlRequest.php:135
+#: vl/program-management/vl-export-data.php:156 vl/requests/vlRequest.php:135
 msgid "Breastfeeding"
 msgstr "Allaitement"
 
@@ -6299,7 +6299,7 @@ msgstr ""
 #: vl/program-management/highViralLoad.php:396
 #: vl/program-management/highViralLoad.php:424
 #: vl/program-management/vlMonitoringReport.php:231
-#: vl/program-management/vlResult.php:270
+#: vl/program-management/vl-export-data.php:270
 #: vl/requests/addSamplesFromManifest.php:66 vl/requests/vlRequest.php:270
 #: vl/results/vl-failed-results.php:179 vl/results/vlResultApproval.php:181
 #: vl/results/vlTestResult.php:190
@@ -6386,30 +6386,30 @@ msgstr "District"
 msgid "Province/State/Region"
 msgstr "Province"
 
-#: vl/program-management/vlResult.php:43
+#: vl/program-management/vl-export-data.php:43
 #, fuzzy
 #| msgid "Export Results"
 msgid "Export Result"
 msgstr "Exporter les résultats"
 
-#: vl/program-management/vlResult.php:62
+#: vl/program-management/vl-export-data.php:62
 #, fuzzy
 #| msgid "Sample Received At Lab"
 msgid "Sample Received at Lab Date"
 msgstr "Échantillon reçu au labo"
 
-#: vl/program-management/vlResult.php:64
+#: vl/program-management/vl-export-data.php:64
 #, fuzzy
 #| msgid "Sample Received Date in Lab"
 msgid "Select Received Date"
 msgstr "Date de réception de l'échantillon au labo"
 
-#: vl/program-management/vlResult.php:100
+#: vl/program-management/vl-export-data.php:100
 msgid "Viral Load"
 msgstr ""
 
-#: vl/program-management/vlResult.php:105
-#: vl/program-management/vlResult.php:107
+#: vl/program-management/vl-export-data.php:105
+#: vl/program-management/vl-export-data.php:107
 msgid "cp/ml"
 msgstr ""
 

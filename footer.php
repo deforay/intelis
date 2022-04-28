@@ -356,7 +356,7 @@
 		$(".program").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".vlControlReport").addClass('active');
-	} else if (splitsUrl == 'vlResult.php') {
+	} else if (splitsUrl == 'vl-export-data.php') {
 		$(".program").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".vlResultMenu").addClass('active');

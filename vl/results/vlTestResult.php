@@ -122,8 +122,6 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
             <tr>
               <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
                 &nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span><?php echo _("Reset"); ?></span></button>
-                &nbsp;<button class="btn btn-default btn-sm" onclick="convertSearchResultToPdf('');"><span><?php echo _("Result PDF"); ?></span></button>
-                &nbsp;<a class="btn btn-success btn-sm" href="javascript:void(0);" onclick="exportAllVlTestResult();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel"); ?></a>
                 &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
               </td>
             </tr>
@@ -405,39 +403,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
     $.unblockUI();
   }
 
-  function convertSearchResultToPdf(id, newData) {
-    $.blockUI();
-    <?php
-    $path = '';
-    $path = '/vl/results/generate-result-pdf.php';
-    ?>
-    $.post("<?php echo $path; ?>", {
-        source: 'print',
-        id: id,
-        newData: newData
-      },
-      function(data) {
-        if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _("Unable to generate download"); ?>");
-        } else {
-          window.open('/download.php?f=' + data, '_blank');
-        }
-      });
-    $.unblockUI();
-  }
-
-  function exportAllVlTestResult() {
-    $.blockUI();
-    $.post("/vl/results/generateVlTestResultExcel.php", {},
-      function(data) {
-        $.unblockUI();
-        if (data === "" || data === null || data === undefined) {
-          alert("<?php echo _("Unable to generate the excel file"); ?>");
-        } else {
-          location.href = '/temporary/' + data;
-        }
-      });
-  }
+  
 
   function reset() {
     document.cookie = "collectionDate=";

@@ -448,7 +448,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "getVlResultDetails.php",
+			"sAjaxSource": "/vl/program-management/get-data-export.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
@@ -530,24 +530,6 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		$.blockUI();
 		oTable.fnDraw();
 		$.unblockUI();
-	}
-
-	function convertSearchResultToPdf(id) {
-		<?php
-		$path = '';
-		$path = '/vl/results/generate-result-pdf.php';
-		?>
-		$.post("<?php echo $path; ?>", {
-				source: 'print',
-				id: id
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					alert("<?php echo _("Unable to generate download"); ?>");
-				} else {
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
 	}
 
 	function exportInexcel(fileName) {

@@ -70,7 +70,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 } else {
 	$vlTestResultMenuAccess = false;
 }
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vl-sample-status.php', 'vlResult.php', 'highViralLoad.php', 'vlControlReport.php', 'vlWeeklyReport.php', 'sampleRejectionReport.php', 'vlMonitoringReport.php'))) {
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vl-sample-status.php', 'vl-export-data.php', 'highViralLoad.php', 'vlControlReport.php', 'vlWeeklyReport.php', 'sampleRejectionReport.php', 'vlMonitoringReport.php'))) {
 	$vlManagementMenuAccess = true;
 } else {
 	$vlManagementMenuAccess = false;
@@ -722,8 +722,8 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<?php } ?>
 									<!--<li><a href="#"><i class="fa fa-caret-right"></i> TOT Report</a></li>
                                 <li><a href="#"><i class="fa fa-caret-right"></i> VL Suppression Report</a></li>-->
-									<?php if (isset($_SESSION['privileges']) && in_array("vlResult.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlResultMenu"><a href="/vl/program-management/vlResult.php"><i class="fa fa-caret-right"></i> <?php echo _("Export Results"); ?></a></li>
+									<?php if (isset($_SESSION['privileges']) && in_array("vl-export-data.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu vlResultMenu"><a href="/vl/program-management/vl-export-data.php"><i class="fa fa-caret-right"></i> <?php echo _("Export Results"); ?></a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("vlPrintResult.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu vlPrintResultMenu"><a href="/vl/results/vlPrintResult.php"><i class="fa fa-caret-right"></i> <?php echo _("Print Result"); ?></a></li>
