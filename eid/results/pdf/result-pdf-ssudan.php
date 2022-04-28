@@ -409,7 +409,7 @@ if (sizeof($requestResult) > 0) {
 
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-            if (!empty($testUserSignaturePath) && file_exists($testUserSignaturePath)) {
+            if (!empty($testUserSignaturePath) &&  $general->fileExists($testUserSignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -430,7 +430,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-            if (!empty($reviewedBySignaturePath) && file_exists($reviewedBySignaturePath)) {
+            if (!empty($reviewedBySignaturePath) &&  $general->fileExists($reviewedBySignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -452,7 +452,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-            if (!empty($approvedBySignaturePath) && file_exists($approvedBySignaturePath)) {
+            if (!empty($approvedBySignaturePath) &&  $general->fileExists($approvedBySignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -481,7 +481,7 @@ if (sizeof($requestResult) > 0) {
 
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-            if (!empty($revisedSignaturePath) && file_exists($revisedSignaturePath)) {
+            if (!empty($revisedSignaturePath) && $general->fileExists($revisedSignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -502,6 +502,19 @@ if (sizeof($requestResult) > 0) {
         }
 
 
+        if (isset($result['lab_tech_comments']) && !empty($result['lab_tech_comments'])) {
+
+            $html .= '<tr>';
+            $html .= '<td colspan="3" style="line-height:20px;"></td>';
+            $html .= '</tr>';
+            $html .= '<tr>';
+            $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>Lab Comments:</strong> ' . $result['lab_tech_comments'] . '</td>';
+            $html .= '</tr>';
+
+            $html .= '<tr>';
+            $html .= '<td colspan="3" style="line-height:2px;"></td>';
+            $html .= '</tr>';
+        }
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:20px;border-bottom:2px solid #d3d3d3;"></td>';
         $html .= '</tr>';
@@ -564,7 +577,7 @@ if (sizeof($requestResult) > 0) {
         $resultPdf->setPrintHeader(false);
         $resultPdf->setPrintFooter(false);
         $resultPdf->concat();
-        $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6). '.pdf';
+        $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
         $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
         $general->removeDirectory($pathFront);
         unset($_SESSION['rVal']);

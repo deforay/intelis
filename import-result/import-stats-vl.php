@@ -103,7 +103,7 @@ unset($_SESSION['controllertrack']);
         $.post("<?php echo $path; ?>", {
                 source: 'print',
                 id: '',
-                sampleCodes: '<?php echo $sCode; ?>'
+                sampleCodes: "<?php echo $sCode; ?>"
             },
             function(data) {
                 if (data == "" || data == null || data == undefined) {
@@ -112,7 +112,7 @@ unset($_SESSION['controllertrack']);
                 } else {
                     $.unblockUI();
                     window.open('/download.php?f=' + data, '_blank');
-                    // window.location.href = "/vl/results/vlPrintResult.php";
+                    window.location.href = "/vl/results/vlPrintResult.php";
                 }
 
             });

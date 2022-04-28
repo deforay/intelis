@@ -575,6 +575,19 @@ if (sizeof($requestResult) > 0) {
           }
 
 
+          if (isset($result['lab_tech_comments']) && !empty($result['lab_tech_comments'])) {
+
+               $html .= '<tr>';
+               $html .= '<td colspan="3" style="line-height:20px;"></td>';
+               $html .= '</tr>';
+               $html .= '<tr>';
+               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>Lab Comments:</strong> ' . $result['lab_tech_comments'] . '</td>';
+               $html .= '</tr>';
+
+               $html .= '<tr>';
+               $html .= '<td colspan="3" style="line-height:2px;"></td>';
+               $html .= '</tr>';
+          }
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
@@ -637,7 +650,7 @@ if (sizeof($requestResult) > 0) {
           $resultPdf->setPrintHeader(false);
           $resultPdf->setPrintFooter(false);
           $resultPdf->concat();
-          $resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6). '.pdf';
+          $resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
           $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
           $general->removeDirectory($pathFront);
           unset($_SESSION['rVal']);

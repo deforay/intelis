@@ -802,6 +802,6 @@ class General
 
     public function fileExists($filePath)
     {
-        return (file_exists($filePath) && !is_dir($filePath));
+        return (file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
     }
 }

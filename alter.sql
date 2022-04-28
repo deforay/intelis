@@ -3088,3 +3088,4 @@ ALTER TABLE `form_eid` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTE
 
 -- Amit 28-Apr-2022
 UPDATE `privileges` SET `privilege_name` = 'vl-export-data.php', `display_name` = 'Export VL Data' WHERE `privileges`.`privilege_id` = 23;
+ALTER TABLE `form_vl` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;

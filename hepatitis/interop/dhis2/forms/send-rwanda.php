@@ -63,6 +63,10 @@ foreach ($formResults as $row) {
 
 
   $programStagesVariables = array(
+    'hbvResultInterpretaion' => 'rEWik190gIO',
+    'hcvResultInterpretaion' => 'V3kCLddinTF',
+    'sampleCollectionDate' => 'q0s6zXe4sI4',
+    'sampleTestedDate' => 'GteriydwIC1',
     'labResultHcvVlCount' => 'Oem0BXNDPWL',
     'labResultHbvVlCount' => 'Di17rUJDIWZ',
     'followUpHbvVlCount' => 'LblBnouUMJE',
@@ -82,28 +86,60 @@ foreach ($formResults as $row) {
     if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
       $row['hbv_vl_count'] = 10;
     }
+
+    if ($row['hbv_vl_count'] > 20) {
+      $interpretaion = 'Detected';
+    } else {
+      $interpretaion = 'Not Detected';
+    }
     $dataValues[$programStagesVariables['labResultHbvVlCount']]  = $row['hbv_vl_count'];
     $dataValues[$programStagesVariables['dateHbvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
+    $dataValues[$programStagesVariables['hbvResultInterpretaion']] = $interpretaion;
   } else if ($row['reason_for_vl_test'] == 'Initial HCV VL') {
     if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
       $row['hcv_vl_count'] = 10;
     }
+
+    if ($row['hcv_vl_count'] > 20) {
+      $interpretaion = 'Detected';
+    } else {
+      $interpretaion = 'Not Detected';
+    }
     $dataValues[$programStagesVariables['labResultHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
+    $dataValues[$programStagesVariables['hcvResultInterpretaion']] = $interpretaion;
   } else if ($row['reason_for_vl_test'] == 'Follow up HBV VL') {
     if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
       $row['hbv_vl_count'] = 10;
     }
+
+    if ($row['hbv_vl_count'] > 20) {
+      $interpretaion = 'Detected';
+    } else {
+      $interpretaion = 'Not Detected';
+    }
+
     $dataValues[$programStagesVariables['followUpHbvVlCount']]  = $row['hbv_vl_count'];
     $dataValues[$programStagesVariables['dateHbvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
+    $dataValues[$programStagesVariables['hbvResultInterpretaion']] = $interpretaion;
   } else if ($row['reason_for_vl_test'] == 'SVR12 HCV VL') {
+    $interpretaion = "";
     if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
       $row['hcv_vl_count'] = 10;
     }
+
+    if ($row['hcv_vl_count'] > 20) {
+      $interpretaion = 'Detected';
+    } else {
+      $interpretaion = 'Not Detected';
+    }
     $dataValues[$programStagesVariables['finalConfirmationHcvVlCount']] = $row['hcv_vl_count'];
+    $dataValues[$programStagesVariables['hcvResultInterpretaion']] = $interpretaion;
+    $dataValues[$programStagesVariables['sampleCollectionDate']] =  $row['sample_collection_date'];
+    $dataValues[$programStagesVariables['sampleTestedDate']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
   }
