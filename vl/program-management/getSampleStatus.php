@@ -63,7 +63,6 @@ $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 //date
 $start_date = '';
 $end_date = '';
-
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
@@ -74,7 +73,29 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $end_date = $general->dateFormat(trim($s_c_date[1]));
     }
 }
+$labStartDate = '';
+$labEndDate = '';
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+    $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
+    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+        $labStartDate = $general->dateFormat(trim($s_c_date[0]));
+    }
+    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+        $labEndDate = $general->dateFormat(trim($s_c_date[1]));
+    }
+}
 
+$testedStartDate = '';
+$testedEndDate = '';
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+    $s_c_date = explode("to", $_POST['sampleTestedDate']);
+    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+        $testedStartDate = $general->dateFormat(trim($s_c_date[0]));
+    }
+    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+        $testedEndDate = $general->dateFormat(trim($s_c_date[1]));
+    }
+}
 $tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name 
     FROM " . $table . " as vl 
     JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -89,6 +110,12 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $sWhere .= ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+}
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+    $sWhere .= ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+}
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+    $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
 if (!empty($_POST['labName'])) {
     $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
@@ -131,7 +158,12 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
 }
-
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+    $sWhere .= ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+}
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+    $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+}
 if (!empty($_POST['labName'])) {
     $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
 }
@@ -169,6 +201,13 @@ $tatSampleQuery = "SELECT
         $recencyWhere ";
 
 $sWhere = '';
+
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+    $sWhere .= ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+}
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+    $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+}
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere .= ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
 }

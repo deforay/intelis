@@ -59,6 +59,29 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 	}
 }
 
+$labStartDate = '';
+$labEndDate = '';
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+	$s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
+	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+		$labStartDate = $general->dateFormat(trim($s_c_date[0]));
+	}
+	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+		$labEndDate = $general->dateFormat(trim($s_c_date[1]));
+	}
+}
+
+$testedStartDate = '';
+$testedEndDate = '';
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+	$s_c_date = explode("to", $_POST['sampleTestedDate']);
+	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+		$testedStartDate = $general->dateFormat(trim($s_c_date[0]));
+	}
+	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+		$testedEndDate = $general->dateFormat(trim($s_c_date[1]));
+	}
+}
 $tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name 
                 FROM form_eid as vl 
                 JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -73,6 +96,12 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	$sWhere .= ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+}
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+	$sWhere .= ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+}
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+	$sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
 if (!empty($_POST['labName'])) {
 	$sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
@@ -109,6 +138,12 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	$sWhere .= ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+}
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+	$sWhere .= ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+}
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+	$sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 	$sWhere .= ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
@@ -211,13 +246,13 @@ foreach ($tatResult as $sRow) {
 				type: 'pie'
 			},
 			title: {
-				text: "<?php echo _("EID Samples Status Overview");?>"
+				text: "<?php echo _("EID Samples Status Overview"); ?>"
 			},
 			credits: {
 				enabled: false
 			},
 			tooltip: {
-				pointFormat: "<?php echo _("EID Samples");?> :<b>{point.y}</b>"
+				pointFormat: "<?php echo _("EID Samples"); ?> :<b>{point.y}</b>"
 			},
 			plotOptions: {
 				pie: {
@@ -283,13 +318,13 @@ foreach ($tatResult as $sRow) {
 				type: 'pie'
 			},
 			title: {
-				text: "<?php echo _("EID Results");?>"
+				text: "<?php echo _("EID Results"); ?>"
 			},
 			credits: {
 				enabled: false
 			},
 			tooltip: {
-				pointFormat: "<?php echo _("Samples");?> :<b>{point.y}</b>"
+				pointFormat: "<?php echo _("Samples"); ?> :<b>{point.y}</b>"
 			},
 			plotOptions: {
 				pie: {
@@ -311,11 +346,11 @@ foreach ($tatResult as $sRow) {
 			series: [{
 				colorByPoint: true,
 				data: [{
-						name: "<?php echo _("Positive");?>",
+						name: "<?php echo _("Positive"); ?>",
 						y: <?php echo (isset($vlSuppressionResult['positiveResult']) && $vlSuppressionResult['positiveResult'] > 0) > 0 ? $vlSuppressionResult['positiveResult'] : 0; ?>
 					},
 					{
-						name: "<?php echo _("Negative");?>",
+						name: "<?php echo _("Negative"); ?>",
 						y: <?php echo (isset($vlSuppressionResult['negativeResult']) && $vlSuppressionResult['negativeResult'] > 0) > 0 ? $vlSuppressionResult['negativeResult'] : 0; ?>
 					},
 				]
@@ -330,12 +365,12 @@ foreach ($tatResult as $sRow) {
 				type: 'line'
 			},
 			title: {
-				text: "<?php echo _("EID Laboratory Turnaround Time");?>"
+				text: "<?php echo _("EID Laboratory Turnaround Time"); ?>"
 			},
 			exporting: {
 				chartOptions: {
 					subtitle: {
-						text: "<?php echo _("EID Laboratory Turnaround Time");?>",
+						text: "<?php echo _("EID Laboratory Turnaround Time"); ?>",
 					}
 				}
 			},
@@ -354,7 +389,7 @@ foreach ($tatResult as $sRow) {
 			},
 			yAxis: [{
 				title: {
-					text: "<?php echo _("Average TAT in Days");?>"
+					text: "<?php echo _("Average TAT in Days"); ?>"
 				},
 				labels: {
 					formatter: function() {
@@ -364,7 +399,7 @@ foreach ($tatResult as $sRow) {
 			}, { // Secondary yAxis
 				gridLineWidth: 0,
 				title: {
-					text: "<?php echo _("No. of Tests");?>"
+					text: "<?php echo _("No. of Tests"); ?>"
 				},
 				labels: {
 					format: '{value}'
@@ -394,7 +429,7 @@ foreach ($tatResult as $sRow) {
 
 			series: [{
 					type: 'column',
-					name: "<?php echo _("No. of Samples Tested");?>",
+					name: "<?php echo _("No. of Samples Tested"); ?>",
 					data: [<?php echo implode(",", $result['totalSamples']); ?>],
 					color: '#7CB5ED',
 					yAxis: 1
@@ -404,7 +439,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: "<?php echo _("Result - Printed");?>",
+						name: "<?php echo _("Result - Printed"); ?>",
 						data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
 						color: '#0f3f6e',
 					},
@@ -414,7 +449,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: "<?php echo _("Collected - Received at Lab");?>",
+						name: "<?php echo _("Collected - Received at Lab"); ?>",
 						data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
 						color: '#edb47c',
 					},
@@ -424,7 +459,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: "<?php echo _("Received - Tested");?>",
+						name: "<?php echo _("Received - Tested"); ?>",
 						data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
 						color: '#0f3f6e',
 					},
@@ -434,7 +469,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: "<?php echo _("Collected - Tested");?>",
+						name: "<?php echo _("Collected - Tested"); ?>",
 						data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
 						color: '#ed7c7d',
 					},
@@ -444,7 +479,7 @@ foreach ($tatResult as $sRow) {
 				?> {
 						connectNulls: false,
 						showInLegend: true,
-						name: "<?php echo _("Collected - Printed");?>",
+						name: "<?php echo _("Collected - Printed"); ?>",
 						data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
 						color: '#000',
 					},
