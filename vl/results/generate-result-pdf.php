@@ -1,15 +1,11 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
+
 ob_start();
 
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
-
 use setasign\Fpdi\Tcpdf\Fpdi;
-
 
 $tableName1 = "activity_log";
 $tableName2 = "form_vl";
@@ -18,26 +14,9 @@ $users = new \Vlsm\Models\Users();
 
 $arr = $general->getGlobalConfig();
 
-if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
-  date_default_timezone_set($arr['default_time_zone']);
-} else {
-  date_default_timezone_set(!empty(date_default_timezone_get()) ?  date_default_timezone_get() : "UTC");
-}
-//set mField Array
-$mFieldArray = array();
-if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
-  $mFieldArray = explode(',', $arr['r_mandatory_fields']);
-}
-//set print time
-$printedTime = date('Y-m-d H:i:s');
-$expStr = explode(" ", $printedTime);
-$printDate = $general->humanDateFormat($expStr[0]);
-$printDateTime = $expStr[1];
-//set query
-$searchQuery = $_SESSION['vlRequestSearchResultQuery'];
+$requestResult = null;
+if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sampleCodes']) && !empty(trim($_POST['sampleCodes'])))) {
 
-if (isset($_POST['id']) && trim($_POST['id']) != '') {
-  //if(isset($_POST['resultMail'])){
   $searchQuery = "SELECT vl.*,
                   f.*,
                   imp.i_partner_name,
@@ -58,16 +37,34 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
                   LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by
                   LEFT JOIN facility_details as l ON l.facility_id = vl.lab_id 
                   LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
-                  LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection 
-                  WHERE vl.vl_sample_id IN(" . $_POST['id'] . ")";
-  //}else{
-  //  $searchQuery = $query." and vl.vl_sample_id IN(".$_POST['id'].")";
-  //}
-} else {
-}
-//error_log($searchQuery);
+                  LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection";
 
-$requestResult = $db->query($searchQuery);
+  $searchQueryWhere = array();
+  if (!empty(trim($_POST['id']))) {
+    $searchQueryWhere[] = " vl.vl_sample_id IN(" . $_POST['id'] . ") ";
+  }
+
+  if (!empty(trim($_POST['sampleCodes']))) {
+    $searchQueryWhere[] = " vl.sample_code IN(" . $_POST['sampleCodes'] . ") ";
+  }
+  if(!empty($searchQueryWhere)){
+    $searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
+  }
+  //echo ($searchQuery);
+  $requestResult = $db->query($searchQuery);
+}
+
+
+if (empty($requestResult) || $requestResult == false) {
+  return null;
+}
+
+//set print time
+$printedTime = date('Y-m-d H:i:s');
+$expStr = explode(" ", $printedTime);
+$printDate = $general->humanDateFormat($expStr[0]);
+$printDateTime = $expStr[1];
+
 $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;
@@ -258,19 +255,19 @@ class Pdf_concat extends FPDI
   }
 }
 if ($arr['vl_form'] == 1) {
-  include('resultPdfSouthSudan.php');
+  include('pdf/result-pdf-ssudan.php');
 } else if ($arr['vl_form'] == 2) {
-  include('resultPdfZm.php');
+  include('pdf/result-pdf-zimbabwe.php');
 } else if ($arr['vl_form'] == 3) {
-  include('resultPdfDrc.php');
+  include('pdf/result-pdf-drc.php');
 } else if ($arr['vl_form'] == 4) {
-  include('resultPdfZam.php');
+  include('pdf/result-pdf-zambia.php');
 } else if ($arr['vl_form'] == 5) {
-  include('resultPdfPng.php');
+  include('pdf/result-pdf-png.php');
 } else if ($arr['vl_form'] == 6) {
-  include('resultPdfWho.php');
+  include('pdf/result-pdf-who.php');
 } else if ($arr['vl_form'] == 7) {
-  include('resultPdfRwd.php');
+  include('pdf/result-pdf-rwanda.php');
 } else if ($arr['vl_form'] == 8) {
-  include('resultPdfAng.php');
+  include('pdf/result-pdf-angola.php');
 }

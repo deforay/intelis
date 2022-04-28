@@ -23,8 +23,28 @@ foreach ($saResult as $sample) {
     }
 }
 $sCode = implode(', ', $sampleCode);
-$samplePrintQuery = "SELECT vl.*,s.sample_name,b.*,ts.*,f.facility_name,l_f.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,acd.art_code,rst.sample_name as routineSampleName,fst.sample_name as failureSampleName,sst.sample_name as suspectedSampleName,u_d.user_name as reviewedBy,a_u_d.user_name as approvedBy ,rs.rejection_reason_name FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as acd ON acd.art_id=vl.current_regimen LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.last_vl_sample_type_routine LEFT JOIN r_vl_sample_type as fst ON fst.sample_id=vl.last_vl_sample_type_failure_ac LEFT JOIN r_vl_sample_type as sst ON sst.sample_id=vl.last_vl_sample_type_failure LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
-$samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
+$samplePrintQuery = "SELECT vl.*,
+f.*,
+imp.i_partner_name,
+rst.*,
+vltr.test_reason_name,
+l.facility_name as labName,
+u_d.user_name as reviewedBy,
+a_u_d.user_name as approvedBy,
+r_r_b.user_name as revised,
+l.facility_logo as facilityLogo,
+rsrr.rejection_reason_name 
+FROM form_vl as vl 
+LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id 
+LEFT JOIN facility_details as f ON vl.facility_id = f.facility_id 
+LEFT JOIN r_vl_sample_type as rst ON rst.sample_id = vl.sample_type 
+LEFT JOIN user_details as u_d ON u_d.user_id = vl.result_reviewed_by
+LEFT JOIN user_details as a_u_d ON a_u_d.user_id = vl.result_approved_by
+LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by
+LEFT JOIN facility_details as l ON l.facility_id = vl.lab_id 
+LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
+LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection ";
+$samplePrintQuery .= ' WHERE vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
 $_SESSION['vlRequestSearchResultQuery'] = $samplePrintQuery;
 
 
@@ -102,11 +122,12 @@ unset($_SESSION['controllertrack']);
         $.blockUI();
         <?php
         $path = '';
-        $path = '/vl/results/pdf/vlRequestSearchResultPdf.php';
+        $path = '/vl/results/generate-result-pdf.php';
         ?>
         $.post("<?php echo $path; ?>", {
                 source: 'print',
-                id: ''
+                id: '',
+                sampleCodes: '<?php echo $sCode; ?>'
             },
             function(data) {
                 if (data == "" || data == null || data == undefined) {

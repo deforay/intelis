@@ -423,7 +423,7 @@ $batchResult = $db->rawQuery($batchQuery);
     $.blockUI();
     //var sample = $("#sample").val();
     var id = samplesData.toString();
-    $.post("/vl/results/pdf/vlRequestSearchResultPdf.php", {
+    $.post("/vl/results/generate-result-pdf.php", {
         source: 'print',
         id: id,
         resultMail: 'resultMail'

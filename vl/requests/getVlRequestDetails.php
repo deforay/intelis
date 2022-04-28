@@ -220,7 +220,7 @@ if (isset($sOrder) && $sOrder != "") {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-// $_SESSION['vlRequestSearchResultQuery'] = $sQuery;
+
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }

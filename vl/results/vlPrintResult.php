@@ -728,7 +728,7 @@ $batResult = $db->rawQuery($batQuery);
 		$.blockUI();
 		<?php
 		$path = '';
-		$path = '/vl/results/pdf/vlRequestSearchResultPdf.php';
+		$path = '/vl/results/generate-result-pdf.php';
 		?>
 		$.post("<?php echo $path; ?>", {
 				source: 'print',
@@ -752,7 +752,7 @@ $batResult = $db->rawQuery($batQuery);
 		$.blockUI();
 		<?php
 		$path = '';
-		$path = '/vl/results/pdf/vlRequestSearchResultPdf.php';
+		$path = '/vl/results/generate-result-pdf.php';
 		?>
 		if (newData == null) {
 			var rowsLength = selectedRows.length;

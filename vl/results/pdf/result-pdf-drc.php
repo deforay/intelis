@@ -1,6 +1,6 @@
 <?php
 
-// imported in vlRequestSearchResultPdf.php
+// imported in /vl/results/generate-result-pdf.php
 
 class DRC_PDF extends MYPDF
 {

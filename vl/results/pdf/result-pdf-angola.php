@@ -1,6 +1,6 @@
 <?php
 
-// This file is included in vlRequestSearchResultPdf.php
+// This file is included in /vl/results/generate-result-pdf.php
 
 
 use setasign\Fpdi\Tcpdf\Fpdi;

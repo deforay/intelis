@@ -409,7 +409,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
     $.blockUI();
     <?php
     $path = '';
-    $path = '/vl/results/pdf/vlRequestSearchResultPdf.php';
+    $path = '/vl/results/generate-result-pdf.php';
     ?>
     $.post("<?php echo $path; ?>", {
         source: 'print',

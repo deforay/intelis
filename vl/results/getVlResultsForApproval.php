@@ -233,7 +233,7 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 //die($sQuery);
 // echo $sQuery;
-$_SESSION['vlRequestSearchResultQuery'] = $sQuery;
+
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
