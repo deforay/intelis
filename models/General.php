@@ -598,7 +598,7 @@ class General
                     $value = substr($str, 0, strpos($str, ".php"));
                     /* $cut = str_replace("-", "", substr($index, strpos($index, "result-pdf-" . $countryCode . "-") - 15));
                     $value = substr($cut, 0, strpos($cut, ".php")); */
-                    $list[$index] = ucwords($value);
+                    $list[$index] = strtoupper($value);
                 }
             } else {
                 $list['pdf/result-pdf-' . $countryCode . '.pdf'] = "Default";

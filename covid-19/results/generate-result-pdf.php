@@ -363,7 +363,7 @@ if (sizeof($requestResult) > 0) {
 				} else if ($arr['vl_form'] == 8) {
 					include('pdf/result-pdf-angola.php');
 				}
-				exit(0);
+				// exit(0);
 			}
 		} else {
 			if ($arr['vl_form'] == 1) {
@@ -383,7 +383,7 @@ if (sizeof($requestResult) > 0) {
 			} else if ($arr['vl_form'] == 8) {
 				include('pdf/result-pdf-angola.php');
 			}
-			exit(0);
+			// exit(0);
 		}
 	}
 	if (count($pages) > 0) {
