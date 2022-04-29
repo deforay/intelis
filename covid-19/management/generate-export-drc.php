@@ -22,13 +22,14 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
     $headings = array(
         _("S. No."),
         _("Sample Code"),
+        _("Remote Sample Code"),
         _("Testing Lab Name"),
         _("Tested By"),
-        "Prélévement",
+        _("Prélévement"),
         _("District"),
         _("State"),
-        "POINT DE COLLECT",
-        "No. EPID",
+        _("POINT DE COLLECT"),
+        _("No. EPID"),
         _("Patient Name"),
         _("Patient DoB"),
         _("Patient Age"),
@@ -38,7 +39,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("Patient Email"),
         _("Patient Address"),
         _("Patient Province"),
-        'Commune',
+        _('Commune'),
         _("Nationality"),
         _("Fever/Temperature"),
         _("Temprature Measurement"),
@@ -79,7 +80,11 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("Date result released")
     );
 
-
+    if ($_SESSION['instanceType'] == 'standalone') {
+        if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+            unset($headings[$key]);
+        }
+    }
     $colNo = 1;
 
     $styleArray = array(
@@ -215,12 +220,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
             $resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
         }
 
-        if ($_SESSION['instanceType'] == 'remoteuser') {
-            $sampleCode = 'remote_sample_code';
-        } else {
-            $sampleCode = 'sample_code';
-        }
-
         if ($aRow['patient_name'] != '') {
             $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
         } else {
@@ -241,7 +240,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
 
         $row[] = $no;
-        $row[] = $aRow[$sampleCode];
+        if ($_SESSION['instanceType'] == 'standalone') {
+            $row[] = $aRow["sample_code"];
+        } else {
+            $row[] = $aRow["sample_code"];
+            $row[] = $aRow["remote_sample_code"];
+        }
         $row[] = ucwords($aRow['lab_name']);
         $row[] = ucwords($aRow['labTechnician']);
         $row[] = $aRow['test_number'];

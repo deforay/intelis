@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+	session_start();
 }
 ob_start();
 
@@ -31,8 +31,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 
-	$headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date","Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-
+	$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	if ($_SESSION['instanceType'] == 'standalone') {
+		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+			unset($headings[$key]);
+		}
+	}
 	$colNo = 1;
 
 	$styleArray = array(
@@ -85,7 +89,9 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	}
 	$sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
 
-	$no = 1;$sysmtomsArr = array();$comorbiditiesArr = array();
+	$no = 1;
+	$sysmtomsArr = array();
+	$comorbiditiesArr = array();
 	foreach ($rResult as $aRow) {
 		$row = array();
 		//date of birth
@@ -127,12 +133,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
-		if ($_SESSION['instanceType'] == 'remoteuser') {
-			$sampleCode = 'remote_sample_code';
-		} else {
-			$sampleCode = 'sample_code';
-		}
-
 		if ($aRow['patient_name'] != '') {
 			$patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
 		} else {
@@ -142,23 +142,28 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';
-        }
-        /* To get Symptoms and Comorbidities details */
-        $covid19SelectedSymptoms = $covid19Obj->getCovid19SymptomsByFormId($aRow['covid19_id']);
-        foreach ($covid19Symptoms as $symptomId => $symptomName) {
-			if($covid19SelectedSymptoms[$symptomId] == 'yes'){
-				$sysmtomsArr[] =$symptomName.':'.$covid19SelectedSymptoms[$symptomId];
+		}
+		/* To get Symptoms and Comorbidities details */
+		$covid19SelectedSymptoms = $covid19Obj->getCovid19SymptomsByFormId($aRow['covid19_id']);
+		foreach ($covid19Symptoms as $symptomId => $symptomName) {
+			if ($covid19SelectedSymptoms[$symptomId] == 'yes') {
+				$sysmtomsArr[] = $symptomName . ':' . $covid19SelectedSymptoms[$symptomId];
 			}
-        }
-        $covid19SelectedComorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($aRow['covid19_id']);
-        foreach ($covid19Comorbidities as $comId => $comName) {
-			if($covid19SelectedComorbidities[$symptomId] == 'yes'){
-				$comorbiditiesArr[] =$comName.':'.$covid19SelectedComorbidities[$comId];
+		}
+		$covid19SelectedComorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($aRow['covid19_id']);
+		foreach ($covid19Comorbidities as $comId => $comName) {
+			if ($covid19SelectedComorbidities[$symptomId] == 'yes') {
+				$comorbiditiesArr[] = $comName . ':' . $covid19SelectedComorbidities[$comId];
 			}
-        }
+		}
 
 		$row[] = $no;
-		$row[] = $aRow[$sampleCode];
+		if ($_SESSION['instanceType'] == 'standalone') {
+			$row[] = $aRow["sample_code"];
+		} else {
+			$row[] = $aRow["sample_code"];
+			$row[] = $aRow["remote_sample_code"];
+		}
 		$row[] = ucwords($aRow['facility_name']);
 		$row[] = $aRow['facility_code'];
 		$row[] = ucwords($aRow['facility_district']);
@@ -168,10 +173,10 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = $dob;
 		$row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = $gender;
-        $row[] = $sampleCollectionDate;
-        /* To get Symptoms and Comorbidities details */
-        $row[] = implode(',',$sysmtomsArr);
-        $row[] = implode(',',$comorbiditiesArr);
+		$row[] = $sampleCollectionDate;
+		/* To get Symptoms and Comorbidities details */
+		$row[] = implode(',', $sysmtomsArr);
+		$row[] = implode(',', $comorbiditiesArr);
 		/* $row[] = $general->humanDateFormat($aRow['date_of_symptom_onset']);
 		$row[] = ucwords($aRow['contact_with_confirmed_case']);
 		$row[] = ucwords($aRow['has_recent_travel_history']);
