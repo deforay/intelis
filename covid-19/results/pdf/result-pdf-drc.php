@@ -419,12 +419,16 @@ if (sizeof($requestResult) > 0) {
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:20px;border-bottom:2px solid #d3d3d3;"></td>';
         $html .= '</tr>';
-
+        if ($systemConfig['sc_user_type'] == 'vluser' && $result['dataSync'] == 0) {
+            $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+        } else {
+            $generatedAtTestingLab = "";
+        }
         $html .= '<tr>';
         $html .= '<td colspan="3">';
         $html .= '<table>';
         $html .= '<tr>';
-        $html .= '<td style="font-size:10px;text-align:left;">Imprimé sur : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
+        $html .= '<td style="font-size:10px;text-align:left;">Imprimé sur : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab . '</td>';
         $html .= '<td style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
         $html .= '<tr>';

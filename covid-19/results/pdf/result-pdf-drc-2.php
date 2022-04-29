@@ -66,6 +66,12 @@ class DRC_PDF extends MYPDF
         $this->writeHTML("<hr>");
         // Set font
         $this->SetFont('helvetica', 'I', 8);
+        if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0) {
+            $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+        } else {
+            $generatedAtTestingLab = "";
+        }
+        $this->writeHTMLCell(0, 0, 10, 290, strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . $generatedAtTestingLab, 0, 0, false, true, 'L', true);
         $this->writeHTMLCell(0, 0, 10, 280, 'N 29 Av des Orchidees O. le volcan C. de Goma Tel: +243 817933409 +234 993549796', 0, 0, false, true, 'C', true);
         $this->writeHTMLCell(0, 0, 10, 285, 'E-mail : info@inrbgoma.com, inrbgoma@gmail.com', 0, 0, false, true, 'C', true);
         $this->writeHTMLCell(0, 0, 10, 290, 'inrbgoma.com', 0, 0, false, true, 'C', true);
@@ -76,7 +82,7 @@ $users = new \Vlsm\Models\Users();
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo);
+$pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $currentDateTime, $result['dataSync'], $systemConfig);
 // set document information
 $pdf->SetCreator('VLSM');
 $pdf->SetTitle('Covid-19 Rapport du patient');

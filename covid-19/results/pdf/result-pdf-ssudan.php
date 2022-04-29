@@ -72,9 +72,6 @@ class SouthSudan_PDF extends MYPDF
     }
 }
 
-
-
-
 $covid19Results = $general->getCovid19Results();
 
 $countryFormId = $general->getGlobalConfig('vl_form');

@@ -591,8 +591,13 @@ class General
             if (isset($pdfFormat) && sizeof($pdfFormat) > 0) {
                 foreach ($pdfFormat as $formatPath) {
                     $index = substr($formatPath, strpos($formatPath, "results/") + 8);
-                    $cut = str_replace("-", "", substr($index, strpos($index, "result-pdf-" . $countryCode . "-") - 15));
-                    $value = substr($cut, 0, strpos($cut, ".php"));
+                    /* Previous code updated */
+                    $str = explode("/", $index);
+                    $str = explode("-", $str[1]);
+                    $str = ucwords($str[2]) . "-" . ucwords($str[3]);
+                    $value = substr($str, 0, strpos($str, ".php"));
+                    /* $cut = str_replace("-", "", substr($index, strpos($index, "result-pdf-" . $countryCode . "-") - 15));
+                    $value = substr($cut, 0, strpos($cut, ".php")); */
                     $list[$index] = ucwords($value);
                 }
             } else {
