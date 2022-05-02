@@ -11,22 +11,46 @@ $backupFolder = APPLICATION_PATH . '/../backups';
 if (!is_dir($backupFolder)) {
     mkdir($backupFolder, 0777, true);
 }
-$durationToDelete = 60 * 24 * 60 * 60; // 60 days
-if (file_exists($backupFolder)) {
-    foreach (new DirectoryIterator($backupFolder) as $fileInfo) {
-        if ($fileInfo->isDot()) {
-            continue;
-        }
-        if ($fileInfo->isFile() && time() - $fileInfo->getCTime() >= $durationToDelete) {
-            unlink($fileInfo->getRealPath());
-        }
-    }
-}
 
-$filename = $backupFolder . DIRECTORY_SEPARATOR . 'vlsm-db-backup-' . date("dmYHis") . '-' . rand() . '.sql';
+$fileName = $backupFolder . DIRECTORY_SEPARATOR . 'vlsm-db-backup-' . date("dmYHis") . '-' . rand() . '.sql';
 
 try {
-    exec($systemConfig['mysqlDump'] . ' --create-options --user=' . $systemConfig['dbUser'] . ' --password="' . $systemConfig['dbPassword'] . '" --host=' . $systemConfig['dbHost'] . ' --port=' . $systemConfig['dbPort'] . ' --databases ' . $systemConfig['dbName'] . '  > ' . $filename);
+    exec($systemConfig['mysqlDump'] . ' --create-options --user=' . $systemConfig['dbUser'] . ' --password="' . $systemConfig['dbPassword'] . '" --host=' . $systemConfig['dbHost'] . ' --port=' . $systemConfig['dbPort'] . ' --databases ' . $systemConfig['dbName'] . '  > ' . $fileName);
+
+    sleep(2);
+
+    $zip = new ZipArchive();
+
+    $baseName = basename($fileName);
+
+    $zipFile = $backupFolder . DIRECTORY_SEPARATOR . "$baseName.zip";
+    if (file_exists($zipFile)) {
+        unlink($zipFile);
+    }
+
+    $zipStatus = $zip->open($zipFile, ZipArchive::CREATE);
+    if ($zipStatus !== true) {
+        throw new RuntimeException(sprintf('Failed to create zip archive. (Status code: %s)', $zipStatus));
+    }
+
+    $password = md5($systemConfig['dbPassword']);
+    if (!$zip->setPassword($password)) {
+        throw new RuntimeException('Set password failed');
+    }
+
+    // compress file
+
+    if (!$zip->addFile($fileName, $baseName)) {
+        throw new RuntimeException(sprintf('Add file failed: %s', $fileName));
+    }
+
+    // encrypt the file with AES-256
+    if (!$zip->setEncryptionName($baseName, ZipArchive::EM_AES_256)) {
+        throw new RuntimeException(sprintf('Set encryption failed: %s', $baseName));
+    }
+
+    $zip->close();
+    unlink($fileName);
 } catch (Exception $e) {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
