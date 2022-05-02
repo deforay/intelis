@@ -439,14 +439,14 @@ if (sizeof($requestResult) > 0) {
                $html .= '<td colspan="3" style="line-height:16px;"></td>';
                $html .= '</tr>';
           }
-          if (trim($result['approver_comments']) != '') {
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">LAB COMMENTS&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ucfirst($result['approver_comments']) . '</span></td>';
-               $html .= '</tr>';
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:10px;"></td>';
-               $html .= '</tr>';
-          }
+          // if (trim($result['approver_comments']) != '') {
+          //      $html .= '<tr>';
+          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">LAB COMMENTS&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ucfirst($result['approver_comments']) . '</span></td>';
+          //      $html .= '</tr>';
+          //      $html .= '<tr>';
+          //      $html .= '<td colspan="3" style="line-height:10px;"></td>';
+          //      $html .= '</tr>';
+          // }
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
@@ -565,14 +565,14 @@ if (sizeof($requestResult) > 0) {
           // $html .= '<td colspan="3" style="line-height:2px;"></td>';
           // $html .= '</tr>';
 
-          if (!empty($result['approver_comments'])) {
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
-               $html .= '</tr>';
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['approver_comments'] . '</td>';
-               $html .= '</tr>';
-          }
+          // if (!empty($result['approver_comments'])) {
+          //      $html .= '<tr>';
+          //      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
+          //      $html .= '</tr>';
+          //      $html .= '<tr>';
+          //      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['approver_comments'] . '</td>';
+          //      $html .= '</tr>';
+          // }
 
 
           if (isset($result['lab_tech_comments']) && !empty($result['lab_tech_comments'])) {

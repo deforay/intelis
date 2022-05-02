@@ -11,6 +11,23 @@ $timeZone = $_SESSION['APP_TIMEZONE'];
 
 $schedule = new \Crunz\Schedule();
 
+
+
+// DB Backup
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/db-backups.php")
+    ->everySixHours()
+    ->timezone($timeZone)
+    ->preventOverlapping()
+    ->description('Backing Up Database');
+
+
+// DB Backup
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/cleanup.php")
+    ->everySixHours()
+    ->timezone($timeZone)
+    ->preventOverlapping()
+    ->description('Cleaning Up Backups and Temporary files');    
+
 // Expiring/Locking Samples
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/update-sample-status.php")
     ->everySixHours()

@@ -11,6 +11,17 @@ $backupFolder = APPLICATION_PATH . '/../backups';
 if (!is_dir($backupFolder)) {
     mkdir($backupFolder, 0777, true);
 }
+$durationToDelete = 60 * 24 * 60 * 60; // 60 days
+if (file_exists($backupFolder)) {
+    foreach (new DirectoryIterator($backupFolder) as $fileInfo) {
+        if ($fileInfo->isDot()) {
+            continue;
+        }
+        if ($fileInfo->isFile() && time() - $fileInfo->getCTime() >= $durationToDelete) {
+            unlink($fileInfo->getRealPath());
+        }
+    }
+}
 
 $filename = $backupFolder . DIRECTORY_SEPARATOR . 'vlsm-db-backup-' . date("dmYHis") . '-' . rand() . '.sql';
 

@@ -1,10 +1,6 @@
 <?php
 ob_start();
 
-
-
-
-
 $general = new \Vlsm\Models\General();
 $id = base64_decode($_GET['id']);
 
