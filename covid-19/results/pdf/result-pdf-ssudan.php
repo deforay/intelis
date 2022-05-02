@@ -72,9 +72,6 @@ class SouthSudan_PDF extends MYPDF
     }
 }
 
-
-
-
 $covid19Results = $general->getCovid19Results();
 
 $countryFormId = $general->getGlobalConfig('vl_form');
@@ -484,10 +481,13 @@ if (sizeof($requestResult) > 0) {
         $html .= '<tr>';
         $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
-
+        if ($systemConfig['sc_user_type'] == 'vluser' && $result['dataSync'] == 0) {
+            $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+        } else {
+            $generatedAtTestingLab = "";
+        }
         $html .= '<tr>';
-        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
-        $html .= '<td style="font-size:10px;text-align:left;width:60%;"></td>';
+        $html .= '<td style="font-size:10px;text-align:left;" colspan="2">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -497,7 +497,7 @@ if (sizeof($requestResult) > 0) {
         if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($systemConfig['remoteURL'])) {
             $showQR = true;
         }
-        if ($showQR && !empty($result['result']) || ($result['result'] == '' && $result['result_status'] == '4')) {
+        if (($showQR || !empty($result['result'])) || ($result['result'] == '' && $result['result_status'] == '4')) {
             $ciphering = "AES-128-CTR";
             $iv_length = openssl_cipher_iv_length($ciphering);
             $options = 0;
@@ -560,17 +560,4 @@ if (sizeof($requestResult) > 0) {
             }
         }
     }
-
-    if (count($pages) > 0) {
-        $resultPdf = new Pdf_concat();
-        $resultPdf->setFiles($pages);
-        $resultPdf->setPrintHeader(false);
-        $resultPdf->setPrintFooter(false);
-        $resultPdf->concat();
-        $resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
-        $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-        $general->removeDirectory($pathFront);
-        unset($_SESSION['rVal']);
-    }
 }
-echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

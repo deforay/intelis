@@ -88,8 +88,13 @@ if (!class_exists('DRC_PDF')) {
             // Set font
             $this->SetFont('helvetica', 'I', 8);
             setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
-            $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Département de Virologie");
-
+            if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0) {
+                $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+            } else {
+                $generatedAtTestingLab = "";
+            }
+            $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . $generatedAtTestingLab);
+            $this->writeHTMLCell(0, 0, 10, 290, 'Département de Virologie', 0, 0, false, true, 'C', true);
             // Page number
             //$this->SetFont('helvetica', '', 8);
             //$this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
@@ -117,7 +122,7 @@ if (isset($result['result_printed_datetime']) && trim($result['result_printed_da
     $resultPrintedDate = $currentDate = $general->humanDateFormat($expStr[0]);
     $resultPrintedTime = $currentTime = $expStr[1];
 }
-$pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $currentDateTime);
+$pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $currentDateTime, $result['dataSync'], $systemConfig);
 // set document information
 $pdf->SetCreator('VLSM');
 $pdf->SetTitle('Covid-19 Rapport du patient');

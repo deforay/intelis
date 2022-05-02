@@ -701,7 +701,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				if (data === "" || data === null || data === undefined) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
-					// window.location.href = '/temporary/' + data;
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});

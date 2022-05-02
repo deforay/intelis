@@ -253,8 +253,6 @@ if (!empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
 
-
-
 if (isset($sOrder) && $sOrder != "") {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;

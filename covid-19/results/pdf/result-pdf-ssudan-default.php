@@ -366,17 +366,17 @@ $html .= '<td colspan="2" style="line-height:20px;"></td>';
 $html .= '</tr>';
 $html .= '</table>';
 
-$html .= '<table align="center" style="min-height:120px">';
-$html .= '<tr>';
-$html .= '<td  colspan="4" style="text-align:center;" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-$html .= '<table style="width:80%;padding:3px;border:1px solid #67b3ff;">';
-$html .= '<tr>';
-$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;">AUTHORISED BY</td>';
-$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">PRINT NAME</td>';
-$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">SIGNATURE</td>';
-$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">DATE & TIME</td>';
-$html .= '</tr>';
 if (isset($signResults) && !empty($signResults)) {
+    $html .= '<table align="center" style="min-height:120px">';
+    $html .= '<tr>';
+    $html .= '<td  colspan="4" style="text-align:center;" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+    $html .= '<table style="width:80%;padding:3px;border:1px solid #67b3ff;">';
+    $html .= '<tr>';
+    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;">AUTHORISED BY</td>';
+    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">PRINT NAME</td>';
+    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">SIGNATURE</td>';
+    $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">DATE & TIME</td>';
+    $html .= '</tr>';
     foreach ($signResults as $key => $row) {
         $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
         $html .= '<tr>';
@@ -386,33 +386,31 @@ if (isset($signResults) && !empty($signResults)) {
         $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
         $html .= '</tr>';
     }
+    /* 
+            $lqSign = "/uploads/covid-19/{$countryFormId}/pdf/lq.png";
+            $html .= '<tr>';
+            $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Quality Manager</td>';
+            $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">Abe Gordon Abias</td>';
+            $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lqSign . '" style="width:30px;"></td>';
+            $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
+            $html .= '</tr>';
+            
+            $lsSign = "/uploads/covid-19/{$countryFormId}/pdf/ls.png";
+            $html .= '<tr>';
+            $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Supervisor</td>';
+            $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">Dr. Simon Deng Nyicar</td>';
+            $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lsSign . '" style="width:30px;"></td>';
+            $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
+            $html .= '</tr>'; */
+    $html .= '</table>';
+    $html .= '</td>';
+    $html .= '</tr>';
+    $html .= '</table>';
 } else {
     $html .= '<tr>';
     $html .= '<td colspan="5" style="line-height:50px;"></td>';
     $html .= '</tr>';
 }
-
-/* 
-        $lqSign = "/uploads/covid-19/{$countryFormId}/pdf/lq.png";
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Quality Manager</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">Abe Gordon Abias</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lqSign . '" style="width:30px;"></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
-        $html .= '</tr>';
-        
-        $lsSign = "/uploads/covid-19/{$countryFormId}/pdf/ls.png";
-        $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Supervisor</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">Dr. Simon Deng Nyicar</td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lsSign . '" style="width:30px;"></td>';
-        $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
-        $html .= '</tr>'; */
-$html .= '</table>';
-$html .= '</td>';
-$html .= '</tr>';
-$html .= '</table>';
-
 $html .= '<table>';
 $html .= '<tr>';
 $html .= '<td colspan="2" style="line-height:20px;border-bottom:2px solid #d3d3d3;"></td>';
@@ -421,17 +419,20 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
 $html .= '</tr>';
-
+if ($systemConfig['sc_user_type'] == 'vluser' && $result['dataSync'] == 0) {
+    $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+} else {
+    $generatedAtTestingLab = "";
+}
 $html .= '<tr>';
-$html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
-$html .= '<td style="font-size:10px;text-align:left;width:60%;"></td>';
+$html .= '<td style="font-size:10px;text-align:left;" colspan="2">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
 $html .= '</tr>';
 $html .= '</table>';
-if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+if (($result['result'] != '') || ($result['result'] == '' && $result['result_status'] == '4')) {
     $ciphering = "AES-128-CTR";
     $iv_length = openssl_cipher_iv_length($ciphering);
     $options = 0;
@@ -481,15 +482,4 @@ if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
         $db = $db->where('covid19_id', $result['covid19_id']);
         $db->update($tableName2, array('result_printed_datetime' => $currentDateTime, 'result_dispatched_datetime' => $currentDateTime));
     }
-}
-if (count($pages) > 0) {
-    $resultPdf = new Pdf_concat();
-    $resultPdf->setFiles($pages);
-    $resultPdf->setPrintHeader(false);
-    $resultPdf->setPrintFooter(false);
-    $resultPdf->concat();
-    $resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
-    $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-    $general->removeDirectory($pathFront);
-    unset($_SESSION['rVal']);
 }

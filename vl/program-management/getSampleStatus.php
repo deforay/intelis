@@ -22,10 +22,8 @@ if ($userType == 'remoteuser') {
     }
 }
 
-
-
 if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
-    $recencyWhere = " AND reason_for_vl_testing = 9999";
+    $recencyWhere = " AND reason_for_vl_testing = 9999 ";
     $sampleStatusOverviewContainer  = "recencySampleStatusOverviewContainer";
     $samplesVlOverview              = "recencySmplesVlOverview";
     $labAverageTat                  = "recencyLabAverageTat";
@@ -104,34 +102,25 @@ $tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name
     WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'" . $whereCondition . $recencyWhere;
 
 //filter
-$sWhere = '';
+$sWhere = array();
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-    $sWhere .= ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
+    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+    $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+    $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
 }
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
+    $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-$tQuery .= " " . $sWhere;
-
-$tQuery .= " " . "GROUP BY vl.result_status ORDER BY status_id";
-
-
-//echo $tQuery;die;
+$tQuery .= " AND " . implode(" AND ", $sWhere) . " GROUP BY vl.result_status ORDER BY status_id";
 
 $tResult = $db->rawQuery($tQuery);
-
-
-//HVL and LVL Samples
-
 $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         SUM(CASE
                 WHEN (vl.vl_result_category like 'not suppressed') THEN 1

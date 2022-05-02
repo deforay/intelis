@@ -17,6 +17,7 @@ $covid19Obj = new \Vlsm\Models\Covid19();
 
 $configQuery = "SELECT * from global_config";
 $configResult = $db->query($configQuery);
+$systemConfig = $general->getSystemConfig();
 $arr = array();
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($configResult); $i++) {
@@ -54,6 +55,7 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 				rfs.funding_source_name,
 				c.iso_name as nationality,
 				rst.sample_name,
+				vl.data_sync as dataSync,
 				testres.test_reason_name as reasonForTesting
 				FROM form_covid19 as vl
 				LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
@@ -90,7 +92,7 @@ class MYPDF extends TCPDF
 {
 
 	//Page header
-	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = array(), $resultPrintedDate = null)
+	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = array(), $resultPrintedDate = null, $dataSync = null, $systemConfig = null)
 	{
 		$this->logo = $logo;
 		$this->text = $text;
@@ -100,6 +102,8 @@ class MYPDF extends TCPDF
 		$this->formId = $formId;
 		$this->facilityInfo = $facilityInfo;
 		$this->resultPrintedDate = $resultPrintedDate;
+		$this->systemConfig = $systemConfig;
+		$this->dataSync = $dataSync;
 	}
 	//Page header
 	public function Header()
@@ -194,8 +198,13 @@ class MYPDF extends TCPDF
 		$this->SetY(-15);
 		// Set font
 		$this->SetFont('helvetica', '', 8);
+		if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0 && ($this->formId == 1 || $this->formId == 3)) {
+			$generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+		} else {
+			$generatedAtTestingLab = "";
+		}
 		// Page number
-		$this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'C', 0, '', 0, false, 'T', 'M');
+		$this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'] . $generatedAtTestingLab, 0, false, 'C', 0, '', 0, false, 'T', 'M');
 	}
 }
 
@@ -295,9 +304,7 @@ if (sizeof($requestResult) > 0) {
 	}
 	$pages = array();
 	$page = 1;
-
 	foreach ($requestResult as $result) {
-
 		//set print time
 		$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
 		$expStr = explode(" ", $printedTime);
@@ -356,7 +363,7 @@ if (sizeof($requestResult) > 0) {
 				} else if ($arr['vl_form'] == 8) {
 					include('pdf/result-pdf-angola.php');
 				}
-				exit(0);
+				// exit(0);
 			}
 		} else {
 			if ($arr['vl_form'] == 1) {
@@ -376,7 +383,7 @@ if (sizeof($requestResult) > 0) {
 			} else if ($arr['vl_form'] == 8) {
 				include('pdf/result-pdf-angola.php');
 			}
-			exit(0);
+			// exit(0);
 		}
 	}
 	if (count($pages) > 0) {
