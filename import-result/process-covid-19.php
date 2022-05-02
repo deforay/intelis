@@ -37,8 +37,8 @@ try {
             $rResult = $db->rawQuery($sQuery);
             $fileName = $rResult[0]['import_machine_file_name'];
 
-            if (isset($rResult[0]['approver_comments']) && $rResult[0]['approver_comments'] != "") {
-                $comments = $rResult[0]['approver_comments']; //
+            if (isset($rResult[0]['lab_tech_comments']) && $rResult[0]['lab_tech_comments'] != "") {
+                $comments = $rResult[0]['lab_tech_comments']; //
                 if ($_POST['comments'] != "") {
                     $comments .= " - " . $_POST['comments'];
                 }
@@ -60,7 +60,7 @@ try {
                     //'reason_for_sample_rejection'=>$rResult[0]['reason_for_sample_rejection'],
                     'result' => $rResult[0]['result'],
                     'tested_by' => $_POST['testBy'],
-                    'approver_comments' => $comments,
+                    'lab_tech_comments' => $comments,
                     'result_reviewed_by' => $rResult[0]['result_reviewed_by'],
                     'result_reviewed_datetime' => $general->getDateTime(),
                     'result_approved_by' => $_POST['appBy'],
@@ -99,7 +99,7 @@ try {
                 $data = array(
                     'result_reviewed_by' => $_POST['reviewedBy'],
                     'import_machine_name' => $rResult[0]['import_machine_name'],
-                    'approver_comments' => $comments,
+                    'lab_tech_comments' => $comments,
                     'lot_number' => $rResult[0]['lot_number'],
                     'lot_expiration_date' => $rResult[0]['lot_expiration_date'],
                     'result' => $rResult[0]['result'],
@@ -225,7 +225,7 @@ try {
                 //'result_dispatched_datetime' => $accResult[$i]['result_dispatched_datetime'],
                 'result_reviewed_datetime' => $accResult[$i]['result_reviewed_datetime'],
                 'result_reviewed_by' => $_POST['reviewedBy'],
-                'approver_comments' => $_POST['comments'],
+                'lab_tech_comments' => $_POST['comments'],
                 'lot_number' => $accResult[$i]['lot_number'],
                 'lot_expiration_date' => $accResult[$i]['lot_expiration_date'],
                 'result' => $accResult[$i]['result'],

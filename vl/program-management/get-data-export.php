@@ -127,7 +127,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.is_patient_pregnant,
                         vl.is_patient_breastfeeding,
                         vl.request_clinician_name,
-                        vl.approver_comments,
+                        vl.lab_tech_comments,
                         vl.sample_received_at_hub_datetime,							
                         vl.sample_received_at_vl_lab_datetime,							
                         vl.result_dispatched_datetime,	

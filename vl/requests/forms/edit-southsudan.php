@@ -790,7 +790,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
 													<div class="col-lg-7">
-														<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['approver_comments']); ?></textarea>
+														<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
 													</div>
 												</div>
 												<div class="col-md-6 reasonForResultChanges" style="display:none;">

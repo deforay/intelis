@@ -130,7 +130,7 @@ try {
         vl.sample_received_at_vl_lab_datetime   as sampleReceivedDate,
         vl.is_sample_rejected                   as sampleRejected,
         vl.is_result_authorised                 as isAuthorised,
-        vl.approver_comments                    as approverComments,
+        vl.lab_tech_comments                    as approverComments,
         vl.request_created_datetime             as requestedDate,
         vl.result_printed_datetime              as resultPrintedDate,
         vl.testing_point                        as testingPoint,

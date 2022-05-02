@@ -353,9 +353,9 @@ if ($result['reason_for_sample_rejection'] != '') {
     $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">REJECTION REASON : <span style="font-weight:normal;">' . $result['rejection_reason_name'] . '</span></td>';
     $html .= '</tr>';
 }
-if (trim($result['approver_comments']) != '') {
+if (trim($result['lab_tech_comments']) != '') {
     $html .= '<tr>';
-    $html .= '<td colspan="4" style="line-height:17px;font-size:11px;font-weight:bold;">LAB COMMENTS : <span style="font-weight:normal;">' . ucfirst($result['approver_comments']) . '</span></td>';
+    $html .= '<td colspan="4" style="line-height:17px;font-size:11px;font-weight:bold;">LAB COMMENTS : <span style="font-weight:normal;">' . ($result['lab_tech_comments']) . '</span></td>';
     $html .= '</tr>';
 }
 $html .= '</table>';

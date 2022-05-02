@@ -218,7 +218,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$row[] = $sampleReceivedOn;
 		$row[] = $resultDispatchedDate;
 		//$row[] = $tatdays;
-		$row[] = ucfirst($aRow['approver_comments']);
+		$row[] = ucfirst($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
 		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
 		$output[] = $row;

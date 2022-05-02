@@ -192,7 +192,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
                } elseif ($filedGroup[$f] == "Approved By") {
                   $field = 'result_approved_by';
                } elseif ($filedGroup[$f] == "Lab Tech. Comments") {
-                  $field = 'approver_comments';
+                  $field = 'lab_tech_comments';
                } elseif ($filedGroup[$f] == "Status") {
                   $field = 'status_name';
                }

@@ -82,7 +82,7 @@ try {
         vl.result,
         vl.xpert_mtb_result                     as xpertMtbResult,
         vl.is_sample_rejected                   as sampleRejected,
-        vl.approver_comments                    as approverComments,
+        vl.lab_tech_comments                    as approverComments,
         vl.request_created_datetime             as requestedDate,
         vl.result_printed_datetime              as resultPrintedDate,
         vl.last_modified_datetime               as updatedOn,

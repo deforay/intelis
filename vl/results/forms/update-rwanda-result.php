@@ -698,7 +698,7 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-8">
 												<label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
 												<div class="col-lg-10">
-													<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['approver_comments']); ?></textarea>
+													<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
 												</div>
 											</div>
 										</div>

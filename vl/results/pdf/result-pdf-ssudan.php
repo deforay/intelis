@@ -439,9 +439,9 @@ if (sizeof($requestResult) > 0) {
                $html .= '<td colspan="3" style="line-height:16px;"></td>';
                $html .= '</tr>';
           }
-          // if (trim($result['approver_comments']) != '') {
+          // if (trim($result['lab_tech_comments']) != '') {
           //      $html .= '<tr>';
-          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">LAB COMMENTS&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ucfirst($result['approver_comments']) . '</span></td>';
+          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">LAB COMMENTS&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ($result['lab_tech_comments']) . '</span></td>';
           //      $html .= '</tr>';
           //      $html .= '<tr>';
           //      $html .= '<td colspan="3" style="line-height:10px;"></td>';
@@ -565,12 +565,12 @@ if (sizeof($requestResult) > 0) {
           // $html .= '<td colspan="3" style="line-height:2px;"></td>';
           // $html .= '</tr>';
 
-          // if (!empty($result['approver_comments'])) {
+          // if (!empty($result['lab_tech_comments'])) {
           //      $html .= '<tr>';
           //      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
           //      $html .= '</tr>';
           //      $html .= '<tr>';
-          //      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['approver_comments'] . '</td>';
+          //      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['lab_tech_comments'] . '</td>';
           //      $html .= '</tr>';
           // }
 

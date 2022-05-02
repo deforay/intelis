@@ -178,7 +178,7 @@ try {
                 'sample_tested_datetime' => $testingDate,
                 'result_status' => 6,
                 'import_machine_file_name' => $fileName,
-                'approver_comments' => $d['resultFlag']
+                'lab_tech_comments' => $d['resultFlag']
             );
 
 

@@ -115,7 +115,7 @@ try {
         vl.result_value_log                                  as vlLog,
         vl.tested_by                                         as testedBy,
         vl.result_approved_by                                as approvedBy,
-        vl.approver_comments                                 as labComments,
+        vl.lab_tech_comments                                 as labComments,
         vl.result_status                                     as resultStatus,
         vl.funding_source                                    as fundingSource,
         vl.implementing_partner                              as implementingPartner,

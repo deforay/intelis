@@ -182,7 +182,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = $eidResults[$aRow['result']];
 		$row[] = $general->humanDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
-		$row[] = ucfirst($aRow['approver_comments']);
+		$row[] = ucfirst($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
 		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
 		$output[] = $row;

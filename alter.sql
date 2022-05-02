@@ -3089,3 +3089,22 @@ ALTER TABLE `form_eid` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTE
 -- Amit 28-Apr-2022
 UPDATE `privileges` SET `privilege_name` = 'vl-export-data.php', `display_name` = 'Export VL Data' WHERE `privileges`.`privilege_id` = 23;
 ALTER TABLE `form_vl` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;
+
+-- Amit 02-May-2022
+ALTER TABLE `form_covid19` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;
+ALTER TABLE `form_hepatitis` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;
+ALTER TABLE `form_tb` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;
+ALTER TABLE `temp_sample_import` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `result_reviewed_by`;
+ALTER TABLE `hold_sample_import` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `result_reviewed_by`;
+ALTER TABLE `covid19_imported_controls` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `result_reviewed_by`;
+ALTER TABLE `vl_imported_controls` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `result_reviewed_by`;
+UPDATE `form_covid19` SET `lab_tech_comments` = approver_comments;
+UPDATE `form_hepatitis` SET `lab_tech_comments` = approver_comments;
+UPDATE `form_tb` SET `lab_tech_comments` = approver_comments;
+UPDATE `temp_sample_import` SET `lab_tech_comments` = approver_comments;
+UPDATE `hold_sample_import` SET `lab_tech_comments` = approver_comments;
+UPDATE `covid19_imported_controls` SET `lab_tech_comments` = approver_comments;
+
+
+-- Amit 02-May-2022 version 4.5.1
+UPDATE `system_config` SET `value` = '4.5.1' WHERE `system_config`.`name` = 'sc_version';

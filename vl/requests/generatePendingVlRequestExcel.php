@@ -28,7 +28,7 @@ $sQuery = "SELECT
                         vl.is_patient_pregnant,
                         vl.is_patient_breastfeeding,
                         vl.request_clinician_name,
-                        vl.approver_comments,
+                        vl.lab_tech_comments,
                         vl.sample_received_at_hub_datetime,							
                         vl.sample_received_at_vl_lab_datetime,							
                         vl.result_dispatched_datetime,	
@@ -269,7 +269,7 @@ foreach ($rResult as $aRow) {
 	$row[] = $sampleReceivedOn;
 	$row[] = $resultDispatchedDate;
 	//$row[] = $tatdays;
-	$row[] = ucfirst($aRow['approver_comments']);
+	$row[] = ucfirst($aRow['lab_tech_comments']);
 	$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
 	$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
 	$output[] = $row;

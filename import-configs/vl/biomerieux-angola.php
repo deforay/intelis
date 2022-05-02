@@ -156,7 +156,7 @@ try {
                 'result_status' => '6',
                 'lot_number' => $d['lotNumber'],
                 'import_machine_file_name' => $fileName,
-                'approver_comments' => $d['resultFlag']
+                'lab_tech_comments' => $d['resultFlag']
             );
 
 

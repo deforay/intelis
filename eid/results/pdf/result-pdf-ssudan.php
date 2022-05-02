@@ -489,7 +489,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['revised_on'])) . '</td>';
             $html .= '</tr>';
         }
-        if (!empty($result['approver_comments'])) {
+        if (!empty($result['lab_tech_comments'])) {
             $html .= '<tr>';
             $html .= '<td colspan="3" style="line-height:22px;"></td>';
             $html .= '</tr>';
@@ -497,7 +497,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
             $html .= '</tr>';
             $html .= '<tr>';
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['approver_comments'] . '</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['lab_tech_comments'] . '</td>';
             $html .= '</tr>';
         }
 

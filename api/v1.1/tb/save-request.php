@@ -280,7 +280,7 @@ try {
             'result_reviewed_datetime'            => !empty($data['reviewedOn']) ? $general->dateFormat($data['reviewedOn']) : null,
             'result_approved_by'                  => !empty($data['approvedBy']) ? $data['approvedBy'] : null,
             'result_approved_datetime'            => !empty($data['approvedOn']) ? $general->dateFormat($data['approvedOn']) : null,
-            'approver_comments'                   => !empty($data['approverComments']) ? $data['approverComments'] : null,
+            'lab_tech_comments'                   => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'revised_by'                          => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on'                          => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
             'reason_for_changing'                 => (!empty($data['reasonFortbResultChanges']) && !empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,

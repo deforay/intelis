@@ -325,9 +325,9 @@ if (sizeof($requestResult) > 0) {
             $html .= '<tr>';
             $html .= '<td colspan="3" style="line-height:10px;"></td>';
             $html .= '</tr>';
-            if (trim($result['approver_comments']) != '') {
+            if (trim($result['lab_tech_comments']) != '') {
                 $html .= '<tr>';
-                $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Commentaires du laboratoire&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ucfirst($result['approver_comments']) . '</span></td>';
+                $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Commentaires du laboratoire&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ($result['lab_tech_comments']) . '</span></td>';
                 $html .= '</tr>';
                 $html .= '<tr>';
                 $html .= '<td colspan="3" style="line-height:10px;"></td>';

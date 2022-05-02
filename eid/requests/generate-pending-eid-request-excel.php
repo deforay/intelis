@@ -211,7 +211,7 @@ foreach ($rResult as $aRow) {
     $row[] = $eidResults[$aRow['result']];
     $row[] = $sampleReceivedOn;
     $row[] = $resultDispatchedDate;
-    $row[] = ucfirst($aRow['approver_comments']);
+    $row[] = ($aRow['lab_tech_comments']);
     $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
     $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
     $output[] = $row;

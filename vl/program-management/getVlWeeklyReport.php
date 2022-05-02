@@ -18,8 +18,8 @@ $sarr = $general->getSystemConfig();
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('facility_state', 'facility_district', 'facility_name', 'facility_code', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.approver_comments');
-$orderColumns = array('facility_state', 'facility_district', 'facility_name', 'sample_tested_datetime', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'vl.approver_comments');
+$aColumns = array('facility_state', 'facility_district', 'facility_name', 'facility_code', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.lab_tech_comments');
+$orderColumns = array('facility_state', 'facility_district', 'facility_name', 'sample_tested_datetime', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'vl.lab_tech_comments');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;

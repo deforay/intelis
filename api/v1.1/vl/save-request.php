@@ -374,7 +374,7 @@ try {
             'revised_by'                            => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
             'revised_on'                            => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
             'reason_for_vl_result_changes'          => (!empty($_POST['reasonForVlResultChanges']) && !empty($_POST['reasonForVlResultChanges'])) ? $_POST['reasonForVlResultChanges'] : null,
-            'approver_comments'                     => (isset($data['labComments']) && trim($data['labComments']) != '') ? trim($data['labComments']) :  NULL,
+            'lab_tech_comments'                     => (isset($data['labComments']) && trim($data['labComments']) != '') ? trim($data['labComments']) :  NULL,
             'result_status'                         => $status,
             'funding_source'                        => (isset($data['fundingSource']) && trim($data['fundingSource']) != '') ? $data['fundingSource'] : NULL,
             'implementing_partner'                  => (isset($data['implementingPartner']) && trim($data['implementingPartner']) != '') ? $data['implementingPartner'] : NULL,

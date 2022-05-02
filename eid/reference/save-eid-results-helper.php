@@ -15,18 +15,18 @@ try {
 			'status' 	    => $_POST['resultStatus'],
 			'updated_datetime' 	=> $general->getDateTime(),
 		);
-		if(isset($_POST['resultId']) && $_POST['resultId'] != ""){
+		if (isset($_POST['resultId']) && $_POST['resultId'] != "") {
 			$db = $db->where($primaryKey, base64_decode($_POST['resultId']))->where('result', $_POST['oldResultName']);
-        	$lastId = $db->update($tableName, $data);
-		} else{
+			$lastId = $db->update($tableName, $data);
+		} else {
 			$db->insert($tableName, $data);
 			$lastId = $db->getInsertId();
 		}
 
-		if($lastId > 0){
-            $_SESSION['alertMsg'] = _("EID Results details saved successfully");
-            $general->activityLog('EID Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'eid-reference');
-        }
+		if ($lastId > 0) {
+			$_SESSION['alertMsg'] = _("EID Results details saved successfully");
+			$general->activityLog('EID Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'eid-reference');
+		}
 	}
 	header("location:eid-results.php");
 } catch (Exception $exc) {
