@@ -23,10 +23,10 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/db-
 
 // DB Backup
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/cleanup.php")
-    ->everySixHours()
+    ->cron('0 */12 * * *')
     ->timezone($timeZone)
     ->preventOverlapping()
-    ->description('Cleaning Up Backups and Temporary files');    
+    ->description('Cleaning Up Old Backups and Temporary files');
 
 // Expiring/Locking Samples
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/update-sample-status.php")

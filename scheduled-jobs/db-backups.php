@@ -11,8 +11,8 @@ $backupFolder = APPLICATION_PATH . '/../backups';
 if (!is_dir($backupFolder)) {
     mkdir($backupFolder, 0777, true);
 }
-
-$fileName = $backupFolder . DIRECTORY_SEPARATOR . 'vlsm-db-backup-' . date("dmYHis") . '-' . rand() . '.sql';
+$randomString = $general->generateRandomString(6);
+$fileName = $backupFolder . DIRECTORY_SEPARATOR . 'vlsm-' . date("dmYHis") . '-' . $randomString . '.sql';
 
 try {
     exec($systemConfig['mysqlDump'] . ' --create-options --user=' . $systemConfig['dbUser'] . ' --password="' . $systemConfig['dbPassword'] . '" --host=' . $systemConfig['dbHost'] . ' --port=' . $systemConfig['dbPort'] . ' --databases ' . $systemConfig['dbName'] . '  > ' . $fileName);
@@ -33,7 +33,7 @@ try {
         throw new RuntimeException(sprintf('Failed to create zip archive. (Status code: %s)', $zipStatus));
     }
 
-    $password = md5($systemConfig['dbPassword']);
+    $password = md5($systemConfig['dbPassword'] . $randomString);
     if (!$zip->setPassword($password)) {
         throw new RuntimeException('Set password failed');
     }
