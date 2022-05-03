@@ -3098,6 +3098,8 @@ ALTER TABLE `temp_sample_import` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT
 ALTER TABLE `hold_sample_import` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `result_reviewed_by`;
 ALTER TABLE `covid19_imported_controls` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `result_reviewed_by`;
 ALTER TABLE `vl_imported_controls` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `result_reviewed_by`;
+UPDATE `form_vl` SET `lab_tech_comments` = approver_comments;
+UPDATE `form_eid` SET `lab_tech_comments` = approver_comments;
 UPDATE `form_covid19` SET `lab_tech_comments` = approver_comments;
 UPDATE `form_hepatitis` SET `lab_tech_comments` = approver_comments;
 UPDATE `form_tb` SET `lab_tech_comments` = approver_comments;
