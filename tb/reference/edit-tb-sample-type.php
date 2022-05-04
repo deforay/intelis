@@ -10,7 +10,7 @@ $sampleInfo = $db->query($sampleQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-heartbeat"></i> Edit TB Sample Type</h1>
+    <h1><i class="fa-solid fa-heart-pulse"></i> Edit TB Sample Type</h1>
     <ol class="breadcrumb">
       <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">TB Sample Type</li>

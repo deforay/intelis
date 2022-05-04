@@ -151,7 +151,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="covid-19-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position');?>"><i class="fa fa-sort-numeric-desc"> <?php echo _("Edit Position");?></i></a></div>
+							<div class="col-md-6"><a href="covid-19-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position');?>"><i class="fa-solid fa-arrow-down-1-9"></i> <?php echo _("Edit Position");?></a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-8">

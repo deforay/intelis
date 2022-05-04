@@ -2,7 +2,7 @@
 $title = _("Dashboard");
 require_once(APPLICATION_PATH . '/header.php');
 ?>
-<link rel="stylesheet" href="/assets/css/components-rounded.min.css">
+
 <style>
 	.bluebox,
 	.dashboard-stat2 {

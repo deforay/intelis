@@ -211,7 +211,7 @@ foreach ($srcResults as $list) {
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 								&nbsp;
 								<?php if (isset($_SESSION['privileges']) && in_array("export-vl-requests.php", $_SESSION['privileges'])) { ?>
-									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel"); ?></a>
+									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 							</td>
 						</tr>
@@ -227,7 +227,7 @@ foreach ($srcResults as $list) {
 								?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 								<?php if (isset($_SESSION['privileges']) && in_array("export-vl-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
 							</td>

@@ -29,7 +29,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-calendar-check-o" aria-hidden="true"></i> <?php echo _("VL Lab Weekly Report"); ?>
+    <h1><i class="fa-solid fa-calendar-check"></i> <?php echo _("VL Lab Weekly Report"); ?>
       <!--<ol class="breadcrumb">-->
       <!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->

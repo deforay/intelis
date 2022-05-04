@@ -161,7 +161,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-book"></i> <?php echo _("EARLY INFANT DIAGNOSIS - Testing Target Report");?>
+    <h1><i class="fa-solid fa-book"></i> <?php echo _("EARLY INFANT DIAGNOSIS - Testing Target Report");?>
       <!--<ol class="breadcrumb">-->
       <!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->

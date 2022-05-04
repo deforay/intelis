@@ -141,22 +141,22 @@ if (!isset($_SESSION['adminUserId'])) {
             </a>
             <ul class="treeview-menu">
               <li class="allMenu systemConfigmenu">
-                <a href="/system-admin/edit-config/index.php"><i class="fa fa-circle-o"></i><?php echo _("System Configuration");?></a>
+                <a href="/system-admin/edit-config/index.php"><i class="fa-regular fa-circle"></i><?php echo _("System Configuration");?></a>
               </li>
             </ul>
             <ul class="treeview-menu">
               <li class="allMenu instanceOverviewMenu">
-                <a href="/system-admin/instance-overview/instanceIndex.php"><i class="fa fa-circle-o"></i><?php echo _("Instance Overview");?></a>
+                <a href="/system-admin/instance-overview/instanceIndex.php"><i class="fa-regular fa-circle"></i><?php echo _("Instance Overview");?></a>
               </li>
             </ul>
             <ul class="treeview-menu">
               <li class="allMenu apiStatsMenu">
-                <a href="/system-admin/api-stats/apiIndex.php"><i class="fa fa-circle-o"></i><?php echo _("Api Stats");?></a>
+                <a href="/system-admin/api-stats/apiIndex.php"><i class="fa-regular fa-circle"></i><?php echo _("Api Stats");?></a>
               </li>
             </ul>
             <ul class="treeview-menu">
               <li class="allMenu userLoginMenu">
-                <a href="/system-admin/user-login-history/userLoginIndex.php"><i class="fa fa-circle-o"></i><?php echo _("User Login History");?></a>
+                <a href="/system-admin/user-login-history/userLoginIndex.php"><i class="fa-regular fa-circle"></i><?php echo _("User Login History");?></a>
               </li>
             </ul>
           </li>

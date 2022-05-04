@@ -158,7 +158,7 @@ $state = $geoLocationDb->getProvinces("yes");
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-book"></i> <?php echo _("VL Quarterly Monitoring Tool");?>
+		<h1><i class="fa-solid fa-book"></i> <?php echo _("VL Quarterly Monitoring Tool");?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -177,7 +177,7 @@ $state = $geoLocationDb->getProvinces("yes");
 							<td>
 								<!--<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;"/>-->
 								<div id="sla-data-range" class="mrp-container form-control">
-									<span class="mrp-icon"><i class="fa fa-calendar"></i> &nbsp;</span>
+									<span class="mrp-icon"><i class="fa-solid fa-calendar-days"></i> &nbsp;</span>
 									<div class="mrp-monthdisplay ">
 										<span class="mrp-lowerMonth"><?php echo date('M', strtotime('-2 month')); ?> <?php echo $startYear; ?></span> <span class="mrp-to"> to </span>
 										<span class="mrp-upperMonth"><?php echo date('M'); ?> <?php echo date('Y'); ?></span>

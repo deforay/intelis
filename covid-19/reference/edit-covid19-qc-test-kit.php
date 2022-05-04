@@ -82,7 +82,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                                             </select>
                                         </td>
                                         <td align="center" style="vertical-align:middle;">
-                                            <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
+                                            <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
                                         </td>
                                     </tr>
                                 <?php }
@@ -97,7 +97,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                                         </select>
                                     </td>
                                     <td align="center" style="vertical-align:middle;">
-                                        <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
+                                        <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -168,7 +168,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
 
         b.innerHTML = '<input type="text" name="qcTestLable[]" id="qcTestLable' + tableRowId + '" class="isRequired form-control" placeholder="<?php echo _('QC Test Label'); ?>" title="<?php echo _('Please enter qc test label'); ?>" onblur="checkLabelName(this);"/ >';
         c.innerHTML = '<select id="expectedResult' + tableRowId + '" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results"><option value="">--Select--</option><?php foreach ($covid19Results as $key => $row) { ?><option value="<?php echo $key; ?>"><?php echo $row; ?></option><?php } ?></select>';
-        d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>';
+        d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
         $(a).fadeIn(800);
         tableRowId++;
     }

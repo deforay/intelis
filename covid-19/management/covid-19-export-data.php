@@ -51,7 +51,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-book"></i> <?php echo _("Export Data"); ?>
+		<h1><i class="fa-solid fa-book"></i> <?php echo _("Export Data"); ?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -165,7 +165,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo $reportType; ?>')"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo $reportType; ?>')"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>

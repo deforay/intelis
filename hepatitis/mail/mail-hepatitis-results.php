@@ -239,7 +239,7 @@ $batchResult = $db->rawQuery($batchQuery);
             <input type="hidden" id="reportEmail" name="reportEmail" />
             <input type="hidden" name="pdfFile" id="pdfFile" />
             <a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default"> Cancel</a>&nbsp;
-            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;">Next <i class="fa-solid fa-chevron-right"></i></a>
           </div>
           <!-- /.box-footer -->
         </form>

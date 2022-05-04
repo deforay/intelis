@@ -11,7 +11,7 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-heartbeat"></i> <?php echo _("TB Test Reasons");?></h1>
+    <h1><i class="fa-solid fa-heart-pulse"></i> <?php echo _("TB Test Reasons");?></h1>
     <ol class="breadcrumb">
       <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("TB Test Reasons");?></li>

@@ -177,7 +177,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;
 							</td>
@@ -195,7 +195,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
 							</td>

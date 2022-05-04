@@ -195,7 +195,6 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="/assets/fontawesome-6.1.1/css/all.min.css">
-	<link rel="stylesheet" href="/assets/fontawesome-6.1.1/css/v4-shims.css">
 
 	<!-- Ionicons -->
 	<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
@@ -214,6 +213,8 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<link href="/assets/css/style.css" rel="stylesheet" />
 	<link href="/assets/css/deforayModal.css" rel="stylesheet" />
 	<link href="/assets/css/jquery.fastconfirm.css" rel="stylesheet" />
+
+	<link rel="stylesheet" href="/assets/css/components-rounded.min.css">
 
 	<!-- jQuery 2.2.3 -->
 
@@ -307,7 +308,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						<?php if ($systemConfig['recency']['crosslogin']) {
 							$password = $crossLoginResult['password'] . $systemConfig['recency']['crossloginSalt']; ?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?php echo rtrim($systemConfig['recency']['url'], "/") . '/login?u=' . base64_encode($crossLoginResult['login_id']) . '&t=' . hash('sha256', $password) . '&name=' . base64_encode($crossLoginResult['user_name']); ?>" class="btn btn-link"><i class="fa fa-fw fa-external-link"></i> Recency</a>
+								<a onclick="setCrossLogin();" href="<?php echo rtrim($systemConfig['recency']['url'], "/") . '/login?u=' . base64_encode($crossLoginResult['login_id']) . '&t=' . hash('sha256', $password) . '&name=' . base64_encode($crossLoginResult['user_name']); ?>" class="btn btn-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Recency</a>
 							</li>
 						<?php } ?>
 
@@ -367,7 +368,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					if ($allAdminMenuAccess == true && array_intersect($_SESSION['module'], array('admin'))) { ?>
 						<li class="treeview manage">
 							<a href="#">
-								<i class="fa fa-shield"></i>
+								<i class="fa-solid fa-shield"></i>
 								<span><?php echo _("Admin"); ?></span>
 								<span class="pull-right-container">
 									<i class="fa-solid fa-angle-left pull-right"></i>
@@ -410,13 +411,13 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("facilities.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview facility-config-menu">
-										<a href="/facilities/facilities.php"><i class="fa fa-hospital-o"></i> <?php echo _("Facilities"); ?></a>
+										<a href="/facilities/facilities.php"><i class="fa-solid fa-hospital"></i> <?php echo _("Facilities"); ?></a>
 									</li>
 								<?php }
 								if (isset($_SESSION['privileges']) && ((in_array("audit-trail.php", $_SESSION['privileges']) || in_array("api-sync-history.php", $_SESSION['privileges'])) || (in_array("sources-of-requests.php", $_SESSION['privileges'])))) { ?>
 									<li class="treeview monitoring-menu">
 										<a href="#">
-											<i class="fa fa-bullseye"></i>
+											<i class="fa-solid fa-bullseye"></i>
 											<span><?php echo _("Monitoring"); ?></span>
 											<span class="pull-right-container">
 												<i class="fa-solid fa-angle-left pull-right"></i>
@@ -425,17 +426,17 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<ul class="treeview-menu">
 											<?php if (isset($_SESSION['privileges']) && in_array("audit-trail.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview audit-trail-menu">
-													<a href="/admin/monitoring/audit-trail.php"><i class="fa fa-file-text-o"></i> <?php echo _("Audit Trail"); ?></a>
+													<a href="/admin/monitoring/audit-trail.php"><i class="fa-solid fa-file-lines"></i> <?php echo _("Audit Trail"); ?></a>
 												</li>
 											<?php }
 											if (isset($_SESSION['privileges']) && in_array("api-sync-history.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview api-sync-history-menu">
-													<a href="/admin/monitoring/api-sync-history.php"><i class="fa fa-cloud" aria-hidden="true"></i> <?php echo _("API Sync History"); ?></a>
+													<a href="/admin/monitoring/api-sync-history.php"><i class="fa-solid fa-cloud"></i> <?php echo _("API Sync History"); ?></a>
 												</li>
 											<?php }
 											if (isset($_SESSION['privileges']) && in_array("sources-of-requests.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview sources-of-requests-report-menu">
-													<a href="/admin/monitoring/sources-of-requests.php"><i class="fa fa-circle-o-notch" aria-hidden="true"></i> <?php echo _("Source of Requests"); ?></a>
+													<a href="/admin/monitoring/sources-of-requests.php"><i class="fa-solid fa-circle-notch"></i> <?php echo _("Source of Requests"); ?></a>
 												</li>
 											<?php } ?>
 										</ul>
@@ -598,7 +599,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<?php }
 								if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview tb-reference-manage">
-										<a href="#"><i class="fa fa-heartbeat"></i>
+										<a href="#"><i class="fa-solid fa-heart-pulse"></i>
 											<?php echo _("TB Config"); ?>
 											<span class="pull-right-container">
 												<i class="fa-solid fa-angle-left pull-right"></i>
@@ -623,7 +624,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<?php }
 								if (isset($_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') && in_array("move-samples.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview facility-config-menu">
-										<a href="/move-samples/move-samples.php"><i class="fa fa-hospital-o"></i> <?php echo _("Move Samples"); ?></a>
+										<a href="/move-samples/move-samples.php"><i class="fa-solid fa-hospital"></i> <?php echo _("Move Samples"); ?></a>
 									</li>
 								<?php } ?>
 							</ul>
@@ -674,7 +675,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if ($vlTestResultMenuAccess == true) { ?>
 							<li class="treeview test" style="<?php echo $hideResult; ?>">
 								<a href="#">
-									<i class="fa fa-tasks"></i>
+									<i class="fa-solid fa-list-check"></i>
 									<span><?php echo _("Test Result Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>
@@ -703,7 +704,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if ($vlManagementMenuAccess == true) { ?>
 							<li class="treeview program">
 								<a href="#">
-									<i class="fa fa-book"></i>
+									<i class="fa-solid fa-book"></i>
 									<span><?php echo _("Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>
@@ -794,7 +795,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true && $eidTestResultMenuAccess == true) { ?>
 							<li class="treeview eidResults" style="<?php echo $hideResult; ?>">
 								<a href="#">
-									<i class="fa fa-tasks"></i>
+									<i class="fa-solid fa-list-check"></i>
 									<span><?php echo _("Test Result Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>
@@ -817,7 +818,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true && $eidManagementMenuAccess == true) { ?>
 							<li class="treeview eidProgramMenu">
 								<a href="#">
-									<i class="fa fa-book"></i>
+									<i class="fa-solid fa-book"></i>
 									<span><?php echo _("Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>
@@ -891,7 +892,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true && $covid19TestResultMenuAccess == true) { ?>
 							<li class="treeview covid19Results" style="<?php echo $hideResult; ?>">
 								<a href="#">
-									<i class="fa fa-tasks"></i>
+									<i class="fa-solid fa-list-check"></i>
 									<span><?php echo _("Test Result Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>
@@ -928,7 +929,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true && $covid19ManagementMenuAccess == true) { ?>
 							<li class="treeview covid19ProgramMenu">
 								<a href="#">
-									<i class="fa fa-book"></i>
+									<i class="fa-solid fa-book"></i>
 									<span><?php echo _("Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>
@@ -1003,7 +1004,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && $hepatitisTestResultMenuAccess == true) { ?>
 							<li class="treeview hepatitisResults" style="<?php echo $hideResult; ?>">
 								<a href="#">
-									<i class="fa fa-tasks"></i>
+									<i class="fa-solid fa-list-check"></i>
 									<span><?php echo _("Test Result Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>
@@ -1032,7 +1033,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && $hepatitisManagementMenuAccess == true) { ?>
 							<li class="treeview hepatitisProgramMenu">
 								<a href="#">
-									<i class="fa fa-book"></i>
+									<i class="fa-solid fa-book"></i>
 									<span><?php echo _("Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>
@@ -1107,7 +1108,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && $tbTestResultMenuAccess == true) { ?>
 							<li class="treeview tbResults" style="<?php echo $hideResult; ?>">
 								<a href="#">
-									<i class="fa fa-tasks"></i>
+									<i class="fa-solid fa-list-check"></i>
 									<span><?php echo _("Test Result Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>
@@ -1136,7 +1137,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && $tbManagementMenuAccess == true) { ?>
 							<li class="treeview tbProgramMenu">
 								<a href="#">
-									<i class="fa fa-book"></i>
+									<i class="fa-solid fa-book"></i>
 									<span><?php echo _("Management"); ?></span>
 									<span class="pull-right-container">
 										<i class="fa-solid fa-angle-left pull-right"></i>

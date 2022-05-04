@@ -23,7 +23,7 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-check-square-o"></i> Confirmation Test Manifest</h1>
+		<h1><i class="fa-solid fa-square-check"></i> Confirmation Test Manifest</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
 			<li class="active">Covid-19 Confirmation Test Manifest</li>

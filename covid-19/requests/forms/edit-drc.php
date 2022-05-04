@@ -893,7 +893,7 @@ if (!empty($patientData)) {
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;">
                                                                         <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
-                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>');"><i class="fa fa-minus"></i></a>
+                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>');"><i class="fa-solid fa-minus"></i></a>
                                                                     </td>
                                                                 </tr>
                                                             <?php }
@@ -922,7 +922,7 @@ if (!empty($patientData)) {
                                                                 </td>
                                                                 <td style="vertical-align:middle;text-align: center;">
                                                                     <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
-                                                                    <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
+                                                                    <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
                                                                 </td>
                                                             </tr>
                                                         <?php } ?>
@@ -1713,7 +1713,7 @@ if (!empty($patientData)) {
             </td>
             <td style="vertical-align:middle;text-align: center;">
                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa-solid fa-plus"></i></a>&nbsp;
-                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
+                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
             </td>
         </tr>`;
 

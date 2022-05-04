@@ -49,7 +49,7 @@ $fileName = APPLICATION_PATH. DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATO
                       </div>
                       <?php if(file_exists($fileName)) {?>
                       <div class="col-md-6">
-                        <a href="<?php echo "/files/eid/{$countryFormId}/Eid_Bulk_Import_Excel_Format.xlsx"; ?>" target="_blank" class="btn btn-sm btn-primary" download><i class="fa fa-download"></i> Download Example Format</a>
+                        <a href="<?php echo "/files/eid/{$countryFormId}/Eid_Bulk_Import_Excel_Format.xlsx"; ?>" target="_blank" class="btn btn-sm btn-primary" download><i class="fa-solid fa-download"></i> Download Example Format</a>
                       </div>
                       <?php } ?>
                     </div>

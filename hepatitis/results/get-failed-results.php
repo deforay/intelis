@@ -300,7 +300,7 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['status_name']);
 
     
-        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Failed result retest").'" onclick="retestSample(\'' . trim(base64_encode($aRow['hepatitis_id'])) . '\')"><i class="fa fa-refresh"> '. _("Retest").'</i></a>';
+        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Failed result retest").'" onclick="retestSample(\'' . trim(base64_encode($aRow['hepatitis_id'])) . '\')"><i class="fa-solid fa-arrows-rotate"></i>'. _("Retest").'</a>';
     
     $output['aaData'][] = $row;
 }

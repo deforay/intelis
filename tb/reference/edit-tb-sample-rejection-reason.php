@@ -12,7 +12,7 @@ $rsnInfo = $db->query($rsnQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-heartbeat"></i> Edit TB Sample Rejection Reasons</h1>
+		<h1><i class="fa-solid fa-heart-pulse"></i> Edit TB Sample Rejection Reasons</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
 			<li class="active">TB Sample Rejection Reasons</li>
