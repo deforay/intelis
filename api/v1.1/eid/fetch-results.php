@@ -102,6 +102,7 @@ try {
         vl.tested_by                                         as testedBy,
         vl.result_approved_by                                as approvedBy,
         vl.result_approved_datetime                          as approvedOn,
+        vl.lab_tech_comments                                 as approverComments,
         vl.result_status                                     as status,
         l_f.facility_name                                    as labName,
         f.facility_district                                  as district,
