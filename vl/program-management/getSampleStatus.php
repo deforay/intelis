@@ -118,9 +118,14 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-$tQuery .= " AND " . implode(" AND ", $sWhere) . " GROUP BY vl.result_status ORDER BY status_id";
+if (isset($sWhere) && sizeof($sWhere) > 0) {
+    $tQuery .= " AND " . implode(" AND ", $sWhere);
+}
+$tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 
 $tResult = $db->rawQuery($tQuery);
+
+$sWhere = array();
 $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         SUM(CASE
                 WHEN (vl.vl_result_category like 'not suppressed') THEN 1
@@ -140,23 +145,25 @@ $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
     $whereCondition  .
     $recencyWhere;
 
-$sWhere = " AND (vl.result_status = 7) ";
+$sWhere[] = " (vl.result_status = 7) ";
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-    $sWhere .= ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
+    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+    $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
 }
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
+    $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-$vlSuppressionQuery = $vlSuppressionQuery . ' ' . $sWhere;
+if (isset($sWhere) && sizeof($sWhere) > 0) {
+    $vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
+}
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
 //get LAB TAT
@@ -189,26 +196,28 @@ $tatSampleQuery = "SELECT
         $whereCondition 
         $recencyWhere ";
 
-$sWhere = '';
+$sWhere = array();
 
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+    $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
 }
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-    $sWhere .= ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
+    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
-    $sWhere .= ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
+    $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
 
 if (!empty($_POST['labName'])) {
-    $sWhere .= ' AND vl.lab_id = ' . $_POST['labName'];
+    $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 
-$tatSampleQuery .= " " . $sWhere;
+if (isset($sWhere) && sizeof($sWhere) > 0) {
+    $vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
+}
 $tatSampleQuery .= " GROUP BY monthDate";
 //$tatSampleQuery .= " HAVING daydiff < 120";
 $tatSampleQuery .= " ORDER BY sample_tested_datetime";
