@@ -72,13 +72,13 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 	$searchArray = explode(" ", $_POST['sSearch']);
 	$sWhereSub = "";
 	foreach ($searchArray as $search) {
 		if ($sWhereSub == "") {
-			$sWhereSub .= "(";
+			$sWhereSub .= " (";
 		} else {
 			$sWhereSub .= " AND (";
 		}
@@ -93,17 +93,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 		}
 		$sWhereSub .= ")";
 	}
-	$sWhere .= $sWhereSub;
+	$sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
 	if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-		if ($sWhere == "") {
-			$sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-		} else {
-			$sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-		}
+		$sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
 	}
 }
 
@@ -111,8 +107,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$aWhere = '';
-$sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
+$sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.sample_code, vl.remote_sample_code from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
                         AND vl.hcv_vl_result is not null
                         AND vl.hcv_vl_result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "'";
@@ -162,57 +157,51 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 		$testedEndDate = $general->dateFormat(trim($s_c_date[1]));
 	}
 }
-$seWhere = '';
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-	$seWhere = $seWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
+	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	if (trim($start_date) == trim($end_date)) {
-		$seWhere = $seWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+		$sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
 	} else {
-		$seWhere = $seWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+		$sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 	}
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
 	if (trim($labStartDate) == trim($labEndDate)) {
-		$seWhere = $seWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) = "' . $labStartDate . '"';
+		$sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $labStartDate . '"';
 	} else {
-		$seWhere = $seWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+		$sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
 	}
 }
 
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
 	if (trim($testedStartDate) == trim($testedEndDate)) {
-		$seWhere = $seWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
+		$sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
 	} else {
-		$seWhere = $seWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+		$sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 	}
 }
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
-	$seWhere = $seWhere . ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
+	$sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-	$seWhere = $seWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
+	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if ($sWhere != '') {
-	$saWhere = "AND " . $sWhere . ' ' . $seWhere;
-	$sQuery = $sQuery . ' ' . $saWhere;
-} else {
-	$saWhere = $sWhere . ' ' . $seWhere;
-	$sQuery = $sQuery . ' ' . $saWhere;
+if (!empty($sWhere)) {
+	$_SESSION['hepatitisTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
+	$sQuery = $sQuery . $sWhere;
 }
-//echo $sQuery;die;
-$_SESSION['HepatitisTATQuery'] = $sQuery;
+
 if (isset($sOrder) && $sOrder != "") {
-	$sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-	$sQuery = $sQuery . " order by " . $sOrder;
+	$_SESSION['hepatitisTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 
 if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 $rResult = $db->rawQuery($sQuery);
-// print_r($sQuery);die;
 /* Data set length after filtering */
 $rUser = '';
 if ($sarr['sc_user_type'] == 'remoteuser') {
@@ -223,7 +212,7 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
 $aResultFilterTotal = $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
                         AND vl.hcv_vl_result is not null
-                        AND vl.hcv_vl_result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' $saWhere $rUser");
+                        AND vl.hcv_vl_result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' $rUser");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
