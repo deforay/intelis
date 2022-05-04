@@ -25,7 +25,7 @@ $batResult = $db->rawQuery($batQuery);
 	<section class="content-header">
 		<h1><i class="fa fa-check-square-o"></i> Confirmation Test Manifest</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
 			<li class="active">Covid-19 Confirmation Test Manifest</li>
 		</ol>
 	</section>
@@ -39,7 +39,7 @@ $batResult = $db->rawQuery($batQuery);
 						<tr>
 							<td>
 								<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
-									<a href="/covid-19/results/covid-19-add-confirmation-manifest.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> Add new Covid-19 Confirmation Manifest</a>
+									<a href="/covid-19/results/covid-19-add-confirmation-manifest.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> Add new Covid-19 Confirmation Manifest</a>
 								<?php } ?>
 							</td>
 						</tr>

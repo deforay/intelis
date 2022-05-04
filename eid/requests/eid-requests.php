@@ -41,9 +41,9 @@ foreach ($srcResults as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("EID Test Requests"); ?></h1>
+		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("EID Test Requests"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Test Request"); ?></li>
 		</ol>
 	</section>
@@ -171,9 +171,9 @@ foreach ($srcResults as $list) {
 							<td colspan="4">
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("eid-add-request.php", $_SESSION['privileges'])) { ?>
-									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new EID Request"); ?></a>
+									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add new EID Request"); ?></a>
 									<?php if ($formId == 1) { ?>
-										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Bulk Import EID Request"); ?></a>
+										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Bulk Import EID Request"); ?></a>
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
@@ -189,9 +189,9 @@ foreach ($srcResults as $list) {
 
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("eid-add-request.php", $_SESSION['privileges'])) { ?>
-									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new EID Request"); ?></a>
+									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add new EID Request"); ?></a>
 									<?php if ($formId == 1) { ?>
-										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Bulk Import EID Request"); ?></a>
+										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Bulk Import EID Request"); ?></a>
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>

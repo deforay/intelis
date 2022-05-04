@@ -41,9 +41,9 @@ foreach ($srcResults as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("Viral Load Test Requests"); ?></h1>
+		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Viral Load Test Requests"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Test Request"); ?></li>
 		</ol>
 	</section>
@@ -205,7 +205,7 @@ foreach ($srcResults as $list) {
 							<td colspan="4">
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges'])) { ?>
-									<a href="addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add VL Request Form"); ?></a>
+									<a href="addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add VL Request Form"); ?></a>
 								<?php }
 								?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
@@ -222,7 +222,7 @@ foreach ($srcResults as $list) {
 
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges'])) { ?>
-									<a href="addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add VL Request Form"); ?></a>
+									<a href="addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add VL Request Form"); ?></a>
 								<?php }
 								?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>

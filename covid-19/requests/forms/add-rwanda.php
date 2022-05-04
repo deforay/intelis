@@ -62,9 +62,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM");?></h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM");?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
             <li class="active"><?php echo _("Add New Request");?></li>
         </ol>
     </section>
@@ -471,7 +471,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                                 </select>
                                                             </td>
                                                             <td style="vertical-align:middle;text-align: center;">
-                                                                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><i class="fa fa-plus"></i></a>&nbsp;
+                                                                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
                                                                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
                                                             </td>
                                                         </tr>
@@ -768,7 +768,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         c.innerHTML = '<input type="text" name="testName[]" id="testName' + tableRowId + '" class="form-control test-name-table-input" placeholder="Test name" title="Please enter the test name for row ' + tableRowId + '"/>';
         d.innerHTML = '<input type="text" name="testDate[]" id="testDate' + tableRowId + '" class="form-control test-name-table-input dateTime" placeholder="Tested on"  title="Please enter the tested on for row ' + tableRowId + '"/>';
         e.innerHTML = '<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult' + tableRowId + '" title="Please select the result for row ' + tableRowId + '"><option value=""> -- Select -- </option><?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?> <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option> <?php } ?> </select>';
-        f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><i class="fa fa-plus"></i></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>';
+        f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>';
         $(a).fadeIn(800);
         $('.dateTime').datetimepicker({
             changeMonth: true,

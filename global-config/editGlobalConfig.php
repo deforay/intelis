@@ -44,7 +44,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 	<section class="content-header">
 		<h1 class="fa fa-gears"> <?php echo _("Edit General Configuration"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Manage General Config"); ?></li>
 		</ol>
 	</section>
@@ -57,7 +57,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 				<div class="pull-right" style="font-size:15px;">
 					<?php if (isset($_SESSION['privileges']) && in_array("editGlobalConfig.php", $_SESSION['privileges']) && !isset($_GET['e'])) { ?>
 						<div class="col-sm-6 pull-right">
-							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <i class="fa fa-pencil"></i> <?php echo _("Edit General Config"); ?></a>
+							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <i class="fa-solid fa-pen-to-square"></i></i> <?php echo _("Edit General Config"); ?></a>
 						</div>
 					<?php } ?>
 					<br>

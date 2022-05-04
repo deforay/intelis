@@ -8,9 +8,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-user"></i> <?php echo _("Roles");?></h1>
+    <h1><i class="fa-solid fa-user"></i> <?php echo _("Roles");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("Roles");?></li>
     </ol>
   </section>
@@ -24,7 +24,7 @@ require_once(APPLICATION_PATH . '/header.php');
         <div class="box">
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("addRole.php", $_SESSION['privileges'])) { ?>
-              <a href="addRole.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add Role");?></a>
+              <a href="addRole.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add Role");?></a>
             <?php } ?>
           </div>
           <!-- /.box-header -->

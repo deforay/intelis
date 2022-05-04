@@ -34,7 +34,7 @@ $batResult = $db->rawQuery($batQuery);
 	<section class="content-header">
 		<h1><i class="fa fa-book"></i> <?php echo _("Hepatitis Sample Status Report"); ?></h1>
 		<ol class="breadcrumb">
-			<!-- <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li> -->
+			<!-- <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li> -->
 			<li><i class="fa fa-book"></i> <?php echo _("Hepatitis"); ?></li>
 			<li><?php echo _("Management"); ?></li>
 			<li class="active"><?php echo _("Hepatitis Sample Status"); ?></li>

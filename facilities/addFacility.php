@@ -50,7 +50,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 	<section class="content-header">
 		<h1><i class="fa fa-hospital-o"></i> <?php echo _("Add Facility");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
 			<li class="active"><?php echo _("Facilities");?></li>
 		</ol>
 	</section>
@@ -457,7 +457,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 											</select>
 										</td>
 										<td style="vertical-align:middle;text-align: center;width:10%;">
-											<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><i class="fa fa-plus"></i></a>&nbsp;
+											<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
 											<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
 										</td>
 									</tr>
@@ -686,7 +686,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 				</select>
 			</td>
 			<td style="vertical-align:middle;text-align: center;width:10%;">
-				<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><i class="fa fa-plus"></i></a>&nbsp;
+				<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
 				<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
 			</td>
 		</tr>`;

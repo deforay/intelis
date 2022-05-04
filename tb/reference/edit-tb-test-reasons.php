@@ -14,7 +14,7 @@ $tstInfo = $db->query($tstQuery);
   <section class="content-header">
     <h1><i class="fa fa-heartbeat"></i> Edit TB Test Reasons</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">TB Test Reasons</li>
     </ol>
   </section>

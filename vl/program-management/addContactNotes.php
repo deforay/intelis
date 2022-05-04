@@ -85,7 +85,7 @@
 
           <!--histroy of contact notes-->
           <div class="col-md-12">
-            <h4><a id="history" href="javascript:void(0);" style="text-decoration: none;" onclick="formToggler('+');">Show History <i class="fa fa-plus"></i></a></h4>
+            <h4><a id="history" href="javascript:void(0);" style="text-decoration: none;" onclick="formToggler('+');">Show History <i class="fa-solid fa-plus"></i></a></h4>
           </div>
           <div class="row" id="showHistory" style="display: none;">
             <div class="col-xs-12">
@@ -187,7 +187,7 @@
         $("#history").attr("onclick", "formToggler('-')");
       } else {
         $("#showHistory").slideToggle();
-        $("#history").html('Show History <i class="fa fa-plus"></i>');
+        $("#history").html('Show History <i class="fa-solid fa-plus"></i>');
         $("#history").attr("onclick", "formToggler('-')");
       }
     }

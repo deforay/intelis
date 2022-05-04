@@ -49,9 +49,9 @@ foreach ($fResult as $fDetails) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> Select Samples to Move</h1>
+		<h1><i class="fa-solid fa-pen-to-square"></i> Select Samples to Move</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
 			<li class="active">Sample List</li>
 		</ol>
 	</section>

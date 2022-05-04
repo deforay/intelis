@@ -103,9 +103,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> COVID-19 VIRUS LABORATORY TEST PNG REQUEST FORM</h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> COVID-19 VIRUS LABORATORY TEST PNG REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> HOME</a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> HOME</a></li>
             <li class="active">Add New Request</li>
         </ol>
     </section>
@@ -602,7 +602,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                         </select>
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
-                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa fa-plus"></i></a>&nbsp;
+                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
                                                                         <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>');"><i class="fa fa-minus"></i></a>
                                                                     </td>
                                                                 </tr>
@@ -634,7 +634,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                     </select>
                                                                 </td>
                                                                 <td style="vertical-align:middle;text-align: center;width:100px;">
-                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa fa-plus"></i></a>&nbsp;
+                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
                                                                     <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
                                                                 </td>
                                                             </tr>
@@ -1049,7 +1049,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
-                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa fa-plus"></i></a>&nbsp;
+                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa-solid fa-plus"></i></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
             </td>
         </tr>`;

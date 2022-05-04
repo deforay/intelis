@@ -54,9 +54,9 @@ foreach ($srcResults as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> <?php echo _("Covid-19 Test Requests"); ?></h1>
+		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Covid-19 Test Requests"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Test Request"); ?></li>
 		</ol>
 	</section>
@@ -187,12 +187,12 @@ foreach ($srcResults as $list) {
 							</td>
 							<td colspan="4">
 								<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add new Covid-19 Request"); ?></a>
+									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add new Covid-19 Request"); ?></a>
 									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Bulk Import Covid-19 Request"); ?></a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Bulk Import Covid-19 Request"); ?></a>
 									<?php }
 									if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?php echo _("Quick Add Covid-19 Request"); ?></a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Quick Add Covid-19 Request"); ?></a>
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
@@ -208,12 +208,12 @@ foreach ($srcResults as $list) {
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
 									<?php if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?= _("Quick Add Covid-19 Request"); ?></a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?= _("Quick Add Covid-19 Request"); ?></a>
 									<?php } ?>
 
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?= _("Add new Covid-19 Request"); ?></a>
+									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?= _("Add new Covid-19 Request"); ?></a>
 									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa fa-plus"></i> <?= _("Bulk Import Covid-19 Requests"); ?></a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?= _("Bulk Import Covid-19 Requests"); ?></a>
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>

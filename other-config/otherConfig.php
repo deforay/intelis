@@ -6,9 +6,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-gears"></i> Email/SMS Configuration</h1>
+    <h1><i class="fa-solid fa-gears"></i> Email/SMS Configuration</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">Email/SMS Configuration</li>
     </ol>
   </section>
@@ -19,9 +19,9 @@ require_once(APPLICATION_PATH . '/header.php');
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <a href="editOtherConfig.php" class="btn btn-primary pull-right"> <i class="fa fa-pencil"></i> Edit Other Config</a>
-            <a href="editResultEmailConfig.php" class="btn btn-warning pull-right" style="margin-right:10px;"> <i class="fa fa-pencil"></i> Edit Result Email Config</a>
-            <a href="editRequestEmailConfig.php" class="btn btn-default pull-right" style="margin-right:10px;"> <i class="fa fa-pencil"></i> Edit Request Email Config</a>
+            <a href="editOtherConfig.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-pen-to-square"></i></i> Edit Other Config</a>
+            <a href="editResultEmailConfig.php" class="btn btn-warning pull-right" style="margin-right:10px;"> <i class="fa-solid fa-pen-to-square"></i></i> Edit Result Email Config</a>
+            <a href="editRequestEmailConfig.php" class="btn btn-default pull-right" style="margin-right:10px;"> <i class="fa-solid fa-pen-to-square"></i></i> Edit Request Email Config</a>
           </div>
           <!-- /.box-header -->
           <div class="box-body">

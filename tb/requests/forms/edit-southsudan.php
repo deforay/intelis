@@ -89,9 +89,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-edit"></i> TB LABORATORY TEST REQUEST FORM</h1>
+		<h1><i class="fa-solid fa-pen-to-square"></i> TB LABORATORY TEST REQUEST FORM</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
 			<li class="active">Edit New Request</li>
 		</ol>
 	</section>
@@ -197,7 +197,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 								<div class="box-header with-border">
 									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
-									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
+									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa-solid fa-magnifying-glass"></i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
 								</div>
 								<table class="table" style="width:100%">
 									<tr>

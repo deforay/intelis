@@ -70,7 +70,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 	<section class="content-header">
 		<h1><?php echo _("Edit Batch");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
 			<li class="active">Batch</li>
 		</ol>
 	</section>

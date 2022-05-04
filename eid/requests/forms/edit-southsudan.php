@@ -73,9 +73,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM</h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
             <li class="active">Add EID Request</li>
         </ol>
     </section>
@@ -181,7 +181,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Patient Information</h3>&nbsp;&nbsp;&nbsp;
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Infant ID or Infant Name" title="Enter art number or patient name" />&nbsp;&nbsp;
-                                    <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><i class="fa fa-search">&nbsp;</i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
+                                    <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><i class="fa-solid fa-magnifying-glass"></i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
                                 </div>
                                 <table class="table" style="width:100%">
 

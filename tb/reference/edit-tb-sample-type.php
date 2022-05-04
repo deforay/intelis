@@ -12,7 +12,7 @@ $sampleInfo = $db->query($sampleQuery);
   <section class="content-header">
     <h1><i class="fa fa-heartbeat"></i> Edit TB Sample Type</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">TB Sample Type</li>
     </ol>
   </section>

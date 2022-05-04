@@ -13,7 +13,7 @@ require_once(APPLICATION_PATH . '/header.php');
   <section class="content-header">
     <h1><i class="fa fa-hospital-o"></i> <?php echo _("Facilities");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("Facilities");?></li>
     </ol>
   </section>
@@ -43,9 +43,9 @@ require_once(APPLICATION_PATH . '/header.php');
           </span>
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("addFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
-              <a href="addFacility.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add Facility");?></a>
-              <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa fa-plus"></i> <?php echo _("Manage Testing Lab");?></a>
-              <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa fa-plus"></i> <?php echo _("Manage Health Facilities");?></a>
+              <a href="addFacility.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add Facility");?></a>
+              <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa-solid fa-plus"></i> <?php echo _("Manage Testing Lab");?></a>
+              <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <i class="fa-solid fa-plus"></i> <?php echo _("Manage Health Facilities");?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>

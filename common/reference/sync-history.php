@@ -8,9 +8,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-gears"></i> Sync History</h1>
+        <h1><i class="fa-solid fa-gears"></i> Sync History</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
             <li class="active">Sync History</li>
         </ol>
     </section>

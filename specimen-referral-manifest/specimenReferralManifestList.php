@@ -12,9 +12,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-gears"></i> Specimen Referral Manifest</h1>
+    <h1><i class="fa-solid fa-gears"></i> Specimen Referral Manifest</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">Manage Specimen Referral Manifest</li>
     </ol>
   </section>
@@ -25,7 +25,7 @@ require_once(APPLICATION_PATH . '/header.php');
         <div class="box">
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("addSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
-              <a href="addSpecimenReferralManifest.php?t=<?php echo $_GET['t']; ?>" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add Specimen Referral Manifest</a>
+              <a href="addSpecimenReferralManifest.php?t=<?php echo $_GET['t']; ?>" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> Add Specimen Referral Manifest</a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
@@ -202,7 +202,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
   var count_elem = document.getElementById('specimenReferralManifestDataTable');
   var div = document.createElement('div');
-  div.innerHTML = '<span class="selectedRows" style="font-weight:bold;">0 Row(s) Selected</span>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info btn-xs printBarcode" href="javascript:void(0);" onclick="generateManifestPDF(\' \',\'pk2\');" style="display:none;margin-bottom: 1vh;"><i class="fa fa-barcode"></i> Print Barcode</a>';
+  div.innerHTML = '<span class="selectedRows" style="font-weight:bold;">0 Row(s) Selected</span>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info btn-xs printBarcode" href="javascript:void(0);" onclick="generateManifestPDF(\' \',\'pk2\');" style="display:none;margin-bottom: 1vh;"><i class="fa-solid fa-barcode"></i> Print Barcode</a>';
   count_elem.parentNode.insertBefore(div, count_elem);
 </script>
 <?php

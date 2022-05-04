@@ -10,9 +10,9 @@ $comorbidityInfo = $db->query($comorbidityQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-h-square"></i> Edit Hepatitis Co-morbidities</h1>
+    <h1><i class="fa-solid fa-square-h"></i> Edit Hepatitis Co-morbidities</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">Hepatitis Co-morbidities</li>
     </ol>
   </section>

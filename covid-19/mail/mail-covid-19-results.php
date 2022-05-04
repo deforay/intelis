@@ -37,7 +37,7 @@ $batchResult = $db->rawQuery($batchQuery);
   <section class="content-header">
     <h1 class="fa fa-envelope"> E-mail Test Result</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">E-mail Test Result</li>
     </ol>
   </section>

@@ -104,9 +104,9 @@ $patienZones["other"] = "Other";
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> COVID-19 VIRUS LABORATORY TEST DRC REQUEST FORM</h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> COVID-19 VIRUS LABORATORY TEST DRC REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Accueil</a></li>
             <li class="active">Ajouter une nouvelle demande</li>
         </ol>
     </section>
@@ -834,7 +834,7 @@ $patienZones["other"] = "Other";
                                                                     </select>
                                                                 </td>
                                                                 <td style="vertical-align:middle;text-align: center;">
-                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa fa-plus"></i></a>&nbsp;
+                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
                                                                     <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>');"><i class="fa fa-minus"></i></a>
                                                                 </td>
                                                             </tr>
@@ -862,7 +862,7 @@ $patienZones["other"] = "Other";
                                                                 </select>
                                                             </td>
                                                             <td style="vertical-align:middle;text-align: center;">
-                                                                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa fa-plus"></i></a>&nbsp;
+                                                                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
                                                                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
                                                             </td>
                                                         </tr>
@@ -1412,7 +1412,7 @@ $patienZones["other"] = "Other";
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${tableRowId}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Sélectionner --'); ?></select>
             </td>
             <td style="vertical-align:middle;text-align: center;">
-                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa fa-plus"></i></a>&nbsp;
+                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa-solid fa-plus"></i></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa fa-minus"></i></a>
             </td>
         </tr>`;

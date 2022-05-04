@@ -11,9 +11,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-edit"></i> <?php echo _("Manage Batches");?></h1>
+    <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Manage Batches");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("Manage Batches");?></li>
     </ol>
   </section>
@@ -43,7 +43,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("eid-add-batch.php", $_SESSION['privileges'])) { ?>
-              <a href="eid-add-batch.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Create New Batch");?></a>
+              <a href="eid-add-batch.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Create New Batch");?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>

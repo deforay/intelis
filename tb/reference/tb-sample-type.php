@@ -13,7 +13,7 @@ require_once(APPLICATION_PATH . '/header.php');
   <section class="content-header">
     <h1><i class="fa fa-heartbeat"></i> <?php echo _("TB Sample Type");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("TB Sample Type");?></li>
     </ol>
   </section>
@@ -43,7 +43,7 @@ require_once(APPLICATION_PATH . '/header.php');
           </span>
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-              <a href="add-tb-sample-type.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add TB Sample Type");?></a>
+              <a href="add-tb-sample-type.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add TB Sample Type");?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
