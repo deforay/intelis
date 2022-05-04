@@ -13,6 +13,18 @@ A simple, open source Sample Management System for Viral Load, EID, Covid-19 and
 * Open phpMyAdmin or any MySQL client and create a blank database
 * Import the initial sql file from the releases page
 * Rename configs/config.production.dist.php to configs/config.production.php
+* Enter Database User, Password, DB Name etc. 
+
+```php
+// config.production.php
+// Database Settings
+$systemConfig['dbHost']     = 'localhost';
+$systemConfig['dbUser']     = 'dbuser';
+$systemConfig['dbPassword'] = 'dbpassword';
+$systemConfig['dbName']     = 'vlsm';
+$systemConfig['dbPort']     = 3306;
+$systemConfig['dbCharset']  = 'utf8mb4';
+```
 * You can enable or disable VL,EID or Covid-19 module by changing the following variables in config.production.php. If a module is disabled, then it does not appear on the User Interface.
 
 ```php
@@ -24,6 +36,7 @@ $systemConfig['modules']['vl'] = true;
 $systemConfig['modules']['eid'] = true;
 $systemConfig['modules']['covid19'] = false;
 $systemConfig['modules']['hepatitis'] = false;
+$systemConfig['modules']['tb'] = false;
 ```
 
 * Next we will set up virtual host for this application. You can find many guides online on this topic. For example to set up on Ubuntu you can follow this guide : https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-18-04
@@ -56,10 +69,9 @@ Add the following in crontab (or equivalent for your Operating System)
 * * * * * cd /var/www/vlsm/ && ./vendor/bin/crunz schedule:run
 ```
 
-
-* Once you have the application set up, you can visit the vlsm URL http://vlsm/ and log in with the credentials admin and 123
-* Please add the Sample Types, Reasons for Testing, Rejection Reasons, Provinces etc. under the Admin menu
-* Now you can start adding Users, facilities and set up the global config.
+* Once you have the application set up, you can visit the vlsm URL http://vlsm.example.org/ and set up admin user
+* Once you login as admin user, add the Sample Types, Reasons for Testing, Rejection Reasons, Provinces etc. for each Test under the Admin menu 
+* Now you can start adding Users, facilities and finish the System config.
 
 
 #### Who do I talk to?
