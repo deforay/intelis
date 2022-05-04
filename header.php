@@ -194,7 +194,8 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<!-- Bootstrap 3.3.6 -->
 	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 	<!-- Font Awesome -->
-	<link rel="stylesheet" href="/assets/css/font-awesome.min.4.5.0.css">
+	<link rel="stylesheet" href="/assets/fontawesome-6.1.1/css/all.min.css">
+	<link rel="stylesheet" href="/assets/fontawesome-6.1.1/css/v4-shims.css">
 
 	<!-- Ionicons -->
 	<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
@@ -227,18 +228,6 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 	<!--<script type="text/javascript" src="assets/js/jquery-ui-sliderAccess.js"></script>-->
 	<style>
-		.is-remote-server-reachable {
-			/* background-color: red; */
-			text-align: center;
-			display: block;
-			position: absolute;
-			width: 12px;
-			height: 12px;
-			margin-top: 20px;
-			border-radius: 50%;
-			box-shadow: 0px 0px 0px;
-		}
-
 		.dataTables_empty {
 			text-align: center;
 		}
@@ -321,13 +310,17 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<a onclick="setCrossLogin();" href="<?php echo rtrim($systemConfig['recency']['url'], "/") . '/login?u=' . base64_encode($crossLoginResult['login_id']) . '&t=' . hash('sha256', $password) . '&name=' . base64_encode($crossLoginResult['user_name']); ?>" class="btn btn-link"><i class="fa fa-fw fa-external-link"></i> Recency</a>
 							</li>
 						<?php } ?>
-						<li><span class="is-remote-server-reachable"></span></li>
+
 						<li class="dropdown user user-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<img src="/assets/img/default-user.png" class="user-image" alt="User Image" style="max-width:25px;">
+
+								<i class="fa-solid fa-hospital-user"></i>
 								<span class="hidden-xs"><?php if (isset($_SESSION['userName'])) {
 															echo $_SESSION['userName'];
 														} ?></span>
+								<?php if (!empty($systemConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
+									<i class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;;"></i>
+								<?php } ?>
 							</a>
 							<ul class="dropdown-menu">
 								<!-- Menu Footer-->

@@ -179,13 +179,13 @@
 
 				(function checkNetworkConnection() {
 					$.ajax({
-						url: '<?php echo rtrim($systemConfig['remoteURL'], "/"); ?>/vlsts-icons/favicon-16x16.png',
+						url: '<?php echo rtrim($systemConfig['remoteURL'], "/"); ?>/api/v1.1/version.php',
 						cache: false,
 						success: function(data) {
-							$('.is-remote-server-reachable').css('background-color', '#4dbc3c');
+							$('.is-remote-server-reachable').css('color', '#4dbc3c');
 						},
 						error: function() {
-							$('.is-remote-server-reachable').css('background-color', 'red');
+							$('.is-remote-server-reachable').css('color', 'red');
 						}
 					});
 					setTimeout(checkNetworkConnection, 15 * 60 * 1000);
