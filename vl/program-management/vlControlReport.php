@@ -69,9 +69,9 @@ $sResult = $db->rawQuery($sQuery);
 </div>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/highcharts-more.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="/assets/js/highcharts.js"></script>
+<script src="/assets/js/exporting.js"></script>
+<script src="/assets/js/accessibility.js"></script>
 <script type="text/javascript">
   var startDate = "";
   var endDate = "";

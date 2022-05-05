@@ -297,6 +297,7 @@ require_once(APPLICATION_PATH . '/header.php');
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
 <script src="/assets/js/exporting.js"></script>	
+<script src="/assets/js/accessibility.js"></script>
 <script>
 	$(function() {
 
