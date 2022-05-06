@@ -11,11 +11,15 @@ $query = "SELECT * FROM form_hepatitis WHERE (source_of_request LIKE 'dhis2' OR 
 $formResults = $db->rawQuery($query);
 //var_dump($formResults);die;
 $counter = 0;
+
+
 foreach ($formResults as $row) {
 
   $uniqueIdArray = explode("::", $row['unique_id']);
   $trackedEntityInstance = $uniqueIdArray[1];
 
+  $programID = 'LEhPhsbgfFB';
+  $orgUnit = 'HsbgfFB';
   $programStages = array(
     'Screening' => 'ZBWBirHgmE6',
     'Lab Tests Request' => 'ODgOyrbLkvv',
@@ -23,6 +27,7 @@ foreach ($formResults as $row) {
     'Initial HCV VL' => 'KPBuhvFV5bK',
     'Follow up HBV VL' => 'WAyPhFAJLdv',
     'SVR12 HCV VL' => 'qiqz1esOFKV',
+    'SVR12 HCV VL - Second Line' => 'PE0MBFfqSSF',
   );
 
   if (!empty($row['reason_for_vl_test'])) {
@@ -75,6 +80,9 @@ foreach ($formResults as $row) {
     'dateHbvResultsAvailable' => 'AzuU2zVke8N',
     'hbvSampleId' => 'mVNtr2M5Nw3',
     'hcvSampleId' => 'z6L8rdc77DL',
+    '2LsampleTestedDate' => 'V7j7aBS4Kju',
+    '2LhcvResultInterpretaion' => 'RaBRk1Dw3fu',
+    '2LlabResultHcvVlCount' => 'YxcAk32kPRJ'
   );
 
 
@@ -142,6 +150,21 @@ foreach ($formResults as $row) {
     $dataValues[$programStagesVariables['sampleTestedDate']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
+  } else if ($row['reason_for_vl_test'] == 'SVR12 HCV VL - Second Line') {
+    $interpretaion = "";
+    $programID = 'LQUdgfzYQCt';
+    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
+      $row['hcv_vl_count'] = 10;
+    }
+
+    if ($row['hcv_vl_count'] > 20) {
+      $interpretaion = 'Detected';
+    } else {
+      $interpretaion = 'Not Detected';
+    }
+    $dataValues[$programStagesVariables['2LlabResultHcvVlCount']] = $row['hcv_vl_count'];
+    $dataValues[$programStagesVariables['2LhcvResultInterpretaion']] = $interpretaion;
+    $dataValues[$programStagesVariables['2LsampleTestedDate']] =  $row['sample_tested_datetime'];
   }
 
 
@@ -155,7 +178,7 @@ foreach ($formResults as $row) {
     $eventPayload = array(
       "event" => $eventId,
       "eventDate" => $eventDate,
-      "program" => "LEhPhsbgfFB",
+      "program" => $programID,
       "orgUnit" => $facResult['other_id'],
       "programStage" => $pStage,
       "status" => "ACTIVE",

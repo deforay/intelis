@@ -417,6 +417,8 @@ try {
         $vlFulldata['request_created_by'] =  $user['user_id'];
         $vlFulldata['last_modified_by'] =  $user['user_id'];
 
+        $vlFulldata['vl_result_category'] = $vlModel->getVLResultCategory($vlFulldata['result_status'], $vlFulldata['result']);
+
         /* echo "<pre>";
         print_r($data);
         die; */

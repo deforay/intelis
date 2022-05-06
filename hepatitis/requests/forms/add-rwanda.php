@@ -303,6 +303,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value=''> -- Select -- </option>
                                                     <option value='Initial HCV VL'>Initial HCV VL</option>
                                                     <option value='SVR12 HCV VL'>SVR12 HCV VL</option>
+                                                    <option value='SVR12 HCV VL - Second Line'>SVR12 HCV VL - Second Line</option>
                                                     <option value='Initial HBV VL'>Initial HBV VL</option>
                                                     <option value='Follow up HBV VL'>Follow up HBV VL</option>
                                                 </select>

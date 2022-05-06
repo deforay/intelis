@@ -38,7 +38,8 @@ $dhis2SocialCategoryOptions = array('1' => 'A', '2' => 'B', '3' => 'C', '4' => '
 $dhis2VlTestReasonOptions = array(
     'I_VL001' => 'Initial HBV VL',
     'HBV_F0012' => 'Follow up HBV VL',
-    'SVR12_HCV01' => 'SVR12 HCV VL'
+    'SVR12_HCV01' => 'SVR12 HCV VL',
+    'SVR12_HCV02' => 'SVR12 HCV VL - Second Line'
 );
 
 $attributesDataElementMapping = [
@@ -174,8 +175,17 @@ foreach ($trackedEntityInstances as $tracker) {
             continue;
         }
 
+        $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ?  $formData['sample_collection_date'] : $enrollmentDate);
+
+        // if this is an old request, then skip
+        if (strtotime($formData['sample_collection_date']) < strtotime('-6 months')) {
+            continue;
+        }
+
         $formData['source_of_request'] = 'dhis2';
         $formData['source_data_dump'] = json_encode($tracker);
+
+
 
         //$formData['patient_province'] = $_SESSION['DHIS2_HEP_PROVINCES'][$formData['patient_province']];
         //$formData['patient_district'] = $_SESSION['DHIS2_HEP_DISTRICTS'][$formData['patient_district']];
@@ -195,7 +205,7 @@ foreach ($trackedEntityInstances as $tracker) {
             // echo "<pre>";var_dump($lab);echo "</pre>";
             if (!empty($lab)) {
                 $formData['lab_id'] = $lab['facility_id'];
-            }else{
+            } else {
                 $formData['lab_id'] = null;
             }
         } else {
@@ -224,7 +234,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['patient_gender'] = (!empty($formData['patient_gender']) ? $dhis2GenderOptions[$formData['patient_gender']] : null);
         //$formData['specimen_quality'] = (!empty($formData['specimen_quality']) ? strtolower($formData['specimen_quality']) : null);
 
-        $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ?  $formData['sample_collection_date'] : $enrollmentDate);
+
         $formData['reason_for_hepatitis_test'] = (!empty($formData['reason_for_hepatitis_test']) ?  $formData['reason_for_hepatitis_test'] : 1);
 
 
