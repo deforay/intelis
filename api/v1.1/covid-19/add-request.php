@@ -183,13 +183,14 @@ try {
             $status = 7;
         }
 
-        if (isset($globalConfig['covid19_auto_approve_api_results']) && $globalConfig['covid19_auto_approve_api_results'] == "yes") {
+        /* if (isset($globalConfig['covid19_auto_approve_api_results']) && $globalConfig['covid19_auto_approve_api_results'] == "yes") {
             $status = 4;
-            $data['resultDispatchedOn'] = "yes";
             if (isset($data['result']) && $data['result'] != "") {
                 $status = 9;
+            } else {
+                $data['isSampleRejected'] = "yes";
             }
-        }
+        } */
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);

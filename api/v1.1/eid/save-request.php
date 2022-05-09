@@ -183,13 +183,14 @@ try {
         } else if ($data['isSampleRejected'] == 'no' && isset($data['result']) && !empty($data['result']) && isset($data['approvedBy']) && !empty($data['approvedBy'])) {
             $status = 7;
         }
-        if (isset($globalConfig['eid_auto_approve_api_results']) && $globalConfig['eid_auto_approve_api_results'] == "yes") {
+        /* if (isset($globalConfig['eid_auto_approve_api_results']) && $globalConfig['eid_auto_approve_api_results'] == "yes") {
             $status = 4;
-            $data['resultDispatchedOn'] = "yes";
             if (isset($data['result']) && $data['result'] != "") {
                 $status = 9;
+            } else {
+                $data['isSampleRejected'] = "yes";
             }
-        }
+        } */
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
             $approvedOn = explode(" ", $data['approvedOn']);
