@@ -186,7 +186,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
-								</div>								
+								</div>
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
@@ -246,8 +246,6 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									</div>
 								</div>
 
-
-
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
 										<div class="form-group" style="height:38px;">
@@ -262,9 +260,6 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										</div>
 									</div>
 								</div>
-
-
-
 
 								<div class="row" style="margin-top:10px;">
 									<div class="col-md-7">
@@ -329,7 +324,6 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<h3 class="panel-title"><?php echo _("Viral Load Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
-
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -503,6 +497,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="vl_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _("VL Auto Approve API Results"); ?></label>
+												<div class="col-lg-4">
+													<select id="vl_auto_approve_api_results" name="vl_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _('Please select VL Auto Approve API Results'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['vl_auto_approve_api_results']) && $arr['vl_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['vl_auto_approve_api_results']) && $arr['vl_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						<?php }
@@ -611,6 +619,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 												<label for="eid_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days"); ?></label>
 												<div class="col-lg-4">
 													<input value="<?php echo $arr['eid_sample_lock_after_days']; ?>" type="text" id="eid_sample_lock_after_days" name="eid_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days'); ?>">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="eid_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _("EID Auto Approve API Results"); ?></label>
+												<div class="col-lg-4">
+													<select id="eid_auto_approve_api_results" name="eid_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _('Please select EID Auto Approve API Results'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['eid_auto_approve_api_results']) && $arr['eid_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['eid_auto_approve_api_results']) && $arr['eid_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
 												</div>
 											</div>
 										</div>
@@ -784,6 +806,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="covid19_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _("COVID-19 Auto Approve API Results"); ?></label>
+												<div class="col-lg-4">
+													<select id="covid19_auto_approve_api_results" name="covid19_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _('Please select COVID-19 Auto Approve API Results'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['covid19_auto_approve_api_results']) && $arr['covid19_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['covid19_auto_approve_api_results']) && $arr['covid19_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						<?php }
@@ -875,6 +911,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="hepatitis_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _("Hepatitis Auto Approve API Results"); ?></label>
+												<div class="col-lg-4">
+													<select id="hepatitis_auto_approve_api_results" name="hepatitis_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _('Please select Hepatitis Auto Approve API Results'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['hepatitis_auto_approve_api_results']) && $arr['hepatitis_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['hepatitis_auto_approve_api_results']) && $arr['hepatitis_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						<?php }
@@ -962,6 +1012,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 												<label for="tb_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days"); ?></label>
 												<div class="col-lg-4">
 													<input value="<?php echo $arr['tb_sample_lock_after_days']; ?>" type="text" id="tb_sample_lock_after_days" name="tb_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days'); ?>">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="tb_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _("TB Auto Approve API Results"); ?></label>
+												<div class="col-lg-4">
+													<select id="tb_auto_approve_api_results" name="tb_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _('Please select TB Auto Approve API Results'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['tb_auto_approve_api_results']) && $arr['tb_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['tb_auto_approve_api_results']) && $arr['tb_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
 												</div>
 											</div>
 										</div>
