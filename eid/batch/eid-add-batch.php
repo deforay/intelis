@@ -68,9 +68,9 @@ foreach ($testPlatformResult as $machine) {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> Create Batch</h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> Create Batch</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
             <li class="active">Batch</li>
         </ol>
     </section>

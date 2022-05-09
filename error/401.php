@@ -14,7 +14,7 @@ require_once(APPLICATION_PATH . '/header.php');
         <br>
         <br>
         <br>
-        <h1 style="color:red;text-align: center;font-size:8em;"><i class="fa fa-exclamation-triangle"></i> 401</h1>
+        <h1 style="color:red;text-align: center;font-size:8em;"><i class="fa-solid fa-triangle-exclamation"></i> 401</h1>
         <h2 style="color:red;text-align: center;">
           Sorry! You are not allowed to access this page.<br />
           <small>Please contact the System Admin for further support.</small>

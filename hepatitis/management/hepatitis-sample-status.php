@@ -32,10 +32,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-book"></i> <?php echo _("Hepatitis Sample Status Report"); ?></h1>
+		<h1><i class="fa-solid fa-book"></i> <?php echo _("Hepatitis Sample Status Report"); ?></h1>
 		<ol class="breadcrumb">
-			<!-- <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li> -->
-			<li><i class="fa fa-book"></i> <?php echo _("Hepatitis"); ?></li>
+			<!-- <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li> -->
+			<li><i class="fa-solid fa-book"></i> <?php echo _("Hepatitis"); ?></li>
 			<li><?php echo _("Management"); ?></li>
 			<li class="active"><?php echo _("Hepatitis Sample Status"); ?></li>
 		</ol>
@@ -98,7 +98,7 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-body">
-						<button class="btn btn-success pull-right" type="button" onclick="hepatitisExportTAT()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel"); ?></button>
+						<button class="btn btn-success pull-right" type="button" onclick="hepatitisExportTAT()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel"); ?></button>
 						<table id="hepatitisRequestDataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
@@ -130,7 +130,8 @@ $batResult = $db->rawQuery($batQuery);
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highchart-exporting.js"></script>
+<script src="/assets/js/exporting.js"></script>
+<script src="/assets/js/accessibility.js"></script>
 <script>
 	$(function() {
 		$("#labName").select2({

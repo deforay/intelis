@@ -37,7 +37,7 @@ $batchResult = $db->rawQuery($batchQuery);
   <section class="content-header">
     <h1 class="fa fa-envelope"> E-mail Test Result</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">E-mail Test Result</li>
     </ol>
   </section>
@@ -239,7 +239,7 @@ $batchResult = $db->rawQuery($batchQuery);
             <input type="hidden" id="reportEmail" name="reportEmail" />
             <input type="hidden" name="pdfFile" id="pdfFile" />
             <a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default"> Cancel</a>&nbsp;
-            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;">Next <i class="fa-solid fa-chevron-right"></i></a>
           </div>
           <!-- /.box-footer -->
         </form>

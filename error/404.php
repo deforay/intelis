@@ -15,7 +15,7 @@ require_once(APPLICATION_PATH . '/header.php');
                 <br>
                 <br>
                 <br>
-                <h1 style="color:red;text-align: center;font-size:8em;"><i class="fa fa-exclamation-triangle"></i> 404</h1>
+                <h1 style="color:red;text-align: center;font-size:8em;"><i class="fa-solid fa-triangle-exclamation"></i> 404</h1>
                 <h2 style="color:red;text-align: center;">
                     Sorry! We could not find this page or resource.<br />
                     <small>Please contact the System Admin for further support.</small>

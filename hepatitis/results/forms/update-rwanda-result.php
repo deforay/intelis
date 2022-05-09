@@ -49,9 +49,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> Hepatitis LABORATORY REQUEST FORM</h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> Hepatitis LABORATORY REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
             <li class="active">Hepatitis Request</li>
         </ol>
     </section>
@@ -265,7 +265,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                 </div>
 
                 <form class="form-horizontal" method="post" name="updateHepatitisRequestForm" id="updateHepatitisRequestForm" autocomplete="off" action="hepatitis-update-result-helper.php">
-                <?php if ($usersModel->isAllowed('hepatitis-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>                        
+                    <?php if ($usersModel->isAllowed('hepatitis-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="box-header with-border">
@@ -291,8 +291,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                         </td>
                                         <th><label for="vlTestingSite">VL Testing Site</label></th>
                                         <td>
-                                        <select class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" title="Please select testing site" style="width:100%;">
-									<?= $testingLabsDropdown; ?>
+                                            <select class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" title="Please select testing site" style="width:100%;">
+                                                <?= $testingLabsDropdown; ?>
                                         </td>
                                     </tr>
                                     <tr>
@@ -302,6 +302,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                                 <option value=''> -- Select -- </option>
                                                 <option value='Initial HCV VL' <?php echo ($hepatitisInfo['reason_for_vl_test'] == 'Initial HCV VL') ? "selected='selected'" : ""; ?>>Initial HCV VL</option>
                                                 <option value='SVR12 HCV VL' <?php echo ($hepatitisInfo['reason_for_vl_test'] == 'SVR12 HCV VL') ? "selected='selected'" : ""; ?>>SVR12 HCV VL</option>
+                                                <option value='SVR12 HCV VL - Second Line' <?php echo ($hepatitisInfo['reason_for_vl_test'] == 'SVR12 HCV VL - Second Line') ? "selected='selected'" : ""; ?>>SVR12 HCV VL - Second Line</option>
                                                 <option value='Initial HBV VL' <?php echo ($hepatitisInfo['reason_for_vl_test'] == 'Initial HBV VL') ? "selected='selected'" : ""; ?>>Initial HBV VL</option>
                                                 <option value='Follow up HBV VL' <?php echo ($hepatitisInfo['reason_for_vl_test'] == 'Follow up HBV VL') ? "selected='selected'" : ""; ?>>Follow up HBV VL</option>
                                             </select>
@@ -533,8 +534,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
             placeholder: "Lab Name"
         });
         $("#vlTestingSite").select2({
-			placeholder: "Select Vl Testing Site"
-		});
+            placeholder: "Select Vl Testing Site"
+        });
         getfacilityProvinceDetails($("#facilityId"));
         $('#isResultAuthorized').change(function(e) {
             checkIsResultAuthorized();

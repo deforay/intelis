@@ -7,9 +7,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-flask"></i> <?php echo _("Viral Load ART Regimen");?></h1>
+		<h1><i class="fa-solid fa-flask-vial"></i> <?php echo _("Viral Load ART Regimen");?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
 			<li class="active"><?php echo _("VL ART Regimen");?></li>
 		</ol>
 	</section>
@@ -21,7 +21,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-vl-art-code-details.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> <?php echo _("Add VL ART Regimen");?></a>
+							<a href="add-vl-art-code-details.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add VL ART Regimen");?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->

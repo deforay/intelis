@@ -1,6 +1,6 @@
 <?php
 $title = "VL Quarterly Monitoring Report";
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
@@ -168,9 +168,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-book"></i> Viral Load Suppression - Monthly Target Report
+    <h1><i class="fa-solid fa-book"></i> Viral Load Suppression - Monthly Target Report
       <!--<ol class="breadcrumb">-->
-      <!--  <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>-->
+      <!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->
       <!--</ol>-->
 
@@ -233,7 +233,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highchart-exporting.js"></script>
+<script src="/assets/js/exporting.js"></script>
+<script src="/assets/js/accessibility.js"></script>
 <script type="text/javascript">
   var startDate = "";
   var endDate = "";
@@ -253,17 +254,17 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         endDate: moment(),
         maxDate: moment(),
         ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-				}
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+          'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+          'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+          'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+        }
       },
       function(start, end) {
         startDate = start.format('YYYY-MM-DD');

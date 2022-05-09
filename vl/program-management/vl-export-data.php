@@ -40,9 +40,9 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-book"></i> <?php echo _("Export Result"); ?>
+		<h1><i class="fa-solid fa-book"></i> <?php echo _("Export Result"); ?>
 			<!--<ol class="breadcrumb">-->
-			<!--  <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>-->
+			<!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
 			<!--</ol>-->
 
@@ -206,7 +206,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('vlResultExportInExcel.php')"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('vlResultExportInExcel.php')"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>
@@ -289,7 +289,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 						<?php
 						if ($_SESSION['roleCode'] == 'ad' || $_SESSION['roleCode'] == 'AD') {
 						?>
-							<!-- &nbsp;<button class="btn btn-success pull-right" type="button" onclick="exportInexcel('vlResultAllFieldExportInExcel.php')"><i class="fa fa-cloud-download" aria-hidden="true"></i> Export Data for Dashboard</button> -->
+							<!-- &nbsp;<button class="btn btn-success pull-right" type="button" onclick="exportInexcel('vlResultAllFieldExportInExcel.php')"><i class="fa-solid fa-cloud-arrow-down"></i> Export Data for Dashboard</button> -->
 						<?php } ?>
 
 					</div>

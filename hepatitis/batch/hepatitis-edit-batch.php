@@ -70,7 +70,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 	<section class="content-header">
 		<h1>Edit Batch</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
 			<li class="active">Batch</li>
 		</ol>
 	</section>
@@ -142,7 +142,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="hepatitis-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><i class="fa fa-sort-numeric-desc"> Edit Position</i></a></div>
+							<div class="col-md-6"><a href="hepatitis-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><i class="fa-solid fa-arrow-down-1-9"></i>  Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-8">

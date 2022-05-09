@@ -35,9 +35,9 @@ $ftResult = $db->rawQuery($fQuery);
 <div class="content-wrapper">
      <!-- Content Header (Page header) -->
      <section class="content-header">
-          <h1><i class="fa fa-user"></i> <?php echo _("Add User"); ?></h1>
+          <h1><i class="fa-solid fa-user"></i> <?php echo _("Add User"); ?></h1>
           <ol class="breadcrumb">
-               <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+               <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
                <li class="active"><?php echo _("Users"); ?></li>
           </ol>
      </section>

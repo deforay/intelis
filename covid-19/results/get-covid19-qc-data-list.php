@@ -142,7 +142,7 @@ foreach ($rResult as $aRow) {
     $row[] = date("d-m-Y H:i:s", strtotime($aRow['qc_tested_datetime']));
     $row[] = date("d-m-Y H:i:s", strtotime($aRow['updated_datetime']));
     if (isset($_SESSION['privileges']) && in_array("edit-covid-19-qc-data.php", $_SESSION['privileges'])) {
-        $edit = '<a href="edit-covid-19-qc-data.php?id=' . base64_encode($aRow['qc_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa fa-pencil"> ' . _("Edit") . '</i></a>';
+        $edit = '<a href="edit-covid-19-qc-data.php?id=' . base64_encode($aRow['qc_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Edit") . '</i></a>';
         $row[] = $edit;
     }
     $output['aaData'][] = $row;

@@ -7,9 +7,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("Welcome to Admin Page"); ?></h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Welcome to Admin Page"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Admin"); ?></li>
         </ol>
     </section>

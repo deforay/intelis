@@ -18,9 +18,9 @@ $sResult = $db->rawQuery($sQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-edit"></i> <?php echo _("VL Control Report");?></h1>
+    <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("VL Control Report");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("VL Control Report");?></li>
     </ol>
   </section>
@@ -69,9 +69,9 @@ $sResult = $db->rawQuery($sQuery);
 </div>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/highcharts-more.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="/assets/js/highcharts.js"></script>
+<script src="/assets/js/exporting.js"></script>
+<script src="/assets/js/accessibility.js"></script>
 <script type="text/javascript">
   var startDate = "";
   var endDate = "";

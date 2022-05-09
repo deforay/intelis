@@ -177,7 +177,7 @@ function generate_token()
 							</div>
 							<div>
 								<img id="capChaw" width="254px" height="100px" src="/includes/captcha.php/<?php echo rand(); ?>" />
-								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo _("Get New Image"); ?></a>
+								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa-solid fa-arrows-rotate"></i> <?php echo _("Get New Image"); ?></a>
 							</div>
 						</div>
 

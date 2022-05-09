@@ -137,9 +137,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 <div class="content-wrapper">
      <!-- Content Header (Page header) -->
      <section class="content-header">
-          <h1><i class="fa fa-edit"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
+          <h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
           <ol class="breadcrumb">
-               <li><a href="/dashboard/index.php"><i class="fa fa-dashboard"></i> Home</a></li>
+               <li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
                <li class="active">Edit Vl Request</li>
           </ol>
      </section>

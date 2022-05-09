@@ -7,9 +7,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-hospital-o"></i> Facility Map</h1>
+    <h1><i class="fa-solid fa-hospital"></i> Facility Map</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">Facility Map</li>
     </ol>
   </section>
@@ -21,7 +21,7 @@ require_once(APPLICATION_PATH . '/header.php');
         <div class="box">
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("addVlFacilityMap.php", $_SESSION['privileges']) && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone'))) { ?>
-              <a href="addVlFacilityMap.php" class="btn btn-primary pull-right"> <i class="fa fa-plus"></i> Add Facility Map</a>
+              <a href="addVlFacilityMap.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> Add Facility Map</a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>

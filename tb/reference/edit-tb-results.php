@@ -10,9 +10,9 @@ $resultInfo = $db->query($resultQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-heartbeat"></i></i> Edit TB Results</h1>
+		<h1><i class="fa-solid fa-heart-pulse"></i></i> Edit TB Results</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
 			<li class="active">TB Results</li>
 		</ol>
 	</section>

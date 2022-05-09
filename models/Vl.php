@@ -174,12 +174,17 @@ class Vl
     {
 
         $vlResultCategory = null;
-        if ($resultStatus == 4) {
+        if (empty($finalResult)) {
+            return null;
+        }
+        if (in_array($resultStatus, array(1, 2, 3, 10))) {
+            $vlResultCategory = null;
+        } else if ($resultStatus == 4) {
             $vlResultCategory = 'rejected';
         } else if ($resultStatus == 5) {
             $vlResultCategory = 'invalid';
-        } else if ($resultStatus == 7) {
-            if (is_numeric($finalResult) && $finalResult > 0 && $finalResult == round($finalResult, 0)) {
+        } else {
+            if (is_numeric($finalResult) && (float)$finalResult > 0 && (float)$finalResult == round($finalResult, 0)) {
                 $finalResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
 
                 if ($finalResult < $this->suppressionLimit) {
@@ -192,7 +197,7 @@ class Vl
                 $textResult = NULL;
 
                 if (in_array(strtolower($finalResult), $this->suppressedArray)) {
-                    $textResult = 20;
+                    $textResult = 10;
                 } else {
                     $textResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
                 }
@@ -211,7 +216,7 @@ class Vl
         }
     }
 
-    public function interpretViralLoadTextResult($result, $unit = false, $lowVlResultText= null)
+    public function interpretViralLoadTextResult($result, $unit = false, $lowVlResultText = null)
     {
 
         // If result is blank, then return null
@@ -221,7 +226,7 @@ class Vl
         if (is_numeric($result)) return $result;
 
         $defaultVLTextResult = "Target Not Detected";
-        if(!empty($lowVlResultText)){
+        if (!empty($lowVlResultText)) {
             $defaultVLTextResult = $lowVlResultText;
         }
 

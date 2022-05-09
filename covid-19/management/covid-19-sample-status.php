@@ -32,9 +32,9 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa fa-book"></i> <?php echo _("Covid-19 Sample Status Report"); ?></h1>
+		<h1><i class="fa-solid fa-book"></i> <?php echo _("Covid-19 Sample Status Report"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Covid-19 Sample Status"); ?></li>
 		</ol>
 	</section>
@@ -96,7 +96,7 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-body">
-						<button class="btn btn-success pull-right" type="button" onclick="covid19ExportTAT()"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo _("Export to excel"); ?></button>
+						<button class="btn btn-success pull-right" type="button" onclick="covid19ExportTAT()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel"); ?></button>
 						<table id="covid19RequestDataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
@@ -128,7 +128,8 @@ $batResult = $db->rawQuery($batQuery);
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highchart-exporting.js"></script>
+<script src="/assets/js/exporting.js"></script>
+<script src="/assets/js/accessibility.js"></script>
 <script>
 	$(function() {
 		$("#labName").select2({

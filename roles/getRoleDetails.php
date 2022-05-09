@@ -135,7 +135,7 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['role_code']);
     $row[] = ucwords($aRow['status']);
     if (isset($_SESSION['privileges']) && in_array("editRole.php", $_SESSION['privileges'])) {
-        $row[] = '<a href="editRole.php?id=' . base64_encode($aRow['role_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><i class="fa fa-pencil"> '. _("Edit").'</i></a>';
+        $row[] = '<a href="editRole.php?id=' . base64_encode($aRow['role_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><i class="fa-solid fa-pen-to-square"></i> '. _("Edit").'</i></a>';
     }
     $output['aaData'][] = $row;
 }

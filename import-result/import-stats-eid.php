@@ -63,7 +63,7 @@ unset($_SESSION['controllertrack']);
     <section class="content-header">
         <h1>Imported Results</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
         </ol>
     </section>
     <!-- Main content -->

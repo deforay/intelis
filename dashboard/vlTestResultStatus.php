@@ -23,7 +23,7 @@ $batResult = $db->rawQuery($batQuery);
   <section class="content-header">
     <h1>VL Test Result Status [<?php echo ucwords($tsResult[0]['status_name']); ?> ]</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
       <li class="active">VL Test Result Status [<?php echo ucwords($tsResult[0]['status_name']); ?> ]</li>
     </ol>
   </section>

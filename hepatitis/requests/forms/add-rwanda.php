@@ -47,9 +47,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> RWANDA HEPATITIS LABORATORY TEST REQUEST FORM</h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> RWANDA HEPATITIS LABORATORY TEST REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
             <li class="active">Add New Request</li>
         </ol>
     </section>
@@ -303,6 +303,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value=''> -- Select -- </option>
                                                     <option value='Initial HCV VL'>Initial HCV VL</option>
                                                     <option value='SVR12 HCV VL'>SVR12 HCV VL</option>
+                                                    <option value='SVR12 HCV VL - Second Line'>SVR12 HCV VL - Second Line</option>
                                                     <option value='Initial HBV VL'>Initial HBV VL</option>
                                                     <option value='Follow up HBV VL'>Follow up HBV VL</option>
                                                 </select>

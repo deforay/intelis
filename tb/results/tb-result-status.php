@@ -60,16 +60,16 @@ foreach ($rejectionTypeResult as $type) {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-edit"></i> <?php echo _("Results Approval"); ?></h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Results Approval"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?></a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Test Request"); ?></li>
         </ol>
     </section>
 
     <!-- for sample rejection -->
     <div id="rejectReasonDiv">
-        <a href="javascript:void(0)" style="float:right;color:red;" onclick="hideReasonDiv('rejectReasonDiv')"><i class="fa fa-close"></i></a>
+        <a href="javascript:void(0)" style="float:right;color:red;" onclick="hideReasonDiv('rejectReasonDiv')"><i class="fa-solid fa-xmark"></i></a>
         <div class="arrow-right"></div>
         <input type="hidden" name="statusDropDownId" id="statusDropDownId" />
         <h3 style="color:red;"><?php echo _("Choose Rejection Reason"); ?></h3>

@@ -31,8 +31,8 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
   <section class="content-header">
     <h1 class="fa fa-gears"> <?php echo _("Edit Test Result Email Configuration");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
-      <li><a href="testResultEmailConfig.php"><i class="fa fa-dashboard"></i> <?php echo _("Manage Test Result Email/SMS Config");?></a></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
+      <li><a href="testResultEmailConfig.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Manage Test Result Email/SMS Config");?></a></li>
       <li class="active"><?php echo _("Edit Test Result Email Configuration");?></li>
     </ol>
   </section>

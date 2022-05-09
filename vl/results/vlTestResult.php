@@ -47,9 +47,9 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa fa-edit"></i> <?php echo _("Enter VL Result"); ?></h1>
+    <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Enter VL Result"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/dashboard/index.php"><i class="fa fa-dashboard"></i> <?php echo _("Home"); ?> </a></li>
+      <li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?> </a></li>
       <li class="active"><?php echo _("Enter VL Result"); ?></li>
     </ol>
   </section>

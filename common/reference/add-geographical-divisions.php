@@ -14,9 +14,9 @@ foreach ($geoParentInfo as $type) {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-gears"></i> <?php echo _("Add Geographical Divisions");?></h1>
+        <h1><i class="fa-solid fa-gears"></i> <?php echo _("Add Geographical Divisions");?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> <?php echo _("Home");?></a></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
             <li class="active"><?php echo _("Add Geographical Divisions");?></li>
         </ol>
     </section>
@@ -36,17 +36,17 @@ foreach ($geoParentInfo as $type) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="geoName" class="col-lg-4 control-label"><?php echo _("Geographical Divisions Name");?> <span class="mandatory">*</span></label>
+                                    <label for="geoName" class="col-lg-4 control-label"><?php echo _("Geographical Division Name");?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="geoName" name="geoName" placeholder="<?php echo _('Geographical Divisions Name');?>" title="<?php echo _('Please enter Geographical Divisions name');?>" onblur='checkNameValidation("geographical_divisions","geo_name",this,null,"<?php echo _("The Geographical Divisions name that you entered already exists.Enter another name");?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="geoName" name="geoName" placeholder="<?php echo _('Geographical Division Name');?>" title="<?php echo _('Please enter Geographical Division name');?>" onblur='checkNameValidation("geographical_divisions","geo_name",this,null,"<?php echo _("The Geographical Division name that you entered already exists.Enter another name");?>",null)' />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="geoCode" class="col-lg-4 control-label"><?php echo _("Geographical Divisions Code");?> <span class="mandatory">*</span></label>
+                                    <label for="geoCode" class="col-lg-4 control-label"><?php echo _("Geographical Division Code");?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="geoCode" name="geoCode" placeholder="<?php echo _('Geographical Divisions code');?>" title="<?php echo _('Please enter Geographical Divisions code');?>" onblur='checkNameValidation("geographical_divisions","geo_code",this,null,"<?php echo _("The Geographical Divisions code that you entered already exists.Enter another code");?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="geoCode" name="geoCode" placeholder="<?php echo _('Geographical Division code');?>" title="<?php echo _('Please enter Geographical Division code');?>" onblur='checkNameValidation("geographical_divisions","geo_code",this,null,"<?php echo _("The Geographical Division code that you entered already exists.Enter another code");?>",null)' />
                                     </div>
                                 </div>
                             </div>
@@ -54,9 +54,9 @@ foreach ($geoParentInfo as $type) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="geoParent" class="col-lg-4 control-label"><?php echo _("Parent Geographical Divisions");?></label>
+                                    <label for="geoParent" class="col-lg-4 control-label"><?php echo _("Parent Geographical Division");?></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control" id="geoParent" name="geoParent" placeholder="<?php echo _('Parent Reason');?>" title="<?php echo _('Please enter Parent Reason');?>">
+                                        <select class="form-control" id="geoParent" name="geoParent" placeholder="<?php echo _('Parent Division');?>" title="<?php echo _('Please select Parent Division');?>">
                                             <?= $general->generateSelectOptions($geoArray, null, _("-- Select --")); ?>
                                         </select>
                                     </div>
@@ -64,9 +64,9 @@ foreach ($geoParentInfo as $type) {
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="geoStatus" class="col-lg-4 control-label"><?php echo _("Geographical Divisions Status");?><span class="mandatory">*</span></label>
+                                    <label for="geoStatus" class="col-lg-4 control-label"><?php echo _("Status");?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="geoStatus" name="geoStatus" title="<?php echo _('Please select partner status');?>">
+                                        <select class="form-control isRequired" id="geoStatus" name="geoStatus" title="<?php echo _('Please select status');?>">
                                             <option value=""><?php echo _("--Select--");?></option>
                                             <option value="active"><?php echo _("Active");?></option>
                                             <option value="inactive"><?php echo _("Inactive");?></option>
