@@ -171,6 +171,14 @@ try {
             $status = 7;
         }
 
+        if (isset($globalConfig['tb_auto_approve_api_results']) && $globalConfig['tb_auto_approve_api_results'] == "yes") {
+            $status = 4;
+            $data['resultDispatchedOn'] = "yes";
+            if (isset($data['result']) && $data['result'] != "") {
+                $status = 9;
+            }
+        }
+
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
             $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];

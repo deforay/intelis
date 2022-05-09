@@ -186,6 +186,13 @@ try {
         } else if ($data['isSampleRejected'] == 'no' && isset($data['result']) && !empty($data['result']) && isset($data['approvedBy']) && !empty($data['approvedBy'])) {
             $status = 7;
         }
+        if (isset($globalConfig['vl_auto_approve_api_results']) && $globalConfig['vl_auto_approve_api_results'] == "yes") {
+            $status = 4;
+            $data['resultDispatchedOn'] = "yes";
+            if (isset($data['result']) && $data['result'] != "") {
+                $status = 9;
+            }
+        }
 
         if (isset($data['approvedOnDateTime']) && trim($data['approvedOnDateTime']) != "") {
             $approvedOnDateTime = explode(" ", $data['approvedOnDateTime']);
@@ -331,13 +338,11 @@ try {
             'is_patient_pregnant'                   => (isset($data['patientPregnant']) && $data['patientPregnant'] != '') ? $data['patientPregnant'] :  NULL,
             'is_patient_breastfeeding'              => (isset($data['breastfeeding']) && $data['breastfeeding'] != '') ? $data['breastfeeding'] :  NULL,
             'patient_art_no'                        => (isset($data['patientArtNo']) && $data['patientArtNo'] != '') ? $data['patientArtNo'] :  NULL,
-
             'treatment_initiated_date'              => $general->dateFormat($data['dateOfArtInitiation']),
             'reason_for_regimen_change'             => $data['reasonForArvRegimenChange'],
             'regimen_change_date'                   => $general->dateFormat($data['dateOfArvRegimenChange']),
             'current_regimen'                       => (isset($data['artRegimen']) && $data['artRegimen'] != '') ? $data['artRegimen'] :  NULL,
             'date_of_initiation_of_current_regimen' => $data['regimenInitiatedOn'],
-
             'patient_mobile_number'                 => (isset($data['patientPhoneNumber']) && $data['patientPhoneNumber'] != '') ? $data['patientPhoneNumber'] :  NULL,
             'consent_to_receive_sms'                => (isset($data['receiveSms']) && $data['receiveSms'] != '') ? $data['receiveSms'] :  NULL,
             'sample_type'                           => (isset($data['specimenType']) && $data['specimenType'] != '') ? $data['specimenType'] :  NULL,
@@ -382,8 +387,7 @@ try {
             'last_modified_datetime'                => $general->getDateTime(),
             'manual_result_entry'                   => 'yes',
             'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
-
-            'external_sample_code'                             => isset($data['serialNo']) ? $data['serialNo'] : null,
+            'external_sample_code'                  => isset($data['serialNo']) ? $data['serialNo'] : null,
             'is_patient_new'                        => (isset($data['isPatientNew']) && $data['isPatientNew'] != '') ? $data['isPatientNew'] :  NULL,
             'has_patient_changed_regimen'           => (isset($data['hasChangedRegimen']) && $data['hasChangedRegimen'] != '') ? $data['hasChangedRegimen'] :  NULL,
             'date_dispatched_from_clinic_to_lab'    => (isset($data['dateDispatchedFromClinicToLab']) && $data['dateDispatchedFromClinicToLab'] != '') ? $data['specimenType'] :  NULL,
@@ -394,7 +398,6 @@ try {
             'date_test_ordered_by_physician'        => (isset($data['dateOfDemand']) && $data['dateOfDemand'] != '') ? $data['dateOfDemand'] :  NULL,
             'result_reviewed_by'                    => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
             'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-
             'source_of_request'                     => "app"
         );
         if (isset($data['patientFullName']) && $data['patientFullName'] != "") {
