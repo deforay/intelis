@@ -131,10 +131,10 @@ try {
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
-            'request_created_by' => null,
-            'request_created_datetime' => $db->now(),
-            'last_modified_by' => null,
-            'last_modified_datetime' => $db->now()
+            'request_created_by' => $user['user_id'],
+            'request_created_datetime' => $general->getDateTime(),
+            'last_modified_by' => $user['user_id'],
+            'last_modified_datetime' => $general->getDateTime()
         );
 
         if ($user['access_type'] != 'testing-lab') {
@@ -165,7 +165,6 @@ try {
         }
         $tableName = "form_vl";
         $tableName1 = "activity_log";
-
         $instanceId = '';
         if (empty($instanceId) && $data['instanceId']) {
             $instanceId = $data['instanceId'];
@@ -423,9 +422,6 @@ try {
 
         $vlFulldata['vl_result_category'] = $vlModel->getVLResultCategory($vlFulldata['result_status'], $vlFulldata['result']);
 
-        /* echo "<pre>";
-        print_r($data);
-        die; */
         $id = 0;
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
