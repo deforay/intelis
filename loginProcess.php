@@ -14,6 +14,8 @@ $userPassword = sha1($password . $systemConfig['passwordSalt']);
 
 
 $general = new \Vlsm\Models\General();
+$facilityDb = new \Vlsm\Models\Facilities();
+
 
 $user = new \Vlsm\Models\Users();
 
@@ -127,6 +129,7 @@ try {
                     $_SESSION['accessType'] = $admin[0]['access_type'];
                     $_SESSION['email'] = $admin[0]['email'];
                     $_SESSION['forcePasswordReset'] = $admin[0]['force_password_reset'];
+                    $_SESSION['facilityMap'] = $facilityDb->getFacilityMap($admin[0]['user_id']);
 
                     //Add event log
                     $eventType = 'login';

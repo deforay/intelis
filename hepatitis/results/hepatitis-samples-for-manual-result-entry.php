@@ -277,15 +277,9 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      }
      $dWhere = "WHERE vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
 }
-if ($_SESSION['instanceType'] == 'remoteuser') {
-     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
-     //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-          $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
-     }
+if ($_SESSION['instanceType'] == 'remoteuser' && isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
+     $sWhere = $sWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
+     $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 $_SESSION['vlResultQuery'] = $sQuery;
@@ -299,7 +293,7 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// echo ($sQuery);die();
+echo ($sQuery);die();
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
@@ -318,10 +312,10 @@ $hepatitisDb = new \Vlsm\Models\Hepatitis();
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $row = array();
-     $print = '<a href="hepatitis-update-result.php?id=' . base64_encode($aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="'. _("Result").'"><i class="fa-solid fa-pen-to-square"></i> '. _("Enter Result").'</a>';
+     $print = '<a href="hepatitis-update-result.php?id=' . base64_encode($aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Enter Result") . '</a>';
      if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
           if (isset($_SESSION['privileges']) && !in_array("edit-locked-hepatitis-samples", $_SESSION['privileges'])) {
-               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Locked").'" disabled><i class="fa-solid fa-lock"></i> '. _("Locked").'</a>';
+               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><i class="fa-solid fa-lock"></i> ' . _("Locked") . '</a>';
           }
      }
 

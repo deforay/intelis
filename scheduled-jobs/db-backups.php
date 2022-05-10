@@ -13,7 +13,6 @@ if (!is_dir($backupFolder)) {
 }
 $randomString = $general->generateRandomString(6);
 $baseFileName = 'vlsm-' . date("dmYHis") . '-' . $randomString . '.sql';
-
 $password = md5($systemConfig['dbPassword'] . $randomString);
 
 try {
@@ -21,6 +20,12 @@ try {
 
     exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
 
+    if (isset($systemConfig['interfacing']['enabled']) && $systemConfig['interfacing']['enabled'] == true) {
+        $baseFileName = 'interfacing-' . date("dmYHis") . '-' . $randomString . '.sql';
+        $password = md5($systemConfig['interfacing']['dbPassword'] . $randomString);
+        exec("cd $backupFolder && " . $systemConfig['mysqlDump'] . ' --create-options --user=' . $systemConfig['interfacing']['dbUser'] . ' --password="' . $systemConfig['interfacing']['dbPassword'] . '" --host=' . $systemConfig['interfacing']['dbHost'] . ' --port=' . $systemConfig['interfacing']['dbPort'] . ' --databases ' . $systemConfig['interfacing']['dbName'] . '  > ' . $baseFileName);
+        exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
+    }
 } catch (Exception $e) {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
