@@ -186,14 +186,14 @@ try {
         } else if ($data['isSampleRejected'] == 'no' && isset($data['result']) && !empty($data['result']) && isset($data['approvedBy']) && !empty($data['approvedBy'])) {
             $status = 7;
         }
-        /* if (isset($globalConfig['vl_auto_approve_api_results']) && $globalConfig['vl_auto_approve_api_results'] == "yes") {
-            $status = 4;
+        if (isset($globalConfig['vl_auto_approve_api_results']) && $globalConfig['vl_auto_approve_api_results'] == "yes") {
             if (isset($data['result']) && $data['result'] != "") {
                 $status = 9;
-            } else {
-                $data['isSampleRejected'] = "yes";
             }
-        } */
+            if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
+                $status = 4;
+            }
+        }
 
         if (isset($data['approvedOnDateTime']) && trim($data['approvedOnDateTime']) != "") {
             $approvedOnDateTime = explode(" ", $data['approvedOnDateTime']);

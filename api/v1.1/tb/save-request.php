@@ -171,14 +171,14 @@ try {
             $status = 7;
         }
 
-        /*  if (isset($globalConfig['tb_auto_approve_api_results']) && $globalConfig['tb_auto_approve_api_results'] == "yes") {
-            $status = 4;
+        if (isset($globalConfig['tb_auto_approve_api_results']) && $globalConfig['tb_auto_approve_api_results'] == "yes") {
             if (isset($data['result']) && $data['result'] != "") {
                 $status = 9;
-            } else {
-                $data['isSampleRejected'] = "yes";
             }
-        } */
+            if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
+                $status = 4;
+            }
+        }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
