@@ -17,7 +17,7 @@ $covid19Obj = new \Vlsm\Models\Covid19();
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
-$systemConfig = array_merge($sc,$systemConfig);
+$systemConfig = array_merge($sc, $systemConfig);
 
 if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
 	date_default_timezone_set($arr['default_time_zone']);
@@ -302,7 +302,11 @@ if (sizeof($requestResult) > 0) {
 	$page = 1;
 	foreach ($requestResult as $result) {
 		//set print time
-		$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
+		if (isset($result['result_printed_datetime']) && $result['result_printed_datetime'] != "") {
+			$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
+		} else {
+			$printedTime = $general->getDateTime();
+		}
 		$expStr = explode(" ", $printedTime);
 		$printDate = $general->humanDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
