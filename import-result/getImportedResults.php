@@ -239,8 +239,8 @@ foreach ($rResult as $aRow) {
     $color = '';
     $status = '';
     if (isset($aRow['sample_code']) && trim($aRow['sample_code']) != '') {
-        $batchCodeQuery = "SELECT batch_code from batch_details as b_d INNER JOIN $mainTableName as vl ON vl.sample_batch_id = b_d.batch_id WHERE vl.sample_code = '" . $aRow['sample_code'] . "'";
-        $batchCodeResult = $db->rawQuery($batchCodeQuery);
+        $batchCodeQuery = "SELECT batch_code from batch_details as b_d INNER JOIN $mainTableName as vl ON vl.sample_batch_id = b_d.batch_id WHERE vl.sample_code = ?";
+        $batchCodeResult = $db->rawQuery($batchCodeQuery, array($aRow['sample_code']));
         if (isset($batchCodeResult) && count($batchCodeResult) > 0) {
             $batchCode = "'" . $batchCodeResult[0]['batch_code'] . "'";
             $aRow['batch_code'] = $batchCodeResult[0]['batch_code'];

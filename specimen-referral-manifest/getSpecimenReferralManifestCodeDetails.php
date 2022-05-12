@@ -163,7 +163,7 @@ if (isset($_SESSION['privileges']) && (in_array("editSpecimenReferralManifest.ph
 
 foreach ($rResult as $aRow) {
     $humanDate = "";
-    $printBarcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print bar code" onclick="generateManifestPDF(\'' . base64_encode($aRow['package_id']) . '\',\'pk1\');"><i class="fa-solid fa-barcode"> Print Barcode</i></a>';
+    $printBarcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print bar code" onclick="generateManifestPDF(\'' . base64_encode($aRow['package_id']) . '\',\'pk1\');"><i class="fa-solid fa-barcode"></i> Print Barcode</a>';
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['request_created_datetime'];
         $humanDate =  date("d-M-Y H:i:s", strtotime($date));

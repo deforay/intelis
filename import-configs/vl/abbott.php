@@ -2,6 +2,7 @@
 
 // File included in addImportResultHelper.php
 
+$db = MysqliDb::getInstance();
 try {
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
@@ -32,7 +33,7 @@ try {
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
 
-        $bquery = "select MAX(batch_code_key) from batch_details";
+        $bquery = "SELECT MAX(batch_code_key) FROM batch_details";
         $bvlResult = $db->rawQuery($bquery);
         if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
             $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
@@ -266,8 +267,8 @@ try {
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
-            $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal FROM form_vl WHERE result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
-            $vlResult = $db->rawQuery($query);
+            $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal FROM form_vl WHERE result_printed_datetime is null AND sample_code like ?";
+            $vlResult = $db->rawQueryOne($query, array($sampleCode));
             //insert sample controls
             $scQuery = "SELECT r_sample_control_name FROM r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
@@ -276,12 +277,12 @@ try {
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if ($vlResult && $sampleCode != '') {
-                if ($vlResult[0]['result_value_log'] != '' || $vlResult[0]['result_value_absolute'] != '' || $vlResult[0]['result_value_text'] != '' || $vlResult[0]['result_value_absolute_decimal'] != '') {
+                if ($vlResult['result_value_log'] != '' || $vlResult['result_value_absolute'] != '' || $vlResult['result_value_text'] != '' || $vlResult['result_value_absolute_decimal'] != '') {
                     $data['sample_details'] = 'Result already exists';
                 } else {
                     $data['result_status'] = '7';
                 }
-                $data['facility_id'] = $vlResult[0]['facility_id'];
+                $data['facility_id'] = $vlResult['facility_id'];
             } else {
                 $data['sample_details'] = 'New Sample';
             }
@@ -314,6 +315,7 @@ try {
     }
     header("location:/import-result/imported-results.php");
 } catch (Exception $exc) {
+    error_log($db->getLastError());
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
