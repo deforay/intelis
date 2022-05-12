@@ -15,14 +15,10 @@ $general = new \Vlsm\Models\General();
 $users = new \Vlsm\Models\Users();
 $covid19Obj = new \Vlsm\Models\Covid19();
 
-$configQuery = "SELECT * from global_config";
-$configResult = $db->query($configQuery);
-$systemConfig = $general->getSystemConfig();
-$arr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
+$arr = $general->getGlobalConfig();
+$sc = $general->getSystemConfig();
+$systemConfig = array_merge($sc,$systemConfig);
+
 if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
 	date_default_timezone_set($arr['default_time_zone']);
 } else {

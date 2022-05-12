@@ -16,13 +16,8 @@ $users = new \Vlsm\Models\Users();
 $tbObj = new \Vlsm\Models\Tb();
 $geoObj = new \Vlsm\Models\GeoLocations();
 
-$configQuery = "SELECT * from global_config";
-$configResult = $db->query($configQuery);
-$arr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-    $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
+$arr = $general->getGlobalConfig();
+
 if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
     date_default_timezone_set($arr['default_time_zone']);
 } else {
