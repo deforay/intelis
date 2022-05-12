@@ -15,8 +15,8 @@ $receivedCounter = 0;
 $processedCounter = 0;
 
 $data = array();
-$data[] = "lastUpdatedDuration=90m";
-//$data[] = "lastUpdatedDuration=5d";
+//$data[] = "lastUpdatedDuration=90m";
+$data[] = "lastUpdatedDuration=15d";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=LEhPhsbgfFB";
@@ -179,7 +179,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         // if this is an old request, then skip
         if (strtotime($formData['sample_collection_date']) < strtotime('-6 months')) {
-            continue;
+            //continue;
         }
 
         $formData['source_of_request'] = 'dhis2';

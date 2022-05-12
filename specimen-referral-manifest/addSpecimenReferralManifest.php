@@ -1,4 +1,4 @@
-<?php
+	<?php
 ob_start();
 
 
@@ -19,7 +19,7 @@ foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];
 }
 $facilities = $facilitiesDb->getHealthFacilities($module);
-
+$shortCode = $module;
 if ($module == 'vl') {
 	$vlDb = new \Vlsm\Models\Vl($db);
 	$sampleTypes = $vlDb->getVlSampleTypes();
@@ -35,8 +35,6 @@ if ($module == 'vl') {
 } else if ($module == 'tb') {
 	$tbDb = new \Vlsm\Models\Tb($db);
 	$sampleTypes = $tbDb->getTbSampleTypes();
-} else {
-	$shortCode = $module;
 }
 $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomString(6);
 
@@ -109,9 +107,9 @@ $packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomStr
 
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="packageCode" class="col-lg-4 control-label">Testing Lab :</label>
+									<label for="packageCode" class="col-lg-4 control-label">Testing Lab <span class="mandatory">*</span> :</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select type="text" class="form-control select2" id="testingLab" name="testingLab" title="Choose one test lab">
+										<select type="text" class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
 											<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
 										</select>
 									</div>

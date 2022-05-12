@@ -573,6 +573,87 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	<?php } ?>
 
+	function receiveDhis2Data() {
+		if (!navigator.onLine) {
+			alert('Please connect to internet to sync with DHIS2');
+			return false;
+		}
+
+
+		$.blockUI({
+			message: '<h3>Receiving test requests from DHIS2<br><img src="/assets/img/loading.gif" /></h3>'
+		});
+		var jqxhr = $.ajax({
+				url: "/hepatitis/interop/dhis2/hepatitis-receive.php",
+			})
+			.done(function(data) {
+				var response = JSON.parse(data);
+				if (response.received > 0) {
+					msg  = '<h3>No. of Records Received : ' + response.received + ' <br><img src="/assets/img/loading.gif" /></h3>'
+				}else{
+					msg =  '<h3>No Records received from DHIS2 for the selected date range</h3>'
+				}
+				setTimeout(function() {
+						$.blockUI({
+							message: msg
+						});
+					}, 2500);
+				if (response.processed > 0) {
+					setTimeout(function() {
+						$.blockUI({
+							message: '<h3>No. of Records Received : ' + response.received + ' </h3><h3>Successfully Processed : ' + response.processed + ' </h3>'
+						});
+					}, 6000);
+				}
+			})
+			.fail(function() {
+				$.unblockUI();
+				alert("Unable to sync with DHIS2. Please contact technical team for assistance.");
+			})
+			.always(function() {
+				setTimeout(function() {
+					$.unblockUI();
+					window.location.href = window.location;
+				}, 9500);
+			});
+	}
+
+	function sendDhis2Data() {
+		if (!navigator.onLine) {
+			alert('Please connect to internet to sync with DHIS2');
+			return false;
+		}
+
+		$.blockUI({
+			message: '<h3>Sending Test Results to DHIS2<br><img src="/assets/img/loading.gif" /></h3>'
+		});
+		var jqxhr = $.ajax({
+				url: "/hepatitis/interop/dhis2/hepatitis-send.php",
+			})
+			.done(function(data) {
+				var response = JSON.parse(data);
+				if (response.processed > 0) {
+					msg = '<h3>No. of Results Successfully Sent : ' + response.processed + ' </h3>';
+				} else {
+					msg = '<h3>All results already synced with DHIS2</h3>';
+				}
+				$.blockUI({
+					message: msg
+				});
+			})
+			.fail(function() {
+				$.unblockUI();
+				alert("Unable to sync with DHIS2. Please contact technical team for assistance.");
+			})
+			.always(function() {
+
+				setTimeout(function() {
+					$.unblockUI();
+				}, 4500);
+
+			});
+	}
+
 	function exportAllPendingHepatitisRequest() {
 		// $.blockUI();
 		$.post("/hepatitis/requests/generate-pending-hepatitis-request-excel.php", {
