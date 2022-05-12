@@ -67,6 +67,7 @@ try {
         vl.mother_treatment_initiation_date                  as motherTreatmentInitiationDate,
         vl.child_id                                          as childId,
         vl.child_name                                        as childName,
+        vl.child_surname                                     as childSurName,
         vl.child_dob                                         as childDob,
         vl.child_gender                                      as childGender,
         vl.child_age                                         as childAge,
