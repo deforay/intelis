@@ -589,8 +589,8 @@ $sFormat = '';
                                                                            <input type="checkbox" class="labSection specialResults" name="lt40" value="yes" title="Please check <40">
                                                                            &lt; 40<br>
                                                                            <input type="checkbox" class="specialResults" name="tnd" value="yes" title="Please check tnd" <?php echo $labFieldDisabled; ?>> Target Not Detected<br>
-                                                                           <input type="checkbox" class="specialResults" name="bdl" value="yes" title="Please check bdl" <?php echo $labFieldDisabled; ?>> Below Detection Level
-                                                                           <input type="checkbox" class="specialResults" name="failed" value="yes" title="Please check failed" <?php echo $labFieldDisabled; ?>> Failed
+                                                                           <input type="checkbox" class="specialResults" name="bdl" value="yes" title="Please check bdl" <?php echo $labFieldDisabled; ?>> Below Detection Level<br>
+                                                                           <input type="checkbox" class="specialResults" name="failed" value="yes" title="Please check failed" <?php echo $labFieldDisabled; ?>> Failed<br>
                                                                            <input type="checkbox" class="specialResults" name="invalid" value="yes" title="Please check invalid" <?php echo $labFieldDisabled; ?>> Invalid
                                                                       </div>
                                                                  </div>
@@ -886,10 +886,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      $("input:radio[name=noResult]").click(function() {
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
-               $('.vlResult').css('visibility', 'hidden');
+               $('.vlResult').css('display', 'none');
                $('#rejectionReason').addClass('isRequired');
           } else {
-               $('.vlResult').css('visibility', 'visible');
+               $('.vlResult').css('display', 'block');
                $('.rejectionReason').hide();
                $('#rejectionReason').removeClass('isRequired');
                $('#rejectionReason').val('');
