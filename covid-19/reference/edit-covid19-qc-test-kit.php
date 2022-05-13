@@ -39,7 +39,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                                 <div class="form-group">
                                     <label for="testKitName" class="col-lg-4 control-label"><?php echo _("Test Kit Name"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $resultInfo['testkit_name']; ?>" class=" form-control isRequired" id="testKitName" name="testKitName" placeholder="<?php echo _('Test Kit Name'); ?>" title="<?php echo _('Please enter Test Kit name'); ?>" onblur='checkNameValidation("r_covid19_qc_testkits", "testkit_name" , this , null, "<?php echo _("The test kit name that you entered already exists. Enter another name"); ?>", null)' />
+                                        <input type="text" value="<?php echo $resultInfo['testkit_name']; ?>" class=" form-control isRequired" id="testKitName" name="testKitName" placeholder="<?php echo _('Test Kit Name'); ?>" title="<?php echo _('Please enter Test Kit name'); ?>" onblur='checkNameValidation("r_covid19_qc_testkits", "testkit_name" , this , ' <?php echo "testkit_id##" . $id; ?>', "<?php echo _("The test kit name that you entered already exists. Enter another name"); ?>" , null)' readonly />
                                     </div>
                                 </div>
                             </div>
