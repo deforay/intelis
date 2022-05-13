@@ -641,7 +641,7 @@ $disable = "disabled = 'disabled'";
 														<input value="<?php echo $general->humanDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" />
 													</div>
 												</div>
-												<div class="col-md-4 vlResult" style="visibility:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'hidden' : 'visible'; ?>;">
+												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 													<label class="col-lg-5 control-label" for="vlResult">Viral Load Result<span class="mandatory">*</span> (copiesl/ml) </label>
 													<div class="col-lg-7">
 														<input type="text" class="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'no' && $vlQueryInfo['result'] != 'Target Not Detected' && $vlQueryInfo['result'] == 'Below Detection Level') ? 'isRequired' : ''; ?> vlResult forceNumeric form-control labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result_value_absolute']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
@@ -655,7 +655,7 @@ $disable = "disabled = 'disabled'";
 														<input type="checkbox" class="labSection specialResults" name="invalid" value="yes" <?php echo ($vlQueryInfo['result'] == 'Invalid') ? 'checked="checked"' : ''; ?> title="Please check Invalid"> Invalid
 													</div>
 												</div>
-												<div class="col-md-4 vlResult" style="visibility:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'hidden' : 'visible'; ?>;">
+												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 													<label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
@@ -703,7 +703,7 @@ $disable = "disabled = 'disabled'";
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-8 reasonForResultChanges" style="visibility:hidden;">
+											<div class="col-md-8 reasonForResultChanges" style="display:none;">
 												<label class="col-lg-2 control-label" for="reasonForResultChanges">Reason For Changes in Result <span class="mandatory">*</span></label>
 												<div class="col-lg-10">
 													<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
@@ -825,10 +825,10 @@ $disable = "disabled = 'disabled'";
 	$("#vlRequestFormRwd .labSection").on("change", function() {
 		if ($.trim(result) != '') {
 			if ($("#vlRequestFormRwd .labSection").serialize() == $(__clone).serialize()) {
-				$(".reasonForResultChanges").css("visibility", "hidden");
+				$(".reasonForResultChanges").css("display", "none");
 				$("#reasonForResultChanges").removeClass("isRequired");
 			} else {
-				$(".reasonForResultChanges").css("visibility", "visible");
+				$(".reasonForResultChanges").css("display", "block");
 				$("#reasonForResultChanges").addClass("isRequired");
 			}
 		}
