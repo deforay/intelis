@@ -62,10 +62,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM");?></h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Add New Request");?></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Add New Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -443,7 +443,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
                                             <th>Rejection Date<span class="mandatory">*</span></th>
-                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date"/></td>
+                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date" /></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
@@ -493,7 +493,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th>Reviewed On</td>
+                                            <th>Reviewed On</td>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                             <th>Reviewed By</th>
                                             <td>
@@ -503,7 +503,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th>Approved On</td>
+                                            <th>Approved On</td>
                                             <td><input type="text" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th>Approved By</th>
                                             <td>
@@ -531,7 +531,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
 
                                             <th>Authorized on</td>
-                                            <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On"/></td>
+                                            <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On" /></td>
                                             <th></th>
                                             <td></td>
 
@@ -561,8 +561,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <input type="hidden" name="saveNext" id="saveNext" />
                             <!-- <input type="hidden" name="pageURL" id="pageURL" value="<?php echo $_SERVER['PHP_SELF']; ?>" /> -->
                         <?php } ?>
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
+                        <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                        <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
                         <input type="hidden" name="formId" id="formId" value="<?php echo $arr['vl_form']; ?>" />
                         <input type="hidden" name="covid19SampleId" id="covid19SampleId" value="" />
                         <a href="/covid-19/requests/covid-19-requests.php" class="btn btn-default"> Cancel</a>
@@ -701,7 +701,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             formId: 'addCovid19RequestForm'
         });
         if (flag) {
-            //$.blockUI();
+            $('.btn-disabled').attr('disabled', 'yes');
+            $(".btn-disabled").prop("onclick", null).off("click");
+            $.blockUI();
             <?php
             if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'YY' || $arr['covid19_sample_code'] == 'MMYY') {
             ?>
@@ -724,10 +726,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $('#labId').select2({
             placeholder: "Select Lab Name"
         });
-		$('#reviewedBy').select2({
+        $('#reviewedBy').select2({
             placeholder: "Select Reviewed By"
         });
-		$('#approvedBy').select2({
+        $('#approvedBy').select2({
             placeholder: "Select Approved By"
         });
         $('#authorizedBy').select2({

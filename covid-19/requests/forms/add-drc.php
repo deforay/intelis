@@ -923,8 +923,8 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                         <input type="hidden" name="patientCodePrefix" id="patientCodePrefix" value="<?= $patientCodePrefix; ?>" />
                         <input type="hidden" name="patientCodeKey" id="patientCodeKey" value="" />
                         <input type="hidden" name="covid19SampleId" id="covid19SampleId" value="" />
-                        <a class="btn btn-primary submitButton" href="javascript:void(0);" onclick="validateNow();return false;">Sauver</a>
-                        <a class="btn btn-primary submitButton" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Enregistrer et suivant</a>
+                        <a class="btn btn-primary submitButton btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Sauver</a>
+                        <a class="btn btn-primary submitButton btn-disabled" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Enregistrer et suivant</a>
                         <a href="/covid-19/requests/covid-19-requests.php" class="btn btn-default submitButton"> Annuler</a>
                     </div>
                     <!-- /.box-footer -->
@@ -1289,6 +1289,8 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             formId: 'addCovid19RequestForm'
         });
         if (flag) {
+            $('.btn-disabled').attr('disabled', 'yes');
+            $(".btn-disabled").prop("onclick", null).off("click");
             $.blockUI();
             $(".submitButton").hide();
             <?php

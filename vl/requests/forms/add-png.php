@@ -560,7 +560,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</td>
 										</tr>
 										<tr>
-										<td style="width:14%;"><label for="reviewedOn"> Reviewed On </label></td>
+											<td style="width:14%;"><label for="reviewedOn"> Reviewed On </label></td>
 											<td style="width:14%;">
 												<input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the reviewed on" />
 											</td>
@@ -570,11 +570,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-										<td style="width:14%;"><label for="approvedOn"> Approved On </label></td>
+											<td style="width:14%;"><label for="approvedOn"> Approved On </label></td>
 											<td style="width:14%;">
 												<input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" />
 											</td>
-											<tr>
+										<tr>
 											<td style="width:14%;"><label for="approvedBy"> Approved By </label></td>
 											<td style="width:14%;">
 												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
@@ -597,7 +597,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 						<input type="hidden" name="vlSampleId" id="vlSampleId" />
 						<input type="hidden" name="formId" id="formId" value="5" />
 						<input type="hidden" name="provinceId" id="provinceId" />
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+						<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -654,14 +654,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		});
 
 		$('#laboratoryId').select2({
-            placeholder: "Select Laboratory Name"
-        });
+			placeholder: "Select Laboratory Name"
+		});
 		$('#reviewedBy').select2({
-            placeholder: "Select Reviewed By"
-        });
+			placeholder: "Select Reviewed By"
+		});
 		$('#approvedBy').select2({
-            placeholder: "Select Approved By"
-        });
+			placeholder: "Select Approved By"
+		});
 	});
 
 	function validateNow() {
@@ -673,6 +673,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		});
 		$("#saveNext").val('save');
 		if (flag) {
+			$('.btn-disabled').attr('disabled', 'yes');
+			$(".btn-disabled").prop("onclick", null).off("click");
 			$.blockUI();
 			var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
 			<?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'auto2' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
@@ -692,6 +694,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		});
 		$("#saveNext").val('next');
 		if (flag) {
+			$('.btn-disabled').attr('disabled', 'yes');
+			$(".btn-disabled").prop("onclick", null).off("click");
 			$.blockUI();
 			document.getElementById('vlRequestForm').submit();
 		}

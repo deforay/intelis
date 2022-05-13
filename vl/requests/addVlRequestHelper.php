@@ -291,7 +291,7 @@ try {
         'manual_result_entry' => 'yes',
         'vl_result_category' => $vl_result_category
     );
-    
+
     if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
         $vldata['source_of_request'] = 'vlsm';
     } else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {

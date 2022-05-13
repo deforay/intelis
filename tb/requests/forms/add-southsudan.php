@@ -471,8 +471,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 							<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
 							<input type="hidden" name="saveNext" id="saveNext" />
 						<?php } ?>
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
+						<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+						<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
 						<input type="hidden" name="formId" id="formId" value="1" />
 						<input type="hidden" name="tbSampleId" id="tbSampleId" value="" />
 						<a href="/tb/requests/tb-requests.php" class="btn btn-default"> Cancel</a>
@@ -673,6 +673,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 			formId: 'addTbRequestForm'
 		});
 		if (flag) {
+			$('.btn-disabled').attr('disabled', 'yes');
+			$(".btn-disabled").prop("onclick", null).off("click");
 			<?php
 			if ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'YY' || $arr['tb_sample_code'] == 'MMYY') {
 			?>

@@ -572,7 +572,7 @@ $sFormat = '';
 							<input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
 							<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
 						<?php } ?>
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+						<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<input type="hidden" name="formId" id="formId" value="3" />
 						<input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
 						<input type="hidden" name="provinceId" id="provinceId" />
@@ -815,6 +815,8 @@ $sFormat = '';
 			formId: 'addVlRequestForm'
 		});
 		if (flag) {
+			$('.btn-disabled').attr('disabled', 'yes');
+			$(".btn-disabled").prop("onclick", null).off("click");
 			$.blockUI();
 			<?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
 				insertSampleCode('addVlRequestForm', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate');

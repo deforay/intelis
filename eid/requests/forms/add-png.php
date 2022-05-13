@@ -430,7 +430,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
                             <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                         <?php } ?>
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                        <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
                         <input type="hidden" name="formId" id="formId" value="5" />
                         <input type="hidden" name="eidSampleId" id="eidSampleId" value="" />
                         <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
@@ -605,7 +605,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             formId: 'addEIDRequestForm'
         });
         if (flag) {
-            //$.blockUI();
+            $('.btn-disabled').attr('disabled', 'yes');
+            $(".btn-disabled").prop("onclick", null).off("click");
+            $.blockUI();
             <?php
             if (isset($arr['eid_sample_code'])) {
             ?>

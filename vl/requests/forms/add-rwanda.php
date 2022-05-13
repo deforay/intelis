@@ -602,7 +602,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                            <div class="col-md-4">
+                                                                 <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
@@ -666,7 +666,7 @@ $sFormat = '';
                                              </div> <!-- /printer_select -->
                                         <?php } ?>
                                         <!-- BARCODESTUFF END -->
-                                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                                        <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
                                         <input type="hidden" name="saveNext" id="saveNext" />
                                         <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
                                         <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
@@ -675,7 +675,7 @@ $sFormat = '';
                                         <?php } ?>
                                         <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                         <input type="hidden" name="provinceId" id="provinceId" />
-                                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
+                                        <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
                                         <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
                                    </div>
                     </form>
@@ -711,14 +711,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                placeholder: "Select Clinic/Health Center"
           });
           $('#labId').select2({
-            placeholder: "Select Lab Name"
-        });
-		$('#reviewedBy').select2({
-            placeholder: "Select Reviewed By"
-        });
-		$('#approvedBy').select2({
-            placeholder: "Select Approved By"
-        });
+               placeholder: "Select Lab Name"
+          });
+          $('#reviewedBy').select2({
+               placeholder: "Select Reviewed By"
+          });
+          $('#approvedBy').select2({
+               placeholder: "Select Approved By"
+          });
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
@@ -1044,6 +1044,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
           $("#saveNext").val('save');
           if (flag) {
+               $('.btn-disabled').attr('disabled', 'yes');
+               $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
                <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
                     insertSampleCode('vlRequestFormRwd', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 7, 'sampleCollectionDate');
@@ -1069,6 +1071,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
           $("#saveNext").val('next');
           if (flag) {
+               $('.btn-disabled').attr('disabled', 'yes');
+               $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
                <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
                     insertSampleCode('vlRequestFormRwd', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 7, 'sampleCollectionDate');

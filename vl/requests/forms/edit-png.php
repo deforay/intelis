@@ -37,9 +37,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rKey = 'R';
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
-	if(!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes'){
+	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
-	}else{
+	} else {
 		$sampleCode = 'sample_code';
 	}
 	//check user exist in user_facility_map table
@@ -732,7 +732,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td></td>
 									</tr>
 									<tr>
-									<td style="width:14%;"><label for="reviewedOn"> Reviewed On </label></td>
+										<td style="width:14%;"><label for="reviewedOn"> Reviewed On </label></td>
 										<td style="width:14%;">
 											<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the reviewed on" />
 										</td>
@@ -742,13 +742,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 											</select>
 										</td>
-									<td style="width:14%;"><label for="approvedOn"> Approved On </label></td>
+										<td style="width:14%;"><label for="approvedOn"> Approved On </label></td>
 										<td style="width:14%;">
 											<input type="text" name="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" />
 										</td>
 									</tr>
 									<tr>
-									<td style="width:14%;"><label for="approvedBy"> Approved By </label></td>
+										<td style="width:14%;"><label for="approvedBy"> Approved By </label></td>
 										<td style="width:14%;">
 											<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
@@ -826,14 +826,14 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		getAge();
 
 		$('#laboratoryId').select2({
-            placeholder: "Select Laboratory Name"
-        });
+			placeholder: "Select Laboratory Name"
+		});
 		$('#reviewedBy').select2({
-            placeholder: "Select Reviewed By"
-        });
+			placeholder: "Select Reviewed By"
+		});
 		$('#approvedBy').select2({
-            placeholder: "Select Approved By"
-        });
+			placeholder: "Select Approved By"
+		});
 	});
 
 	function validateNow() {

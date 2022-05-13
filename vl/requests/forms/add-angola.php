@@ -546,7 +546,7 @@ $sFormat = '';
 							<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
 						<?php } ?>
 						<input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+						<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<input type="hidden" name="formId" id="formId" value="8" />
 						<input type="hidden" name="provinceId" id="provinceId" />
 						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
@@ -696,6 +696,8 @@ $sFormat = '';
 			formId: 'addVlRequestForm'
 		});
 		if (flag) {
+			$('.btn-disabled').attr('disabled', 'yes');
+			$(".btn-disabled").prop("onclick", null).off("click");
 			if ($("#clinicName").val() == null || $("#clinicName").val() == '') {
 				alert('Please choose Nome da Unidade');
 				return false;

@@ -402,8 +402,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <input type="hidden" name="saveNext" id="saveNext" />
                             <!-- <input type="hidden" name="pageURL" id="pageURL" value="<?php echo $_SERVER['PHP_SELF']; ?>" /> -->
                         <?php } ?>
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
+                        <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                        <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
                         <input type="hidden" name="formId" id="formId" value="<?php echo $arr['vl_form']; ?>" />
                         <input type="hidden" name="hepatitisSampleId" id="hepatitisSampleId" value="" />
                         <a href="/hepatitis/requests/hepatitis-requests.php" class="btn btn-default"> Cancel</a>
@@ -562,7 +562,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             formId: 'addHepatitisRequestForm'
         });
         if (flag) {
-
+            $('.btn-disabled').attr('disabled', 'yes');
+            $(".btn-disabled").prop("onclick", null).off("click");
 
             if ($('#antiHcv').val() != "" || $('#HBsAg').val() != "") {
 
