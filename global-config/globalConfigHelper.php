@@ -49,7 +49,7 @@ try {
         if (move_uploaded_file($_FILES["instanceLogo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
 
             $resizeObj = new \Vlsm\Helpers\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
-            $resizeObj->resizeToWidth(80);
+            $resizeObj->resizeToWidth(100);
             $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
 
 
@@ -88,7 +88,7 @@ try {
                     $resizeObj->resizeToBestFit(240, 80);
                 }
             } else {
-                $resizeObj->resizeToWidth(80);
+                $resizeObj->resizeToWidth(100);
             }
             $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName);
 

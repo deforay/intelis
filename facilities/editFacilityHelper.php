@@ -188,7 +188,7 @@ try {
 			if (move_uploaded_file($_FILES["labLogo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName)) {
 
 				$resizeObj = new \Vlsm\Helpers\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName);
-				$resizeObj->resizeToWidth(80);
+				$resizeObj->resizeToWidth(100);
 				$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
 				$image = array('facility_logo' => $imageName);
@@ -242,7 +242,7 @@ try {
 						if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {
 
 							$resizeObj = new \Vlsm\Helpers\ImageResize($pathname . $imageName);
-							$resizeObj->resizeToWidth(80);
+							$resizeObj->resizeToWidth(100);
 							$resizeObj->save($pathname . $imageName);
 
 							$image = array('signature' => $imageName);
