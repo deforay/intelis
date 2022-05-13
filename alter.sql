@@ -3112,4 +3112,11 @@ UPDATE `covid19_imported_controls` SET `lab_tech_comments` = approver_comments;
 UPDATE `system_config` SET `value` = '4.5.1' WHERE `system_config`.`name` = 'sc_version';
 
 -- Amit 09-May-2022
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('VL Auto Approve API Results', 'vl_auto_approve_api_results', 'yes', 'vl', 'yes', NULL, NULL, 'active'), ('EID Auto Approve API Results', 'eid_auto_approve_api_results', 'yes', 'eid', 'yes', NULL, NULL, 'active'), ('COVID-19 Auto Approve API Results', 'covid19_auto_approve_api_results', 'yes', 'covid19', 'yes', NULL, NULL, 'active'), ('Hepatitis Auto Approve API Results', 'hepatitis_auto_approve_api_results', 'yes', 'hepatitis', 'yes', NULL, NULL, 'active'), ('TB Auto Approve API Results', 'tb_auto_approve_api_results', 'yes', 'tb', 'yes', NULL, NULL, 'active');
+INSERT INTO `global_config` 
+(`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+VALUES 
+('VL Auto Approve API Results', 'vl_auto_approve_api_results', 'no', 'vl', 'no', NULL, NULL, 'active'), 
+('EID Auto Approve API Results', 'eid_auto_approve_api_results', 'no', 'eid', 'no', NULL, NULL, 'active'), 
+('COVID-19 Auto Approve API Results', 'covid19_auto_approve_api_results', 'no', 'covid19', 'no', NULL, NULL, 'active'), 
+('Hepatitis Auto Approve API Results', 'hepatitis_auto_approve_api_results', 'no', 'hepatitis', 'no', NULL, NULL, 'active'), 
+('TB Auto Approve API Results', 'tb_auto_approve_api_results', 'no', 'tb', 'no', NULL, NULL, 'active');
