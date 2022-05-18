@@ -43,7 +43,7 @@ try {
     } else {
         $post = ($decode['post']);
     }
-    $userId = !empty($post['userId']) ? base64_decode($post['userId']) : null;
+    $userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
     if (!$apiKey) {
         throw new Exception("Invalid API Key. Please check your request parameters.");
     }
@@ -52,18 +52,18 @@ try {
         if (!empty($userId)) {
             $db->where("user_id", $userId);
         } else if (!empty($post['email'])) {
-            $db->where("email", $post['email']);
+            $db->where("email", $db->escape($post['email']));
         }
         $aRow = $db->getOne("user_details");
     }
 
     $data = array(
         'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
-        'user_name' => $post['userName'],
-        'email' => $post['email'],
-        'interface_user_name' => $post['interfaceUserName'],
-        'login_id' => $post['loginId'],
-        'phone_number' => $post['phoneNo'],
+        'user_name' => $db->escape($post['userName']),
+        'email' => $db->escape($post['email']),
+        'interface_user_name' => $db->escape($post['interfaceUserName']),
+        'login_id' => $db->escape($post['loginId']),
+        'phone_number' => $db->escape($post['phoneNo']),
         'user_signature' => !empty($imageName) ? $imageName : null
     );
 
@@ -72,10 +72,10 @@ try {
     }
 
     if (!empty($post['password'])) {
-        $data['password'] = sha1($post['password'] . $systemConfig['passwordSalt']);
+        $data['password'] = sha1($db->escape($post['password']) . $systemConfig['passwordSalt']);
     }
     if (!empty($post['role'])) {
-        $data['role_id'] = $post['role'];
+        $data['role_id'] =  $db->escape($post['role']);
     }
 
     if (isset($_FILES['sign']['name']) && $_FILES['sign']['name'] != "") {
@@ -137,7 +137,7 @@ try {
     );
 
     echo json_encode($payload);
-    error_log( print_r($data['post'], TRUE) );
+    error_log(print_r($data['post'], TRUE));
 
     error_log("Save User Profile API : " . $exc->getMessage());
     error_log($exc->getTraceAsString());
