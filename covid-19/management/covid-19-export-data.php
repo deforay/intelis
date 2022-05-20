@@ -38,7 +38,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 } else if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'drc' && $arr['vl_form'] == 3)) {
 	$reportType = 'generate-export-drc.php';
 } else {
-	$reportType = ' ';
+	$reportType = 'generate-export-data.php';
 }
 
 ?>

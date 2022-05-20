@@ -1,4 +1,6 @@
 <?php
+
+
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -16,7 +18,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
+$domain = '';
 if (php_sapi_name() !== 'cli') {
     // base directory
     $base_dir = __DIR__;
@@ -38,10 +40,10 @@ if (php_sapi_name() !== 'cli') {
 
     // put em all together to get the complete base URL
     $domain = "${protocol}://${domain}${disp_port}${base_url}";
-
-    defined('DOMAIN')
-        || define('DOMAIN', $domain);
 }
+
+defined('DOMAIN')
+    || define('DOMAIN', $domain);
 
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', __DIR__);
@@ -66,6 +68,7 @@ require_once(APPLICATION_PATH . '/system/system.php');
 require_once(APPLICATION_PATH . '/vendor/autoload.php');
 
 $systemConfig = require_once(APPLICATION_PATH . "/configs/config." . APPLICATION_ENV . ".php");
+
 
 // Database Connection
 $db = new MysqliDb(array(
