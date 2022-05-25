@@ -176,17 +176,17 @@ try {
             $status = 9;
         }
 
-        if (isset($data['isSampleRejected']) && $data['isSampleRejected'] = "yes") {
+        if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
             $status = 4;
         } else if (
             isset($globalConfig['covid19_auto_approve_api_results']) &&
             $globalConfig['covid19_auto_approve_api_results'] == "yes" &&
-            (isset($data['isSampleRejected']) && $data['isSampleRejected'] = "no") &&
+            (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
             (isset($data['result']) && !empty($data['result']))
         ) {
             $status = 7;
-        } else if ((isset($data['isSampleRejected']) && $data['isSampleRejected'] = "no") && (isset($data['result']) && !empty($data['result']))) {
+        } else if ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
             $status = 8;
         }
 

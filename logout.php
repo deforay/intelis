@@ -11,7 +11,7 @@ $general = new \Vlsm\Models\General();
 
 //Add event log
 $eventType = 'log-out';
-$action = ucwords($admin[0]['user_name']) . ' logged out';
+$action = $_SESSION['userName'] . ' logged out';
 $resource = 'user';
 $general->activityLog($eventType, $action, $resource);
 

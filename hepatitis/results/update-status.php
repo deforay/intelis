@@ -36,6 +36,14 @@ try {
         $db = $db->where('hepatitis_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
+
+
+        //Add event log
+        $eventType = 'update-sample-status';
+        $action = $_SESSION['userName'] . ' updated Hepatitis samples status';
+        $resource = 'hepatitis-results';
+        $general->activityLog($eventType, $action, $resource);
+
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

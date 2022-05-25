@@ -6,7 +6,7 @@ ob_start();
 $general = new \Vlsm\Models\General();
 $tableName = "form_vl";
 try {
-    
+
     $id = explode(",", $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
@@ -45,6 +45,13 @@ try {
         $db = $db->where('vl_sample_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
+
+
+        //Add event log
+        $eventType = 'update-sample-status';
+        $action = $_SESSION['userName'] . ' updated VL samples status';
+        $resource = 'vl-results';
+        $general->activityLog($eventType, $action, $resource);
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

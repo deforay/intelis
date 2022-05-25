@@ -39,6 +39,13 @@ try {
         $db = $db->where('eid_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
+
+        //Add event log
+        $eventType = 'update-sample-status';
+        $action = $_SESSION['userName'] . ' updated EID samples status';
+        $resource = 'eid-results';
+        $general->activityLog($eventType, $action, $resource);
+
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());
