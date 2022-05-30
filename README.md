@@ -6,13 +6,15 @@ A simple, open source Sample Management System for Viral Load, EID, Covid-19 and
 * Apache 2.x
 * MySQL 5.7.x
 * PHP 7.4.x
+* [Composer](https://getcomposer.org/download/)
 
 
 #### How do I get started?
 * Download the Source Code and put it into your server's root folder (www or htdocs).
-* Open phpMyAdmin or any MySQL client and create a blank database
+* Run ```composer update``` inside the project folder
+* Open phpMyAdmin or any MySQL client and create a blank database called ```vlsm```
 * Import the initial sql file from the releases page
-* Rename configs/config.production.dist.php to configs/config.production.php
+* Rename the file configs/config.production.dist.php to configs/config.production.php
 * Enter Database User, Password, DB Name etc. 
 
 ```php
@@ -25,7 +27,7 @@ $systemConfig['dbName']     = 'vlsm';
 $systemConfig['dbPort']     = 3306;
 $systemConfig['dbCharset']  = 'utf8mb4';
 ```
-* You can enable or disable VL,EID or Covid-19 module by changing the following variables in config.production.php. If a module is disabled, then it does not appear on the User Interface.
+* You can enable or disable VL,EID, Covid-19 etc. modules by changing the following variables in config.production.php. If a module is disabled, then it does not appear on the User Interface.
 
 ```php
 // config.production.php
@@ -39,7 +41,7 @@ $systemConfig['modules']['hepatitis'] = false;
 $systemConfig['modules']['tb'] = false;
 ```
 
-* Next we will set up virtual host for this application. You can find many guides online on this topic. For example to set up on Ubuntu you can follow this guide : https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-18-04
+* Next we will set up virtual host for this application. You can find many guides online on this topic. For example to set up on Ubuntu you can follow this guide : [https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-20-04](https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-20-04)
 * Before we set up the virtual host, ensure that the apache rewrite module is enabled in your Apache webserver settings.
 * Edit your computer's hosts file to make an entry for this virtual host name.
 * Next we create a virtual host pointing to the root folder of the source code. You can see an example below (assuming the full path to VLSM is "/var/www/vlsm") : 
