@@ -67,6 +67,11 @@ $systemConfig['modules']['tb'] = false;
 
 Add the following in crontab (or equivalent for your Operating System)
 
+For eg. if using Ubuntu, in the terminal type : ```sudo EDITOR=gedit crontab -e```
+
+At the end of the file, type this line :
+
+
 ```
 * * * * * cd /var/www/vlsm/ && ./vendor/bin/crunz schedule:run
 ```
