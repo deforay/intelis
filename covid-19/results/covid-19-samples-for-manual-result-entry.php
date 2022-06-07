@@ -172,6 +172,9 @@ if (isset($sWhere) && $sWhere != "") {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+     }
      if (isset($_POST['status']) && trim($_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
                $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != 4';
@@ -218,6 +221,15 @@ if (isset($sWhere) && $sWhere != "") {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+          }
+     }
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          } else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
           }
      }
 
@@ -328,10 +340,10 @@ $output = array(
 
 foreach ($rResult as $aRow) {
      $row = array();
-     $print = '<a href="covid-19-update-result.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="'. _("Result").'"><i class="fa-solid fa-pen-to-square"></i> '. _("Enter Result").'</a>';
+     $print = '<a href="covid-19-update-result.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Enter Result") . '</a>';
      if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
           if (isset($_SESSION['privileges']) && !in_array("edit-locked-covid19-samples", $_SESSION['privileges'])) {
-               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title='. _("Locked").' disabled><i class="fa-solid fa-lock"></i> '. _("Locked").'</a>';
+               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title=' . _("Locked") . ' disabled><i class="fa-solid fa-lock"></i> ' . _("Locked") . '</a>';
           }
      }
 

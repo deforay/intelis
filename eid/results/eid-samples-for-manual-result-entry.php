@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 
 
@@ -31,13 +31,13 @@ $primaryKey = "eid_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name','vl.mother_id','vl.mother_name', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name','vl.mother_id','vl.mother_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name','vl.mother_id','vl.mother_name', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name','vl.mother_id','vl.mother_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      array_unshift($orderColumns, "vl.eid_id");
@@ -167,6 +167,9 @@ if (isset($sWhere) && $sWhere != "") {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+     }
      if (isset($_POST['status']) && trim($_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
                $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != 4';
@@ -213,6 +216,16 @@ if (isset($sWhere) && $sWhere != "") {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+          }
+     }
+
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          } else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
           }
      }
 
@@ -323,10 +336,10 @@ $output = array(
 
 foreach ($rResult as $aRow) {
      $row = array();
-     $print = '<a href="eid-update-result.php?id=' . base64_encode($aRow['eid_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="'. _("Result").'"><i class="fa-solid fa-pen-to-square"></i> '. _("Enter Result").'</a>';
-     if($aRow['result_status'] == 7 && $aRow['locked'] == 'yes'){
-          if( isset($_SESSION['privileges']) && !in_array("edit-locked-eid-samples", $_SESSION['privileges'])){
-               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Locked").'" disabled><i class="fa-solid fa-lock"></i> '. _("Locked").'</a>';
+     $print = '<a href="eid-update-result.php?id=' . base64_encode($aRow['eid_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Enter Result") . '</a>';
+     if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
+          if (isset($_SESSION['privileges']) && !in_array("edit-locked-eid-samples", $_SESSION['privileges'])) {
+               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><i class="fa-solid fa-lock"></i> ' . _("Locked") . '</a>';
           }
      }
 

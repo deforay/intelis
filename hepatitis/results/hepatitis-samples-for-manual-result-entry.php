@@ -165,6 +165,11 @@ if (isset($sWhere) && $sWhere != "") {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
+
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+     }
+
      if (isset($_POST['status']) && trim($_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
                $statusCondition = ' AND (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ="" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  ="") AND vl.result_status != 4';
@@ -211,6 +216,16 @@ if (isset($sWhere) && $sWhere != "") {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
                $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+          }
+     }
+
+     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+          if (isset($setWhr)) {
+               $sWhere = $sWhere . ' AND vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          } else {
+               $setWhr = 'where';
+               $sWhere = ' where ' . $sWhere;
+               $sWhere = $sWhere . ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
           }
      }
 
@@ -293,7 +308,6 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-echo ($sQuery);die();
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");

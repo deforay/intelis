@@ -213,6 +213,9 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
+if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+     $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
+}
 if (isset($_POST['artNo']) && trim($_POST['artNo']) != '') {
      $sWhere[] = " vl.patient_art_no LIKE '%" . $_POST['artNo'] . "%' ";
 }
