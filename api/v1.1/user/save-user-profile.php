@@ -54,27 +54,28 @@ try {
         }
     }
 
+    $filter_factory = new FilterFactory();
+    $filter = $filter_factory->newSubjectFilter();
+
+    $filter->validate('userId')->isNotBlank();
+    $filter->validate('email')->is('email');
+
+    $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/');
+    $filter->sanitize('interface_user_name')->to('regex', '/^[a-zA-Z0-9_]+$/');
+    $filter->sanitize('login_id')->to('regex', '/^[a-zA-Z0-9_]+$/');
+    $filter->sanitize('password')->to('alnum');
+    $filter->sanitize('role')->to('int');
+
+    // filter the object and see if there were failures
+    $success = $filter->apply($post);
+    if (!$success) {
+        // get the failures
+        $failures = $filter->getFailures();
+        error_log($failures->getMessages());
+        throw new Exception("Invalid request. Please check your request parameters.");
+    }
+
     if (!isset($user)) {
-        $filter_factory = new FilterFactory();
-        $filter = $filter_factory->newSubjectFilter();
-
-        $filter->validate('userId')->isNotBlank();
-        $filter->validate('email')->is('email');
-
-        $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/');
-        $filter->sanitize('interface_user_name')->to('regex', '/^[a-zA-Z0-9_]+$/');
-        $filter->sanitize('login_id')->to('regex', '/^[a-zA-Z0-9_]+$/');
-        $filter->sanitize('password')->to('alnum');
-        $filter->sanitize('role')->to('int');
-
-        // filter the object and see if there were failures
-        $success = $filter->apply($post);
-        if (!$success) {
-            // get the failures
-            $failures = $filter->getFailures();
-            error_log($failures->getMessages());
-            throw new Exception("Invalid request. Please check your request parameters.");
-        }
         if (!$apiKey) {
             throw new Exception("Invalid API Key. Please check your request parameters.");
         }
