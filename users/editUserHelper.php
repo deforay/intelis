@@ -102,6 +102,9 @@ try {
         $userType = $general->getSystemConfig('sc_user_type');
         if (!empty($systemConfig['remoteURL']) && $userType == 'vluser') {
 
+            
+            $_POST['login_id'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
+            $_POST['password'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['role'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['status'] = null; // so that we can retain whatever status is on server
             $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";

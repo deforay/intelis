@@ -2,6 +2,8 @@
 
 header('Content-Type: application/json');
 
+use Aura\Filter\FilterFactory;
+
 session_unset(); // no need of session in json response
 $general = new \Vlsm\Models\General();
 $userDb = new \Vlsm\Models\Users();
@@ -47,6 +49,31 @@ try {
     } else {
         $post = ($decode['post']);
     }
+
+
+    $filter_factory = new FilterFactory();
+    $filter = $filter_factory->newSubjectFilter();
+
+
+    $filter->validate('userId')->isNotBlank();
+    $filter->validate('email')->is('email');
+
+    $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/');
+    $filter->sanitize('interface_user_name')->to('regex', '/^[a-zA-Z0-9_]+$/');
+    $filter->sanitize('login_id')->to('regex', '/^[a-zA-Z0-9_]+$/');
+    $filter->sanitize('password')->to('alnum');
+    $filter->sanitize('role')->to('int');
+
+    // filter the object and see if there were failures
+    $success = $filter->apply($post);
+    if (!$success) {
+        // get the failures
+        $failures = $filter->getFailures();
+        error_log($failures->getMessages());
+        throw new Exception("Invalid request. Please check your request parameters.");
+    }
+
+
     $userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
     if (!$apiKey) {
         throw new Exception("Invalid API Key. Please check your request parameters.");
@@ -66,7 +93,6 @@ try {
         'user_name' => $db->escape($post['userName']),
         'email' => $db->escape($post['email']),
         'interface_user_name' => $db->escape($post['interfaceUserName']),
-        'login_id' => $db->escape($post['loginId']),
         'phone_number' => $db->escape($post['phoneNo']),
         'user_signature' => !empty($imageName) ? $imageName : null
     );
@@ -80,6 +106,9 @@ try {
     }
     if (!empty($post['role'])) {
         $data['role_id'] =  $db->escape($post['role']);
+    }
+    if (!empty($post['login_id'])) {
+        $data['login_id'] =  $db->escape($post['login_id']);
     }
 
     if (isset($_FILES['sign']['name']) && $_FILES['sign']['name'] != "") {
@@ -100,7 +129,6 @@ try {
 
     $id = 0;
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
-
         $db = $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
     } else {
@@ -132,8 +160,6 @@ try {
     );
 
     echo json_encode($payload);
-
-
 } catch (Exception $exc) {
     $payload = array(
         'status' => 'failed',
