@@ -324,6 +324,7 @@ foreach ($rResult as $aRow) {
      // $row[] = ucwords($patientFname);
      $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ucwords($aRow['facility_name']);
+     $row[] = ucwords($aRow['lab_name']);
      $row[] = ucwords($aRow['facility_state']);
      $row[] = ucwords($aRow['facility_district']);
      $row[] = ucwords($aRow['sample_name']);
