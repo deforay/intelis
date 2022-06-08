@@ -119,6 +119,8 @@ class ComposerStaticInit6e4cb3a9504605e3f03628d02d1b59e1
         ),
         'A' => 
         array (
+            'Aura\\Filter\\_Config\\' => 20,
+            'Aura\\Filter\\' => 12,
             'Aranyasen\\' => 10,
         ),
     );
@@ -320,6 +322,14 @@ class ComposerStaticInit6e4cb3a9504605e3f03628d02d1b59e1
         'Complex\\' => 
         array (
             0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
+        ),
+        'Aura\\Filter\\_Config\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aura/filter/config',
+        ),
+        'Aura\\Filter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aura/filter/src',
         ),
         'Aranyasen\\' => 
         array (

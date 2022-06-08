@@ -179,7 +179,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         // if this is an old request, then skip
         if (strtotime($formData['sample_collection_date']) < strtotime('-6 months')) {
-            //continue;
+            continue;
         }
 
         $formData['source_of_request'] = 'dhis2';

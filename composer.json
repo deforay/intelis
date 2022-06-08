@@ -18,7 +18,8 @@
         "guzzlehttp/guzzle": "^7.3",
         "halaxa/json-machine": "^0.7.0",
         "lavary/crunz": "^3.0",
-        "league/csv": "^9.0"
+        "league/csv": "^9.0",
+        "aura/filter": "^2.3"
     },
     "autoload": {
         "psr-4": {
