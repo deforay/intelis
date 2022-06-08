@@ -121,6 +121,7 @@ vl.patient_first_name,
 vl.patient_middle_name,
 vl.patient_last_name,
 f.facility_name, 
+testingLab.facility_name as lab_name, 
 s.sample_name, 
 vl.result,
 vl.reason_for_vl_testing,
@@ -157,6 +158,7 @@ vl.result_approved_by
 
 FROM form_vl as vl 
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
 LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
@@ -320,6 +322,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['patient_art_no'];
      $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ucwords($aRow['facility_name']);
+     $row[] = ucwords($aRow['lab_name']);
      $row[] = ucwords($aRow['sample_name']);
      $row[] = $aRow['result'];
 
