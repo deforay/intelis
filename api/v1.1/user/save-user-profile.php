@@ -22,7 +22,7 @@ try {
         /* Check if API token exists */
         $user = $userDb->getAuthToken($authToken);
         // If authentication fails then do not proceed
-        if (empty($user) || empty($user['user_id'])) {
+        if (!isset($user) || empty($user) || empty($user['user_id'])) {
             $response = array(
                 'status' => 'failed',
                 'timestamp' => time(),
@@ -44,40 +44,45 @@ try {
     }
     $apiKey = isset($decode['x-api-key']) && !empty($decode['x-api-key']) ? $decode['x-api-key'] : null;
 
-    if (empty($decode['post']) || $decode['post'] === false) {
+    if ((empty($decode['post']) || $decode['post'] === false) && !isset($user)) {
         throw new Exception("Invalid request. Please check your request parameters.");
     } else {
-        $post = ($decode['post']);
+        if (isset($user)) {
+            $post = $decode;
+        } else {
+            $post = $decode['post'];
+        }
     }
 
+    if (!isset($user)) {
+        $filter_factory = new FilterFactory();
+        $filter = $filter_factory->newSubjectFilter();
 
-    $filter_factory = new FilterFactory();
-    $filter = $filter_factory->newSubjectFilter();
+        $filter->validate('userId')->isNotBlank();
+        $filter->validate('email')->is('email');
 
+        $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/');
+        $filter->sanitize('interface_user_name')->to('regex', '/^[a-zA-Z0-9_]+$/');
+        $filter->sanitize('login_id')->to('regex', '/^[a-zA-Z0-9_]+$/');
+        $filter->sanitize('password')->to('alnum');
+        $filter->sanitize('role')->to('int');
 
-    $filter->validate('userId')->isNotBlank();
-    $filter->validate('email')->is('email');
-
-    $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/');
-    $filter->sanitize('interface_user_name')->to('regex', '/^[a-zA-Z0-9_]+$/');
-    $filter->sanitize('login_id')->to('regex', '/^[a-zA-Z0-9_]+$/');
-    $filter->sanitize('password')->to('alnum');
-    $filter->sanitize('role')->to('int');
-
-    // filter the object and see if there were failures
-    $success = $filter->apply($post);
-    if (!$success) {
-        // get the failures
-        $failures = $filter->getFailures();
-        error_log($failures->getMessages());
-        throw new Exception("Invalid request. Please check your request parameters.");
+        // filter the object and see if there were failures
+        $success = $filter->apply($post);
+        if (!$success) {
+            // get the failures
+            $failures = $filter->getFailures();
+            error_log($failures->getMessages());
+            throw new Exception("Invalid request. Please check your request parameters.");
+        }
+        if (!$apiKey) {
+            throw new Exception("Invalid API Key. Please check your request parameters.");
+        }
+        $userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
+    } else {
+        $userId = !empty($post['userId']) ? $db->escape($post['userId']) : null;
     }
 
-
-    $userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
-    if (!$apiKey) {
-        throw new Exception("Invalid API Key. Please check your request parameters.");
-    }
     $aRow = null;
     if (!empty($userId) || !empty($post['email'])) {
         if (!empty($userId)) {
@@ -87,14 +92,12 @@ try {
         }
         $aRow = $db->getOne("user_details");
     }
-
     $data = array(
         'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
         'user_name' => $db->escape($post['userName']),
         'email' => $db->escape($post['email']),
-        'interface_user_name' => $db->escape($post['interfaceUserName']),
-        'phone_number' => $db->escape($post['phoneNo']),
-        'user_signature' => !empty($imageName) ? $imageName : null
+        'interface_user_name' => json_encode(array_map('trim', explode(",", $db->escape($post['interfaceUserName'])))),
+        'phone_number' => $db->escape($post['phoneNo'])
     );
 
     if (!empty($post['status'])) {
@@ -126,11 +129,11 @@ try {
             $data['user_signature'] = $imageName;
         }
     }
-
     $id = 0;
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
         $db = $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
+        /* 0     */
     } else {
         $data['status'] = 'inactive';
         $id = $db->insert("user_details", $data);
@@ -153,11 +156,18 @@ try {
             }
         }
     }
-
-    $payload = array(
-        'status' => 'success',
-        'timestamp' => time(),
-    );
+    if ($id > 0) {
+        $payload = array(
+            'status' => 'success',
+            'timestamp' => time(),
+        );
+    } else {
+        $payload = array(
+            'status' => 'failed',
+            'message' => 'Something went wrong!',
+            'timestamp' => time(),
+        );
+    }
 
     echo json_encode($payload);
 } catch (Exception $exc) {
