@@ -8,6 +8,10 @@ $userDb = new \Vlsm\Models\Users();
 $app = new \Vlsm\Models\App();
 $jsonResponse = file_get_contents('php://input');
 
+// error_log("------ USER API START-----");
+// error_log($jsonResponse);
+// error_log("------ USER API END -----");
+
 try {
     ini_set('memory_limit', -1);
     $auth = $general->getHeader('Authorization');
@@ -112,11 +116,11 @@ try {
             $uniqueFacilityId = array_unique($selectedFacility);
             for ($j = 0; $j <= count($selectedFacility); $j++) {
                 if (isset($uniqueFacilityId[$j])) {
-                    $data = array(
+                    $insertData = array(
                         'facility_id' => $selectedFacility[$j],
                         'user_id' => $data['user_id'],
                     );
-                    $db->insert("user_facility_map", $data);
+                    $db->insert("user_facility_map", $insertData);
                 }
             }
         }
@@ -127,8 +131,9 @@ try {
         'timestamp' => time(),
     );
 
-    error_log($db->getLastError());
     echo json_encode($payload);
+
+
 } catch (Exception $exc) {
     $payload = array(
         'status' => 'failed',
@@ -142,4 +147,9 @@ try {
     error_log("Save User Profile API : " . $exc->getMessage());
     error_log($exc->getTraceAsString());
 }
+
+
+$trackId = $app->addApiTracking($data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], json_encode($decode), 'REST');
+
+
 exit(0);
