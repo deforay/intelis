@@ -13,23 +13,15 @@ $userId = base64_decode($_POST['userId']);
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '') {
 
-
-        if (!empty($_POST['interfaceUserName'])) {
-
-            $_POST['interfaceUserName'] = json_encode(array_map('trim', explode(",", $_POST['interfaceUserName'])));
-        } else {
-            $_POST['interfaceUserName'] = null;
-        }
-
         $data = array(
-            'user_name'     => $_POST['userName'],
-            'interface_user_name'     => $_POST['interfaceUserName'],
-            'email'         => $_POST['email'],
-            'phone_number'  => $_POST['phoneNo'],
-            'login_id'      => $_POST['loginId'],
-            'role_id'       => $_POST['role'],
-            'status'        => $_POST['status'],
-            'app_access'    => $_POST['appAccessable']
+            'user_name'             => $_POST['userName'],
+            'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", $_POST['interfaceUserName']))) : null,
+            'email'                 => $_POST['email'],
+            'phone_number'          => $_POST['phoneNo'],
+            'login_id'              => $_POST['loginId'],
+            'role_id'               => $_POST['role'],
+            'status'                => $_POST['status'],
+            'app_access'            => $_POST['appAccessable']
         );
         if (isset($_POST['authToken']) && !empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
@@ -43,7 +35,6 @@ try {
             }
             $data['user_signature'] = null;
         }
-
 
         if (isset($_FILES['userSignature']['name']) && $_FILES['userSignature']['name'] != "") {
             if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
@@ -101,8 +92,6 @@ try {
 
         $userType = $general->getSystemConfig('sc_user_type');
         if (!empty($systemConfig['remoteURL']) && $userType == 'vluser') {
-
-            
             $_POST['login_id'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['password'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['role'] = null; // We don't want to unintentionally end up creating admin users on VLSTS

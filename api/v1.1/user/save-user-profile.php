@@ -59,9 +59,15 @@ try {
 
     $filter->validate('userId')->isNotBlank();
     $filter->validate('email')->is('email');
-    $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/', '');
-    $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/', '');
-    $filter->sanitize('login_id')->to('regex', '/^[a-zA-Z0-9_]+$/', '');
+    if (!isset($user)) {
+        $filter->sanitize('loginId')->to('regex', '/^[a-zA-Z0-9_]+$/');
+        $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/');
+        $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/');
+    } else {
+        $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/', '');
+        $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/', '');
+        $filter->sanitize('loginId')->to('regex', '/^[a-zA-Z0-9_]+$/', '');
+    }
     $filter->sanitize('password')->to('alnum');
     $filter->sanitize('role')->to('int');
     // filter the object and see if there were failures
