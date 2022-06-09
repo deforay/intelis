@@ -59,13 +59,11 @@ try {
 
     $filter->validate('userId')->isNotBlank();
     $filter->validate('email')->is('email');
-
-    $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/');
-    $filter->sanitize('interface_user_name')->to('regex', '/^[a-zA-Z0-9_]+$/');
-    $filter->sanitize('login_id')->to('regex', '/^[a-zA-Z0-9_]+$/');
+    $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/', '');
+    $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/', '');
+    $filter->sanitize('login_id')->to('regex', '/^[a-zA-Z0-9_]+$/', '');
     $filter->sanitize('password')->to('alnum');
     $filter->sanitize('role')->to('int');
-
     // filter the object and see if there were failures
     $success = $filter->apply($post);
     if (!$success) {
@@ -74,7 +72,6 @@ try {
         error_log($failures->getMessages());
         throw new Exception("Invalid request. Please check your request parameters.");
     }
-
     if (!isset($user)) {
         if (!$apiKey) {
             throw new Exception("Invalid API Key. Please check your request parameters.");
