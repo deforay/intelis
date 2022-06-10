@@ -60,13 +60,13 @@ try {
     $filter->validate('userId')->isNotBlank();
     $filter->validate('email')->is('email');
     if (!isset($user)) {
-        $filter->sanitize('loginId')->to('regex', '/^[a-zA-Z0-9_]+$/');
-        $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/');
-        $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/');
-    } else {
-        $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/', '');
+        $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/', $post['interfaceUserName']);
         $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/', '');
-        $filter->sanitize('loginId')->to('regex', '/^[a-zA-Z0-9_]+$/', '');
+        $filter->sanitize('loginId')->to('regex', '/^[a-zA-Z0-9_]+$/', $post['loginId']);
+    } else {
+        $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/', $post['interfaceUserName']);
+        $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/', '');
+        $filter->sanitize('loginId')->to('regex', '/^[a-zA-Z0-9_]+$/', $post['loginId']);
     }
     $filter->sanitize('password')->to('alnum');
     $filter->sanitize('role')->to('int');
@@ -187,9 +187,5 @@ try {
     error_log("Save User Profile API : " . $exc->getMessage());
     error_log($exc->getTraceAsString());
 }
-
-
 $trackId = $app->addApiTracking($data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], json_encode($decode), 'REST');
-
-
 exit(0);
