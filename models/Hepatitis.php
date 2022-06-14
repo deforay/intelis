@@ -215,6 +215,16 @@ class Hepatitis
         return $response;
     }
 
+    public function getHepatitisSampleTypes()
+    {
+        $results = $this->db->rawQuery("SELECT * FROM r_hepatitis_sample_type where status='active'");
+        $response = array();
+        foreach ($results as $row) {
+            $response[$row['sample_id']] = $row['sample_name'];
+        }
+        return $response;
+    }    
+
     public function getHepatitisReasonsForTesting()
     {
         $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name FROM r_hepatitis_test_reasons WHERE `test_reason_status` LIKE 'active'");

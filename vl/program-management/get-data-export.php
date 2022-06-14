@@ -61,7 +61,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = " WHERE reason_for_vl_testing != 9999 ";
+$sWhere = " WHERE (reason_for_vl_testing != 9999 or reason_for_vl_testing is null) ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -158,7 +158,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
                         LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
                         LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-                        INNER JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing 
+                        LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing 
                         LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
                         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 //echo $sQuery;die;
@@ -316,7 +316,7 @@ $_SESSION['vlResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
+//echo($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 

@@ -22,6 +22,7 @@ $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=LEhPhsbgfFB";
 $data[] = "fields=attributes[attribute,code,value],enrollments[*],orgUnit,trackedEntityInstance";
 $data[] = "paging=false";
+$data[] = "skipPaging=true";
 
 $url = "/api/trackedEntityInstances.json";
 

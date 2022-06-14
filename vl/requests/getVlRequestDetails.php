@@ -321,7 +321,7 @@ foreach ($rResult as $aRow) {
           $r[] = $aRow['remote_sample_code'];
 
           if (!empty($aRow['app_sample_code'])) {
-               $r[] = $aRow['app_sample_code'];
+               //$r[] = $aRow['app_sample_code'];
           }
 
           $row[] = implode("/", $r);
