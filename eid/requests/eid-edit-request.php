@@ -31,7 +31,7 @@ $labFieldDisabled = '';
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
-
+$systemConfig = $general->getSystemConfig();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);

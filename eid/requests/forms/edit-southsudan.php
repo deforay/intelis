@@ -378,11 +378,15 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
                                         </td>
+                                        <?php if ($usersModel->isAllowed('eid-update-result.php', $systemConfig) && $systemConfig['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] != 'collection-site') { ?>
+                                            <th><label for="">Sample Received Date </label></th>
+                                            <td>
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
+                                            </td>
+                                        <?php } ?>
                                     </tr>
 
                                 </table>
-
-
                             </div>
                         </div>
                         <?php if ($usersModel->isAllowed('eid-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
@@ -393,30 +397,23 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </div>
                                     <table class="table" style="width:100%">
                                         <tr>
-                                            <th><label for="">Sample Received Date </label></th>
-                                            <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
-                                            </td>
                                             <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <td><label for="">Testing Platform </label></td>
                                             <td><select class="form-control" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <td><label>Machine used to test </label></td>
-                                            <td><select class="form-control" id="machineName" name="machineName" title="Please select the machine name" ">
-                                                
-                                            </select>
-                                        </td>
-                                    </tr>
+                                        </tr>
                                         <tr>
+                                            <td><label>Machine used to test </label></td>
+                                            <td>
+                                                <select class="form-control" id="machineName" name="machineName" title="Please select the machine name"></select>
+                                            </td>
                                             <th>Is Sample Rejected ?</th>
                                             <td>
                                                 <select class=" form-control" name="isSampleRejected" id="isSampleRejected" title="Please select if sample is rejected or not">
@@ -425,7 +422,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     <option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
-
+                                        </tr>
+                                        <tr class="rejected" style="display: none;">
                                             <th class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the sample rejection reason">
@@ -448,7 +446,6 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                             </td>
-
 
                                             <th>Result</th>
                                             <td>
