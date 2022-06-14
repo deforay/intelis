@@ -351,8 +351,8 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <td>
                                         <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
                                     </td>
-                                    <?php if ($usersModel->isAllowed('eid-update-result.php', $_SESSION['privileges']) && $systemConfig['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] != 'collection-site') { ?>
-                                        <th><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
+                                    <?php if ($systemConfig['sc_user_type'] != 'remoteuser' && $_SESSION['accessType'] != 'collection-site') { ?>
+                                        <th>Sample Received Date <span class="mandatory">*</span></th>
                                         <td>
                                             <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                         </td>

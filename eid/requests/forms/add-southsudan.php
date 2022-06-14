@@ -64,7 +64,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     </section>
     <!-- Main content -->
     <section class="content">
-
         <div class="box box-default">
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -361,8 +360,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
                                         </td>
-                                        <?php if ($usersModel->isAllowed('eid-update-result.php', $_SESSION['privileges']) && $systemConfig['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] != 'collection-site') { ?>
-                                            <th><label for="">Sample Received Date </label></th>
+                                        <?php if ($systemConfig['sc_user_type'] != 'remoteuser' && $_SESSION['accessType'] != 'collection-site') { ?>
+                                            <th>Sample Received Date</th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
