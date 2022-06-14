@@ -452,7 +452,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
                                             <th>Result</th>
                                             <td>
-                                                <select class="form-control result-focus" name="result" id="result" title="Please select the result">
+                                                <select class="form-control" name="result" id="result" data-result="<?= $eidInfo['result']; ?>" title="Please select the result">
                                                     <option value=''> -- Select -- </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
@@ -664,6 +664,23 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
     $(document).ready(function() {
+
+        $('#result').change(function(e) {
+            var status = false;
+
+            if ($(this).data("result") != "" && $(this).data("result") != $(this).val()) {
+                status = true;
+            }
+
+            if (status) {
+                $('.change-reason').show();
+                $('#reasonForChanging').addClass('isRequired');
+            } else {
+                $('.change-reason').hide();
+                $('#reasonForChanging').removeClass('isRequired');
+            }
+        });
+
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,
