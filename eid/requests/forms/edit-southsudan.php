@@ -495,8 +495,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr class="change-reason">
-                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
-                                            <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <th style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
+                                            <td style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                             <th></th>
                                             <td></td>
                                         </tr>
@@ -666,13 +666,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $(document).ready(function() {
 
         $('#result').change(function(e) {
-            var status = false;
-
             if ($(this).data("result") != "" && $(this).data("result") != $(this).val()) {
-                status = true;
-            }
-
-            if (status) {
                 $('.change-reason').show();
                 $('#reasonForChanging').addClass('isRequired');
             } else {
