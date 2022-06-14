@@ -1,4 +1,4 @@
-	<?php
+<?php
 ob_start();
 
 
@@ -32,6 +32,8 @@ if ($module == 'vl') {
 	$sampleTypes = $covid19Db->getCovid19SampleTypes();
 } else if ($module == 'hepatitis') {
 	$shortCode = 'HEP';
+	$hepDb = new \Vlsm\Models\Hepatitis($db);
+	$sampleTypes = $hepDb->getHepatitisSampleTypes();
 } else if ($module == 'tb') {
 	$tbDb = new \Vlsm\Models\Tb($db);
 	$sampleTypes = $tbDb->getTbSampleTypes();

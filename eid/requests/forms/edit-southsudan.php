@@ -452,7 +452,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
                                             <th>Result</th>
                                             <td>
-                                                <select class="form-control result-focus" name="result" id="result" title="Please select the result">
+                                                <select class="form-control" name="result" id="result" data-result="<?= $eidInfo['result']; ?>" title="Please select the result">
                                                     <option value=''> -- Select -- </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
@@ -495,8 +495,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr class="change-reason">
-                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
-                                            <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <th style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
+                                            <td style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                             <th></th>
                                             <td></td>
                                         </tr>
@@ -664,6 +664,17 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
     $(document).ready(function() {
+
+        $('#result').change(function(e) {
+            if ($(this).data("result") != "" && $(this).data("result") != $(this).val()) {
+                $('.change-reason').show();
+                $('#reasonForChanging').addClass('isRequired');
+            } else {
+                $('.change-reason').hide();
+                $('#reasonForChanging').removeClass('isRequired');
+            }
+        });
+
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,

@@ -181,7 +181,7 @@ foreach ($formResults as $row) {
       "program" => $programID,
       "orgUnit" => $facResult['other_id'],
       "programStage" => $pStage,
-      "status" => "ACTIVE",
+      "status" => "COMPLETED",
       "trackedEntityInstance" => $trackedEntityInstance,
       "dataValues" => array()
     );
@@ -193,9 +193,9 @@ foreach ($formResults as $row) {
       // echo "</pre>";
 
       $response = $dhis2->post("/api/33/events/", $payload);
-      echo "<br><br><pre>";
-      var_dump($response);
-      echo "</pre>";
+      // echo "<br><br><pre>";
+      // var_dump($response);
+      // echo "</pre>";
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {
@@ -210,9 +210,9 @@ foreach ($formResults as $row) {
         $urlParams[] = "strategy=UPDATE";
         $urlParams[] = "importStrategy=CREATE_AND_UPDATE";
         $response = $dhis2->post("/api/33/events/", $payload, $urlParams);
-        echo "<br><br><pre>";
-        var_dump($response);
-        echo "</pre>";
+        // echo "<br><br><pre>";
+        // var_dump($response);
+        // echo "</pre>";
       }
     }
   }

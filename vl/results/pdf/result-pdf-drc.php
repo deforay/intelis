@@ -72,7 +72,7 @@ if (sizeof($requestResult) > 0) {
 	$page = 1;
 	foreach ($requestResult as $result) {
 
-		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%vl%' AND signatory_status like 'active' ORDER BY display_order ASC";
+		$signQuery = "SELECT * FROM lab_report_signatories where lab_id=? AND test_types like '%vl%' AND signatory_status like 'active' ORDER BY display_order ASC";
 		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
 
 		$_SESSION['aliasPage'] = $page;

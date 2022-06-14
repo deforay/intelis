@@ -58,12 +58,13 @@ $processedCounter = 0;
 
 $counter = 0;
 $data = array();
-$data[] = "lastUpdatedDuration=200d";
+$data[] = "lastUpdatedDuration=1d";
 $data[] = "ou=OV9zi20DDXP"; // South Sudan
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=uYjxkTbwRNf";
 $data[] = "fields=attributes[attribute,code,value],enrollments[*],orgUnit,trackedEntityInstance";
 $data[] = "paging=false";
+$data[] = "skipPaging=true";
 
 $url = "/api/trackedEntityInstances.json";
 

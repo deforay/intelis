@@ -433,7 +433,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                         <th>Result</th>
                                         <td>
-                                            <select class="result-focus form-control isRequired" name="result" id="result" title="Please enter the EID Test Result">
+                                            <select class="form-control isRequired" name="result" id="result" data-result="<?= $eidInfo['result']; ?>" title="Please enter the EID Test Result">
                                                 <option value=''> -- Select -- </option>
                                                 <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                     <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
@@ -621,6 +621,17 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
 
     $(document).ready(function() {
+
+        $('#result').change(function(e) {
+            if ($(this).data("result") != "" && $(this).data("result") != $(this).val()) {
+                $('.change-reason').show();
+                $('#reasonForChanging').addClass('isRequired');
+            } else {
+                $('.change-reason').hide();
+                $('#reasonForChanging').removeClass('isRequired');
+            }
+        });
+
         $('.disabledForm input, .disabledForm select , .disabledForm textarea ').attr('disabled', true);
         $('#labId').select2({
             width: '100%',
