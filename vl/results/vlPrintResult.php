@@ -189,6 +189,7 @@ $batResult = $db->rawQuery($batQuery);
 														<th><?php echo _("Patient ID"); ?></th>
 														<th><?php echo _("Patient's Name"); ?></th>
 														<th><?php echo _("Facility Name"); ?></th>
+														<th><?php echo _("Testing Lab"); ?></th>
 														<th><?php echo _("Sample Type"); ?></th>
 														<th><?php echo _("Result"); ?></th>
 														<th><?php echo _("Last Modified On"); ?></th>
@@ -334,6 +335,7 @@ $batResult = $db->rawQuery($batQuery);
 														<th><?php echo _("Patient ID"); ?></th>
 														<th><?php echo _("Patient's Name"); ?></th>
 														<th><?php echo _("Facility Name"); ?></th>
+														<th><?php echo _("Testing Lab"); ?></th>
 														<th><?php echo _("Sample Type"); ?></th>
 														<th><?php echo _("Result"); ?></th>
 														<th><?php echo _("Last Modified On"); ?></th>
@@ -508,6 +510,9 @@ $batResult = $db->rawQuery($batQuery);
 					"sClass": "center"
 				},
 				{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center",
 					"bSortable": false
 				},
@@ -610,6 +615,9 @@ $batResult = $db->rawQuery($batQuery);
 						"sClass": "center"
 					},
 				<?php } ?> {
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{
