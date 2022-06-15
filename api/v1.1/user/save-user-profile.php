@@ -36,6 +36,8 @@ try {
     }
     if (!empty($jsonResponse)) {
         $decode = json_decode($jsonResponse, true);
+        http_response_code(501);
+        exit(0);
     } else if (!empty($_REQUEST)) {
         $decode = $_REQUEST;
         $decode['post'] = json_decode($decode['post'], true);
