@@ -842,6 +842,7 @@ $disable = "disabled = 'disabled'";
 			$('#vlResult').removeClass('isRequired');
 
 			$('#bdl').prop('checked', false);
+			$(".result-fields").val("");
 			$(".result-fields, #bdl").attr("disabled", true);
 			$(".result-fields, #bdl").removeClass("isRequired");
 		} else {

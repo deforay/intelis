@@ -611,6 +611,12 @@ $sFormat = '';
                                                                            <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
                                                                       </div>
                                                                  </div>
+                                                                 <div class="col-md-4 rejectionReason" style="display:none;">
+                                                                      <label class="col-lg-5 control-label" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
+                                                                      <div class="col-lg-7">
+                                                                           <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" />
+                                                                      </div>
+                                                                 </div>
                                                                  <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -1048,6 +1054,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.vlLog').css('display', 'none');
                $("#sampleTestingDateAtLab, #vlResult").val("");
                $('#bdl').prop('checked', false);
+               $(".result-fields").val("");
                $(".result-fields, #bdl").attr("disabled", true);
                $(".result-fields, #bdl").removeClass("isRequired");
                $(".result-span").hide();
