@@ -665,7 +665,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4">
 													<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
 													<div class="col-lg-7">
-														<select name="testingPlatform" id="testingPlatform" class="form-control labSection" title="Please choose VL Testing Platform">
+														<select name="testingPlatform" id="testingPlatform" class="form-control result-optional labSection" title="Please choose VL Testing Platform">
 															<option value="">-- Select --</option>
 															<?php foreach ($importResult as $mName) { ?>
 																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
@@ -1157,6 +1157,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			$(".result-fields").val("");
 			$(".result-fields, #bdl").attr("disabled", true);
 			$(".result-fields, #bdl").removeClass("isRequired");
+			$(".result-optional").removeClass("isRequired");
 		} else {
 			$('.vlResult').css('display', 'block');
 			$('.rejectionReason').hide();
@@ -1171,7 +1172,6 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			$('#rejectionReason').val('');
 			$('.vlLog').css('display', 'block');
 			$("#status").val('');
-
 			$(".result-fields, #bdl").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
 		}

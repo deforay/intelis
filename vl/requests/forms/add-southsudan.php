@@ -570,7 +570,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform">
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control result-optional" title="Please choose VL Testing Platform">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -1059,6 +1059,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".result-fields, #bdl").removeClass("isRequired");
                $(".result-span").hide();
                $('#rejectionReason').addClass('isRequired');
+               $(".result-optional").removeClass("isRequired");
           } else {
                $(".result-fields, #bdl").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
