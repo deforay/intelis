@@ -559,9 +559,9 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date </label>
+                                                                      <label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span" style="display: none;">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" />
+                                                                           <input type="text" class="form-control result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
                                                                       </div>
                                                                  </div>
 
@@ -612,11 +612,11 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4 vlResult">
-                                                                      <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copiesl/ml) </label>
+                                                                      <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" style="width:100%;" onchange="calculateLogValue(this)" />
+                                                                           <input type="text" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" style="width:100%;" onchange="calculateLogValue(this)" disabled />
                                                                            <!-- <span style="display: none;"><input type="hidden" class="" id="tnd" name="tnd" value="yes" title="Please check tnd"> Target Not Detected<br></span> -->
-                                                                           <input type="checkbox" class="" id="bdl" name="bdl" value="yes" title="Please check bdl"> Below Detection Level
+                                                                           <input type="checkbox" class="" id="bdl" name="bdl" value="yes" title="Please check bdl" disabled> Below Detection Level
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -624,11 +624,11 @@ $sFormat = '';
                                                                  <div class=" vlLog col-md-4">
                                                                       <label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control " id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" style="width:100%;" onchange="calculateLogValue(this);" />
+                                                                           <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" style="width:100%;" onchange="calculateLogValue(this);" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
@@ -1046,9 +1046,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.rejectionReason').show();
                $('.vlResult').css('display', 'none');
                $('.vlLog').css('display', 'none');
-
+               $("#sampleTestingDateAtLab, #vlResult").val("");
+               $('#bdl').prop('checked', false);
+               $(".result-fields, #bdl").attr("disabled", true);
+               $(".result-fields, #bdl").removeClass("isRequired");
+               $(".result-span").hide();
                $('#rejectionReason').addClass('isRequired');
           } else {
+               $(".result-fields, #bdl").attr("disabled", false);
+               $(".result-fields").addClass("isRequired");
+               $(".result-span").show();
                $('.vlResult').css('display', 'block');
                $('.vlLog').css('display', 'block');
                $('.rejectionReason').hide();
