@@ -644,12 +644,11 @@ $disable = "disabled = 'disabled'";
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="noResult">Sample Rejected? </label>
 														<div class="col-lg-7">
-															<label class="radio-inline">
-																<input class="labSection" id="noResultYes" name="noResult" value="yes" title="Please check one" type="radio" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'checked="checked"' : ''; ?>> Yes
-															</label>
-															<label class="radio-inline">
-																<input class="labSection" id="noResultNo" name="noResult" value="no" title="Please check one" type="radio" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'checked="checked"' : ''; ?>> No
-															</label>
+															<select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
+																<option value="">-- Select --</option>
+																<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
+																<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
+															</select>
 														</div>
 													</div>
 													<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
@@ -707,7 +706,7 @@ $disable = "disabled = 'disabled'";
 														</div>
 													</div>
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
+														<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
 															<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
 																<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
@@ -717,7 +716,7 @@ $disable = "disabled = 'disabled'";
 												</div>
 												<div class="row">
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+														<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
 															<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
 														</div>
@@ -731,7 +730,7 @@ $disable = "disabled = 'disabled'";
 														</div>
 													</div>
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+														<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
 															<select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
 																<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
@@ -741,7 +740,7 @@ $disable = "disabled = 'disabled'";
 												</div>
 												<div class="row">
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
+														<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
 															<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 														</div>
@@ -794,6 +793,9 @@ $disable = "disabled = 'disabled'";
 </div>
 <script>
 	$(document).ready(function() {
+
+		$("#noResult").trigger('change');
+
 		autoFillFocalDetails();
 		$('#labId').select2({
 			width: '100%',
@@ -833,60 +835,87 @@ $disable = "disabled = 'disabled'";
 		result = ($("#vlResult").length) ? $("#vlResult").val() : '';
 	});
 
-	$("input:radio[name=noResult]").click(function() {
-		if ($(this).val() == 'yes') {
-			$('.rejectionReason').show();
-			$('.vlResult').css('display', 'none');
-			$('#rejectionReason').addClass('isRequired');
-			$('#rejectionDate').addClass('isRequired');
-			$("#status").val(4);
-			$('#vlResult').removeClass('isRequired');
-
-			$('#bdl').prop('checked', false);
-			$(".result-fields").val("");
-			$(".result-fields, #bdl").attr("disabled", true);
-			$(".result-fields, #bdl").removeClass("isRequired");
-			$(".result-optional").removeClass("isRequired");
-		} else {
+	$("#sampleTestingDateAtLab").change(function() {
+		if ($(this).val() != "") {
+			$(".result-fields, #bdl").attr("disabled", false);
+			$(".result-fields").addClass("isRequired");
+			$(".result-span").show();
 			$('.vlResult').css('display', 'block');
+			$('.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionDate').removeClass('isRequired');
 			$('#rejectionReason').val('');
-			$("#status").val('');
-			$('#vlResult').addClass('isRequired');
-			if ($('#tnd').is(':checked') || $('#bdl').is(':checked')) {
-				$('#vlResult').removeClass('isRequired');
-			}
-
+			$(".review-approve-span").hide();
+		}
+	});
+	$("#noResult").change(function() {
+		if ($(this).val() == 'yes') {
+			$('.rejectionReason').show();
+			$('.vlResult').css('display', 'none');
+			$('.vlLog').css('display', 'none');
+			$("#sampleTestingDateAtLab, #vlResult").val("");
+			$('#bdl').prop('checked', false);
+			$(".result-fields").val("");
+			$(".result-fields, #bdl").attr("disabled", true);
+			$(".result-fields, #bdl").removeClass("isRequired");
+			$(".result-span").hide();
+			$(".review-approve-span").show();
+			$('#rejectionReason').addClass('isRequired');
+			$('#rejectionDate').addClass('isRequired');
+			$('#reviewedBy').addClass('isRequired');
+			$('#reviewedOn').addClass('isRequired');
+			$('#approvedBy').addClass('isRequired');
+			$('#approvedOnDateTime').addClass('isRequired');
+			$(".result-optional").removeClass("isRequired");
+		} else if ($(this).val() == 'no') {
 			$(".result-fields, #bdl").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
+			$(".result-span").show();
+			$(".review-approve-span").show();
+			$('.vlResult').css('display', 'block');
+			$('.vlLog').css('display', 'block');
+			$('.rejectionReason').hide();
+			$('#rejectionReason').removeClass('isRequired');
+			$('#rejectionDate').removeClass('isRequired');
+			$('#rejectionReason').val('');
+			$('#reviewedBy').addClass('isRequired');
+			$('#reviewedOn').addClass('isRequired');
+			$('#approvedBy').addClass('isRequired');
+			$('#approvedOnDateTime').addClass('isRequired');
+		} else {
+			$(".result-fields, #bdl").attr("disabled", false);
+			$(".result-fields").removeClass("isRequired");
+			$(".result-optional").removeClass("isRequired");
+			$(".result-span").show();
+			$(".result-fields").val("");
+			$('.vlResult').css('display', 'block');
+			$('.vlLog').css('display', 'block');
+			$('.rejectionReason').hide();
+			$(".result-span").hide();
+			$(".review-approve-span").hide();
+			$('#rejectionReason').removeClass('isRequired');
+			$('#rejectionDate').removeClass('isRequired');
+			$('#rejectionReason').val('');
+			$('#reviewedBy').removeClass('isRequired');
+			$('#reviewedOn').removeClass('isRequired');
+			$('#approvedBy').removeClass('isRequired');
+			$('#approvedOnDateTime').removeClass('isRequired');
 		}
 	});
 
-	$('#tnd').change(function() {
-		if ($('#tnd').is(':checked')) {
-			$('#vlResult,#vlLog').attr('readonly', true);
-			$("#vlResult").removeClass("isRequired");
-			$('#bdl').prop('checked', false).attr('disabled', true);
-		} else {
-			$('#vlResult,#vlLog').attr('readonly', false);
-			$("#vlResult").addClass("isRequired");
-			$('#bdl').attr('disabled', false);
-		}
-	});
 	$('#bdl').change(function() {
 		if ($('#bdl').is(':checked')) {
 			$('#vlResult,#vlLog').attr('readonly', true);
-			$("#vlResult").removeClass("isRequired");
 			$('#tnd').prop('checked', false).attr('disabled', true);
 		} else {
 			$('#vlResult,#vlLog').attr('readonly', false);
-			$("#vlResult").addClass("isRequired");
 			$('#tnd').attr('disabled', false);
+			if ($('#noResult').val() == 'no') {
+				$('#vlResult').addClass('isRequired');
+			}
 		}
 	});
-
 	$('#vlResult,#vlLog').on('input', function(e) {
 		if (this.value == 0) {
 			$('#bdl').attr('checked', true);

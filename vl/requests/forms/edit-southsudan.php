@@ -655,7 +655,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control labSection dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>"   <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
+														<input type="text" class="form-control labSection dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 													</div>
 												</div>
 
@@ -676,12 +676,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="noResult">Sample Rejection </label>
 													<div class="col-lg-7">
-														<label class="radio-inline">
-															<input class="labSection" id="noResultYes" name="noResult" value="yes" title="Please check one" type="radio" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'checked="checked"' : ''; ?>> Yes
-														</label>
-														<label class="radio-inline">
-															<input class="labSection" id="noResultNo" name="noResult" value="no" title="Please check one" type="radio" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'checked="checked"' : ''; ?>> No
-														</label>
+														<select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
+															<option value="">-- Select --</option>
+															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
+															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
+														</select>
 													</div>
 												</div>
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
@@ -709,15 +708,14 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input value="<?php echo $general->humanDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date"/>
+														<input value="<?php echo $general->humanDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 													</div>
 												</div>
 												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 													<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control labSection result-fields" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result_value_absolute']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
-														<!-- <span style="display: none;"><input type="hidden" class="labSection" id="tnd" name="tnd" value="yes" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'checked="checked"' : '';
-																																									echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'disabled="disabled"' : '' ?> title="Please check tnd"> Target Not Detected<br></span> -->
+
 														<input type="checkbox" class="labSection" id="bdl" name="bdl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'checked="checked"' : '';
 																																	echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'disabled="disabled"' : '' ?> title="Please check bdl"> Below Detection Level
 													</div>
@@ -738,7 +736,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
+													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
 															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
@@ -749,7 +747,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											<div class="row">
 												<br>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
 													</div>
@@ -776,7 +774,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											<div class="row">
 												<br>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+													<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
 															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
@@ -784,7 +782,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
+													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 													</div>
@@ -832,6 +830,8 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	provinceName = true;
 	facilityName = true;
 	$(document).ready(function() {
+
+		$("#noResult").trigger('change');
 
 		$(document).on('select2:open', (e) => {
 			const selectId = e.target.id
@@ -1144,52 +1144,75 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			$('.femaleSection').show();
 		}
 	});
-	$("input:radio[name=noResult]").click(function() {
+	$("#sampleTestingDateAtLab").change(function() {
+		if ($(this).val() != "") {
+			$(".result-fields, #bdl").attr("disabled", false);
+			$(".result-fields").addClass("isRequired");
+			$(".result-span").show();
+			$('.vlResult').css('display', 'block');
+			$('.vlLog').css('display', 'block');
+			$('.rejectionReason').hide();
+			$('#rejectionReason').removeClass('isRequired');
+			$('#rejectionDate').removeClass('isRequired');
+			$('#rejectionReason').val('');
+			$(".review-approve-span").hide();
+		}
+	});
+	$("#noResult").change(function() {
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult').css('display', 'none');
-			$("#status").val(4);
-			$('#rejectionReason').addClass('isRequired');
-			$('#rejectionDate').addClass('isRequired');
-			$('#vlResult').removeClass('isRequired');
 			$('.vlLog').css('display', 'none');
-
+			$("#sampleTestingDateAtLab, #vlResult").val("");
 			$('#bdl').prop('checked', false);
 			$(".result-fields").val("");
 			$(".result-fields, #bdl").attr("disabled", true);
 			$(".result-fields, #bdl").removeClass("isRequired");
+			$(".result-span").hide();
+			$(".review-approve-span").show();
+			$('#rejectionReason').addClass('isRequired');
+			$('#rejectionDate').addClass('isRequired');
+			$('#reviewedBy').addClass('isRequired');
+			$('#reviewedOn').addClass('isRequired');
+			$('#approvedBy').addClass('isRequired');
+			$('#approvedOnDateTime').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
-		} else {
+		} else if ($(this).val() == 'no') {
+			$(".result-fields, #bdl").attr("disabled", false);
+			$(".result-fields").addClass("isRequired");
+			$(".result-span").show();
+			$(".review-approve-span").show();
 			$('.vlResult').css('display', 'block');
+			$('.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionDate').removeClass('isRequired');
-			$('#vlResult').addClass('isRequired');
-			if ($('#tnd').is(':checked')) {
-				$('#vlResult').removeClass('isRequired');
-			}
-			if ($('#bdl').is(':checked')) {
-				$('#vlResult').removeClass('isRequired');
-			}
 			$('#rejectionReason').val('');
-			$('.vlLog').css('display', 'block');
-			$("#status").val('');
-			$(".result-fields, #bdl").attr("disabled", false);
-			$(".result-fields").addClass("isRequired");
-		}
-	});
-	$('#tnd').change(function() {
-		if ($('#tnd').is(':checked')) {
-			$('#vlResult,#vlLog').attr('readonly', true);
-			$('#bdl').prop('checked', false).attr('disabled', true);
+			$('#reviewedBy').addClass('isRequired');
+			$('#reviewedOn').addClass('isRequired');
+			$('#approvedBy').addClass('isRequired');
+			$('#approvedOnDateTime').addClass('isRequired');
 		} else {
-			$('#vlResult,#vlLog').attr('readonly', false);
-			$('#bdl').attr('disabled', false);
-			if ($('#noResultNo').is(':checked')) {
-				$('#vlResult').addClass('isRequired');
-			}
+			$(".result-fields, #bdl").attr("disabled", false);
+			$(".result-fields").removeClass("isRequired");
+			$(".result-optional").removeClass("isRequired");
+			$(".result-span").show();
+			$(".result-fields").val("");
+			$('.vlResult').css('display', 'block');
+			$('.vlLog').css('display', 'block');
+			$('.rejectionReason').hide();
+			$(".result-span").hide();
+			$(".review-approve-span").hide();
+			$('#rejectionReason').removeClass('isRequired');
+			$('#rejectionDate').removeClass('isRequired');
+			$('#rejectionReason').val('');
+			$('#reviewedBy').removeClass('isRequired');
+			$('#reviewedOn').removeClass('isRequired');
+			$('#approvedBy').removeClass('isRequired');
+			$('#approvedOnDateTime').removeClass('isRequired');
 		}
 	});
+
 	$('#bdl').change(function() {
 		if ($('#bdl').is(':checked')) {
 			$('#vlResult,#vlLog').attr('readonly', true);
@@ -1197,7 +1220,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 		} else {
 			$('#vlResult,#vlLog').attr('readonly', false);
 			$('#tnd').attr('disabled', false);
-			if ($('#noResultNo').is(':checked')) {
+			if ($('#noResult').val() == 'no') {
 				$('#vlResult').addClass('isRequired');
 			}
 		}

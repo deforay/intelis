@@ -143,16 +143,32 @@ require_once($fileArray[$arr['vl_form']]);
 			$('#sampleTestedDateTime,#result').val('');
 			$('#sampleTestedDateTime,#result').removeClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
+			$('#reviewedBy').addClass('isRequired');
+			$('#reviewedOn').addClass('isRequired');
+			$('#approvedBy').addClass('isRequired');
+			$('#approvedOnDateTime').addClass('isRequired');
 		} else if ($('#isSampleRejected').val() == "no") {
 			$('.rejected').hide();
 			$('#sampleRejectionReason').removeClass('isRequired');
 			$('#sampleTestedDateTime').addClass('isRequired');
 			$('#result').addClass('isRequired');
+			$('#testedBy').addClass('isRequired');
+			$('#reviewedBy').addClass('isRequired');
+			$('#reviewedOn').addClass('isRequired');
+			$('#approvedBy').addClass('isRequired');
+			$('#approvedOnDateTime').addClass('isRequired');
 		} else {
 			$('.rejected').hide();
 			$('#sampleRejectionReason').removeClass('isRequired');
 			$('#sampleTestedDateTime').removeClass('isRequired');
 			$('#result').removeClass('isRequired');
+			$('#testedBy').removeClass('isRequired');
+			$(".result-optional").removeClass("isRequired");
+
+			$('#reviewedBy').removeClass('isRequired');
+			$('#reviewedOn').removeClass('isRequired');
+			$('#approvedBy').removeClass('isRequired');
+			$('#approvedOnDateTime').removeClass('isRequired');
 		}
 
 		if ($('#result').val() == "") {

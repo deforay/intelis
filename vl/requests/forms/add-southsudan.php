@@ -581,12 +581,11 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="noResult">Sample Rejected? </label>
                                                                       <div class="col-lg-7">
-                                                                           <label class="radio-inline">
-                                                                                <input class="" id="noResultYes" name="noResult" value="yes" title="Please check one" type="radio"> Yes
-                                                                           </label>
-                                                                           <label class="radio-inline">
-                                                                                <input class="" id="noResultNo" name="noResult" value="no" title="Please check one" type="radio"> No
-                                                                           </label>
+                                                                           <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
+                                                                                <option value="">-- Select --</option>
+                                                                                <option value="yes">Yes</option>
+                                                                                <option value="no">No</option>
+                                                                           </select>
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4 rejectionReason" style="display:none;">
@@ -640,7 +639,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
+                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
                                                                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
@@ -650,7 +649,7 @@ $sFormat = '';
                                                             </div><br />
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+                                                                      <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                       </div>
@@ -664,7 +663,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+                                                                      <label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by">
                                                                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
@@ -674,7 +673,7 @@ $sFormat = '';
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
+                                                                      <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
                                                                       </div>
@@ -1047,7 +1046,21 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.femaleSection').show();
           }
      });
-     $("input:radio[name=noResult]").click(function() {
+     $("#sampleTestingDateAtLab").change(function() {
+          if ($(this).val() != "") {
+               $(".result-fields, #bdl").attr("disabled", false);
+               $(".result-fields").addClass("isRequired");
+               $(".result-span").show();
+               $('.vlResult').css('display', 'block');
+               $('.vlLog').css('display', 'block');
+               $('.rejectionReason').hide();
+               $('#rejectionReason').removeClass('isRequired');
+               $('#rejectionDate').removeClass('isRequired');
+               $('#rejectionReason').val('');
+               $(".review-approve-span").hide();
+          }
+     });
+     $("#noResult").change(function() {
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
                $('.vlResult').css('display', 'none');
@@ -1058,38 +1071,59 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".result-fields, #bdl").attr("disabled", true);
                $(".result-fields, #bdl").removeClass("isRequired");
                $(".result-span").hide();
+               $(".review-approve-span").show();
                $('#rejectionReason').addClass('isRequired');
                $('#rejectionDate').addClass('isRequired');
+               $('#reviewedBy').addClass('isRequired');
+               $('#reviewedOn').addClass('isRequired');
+               $('#approvedBy').addClass('isRequired');
+               $('#approvedOnDateTime').addClass('isRequired');
                $(".result-optional").removeClass("isRequired");
-          } else {
+          } else if ($(this).val() == 'no') {
                $(".result-fields, #bdl").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
                $(".result-span").show();
+               $(".review-approve-span").show();
                $('.vlResult').css('display', 'block');
                $('.vlLog').css('display', 'block');
                $('.rejectionReason').hide();
                $('#rejectionReason').removeClass('isRequired');
                $('#rejectionDate').removeClass('isRequired');
                $('#rejectionReason').val('');
-          }
-     });
-     $('#tnd').change(function() {
-          if ($('#tnd').is(':checked')) {
-               $('#vlResult,#vlLog').attr('readonly', true);
-               $('#vlResult,#vlLog').removeClass('isRequired');
-               $('#bdl').attr('disabled', true);
+               $('#reviewedBy').addClass('isRequired');
+               $('#reviewedOn').addClass('isRequired');
+               $('#approvedBy').addClass('isRequired');
+               $('#approvedOnDateTime').addClass('isRequired');
           } else {
-               $('#vlResult,#vlLog').attr('readonly', false);
-               $('#bdl').attr('disabled', false);
+               $(".result-fields, #bdl").attr("disabled", false);
+               $(".result-fields").removeClass("isRequired");
+               $(".result-optional").removeClass("isRequired");
+               $(".result-span").show();
+               $(".result-fields").val("");
+               $('.vlResult').css('display', 'block');
+               $('.vlLog').css('display', 'block');
+               $('.rejectionReason').hide();
+               $(".result-span").hide();
+               $(".review-approve-span").hide();
+               $('#rejectionReason').removeClass('isRequired');
+               $('#rejectionDate').removeClass('isRequired');
+               $('#rejectionReason').val('');
+               $('#reviewedBy').removeClass('isRequired');
+               $('#reviewedOn').removeClass('isRequired');
+               $('#approvedBy').removeClass('isRequired');
+               $('#approvedOnDateTime').removeClass('isRequired');
           }
      });
      $('#bdl').change(function() {
           if ($('#bdl').is(':checked')) {
                $('#vlResult,#vlLog').attr('readonly', true);
-               $('#tnd').attr('disabled', true);
+               $('#tnd').prop('checked', false).attr('disabled', true);
           } else {
                $('#vlResult,#vlLog').attr('readonly', false);
                $('#tnd').attr('disabled', false);
+               if ($('#noResult').val() == 'no') {
+                    $('#vlResult').addClass('isRequired');
+               }
           }
      });
      $('#vlResult,#vlLog').on('input', function(e) {
