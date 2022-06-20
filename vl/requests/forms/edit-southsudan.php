@@ -709,7 +709,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input value="<?php echo $general->humanDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" />
+														<input value="<?php echo $general->humanDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" />
 													</div>
 												</div>
 												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
@@ -1150,6 +1150,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			$('.vlResult').css('display', 'none');
 			$("#status").val(4);
 			$('#rejectionReason').addClass('isRequired');
+			$('#rejectionDate').addClass('isRequired');
 			$('#vlResult').removeClass('isRequired');
 			$('.vlLog').css('display', 'none');
 
@@ -1162,6 +1163,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			$('.vlResult').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
+			$('#rejectionDate').removeClass('isRequired');
 			$('#vlResult').addClass('isRequired');
 			if ($('#tnd').is(':checked')) {
 				$('#vlResult').removeClass('isRequired');

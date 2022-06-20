@@ -579,7 +579,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="noResult">Sample Rejected ? </label>
+                                                                      <label class="col-lg-5 control-label" for="noResult">Sample Rejected? </label>
                                                                       <div class="col-lg-7">
                                                                            <label class="radio-inline">
                                                                                 <input class="" id="noResultYes" name="noResult" value="yes" title="Please check one" type="radio"> Yes
@@ -1059,6 +1059,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".result-fields, #bdl").removeClass("isRequired");
                $(".result-span").hide();
                $('#rejectionReason').addClass('isRequired');
+               $('#rejectionDate').addClass('isRequired');
                $(".result-optional").removeClass("isRequired");
           } else {
                $(".result-fields, #bdl").attr("disabled", false);
@@ -1068,6 +1069,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.vlLog').css('display', 'block');
                $('.rejectionReason').hide();
                $('#rejectionReason').removeClass('isRequired');
+               $('#rejectionDate').removeClass('isRequired');
                $('#rejectionReason').val('');
           }
      });
