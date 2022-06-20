@@ -581,7 +581,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4 vlResult">
-                                                                      <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copiesl/ml) </label>
+                                                                      <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" />
                                                                            <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check <20">
