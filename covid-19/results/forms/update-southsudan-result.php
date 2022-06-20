@@ -448,7 +448,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                                     </td>
                                                                     <td><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime isRequired" placeholder="Tested on" title="Please enter the tested on for row <?php echo ($indexKey + 1); ?>" /></td>
                                                                     <td>
-                                                                        <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input isRequired" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
+                                                                        <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input isRequired" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
                                                                             <?php $display = "display:none;";
                                                                             if ((strpos($covid19TestInfo[$indexKey]['test_name'], 'RDT') !== false)) {
                                                                                 $display = "";

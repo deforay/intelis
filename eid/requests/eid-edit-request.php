@@ -169,8 +169,8 @@ require_once($fileArray[$arr['vl_form']]);
             $('#sampleRejectionReason').addClass('isRequired');
             $('#sampleTestedDateTime,#result').val('');
             $('#sampleTestedDateTime,#result').removeClass('isRequired');
+            $(".result-optional").removeClass("isRequired");
         } else if ($('#isSampleRejected').val() == "no") {
-
             $('.rejected').hide();
             $('#sampleRejectionReason').val('');
             $('#sampleRejectionReason').removeClass('isRequired');

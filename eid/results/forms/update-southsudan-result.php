@@ -379,12 +379,12 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                     <tr>
                                         <th>Testing Platform</th>
-                                        <td><select name="eidPlatform" id="eidPlatform" class="form-control isRequired" title="Please select the testing platform">
+                                        <td><select name="eidPlatform" id="eidPlatform" class="form-control isRequired result-optional" title="Please select the testing platform">
                                                 <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                         <th>Machine used to test </th>
-                                        <td><select name="machineName" id="machineName" class="form-control" title="Please select the machine name" ">
+                                        <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name" ">
                                                 <?= $general->generateSelectOptions($machine, $eidInfo['import_machine_name'], '-- Select --'); ?>
                                             </select>
                                         </td>

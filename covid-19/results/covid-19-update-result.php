@@ -263,6 +263,7 @@ if ($arr['vl_form'] == 1) {
 			$('#sampleTestedDateTime,#result,.test-name-table-input').removeClass('isRequired');
 			$('#result').prop('disabled', true);
 			$('#sampleRejectionReason').prop('disabled', false);
+			$(".result-optional").removeClass("isRequired");
 		} else if (val == 'no') {
 			$('#rejectionDate').val('');
 			$('.show-rejection').hide();

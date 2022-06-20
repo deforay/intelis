@@ -385,7 +385,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <td><label for="">Testing Platform </label></td>
-                                            <td><select name="eidPlatform" id="eidPlatform" class="form-control" title="Please select the testing platform">
+                                            <td><select name="eidPlatform" id="eidPlatform" class="form-control result-optional" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -393,7 +393,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                         <tr>
                                             <td><label for="">Machine used to test </label></td>
-                                            <td><select name="machineName" id="machineName" class="form-control" title="Please select the machine name" ">
+                                            <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name" ">
                                                 <option value="">-- Select --</option>
                                             </select>
                                             <th>Is Sample Rejected ?</th>
@@ -401,7 +401,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <select class=" form-control" name="isSampleRejected" id="isSampleRejected" title="Please select if the sample is rejected or not">
                                                     <option value=''> -- Select -- </option>
                                                     <option value="yes"> Yes </option>
-                                                    <option value="no" /> No </option>
+                                                    <option value="no"> No </option>
                                                 </select>
                                             </td>
                                             </td>

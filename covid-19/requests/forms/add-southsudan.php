@@ -438,7 +438,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             </td>
                                                             <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                             <td>
-                                                                <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
+                                                                <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
                                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                 </select>
                                                             </td>

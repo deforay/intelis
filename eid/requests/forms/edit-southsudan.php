@@ -404,7 +404,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 </select>
                                             </td>
                                             <td><label for="">Testing Platform </label></td>
-                                            <td><select class="form-control" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
+                                            <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -412,7 +412,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <tr>
                                             <td><label>Machine used to test </label></td>
                                             <td>
-                                                <select class="form-control" id="machineName" name="machineName" title="Please select the machine name"></select>
+                                                <select class="form-control result-optional" id="machineName" name="machineName" title="Please select the machine name"></select>
                                             </td>
                                             <th>Is Sample Rejected ?</th>
                                             <td>

@@ -293,6 +293,7 @@ if (file_exists($fileArray[$arr['vl_form']])) {
             $('#result').prop('disabled', true);
             $('#sampleRejectionReason').prop('disabled', false);
             $('#sampleTestedDateTime,#result,.test-name-table-input').val('');
+            $(".result-optional").removeClass("isRequired");
         } else if (val == 'no') {
             $('#sampleRejectionReason').val('');
             $('#rejectionDate').val('');
