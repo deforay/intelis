@@ -758,7 +758,7 @@ $disable = "disabled = 'disabled'";
 												<div class="row reasonForResultChanges" style="display:none;">
 													<br>
 													<div class="col-md-6 ">
-														<label class="col-lg-2 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span> </label>
+														<label class="col-lg-6 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span> </label>
 														<div class="col-lg-10">
 															<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
 														</div>
