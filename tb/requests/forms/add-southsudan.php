@@ -666,6 +666,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 
 
 	function validateNow() {
+		if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+			$("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+		}
 		if ($('#isResultAuthorized').val() != "yes") {
 			$('#authorizedBy,#authorizedOn').removeClass('isRequired');
 		}

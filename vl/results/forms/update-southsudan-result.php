@@ -748,9 +748,9 @@ $disable = "disabled = 'disabled'";
 												</div>
 												<br>
 												<div class="row">
-													<div class="col-md-8">
-														<label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
-														<div class="col-lg-10">
+													<div class="col-md-6">
+														<label class="col-lg-6 control-label" for="labComments">Lab Tech. Comments </label>
+														<div class="col-lg-6">
 															<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
 														</div>
 													</div>
@@ -759,7 +759,7 @@ $disable = "disabled = 'disabled'";
 													<br>
 													<div class="col-md-6 ">
 														<label class="col-lg-6 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span> </label>
-														<div class="col-lg-10">
+														<div class="col-lg-6">
 															<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
 														</div>
 													</div>

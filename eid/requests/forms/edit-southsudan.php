@@ -640,6 +640,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     }
 
     function validateNow() {
+        if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+            $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+        }
+
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         flag = deforayValidator.init({

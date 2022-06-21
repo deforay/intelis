@@ -708,6 +708,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 
 
 	function validateNow() {
+		if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+			$("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+		}
 		if ($('#isResultAuthorized').val() != "yes") {
 			$('#authorizedBy,#authorizedOn').removeClass('isRequired');
 		}

@@ -1159,6 +1159,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
+          if ($("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
+               $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+          }
+
           flag = deforayValidator.init({
                formId: 'vlRequestFormSs'
           });

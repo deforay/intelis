@@ -630,6 +630,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         flag = deforayValidator.init({
             formId: 'addEIDRequestForm'
         });
+        if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+            $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+        }
+
         if (flag) {
             $('.btn-disabled').attr('disabled', 'yes');
             $(".btn-disabled").prop("onclick", null).off("click");

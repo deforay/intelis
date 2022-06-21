@@ -953,6 +953,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     function validateNow() {
+        if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+            $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+        }
+
         if ($('#isResultAuthorized').val() != "yes") {
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
         }
