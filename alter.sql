@@ -3120,3 +3120,6 @@ VALUES
 ('COVID-19 Auto Approve API Results', 'covid19_auto_approve_api_results', 'no', 'covid19', 'no', NULL, NULL, 'active'), 
 ('Hepatitis Auto Approve API Results', 'hepatitis_auto_approve_api_results', 'no', 'hepatitis', 'no', NULL, NULL, 'active'), 
 ('TB Auto Approve API Results', 'tb_auto_approve_api_results', 'no', 'tb', 'no', NULL, NULL, 'active');
+
+-- Amit 21-Jun-2022 version 4.5.2
+UPDATE `system_config` SET `value` = '4.5.2' WHERE `system_config`.`name` = 'sc_version';
