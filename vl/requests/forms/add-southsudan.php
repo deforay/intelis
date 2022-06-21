@@ -626,7 +626,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 <div class=" vlLog col-md-4">
+                                                                 <div class="vlLog col-md-4">
                                                                       <label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" style="width:100%;" onchange="calculateLogValue(this);" />
