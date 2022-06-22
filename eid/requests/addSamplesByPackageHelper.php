@@ -19,8 +19,13 @@ foreach ($sampleResult as $sampleRow) {
         $provinceResult = $db->rawQueryOne($provinceQuery);
         $provinceCode = $provinceResult['province_code'];
     }
-
-
+    if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
+        $testDate = explode(" ", $_POST['testDate']);
+        $_POST['testDate'] = $general->dateFormat($testDate[0]);
+        $_POST['testDate'] .= " " . $testDate[1];
+    } else {
+        $_POST['testDate'] = null;
+    }
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
@@ -31,6 +36,7 @@ foreach ($sampleResult as $sampleRow) {
         $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
         $eidData['result_status'] = 6;
+        $eidData['sample_tested_datetime'] = $_POST['testDate'];
         $eidData['last_modified_by'] = $_SESSION['userId'];
         $eidData['last_modified_datetime'] = $general->getDateTime();
 

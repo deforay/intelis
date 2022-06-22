@@ -18,18 +18,25 @@ foreach ($sampleResult as $sampleRow) {
         $provinceResult = $db->rawQueryOne($provinceQuery);
         $provinceCode = $provinceResult['province_code'];
     }
-
+    if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
+        $testDate = explode(" ", $_POST['testDate']);
+        $_POST['testDate'] = $general->dateFormat($testDate[0]);
+        $_POST['testDate'] .= " " . $testDate[1];
+    } else {
+        $_POST['testDate'] = null;
+    }
 
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $hepatitisObj->generatehepatitisSampleCode($sampleRow['hepatitis_test_type'],$provinceCode, $general->humanDateFormat($sampleRow['sample_collection_date']));
+        $sampleJson = $hepatitisObj->generatehepatitisSampleCode($sampleRow['hepatitis_test_type'], $provinceCode, $general->humanDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
         $hepatitisData = array();
         $hepatitisData['sample_code'] = $sampleData['sampleCode'];
         $hepatitisData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $hepatitisData['sample_code_key'] = $sampleData['sampleCodeKey'];
         $hepatitisData['result_status'] = 6;
+        $hepatitisData['sample_tested_datetime'] = $_POST['testDate'];
         $hepatitisData['last_modified_by'] = $_SESSION['userId'];
         $hepatitisData['last_modified_datetime'] = $general->getDateTime();
 

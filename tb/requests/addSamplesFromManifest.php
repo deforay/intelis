@@ -14,10 +14,10 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-plus"></i> <?php echo _("Add Samples from Manifest");?></h1>
+		<h1><i class="fa-solid fa-plus"></i> <?php echo _("Add Samples from Manifest"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("TB Test Request");?></li>
+			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("TB Test Request"); ?></li>
 		</ol>
 	</section>
 
@@ -28,18 +28,21 @@ require_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
-							<td style="width:20%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code");?> :</b></td>
+							<td style="width:20%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code"); ?> :</b></td>
 							<td>
-								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _('Sample manifest code');?>" title="<?php echo _('Please enter the sample manifest code');?>" style="background:#fff;" />
+								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _('Sample manifest code'); ?>" title="<?php echo _('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td>
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span><?php echo _("Submit");?></span></button>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span><?php echo _("Submit"); ?></span></button>
 							</td>
 						</tr>
 						<tr>
+							<th style="width:50%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
+							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select Sample Received at Testing Lab" readonly /></td>
+
 							<td style="width:100%;" colspan="3">
-								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa-solid fa-square-check"></i> <?php echo _("Activate Samples");?></a>
+								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa-solid fa-square-check"></i> <?php echo _("Activate Samples"); ?></a>
 							</td>
 						</tr>
 					</table>
@@ -48,25 +51,25 @@ require_once(APPLICATION_PATH . '/header.php');
 						<table id="tbManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
-									<th><?php echo _("Sample Code");?></th>
+									<th><?php echo _("Sample Code"); ?></th>
 									<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
-										<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
+										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 									<?php } ?>
-									<th><?php echo _("Sample Collection");?><br /> <?php echo _("Date");?></th>
-									<th><?php echo _("Batch Code");?></th>
-									<th><?php echo _("Facility Name");?></th>
-									<th><?php echo _("Patient ID");?></th>
-									<th><?php echo _("Patient Name");?></th>
-									<th><?php echo _("Province/State");?></th>
-									<th><?php echo _("District/County");?></th>
-									<th><?php echo _("Result");?></th>
-									<th><?php echo _("Last Modified On");?></th>
-									<th><?php echo _("Status");?></th>
+									<th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
+									<th><?php echo _("Batch Code"); ?></th>
+									<th><?php echo _("Facility Name"); ?></th>
+									<th><?php echo _("Patient ID"); ?></th>
+									<th><?php echo _("Patient Name"); ?></th>
+									<th><?php echo _("Province/State"); ?></th>
+									<th><?php echo _("District/County"); ?></th>
+									<th><?php echo _("Result"); ?></th>
+									<th><?php echo _("Last Modified On"); ?></th>
+									<th><?php echo _("Status"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="14" class="dataTables_empty" style="text-align:center;"><?php echo _("Please enter the manifest code then submit");?>!</td>
+									<td colspan="14" class="dataTables_empty" style="text-align:center;"><?php echo _("Please enter the manifest code then submit"); ?>!</td>
 								</tr>
 							</tbody>
 						</table>
@@ -193,7 +196,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					}
 				});
 		} else {
-			alert("<?php echo _("Please enter the Sample Manifest Code then hit submit");?>");
+			alert("<?php echo _("Please enter the Sample Manifest Code then hit submit"); ?>");
 		}
 	}
 
@@ -203,7 +206,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
-				message: "<h3><?php echo _("Trying to sync Relevant Manifest Code Test Requests");?><br><?php echo _("Please wait");?>...</h3>"
+				message: "<h3><?php echo _("Trying to sync Relevant Manifest Code Test Requests"); ?><br><?php echo _("Please wait"); ?>...</h3>"
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
@@ -237,19 +240,43 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	<?php } ?>
 
 	function activeSampleCode() {
+		if ($("#testDate").val() == "") {
+			alert("Please select the sample received at testing lab");
+			return false;
+		}
 		$.blockUI();
 		$.post("/tb/requests/addSamplesByPackageHelper.php", {
-				sampleId: $("#sampleId").val()
+				sampleId: $("#sampleId").val(),
+				testDate: $("#testDate").val()
 			},
 			function(data) {
 				if (data > 0) {
-					alert("<?php echo _("Samples from this Manifest have been activated");?>");
+					alert("<?php echo _("Samples from this Manifest have been activated"); ?>");
 					$('.activateSample').hide();
 				}
 				oTable.fnDraw();
 				$.unblockUI();
 			});
 	}
+	$(document).ready(function() {
+		$('.dateTime').datetimepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			onSelect: function(date) {
+				var dt2 = $('#sampleDispatchedDate');
+				var startDate = $(this).datetimepicker('getDate');
+				var minDate = $(this).datetimepicker('getDate');
+				//dt2.datetimepicker('setDate', minDate);
+				startDate.setDate(startDate.getDate() + 1000000);
+				dt2.datetimepicker('option', 'maxDate', "Today");
+				dt2.datetimepicker('option', 'minDate', minDate);
+				dt2.datetimepicker('option', 'minDateTime', minDate);
+			}
+		});
+	});
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
