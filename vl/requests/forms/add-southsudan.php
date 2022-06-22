@@ -143,7 +143,7 @@ $sFormat = '';
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="fillFacilityDetails();">
+                                                       <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="fillFacilityDetails();setSampleDispatchDate();">
                                                             <?php echo $facility;  ?>
                                                        </select>
                                                   </div>
@@ -193,7 +193,7 @@ $sFormat = '';
                                              <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                                   <div class="col-md-4 col-md-4">
                                                        <label for="labId">Lab Name </label>
-                                                       <select name="labId" id="labId" class="select2 form-control" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
+                                                       <select name="labId" id="labId" class="select2 form-control" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
                                                             <option value="">-- Select --</option>
                                                             <?php foreach ($lResult as $labName) { ?>
                                                                  <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?php echo ucwords($labName['facility_name']); ?></option>
@@ -286,7 +286,7 @@ $sFormat = '';
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();sampleCodeGeneration();">
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();sampleCodeGeneration();setSampleDispatchDate();">
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -758,10 +758,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     var dt2 = $('#sampleDispatchedDate');
                     var startDate = $(this).datetimepicker('getDate');
                     var minDate = $(this).datetimepicker('getDate');
-                    dt2.datetimepicker('setDate', minDate);
+                    //dt2.datetimepicker('setDate', minDate);
                     startDate.setDate(startDate.getDate() + 1000000);
-                    //sets dt2 maxDate to the last day of 30 days window
-                    dt2.datetimepicker('option', 'maxDate', startDate);
+                    dt2.datetimepicker('option', 'maxDate', "Today");
                     dt2.datetimepicker('option', 'minDate', minDate);
                     dt2.datetimepicker('option', 'minDateTime', minDate);
                }
@@ -771,12 +770,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                changeYear: true,
                dateFormat: 'dd-M-yy',
                timeFormat: "HH:mm",
-               minDate: "Today",
                yearRange: "-100:+100",
           });
           $('#labId').select2({
                width: '100%',
                placeholder: "Select Testing Lab"
+          });
+          $('#fName').select2({
+               width: '100%',
+               placeholder: "Select Clinic/Health Center"
           });
           $('#reviewedBy').select2({
                width: '100%',
@@ -1151,6 +1153,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
+     function setSampleDispatchDate() {
+          if ($("#labId").val() != "" && $("#labId").val() == $("#fName").val() && $('#sampleDispatchedDate').val() == "") {
+               $('#sampleDispatchedDate').val($("sampleCollectionDate").val());
+          }
+     }
+
      function validateNow() {
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
@@ -1158,9 +1166,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
-          }
-          if ($("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
-               $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
           }
 
           flag = deforayValidator.init({

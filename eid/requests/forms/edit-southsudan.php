@@ -686,10 +686,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                 var dt2 = $('#sampleDispatchedDate');
                 var startDate = $(this).datetimepicker('getDate');
                 var minDate = $(this).datetimepicker('getDate');
-                dt2.datetimepicker('setDate', minDate);
+                //dt2.datetimepicker('setDate', minDate);
                 startDate.setDate(startDate.getDate() + 1000000);
-                //sets dt2 maxDate to the last day of 30 days window
-                dt2.datetimepicker('option', 'maxDate', startDate);
+                dt2.datetimepicker('option', 'maxDate', "Today");
                 dt2.datetimepicker('option', 'minDate', minDate);
                 dt2.datetimepicker('option', 'minDateTime', minDate);
             }
@@ -699,7 +698,6 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
-            minDate: "Today",
             yearRange: "-100:+100",
         });
         $('#labId').select2({
