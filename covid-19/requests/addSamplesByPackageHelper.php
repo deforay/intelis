@@ -1,9 +1,4 @@
 <?php
-
-
-
-
-
 $general = new \Vlsm\Models\General();
 $covid19Obj = new \Vlsm\Models\Covid19();
 
@@ -19,8 +14,13 @@ foreach ($sampleResult as $sampleRow) {
         $provinceResult = $db->rawQueryOne($provinceQuery);
         $provinceCode = $provinceResult['province_code'];
     }
-
-
+    if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
+        $testDate = explode(" ", $_POST['testDate']);
+        $_POST['testDate'] = $general->dateFormat($testDate[0]);
+        $_POST['testDate'] .= " " . $testDate[1];
+    } else {
+        $_POST['testDate'] = null;
+    }
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
@@ -31,6 +31,7 @@ foreach ($sampleResult as $sampleRow) {
         $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
         $covid19Data['result_status'] = 6;
+        $covid19Data['sample_tested_datetime'] = $_POST['testDate'];
         $covid19Data['last_modified_by'] = $_SESSION['userId'];
         $covid19Data['last_modified_datetime'] = $general->getDateTime();
 
