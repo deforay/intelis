@@ -689,9 +689,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 	}
 
 	$(document).ready(function() {
-		/* $("#labId,#facilityId,#sampleDispatchedDate").change(function() {
+		/* $("#labId,#facilityId,#sampleCollectionDate").change(function() {
 			if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-				$("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
 			}
 		}); */
 		$(".select2").select2();

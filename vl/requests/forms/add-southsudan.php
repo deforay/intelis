@@ -747,7 +747,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      provinceName = true;
      facilityName = true;
      $(document).ready(function() {
-
+          $("#labId,#fName,#sampleCollectionDate").change(function() {
+               if ($("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
+                    $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+               }
+          });
           $("#sampleCollectionDate").datetimepicker({
                changeMonth: true,
                changeYear: true,

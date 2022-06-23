@@ -661,9 +661,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
     $(document).ready(function() {
-        $("#labId,#facilityId,#sampleDispatchedDate").change(function() {
+        $("#labId,#facilityId,#sampleCollectionDate").change(function() {
             if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-                $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+                $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
         $('#result').change(function(e) {
