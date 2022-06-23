@@ -123,7 +123,7 @@ foreach ($srcResults as $list) {
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
 									<option value=""> -- Select -- </option>
 									<option value="yes"><?php echo _("Yes"); ?></option>
-									<option value="no" selected="selected"><?php echo _("No"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
 								</select>
 							</td>
 						</tr>

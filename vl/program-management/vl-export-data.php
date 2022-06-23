@@ -139,7 +139,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<option value="yes"><?php echo _("Yes"); ?></option>
-									<option value="no" selected="selected"><?php echo _("No"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
 								</select>
 							</td>
 							<td colspan="2">
