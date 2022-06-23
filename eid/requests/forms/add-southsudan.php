@@ -630,9 +630,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         flag = deforayValidator.init({
             formId: 'addEIDRequestForm'
         });
-        if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-            $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
-        }
 
         if (flag) {
             $('.btn-disabled').attr('disabled', 'yes');
@@ -660,6 +657,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
+        $("#labId,#facilityId,#sampleDispatchedDate").change(function() {
+            if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+                $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+            }
+        });
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,

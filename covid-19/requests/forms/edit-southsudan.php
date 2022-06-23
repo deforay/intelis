@@ -783,9 +783,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
 
-        if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-            $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
-        }
         flag = deforayValidator.init({
             formId: 'editCovid19RequestForm'
         });
@@ -815,6 +812,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
     $(document).ready(function() {
+        $("#labId,#facilityId,#sampleDispatchedDate").change(function() {
+            if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+                $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+            }
+        });
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,

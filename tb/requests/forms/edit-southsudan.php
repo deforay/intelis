@@ -708,9 +708,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 
 
 	function validateNow() {
-		if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-			$("#sampleDispatchedDate").val($("sampleCollectionDate").val());
-		}
 		if ($('#isResultAuthorized').val() != "yes") {
 			$('#authorizedBy,#authorizedOn').removeClass('isRequired');
 		}
@@ -723,6 +720,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	}
 
 	$(document).ready(function() {
+		/* $("#labId,#facilityId,#sampleDispatchedDate").change(function() {
+			if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+				$("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+			}
+		}); */
 		showOther($("#referringUnit").val(), 'typeOfReferringUnit');
 		showOther($("#typeOfPatient").val(), 'typeOfPatientOther');
 		showOther($("#specimenType").val(), 'specimenTypeOther');

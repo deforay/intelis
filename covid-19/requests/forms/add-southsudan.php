@@ -953,10 +953,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     function validateNow() {
-        if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-            $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
-        }
-
         if ($('#isResultAuthorized').val() != "yes") {
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
         }
@@ -981,6 +977,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
+        $("#labId,#facilityId,#sampleDispatchedDate").change(function() {
+            if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+                $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+            }
+        });
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,

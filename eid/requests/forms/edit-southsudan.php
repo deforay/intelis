@@ -640,10 +640,6 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     }
 
     function validateNow() {
-        if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-            $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
-        }
-
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         flag = deforayValidator.init({
@@ -665,7 +661,11 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
     $(document).ready(function() {
-
+        $("#labId,#facilityId,#sampleDispatchedDate").change(function() {
+            if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+                $("#sampleDispatchedDate").val($("sampleCollectionDate").val());
+            }
+        });
         $('#result').change(function(e) {
             if ($(this).data("result") != "" && $(this).data("result") != $(this).val()) {
                 $('.change-reason').show();
