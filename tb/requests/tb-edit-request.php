@@ -116,6 +116,13 @@ if (isset($tbInfo['sample_tested_datetime']) && trim($tbInfo['sample_tested_date
     $tbInfo['sample_tested_datetime'] = '';
 }
 
+if (isset($tbInfo['sample_dispatched_datetime']) && trim($tbInfo['sample_dispatched_datetime']) != '' && $tbInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+    $sampleTestedDateTime = explode(" ", $tbInfo['sample_dispatched_datetime']);
+    $tbInfo['sample_dispatched_datetime'] = $general->humanDateFormat($sampleTestedDateTime[0]) . " " . $sampleTestedDateTime[1];
+} else {
+    $tbInfo['sample_dispatched_datetime'] = '';
+}
+
 if (isset($tbInfo['result_reviewed_datetime']) && trim($tbInfo['result_reviewed_datetime']) != '' && $tbInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
     $reviewedOn = explode(" ", $tbInfo['result_reviewed_datetime']);
     $tbInfo['result_reviewed_datetime'] = $general->humanDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
