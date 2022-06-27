@@ -455,11 +455,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style="width:25%;"><label for="">Approved On </label></td>
+                                            <th>Approved On </th>
                                             <td style="width:25%;">
                                                 <input type="text" value="<?php $general->humanDateFormat($general->getDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on" />
                                             </td>
-                                            <td style="width:25%;"><label for="">Lab Tech Comments </label></td>
+                                            <th>Lab Tech. Comments	</th>
                                             <td style="width:25%;">
                                                 <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Enter the lab technician commands" title="Please enter the lab technician commands"></textarea>
                                             </td>
@@ -657,11 +657,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
-        $("#labId,#facilityId,#sampleCollectionDate").change(function() {
-            if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+        $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
+            if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
+            if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
+                // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+            }
         });
+
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,

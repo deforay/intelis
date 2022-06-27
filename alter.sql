@@ -3123,3 +3123,6 @@ VALUES
 
 -- Amit 21-Jun-2022 version 4.5.2
 UPDATE `system_config` SET `value` = '4.5.2' WHERE `system_config`.`name` = 'sc_version';
+
+-- Amit 27-Jun-2022 version 4.5.3
+UPDATE `system_config` SET `value` = '4.5.3' WHERE `system_config`.`name` = 'sc_version';

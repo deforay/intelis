@@ -721,11 +721,17 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	}
 
 	$(document).ready(function() {
-		$("#labId,#facilityId,#sampleCollectionDate").change(function() {
-			if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
+			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
 				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
 			}
+			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
+				// $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+			}
 		});
+
+		$("#labId,#facilityId,#sampleCollectionDate").trigger('change');
+
 		showOther($("#referringUnit").val(), 'typeOfReferringUnit');
 		showOther($("#typeOfPatient").val(), 'typeOfPatientOther');
 		showOther($("#specimenType").val(), 'specimenTypeOther');
