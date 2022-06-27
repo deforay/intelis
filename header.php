@@ -566,7 +566,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges'])) { ?>
+								if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview hepatitis-reference-manage">
 										<a href="#"><i class="fa-solid fa-square-h"></i>
 											<?php echo _("Hepatitis Config"); ?>
@@ -597,7 +597,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
+								if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview tb-reference-manage">
 										<a href="#"><i class="fa-solid fa-heart-pulse"></i>
 											<?php echo _("TB Config"); ?>
@@ -630,7 +630,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							</ul>
 						</li>
 					<?php }
-					if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) { ?>
+					if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) { ?>
 						<li class="header"><?php echo _("VIRAL LOAD"); ?></li>
 						<?php if ($vlRequestMenuAccess == true) { ?>
 							<li class="treeview request" style="<?php echo $hideRequest; ?>">
@@ -752,7 +752,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						}
 					}
 
-					if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true && array_intersect($_SESSION['module'], array('eid'))) {  ?>
+					if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true && array_intersect($_SESSION['module'], array('eid'))) {  ?>
 						<li class="header"><?php echo _("EARLY INFANT DIAGNOSIS (EID)"); ?></li>
 						<?php if ($eidTestRequestMenuAccess == true) { ?>
 							<li class="treeview eidRequest" style="<?php echo $hideRequest; ?>">
@@ -792,7 +792,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true && $eidTestResultMenuAccess == true) { ?>
+						if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true && $eidTestResultMenuAccess == true) { ?>
 							<li class="treeview eidResults" style="<?php echo $hideResult; ?>">
 								<a href="#">
 									<i class="fa-solid fa-list-check"></i>
@@ -815,7 +815,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true && $eidManagementMenuAccess == true) { ?>
+						if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true && $eidManagementMenuAccess == true) { ?>
 							<li class="treeview eidProgramMenu">
 								<a href="#">
 									<i class="fa-solid fa-book"></i>
@@ -849,7 +849,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					} ?>
 
 					<!-- COVID-19 START -->
-					<?php if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
+					<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
 						<li class="header"><?php echo _("COVID-19"); ?></li>
 						<?php if ($covid19TestRequestMenuAccess == true) { ?>
 							<li class="treeview covid19Request" style="<?php echo $hideRequest; ?>">
@@ -889,7 +889,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true && $covid19TestResultMenuAccess == true) { ?>
+						if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && $covid19TestResultMenuAccess == true) { ?>
 							<li class="treeview covid19Results" style="<?php echo $hideResult; ?>">
 								<a href="#">
 									<i class="fa-solid fa-list-check"></i>
@@ -926,7 +926,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true && $covid19ManagementMenuAccess == true) { ?>
+						if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && $covid19ManagementMenuAccess == true) { ?>
 							<li class="treeview covid19ProgramMenu">
 								<a href="#">
 									<i class="fa-solid fa-book"></i>
@@ -961,7 +961,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					<!-- COVID-19 END -->
 
 					<!-- HEPATITIS START -->
-					<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
+					<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
 						<li class="header"><?php echo _("Hepatitis"); ?></li>
 						<?php if ($hepatitisTestRequestMenuAccess == true) { ?>
 							<li class="treeview hepatitisRequest" style="<?php echo $hideRequest; ?>">
@@ -1001,7 +1001,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && $hepatitisTestResultMenuAccess == true) { ?>
+						if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && $hepatitisTestResultMenuAccess == true) { ?>
 							<li class="treeview hepatitisResults" style="<?php echo $hideResult; ?>">
 								<a href="#">
 									<i class="fa-solid fa-list-check"></i>
@@ -1030,7 +1030,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && $hepatitisManagementMenuAccess == true) { ?>
+						if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && $hepatitisManagementMenuAccess == true) { ?>
 							<li class="treeview hepatitisProgramMenu">
 								<a href="#">
 									<i class="fa-solid fa-book"></i>
@@ -1065,7 +1065,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					<!-- HEPATITIS END -->
 
 					<!-- TB START -->
-					<?php if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
+					<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
 						<li class="header"><?php echo _("TB"); ?></li>
 						<?php if ($tbTestRequestMenuAccess == true) { ?>
 							<li class="treeview tbRequest" style="<?php echo $hideRequest; ?>">
@@ -1105,7 +1105,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && $tbTestResultMenuAccess == true) { ?>
+						if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && $tbTestResultMenuAccess == true) { ?>
 							<li class="treeview tbResults" style="<?php echo $hideResult; ?>">
 								<a href="#">
 									<i class="fa-solid fa-list-check"></i>
@@ -1134,7 +1134,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && $tbManagementMenuAccess == true) { ?>
+						if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && $tbManagementMenuAccess == true) { ?>
 							<li class="treeview tbProgramMenu">
 								<a href="#">
 									<i class="fa-solid fa-book"></i>
