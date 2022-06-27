@@ -368,6 +368,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</td>
 										</tr>
 										<tr>
+											<th><label class="label-control" for="sampleDispatchedDate">Sample Dispatched On</label></th>
+											<td>
+												<input type="text" value="<?php echo $tbInfo['sample_dispatched_datetime']; ?>" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please choose sample dispatched date" style="width:100%;" />
+											</td>
 											<th><label class="label-control" for="isSampleRejected">Is Sample Rejected? <span class="mandatory">*</span></label></th>
 											<td>
 												<select class="form-control isRequired" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
@@ -377,6 +381,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												</select>
 											</td>
 
+										</tr>
+										<tr class="show-rejection" style="display:none;">
 											<th class="show-rejection" style="display:none;"><label class="label-control" for="sampleRejectionReason">Reason for Rejection <span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
 												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
@@ -396,12 +402,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													} ?>
 												</select>
 											</td>
-										</tr>
-										<tr class="show-rejection" style="display:none;">
 											<th><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
 											<td><input value="<?php echo $general->humanDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
-											<td></td>
-											<td></td>
 										</tr>
 										<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
 											<td colspan="4">

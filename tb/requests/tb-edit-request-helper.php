@@ -56,7 +56,12 @@ try {
     } else {
         $_POST['sampleTestedDateTime'] = NULL;
     }
-
+    if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
+        $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
+        $_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+    } else {
+        $_POST['sampleDispatchedDate'] = NULL;
+    }
     if (!empty($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
         $arrivalDate = explode(" ", $_POST['arrivalDateTime']);
         $_POST['arrivalDateTime'] = $general->dateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
@@ -143,6 +148,7 @@ try {
         'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
+        'sample_dispatched_datetime'          => !empty($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
         'sample_received_at_lab_datetime'     => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
         'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
         'result'                              => !empty($_POST['result']) ? $_POST['result'] : null,
