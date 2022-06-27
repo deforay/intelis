@@ -360,17 +360,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
                                         </td>
-                                        <?php if ($usersModel->isAllowed('eid-update-result.php', $_SESSION['privileges']) && $_SESSION['accessType'] != 'collection-site') { ?>
-                                            <th>Sample Received Date</th>
+                                        <?php if ($usersModel->isAllowed('eid-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                                            <th>Sample Received Date (at Testing Lab)</th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample received date" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
                                         <?php } ?>
                                     </tr>
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('eid-update-result.php', $_SESSION['privileges']) && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersModel->isAllowed('eid-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -378,13 +378,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </div>
                                     <table class="table" style="width:100%">
                                         <tr>
-                                            <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+                                            <th>Testing Laboratory <span class="mandatory">*</span></th>
                                             <td>
                                                 <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <td><label for="">Testing Platform </label></td>
+                                            <th>Testing Platform </th>
                                             <td><select name="eidPlatform" id="eidPlatform" class="form-control result-optional" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                 </select>
@@ -392,7 +392,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
 
                                         <tr>
-                                            <td><label for="">Machine used to test </label></td>
+                                            <th>Machine used to test </th>
                                             <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name" ">
                                                 <option value="">-- Select --</option>
                                             </select>
@@ -416,7 +416,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style="width:25%;"><label for="">Sample Test Date </label></td>
+                                            <th style="width:25%;">Sample Test Date </td>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>

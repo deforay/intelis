@@ -378,8 +378,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
                                         </td>
-                                        <?php if ($usersModel->isAllowed('eid-update-result.php', $_SESSION['privileges']) && $_SESSION['accessType'] != 'collection-site') { ?>
-                                            <th>Sample Received Date</th>
+                                        <?php if ($usersModel->isAllowed('eid-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                                            <th>Sample Received Date (at Testing Lab)</th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
                                             </td>
@@ -389,7 +389,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('eid-update-result.php', $_SESSION['privileges']) && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersModel->isAllowed('eid-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
