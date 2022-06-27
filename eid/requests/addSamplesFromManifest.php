@@ -217,7 +217,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	/* Remote Syn only package code matches */
 	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
-		var remoteUrl = '<?php echo $systemConfig['remoteURL']; ?>';
+		var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({

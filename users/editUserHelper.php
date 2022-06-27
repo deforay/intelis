@@ -52,13 +52,13 @@ try {
         }
 
         if (isset($_POST['password']) && trim($_POST['password']) != "") {
-            if ($systemConfig['recency']['crosslogin'] && !empty($systemConfig['recency']['url'])) {
+            if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {
                 $client = new \GuzzleHttp\Client();
-                $url = rtrim($systemConfig['recency']['url'], "/");
+                $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
                 $result = $client->post($url . '/api/update-password', [
                     'form_params' => [
                         'u' => $_POST['loginId'],
-                        't' => sha1($_POST['password'] . $systemConfig['passwordSalt'])
+                        't' => sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt'])
                     ]
                 ]);
                 $response = json_decode($result->getBody()->getContents());
@@ -66,7 +66,7 @@ try {
                     error_log('Recency profile not updated! for the user ' . $_POST['userName']);
                 }
             }
-            $data['password'] = sha1($_POST['password'] . $systemConfig['passwordSalt']);
+            $data['password'] = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
             $data['force_password_reset'] = 1;
         }
 
@@ -91,12 +91,12 @@ try {
         $_SESSION['alertMsg'] = _("User saved successfully!");
 
         $userType = $general->getSystemConfig('sc_user_type');
-        if (!empty($systemConfig['remoteURL']) && $userType == 'vluser') {
+        if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
             $_POST['login_id'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['status'] = 'inactive'; // so that we can retain whatever status is on server
-            $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
+            $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array(
                 'post' => json_encode($_POST),
                 'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null,

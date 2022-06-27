@@ -10,7 +10,7 @@ $userName = $db->escape($_POST['username']);
 $emailId = $db->escape($_POST['email']);
 $loginId = $db->escape($_POST['loginid']);
 $password = $db->escape($_POST['password']);
-$userPassword = sha1($password . $systemConfig['passwordSalt']);
+$userPassword = sha1($password . SYSTEM_CONFIG['passwordSalt']);
 
 try {
     if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {

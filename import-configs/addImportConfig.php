@@ -55,19 +55,19 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 									<label for="supportedTests" class="col-lg-4 control-label"><?php echo _("Supported Tests"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
-											<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
+											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) { ?>
 												<option value='vl'><?php echo _("Viral Load"); ?></option>
 											<?php }
-											if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
+											if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) { ?>
 												<option value='eid'><?php echo _("EID"); ?></option>
 											<?php }
-											if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
+											if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) { ?>
 												<option value='covid19'><?php echo _("Covid-19"); ?></option>
 											<?php }
-											if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
+											if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) { ?>
 												<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
 											<?php }
-											if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
+											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) { ?>
 												<option value='tb'><?php echo _("TB"); ?></option>
 											<?php } ?> ?>
 										</select>
@@ -115,7 +115,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								</div>
 							</div>
 						</div>
-						<?php if ($systemConfig['modules']['vl']) { ?>
+						<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
 							<div class="row lowVlResultText">
 								<div class="col-md-12">
 									<div class="form-group">
@@ -130,7 +130,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 						<!-- <div class="box-header">
 							<h3 class="box-title ">Machine Names</h3>
 						</div> -->
-						<?php if ($systemConfig['modules']['vl'] || $systemConfig['modules']['eid'] || $systemConfig['modules']['covid19']) { ?>
+						<?php if (SYSTEM_CONFIG['modules']['vl'] || SYSTEM_CONFIG['modules']['eid'] || SYSTEM_CONFIG['modules']['covid19']) { ?>
 							<div class="box-body">
 								<table cellpadding="0" cellspacing="0" border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;display:none;">
 									<thead>
@@ -141,7 +141,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 										</tr>
 									</thead>
 									<tbody>
-										<?php if ($systemConfig['modules']['vl']) { ?>
+										<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
 											<tr class="vl-access user-access-form" style="display: none;">
 												<td style="text-align:center;"><?php echo _("VL"); ?><input type="hidden" name="userTestType[]" id="userTestTypeVl" value="vl" /></td>
 												<td>
@@ -156,7 +156,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</td>
 											</tr>
 										<?php }
-										if ($systemConfig['modules']['eid']) { ?>
+										if (SYSTEM_CONFIG['modules']['eid']) { ?>
 											<tr class="eid-access user-access-form" style="display: none;">
 												<td style="text-align:center;"><?php echo _("EID"); ?><input type="hidden" name="userTestType[]" id="userTestTypeEid" value="eid" /></td>
 												<td>
@@ -171,7 +171,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</td>
 											</tr>
 										<?php }
-										if ($systemConfig['modules']['covid19']) { ?>
+										if (SYSTEM_CONFIG['modules']['covid19']) { ?>
 											<tr class="covid19-access user-access-form" style="display: none;">
 												<td style="text-align:center;"><?php echo _("Covid-19"); ?><input type="hidden" name="userTestType[]" id="userTestTypeCovid19" value="covid19" /></td>
 												<td>
@@ -186,7 +186,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</td>
 											</tr>
 										<?php }
-										if ($systemConfig['modules']['hepatitis']) { ?>
+										if (SYSTEM_CONFIG['modules']['hepatitis']) { ?>
 											<tr class="hepatitis-access user-access-form" style="display: none;">
 												<td style="text-align:center;"><?php echo _("Hepatitis"); ?><input type="hidden" name="userTestType[]" id="userTestTypeHepatitis" value="hepatitis" /></td>
 												<td>
@@ -201,7 +201,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</td>
 											</tr>
 										<?php }
-										if ($systemConfig['modules']['tb']) { ?>
+										if (SYSTEM_CONFIG['modules']['tb']) { ?>
 											<tr class="tb-access user-access-form" style="display: none;">
 												<td style="text-align:center;"><?php echo _("TB"); ?><input type="hidden" name="userTestType[]" id="userTestTypeTb" value="tb" /></td>
 												<td>
@@ -230,7 +230,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 										</tr>
 									</thead>
 									<tbody id="testTypesTable">
-										<?php if ($systemConfig['modules']['vl']) { ?>
+										<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
 											<tr id="vlTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;"><?php echo _("VL"); ?><input type="hidden" name="testType[]" id="testType1" value="vl" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in vl"); ?>' title='<?php echo _("Please enter No of In-House Controls in vl"); ?>' /></td>
@@ -238,7 +238,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in vl"); ?>' title='<?php echo _("Please enter No of Calibrators in vl"); ?>' /></td>
 											</tr>
 										<?php }
-										if ($systemConfig['modules']['eid']) { ?>
+										if (SYSTEM_CONFIG['modules']['eid']) { ?>
 											<tr id="eidTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;"><?php echo _("EID"); ?><input type="hidden" name="testType[]" id="testType1" value="eid" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in eid"); ?>' title='<?php echo _("Please enter No of In-House Controls in eid"); ?>' /></td>
@@ -246,7 +246,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in eid"); ?>' title='<?php echo _("Please enter No of Calibrators in eid"); ?>' /></td>
 											</tr>
 										<?php }
-										if ($systemConfig['modules']['covid19']) { ?>
+										if (SYSTEM_CONFIG['modules']['covid19']) { ?>
 											<tr id="covid19Table" class="ctlCalibrator">
 												<td align="left" style="text-align:center;"><?php echo _("Covid-19"); ?><input type="hidden" name="testType[]" id="testType1" value="covid19" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in covid-19"); ?>' title='<?php echo _("Please enter No of In-House Controls in covid-19"); ?>' /></td>
@@ -254,7 +254,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in covid-19"); ?>' title='<?php echo _("Please enter No of Calibrators in covid-19"); ?>' /></td>
 											</tr>
 										<?php }
-										if ($systemConfig['modules']['hepatitis']) { ?>
+										if (SYSTEM_CONFIG['modules']['hepatitis']) { ?>
 											<tr id="hepatitisTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;"><?php echo _("Hepatitis"); ?><input type="hidden" name="testType[]" id="testType1" value="hepatitis" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in Hepatitis"); ?>' title='<?php echo _("Please enter No of In-House Controls in Hepatitis"); ?>' /></td>
@@ -262,7 +262,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in Hepatitis"); ?>' title='<?php echo _("Please enter No of Calibrators in Hepatitis"); ?>' /></td>
 											</tr>
 										<?php }
-										if ($systemConfig['modules']['tb']) { ?>
+										if (SYSTEM_CONFIG['modules']['tb']) { ?>
 											<tr id="tbTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;"><?php echo _("TB"); ?><input type="hidden" name="testType[]" id="testType1" value="tb" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in TB"); ?>' title='<?php echo _("Please enter No of In-House Controls in TB"); ?>' /></td>

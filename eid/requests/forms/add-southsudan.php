@@ -360,7 +360,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
                                         </td>
-                                        <?php if ($usersModel->isAllowed('eid-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                                        <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th>Sample Received Date (at Testing Lab)</th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample received date" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
@@ -370,7 +370,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('eid-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

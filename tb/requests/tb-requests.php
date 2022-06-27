@@ -551,7 +551,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
 
     <?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
-        var remoteUrl = '<?php echo $systemConfig['remoteURL']; ?>';
+        var remoteUrl = '<?php echo SYSTEM_CONFIG['remoteURL']; ?>';
 
         function forceResultSync(sampleCode) {
             $.blockUI({

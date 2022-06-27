@@ -11,7 +11,6 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
-$systemConfig = $general->getSystemConfig();
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $userInfo = array();

@@ -514,7 +514,7 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                              </div>
-                                             <?php if ($usersModel->isAllowed('vlTestResult.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                                             <?php if ($usersModel->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
                                                             <h3 class="box-title">Laboratory Information</h3>

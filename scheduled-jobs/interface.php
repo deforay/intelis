@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . "/../startup.php");
 
-if (!isset($systemConfig['interfacing']['enabled']) || $systemConfig['interfacing']['enabled'] === false) {
+if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
@@ -21,12 +21,12 @@ if (empty($labId)) {
 }
 
 $db->addConnection('interface', array(
-    'host' => $systemConfig['interfacing']['dbHost'],
-    'username' => $systemConfig['interfacing']['dbUser'],
-    'password' => $systemConfig['interfacing']['dbPassword'],
-    'db' =>  $systemConfig['interfacing']['dbName'],
-    'port' => (!empty($systemConfig['interfacing']['dbPort']) ? $systemConfig['interfacing']['dbPort'] : 3306),
-    'charset' => (!empty($systemConfig['interfacing']['dbCharset']) ? $systemConfig['interfacing']['dbCharset'] : 'utf8mb4')
+    'host' => SYSTEM_CONFIG['interfacing']['dbHost'],
+    'username' => SYSTEM_CONFIG['interfacing']['dbUser'],
+    'password' => SYSTEM_CONFIG['interfacing']['dbPassword'],
+    'db' =>  SYSTEM_CONFIG['interfacing']['dbName'],
+    'port' => (!empty(SYSTEM_CONFIG['interfacing']['dbPort']) ? SYSTEM_CONFIG['interfacing']['dbPort'] : 3306),
+    'charset' => (!empty(SYSTEM_CONFIG['interfacing']['dbCharset']) ? SYSTEM_CONFIG['interfacing']['dbCharset'] : 'utf8mb4')
 ));
 
 //get the value from interfacing DB
@@ -38,26 +38,26 @@ if (count($interfaceInfo) > 0) {
 
     $availableModules = array();
 
-    if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
         $availableModules['vl_sample_id'] = 'form_vl';
         $platform["vl_sample_id"] = "vl_test_platform";
     }
 
-    if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
         $availableModules['eid_id'] = 'form_eid';
         $platform["eid_id"] = "eid_test_platform";
     }
 
-    if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
         $availableModules['covid19_id'] = 'form_covid19';
         $platform["covid19_id"] = "covid19_test_platform";
     }
 
-    if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
         $availableModules['hepatitis_id'] = 'form_hepatitis';
         $platform["hepatitis_id"] = "hepatitis_test_platform";
     }
-    if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
         $availableModules['tb_id'] = 'form_tb';
         $platform["tb_id"] = "tb_test_platform";
     }

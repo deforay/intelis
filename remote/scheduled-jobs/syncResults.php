@@ -5,19 +5,19 @@ require_once(dirname(__FILE__) . "/../../startup.php");
 $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 
-if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
+if (!isset(SYSTEM_CONFIG['remoteURL']) || SYSTEM_CONFIG['remoteURL'] == '') {
     echo "Please check your remote url";
     exit();
 }
 // Checking internet connection is avialable or not
-$systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-$headers = @get_headers($systemConfig['remoteURL'] . '/vlsts-icons/favicon-16x16.png');
+$remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+$headers = @get_headers($remoteUrl . '/vlsts-icons/favicon-16x16.png');
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
     return false;
 }
 
-$url = $systemConfig['remoteURL'] . '/remote/remote/facilityMap.php';
+$url = $remoteUrl . '/remote/remote/facilityMap.php';
 $data = array(
     "Key" => "vlsm-lab-data--",
 );
@@ -79,12 +79,12 @@ $sampleCode = !empty($_GET['sampleCode']) ? $_GET['sampleCode'] : null;
 
 // if only one module is getting synced, lets only sync that one module
 if (!empty($forceSyncModule)) {
-    unset($systemConfig['modules']);
-    $systemConfig['modules'][$forceSyncModule] = true;
+    unset(SYSTEM_CONFIG['modules']);
+    SYSTEM_CONFIG['modules'][$forceSyncModule] = true;
 }
 
 // VIRAL LOAD TEST RESULTS
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
     $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
             FROM `form_vl` AS vl 
             LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
@@ -103,7 +103,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
 
 
-    $url = $systemConfig['remoteURL'] . '/remote/remote/testResults.php';
+    $url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/testResults.php';
 
     $data = array(
         "result" => $vlLabResult,
@@ -140,7 +140,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
 // EID TEST RESULTS
 
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
     $eidQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
                     FROM `form_eid` AS vl 
                     LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
@@ -154,7 +154,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     }
     $eidLabResult = $db->rawQuery($eidQuery);
 
-    $url = $systemConfig['remoteURL'] . '/remote/remote/eid-test-results.php';
+    $url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/eid-test-results.php';
     $data = array(
         "result" => $eidLabResult,
         "Key" => "vlsm-lab-data--",
@@ -192,7 +192,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
 // COVID-19 TEST RESULTS
 
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
 
     $covid19Query = "SELECT c19.*, a.user_name as 'approved_by_name' 
                     FROM `form_covid19` AS c19 
@@ -217,7 +217,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($forms);
     $testResults = $covid19Obj->getCovid19TestsByFormId($forms);
 
-    $url = $systemConfig['remoteURL'] . '/remote/remote/covid-19-test-results.php';
+    $url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/covid-19-test-results.php';
     $data = array(
         "result" => $c19LabResult,
         "testResults" => $testResults,
@@ -258,7 +258,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 // Hepatitis TEST RESULTS
 
-if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
 
     $hepQuery = "SELECT hep.*, a.user_name as 'approved_by_name' 
                     FROM `form_hepatitis` AS hep 
@@ -281,7 +281,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     // $risks = $hepatitisObj->getRiskFactorsByHepatitisId($forms);
     // $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($forms);
 
-    $url = $systemConfig['remoteURL'] . '/remote/remote/hepatitis-test-results.php';
+    $url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/hepatitis-test-results.php';
     $data = array(
         "result" => $hepLabResult,
         "Key" => "vlsm-lab-data--",

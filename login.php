@@ -25,8 +25,8 @@ $globalConfigResult = $general->getGlobalConfig();
 //   $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 // }
 
-if (isset($systemConfig['instanceName']) && !empty($systemConfig['instanceName'])) {
-	$systemType = $systemConfig['instanceName'];
+if (isset(SYSTEM_CONFIG['instanceName']) && !empty(SYSTEM_CONFIG['instanceName'])) {
+	$systemType = SYSTEM_CONFIG['instanceName'];
 } else {
 	$systemType = _("Lab Sample Management Module");
 }
@@ -243,11 +243,11 @@ function generate_token()
 		}
 
 		$(document).ready(function() {
-			<?php if (isset($systemConfig['recency']) && $systemConfig['recency']['crosslogin']) { ?>
+			<?php if (isset(SYSTEM_CONFIG['recency']) && SYSTEM_CONFIG['recency']['crosslogin']) { ?>
 				if (sessionStorage.getItem("crosslogin") == "true") {
 					<?php $_SESSION['logged'] = false; ?>
 					sessionStorage.setItem("crosslogin", "false");
-					$('<iframe src="<?php echo rtrim($systemConfig['recency']['url'], "/") . '/logout'; ?>" frameborder="0" scrolling="no" id="myFrame" style="display:none;"></iframe>').appendTo('body');
+					$('<iframe src="<?php echo rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/logout'; ?>" frameborder="0" scrolling="no" id="myFrame" style="display:none;"></iframe>').appendTo('body');
 				}
 			<?php }
 			if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?>

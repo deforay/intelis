@@ -7,7 +7,7 @@ ob_start();
 $tableName= "system_admin";
 $adminUsername = trim($_POST['username']);
 $adminPassword = trim($_POST['password']);
-$password = sha1($adminPassword . $systemConfig['passwordSalt']);
+$password = sha1($adminPassword . SYSTEM_CONFIG['passwordSalt']);
 try {
     $adminCount = $db->rawQuery("SELECT * FROM system_admin as ud");
     if(count($adminCount) != 0)

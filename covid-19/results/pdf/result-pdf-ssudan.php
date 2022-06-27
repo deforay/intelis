@@ -479,7 +479,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<tr>';
         $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
-        if ($systemConfig['sc_user_type'] == 'vluser' && $result['dataSync'] == 0) {
+        if (SYSTEM_CONFIG['sc_user_type'] == 'vluser' && $result['dataSync'] == 0) {
             $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";
@@ -492,7 +492,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
         $html .= '</table>';
-        if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($systemConfig['remoteURL'])) {
+        if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
             $showQR = true;
         }
         if (($showQR || !empty($result['result'])) || ($result['result'] == '' && $result['result_status'] == '4')) {
@@ -500,8 +500,8 @@ if (sizeof($requestResult) > 0) {
             $iv_length = openssl_cipher_iv_length($ciphering);
             $options = 0;
             $simple_string = $result['unique_id'] . "&&&qr";
-            $encryption_iv = $systemConfig['tryCrypt'];
-            $encryption_key = $systemConfig['tryCrypt'];
+            $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
+            $encryption_key = SYSTEM_CONFIG['tryCrypt'];
             $Cid = openssl_encrypt(
                 $simple_string,
                 $ciphering,
@@ -510,7 +510,7 @@ if (sizeof($requestResult) > 0) {
                 $encryption_iv
             );
             $pdf->writeHTML($html);
-            $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
+            $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
             if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
                 $h = 175;
                 if (isset($signResults) && !empty($signResults)) {
@@ -520,9 +520,9 @@ if (sizeof($requestResult) > 0) {
                 } else {
                     $h = 148.5;
                 }
-                if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($systemConfig['remoteURL'])) {
-                    $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
-                    $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+                if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+                    $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
                 }
             }
             $pdf->lastPage();

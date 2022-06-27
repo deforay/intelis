@@ -37,8 +37,8 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuse
 	$shortName = _("Sample Tracking");
 }
 
-if (isset($systemConfig['instanceName']) && !empty($systemConfig['instanceName'])) {
-	$systemType = $systemConfig['instanceName'];
+if (isset(SYSTEM_CONFIG['instanceName']) && !empty(SYSTEM_CONFIG['instanceName'])) {
+	$systemType = SYSTEM_CONFIG['instanceName'];
 }
 
 $hideResult = '';
@@ -50,7 +50,7 @@ if (isset($arr['instance_type']) && $arr['instance_type'] != '') {
 }
 
 // Check if the user can access the requested page
-if (!$usersModel->isAllowed(basename($_SERVER['PHP_SELF']), $systemConfig)) {
+if (!$usersModel->isAllowed(basename($_SERVER['PHP_SELF']))) {
 	header("location:/error/401.php");
 }
 
@@ -305,10 +305,10 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 				</ul>
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
-						<?php if ($systemConfig['recency']['crosslogin']) {
-							$password = $crossLoginResult['password'] . $systemConfig['recency']['crossloginSalt']; ?>
+						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin']) {
+							$password = $crossLoginResult['password'] . SYSTEM_CONFIG['recency']['crossloginSalt']; ?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?php echo rtrim($systemConfig['recency']['url'], "/") . '/login?u=' . base64_encode($crossLoginResult['login_id']) . '&t=' . hash('sha256', $password) . '&name=' . base64_encode($crossLoginResult['user_name']); ?>" class="btn btn-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Recency</a>
+								<a onclick="setCrossLogin();" href="<?php echo rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($crossLoginResult['login_id']) . '&t=' . hash('sha256', $password) . '&name=' . base64_encode($crossLoginResult['user_name']); ?>" class="btn btn-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Recency</a>
 							</li>
 						<?php } ?>
 
@@ -319,7 +319,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<span class="hidden-xs"><?php if (isset($_SESSION['userName'])) {
 															echo $_SESSION['userName'];
 														} ?></span>
-								<?php if (!empty($systemConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
+								<?php if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 									<i class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;;"></i>
 								<?php } ?>
 							</a>
@@ -484,7 +484,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true && isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges'])) { ?>
+								if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true && isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview vl-reference-manage">
 										<a href="#"><i class="fa-solid fa-flask-vial"></i><?php echo _("VL Config"); ?>
 											<span class="pull-right-container">
@@ -508,7 +508,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true && isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges'])) { ?>
+								if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true && isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview eid-reference-manage">
 										<a href="#"><i class="fa-solid fa-child"></i><?php echo _("EID Config"); ?>
 											<span class="pull-right-container">
@@ -532,7 +532,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true && isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges'])) { ?>
+								if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview covid19-reference-manage">
 										<a href="#"><i class="fa-solid fa-virus-covid"></i>
 											<?php echo _("Covid-19 Config"); ?>

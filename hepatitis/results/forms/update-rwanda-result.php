@@ -265,7 +265,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                 </div>
 
                 <form class="form-horizontal" method="post" name="updateHepatitisRequestForm" id="updateHepatitisRequestForm" autocomplete="off" action="hepatitis-update-result-helper.php">
-                    <?php if ($usersModel->isAllowed('hepatitis-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                    <?php if ($usersModel->isAllowed('hepatitis-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="box-header with-border">

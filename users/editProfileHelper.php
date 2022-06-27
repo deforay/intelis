@@ -8,7 +8,7 @@ $tableName = "user_details";
 $upId = 0;
 /* To check the password update from the API */
 $fromApiFalse = !isset($_POST['u']) && trim($_POST['u']) == "" && !isset($_POST['t']) && trim($_POST['t']) == "";
-$fromApiTrue = isset($_POST['u']) && trim($_POST['u']) != "" && isset($_POST['t']) && trim($_POST['t']) != "" && $systemConfig['recency']['crosslogin'];
+$fromApiTrue = isset($_POST['u']) && trim($_POST['u']) != "" && isset($_POST['t']) && trim($_POST['t']) != "" && SYSTEM_CONFIG['recency']['crosslogin'];
 
 if ($fromApiTrue) {
     $_POST['userName'] = $_POST['u'];
@@ -18,7 +18,7 @@ if ($fromApiTrue) {
 }
 
 try {  
-        $password = sha1($_POST['password'] . $systemConfig['passwordSalt']);
+        $password = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
         $queryParams = array($password);
         $admin = $db->rawQuery("SELECT * FROM user_details as ud WHERE ud.password = ?", $queryParams);
         if (count($admin) > 0) {
@@ -39,13 +39,13 @@ try {
             $db = $db->where('user_name', $data['user_name']);
         } else {
             if (isset($_POST['password']) && trim($_POST['password']) != "") {
-                if ($systemConfig['recency']['crosslogin']) {
+                if (SYSTEM_CONFIG['recency']['crosslogin']) {
                     $client = new \GuzzleHttp\Client();
-                    $url = rtrim($systemConfig['recency']['url'], "/");
+                    $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
                     $result = $client->post($url . '/api/update-password', [
                         'form_params' => [
                             'u' => $_POST['email'],
-                            't' => sha1($_POST['password'] . $systemConfig['passwordSalt'])
+                            't' => sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt'])
                         ]
                     ]);
                     $response = json_decode($result->getBody()->getContents());
@@ -54,7 +54,7 @@ try {
                         error_log('Recency profile not updated! for the user->' . $_POST['userName']);
                     }
                 }
-                $data['password'] = sha1($_POST['password'] . $systemConfig['passwordSalt']);
+                $data['password'] = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
                 $data['force_password_reset'] = $_SESSION['forcePasswordReset'] = 0;
             }
             $db = $db->where('user_id', $userId);

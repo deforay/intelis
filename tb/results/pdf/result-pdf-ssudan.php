@@ -469,8 +469,8 @@ if (sizeof($requestResult) > 0) {
             $iv_length = openssl_cipher_iv_length($ciphering);
             $options = 0;
             $simple_string = $result['tb_id'] . "&&&qr";
-            $encryption_iv = $systemConfig['tryCrypt'];
-            $encryption_key = $systemConfig['tryCrypt'];
+            $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
+            $encryption_key = SYSTEM_CONFIG['tryCrypt'];
             $Cid = openssl_encrypt(
                 $simple_string,
                 $ciphering,
@@ -479,7 +479,7 @@ if (sizeof($requestResult) > 0) {
                 $encryption_iv
             );
             $pdf->writeHTML($html);
-            $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
+            $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
             if (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] == 'yes') {
                 $h = 175;
                 if (isset($signResults) && !empty($signResults)) {
@@ -489,7 +489,7 @@ if (sizeof($requestResult) > 0) {
                 } else {
                     $h = 148.5;
                 }
-                //$pdf->write2DBarcode($systemConfig['remoteURL'] . '/tb/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+                //$pdf->write2DBarcode($remoteUrl . '/tb/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
             }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

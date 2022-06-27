@@ -20,8 +20,9 @@ class Users
     }
 
 
-    public function isAllowed($currentFileName, $systemConfig)
+    public function isAllowed($currentFileName, $systemConfig = SYSTEM_CONFIG)
     {
+        
         $skippedPrivileges = $this->getSkippedPrivileges($systemConfig);
         $sharedPrivileges = $this->getSharedPrivileges($systemConfig);
 
@@ -57,7 +58,7 @@ class Users
             'edit-funding-sources.php'          => 'province-details.php'
         );
 
-        if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
             $sharedVLPrivileges = array(
                 'updateVlTestResult.php'                => 'vlTestResult.php',
                 'vl-failed-results.php'                 => 'vlTestResult.php',
@@ -79,7 +80,7 @@ class Users
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedVLPrivileges);
         }
 
-        if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
             $sharedEIDPrivileges = array(
                 'eid-add-batch-position.php'            => 'eid-add-batch.php',
                 'eid-edit-batch-position.php'           => 'eid-edit-batch.php',
@@ -103,7 +104,7 @@ class Users
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedEIDPrivileges);
         }
 
-        if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
             $sharedCovid19Privileges = array(
                 'covid-19-add-batch-position.php'           => 'covid-19-add-batch.php',
                 'mail-covid-19-results.php'                 => 'covid-19-print-results.php',
@@ -144,7 +145,7 @@ class Users
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedCovid19Privileges);
         }
 
-        if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
             $sharedHepPrivileges = array(
                 'hepatitis-update-result.php'                   => 'hepatitis-manual-results.php',
                 'hepatitis-failed-results.php'                  => 'hepatitis-manual-results.php',
@@ -175,7 +176,7 @@ class Users
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
         }
 
-        if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
             $sharedHepPrivileges = array(
                 'tb-update-result.php' => 'tb-manual-results.php',
                 'tb-failed-results.php' => 'tb-manual-results.php',

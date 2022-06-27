@@ -338,7 +338,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('covid-19-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersModel->isAllowed('covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <?php // if (false) { 
                             ?>
                             <div class="box box-primary">

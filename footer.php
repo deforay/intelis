@@ -7,9 +7,9 @@
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;<?php echo "v" . VERSION; ?></small>
 	<?php
 
-	if (!empty($systemConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
+	if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 		<div class="pull-right">
-			<small><a href="javascript:syncRemoteData('<?= $systemConfig['remoteURL']; ?>');">Force Remote Sync</a>&nbsp;&nbsp;</small>
+			<small><a href="javascript:syncRemoteData('<?= SYSTEM_CONFIG['remoteURL']; ?>');">Force Remote Sync</a>&nbsp;&nbsp;</small>
 		</div>
 	<?php
 	}
@@ -149,10 +149,7 @@
 	<?php } ?>
 	let syncInterval = 60 * 60 * 1000 * 2 // 2 hours in ms
 	$(document).ready(function() {
-		<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser' && !empty($systemConfig['remoteURL'])) { ?>
-
-
-
+		<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser' && !empty(SYSTEM_CONFIG['remoteURL'])) { ?>
 
 				(function getLastSyncDateTime() {
 					let currentDateTime = new Date();
@@ -175,11 +172,11 @@
 
 		<?php
 		// Every 5 mins check connection if this is a local installation of VLSM and there is a remote server configured
-		if (!empty($systemConfig['remoteURL']) && $_SESSION['instanceType'] == 'vluser') { ?>
+		if (!empty(SYSTEM_CONFIG['remoteURL']) && $_SESSION['instanceType'] == 'vluser') { ?>
 
 				(function checkNetworkConnection() {
 					$.ajax({
-						url: '<?php echo rtrim($systemConfig['remoteURL'], "/"); ?>/api/v1.1/version.php',
+						url: '<?php echo rtrim(SYSTEM_CONFIG['remoteURL'], "/"); ?>/api/v1.1/version.php',
 						cache: false,
 						success: function(data) {
 							$('.is-remote-server-reachable').css('color', '#4dbc3c');

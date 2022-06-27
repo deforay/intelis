@@ -483,7 +483,7 @@ $disable = "disabled = 'disabled'";
 												</div>
 											</div>
 										</div>
-										<?php if (isset($systemConfig['recency']['vlsync']) && $systemConfig['recency']['vlsync'] == true) {  ?>
+										<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
 											<div class="row">
 												<div class="col-md-6">
 													<div class="form-group">

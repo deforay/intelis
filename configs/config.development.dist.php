@@ -12,11 +12,11 @@ $systemConfig['remoteURL'] = '';
 // Enable/Disable Modules
 // true => Enabled
 // false => Disabled
-$systemConfig['modules']['vl'] = true;
-$systemConfig['modules']['eid'] = true;
-$systemConfig['modules']['covid19'] = true;
-$systemConfig['modules']['hepatitis'] = false;
-$systemConfig['modules']['tb'] = false;
+SYSTEM_CONFIG['modules']['vl'] = true;
+SYSTEM_CONFIG['modules']['eid'] = true;
+SYSTEM_CONFIG['modules']['covid19'] = true;
+SYSTEM_CONFIG['modules']['hepatitis'] = false;
+SYSTEM_CONFIG['modules']['tb'] = false;
 
 $systemConfig['instanceName'] = '';
 

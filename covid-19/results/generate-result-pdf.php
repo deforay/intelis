@@ -17,7 +17,7 @@ $covid19Obj = new \Vlsm\Models\Covid19();
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
-$systemConfig = array_merge($sc, $systemConfig);
+$systemConfig = array_merge($sc, SYSTEM_CONFIG);
 
 if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
 	date_default_timezone_set($arr['default_time_zone']);

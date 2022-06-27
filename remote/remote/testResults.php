@@ -39,7 +39,7 @@ function var_error_log($object = null)
 }
 
 
-$allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_vl'";
+$allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_vl'";
 $allColResult = $db->rawQuery($allColumns);
 $oneDimensionalArray = array_map('current', $allColResult);
 

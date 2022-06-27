@@ -49,19 +49,19 @@ $sources = array(
                             <td><b><?php echo _("Test Types"); ?>&nbsp;:</b></td>
                             <td>
                                 <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
-                                    <?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
+                                    <?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
-                                    if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
+                                    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) { ?>
                                         <option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
                                     <?php }
-                                    if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
+                                    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) { ?>
                                         <option value="covid19"><?php echo _("Covid-19"); ?></option>
                                     <?php }
-                                    if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
+                                    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) { ?>
                                         <option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
                                     <?php }
-                                    if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
+                                    if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) { ?>
                                         <option value='tb'><?php echo _("TB"); ?></option>
                                     <?php } ?>
                                 </select>
