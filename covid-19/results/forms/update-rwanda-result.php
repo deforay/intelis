@@ -445,7 +445,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
                                         <tr>
-                                            <th>Is Sample Rejected ? <span class="mandatory">*</span></th>
+                                            <th>Is Sample Rejected? <span class="mandatory">*</span></th>
                                             <td>
                                                 <select class="form-control result-focus isRequired" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>

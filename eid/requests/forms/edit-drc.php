@@ -495,7 +495,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												</select>
 											</td>
 										<tr>
-											<th>Is Sample Rejected ?</th>
+											<th>Is Sample Rejected?</th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
 													<option value=''> -- Sélectionner -- </option>

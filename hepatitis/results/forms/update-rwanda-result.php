@@ -307,7 +307,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                                 <option value='Follow up HBV VL' <?php echo ($hepatitisInfo['reason_for_vl_test'] == 'Follow up HBV VL') ? "selected='selected'" : ""; ?>>Follow up HBV VL</option>
                                             </select>
                                         </td>
-                                        <th>Is Sample Rejected ? <span class="mandatory">*</span></th>
+                                        <th>Is Sample Rejected? <span class="mandatory">*</span></th>
                                         <td>
                                             <select class="form-control result-focus isRequired" name="isSampleRejected" id="isSampleRejected">
                                                 <option value=''> -- Select -- </option>

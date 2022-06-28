@@ -308,7 +308,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value='Follow up HBV VL'>Follow up HBV VL</option>
                                                 </select>
                                             </td>
-                                            <th>Is Sample Rejected ?</th>
+                                            <th>Is Sample Rejected?</th>
                                             <td>
                                                 <select class="labSecInput form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>
