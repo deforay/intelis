@@ -87,24 +87,24 @@ foreach ($userResult as $row) {
     $labTechniciansList[$row['user_id']] = ucwords($row['user_name']);
 }
 $activeModule = "";
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
     $activeModule .= '"vl"';
 }
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
     if ($activeModule != "") {
         $activeModule .= ', "eid"';
     } else {
         $activeModule .= '"eid"';
     }
 }
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
     if ($activeModule != "") {
         $activeModule .= ', "covid19"';
     } else {
         $activeModule .= '"covid19"';
     }
 }
-if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
     if ($activeModule != "") {
         $activeModule .= ', "hepatitis"';
     } else {
@@ -112,7 +112,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     }
 }
 
-if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
     if ($activeModule != "") {
         $activeModule .= ', "tb"';
     } else {
@@ -136,7 +136,7 @@ $data['nationalityList'] = $nationalityList;
 $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
 $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
     $covid19Obj = new \Vlsm\Models\Covid19();
 
     // if (isset($formId) && $formId == 1) {
@@ -233,7 +233,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 }
 
 // Check if eid module active/inactive
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
     $eidObj = new \Vlsm\Models\Eid();
     /* SITE INFORMATION SECTION */
     /* Province Details */
@@ -304,7 +304,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 }
 
 // Check if vl module active/inactive
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
     $vlObj = new \Vlsm\Models\Vl();
     /* SAMPLE INFORMATION SECTION */
     $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes());
@@ -357,7 +357,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 }
 
 // Check if tb module active/inactive
-if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
     $tbObj = new \Vlsm\Models\Tb();
     /* SITE INFORMATION SECTION */
 

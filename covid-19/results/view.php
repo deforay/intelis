@@ -3,8 +3,8 @@ $ciphering = "AES-128-CTR";
 $iv_length = openssl_cipher_iv_length($ciphering);
 $encryption = $_GET['q'];
 $options = 0;
-$decryption_iv = $systemConfig['tryCrypt'];
-$decryption_key = $systemConfig['tryCrypt'];
+$decryption_iv = SYSTEM_CONFIG['tryCrypt'];
+$decryption_key = SYSTEM_CONFIG['tryCrypt'];
 $decryption = openssl_decrypt(
     $encryption,
     $ciphering,

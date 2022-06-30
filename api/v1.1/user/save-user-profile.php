@@ -111,7 +111,7 @@ try {
     }
 
     if (!empty($post['password'])) {
-        $data['password'] = sha1($db->escape($post['password']) . $systemConfig['passwordSalt']);
+        $data['password'] = sha1($db->escape($post['password']) . SYSTEM_CONFIG['passwordSalt']);
     }
     if (!empty($post['role'])) {
         $data['role_id'] =  $db->escape($post['role']);

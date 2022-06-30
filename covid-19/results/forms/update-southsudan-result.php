@@ -327,7 +327,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('covid-19-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersModel->isAllowed('covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

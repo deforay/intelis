@@ -79,21 +79,21 @@ if (count($testTypeInfo) > 0) {
 }
 $cntId = $general->reportPdfNames();
 
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
 	$reportFormats['covid19'] = $general->activeReportFormats('covid-19', $cntId['covid19'], null, true);
 }
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
 	$reportFormats['eid'] = $general->activeReportFormats('eid', $cntId['eid'], null, true);
 }
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
 	$reportFormats['vl'] = $general->activeReportFormats('vl', $cntId['vl'], null, true);
 }
 if ($arr['vl_form'] == 7) {
-	if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+	if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
 		$reportFormats['hepatitis'] = $general->activeReportFormats('hepatitis', $cntId['hepatitis'], null, true);
 	}
 }
-if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
 	$reportFormats['tb'] = $general->activeReportFormats('tb', $cntId['tb'], null, true);
 }
 $formats = json_decode($facilityInfo['report_format'], true);
@@ -333,19 +333,19 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type"); ?></label>
 									<div class="col-lg-7">
 										<select type="text" class="" id="testType" name="testType[]" title="<?php echo _('Choose one test type'); ?>" onchange="getTestType();" multiple>
-											<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) { ?>
+											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) { ?>
 												<option value='vl' <?php echo (preg_match("/vl/i", $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _("Viral Load"); ?></option>
 											<?php }
-											if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) { ?>
+											if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) { ?>
 												<option value='eid' <?php echo (preg_match("/eid/i", $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _("Early Infant Diagnosis"); ?></option>
 											<?php }
-											if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) { ?>
+											if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) { ?>
 												<option value='covid19' <?php echo (preg_match("/covid19/i", $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _("Covid-19"); ?></option>
 											<?php }
-											if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) { ?>
+											if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) { ?>
 												<option value='hepatitis' <?php echo (preg_match("/hepatitis/i", $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _("Hepatitis"); ?></option>
 											<?php }
-											if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) { ?>
+											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) { ?>
 												<option value='tb' <?php echo (preg_match("/tb/i", $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _("TB"); ?></option>
 											<?php } ?>
 										</select>
@@ -370,7 +370,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						</div>
 					</div>
 					<div class="row labDiv" style="display:<?php echo $labDiv; ?>;">
-						<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+						<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
 							$count = sizeof($reportFormats['vl']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
@@ -388,7 +388,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								</div>
 							</div>
 						<?php }
-						if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+						if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
 							$count = sizeof($reportFormats['eid']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
@@ -406,7 +406,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								</div>
 							</div>
 						<?php }
-						if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+						if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
 							$count = sizeof($reportFormats['covid19']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
@@ -424,7 +424,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								</div>
 							</div>
 						<?php }
-						if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+						if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
 							$count = sizeof($reportFormats['hepatitis']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
@@ -442,7 +442,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								</div>
 							</div>
 						<?php }
-						if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+						if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
 							$count = sizeof($reportFormats['tb']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">

@@ -338,7 +338,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('covid-19-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersModel->isAllowed('covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <?php // if (false) { 
                             ?>
                             <div class="box box-primary">
@@ -977,11 +977,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
-        $("#labId,#facilityId,#sampleCollectionDate").change(function() {
-            if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-                $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
-            }
-        });
+        $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
+			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+			}
+			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
+				// $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+			}
+		});
+
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,

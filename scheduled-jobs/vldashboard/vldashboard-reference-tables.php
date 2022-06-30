@@ -20,7 +20,7 @@ $referenceTables = array(
     'geographical_divisions'
 );
 
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
     $vlTables = array(
         'r_vl_sample_type',
         'r_vl_test_reasons',
@@ -32,7 +32,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 }
 
 
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
     $eidTables = array(
         //'r_eid_results',
         'r_eid_sample_rejection_reasons',
@@ -43,7 +43,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 }
 
 
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
     $covid19Tables = array(
         //'r_covid19_results',
         'r_covid19_comorbidities',
@@ -55,7 +55,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $referenceTables = array_merge($referenceTables, $covid19Tables);
 }
 
-if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
     $hepatitisTables = array(
         //'r_covid19_results',
         'r_hepatitis_sample_rejection_reasons',
@@ -67,7 +67,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     $referenceTables = array_merge($referenceTables, $hepatitisTables);
 }
 
-if (isset($systemConfig['modules']['common']) && $systemConfig['modules']['common'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['common']) && SYSTEM_CONFIG['modules']['common'] == true) {
     $commonTables = array(
         'import_config_machines',
     );

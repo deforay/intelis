@@ -15,7 +15,7 @@ $tableName2 = "user_facility_map";
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
 
-        $password = sha1($_POST['password'] . $systemConfig['passwordSalt']);
+        $password = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
 
         $data = array(
             'user_id'               => $general->generateUUID(),
@@ -73,13 +73,13 @@ try {
         $_SESSION['alertMsg'] = _("User saved successfully!");
     }
     $userType = $general->getSystemConfig('sc_user_type');
-    if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $userType == 'vluser') {
+    if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $userType == 'vluser') {
         $_POST['login_id'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['password'] = $general->generateRandomString();; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['status'] = 'inactive';
         $_POST['userId'] = base64_encode($data['user_id']);
-        $apiUrl = $systemConfig['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
+        $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
         $post = array(
             'post' => json_encode($_POST),
             'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null,

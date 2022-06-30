@@ -385,7 +385,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td colspan="3" style="line-height:20px;border-bottom:2px solid #d3d3d3;"></td>';
 $html .= '</tr>';
-if ($systemConfig['sc_user_type'] == 'vluser' && $result['dataSync'] == 0) {
+if (SYSTEM_CONFIG['sc_user_type'] == 'vluser' && SYSTEM_CONFIG['dataSync'] == 0) {
     $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
 } else {
     $generatedAtTestingLab = "";
@@ -410,8 +410,8 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $iv_length = openssl_cipher_iv_length($ciphering);
     $options = 0;
     $simple_string = $result['covid19_id'] . "&&&qr";
-    $encryption_iv = $systemConfig['tryCrypt'];
-    $encryption_key = $systemConfig['tryCrypt'];
+    $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
+    $encryption_key = SYSTEM_CONFIG['tryCrypt'];
     $Cid = openssl_encrypt(
         $simple_string,
         $ciphering,
@@ -421,8 +421,8 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     );
     $pdf->writeHTML($html);
 
-    if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($systemConfig['remoteURL'])) {
-        $systemConfig['remoteURL'] = rtrim($systemConfig['remoteURL'], "/");
+    if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+        $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
         $h = 175;
         if (isset($signResults) && !empty($signResults)) {
             if (isset($facilityInfo['address']) && $facilityInfo['address'] != "") {
@@ -431,7 +431,7 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
         } else {
             $h = 160.5;
         }
-        $pdf->write2DBarcode($systemConfig['remoteURL'] . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
     }
     $pdf->lastPage();
     $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

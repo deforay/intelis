@@ -28,29 +28,29 @@ require_once(APPLICATION_PATH . '/header.php');
 	<section class="content-header">
 		<div class="bs-example bs-example-tabs">
 			<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
-				<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
 					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab" onclick="generateDashboard('vl');"><?php echo _("Viral Load Tests");?></a></li>
 				<?php } ?>
-				<?php if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
 					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');"><?php echo _("EID Tests");?></a></li>
 				<?php } ?>
-				<?php if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
 					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab" onclick="generateDashboard('covid19');"><?php echo _("Covid-19 Tests");?></a></li>
 				<?php } ?>
-				<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
 					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');"><?php echo _("Hepatitis Tests");?></a></li>
 				<?php } ?>
-				<?php if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
 					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
 				<?php } ?>
 				<?php
-				if (isset($systemConfig['recency']['vlsync']) && $systemConfig['recency']['vlsync'] == true) {  ?>
+				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
 					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')"><?php echo _("Confirmation Tests for Recency");?></a></li>
 				<?php }  ?>
 			</ul>
 			<div id="myTabContent" class="tab-content">
 
-				<?php if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
 					<div class="tab-pane fade in active" id="vlDashboard">
 						<!-- VL content -->
 						<section class="content">
@@ -90,7 +90,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 				<?php } ?>
 
-				<?php if (isset($systemConfig['recency']['vlsync']) && $systemConfig['recency']['vlsync'] == true) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
 					<div class="tab-pane fade in" id="recencyDashboard">
 						<!-- VL content -->
 						<section class="content">
@@ -126,7 +126,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					</div>
 				<?php } ?>
 				<!-- EID START-->
-				<?php if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
 
 					<div class="tab-pane fade in" id="eidDashboard">
 						<!-- EID content -->
@@ -166,7 +166,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<?php } ?>
 				<!-- EID END -->
 				<!-- COVID-19 START-->
-				<?php if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
 
 					<div class="tab-pane fade in" id="covid19Dashboard">
 						<!-- COVID-19 content -->
@@ -207,7 +207,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<!-- COVID-19 END -->
 
 				<!-- Hepatitis START-->
-				<?php if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
 
 					<div class="tab-pane fade in" id="hepatitisDashboard">
 						<!-- COVID-19 content -->
@@ -248,7 +248,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<!-- COVID-19 END -->
 
 				<!-- TB START-->
-				<?php if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
 
 <div class="tab-pane fade in" id="tbDashboard">
 	<!-- TB content -->

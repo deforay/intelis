@@ -4,11 +4,11 @@ require_once(dirname(__FILE__) . "/../../startup.php");
 
 define("BACKUP_PATH", "/../db-backup");
 
-$dbUsername = $systemConfig['dbUser'];
-$dbPassword = $systemConfig['dbPassword'];
-$dbName = $systemConfig['dbName'];
-$dbHost = $systemConfig['dbHost'];
-$mysqlDumpPath = $systemConfig['mysqlDump'];
+$dbUsername = SYSTEM_CONFIG['dbUser'];
+$dbPassword = SYSTEM_CONFIG['dbPassword'];
+$dbName = SYSTEM_CONFIG['dbName'];
+$dbHost = SYSTEM_CONFIG['dbHost'];
+$mysqlDumpPath = SYSTEM_CONFIG['mysqlDump'];
 
 $folderPath = BACKUP_PATH . DIRECTORY_SEPARATOR;
 

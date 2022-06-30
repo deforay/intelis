@@ -1,15 +1,22 @@
-# Setting up Ubuntu 22.04
+# Setting up Ubuntu 20.04
+
 
 
 #### Initial Ubuntu OS Setup
+
 * Install Ubuntu 22.04 using a flash disk or CD-ROM
 * Make sure to choose a secure password when creating the Ubuntu user during installation
 * Once installed and logged in, start the Software Updater and wait for the full software update process to complete.
 * Start Terminal (ctrl + alt + t) and type the following commands :
-	* ```sudo apt update && sudo apt upgrade -y```
-	* ```sudo apt autoremove -y```
-	* ```sudo apt install software-properties-common apt-transport-https wget vim zip unzip curl snapd rsync gdebi -y```
-	* ```sudo snap install --classic code```
+
+	```sudo apt update && sudo apt upgrade -y```
+
+	```sudo apt autoremove -y```
+
+	```sudo apt install software-properties-common apt-transport-https wget vim zip unzip curl snapd rsync gdebi -y```
+
+	```sudo snap install --classic code```
+
 * Now Ubuntu setup is complete. We can now install Apache, MySQL and PHP.
 
 #### Apache Setup
@@ -17,7 +24,9 @@ Type the following commands in the terminal:
 
 ```sudo apt install apache2 -y```
 
- ```sudo a2enmod rewrite headers && sudo service apache2 restart```
+ ```sudo a2enmod rewrite headers```
+
+ ```sudo service apache2 restart```
 
 #### MySQL Setup
 
@@ -57,4 +66,4 @@ Save and Close file. Then restart mysql :
 
 ```sudo service apache2 restart```
 
-Finally install [Composer](https://getcomposer.org/download/)
+Finally use this link to install [Composer](https://getcomposer.org/download/)

@@ -3,7 +3,7 @@
 A simple, open source Sample Management System for Viral Load, EID, Covid-19 and Hepatitis testing.
 
 #### Pre-requisites
-* Apache 2.x
+* Apache 2.x  (Make sure apache rewrite and headers modules are enabled)
 * MySQL 5.7.x
 * PHP 7.4.x
 * [Composer](https://getcomposer.org/download/)
@@ -78,7 +78,7 @@ At the end of the file, type this line :
 
 * Once you have the application set up, you can visit the vlsm URL http://vlsm.example.org/ and set up admin user
 * Once you login as admin user, add the Sample Types, Reasons for Testing, Rejection Reasons, Provinces etc. for each Test under the Admin menu 
-* Now you can start adding Users, facilities and finish the System config.
+* Now you can start adding users, facilities, sample types etc. and complete the system config.
 
 
 #### Who do I talk to?

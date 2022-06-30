@@ -103,9 +103,9 @@ try {
 			'updated_datetime' => $general->getDateTime(),
 			'status' => 'active'
 		);
-		if (isset($systemConfig['remoteURL']) && $systemConfig['remoteURL'] != "" && $_POST['fromAPI'] == "yes") {
+		if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $_POST['fromAPI'] == "yes") {
 			/* Facility sync to remote */
-			$url = $systemConfig['remoteURL'] . '/facilities/addFacilityHelper.php';
+			$url = SYSTEM_CONFIG['remoteURL'] . '/facilities/addFacilityHelper.php';
 			$apiData = array(
 				"result" => $_POST,
 				"api-type" => "sync",

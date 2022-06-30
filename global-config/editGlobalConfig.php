@@ -318,7 +318,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								</div>
 							</div>
 						</div>
-						<?php if ($systemConfig['modules']['vl']) { ?>
+						<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<h3 class="panel-title"><?php echo _("Viral Load Settings"); ?></h3>
@@ -514,7 +514,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								</div>
 							</div>
 						<?php }
-						if ($systemConfig['modules']['eid']) { ?>
+						if (SYSTEM_CONFIG['modules']['eid']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<h3 class="panel-title"><?php echo _("EID Settings"); ?></h3>
@@ -640,7 +640,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								</div>
 							</div>
 						<?php }
-						if ($systemConfig['modules']['covid19']) { ?>
+						if (SYSTEM_CONFIG['modules']['covid19']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<h3 class="panel-title"><?php echo _("Covid-19 Settings"); ?></h3>
@@ -823,7 +823,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								</div>
 							</div>
 						<?php }
-						if ($systemConfig['modules']['hepatitis'] == true) { ?>
+						if (SYSTEM_CONFIG['modules']['hepatitis'] == true) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<h3 class="panel-title"><?php echo _("Hepatitis Settings"); ?></h3>
@@ -928,7 +928,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								</div>
 							</div>
 						<?php }
-						if ($systemConfig['modules']['tb']) { ?>
+						if (SYSTEM_CONFIG['modules']['tb']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<h3 class="panel-title"><?php echo _("TB Settings"); ?></h3>

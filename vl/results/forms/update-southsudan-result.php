@@ -574,7 +574,7 @@ $disable = "disabled = 'disabled'";
 										</div>
 									</div>
 								</div>
-								<?php if ($usersModel->isAllowed('vlTestResult.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+								<?php if ($usersModel->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 									<form class="form-inline" method="post" name="vlRequestFormSudan" id="vlRequestFormSudan" autocomplete="off" action="updateVlTestResultHelper.php">
 										<div class="box box-primary" style="<?php if ($_SESSION['accessType'] == 'collection-site') { ?> pointer-events:none;<?php } ?>">
 											<div class="box-header with-border">

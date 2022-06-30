@@ -518,7 +518,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 												</select>
 											</td>
 											<th>Date de Revu</td>
-											<td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Date de revu" title="Date de revu" /></td>
+											<td><input type="text" value="<?= $general->humanDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Date de revu" title="Date de revu" /></td>
 										</tr>
 										<tr class="change-reason">
 											<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></td>

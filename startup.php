@@ -68,16 +68,16 @@ require_once(APPLICATION_PATH . '/system/system.php');
 require_once(APPLICATION_PATH . '/vendor/autoload.php');
 
 $systemConfig = require_once(APPLICATION_PATH . "/configs/config." . APPLICATION_ENV . ".php");
-
+define('SYSTEM_CONFIG', $systemConfig);
 
 // Database Connection
 $db = new MysqliDb(array(
-    'host' => $systemConfig['dbHost'],
-    'username' => $systemConfig['dbUser'],
-    'password' => $systemConfig['dbPassword'],
-    'db' =>  $systemConfig['dbName'],
-    'port' => (!empty($systemConfig['dbPort']) ? $systemConfig['dbPort'] : 3306),
-    'charset' => (!empty($systemConfig['dbCharset']) ? $systemConfig['dbCharset'] : 'utf8mb4')
+    'host' => SYSTEM_CONFIG['dbHost'],
+    'username' => SYSTEM_CONFIG['dbUser'],
+    'password' => SYSTEM_CONFIG['dbPassword'],
+    'db' =>  SYSTEM_CONFIG['dbName'],
+    'port' => (!empty(SYSTEM_CONFIG['dbPort']) ? SYSTEM_CONFIG['dbPort'] : 3306),
+    'charset' => (!empty(SYSTEM_CONFIG['dbCharset']) ? SYSTEM_CONFIG['dbCharset'] : 'utf8mb4')
 ));
 
 // Locale

@@ -14,8 +14,7 @@ try {
 
         $username = $db->escape($input['userName']);
         $password = $db->escape($input['password']);
-        // $systemConfig['passwordSalt']='PUT-A-RANDOM-STRING-HERE';
-        $password = sha1($password . $systemConfig['passwordSalt']);
+        $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
         $queryParams = array($username, $password);
         $userResult = $db->rawQueryOne("SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, r.*, (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ? AND ud.password = ?", $queryParams);
         // print_r($userResult);die;

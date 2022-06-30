@@ -19,7 +19,7 @@ $tableName = array(
     "tb" => "form_tb"
 );
 
-foreach ($systemConfig['modules'] as $module => $status) {
+foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
     if ($status) {
         //EXPIRING SAMPLES
         $expiryDays = $general->getGlobalConfig($module . '_sample_expiry_after_days');

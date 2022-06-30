@@ -21,7 +21,7 @@ if (trim($sarr['sc_testing_lab_id']) == '') {
 
 
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_tb'";
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_tb'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
     $sampleCode = array();

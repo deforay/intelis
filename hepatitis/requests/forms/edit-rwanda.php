@@ -296,7 +296,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         </div>
 
 
-                        <?php if ($usersModel->isAllowed('hepatitis-update-result.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersModel->isAllowed('hepatitis-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -339,7 +339,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value='Follow up HBV VL' <?php echo ($hepatitisInfo['reason_for_vl_test'] == 'Follow up HBV VL') ? "selected='selected'" : ""; ?>>Follow up HBV VL</option>
                                                 </select>
                                             </td>
-                                            <th>Is Sample Rejected ?</th>
+                                            <th>Is Sample Rejected?</th>
                                             <td>
                                                 <select class="labSecInput form-control result-focus" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=""> -- Select -- </option>

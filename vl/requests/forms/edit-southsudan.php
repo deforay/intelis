@@ -607,7 +607,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											</div>
 										</div>
 									</div>
-									<?php if ($usersModel->isAllowed('vlTestResult.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+									<?php if ($usersModel->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 										<div class="box-header with-border">
 											<h3 class="box-title">Laboratory Information</h3>
 										</div>
@@ -831,7 +831,20 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	facilityName = true;
 	$(document).ready(function() {
 
+
+		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
+			if ($("#labId").val() !='' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
+				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+			}
+			if ($("#labId").val() !='' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
+				// $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+			}
+		});
+
+		$("#labId,#fName,#sampleCollectionDate").trigger('change');
+
 		$("#noResult").trigger('change');
+
 
 		$(document).on('select2:open', (e) => {
 			const selectId = e.target.id

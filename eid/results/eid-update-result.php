@@ -11,7 +11,6 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
-$systemConfig = $general->getSystemConfig();
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $userInfo = array();
@@ -52,13 +51,16 @@ $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 
 $disable = "disabled = 'disabled'";
 
-if (isset($eidInfo['result_reviewed_datetime']) && trim($eidInfo['result_reviewed_datetime']) != '' && $vlQueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $eidInfo['result_reviewed_datetime']);
-	$eidInfo['result_reviewed_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
-} else {
-	$eidInfo['result_reviewed_datetime'] = '';
+
+$iResultQuery = "SELECT * FROM import_config_machines";
+$iResult = $db->rawQuery($iResultQuery);
+$machine = array();
+foreach ($iResult as $val) {
+	$machine[$val['config_machine_id']] = $val['config_machine_name'];
 }
+
 ?>
+
 <style>
 	.disabledForm {
 		background: #efefef;
@@ -107,18 +109,7 @@ if (isset($eidInfo['result_reviewed_datetime']) && trim($eidInfo['result_reviewe
 	}
 </style>
 <?php
-if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $eidInfo['result_approved_datetime']);
-	$eidInfo['result_approved_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
-} else {
-	$eidInfo['result_approved_datetime'] = $general->humanDateFormat($general->getDateTime());
-}
-$iResultQuery = "select * from  import_config_machines";
-$iResult = $db->rawQuery($iResultQuery);
-$machine = array();
-foreach ($iResult as $val) {
-	$machine[$val['config_machine_id']] = $val['config_machine_name'];
-}
+
 $fileArray = array(
 	1 => 'forms/update-southsudan-result.php',
 	2 => 'forms/update-zimbabwe-result.php',

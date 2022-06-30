@@ -514,7 +514,7 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                              </div>
-                                             <?php if ($usersModel->isAllowed('vlTestResult.php', $systemConfig) && $_SESSION['accessType'] != 'collection-site') { ?>
+                                             <?php if ($usersModel->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
                                                             <h3 class="box-title">Laboratory Information</h3>
@@ -549,7 +549,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) <span class="mandatory">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime isRequired" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" onchange="checkSampleReceviedAtHubDate()" />
+                                                                           <input type="text" class="form-control dateTime isRequired" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
@@ -747,9 +747,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      provinceName = true;
      facilityName = true;
      $(document).ready(function() {
-          $("#labId,#fName,#sampleCollectionDate").change(function() {
-               if ($("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
+          $("#labId,#fName,#sampleCollectionDate").on('change', function() {
+               if ($("#labId").val() !='' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
                     $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+               }
+               if ($("#labId").val() !='' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
+                    // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
                }
           });
           $("#sampleCollectionDate").datetimepicker({

@@ -378,10 +378,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
                                         </td>
-                                        <?php if ($usersModel->isAllowed('eid-update-result.php', $_SESSION['privileges']) && $_SESSION['accessType'] != 'collection-site') { ?>
-                                            <th>Sample Received Date</th>
+                                        <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                            <th>Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
                                             </td>
                                         <?php } ?>
                                     </tr>
@@ -389,7 +389,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('eid-update-result.php', $_SESSION['privileges']) && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if (true == false && $usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -414,7 +414,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <td>
                                                 <select class="form-control result-optional" id="machineName" name="machineName" title="Please select the machine name"></select>
                                             </td>
-                                            <th>Is Sample Rejected ?</th>
+                                            <th>Is Sample Rejected?</th>
                                             <td>
                                                 <select class=" form-control" name="isSampleRejected" id="isSampleRejected" title="Please select if sample is rejected or not">
                                                     <option value=''> -- Select -- </option>
@@ -482,13 +482,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style="width:25%;"><label for="">Approved On </label></td>
+                                            <th>Approved On</th>
                                             <td style="width:25%;">
                                                 <input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on" />
                                             </td>
-                                            <td style="width:25%;"><label for="">Lab Tech Comments </label></td>
+                                            <th>Lab Tech. Comments </th>
                                             <td style="width:25%;">
-                                                <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Enter the lab technician commands" title="Please enter the lab technician commands"><?php echo $eidInfo['lab_tech_comments']; ?></textarea>
+                                                <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Comments from the Lab Technician " title="Please Comments from the Lab Technician "><?php echo $eidInfo['lab_tech_comments']; ?></textarea>
                                             </td>
                                         </tr>
                                         <tr class="change-reason">
@@ -661,12 +661,19 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
     $(document).ready(function() {
-        $("#labId,#facilityId,#sampleCollectionDate").change(function() {
-            if ($("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+
+        $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
+            if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
+            if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
+                // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+            }
         });
-        $('#result').change(function(e) {
+
+        $("#labId,#facilityId,#sampleCollectionDate").trigger('change');
+
+        $('#result').on('change', function() {
             if ($(this).data("result") != "" && $(this).data("result") != $(this).val()) {
                 $('.change-reason').show();
                 $('#reasonForChanging').addClass('isRequired');

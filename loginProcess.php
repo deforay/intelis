@@ -10,7 +10,7 @@ ob_start();
 $tableName = "user_details";
 $userName = $db->escape($_POST['username']);
 $password = $db->escape($_POST['password']);
-$userPassword = sha1($password . $systemConfig['passwordSalt']);
+$userPassword = sha1($password . SYSTEM_CONFIG['passwordSalt']);
 
 
 $general = new \Vlsm\Models\General();
@@ -36,7 +36,7 @@ $_SESSION['instanceType'] = $systemInfo['sc_user_type'];
 $_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
 
 
-if (isset($_GET['u']) && isset($_GET['t']) && $systemConfig['recency']['crosslogin']) {
+if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
 
     $_GET['u'] = filter_var($_GET['u'], FILTER_SANITIZE_STRING);
     $_GET['t'] = filter_var($_GET['t'], FILTER_SANITIZE_STRING);
@@ -47,7 +47,7 @@ if (isset($_GET['u']) && isset($_GET['t']) && $systemConfig['recency']['crosslog
     $_POST['password'] = "";
 
     if ($check) {
-        $passwordCrossLoginSalt = $check['password'] . $systemConfig['recency']['crossloginSalt'];
+        $passwordCrossLoginSalt = $check['password'] . SYSTEM_CONFIG['recency']['crossloginSalt'];
         $_POST['password'] = hash('sha256', $passwordCrossLoginSalt);
         $password = "";
         if ($_POST['password'] == $_GET['t']) {
@@ -56,7 +56,7 @@ if (isset($_GET['u']) && isset($_GET['t']) && $systemConfig['recency']['crosslog
         }
     }
 } else {
-    if (!$systemConfig['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
+    if (!SYSTEM_CONFIG['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
         $_SESSION['alertMsg'] = _("Sorry! Recency cross-login has not been activated. Please contact system administrator.");
     }
 }
@@ -72,7 +72,7 @@ try {
 
             /* Crosss Login Block Start */
             if (empty($_GET) || empty($_GET['u']) || empty($_GET['t'])) {
-                $password = sha1($password . $systemConfig['passwordSalt']);
+                $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
             }
             /* Crosss Login Block End */
             $ipaddress = '';
