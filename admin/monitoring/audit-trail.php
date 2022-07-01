@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" />
 <?php
-$title = _("Audit Trail Form");
+$title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
 
 if(isset($_POST['testType']))
@@ -32,7 +33,7 @@ function getDifference($arr1,$arr2)
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Audit Trail Form"); ?></h1>
+		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Audit Trail"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Audit Trail"); ?></li>
@@ -49,7 +50,7 @@ function getDifference($arr1,$arr2)
 						<tr>
 							<td><b><?php echo _("Test Type"); ?>*&nbsp;:</b></td>
 							<td>
-							<select onchange="getSampleCodeList(this.value)" style="width:220px;" class="form-control" id="testType" name="testType" title="<?php echo _('Type of Test'); ?>">
+							<select style="width:220px;" class="form-control" id="testType" name="testType" title="<?php echo _('Type of Test'); ?>">
 							<option value="">--Choose Test Type--</option>
 							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_vl") echo "selected='selected'"; ?> value="audit_form_vl">VL</option>
 							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_eid") echo "selected='selected'"; ?> value="audit_form_eid">EID</option>
@@ -60,13 +61,13 @@ function getDifference($arr1,$arr2)
 							</td>
 							<td><b><?php echo _("Sample Code"); ?>&nbsp;:</b></td>
 							<td>
-								
-								<select style="width:220px;" class="form-control" id="sampleCode" name="sampleCode" title="<?php echo _('Please select the Sample code'); ?>">
-									
-								</select>
+								<input type="text" value="<?php if(isset($_POST['sampleCode'])) echo $_POST['sampleCode']; else echo ""; ?>" name="sampleCode" id="sampleCode" class="form-control" />
+								<!--<select style="width:220px;" class="form-control" id="sampleCode" name="sampleCode" title="<?php echo _('Please select the Sample code'); ?>">
+								</select>-->
 							</td>
 						</tr>
 						<tr>
+							<td></td>
 							<td style=" display: contents; ">
 								<button type="submit" value="Submit" class="btn btn-primary btn-sm"><span><?php echo _("Submit"); ?></span></button>
 								<a href="/admin/monitoring/audit-trail.php" class="btn btn-danger btn-sm" style=" margin-left: 15px; "><span><?php echo _("Clear"); ?></span></button>
@@ -105,8 +106,8 @@ function getDifference($arr1,$arr2)
               		$code="";
 
               $sql = "SELECT a.*, modifier.user_name as last_modified_by, creator.user_name as req_created_by from $table_name as a 
-			  LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id WHERE a.sample_code = '$sample_code'";
-
+			  LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id 
+			  WHERE sample_code = '$sample_code' OR remote_sample_code = '$sample_code'";
               $result = $db->rawQuery($sql);
 
               $posts=array();
@@ -185,13 +186,14 @@ function getDifference($arr1,$arr2)
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
-	function getSampleCodeList(testType)
+/*	function getSampleCodeList(samplecode)
 	{
 		//loadVlRequestData();
+		testType=$("#testType").val();
 		$.post({
 			type: "POST",
 			url: '/admin/monitoring/get-sample-code-list.php',
-			data: {table: testType, type:"sample_code"},
+			data: {table: testType, type:samplecode},
 			success: function(data){
 				obj = $.parseJSON(data);
 				$("#sampleCode").html('');
@@ -200,79 +202,29 @@ function getDifference($arr1,$arr2)
 				});
 			}
 		});
-	}
-	var oTable = null;
-	$(document).ready(function() {
-		getSampleCodeList($("#testType").val());
-		$("#sampleCode").select2({
+	}*/
+
+
+	/*	$("#sampleCode").autocomplete({
+  source: function(request, response) {
+    $.getJSON("get-sample-code-list.php", { testType: $('#testType').val(), code : $('#sampleCode').val() }, 
+              response);
+  },
+  minLength: 2,
+  select: function(event, ui){
+    alert('hi');
+  }
+});
+*/
+
+	//	getSampleCodeList($("#testType").val());
+		/*$("#sampleCode").select2({
 			placeholder: "<?php echo _("Select Sample Code"); ?>"
 		});
+*/
+	
 
-		$('#dateRange').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-				}
-			},
-			function(start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
-
-	});
-
-	function loadVlRequestData() {
-		$.blockUI();
-		oTable = $('#auditTrailDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
-			"bJQueryUI": false,
-			"bAutoWidth": false,
-			"bInfo": true,
-			"bScrollCollapse": true,
-			//"bStateSave" : true,
-			"bRetrieve": true,
-			"aaSorting": [3, "desc"],
-			"bProcessing": true,
-			"bServerSide": true,
-			"sAjaxSource": "/admin/monitoring/get-audit-trail-form.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
-				aoData.push({
-					"name": "table_name",
-					"value": $("#testType").val()
-				});
-				aoData.push({
-					"name": "sample_code",
-					"value": $("#sampleCode").val()
-				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
-			}
-		});
-		$.unblockUI();
-	}
+	
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

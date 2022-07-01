@@ -1,9 +1,10 @@
 <?php
 
-if(isset($_POST['table']))
+if(isset($_GET['code']))
 {
-    $table = $_POST['table'];
-    $sql = "SELECT DISTINCT sample_code FROM $table";
+    $table = $_GET['testType'];
+    $sampleCode = $_GET['code'];
+    $sql = "SELECT DISTINCT sample_code FROM $table WHERE sample_code like '$sampleCode%' OR remote_sample_code like '$sampleCode%'";
     $result = $db->rawQuery($sql);
     echo json_encode($result);
 }
