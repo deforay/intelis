@@ -227,6 +227,10 @@
 		$(".allMenu").removeClass('active');
 		$(".audit-trail-menu, .manage, .monitoring-menu").addClass('active');
 		$(".facilityMenu").addClass('active');
+	} else if (splitsUrl == 'activity-log.php') {
+		$(".allMenu").removeClass('active');
+		$(".activity-log-menu, .manage, .monitoring-menu").addClass('active');
+		$(".facilityMenu").addClass('active');
 	} else if (splitsUrl == 'sources-of-requests.php') {
 		$(".allMenu").removeClass('active');
 		$(".sources-of-requests-report-menu, .manage, .monitoring-menu").addClass('active');

@@ -425,7 +425,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</a>
 										<ul class="treeview-menu">
 											<?php if (isset($_SESSION['privileges']) && in_array("audit-trail.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu treeview audit-trail-menu">
+												<li class="allMenu treeview activity-log-menu">
 													<a href="/admin/monitoring/audit-trail.php"><i class="fa-solid fa-file-lines"></i> <?php echo _("Audit Trail"); ?></a>
 												</li>
 											<?php }
