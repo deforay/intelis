@@ -426,12 +426,12 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<ul class="treeview-menu">
 											<?php if (isset($_SESSION['privileges']) && in_array("audit-trail.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview audit-trail-menu">
-													<a href="/admin/monitoring/audit-trail.php"><i class="fa-solid fa-file-lines"></i> <?php echo _("Audit Trail"); ?></a>
+													<a href="/admin/monitoring/activity-log.php"><i class="fa-solid fa-file-lines"></i> <?php echo _("User Activity Log"); ?></a>
 												</li>
 											<?php }
 											if (isset($_SESSION['privileges']) && in_array("audit-trail-form.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu treeview audit-trail-form-menu">
-													<a href="/admin/monitoring/audit-trail-form.php"><i class="fa-solid fa-file-lines"></i> <?php echo _("Audit Trail Form"); ?></a>
+												<li class="allMenu treeview audit-trail-menu">
+													<a href="/admin/monitoring/audit-trail.php"><i class="fa-solid fa-file-lines"></i> <?php echo _("Audit Trail"); ?></a>
 												</li>
 											<?php }
 
