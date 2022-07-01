@@ -3125,4 +3125,10 @@ VALUES
 UPDATE `system_config` SET `value` = '4.5.2' WHERE `system_config`.`name` = 'sc_version';
 
 
+-- Amit 27-Jun-2022 version 4.5.3
+UPDATE `system_config` SET `value` = '4.5.3' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Jeyabanu 27-Jun-2022
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
 (NULL, 'common-reference', 'audit-trail-form.php', 'Audit Trail Form');
