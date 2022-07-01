@@ -3126,3 +3126,9 @@ UPDATE `system_config` SET `value` = '4.5.2' WHERE `system_config`.`name` = 'sc_
 
 
 (NULL, 'common-reference', 'audit-trail-form.php', 'Audit Trail Form');
+
+
+-- Jeyabanu 1-July-2022
+UPDATE `privileges` SET `privilege_name` = 'activity-log.php', `display_name` = 'User Activity Log' WHERE `privileges`.`privilege_id` = 216;
+
+UPDATE `privileges` SET `privilege_name` = 'audit-trail.php', `display_name` = 'Audit Trail' WHERE `privileges`.`privilege_id` = 235;

@@ -1,18 +1,23 @@
 <?php
-$title = _("Audit Trail");
+$title = _("Audit Trail Form");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$userDb = new \Vlsm\Models\Users();
-$userNameList = $userDb->getAllUsers(null, null, 'drop-down');
-
-$actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");
-
-$actionList = array();
-foreach ($actions as $list) {
-	$actionList[$list['event_type']] = ucwords(str_replace("-", " ", $list['event_type']));
+if(isset($_POST['testType']))
+{
+	$table_name = $_POST['testType'];
+	$sample_code =$_POST['sampleCode'];
 }
-
+else {
+	$table_name="audit_form_vl";
+	$sample_code="VL062288148";
+}
+$columns_sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'vlsm' AND table_name='$table_name'";
+$col_result = $db->rawQuery($columns_sql);
+function getDifference($arr1,$arr2)
+{
+    $diff = array_merge(array_diff_assoc($arr1,$arr2),array_diff_assoc($arr2,$arr1));
+    return $diff;
+}
 ?>
 <style>
 	.select2-selection__choice {
@@ -27,7 +32,7 @@ foreach ($actions as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Audit Trail"); ?></h1>
+		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Audit Trail Form"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Audit Trail"); ?></li>
@@ -39,49 +44,134 @@ foreach ($actions as $list) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
+				<form name="form1" action="audit-trail.php" method="post" id="searchForm">
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
+							<td><b><?php echo _("Test Type"); ?>*&nbsp;:</b></td>
 							<td>
-								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
+							<select onchange="getSampleCodeList(this.value)" style="width:220px;" class="form-control" id="testType" name="testType" title="<?php echo _('Type of Test'); ?>">
+							<option value="">--Choose Test Type--</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_vl") echo "selected='selected'"; ?> value="audit_form_vl">VL</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_eid") echo "selected='selected'"; ?> value="audit_form_eid">EID</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_covid19") echo "selected='selected'"; ?> value="audit_form_covid19">Covid-19</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_hepatitis") echo "selected='selected'"; ?> value="audit_form_hepatitis">Hepatitis</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_tb") echo "selected='selected'"; ?> value="audit_form_tb">TB</option>
+							</select>
 							</td>
-							<td><b><?php echo _("Users"); ?>&nbsp;:</b></td>
+							<td><b><?php echo _("Sample Code"); ?>&nbsp;:</b></td>
 							<td>
-								<select style="width:220px;" class="form-control select2" id="userName" name="userName" title="<?php echo _('Please select the user name'); ?>">
-									<?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
+								
+								<select style="width:220px;" class="form-control" id="sampleCode" name="sampleCode" title="<?php echo _('Please select the Sample code'); ?>">
+									
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Type of Action"); ?>&nbsp;:</b></td>
-							<td>
-								<select style="width:220px;" class="form-control" id="typeOfAction" name="typeOfAction" title="<?php echo _('Type of Action'); ?>">
-									<?php echo $general->generateSelectOptions($actionList, null, '--All--'); ?>
-								</select>
-							</td>
 							<td style=" display: contents; ">
-								<button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
+								<button type="submit" value="Submit" class="btn btn-primary btn-sm"><span><?php echo _("Submit"); ?></span></button>
 								<a href="/admin/monitoring/audit-trail.php" class="btn btn-danger btn-sm" style=" margin-left: 15px; "><span><?php echo _("Clear"); ?></span></button>
 							</td>
 						</tr>
 					</table>
+</form>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="auditTrailDataTable" class="table table-bordered table-striped">
-							<thead>
-								<tr>
-									<th><?php echo _("Audit Log"); ?></th>
-									<th><?php echo _("Type of Action"); ?></th>
-									<th><?php echo _("IP Address"); ?></th>
-									<th><?php echo _("Recorded On"); ?></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td colspan="15" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
-								</tr>
-							</tbody>
-						</table>
+					<table>
+  <thead>
+    <tr>
+      <?php
+      $columns_sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'vlsm' AND table_name='$table_name'";
+      
+      $result_column = $db->rawQuery($columns_sql);
+      $col_arr = array();
+     foreach($result_column as $col)
+      {
+        $col_arr[] = $col['COLUMN_NAME'];
+        ?>
+        <th>
+          <?php //echo ucwords(str_replace('_',' ',$col['COLUMN_NAME'])); 
+          echo $col['COLUMN_NAME'];
+          ?>
+          <?php } ?>
+        </th>
+    </tr>
+  </thead>
+  <tbody>
+
+              <?php
+              if(isset($_POST['sample_code']))
+              		$code=$_POST['sample_code'];
+              	else
+              		$code="";
+
+              $sql = "SELECT a.*, modifier.user_name as last_modified_by, creator.user_name as req_created_by from $table_name as a 
+			  LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id WHERE a.sample_code = '$sample_code'";
+
+              $result = $db->rawQuery($sql);
+
+              $posts=array();
+              
+              foreach($result as $row) {
+                
+                $posts[] = $row;
+                
+              }
+            
+
+         //  echo 'valu-'.count($posts);
+            //echo '<pre>'; print_r($posts); die();
+            for($i=0;$i<count($posts);$i++)
+            {
+              $k = ($i-1);
+              $arr_diff = getDifference($posts[$i],$posts[$k]);
+               
+            ?>
+            <tr>
+            <?php
+          
+            for($j=0;$j<count($col_arr);$j++)
+            {
+            ?>
+                  <td class="compare_col-<?php echo $i.'-'.$j; ?>">
+                    <?php 
+                     //  echo $i.'--'.($i-1);
+                    if($i>0)
+                    {
+                     
+                          if(!empty($arr_diff[$col_arr[$j]]) && $arr_diff[$col_arr[$j]]!=$posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]]))
+                          {
+                          echo '<style type="text/css">
+                            .compare_col-'.$i.'-'.$j.' {
+                              background: orange;
+                              color:black;
+                            }
+                            </style>';
+                          }
+                          else
+                        {
+                          echo '<style type="text/css">
+                            .compare_col-'.$i.'-'.$j.' {
+                              background: white;
+                              color:black;
+                            }
+                            </style>';
+                        }
+                        
+                  }                   
+                    
+                   echo $posts[$i][$col_arr[$j]];
+                    ?>
+                  </td>
+            <?php }
+            ?>
+  </tr>
+  <?php
+}
+  ?>
+   
+  </tbody>
+
+</table>
 					</div>
 				</div>
 				<!-- /.box -->
@@ -95,17 +185,29 @@ foreach ($actions as $list) {
 <script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
+	function getSampleCodeList(testType)
+	{
+		//loadVlRequestData();
+		$.post({
+			type: "POST",
+			url: '/admin/monitoring/get-sample-code-list.php',
+			data: {table: testType, type:"sample_code"},
+			success: function(data){
+				obj = $.parseJSON(data);
+				$("#sampleCode").html('');
+				$.each( obj, function( key, value ) {
+					$("#sampleCode").append("<option value="+value.sample_code+">"+value.sample_code+"</option>") ;
+				});
+			}
+		});
+	}
 	var oTable = null;
 	$(document).ready(function() {
-		$('#userName').select2({
-			placeholder: "Select user to filter"
+		getSampleCodeList($("#testType").val());
+		$("#sampleCode").select2({
+			placeholder: "<?php echo _("Select Sample Code"); ?>"
 		});
 
-		$('#typeOfAction').select2({
-			placeholder: "Select action to filter"
-		});
-
-		loadVlRequestData();
 		$('#dateRange').daterangepicker({
 				locale: {
 					cancelLabel: 'Clear'
@@ -147,31 +249,18 @@ foreach ($actions as $list) {
 			"bScrollCollapse": true,
 			//"bStateSave" : true,
 			"bRetrieve": true,
-			"aoColumns": [{
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}],
 			"aaSorting": [3, "desc"],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/admin/monitoring/get-audit-trail-list.php",
+			"sAjaxSource": "/admin/monitoring/get-audit-trail-form.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
-					"name": "dateRange",
-					"value": $("#dateRange").val()
+					"name": "table_name",
+					"value": $("#testType").val()
 				});
 				aoData.push({
-					"name": "userName",
-					"value": $("#userName").val()
-				});
-				aoData.push({
-					"name": "typeOfAction",
-					"value": $("#typeOfAction").val()
+					"name": "sample_code",
+					"value": $("#sampleCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -188,3 +277,32 @@ foreach ($actions as $list) {
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
 ?>
+<style>
+.box-body
+{
+	overflow:scroll;
+}
+.box-body td, .box-body th {
+  border: 1px solid #999;
+  padding: 20px;
+}
+ td{
+  background: white;
+}
+.primary{
+  background-color: brown;
+  position: sticky;
+}
+.box-body > th {
+  background: white;
+  font-size:20px;
+  color: black;
+  border-radius: 0;
+  top: 0;
+  padding: 10px;
+}
+.box-body > tbody > tr:hover {
+  background-color: #ffc107;
+}
+
+</style>
