@@ -95,8 +95,13 @@ if(!empty($sample_code))
 
               	<?php
 				
-				$sql = "SELECT a.*, modifier.user_name as last_modified_by, creator.user_name as req_created_by from $table_name as a 
-				LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id 
+				$sql = "SELECT a.*, modifier.user_name as last_modified_by, creator.user_name as req_created_by,tester.user_name as tested_by,approver.user_name as result_approved_by,riewer.user_name as result_reviewed_by
+				from $table_name as a 
+				LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id 
+				LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id
+				LEFT JOIN user_details as tester ON a.tested_by = tester.user_id 
+				LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
+				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id 
 				WHERE sample_code = '$sample_code' OR remote_sample_code = '$sample_code'";
 				$posts = $db->rawQuery($sql);
 				if(count($posts)>0) 
