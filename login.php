@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 if (isset($_SESSION['userId'])) {
 	header("location:dashboard/index.php");
 }
-
+$general = new \Vlsm\Models\General();
 // If there are NO users, then we need to register the admin user
 // This happens during first setup typically
 $count = $db->getValue("user_details", "count(*)");

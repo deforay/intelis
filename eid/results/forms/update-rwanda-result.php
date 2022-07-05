@@ -360,7 +360,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </select>
                                         </td>
                                     <tr>
-                                        <th>Is Sample Rejected ? <span class="mandatory">*</span></th>
+                                        <th>Is Sample Rejected? <span class="mandatory">*</span></th>
                                         <td>
                                             <select class="form-control isRequired" name="isSampleRejected" id="isSampleRejected">
                                                 <option value=''> -- Select -- </option>
@@ -417,7 +417,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </select>
                                         </td>
                                         <th>Reviewed on</td>
-                                        <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+                                        <td><input type="text" value="<?= $general->humanDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                     </tr>
                                     <tr class="change-reason">
                                         <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>

@@ -2,27 +2,46 @@
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$userDb = new \Vlsm\Models\Users();
-$userNameList = $userDb->getAllUsers(null, null, 'drop-down');
-
-$actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");
-
-$actionList = array();
-foreach ($actions as $list) {
-	$actionList[$list['event_type']] = ucwords(str_replace("-", " ", $list['event_type']));
+if(isset($_POST['testType']))
+{
+	$tableName = $_POST['testType'];
+	$sampleCode =$_POST['sampleCode'];
+	$tableName2=str_replace('audit_','',$tableName);
+}
+else {
+	$tableName="";
+	$sampleCode="";
+	$tableName2="";
 }
 
-?>
-<style>
-	.select2-selection__choice {
-		color: black !important;
-	}
+function getDifference($arr1,$arr2)
+{
+    $diff = array_merge(array_diff_assoc($arr1,$arr2),array_diff_assoc($arr2,$arr1));
+    return $diff;
+}
 
-	th {
-		display: revert !important;
-	}
-</style>
+function getColumns($db,$tableName)
+{
+	$columns_sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='$tableName'";
+	$result_column = $db->rawQuery($columns_sql);
+	return $result_column;
+}
+
+function getColumnValues($db,$tableName,$sampleCode)
+{
+	$sql = "SELECT a.*, modifier.user_name as last_modified_by, creator.user_name as req_created_by,tester.user_name as tested_by,approver.user_name as result_approved_by,riewer.user_name as result_reviewed_by
+				from $tableName as a 
+				LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id 
+				LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id
+				LEFT JOIN user_details as tester ON a.tested_by = tester.user_id 
+				LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
+				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id 
+				WHERE sample_code = '$sampleCode' OR remote_sample_code = '$sampleCode'";
+				$posts = $db->rawQuery($sql);
+				return $posts;
+}
+?>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -33,158 +52,261 @@ foreach ($actions as $list) {
 			<li class="active"><?php echo _("Audit Trail"); ?></li>
 		</ol>
 	</section>
-
 	<!-- Main content -->
 	<section class="content">
 		<div class="row">
-			<div class="col-xs-12">
+
+		<div class="col-xs-12">
 				<div class="box">
+				<form name="form1" action="audit-trail.php" method="post" id="searchForm">
+
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
+							<td><b><?php echo _("Test Type"); ?>&nbsp;:</b></td>
 							<td>
-								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
+							<select style="width:220px;" class="form-control" id="testType" name="testType" title="<?php echo _('Type of Test'); ?>">
+							<option value="">--Choose Test Type--</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_vl") echo "selected='selected'"; ?> value="audit_form_vl">VL</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_eid") echo "selected='selected'"; ?> value="audit_form_eid">EID</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_covid19") echo "selected='selected'"; ?> value="audit_form_covid19">Covid-19</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_hepatitis") echo "selected='selected'"; ?> value="audit_form_hepatitis">Hepatitis</option>
+							<option <?php if(isset($_POST['testType']) && $_POST['testType']=="audit_form_tb") echo "selected='selected'"; ?> value="audit_form_tb">TB</option>
+							</select>
 							</td>
-							<td><b><?php echo _("Users"); ?>&nbsp;:</b></td>
+							<td>&nbsp;<b><?php echo _("Sample Code"); ?>&nbsp;:</b></td>
 							<td>
-								<select style="width:220px;" class="form-control select2" id="userName" name="userName" title="<?php echo _('Please select the user name'); ?>">
-									<?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
-								</select>
+							<input type="text" value="<?php if(isset($_POST['sampleCode'])) echo $_POST['sampleCode']; else echo ""; ?>" name="sampleCode" id="sampleCode" class="form-control" />
 							</td>
-						</tr>
+						
 						<tr>
-							<td><b><?php echo _("Type of Action"); ?>&nbsp;:</b></td>
-							<td>
-								<select style="width:220px;" class="form-control" id="typeOfAction" name="typeOfAction" title="<?php echo _('Type of Action'); ?>">
-									<?php echo $general->generateSelectOptions($actionList, null, '--All--'); ?>
-								</select>
-							</td>
-							<td style=" display: contents; ">
-								<button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
-								<a href="/admin/monitoring/audit-trail.php" class="btn btn-danger btn-sm" style=" margin-left: 15px; "><span><?php echo _("Clear"); ?></span></button>
+							<td colspan="4">&nbsp;<input type="submit"  value="<?php echo _("Submit"); ?>" class="btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
 							</td>
 						</tr>
+
 					</table>
+				</form>	
+				</div>
+			</div>
+<?php
+if(!empty($sampleCode))
+{
+?>
+			<div class="col-xs-12">
+				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="auditTrailDataTable" class="table table-bordered table-striped">
-							<thead>
-								<tr>
-									<th><?php echo _("Audit Log"); ?></th>
-									<th><?php echo _("Type of Action"); ?></th>
-									<th><?php echo _("IP Address"); ?></th>
-									<th><?php echo _("Recorded On"); ?></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td colspan="15" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
-								</tr>
-							</tbody>
-						</table>
+					<h3> Audit Trail for Sample <?php echo $sampleCode; ?></h3>
+					<table>
+						<thead>
+							<tr>
+							<?php
+							$result_column = getColumns($db,$tableName);
+							$col_arr = array();
+							foreach($result_column as $col)
+							{
+								$col_arr[] = $col['COLUMN_NAME'];
+								?>
+								<th>
+								<?php //echo ucwords(str_replace('_',' ',$col['COLUMN_NAME'])); 
+								echo $col['COLUMN_NAME'];
+								?>
+								</th>
+								<?php } ?>
+							</tr>
+						</thead>
+						<tbody>
+
+              	<?php
+				
+				$posts = getColumnValues($db,$tableName,$sampleCode);
+				if(count($posts)>0) 
+				{
+					for($i=0;$i<count($posts);$i++)
+					{
+					$k = ($i-1);
+					$arrDiff = getDifference($posts[$i],$posts[$k]);
+					
+					?>
+					<tr>
+					<?php
+				
+					for($j=0;$j<count($col_arr);$j++)
+					{
+					?>
+					<td class="compare_col-<?php echo $i.'-'.$j; ?>">
+						<?php 
+						if($i>0)
+						{
+							if(!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]]!=$posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]]))
+							{
+							echo '<style type="text/css">
+								.compare_col-'.$i.'-'.$j.' {
+								background: orange;
+								color:black;
+								}
+								</style>';
+							}
+							else
+							{
+							echo '<style type="text/css">
+								.compare_col-'.$i.'-'.$j.' {
+								background: white;
+								color:black;
+								}
+								</style>';
+							}
+							
+					}                   
+						
+					echo $posts[$i][$col_arr[$j]];
+						?>
+					</td>
+				<?php }
+				?>
+			</tr>
+  <?php
+}
+				}
+			
+				else
+				{
+					echo "<tr align='center'><td colspan='10'>No records available</td></tr>";
+				}
+  ?>
+   
+  </tbody>
+
+</table>
+
+<p>
+	<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
+</p>
+<table>
+						<thead>
+							<tr>
+							<?php
+							$result_column = getColumns($db,$tableName2);
+							$col_arr = array();
+							foreach($result_column as $col)
+							{
+								$col_arr[] = $col['COLUMN_NAME'];
+								?>
+								<th>
+								<?php //echo ucwords(str_replace('_',' ',$col['COLUMN_NAME'])); 
+								echo $col['COLUMN_NAME'];
+								?>
+								</th>
+								<?php } ?>
+							</tr>
+						</thead>
+						<tbody>
+              	<?php
+				
+				$posts = getColumnValues($db,$tableName2,$sampleCode);
+				if(count($posts)>0) 
+				{
+					for($i=0;$i<count($posts);$i++)
+					{
+					$k = ($i-1);
+					$arrDiff = getDifference($posts[$i],$posts[$k]);
+					
+					?>
+					<tr>
+					<?php
+				
+					for($j=0;$j<count($col_arr);$j++)
+					{
+					?>
+					<td class="compare_col-<?php echo $i.'-'.$j; ?>">
+						<?php 
+						if($i>0)
+						{
+							if(!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]]!=$posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]]))
+							{
+							echo '<style type="text/css">
+								.compare_col-'.$i.'-'.$j.' {
+								background: orange;
+								color:black;
+								}
+								</style>';
+							}
+							else
+							{
+							echo '<style type="text/css">
+								.compare_col-'.$i.'-'.$j.' {
+								background: white;
+								color:black;
+								}
+								</style>';
+							}
+							
+					}                   
+						
+					echo $posts[$i][$col_arr[$j]];
+						?>
+					</td>
+				<?php }
+				?>
+			</tr>
+  <?php
+}
+				}
+			
+				else
+				{
+					echo "<tr align='center'><td colspan='10'>No records available</td></tr>";
+				}
+  ?>
+   
+  </tbody>
+
+</table>
+
+
 					</div>
 				</div>
 				<!-- /.box -->
 			</div>
 			<!-- /.col -->
+			<?php
+}
+?>
 		</div>
 		<!-- /.row -->
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
-	var oTable = null;
-	$(document).ready(function() {
-		$('#userName').select2({
-			placeholder: "Select user to filter"
-		});
 
-		$('#typeOfAction').select2({
-			placeholder: "Select action to filter"
-		});
-
-		loadVlRequestData();
-		$('#dateRange').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-				}
-			},
-			function(start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
-
-	});
-
-	function loadVlRequestData() {
-		$.blockUI();
-		oTable = $('#auditTrailDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
-			"bJQueryUI": false,
-			"bAutoWidth": false,
-			"bInfo": true,
-			"bScrollCollapse": true,
-			//"bStateSave" : true,
-			"bRetrieve": true,
-			"aoColumns": [{
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}],
-			"aaSorting": [3, "desc"],
-			"bProcessing": true,
-			"bServerSide": true,
-			"sAjaxSource": "/admin/monitoring/get-audit-trail-list.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
-				aoData.push({
-					"name": "dateRange",
-					"value": $("#dateRange").val()
-				});
-				aoData.push({
-					"name": "userName",
-					"value": $("#userName").val()
-				});
-				aoData.push({
-					"name": "typeOfAction",
-					"value": $("#typeOfAction").val()
-				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
-			}
-		});
-		$.unblockUI();
-	}
-</script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
 ?>
+<style>
+.box-body
+{
+	overflow:scroll;
+}
+.box-body td, .box-body th {
+  border: 1px solid #999;
+  padding: 20px;
+}
+ td{
+  background: white;
+}
+.primary{
+  background-color: brown;
+  position: sticky;
+}
+.box-body > th {
+  background: white;
+  font-size:20px;
+  color: black;
+  border-radius: 0;
+  top: 0;
+  padding: 10px;
+}
+.box-body > tbody > tr:hover {
+  background-color: #ffc107;
+}
+
+</style>

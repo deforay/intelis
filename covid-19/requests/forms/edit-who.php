@@ -371,7 +371,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 </select>
                                             </td>
                                         <tr>
-                                            <th>Is Sample Rejected ?</th>
+                                            <th>Is Sample Rejected?</th>
                                             <td>
                                                 <select class="form-control result-focus" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>
