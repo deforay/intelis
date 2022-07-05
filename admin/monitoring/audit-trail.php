@@ -96,7 +96,7 @@ if(!empty($sampleCode))
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-					<h3> Audit Form Details</h3>
+					<h3> Audit Trail for Sample <?php echo $sampleCode; ?></h3>
 					<table>
 						<thead>
 							<tr>
@@ -180,7 +180,7 @@ if(!empty($sampleCode))
 </table>
 
 <p>
-	<h3> Form Details</h3>
+	<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
 </p>
 <table>
 						<thead>
