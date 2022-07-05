@@ -4,18 +4,41 @@ require_once(APPLICATION_PATH . '/header.php');
 
 if(isset($_POST['testType']))
 {
-	$table_name = $_POST['testType'];
-	$sample_code =$_POST['sampleCode'];
+	$tableName = $_POST['testType'];
+	$sampleCode =$_POST['sampleCode'];
+	$tableName2=str_replace('audit_','',$tableName);
 }
 else {
-	$table_name="";
-	$sample_code="";
+	$tableName="";
+	$sampleCode="";
+	$tableName2="";
 }
 
 function getDifference($arr1,$arr2)
 {
     $diff = array_merge(array_diff_assoc($arr1,$arr2),array_diff_assoc($arr2,$arr1));
     return $diff;
+}
+
+function getColumns($db,$tableName)
+{
+	$columns_sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='$tableName'";
+	$result_column = $db->rawQuery($columns_sql);
+	return $result_column;
+}
+
+function getColumnValues($db,$tableName,$sampleCode)
+{
+	$sql = "SELECT a.*, modifier.user_name as last_modified_by, creator.user_name as req_created_by,tester.user_name as tested_by,approver.user_name as result_approved_by,riewer.user_name as result_reviewed_by
+				from $tableName as a 
+				LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id 
+				LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id
+				LEFT JOIN user_details as tester ON a.tested_by = tester.user_id 
+				LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
+				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id 
+				WHERE sample_code = '$sampleCode' OR remote_sample_code = '$sampleCode'";
+				$posts = $db->rawQuery($sql);
+				return $posts;
 }
 ?>
 
@@ -36,6 +59,7 @@ function getDifference($arr1,$arr2)
 		<div class="col-xs-12">
 				<div class="box">
 				<form name="form1" action="audit-trail.php" method="post" id="searchForm">
+
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><b><?php echo _("Test Type"); ?>&nbsp;:</b></td>
@@ -65,19 +89,19 @@ function getDifference($arr1,$arr2)
 				</div>
 			</div>
 <?php
-if(!empty($sample_code))
+if(!empty($sampleCode))
 {
 ?>
 			<div class="col-xs-12">
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
+					<h3> Audit Form Details</h3>
 					<table>
 						<thead>
 							<tr>
 							<?php
-							$columns_sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='$table_name'";
-							$result_column = $db->rawQuery($columns_sql);
+							$result_column = getColumns($db,$tableName);
 							$col_arr = array();
 							foreach($result_column as $col)
 							{
@@ -87,29 +111,21 @@ if(!empty($sample_code))
 								<?php //echo ucwords(str_replace('_',' ',$col['COLUMN_NAME'])); 
 								echo $col['COLUMN_NAME'];
 								?>
-								<?php } ?>
 								</th>
+								<?php } ?>
 							</tr>
 						</thead>
 						<tbody>
 
               	<?php
 				
-				$sql = "SELECT a.*, modifier.user_name as last_modified_by, creator.user_name as req_created_by,tester.user_name as tested_by,approver.user_name as result_approved_by,riewer.user_name as result_reviewed_by
-				from $table_name as a 
-				LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id 
-				LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id
-				LEFT JOIN user_details as tester ON a.tested_by = tester.user_id 
-				LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
-				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id 
-				WHERE sample_code = '$sample_code' OR remote_sample_code = '$sample_code'";
-				$posts = $db->rawQuery($sql);
+				$posts = getColumnValues($db,$tableName,$sampleCode);
 				if(count($posts)>0) 
 				{
 					for($i=0;$i<count($posts);$i++)
 					{
 					$k = ($i-1);
-					$arr_diff = getDifference($posts[$i],$posts[$k]);
+					$arrDiff = getDifference($posts[$i],$posts[$k]);
 					
 					?>
 					<tr>
@@ -122,7 +138,7 @@ if(!empty($sample_code))
 						<?php 
 						if($i>0)
 						{
-							if(!empty($arr_diff[$col_arr[$j]]) && $arr_diff[$col_arr[$j]]!=$posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]]))
+							if(!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]]!=$posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]]))
 							{
 							echo '<style type="text/css">
 								.compare_col-'.$i.'-'.$j.' {
@@ -162,6 +178,92 @@ if(!empty($sample_code))
   </tbody>
 
 </table>
+
+<p>
+	<h3> Form Details</h3>
+</p>
+<table>
+						<thead>
+							<tr>
+							<?php
+							$result_column = getColumns($db,$tableName2);
+							$col_arr = array();
+							foreach($result_column as $col)
+							{
+								$col_arr[] = $col['COLUMN_NAME'];
+								?>
+								<th>
+								<?php //echo ucwords(str_replace('_',' ',$col['COLUMN_NAME'])); 
+								echo $col['COLUMN_NAME'];
+								?>
+								</th>
+								<?php } ?>
+							</tr>
+						</thead>
+						<tbody>
+              	<?php
+				
+				$posts = getColumnValues($db,$tableName2,$sampleCode);
+				if(count($posts)>0) 
+				{
+					for($i=0;$i<count($posts);$i++)
+					{
+					$k = ($i-1);
+					$arrDiff = getDifference($posts[$i],$posts[$k]);
+					
+					?>
+					<tr>
+					<?php
+				
+					for($j=0;$j<count($col_arr);$j++)
+					{
+					?>
+					<td class="compare_col-<?php echo $i.'-'.$j; ?>">
+						<?php 
+						if($i>0)
+						{
+							if(!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]]!=$posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]]))
+							{
+							echo '<style type="text/css">
+								.compare_col-'.$i.'-'.$j.' {
+								background: orange;
+								color:black;
+								}
+								</style>';
+							}
+							else
+							{
+							echo '<style type="text/css">
+								.compare_col-'.$i.'-'.$j.' {
+								background: white;
+								color:black;
+								}
+								</style>';
+							}
+							
+					}                   
+						
+					echo $posts[$i][$col_arr[$j]];
+						?>
+					</td>
+				<?php }
+				?>
+			</tr>
+  <?php
+}
+				}
+			
+				else
+				{
+					echo "<tr align='center'><td colspan='10'>No records available</td></tr>";
+				}
+  ?>
+   
+  </tbody>
+
+</table>
+
+
 					</div>
 				</div>
 				<!-- /.box -->
