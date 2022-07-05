@@ -232,7 +232,7 @@ if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) !=
           $sWhere[] = ' DATE(vl.sample_registered_at_lab) >= "' . $rstart_date . '" AND DATE(vl.sample_registered_at_lab) <= "' . $rend_date . '"';
      }
 }
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '' && $_POST['status'] == 7) {
+if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      if (trim($sTestDate) == trim($eTestDate)) {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
      } else {

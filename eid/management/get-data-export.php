@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
+
 
 
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
@@ -207,7 +207,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '' && $_POST['status'] == 7) {
+if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      if (trim($sTestDate) == trim($eTestDate)) {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
      } else {
@@ -284,7 +284,7 @@ foreach ($rResult as $aRow) {
      $row[] = ucwords($aRow['status_name']);
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
-     $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("View").'" onclick="convertSearchResultToPdf(' . $aRow['eid_id'] . ');"><i class="fa-solid fa-file-lines"></i> '. _("Result PDF").'</a>';
+     $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['eid_id'] . ');"><i class="fa-solid fa-file-lines"></i> ' . _("Result PDF") . '</a>';
 
      $output['aaData'][] = $row;
 }
