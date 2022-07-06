@@ -85,8 +85,8 @@ if (count($interfaceInfo) > 0) {
         //Getting Approved By and Reviewed By from Instruments table
         $instrumentDetails = $db->rawQueryOne("SELECT * from import_config where machine_name like '" . $result['machine_used'] . "'");
 
-        $approved = !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : array();
-        $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : array();
+        $approved = isset($instrumentDetails['approved_by']) && !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : array();
+        $reviewed = isset($instrumentDetails['reviewed_by']) && !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : array();
 
         if (isset($tableInfo['vl_sample_id'])) {
             $absDecimalVal = null;
@@ -96,8 +96,7 @@ if (count($interfaceInfo) > 0) {
             //set result in result fields
             if (trim($result['results']) != "") {
 
-                $vlResult = str_replace(['cp/mL', 'cp/ml', 'copies/mL', 'copies/ml'], '', $vlResult);
-                $vlResult = trim($result['results']);
+                $vlResult = trim(str_replace(['cp/mL', 'cp/ml', 'copies/mL', 'copies/ml'], '', $result['results']));
 
                 $unit = trim($result['test_unit']);
 

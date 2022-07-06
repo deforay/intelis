@@ -7,7 +7,7 @@ $cleanup = array(
     APPLICATION_PATH . 'temporary',
 );
 
-$durationToDelete = 60 * 24 * 60 * 60; // 60 days
+$durationToDelete = 180 * 86400; // 180 days
 
 foreach ($cleanup as $folder) {
     if (file_exists($folder)) {

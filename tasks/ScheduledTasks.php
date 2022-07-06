@@ -21,7 +21,7 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/db-
     ->description('Backing Up Database');
 
 
-// DB Backup
+// Cleanup Old Files
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/cleanup.php")
     ->cron('0 */12 * * *')
     ->timezone($timeZone)
