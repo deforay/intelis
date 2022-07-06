@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $geolocation = new \Vlsm\Models\GeoLocations();

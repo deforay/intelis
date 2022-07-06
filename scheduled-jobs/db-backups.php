@@ -26,7 +26,7 @@ try {
         exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['interfacing']['dbUser'] . ' --password="' . SYSTEM_CONFIG['interfacing']['dbPassword'] . '" --host=' . SYSTEM_CONFIG['interfacing']['dbHost'] . ' --port=' . SYSTEM_CONFIG['interfacing']['dbPort'] . ' --databases ' . SYSTEM_CONFIG['interfacing']['dbName'] . '  > ' . $baseFileName);
         exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
     }
-} catch (Exception $e) {
+} catch (\Exception $e) {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
     error_log('whoops! Something went wrong in scheduled-jobs/db-backups.php');

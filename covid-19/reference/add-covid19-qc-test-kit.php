@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $generalObj = new \Vlsm\Models\General();
 $covid19Obj = new \Vlsm\Models\Covid19();

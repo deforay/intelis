@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php'); 
+ 
 include('../admin-header.php');
 $id = $_SESSION['adminUserId'];
 $userQuery = "SELECT * from system_admin where system_admin_id='" . $id . "'";

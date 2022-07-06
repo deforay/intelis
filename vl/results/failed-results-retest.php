@@ -54,6 +54,6 @@ try {
     echo $id;
 }
 //catch exception
-catch (Exception $e) {
+catch (\Exception $e) {
     echo 'VL failed-results-retest.php: ' . $e->getMessage();
 }

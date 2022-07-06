@@ -13,7 +13,7 @@
 
 	```sudo apt autoremove -y```
 
-	```sudo apt install software-properties-common apt-transport-https wget vim zip unzip curl snapd rsync gdebi -y```
+	```sudo apt install apt-transport-https ca-certificates lsb-release gnupg software-properties-common apt-transport-https wget vim zip unzip curl snapd rsync gdebi -y```
 
 	```sudo snap install --classic code```
 
@@ -60,7 +60,32 @@ Save and Close file. Then restart mysql :
 
 #### PHP Setup
 
-```sudo apt install php libapache2-mod-php php-common php-mysql php-zip php-curl php-gd php-imagick php-intl php-bcmath php-json php-mbstring php-xml php-mime-type phpmyadmin -y```
+``` 
+sudo add-apt-repository ppa:ondrej/php
+```
+
+```
+sudo apt update
+
+```
+```
+sudo apt -y install php7.4 openssl php7.4-common php7.4-cli php7.4-json php7.4-common php7.4-mysql php7.4-zip php7.4-gd php7.4-mbstring php7.4-curl php7.4-xml php7.4-xmlrpc php7.4-bcmath php7.4-zip php7.4-intl php7.4-imagick php-mime-type phpmyadmin
+
+```
+```
+sudo a2dismod php8.*
+sudo a2enmod php7.4
+sudo service apache2 restart
+```
+
+Select php7.4 when you are shown options to select PHP version when you run the following commands
+
+```
+sudo update-alternatives --config php
+sudo update-alternatives --config phar
+sudo update-alternatives --config phar.phar
+sudo service apache2 restart
+```
 
 ```sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-enabled/phpmyadmin.conf```
 

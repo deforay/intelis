@@ -3,7 +3,7 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-#require_once('../startup.php');  
+  
 $general = new \Vlsm\Models\General();
 $tableName = "r_eid_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";

@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php');
+
 $generalObj = new \Vlsm\Models\General();
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();

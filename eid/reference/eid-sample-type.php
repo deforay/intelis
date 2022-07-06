@@ -1,6 +1,6 @@
 <?php
 $title = _("EID Sample Type");
-#require_once('../startup.php'); 
+ 
 require_once(APPLICATION_PATH . '/header.php');
 ?>
 <!-- Content Wrapper. Contains page content -->

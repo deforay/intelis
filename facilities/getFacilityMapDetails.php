@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../startup.php');  
+  
 
 $tableName="testing_lab_health_facilities_map";
 $primaryKey="facility_map_id";

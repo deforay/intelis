@@ -229,7 +229,7 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
         },
         series: [
             <?php foreach ($resArray as $tRow) {
-                $color = sprintf("#%06x", rand(0, 16777215)); ?> {
+                $color = sprintf("#%06x", random_int(0, 16777215)); ?> {
                     name: '<?php echo  $tRow['facility_name']; ?>',
                     // data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
                     data: [

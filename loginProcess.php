@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-#require_once('../startup.php');
+
 $tableName = "user_details";
 $userName = $db->escape($_POST['username']);
 $password = $db->escape($_POST['password']);

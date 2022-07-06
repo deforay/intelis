@@ -18,7 +18,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
     exit(0);
 }
 try {
-    #require_once('../startup.php');
+    
     
     
 
@@ -107,6 +107,6 @@ try {
     } else {
         // echo 'Something went wrong try after some time..!';
     }
-} catch (Exception $e) {
+} catch (\Exception $e) {
     echo 'Error: ' . $e->getMessage();
 }

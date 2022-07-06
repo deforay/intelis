@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "Bulk Import Test Requests";
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $countryFormId = $general->getGlobalConfig('vl_form');

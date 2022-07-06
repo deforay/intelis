@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../startup.php');  
+  
 $general = new \Vlsm\Models\General();
 $tableName = "user_login_history";
 $primaryKey = "history_id";

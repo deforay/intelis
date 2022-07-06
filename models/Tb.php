@@ -365,7 +365,7 @@ class Tb
             } else {
                 return 0;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log('Insert TB Sample : ' . $this->db->getLastError());
             error_log('Insert TB Sample : ' . $e->getMessage());
         }

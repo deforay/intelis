@@ -51,6 +51,6 @@ try {
     echo $id;
 }
 //catch exception
-catch (Exception $e) {
+catch (\Exception $e) {
     echo 'EID failed-results-retest.php: ' . $e->getMessage();
 }

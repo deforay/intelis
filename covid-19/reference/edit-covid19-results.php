@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 $resultQuery = "SELECT * from r_covid19_results where result_id = '" . $id . "' ";

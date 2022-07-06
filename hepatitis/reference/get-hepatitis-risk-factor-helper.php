@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../startup.php');  
+  
 
 $tableName = "r_hepatitis_risk_factors";
 $primaryKey = "riskfactor_id";

@@ -55,6 +55,6 @@ try {
     echo $id;
 }
 //catch exception
-catch (Exception $e) {
+catch (\Exception $e) {
     echo 'Covid-19 failed-results-retest.php: ' . $e->getMessage();
 }

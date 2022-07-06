@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = _("Edit Global Configuration");
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();

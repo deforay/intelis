@@ -8,12 +8,14 @@ require_once(dirname(__FILE__) . "/../../startup.php");
 $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 
-if (!isset(SYSTEM_CONFIG['remoteURL']) || SYSTEM_CONFIG['remoteURL'] == '') {
+$systemConfig = SYSTEM_CONFIG;
+
+if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     echo "Please check your Remote URL";
     die;
 }
 
-$remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+$remoteUrl = rtrim($systemConfig['remoteURL'], "/");
 
 $headers = @get_headers($remoteUrl . '/vlsts-icons/favicon-16x16.png');
 
@@ -35,8 +37,8 @@ $manifestCode = !empty($_GET['manifestCode']) ? $_GET['manifestCode'] : null;
 
 // if only one module is getting synced, lets only sync that one module
 if (!empty($forceSyncModule)) {
-    unset(SYSTEM_CONFIG['modules']);
-    SYSTEM_CONFIG['modules'][$forceSyncModule] = true;
+    unset($systemConfig['modules']);
+    $systemConfig['modules'][$forceSyncModule] = true;
 }
 
 /*
@@ -45,10 +47,10 @@ if (!empty($forceSyncModule)) {
  ****************************************************************
  */
 $request = array();
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
+if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
     //$remoteSampleCodeList = array();
 
-    $url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/getRequests.php';
+    $url = $systemConfig['remoteURL'] . '/remote/remote/getRequests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'vl',
@@ -80,7 +82,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == t
 
         $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_vl'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_vl'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
 
@@ -173,8 +175,8 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == t
 
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
-    $url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/eid-test-requests.php';
+if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+    $url = $systemConfig['remoteURL'] . '/remote/remote/eid-test-requests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'eid',
@@ -206,7 +208,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
         $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
 
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_eid'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_eid'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
 
@@ -289,8 +291,8 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
   */
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
-    $url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/covid-19-test-requests.php';
+if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+    $url = $systemConfig['remoteURL'] . '/remote/remote/covid-19-test-requests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'covid19',
@@ -336,7 +338,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
         );
 
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_covid19'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_covid19'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);
@@ -446,8 +448,8 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
 */
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
-    $url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/hepatitis-test-requests.php';
+if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+    $url = $systemConfig['remoteURL'] . '/remote/remote/hepatitis-test-requests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'hepatitis',
@@ -499,7 +501,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 
 
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_hepatitis'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_hepatitis'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);
@@ -601,8 +603,8 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 */
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
-    $url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/tb-test-requests.php';
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+    $url = $systemConfig['remoteURL'] . '/remote/remote/tb-test-requests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'tb',
@@ -647,7 +649,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == t
             'data_sync'
         );
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_tb'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_tb'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);

@@ -1,6 +1,6 @@
 <?php
 $title = _("Covid-19 QC Test Kits");
-#require_once('../startup.php'); 
+ 
 require_once(APPLICATION_PATH . '/header.php');
 ?>
 <!-- Content Wrapper. Contains page content -->

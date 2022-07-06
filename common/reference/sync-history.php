@@ -1,6 +1,6 @@
 <?php
 $title = "Sync History";
-#require_once('../startup.php'); 
+ 
 require_once(APPLICATION_PATH . '/header.php');
 
 ?>

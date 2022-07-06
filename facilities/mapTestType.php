@@ -6,7 +6,7 @@ if ($type == 'health-facilities') {
 } else if ($type == 'testing-labs') {
 	$title = "Manage Testing Labs";
 }
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 
 

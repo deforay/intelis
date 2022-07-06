@@ -27,9 +27,9 @@ foreach ($actions as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("User Activity Log"); ?></h1>
+		<h1><span class="fa-solid fa-pen-to-square"></span> <?php echo _("User Activity Log"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><span class="fa-solid fa-chart-pie"></span> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Audit Trail"); ?></li>
 		</ol>
 	</section>
@@ -39,13 +39,13 @@ foreach ($actions as $list) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
+							<th scope="row"><?php echo _("Date Range"); ?>&nbsp;:</th>
 							<td>
 								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
 							</td>
-							<td><b><?php echo _("Users"); ?>&nbsp;:</b></td>
+							<th scope="row"><?php echo _("Users"); ?>&nbsp;:</th>
 							<td>
 								<select style="width:220px;" class="form-control select2" id="userName" name="userName" title="<?php echo _('Please select the user name'); ?>">
 									<?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
@@ -53,7 +53,7 @@ foreach ($actions as $list) {
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Type of Action"); ?>&nbsp;:</b></td>
+							<th scope="row"><?php echo _("Type of Action"); ?>&nbsp;:</th>
 							<td>
 								<select style="width:220px;" class="form-control" id="typeOfAction" name="typeOfAction" title="<?php echo _('Type of Action'); ?>">
 									<?php echo $general->generateSelectOptions($actionList, null, '--All--'); ?>
@@ -187,4 +187,3 @@ foreach ($actions as $list) {
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

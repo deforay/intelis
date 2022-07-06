@@ -18,7 +18,7 @@ if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
     exit(0);
 }
 
-#require_once('../startup.php'); 
+ 
 
 
 //$facilityQuery ="SELECT facility_id,facility_name,facility_type from facility_details";

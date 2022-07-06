@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "VL Test Reasons";
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $testQuery = "SELECT * from r_vl_test_reasons WHERE parent_reason ='0'";
 $testInfo = $db->query($testQuery);

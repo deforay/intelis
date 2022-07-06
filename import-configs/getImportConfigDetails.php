@@ -1,5 +1,5 @@
 <?php
-#require_once('../startup.php');  
+  
 
 $tableName="import_config";
 $primaryKey="config_id";

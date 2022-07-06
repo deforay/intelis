@@ -5,7 +5,7 @@ use function PHPSTORM_META\elementType;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../startup.php');  
+  
 
 $tableName = "r_vl_art_regimen";
 $primaryKey = "art_id";

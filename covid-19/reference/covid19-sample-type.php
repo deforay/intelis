@@ -1,6 +1,6 @@
 <?php
 $title = _("Covid-19 Sample Type");
-#require_once('../startup.php'); 
+ 
 require_once(APPLICATION_PATH . '/header.php');
 
 // if($sarr['sc_user_type']=='vluser'){

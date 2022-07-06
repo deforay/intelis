@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "VL Test Reasons";
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 

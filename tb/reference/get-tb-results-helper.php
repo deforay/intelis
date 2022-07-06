@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../startup.php');  
+  
 
 $tableName = "r_tb_results";
 $primaryKey = "result_id";

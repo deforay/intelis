@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 require_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
-#require_once('../startup.php');  
+  
 
 $general = new \Vlsm\Models\General();
 $geolocation = new \Vlsm\Models\GeoLocations();

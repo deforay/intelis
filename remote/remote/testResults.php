@@ -119,7 +119,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             } else {
                 $id = $db->insert('form_vl', $lab);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             continue;
         }
 

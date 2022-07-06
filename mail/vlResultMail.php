@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = _("Email VL Test Results");
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();

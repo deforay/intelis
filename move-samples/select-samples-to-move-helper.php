@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-#require_once('../startup.php');  
+  
 $general = new \Vlsm\Models\General();
 $testType = $_POST['testTypeId'];
 $tableName = "move_samples";

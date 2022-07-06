@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $rejReaons = $general->getRejectionReasons('hepatitis');
 $id = base64_decode($_GET['id']);

@@ -24,7 +24,7 @@ try {
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = str_pad(rand(0, pow(10, 6) - 1), 6, '0', STR_PAD_LEFT);
+    $ranNumber = \Vlsm\Models\General::generateRandomString();
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     if (!in_array($extension, $allowedExtensions)) {
         throw new Exception("Invalid file format.");

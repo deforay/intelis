@@ -1,8 +1,8 @@
 <?php
 ob_start();
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
-//#require_once('../startup.php');  
+//  
 
 $userDb = new \Vlsm\Models\Users();
 $general = new \Vlsm\Models\General();

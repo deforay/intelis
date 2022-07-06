@@ -28,7 +28,7 @@ $id = $res['covid19_id'];
     }
 </style>
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js" integrity="sha512-dw+7hmxlGiOvY3mCnzrPT5yoUwN/MRjVgYV7HGXqsiXnZeqsw1H9n9lsnnPu4kL2nx2bnrjFcuWK+P3lshekwQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <canvas id="the-canvas"></canvas>
 

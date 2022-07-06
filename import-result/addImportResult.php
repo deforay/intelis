@@ -4,7 +4,7 @@ ob_start();
 $type = base64_decode($_GET['t']);
 $db = MysqliDb::getInstance();
 $title = _("Import ") . strtoupper($type) . _(" Test Results From File");
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();

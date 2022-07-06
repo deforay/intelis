@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-#require_once('../startup.php');
+
 $tableName= "system_admin";
 $userName = $db->escape($_POST['username']);
 $emailId = $db->escape($_POST['email']);

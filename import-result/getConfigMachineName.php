@@ -1,5 +1,5 @@
 <?php
-#require_once('../startup.php');  
+  
 
 $importMachineTable="import_config_machines";
 $configId = base64_decode($_POST['configId']);

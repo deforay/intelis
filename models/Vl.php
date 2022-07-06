@@ -16,6 +16,7 @@ class Vl
     protected $table = 'form_vl';
     protected $shortCode = 'VL';
     protected $suppressedArray = array(
+        'HIV-1 NOT DETECTED',
         'target not detected',
         'tnd',
         'not detected',

@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php');
+
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="assets/css/jquery-ui.1.11.0.css" />
 <link href="assets/css/jasny-bootstrap.min.css" rel="stylesheet" />

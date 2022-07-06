@@ -1,6 +1,6 @@
 <?php
 $title = _("Viral Load Sample Rejection Reasons");
-#require_once('../startup.php'); 
+ 
 require_once(APPLICATION_PATH . '/header.php');
 
 ?>

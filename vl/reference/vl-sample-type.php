@@ -1,6 +1,6 @@
 <?php
 $title = _("Viral Load Sample Type");
-#require_once('../startup.php'); 
+ 
 require_once(APPLICATION_PATH . '/header.php');
 
 ?>

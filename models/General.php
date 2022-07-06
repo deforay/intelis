@@ -36,14 +36,14 @@ class General
     {
         $uuid = sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0C2f) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0x2Aff),
-            mt_rand(0, 0xffD3),
-            mt_rand(0, 0xff4B)
+            random_int(0, 0xffff),
+            random_int(0, 0xffff),
+            random_int(0, 0xffff),
+            random_int(0, 0x0C2f) | 0x4000,
+            random_int(0, 0x3fff) | 0x8000,
+            random_int(0, 0x2Aff),
+            random_int(0, 0xffD3),
+            random_int(0, 0xff4B)
         );
         if ($attachExtraString) {
             $uuid .= "-" . $this->generateRandomString('4');
@@ -481,7 +481,7 @@ class General
 
     public function random_color_part()
     {
-        return str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        return str_pad(dechex(random_int(0, 255)), 2, '0', STR_PAD_LEFT);
     }
 
     public function random_color()

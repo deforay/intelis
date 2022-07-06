@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "Edit Specimen Referral Manifest";
-#require_once('../startup.php'); 
+ 
 require_once(APPLICATION_PATH . '/header.php');
 
 $facilitiesDb = new \Vlsm\Models\Facilities();

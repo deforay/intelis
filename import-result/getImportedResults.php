@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../startup.php');
+
 
 
 $general = new \Vlsm\Models\General();
@@ -103,8 +103,8 @@ $inQuery = "SELECT ic.number_of_in_house_controls,ic.number_of_manufacturer_cont
 $inResult = $db->rawQuery($inQuery);
 
 $sampleTypeTotal = 0;
-if (isset($_COOKIE['refno']) && $_COOKIE['refno'] > 0) {
-    $sampleTypeTotal = $_COOKIE['refno'];
+if (isset($_SESSION['refno']) && $_SESSION['refno'] > 0) {
+    $sampleTypeTotal = $_SESSION['refno'];
 }
 $totalControls = 0;
 if (isset($tsrResult[0]['count']) && $tsrResult[0]['count'] > 0) {

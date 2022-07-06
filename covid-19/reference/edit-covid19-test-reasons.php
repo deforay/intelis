@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $rejQuery = "SELECT * from r_covid19_test_reasons WHERE test_reason_status ='active'";
 $rejInfo = $db->query($rejQuery);

@@ -389,7 +389,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 </table>
                             </div>
                         </div>
-                        <?php if (true == false && $usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

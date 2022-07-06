@@ -3,7 +3,7 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-#require_once('../startup.php');  
+  
 
 require APPLICATION_PATH . '/includes/mail/PHPMailerAutoload.php';
 
@@ -32,7 +32,7 @@ foreach($geResult as $row){
 if(isset($_POST['toEmail']) && trim($_POST['toEmail'])!=''){
    if(isset($mailconf['rs_field']) && trim($mailconf['rs_field'])!= ''){
       //Create a new PHPMailer instance
-      $mail = new PHPMailer();
+      $mail = new PHPMailer\PHPMailer\PHPMailer();
       //Tell PHPMailer to use SMTP
       $mail->isSMTP();
       //Enable SMTP debugging

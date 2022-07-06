@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 $riskfactorQuery = "SELECT * from r_hepatitis_risk_factors where riskfactor_id=$id";

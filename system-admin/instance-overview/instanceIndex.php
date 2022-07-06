@@ -1,6 +1,6 @@
 <?php
 ob_start();
-#require_once('../startup.php'); 
+ 
 include('../admin-header.php');
 $instanceValues = "SELECT * FROM s_vlsm_instance";
 $data = $db->rawQuery($instanceValues);

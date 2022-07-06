@@ -1,5 +1,5 @@
 <?php
-#require_once('../startup.php');
+
 require_once(APPLICATION_PATH . '/header.php');
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);

@@ -75,9 +75,9 @@ class Captcha
         // Generate CAPTCHA code if not set by user
         if (empty($captcha_config['code'])) {
             $captcha_config['code'] = '';
-            $length = rand($captcha_config['min_length'], $captcha_config['max_length']);
+            $length = random_int($captcha_config['min_length'], $captcha_config['max_length']);
             while (strlen($captcha_config['code']) < $length) {
-                $captcha_config['code'] .= substr($captcha_config['characters'], rand() % (strlen($captcha_config['characters'])), 1);
+                $captcha_config['code'] .= substr($captcha_config['characters'], random_int(PHP_INT_MIN, PHP_INT_MAX) % (strlen($captcha_config['characters'])), 1);
             }
             $captcha_config['code'] = str_shuffle(str_shuffle($captcha_config['code']));
         }
@@ -113,7 +113,7 @@ class Captcha
         srand((float) microtime() * 1000);
 
         // Pick random background, get info, and start captcha
-        $background = $captcha_config['png_backgrounds'][rand(0, count($captcha_config['png_backgrounds']) - 1)];
+        $background = $captcha_config['png_backgrounds'][random_int(0, count($captcha_config['png_backgrounds']) - 1)];
         list($bg_width, $bg_height, $bg_type, $bg_attr) = getimagesize($background);
         // Create captcha object
         $captcha = imagecreatefrompng($background);
@@ -124,17 +124,17 @@ class Captcha
         $color = imagecolorallocate($captcha, $color['r'], $color['g'], $color['b']);
 
         // Determine text angle
-        $angle = rand($captcha_config['angle_min'], $captcha_config['angle_max']) * (rand(0, 1) == 1 ? -1 : 1);
+        $angle = random_int($captcha_config['angle_min'], $captcha_config['angle_max']) * (random_int(0, 1) == 1 ? -1 : 1);
 
         // Select font randomly
-        $font = $captcha_config['fonts'][rand(0, count($captcha_config['fonts']) - 1)];
+        $font = $captcha_config['fonts'][random_int(0, count($captcha_config['fonts']) - 1)];
 
         // Verify font file exists
         if (!file_exists($font))
             throw new Exception('Font file not found: ' . $font);
 
         //Set the font size.
-        $font_size = rand($captcha_config['min_font_size'], $captcha_config['max_font_size']);
+        $font_size = random_int($captcha_config['min_font_size'], $captcha_config['max_font_size']);
         $text_box_size = imagettfbbox($font_size, $angle, $font, $captcha_config['code']);
 
         // Determine text position
@@ -142,10 +142,10 @@ class Captcha
         $box_height = abs($text_box_size[5] - $text_box_size[1]);
         $text_pos_x_min = 0;
         $text_pos_x_max = ($bg_width) - ($box_width);
-        $text_pos_x = rand($text_pos_x_min, $text_pos_x_max);
+        $text_pos_x = random_int($text_pos_x_min, $text_pos_x_max);
         $text_pos_y_min = $box_height;
         $text_pos_y_max = ($bg_height) - ($box_height / 2);
-        $text_pos_y = rand($text_pos_y_min, $text_pos_y_max);
+        $text_pos_y = random_int($text_pos_y_min, $text_pos_y_max);
 
         // Draw shadow
         if ($captcha_config['shadow']) {

@@ -1,6 +1,6 @@
 <?php
 $title = "User-Login-History";
-#require_once('../startup.php'); 
+ 
 include('../admin-header.php');
 $sQuery = "SELECT * FROM user_login_history";
 $sResult = $db->rawQuery($sQuery);

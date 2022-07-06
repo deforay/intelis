@@ -12,7 +12,7 @@
         "phpoffice/phpspreadsheet": "^1.5",
         "setasign/fpdi": "^2.3",
         "tecnickcom/tcpdf": "^6.3",
-        "phpmailer/phpmailer": "^6.1",
+        "phpmailer/phpmailer": "^6.6",
         "thingengineer/mysqli-database-class": "dev-master",
         "aranyasen/hl7": "^2.0",
         "guzzlehttp/guzzle": "^7.3",
