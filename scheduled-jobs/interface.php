@@ -84,8 +84,9 @@ if (count($interfaceInfo) > 0) {
 
         //Getting Approved By and Reviewed By from Instruments table
         $instrumentDetails = $db->rawQueryOne("SELECT * from import_config where machine_name like '" . $result['machine_used'] . "'");
-        $approved = json_decode($instrumentDetails['approved_by'], true);
-        $reviewed = json_decode($instrumentDetails['reviewed_by'], true);
+
+        $approved = !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : array();
+        $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : array();
 
         if (isset($tableInfo['vl_sample_id'])) {
             $absDecimalVal = null;
@@ -95,10 +96,12 @@ if (count($interfaceInfo) > 0) {
             //set result in result fields
             if (trim($result['results']) != "") {
 
+                $vlResult = str_replace(['cp/mL', 'cp/ml', 'copies/mL', 'copies/ml'], '', $vlResult);
                 $vlResult = trim($result['results']);
+
                 $unit = trim($result['test_unit']);
 
-                if($vlResult == "-1.00"){
+                if ($vlResult == "-1.00") {
                     $vlResult = "Not Detected";
                 }
 
@@ -140,6 +143,7 @@ if (count($interfaceInfo) > 0) {
                 'result' => $vlResult,
                 'vl_test_platform' => $result['machine_used'],
                 'result_status' => 7,
+                'manual_result_entry' => 'no',
                 'result_printed_datetime' => NULL,
                 'result_dispatched_datetime' => NULL,
                 'last_modified_datetime' => $db->now(),
@@ -190,6 +194,7 @@ if (count($interfaceInfo) > 0) {
                 'result' => $eidResult,
                 'eid_test_platform' => $result['machine_used'],
                 'result_status' => 7,
+                'manual_result_entry' => 'no',
                 'result_approved_by' => (isset($approved['eid']) && $approved['eid'] != "") ? $approved['eid'] : null,
                 'result_reviewed_by' => (isset($reviewed['eid']) && $reviewed['eid'] != "") ? $reviewed['eid'] : null,
                 'result_printed_datetime' => NULL,
@@ -255,6 +260,7 @@ if (count($interfaceInfo) > 0) {
                 $otherField => $otherFieldResult,
                 'hepatitis_test_platform' => $result['machine_used'],
                 'result_status' => 7,
+                'manual_result_entry' => 'no',
                 'result_approved_by' => (isset($approved['hepatitis']) && $approved['hepatitis'] != "") ? $approved['hepatitis'] : null,
                 'result_reviewed_by' => (isset($reviewed['hepatitis']) && $reviewed['hepatitis'] != "") ? $reviewed['hepatitis'] : null,
                 'result_printed_datetime' => NULL,

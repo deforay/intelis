@@ -52,7 +52,7 @@
 <script src="/assets/js/moment.min.js"></script>
 
 <!-- HTML2CANVAS -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js">
+<!-- <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"> -->
 </script>
 
 <script type="text/javascript">

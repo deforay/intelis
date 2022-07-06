@@ -707,6 +707,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      $(document).ready(function() {
 
 
+          $("#vlResult, #vlLog").on('keyup keypress blur change paste', function() {
+			if ($(this).val() != '') {
+				if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
+					$(this).val('');
+					alert('Please enter only numeric values for Viral Load Result')
+				}
+			}
+		});
+
           $('#fName').select2({
                placeholder: "Select Clinic/Health Center"
           });
@@ -726,15 +735,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
           ?>
           // BARCODESTUFF END
-
-          $("#vlResult, #vlLog").on('keyup keypress blur change paste', function() {
-               if ($(this).val() != '') {
-                    if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
-                         $(this).val('');
-                         alert('Please enter only numeric values for Viral Load Result')
-                    }
-               }
-          });
      });
 
      function showTesting(chosenClass) {
