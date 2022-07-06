@@ -1,6 +1,6 @@
 <?php
 ob_start();
- 
+
 include('../admin-header.php');
 $instanceValues = "SELECT * FROM s_vlsm_instance";
 $data = $db->rawQuery($instanceValues);
@@ -26,9 +26,9 @@ $data = $db->rawQuery($instanceValues);
         vertical-align: middle !important;
     }
 </style>
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="/assets/css/bootstrap.3-3-6.min.css">
+<script src="/assets/js/jquery.ajax.min.js"></script>
+<script src="/assets/js/jquery-ui.js"></script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
