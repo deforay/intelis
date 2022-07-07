@@ -64,6 +64,9 @@ Save and Close file. Then restart mysql :
 sudo add-apt-repository ppa:ondrej/php
 ```
 
+Press ENTER when prompted
+
+
 ```
 sudo apt update
 

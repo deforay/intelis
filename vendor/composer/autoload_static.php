@@ -43,6 +43,7 @@ class ComposerStaticInit6e4cb3a9504605e3f03628d02d1b59e1
         ),
         'V' => 
         array (
+            'Vlsm\\Utilities\\' => 15,
             'Vlsm\\Models\\' => 12,
             'Vlsm\\Interop\\' => 13,
             'Vlsm\\Helpers\\' => 13,
@@ -137,6 +138,10 @@ class ComposerStaticInit6e4cb3a9504605e3f03628d02d1b59e1
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Vlsm\\Utilities\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/utilities',
         ),
         'Vlsm\\Models\\' => 
         array (

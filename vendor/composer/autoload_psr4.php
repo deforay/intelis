@@ -9,6 +9,7 @@ return array(
     'setasign\\Fpdi\\' => array($vendorDir . '/setasign/fpdi/src'),
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
+    'Vlsm\\Utilities\\' => array($baseDir . '/utilities'),
     'Vlsm\\Models\\' => array($baseDir . '/models'),
     'Vlsm\\Interop\\' => array($baseDir . '/interop'),
     'Vlsm\\Helpers\\' => array($baseDir . '/helpers'),

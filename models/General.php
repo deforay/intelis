@@ -31,6 +31,15 @@ class General
         return $random_string;
     }
 
+    public function escape($inputArray, $db)
+    {
+        foreach($inputArray as $key => $value) {
+            $inputArray[$key] = $db->escape($value);
+        }
+
+        return $inputArray;
+    }
+
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true)
     {

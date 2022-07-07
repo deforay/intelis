@@ -46,6 +46,12 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacin
         ->description('Importing data from interface db into local db');
 }
 
+// UPDATE VL RESULT INTERPRETATION
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-vl-suppression.php")
+    ->everyMinute()
+    ->timezone($timeZone)
+    ->preventOverlapping()
+    ->description('Updating VL Result Interpretation');
 
 
 // REMOTE SYNC JOBS START
