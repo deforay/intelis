@@ -456,9 +456,9 @@ try {
             }
             http_response_code(301);
         }
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], $data['covid19SampleId'], 'add-request', 'covid19', $requestUrl, $params, 'json');
     }
+    $app = new \Vlsm\Models\App();
+    $trackId = $app->addApiTracking($user['user_id'], count($input['data']), 'add-request', 'covid19', $requestUrl, $params, 'json');
     if ($update == "yes") {
         $msg = 'Successfully updated.';
     } else {
