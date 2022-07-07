@@ -34,10 +34,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
 ?>
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+<link href="/assets/css/datepicker.min.css" rel="stylesheet">
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+<script src="/assets/js/bootstrap-datepicker.min.js"></script>
 
 <style>
   .bluebox,

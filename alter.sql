@@ -3134,3 +3134,5 @@ UPDATE `privileges` SET `privilege_name` = 'activity-log.php', `display_name` = 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
 (NULL, 'common-reference', 'audit-trail.php', 'Audit Trail');
 
+-- Thana 06-Jul-2022
+ALTER TABLE `user_details` ADD `hash_algorithm` VARCHAR(256) NOT NULL DEFAULT 'sha1' AFTER `app_access`;

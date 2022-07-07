@@ -225,8 +225,8 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<script type="text/javascript" src="/assets/js/jquery-ui.1.11.0.js"></script>
 	<script src="/assets/js/deforayModal.js"></script>
 	<script src="/assets/js/jquery.fastconfirm.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+	<link href="/assets/css/select2.live.min.css" rel="stylesheet" />
+	<script src="/assets/js/select2.min.js"></script>
 	<!--<script type="text/javascript" src="assets/js/jquery-ui-sliderAccess.js"></script>-->
 	<style>
 		.dataTables_empty {

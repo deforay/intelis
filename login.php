@@ -52,7 +52,6 @@ if (file_exists(APPLICATION_PATH . DIRECTORY_SEPARATOR . "configs/bg.jpg")) {
 
 <!-- CSRF TOKEN -->
 <?php
-session_start();
 function generate_token()
 {
 	// Check if a token is present for the current session
@@ -69,8 +68,6 @@ function generate_token()
 	return $token;
 }
 ?>
-
-
 <!DOCTYPE html>
 <html>
 
@@ -257,7 +254,7 @@ function generate_token()
 			} ?>
 		});
 
-		
+
 
 		function checkNameValidation(tableName, fieldName, id, fnct) {
 			if ($.trim($("#" + id).val()) != '') {

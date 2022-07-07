@@ -461,9 +461,9 @@ try {
             }
             http_response_code(301);
         }
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], $data['vlSampleId'], 'save-request', 'VL', $requestUrl, $params, 'json');
     }
+    $app = new \Vlsm\Models\App();
+    $trackId = $app->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'VL', $requestUrl, $params, 'json');
     if ($update == "yes") {
         $msg = 'Successfully updated.';
     } else {
