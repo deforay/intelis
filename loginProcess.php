@@ -10,7 +10,6 @@ ob_start();
 $tableName = "user_details";
 $userName = $db->escape($_POST['username']);
 $password = $db->escape($_POST['password']);
-$userPassword = sha1($password . SYSTEM_CONFIG['passwordSalt']);
 
 
 $general = new \Vlsm\Models\General();
@@ -71,10 +70,21 @@ try {
             $password = $db->escape($_POST['password']);
 
             /* Crosss Login Block Start */
+            $sha1protect = false;
             if (empty($_GET) || empty($_GET['u']) || empty($_GET['t'])) {
                 $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
             }
             /* Crosss Login Block End */
+            $existQuery = "SELECT `login_id`, `password`, `user_name`, `hash_algorithm`, `user_id` FROM user_details WHERE `login_id` = ?";
+            $existUser = $db->rawQueryOne($existQuery, array($db->escape($_POST['username'])));
+            if (isset($existUser['hash_algorithm']) && !empty($existUser['hash_algorithm'])) {
+                if ($existUser['hash_algorithm'] == 'sha1') {
+                    $sha1protect = true;
+                }
+                if ($existUser['hash_algorithm'] == 'phb') {
+                    $password = $user->passwordHash($password, $existUser['user_id']);
+                }
+            }
             $ipaddress = '';
             if (isset($_SERVER['HTTP_CLIENT_IP'])) {
                 $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
@@ -92,6 +102,9 @@ try {
                 $ipaddress = 'UNKNOWN';
             }
             $queryParams = array($username, $password, 'active');
+            /*   echo "<pre>";
+            print_r($queryParams);
+            die; */
             $admin = $db->rawQuery("SELECT * FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ? AND ud.password = ? AND ud.status = ?", $queryParams);
             $attemptCount1 = $db->rawQueryOne("SELECT 
                                                 SUM(CASE WHEN login_id = '" . $username . "' THEN 1 ELSE 0 END) AS LoginIdCount,
@@ -100,6 +113,12 @@ try {
                                                 WHERE login_status='failed' AND login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 15 minute)");
 
             if ($attemptCount1['LoginIdCount'] < 3 || $attemptCount1['IpCount'] < 3) {
+                if ($sha1protect) {
+                    $password = $user->passwordHash($password, $admin[0]['user_id']);
+                    $db = $db->where('user_id', $admin[0]['user_id']);
+                    $db->update('user_details', array('password' => $password, 'hash_algorithm' => 'phb'));
+                }
+
                 if (count($admin) > 0) {
                     $user->userHistoryLog($username, $loginStatus = 'successful');
                     //add random key

@@ -22,7 +22,7 @@ class Users
 
     public function isAllowed($currentFileName, $systemConfig = SYSTEM_CONFIG)
     {
-        
+
         $skippedPrivileges = $this->getSkippedPrivileges($systemConfig);
         $sharedPrivileges = $this->getSharedPrivileges($systemConfig);
 
@@ -379,5 +379,18 @@ class Users
             'operating_system' => $os
         );
         $this->db->insert('user_login_history', $data);
+    }
+
+    public function passwordHash($password, $salt)
+    {
+        if (empty($password)) {
+            return null;
+        }
+        $options = [
+            'cost' => 14,
+            'salt' => $salt,
+        ];
+
+        return password_hash($password, PASSWORD_BCRYPT, $options);
     }
 }
