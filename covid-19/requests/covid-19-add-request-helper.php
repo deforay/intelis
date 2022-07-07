@@ -221,8 +221,8 @@ try {
 	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
 		$covid19Data['source_of_request'] = 'vlsts';
 	} else if (!empty($_POST['api']) && $_POST['api'] = "yes") {
-        $covid19Data['source_of_request'] = 'api';
-    }
+		$covid19Data['source_of_request'] = 'api';
+	}
 
 	if (!empty($_POST['labId'])) {
 		$facility = $facilityDb->getFacilityById($_POST['labId']);
@@ -320,7 +320,7 @@ try {
 				'message' => 'Successfully added.'
 			);
 			$app = new \Vlsm\Models\App();
-			$trackId = $app->addApiTracking($user['user_id'], $_POST['covid19SampleId'], 'add-request', 'covid19', $requestUrl, $params, 'json');
+			$trackId = $app->addApiTracking($user['user_id'], 1, 'add-request', 'covid19', $requestUrl, $params, 'json');
 			http_response_code(200);
 		} else {
 			$payload = array(

@@ -539,7 +539,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     // print_r($savedSamples);die;
     if ($id > 0 && isset($covid19Data) && count($covid19Data) > 0) {
         $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], $_POST['covid19SampleId'], $type[1], 'covid19', $requestUrl, $hl7, 'hl7');
+        $trackId = $app->addApiTracking($user['user_id'], 1, $type[1], 'covid19', $requestUrl, $hl7, 'hl7');
         if ($savedSamples['sample_code'] != '') {
             $sampleCode = $savedSamples['sample_code'];
         } else {

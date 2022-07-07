@@ -373,7 +373,7 @@ try {
 				'message' => 'Successfully updated.'
 			);
 			$app = new \Vlsm\Models\App();
-			$trackId = $app->addApiTracking($user['user_id'], $_POST['covid19SampleId'], 'update-record', 'covid19', $requestUrl, $params, 'json');
+			$trackId = $app->addApiTracking($user['user_id'], 1, 'update-record', 'covid19', $requestUrl, $params, 'json');
 			http_response_code(200);
 		} else {
 			$payload = array(
