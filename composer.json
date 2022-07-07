@@ -25,7 +25,8 @@
         "psr-4": {
             "Vlsm\\Models\\": "models/",
             "Vlsm\\Interop\\": "interop/",
-            "Vlsm\\Helpers\\": "helpers/"
+            "Vlsm\\Helpers\\": "helpers/",
+            "Vlsm\\Utilities\\": "utilities/"
         }
     }
 }

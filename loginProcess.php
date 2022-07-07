@@ -1,7 +1,5 @@
 <?php
 
-use PhpOffice\PhpSpreadsheet\Calculation\Financial\Securities\Price;
-
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }

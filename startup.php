@@ -103,3 +103,14 @@ if (empty($_SESSION['APP_TIMEZONE'])) {
 }
 
 date_default_timezone_set($_SESSION['APP_TIMEZONE']);
+
+
+// $registry = \Vlsm\Utilities\Registry::getInstance();
+// \Vlsm\Utilities\Registry::set('db', $db);
+// var_dump(\Vlsm\Utilities\Registry::get('db'));die;
+
+// $general = new \Vlsm\Models\General();
+// if(isset($_POST) && !empty($_POST)){
+//     \Vlsm\Utilities\Registry::set('unescaped', $_POST);
+//     $_POST = $general->escape($_POST, MysqliDb::getInstance());
+// }
