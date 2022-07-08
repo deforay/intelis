@@ -75,9 +75,9 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $sWhere = " AND ";
+    $sWhere[] = " AND ";
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
@@ -97,16 +97,16 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        if (count($sWhere) >0 ) {
+            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
         } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
         }
     }
 }
@@ -120,7 +120,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName,r
 $start_date = '';
 $end_date = '';
 if (isset($_POST['rjtBatchCode']) && trim($_POST['rjtBatchCode']) != '') {
-    $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
+    $sWhere[] = ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
 }
 
 if (isset($_POST['rjtSampleTestDate']) && trim($_POST['rjtSampleTestDate']) != '') {
@@ -133,36 +133,40 @@ if (isset($_POST['rjtSampleTestDate']) && trim($_POST['rjtSampleTestDate']) != '
         $end_date = $general->dateFormat(trim($s_c_date[1]));
     }
     if (trim($start_date) == trim($end_date)) {
-        $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
+        $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
-        $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+        $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
     }
 }
 if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {
-    $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['rjtSampleType'] . '"';
+    $sWhere[] =  ' s.sample_id = "' . $_POST['rjtSampleType'] . '"';
 }
 if (isset($_POST['rjtFacilityName']) && $_POST['rjtFacilityName'] != '') {
-    $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
+    $sWhere[] =  ' f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
 }
 if (isset($_POST['rjtGender']) && $_POST['rjtGender'] != '') {
-    $sWhere = $sWhere . ' AND vl.patient_gender = "' . $_POST['rjtGender'] . '"';
+    $sWhere[] = ' vl.patient_gender = "' . $_POST['rjtGender'] . '"';
 }
 if (isset($_POST['rjtPatientPregnant']) && $_POST['rjtPatientPregnant'] != '') {
-    $sWhere = $sWhere . ' AND vl.is_patient_pregnant = "' . $_POST['rjtPatientPregnant'] . '"';
+    $sWhere[] =  ' vl.is_patient_pregnant = "' . $_POST['rjtPatientPregnant'] . '"';
 }
 if (isset($_POST['rjtPatientBreastfeeding']) && $_POST['rjtPatientBreastfeeding'] != '') {
-    $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding = "' . $_POST['rjtPatientBreastfeeding'] . '"';
+    $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['rjtPatientBreastfeeding'] . '"';
 }
 
 $dWhere = '';
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
     if (!empty($facilityMap)) {
-        $sWhere = $sWhere . " AND vl.facility_id IN (" . $facilityMap . ") ";
+        $sWhere[] = " vl.facility_id IN (" . $facilityMap . ") ";
     }
 }
 
-$sQuery = $sQuery . ' ' . $sWhere;
+if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
+    $sWhere = implode(" AND ", $sWhere);
+}
+
+$sQuery = $sQuery . ' AND ' . $sWhere;
 $sQuery = $sQuery . ' group by vl.vl_sample_id';
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
