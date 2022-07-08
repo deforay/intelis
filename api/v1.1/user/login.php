@@ -43,7 +43,7 @@ try {
                 $password = sha1($input['password'] . SYSTEM_CONFIG['passwordSalt']);
                 if ($password == $userResult['password']) {
                     $passwordCheck = true;
-                    $newPassword = $user->passwordHash($input['password'], $userResult['user_id']);
+                    $newPassword = $users->passwordHash($input['password'], $userResult['user_id']);
                     $db->where('user_id', $userResult['user_id']);
                     $db->update('user_details', array('password' => $newPassword, 'hash_algorithm' => 'phb'));
                 } else {
