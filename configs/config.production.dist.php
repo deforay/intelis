@@ -28,7 +28,6 @@ $systemConfig['dbName']     = 'vlsm';
 $systemConfig['dbPort']     = 3306;
 $systemConfig['dbCharset'] = 'utf8mb4';
 
-
 $systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
 $systemConfig['tryCrypt'] = 'PUT-A-RANDOM-STRING-HERE';
 

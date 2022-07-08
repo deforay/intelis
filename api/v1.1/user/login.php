@@ -18,29 +18,17 @@ try {
 
         $username = $db->escape($input['userName']);
         $password = $db->escape($input['password']);
-        $sha1protect = false;
-        if (isset($hashCheck) && !empty($hashCheck['user_id']) && !empty($hashCheck['hash_algorithm'])) {
-            if ($hashCheck['hash_algorithm'] == 'sha1') {
-                $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
-                $sha1protect = true;
-            }
-            if ($hashCheck['hash_algorithm'] == 'phb') {
-                if (!password_verify($db->escape($input['password']), $hashCheck['password'])) {
-                    $_SESSION['alertMsg'] = _("Something went wrong!");
-                    $payload = array(
-                        'status' => 2,
-                        'message' => 'Invalid password.',
-                        'timestamp' => time(),
-                    );
-                    exit(0);
-                }
-                $password = $users->passwordHash($db->escape($input['password']), $hashCheck['user_id']);
-            }
-        } else {
-            $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
-        }
-        $queryParams = array($username, $password);
-        $userResult = $db->rawQueryOne("SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, r.*, (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ? AND ud.password = ?", $queryParams);
+
+        $queryParams = array($username);
+        $userResult = $db->rawQueryOne(
+            "SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, ud.password, 
+                                        ud.hash_algorithm, r.*, 
+                                        (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user 
+                                        FROM user_details as ud 
+                                        INNER JOIN roles as r ON ud.role_id=r.role_id 
+                                        WHERE ud.login_id = ?",
+            $queryParams
+        );
 
         if ($userResult['testing_user'] == 'yes') {
             $remoteUser = "yes";
@@ -49,12 +37,28 @@ try {
         }
         if (count($userResult) > 0) {
             /* Update Phb hash password */
-            if ($sha1protect) {
-                $password = $users->passwordHash($db->escape($input['password']), $userResult['user_id']);
-                $db = $db->where('user_id', $userResult['user_id']);
-                $db->update('user_details', array('password' => $password, 'hash_algorithm' => 'phb'));
+
+
+            if ($userResult['hash_algorithm'] == 'sha1') {
+                $password = sha1($input['password'] . SYSTEM_CONFIG['passwordSalt']);
+                if ($password == $userResult['password']) {
+                    $passwordCheck = true;
+                    $newPassword = $users->passwordHash($input['password']);
+                    $db->where('user_id', $userResult['user_id']);
+                    $db->update('user_details', array('password' => $newPassword, 'hash_algorithm' => 'phb'));
+                } else {
+                    $passwordCheck = false;
+                }
+            } else if ($userResult['hash_algorithm'] == 'phb') {
+                if (!password_verify($input['password'], $userResult['password'])) {
+                    $passwordCheck = false;
+                } else {
+                    $passwordCheck = true;
+                }
             }
-            if ($userResult['status'] != 'active') {
+
+
+            if ($userResult['status'] != 'active' || $passwordCheck == false) {
                 $payload = array(
                     'status' => 2,
                     'message' => 'Login failed. Please contact system administrator.',
@@ -75,10 +79,9 @@ try {
                 $upId = $db->update('user_details', $userData);
                 if ($upId) {
                     $data = array();
-                    $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-                    $configFormResult = $db->rawQuery($configFormQuery);
+
                     $data['user'] = $userResult;
-                    $data['form'] = $configFormResult[0]['value'];
+                    $data['form'] = $general->getGlobalConfig('vl_form');
                     $data['api_token'] = $randomString;
                     $data['appMenuName'] = $general->getGlobalConfig('app_menu_name');
                     $data['access'] = $users->getUserRolePrivileges($userResult['user_id']);
@@ -100,7 +103,7 @@ try {
         } else {
             $payload = array(
                 'status' => 2,
-                'message' => 'Please enter valid credentials',
+                'message' => 'Login failed. Please contact system administrator.',
                 'timestamp' => time(),
             );
         }

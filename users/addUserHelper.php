@@ -24,9 +24,10 @@ try {
             'user_signature'        => $imageName,
             'force_password_reset'  => 1
         );
-        /* To update phb password */
-        $password = $userDb->passwordHash($db->escape($_POST['password']), $data['user_id']);
+        
+        $password = $userDb->passwordHash($db->escape($_POST['password']));
         $data['password'] = $password;
+        $data['hash_algorithm'] = 'phb';
 
         if (isset($_FILES['userSignature']['name']) && $_FILES['userSignature']['name'] != "") {
             if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
@@ -72,7 +73,8 @@ try {
     $userType = $general->getSystemConfig('sc_user_type');
     if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $userType == 'vluser') {
         $_POST['login_id'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
-        $_POST['password'] = $general->generateRandomString();; // We don't want to unintentionally end up creating admin users on VLSTS
+        $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
+        $_POST['hash_algorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['status'] = 'inactive';
         $_POST['userId'] = base64_encode($data['user_id']);

@@ -175,8 +175,7 @@ if ($start_date == '' && $end_date == '') {
 
 $tatSampleQuery = "SELECT 
         count(*) as 'totalSamples',
-        DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as `monthDate`,
-        ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) as daydiff,
+        DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthDate,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_vl_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
@@ -185,7 +184,7 @@ $tatSampleQuery = "SELECT
     
         FROM `$table` as vl 
         INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-        JOIN facility_details as f ON vl.lab_id=f.facility_id 
+        INNER JOIN facility_details as f ON vl.lab_id=f.facility_id 
         LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
         WHERE 
@@ -219,7 +218,7 @@ if (isset($sWhere) && sizeof($sWhere) > 0) {
     $vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tatSampleQuery .= " GROUP BY monthDate";
-//$tatSampleQuery .= " HAVING daydiff < 120";
+//$tatSampleQuery .= " HAVING ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) < 120";
 $tatSampleQuery .= " ORDER BY sample_tested_datetime";
 //echo $tatSampleQuery;die;
 $tatResult = $db->rawQuery($tatSampleQuery);

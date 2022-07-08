@@ -12,11 +12,13 @@ class Users
 {
 
     protected $db = null;
+    protected $systemConfig = null;
     protected $table = 'user_details';
 
-    public function __construct($db = null)
+    public function __construct($db = null, $systemConfig = SYSTEM_CONFIG)
     {
         $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->systemConfig = $systemConfig;
     }
 
 
@@ -381,14 +383,14 @@ class Users
         $this->db->insert('user_login_history', $data);
     }
 
-    public function passwordHash($password, $salt)
+    public function passwordHash($password)
     {
         if (empty($password)) {
             return null;
         }
+
         $options = [
-            'cost' => 14,
-            'salt' => $salt,
+            'cost' => 14
         ];
 
         return password_hash($password, PASSWORD_BCRYPT, $options);
