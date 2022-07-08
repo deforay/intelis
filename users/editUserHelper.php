@@ -55,7 +55,7 @@ try {
             /* Check hash login id exist */
             $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
             $sha1protect = false;
-            $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm` FROM user_details WHERE `login_id` = ?";
+            $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm`, `password` FROM user_details WHERE `login_id` = ?";
             $hashCheck = $db->rawQueryOne($hashCheckQuery, array($db->escape($_POST['userName'])));
             if (isset($hashCheck) && !empty($hashCheck['user_id']) && !empty($hashCheck['hash_algorithm'])) {
                 if ($hashCheck['hash_algorithm'] == 'sha1') {
@@ -63,7 +63,6 @@ try {
                     $sha1protect = true;
                 }
                 if ($hashCheck['hash_algorithm'] == 'phb') {
-                    $password = $userDb->passwordHash($db->escape($_POST['password']), $hashCheck['user_id']);
                     if (!password_verify($db->escape($_POST['password']), $hashCheck['password'])) {
                         $_SESSION['alertMsg'] = _("Invalid password!");
                         header("location:users.php");

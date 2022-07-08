@@ -20,7 +20,7 @@ if ($fromApiTrue) {
 try {
     /* Check hash login id exist */
     $sha1protect = false;
-    $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm` FROM user_details WHERE `login_id` = ?";
+    $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm`, `password` FROM user_details WHERE `login_id` = ?";
     $hashCheck = $db->rawQueryOne($hashCheckQuery, array($db->escape($_POST['userName'])));
     if (isset($hashCheck) && !empty($hashCheck['user_id']) && !empty($hashCheck['hash_algorithm'])) {
         if ($hashCheck['hash_algorithm'] == 'sha1') {
@@ -28,16 +28,16 @@ try {
             $sha1protect = true;
         }
         if ($hashCheck['hash_algorithm'] == 'phb') {
-            $password = $userDb->passwordHash($db->escape($_POST['password']), $hashCheck['user_id']);
             if (!password_verify($db->escape($_POST['password']), $hashCheck['password'])) {
                 $_SESSION['alertMsg'] = _("Invalid password!");
                 header("location:editProfile.php");
             }
+            $password = $userDb->passwordHash($db->escape($_POST['password']), $userId);
         }
     } else {
         $password = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
     }
-
+    // die($password);
     $queryParams = array($password);
     $admin = $db->rawQuery("SELECT * FROM user_details as ud WHERE ud.password = ?", $queryParams);
     if (count($admin) > 0) {
@@ -68,14 +68,7 @@ try {
                     $response = json_decode($result->getBody()->getContents());
 
                     if ($response->status == 'fail') {
-                        error_log('Recency profile not updated! for the userDb->' . $_POST['userName']);
                     }
-                }
-                /* Update Phb hash password */
-                if ($sha1protect) {
-                    $password = $userDb->passwordHash($db->escape($_POST['password']), $userId);
-                    $db = $db->where('user_id', $userId);
-                    $db->update('user_details', array('password' => $password, 'hash_algorithm' => 'phb'));
                 }
                 $data['force_password_reset'] = $_SESSION['forcePasswordReset'] = 0;
             }
@@ -94,7 +87,12 @@ try {
                 print_r(json_encode($response));
             }
         }
-
+        /* Update Phb hash password */
+        if ($sha1protect) {
+            $password = $userDb->passwordHash($db->escape($_POST['password']), $userId);
+            $db = $db->where('user_id', $userId);
+            $db->update('user_details', array('password' => $password, 'hash_algorithm' => 'phb'));
+        }
         if ($fromApiFalse) {
             $_SESSION['alertMsg'] = _("Your profile changes have been saved. You can continue using VLSM. Please click on any menu on the left to navigate");
         }

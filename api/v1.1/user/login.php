@@ -13,8 +13,8 @@ try {
     if (isset($input['userName']) && !empty($input['userName']) && isset($input['password']) && !empty($input['password'])) {
 
         /* Check hash login id exist */
-        $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm` FROM user_details WHERE `login_id` = ?";
-        $hashCheck = $db->rawQueryOne($hashCheckQuery, array($db->escape($_POST['userName'])));
+        $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm`, `password` FROM user_details WHERE `login_id` = ?";
+        $hashCheck = $db->rawQueryOne($hashCheckQuery, array($db->escape($input['userName'])));
 
         $username = $db->escape($input['userName']);
         $password = $db->escape($input['password']);
@@ -25,8 +25,7 @@ try {
                 $sha1protect = true;
             }
             if ($hashCheck['hash_algorithm'] == 'phb') {
-                $password = $user->passwordHash($db->escape($_POST['password']), $hashCheck['user_id']);
-                if (!password_verify($db->escape($_POST['password']), $hashCheck['password'])) {
+                if (!password_verify($db->escape($input['password']), $hashCheck['password'])) {
                     $_SESSION['alertMsg'] = _("Something went wrong!");
                     $payload = array(
                         'status' => 2,
@@ -35,13 +34,13 @@ try {
                     );
                     exit(0);
                 }
+                $password = $users->passwordHash($db->escape($input['password']), $hashCheck['user_id']);
             }
         } else {
             $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
         }
         $queryParams = array($username, $password);
         $userResult = $db->rawQueryOne("SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, r.*, (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ? AND ud.password = ?", $queryParams);
-        // print_r($userResult);die;
 
         if ($userResult['testing_user'] == 'yes') {
             $remoteUser = "yes";
@@ -51,7 +50,7 @@ try {
         if (count($userResult) > 0) {
             /* Update Phb hash password */
             if ($sha1protect) {
-                $password = $users->passwordHash($db->escape($_POST['password']), $userResult['user_id']);
+                $password = $users->passwordHash($db->escape($input['password']), $userResult['user_id']);
                 $db = $db->where('user_id', $userResult['user_id']);
                 $db->update('user_details', array('password' => $password, 'hash_algorithm' => 'phb'));
             }

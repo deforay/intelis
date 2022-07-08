@@ -113,7 +113,7 @@ try {
     if (!empty($post['password'])) {
         /* Check hash login id exist */
         $sha1protect = false;
-        $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm` FROM user_details WHERE `user_id` = ?";
+        $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm`, `password` FROM user_details WHERE `user_id` = ?";
         $hashCheck = $db->rawQueryOne($hashCheckQuery, array($userId));
         if (isset($hashCheck) && !empty($hashCheck['user_id']) && !empty($hashCheck['hash_algorithm'])) {
             if ($hashCheck['hash_algorithm'] == 'sha1') {
@@ -121,7 +121,6 @@ try {
                 $sha1protect = true;
             }
             if ($hashCheck['hash_algorithm'] == 'phb') {
-                $password = $user->passwordHash($db->escape($_POST['password']), $hashCheck['user_id']);
                 if (!password_verify($db->escape($post['password']), $hashCheck['password'])) {
                     $user->userHistoryLog($username, $loginStatus = 'failed');
                     $payload = array(
