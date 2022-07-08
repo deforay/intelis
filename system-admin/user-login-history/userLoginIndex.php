@@ -1,6 +1,6 @@
 <?php
 $title = "User-Login-History";
- 
+
 include('../admin-header.php');
 $sQuery = "SELECT * FROM user_login_history";
 $sResult = $db->rawQuery($sQuery);
@@ -10,67 +10,67 @@ $sResult = $db->rawQuery($sQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <i class="fa-solid fa-gears"></i> <?php echo _("User Login History");?></h1>
+    <h1> <i class="fa-solid fa-gears"></i> <?php echo _("User Login History"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/system-admin/edit-config/index.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
-      <li class="active"><?php echo _("Manage User Login History");?></li>
+      <li><a href="/system-admin/edit-config/index.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+      <li class="active"><?php echo _("Manage User Login History"); ?></li>
     </ol>
   </section>
 
   <!-- Main content -->
   <section class="content">
     <div class="row">
-    <div class="col-xs-12">
+      <div class="col-xs-12">
 
 
-<div class="box">
-    <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
-						<tr>
-							<td><b><?php echo _("Date");?>&nbsp;:</b></td>
-							<td>
-								<input type="" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _('Select User Date');?>" readonly style="width:220px;background:#fff;" />
-							</td>
+        <div class="box">
+          <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+            <tr>
+              <td><b><?php echo _("Date"); ?>&nbsp;:</b></td>
+              <td>
+                <input type="" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _('Select User Date'); ?>" readonly style="width:220px;background:#fff;" />
+              </td>
 
-							<td><b><?php echo _("Login ID");?>&nbsp;:</b></td>
-							<td>
-								<select style="width:220px;" class="form-control" id="loginId" name="loginId" title="<?php echo _('Please select login id');?>">
-									<option value=""> <?php echo _("-- Select --");?> </option>
-									<?php
-									foreach ($sResult as $type) {
-									?>
-										<option value="<?php echo $type['login_id']; ?>"><?php echo ucwords($type['login_id']); ?></option>
-									<?php
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6">
-								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search");?></span></button>
+              <td><b><?php echo _("Login ID"); ?>&nbsp;:</b></td>
+              <td>
+                <select style="width:220px;" class="form-control" id="loginId" name="loginId" title="<?php echo _('Please select login id'); ?>">
+                  <option value=""> <?php echo _("-- Select --"); ?> </option>
+                  <?php
+                  foreach ($sResult as $type) {
+                  ?>
+                    <option value="<?php echo $type['login_id']; ?>"><?php echo ucwords($type['login_id']); ?></option>
+                  <?php
+                  }
+                  ?>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                &nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search");?></span></button>
-							</td>
-						</tr>
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
+              </td>
+            </tr>
 
-					</table>
+          </table>
           <!-- /.box-header -->
           <div class="box-body">
             <table id="userLoginHistoryDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th><?php echo _("Login Id");?></th>
-                  <th><?php echo _("Attempted Datetime");?></th>
-                  <th><?php echo _("IP Address");?></th>
-                  <th><?php echo _("Browser");?></th>
-                  <th><?php echo _("Operating System");?></th>
-                  <th><?php echo _("Status");?></th>
-                  
+                  <th><?php echo _("Login Id"); ?></th>
+                  <th><?php echo _("Attempted Datetime"); ?></th>
+                  <th><?php echo _("IP Address"); ?></th>
+                  <th><?php echo _("Browser"); ?></th>
+                  <th><?php echo _("Operating System"); ?></th>
+                  <th><?php echo _("Status"); ?></th>
+
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                 </tr>
               </tbody>
 
@@ -90,13 +90,14 @@ $sResult = $db->rawQuery($sQuery);
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
   var startDate = "";
-	var endDate = "";
-	var oTable = null;
+  var endDate = "";
+  var oTable = null;
   $(function() {
     //$("#example1").DataTable();
 
   });
-    function loadUserLoginRequestData() {
+
+  function loadUserLoginRequestData() {
     $.blockUI();
     oTable = $('#userLoginHistoryDataTable').dataTable({
       "oLanguage": {
@@ -135,13 +136,13 @@ $sResult = $db->rawQuery($sQuery);
       "sAjaxSource": "getUserLoginHistoryDetails.php",
       "fnServerData": function(sSource, aoData, fnCallback) {
         aoData.push({
-					"name": "userDate",
-					"value": $("#userDate").val()
-				});
-				aoData.push({
-					"name": "loginId",
-					"value": $("#loginId").val()
-				});
+          "name": "userDate",
+          "value": $("#userDate").val()
+        });
+        aoData.push({
+          "name": "loginId",
+          "value": $("#loginId").val()
+        });
         $.ajax({
           "dataType": 'json',
           "type": "POST",
@@ -152,50 +153,50 @@ $sResult = $db->rawQuery($sQuery);
       }
     });
     $.unblockUI();
-}
+  }
 
-function searchVlRequestData() {
-		$.blockUI();
-		oTable.fnDraw();
-		$.unblockUI();
-	}
+  function searchVlRequestData() {
+    $.blockUI();
+    oTable.fnDraw();
+    $.unblockUI();
+  }
 
-    $(document).ready(function() {
+  $(document).ready(function() {
 
     $('.daterangefield').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-				}
-			},
-			function(start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
+        locale: {
+          cancelLabel: 'Clear'
+        },
+        format: 'DD-MMM-YYYY',
+        separator: ' to ',
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment(),
+        maxDate: moment(),
+        ranges: {
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+          'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+          'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+          'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+        }
+      },
+      function(start, end) {
+        startDate = start.format('YYYY-MM-DD');
+        endDate = end.format('YYYY-MM-DD');
+      });
 
-		$('.daterangefield').on('cancel.daterangepicker', function(ev, picker) {
-			$(this).val('');
-		});
+    $('.daterangefield').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+    });
 
-		$('#userDate').val("");
+    $('#userDate').val("");
 
-		loadUserLoginRequestData();
+    loadUserLoginRequestData();
 
   });
 </script>

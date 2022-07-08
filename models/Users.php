@@ -350,7 +350,7 @@ class Users
         return $response;
     }
 
-    public function userHistoryLog($userName, $loginStatus)
+    public function userHistoryLog($loginId, $loginStatus, $userId = null)
     {
         $general = new \Vlsm\Models\General($this->db);
         $ipaddress = '';
@@ -373,7 +373,8 @@ class Users
         }
 
         $data = array(
-            'login_id' => $userName,
+            'login_id' => $loginId,
+            'user_id' => $userId,
             'login_attempted_datetime' => $general->getDateTime(),
             'login_status' => $loginStatus,
             'ip_address' => $ipaddress,

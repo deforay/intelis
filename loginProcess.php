@@ -114,21 +114,21 @@ try {
                 $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
                 if ($password == $userRow['password']) {
                     $newPassword = $user->passwordHash($db->escape($_POST['password']));
-                    $db = $db->where('user_id', $userRow['user_id']);
+                    $db = $db->where('user_id', $userRow['user_id'], $userRow['user_id']);
                     $db->update('user_details', array('password' => $newPassword, 'hash_algorithm' => 'phb'));
                 } else {
                     throw new Exception(_("Please check your login credentials"));
                 }
             } else if ($userRow['hash_algorithm'] == 'phb') {
                 if (!password_verify($_POST['password'], $userRow['password'])) {
-                    $user->userHistoryLog($userName, 'failed');
+                    $user->userHistoryLog($userName, 'failed', $userRow['user_id']);
 
                     throw new Exception(_("Please check your login credentials"));
                 }
             }
 
             if (isset($userRow) && !empty($userRow)) {
-                $user->userHistoryLog($userName, $loginStatus = 'successful');
+                $user->userHistoryLog($userName, 'successful', $userRow['user_id']);
                 //add random key
                 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
@@ -150,6 +150,7 @@ try {
 
 
                 $_SESSION['userId'] = $userRow['user_id'];
+                $_SESSION['loginId'] = $userRow['login_id'];
                 $_SESSION['userName'] = ucwords($userRow['user_name']);
                 $_SESSION['roleCode'] = $userRow['role_code'];
                 $_SESSION['roleId'] = $userRow['role_id'];
@@ -200,7 +201,7 @@ try {
                 }
                 header("location:" . $redirect);
             } else {
-                $user->userHistoryLog($userName, $loginStatus = 'failed');
+                $user->userHistoryLog($userName, 'failed');
 
                 throw new Exception(_("Please check your login credentials"));
             }
