@@ -163,7 +163,6 @@ if ($start_date == '' && $end_date == '') {
 $tatSampleQuery = "SELECT 
    'vl.result_status', count(*) as 'totalSamples',
     DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
-    ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) as daydiff,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_vl_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
@@ -194,7 +193,6 @@ if (isset($sWhere) && sizeof($sWhere) > 0) {
     $tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tatSampleQuery .= " GROUP BY monthDate";
-//$tatSampleQuery .= " HAVING daydiff < 120";
 $tatSampleQuery .= " ORDER BY sample_tested_datetime";
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;

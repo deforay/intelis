@@ -62,7 +62,7 @@ try {
     if ($adminCount != 0) {
         if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
 
-            $username = $db->escape($_POST['username']);
+            $userName = $db->escape($_POST['username']);
             $password = $db->escape($_POST['password']);
 
             /* Crosss Login Block Start */
@@ -86,22 +86,25 @@ try {
             } else {
                 $ipaddress = 'UNKNOWN';
             }
-            $queryParams = array($username, 'active');
-            $userRow = $db->rawQueryOne("SELECT * FROM user_details as ud 
+            $queryParams = array($userName, 'active');
+            $userRow = $db->rawQueryOne(
+                "SELECT * FROM user_details as ud 
                                         INNER JOIN roles as r ON ud.role_id=r.role_id 
-                                        WHERE ud.login_id = ? AND ud.status = ?", $queryParams);
+                                        WHERE ud.login_id = ? AND ud.status = ?",
+                $queryParams
+            );
             $loginAttemptCount = $db->rawQueryOne(
                 "SELECT 
                                                 SUM(CASE WHEN login_id = ? THEN 1 ELSE 0 END) AS LoginIdCount,
                                                 SUM(CASE WHEN ip_address = ? THEN 1 ELSE 0 END) AS IpCount
                                                 FROM user_login_history
                                                 WHERE login_status='failed' AND login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 15 minute)",
-                array($username, $username)
+                array($userName, $userName)
             );
 
             if ($loginAttemptCount['LoginIdCount'] >= 3 || $loginAttemptCount['IpCount'] >= 3) {
                 if (!isset($_POST['captcha']) || empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode']) {
-                    $user->userHistoryLog($username, 'failed');
+                    $user->userHistoryLog($userName, 'failed');
                     $_SESSION['alertMsg'] = _("You have exhausted maximum number of login attempts. Please retry login after sometime.");
                     header("location:/login.php");
                 }
@@ -114,18 +117,18 @@ try {
                     $db = $db->where('user_id', $userRow['user_id']);
                     $db->update('user_details', array('password' => $newPassword, 'hash_algorithm' => 'phb'));
                 } else {
-                    header("location:/login.php");
+                    throw new Exception(_("Please check your login credentials"));
                 }
             } else if ($userRow['hash_algorithm'] == 'phb') {
                 if (!password_verify($_POST['password'], $userRow['password'])) {
-                    $user->userHistoryLog($username, 'failed');
-                    $_SESSION['alertMsg'] = _("Invalid password");
-                    header("location:/login.php");
+                    $user->userHistoryLog($userName, 'failed');
+
+                    throw new Exception(_("Please check your login credentials"));
                 }
             }
 
             if (isset($userRow) && !empty($userRow)) {
-                $user->userHistoryLog($username, $loginStatus = 'successful');
+                $user->userHistoryLog($userName, $loginStatus = 'successful');
                 //add random key
                 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
@@ -197,15 +200,17 @@ try {
                 }
                 header("location:" . $redirect);
             } else {
-                $user->userHistoryLog($username, $loginStatus = 'failed');
-                $_SESSION['alertMsg'] = _("Please check your login credentials");
-                header("location:/login.php");
+                $user->userHistoryLog($userName, $loginStatus = 'failed');
+
+                throw new Exception(_("Please check your login credentials"));
             }
         } else {
-            header("location:/login.php");
+            throw new Exception(_("Please check your login credentials"));
         }
     }
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
+    header("location:/login.php");
+    $_SESSION['alertMsg'] = _($exc->getMessage());
+    error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
     error_log($exc->getTraceAsString());
 }
