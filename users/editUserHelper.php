@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-
+$userDb = new \Vlsm\Models\Users();
 $general = new \Vlsm\Models\General();
 $tableName = "user_details";
 $tableName2 = "user_facility_map";
@@ -52,13 +52,35 @@ try {
         }
 
         if (isset($_POST['password']) && trim($_POST['password']) != "") {
+            /* Check hash login id exist */
+            $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
+            $sha1protect = false;
+            $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm` FROM user_details WHERE `login_id` = ?";
+            $hashCheck = $db->rawQueryOne($hashCheckQuery, array($db->escape($_POST['userName'])));
+            if (isset($hashCheck) && !empty($hashCheck['user_id']) && !empty($hashCheck['hash_algorithm'])) {
+                if ($hashCheck['hash_algorithm'] == 'sha1') {
+                    $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
+                    $sha1protect = true;
+                }
+                if ($hashCheck['hash_algorithm'] == 'phb') {
+                    $password = $userDb->passwordHash($db->escape($_POST['password']), $hashCheck['user_id']);
+                    if (!password_verify($db->escape($_POST['password']), $hashCheck['password'])) {
+                        $_SESSION['alertMsg'] = _("Invalid password!");
+                        header("location:users.php");
+                    }
+                }
+            } else {
+                $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
+            }
+
+            /* Recency cross login block */
             if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {
                 $client = new \GuzzleHttp\Client();
                 $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
                 $result = $client->post($url . '/api/update-password', [
                     'form_params' => [
                         'u' => $_POST['loginId'],
-                        't' => sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt'])
+                        't' => $password
                     ]
                 ]);
                 $response = json_decode($result->getBody()->getContents());
@@ -66,7 +88,12 @@ try {
                     error_log('Recency profile not updated! for the user ' . $_POST['userName']);
                 }
             }
-            $data['password'] = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
+            $data['password'] = $password;
+            /* Update Phb hash password */
+            if ($sha1protect) {
+                $data['password'] = $userDb->passwordHash($db->escape($_POST['password']), $userId);
+                $data['hash_algorithm'] = 'phb';
+            }
             $data['force_password_reset'] = 1;
         }
 

@@ -3,10 +3,7 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-
-
-
+$userDb = new \Vlsm\Models\Users();
 $general = new \Vlsm\Models\General();
 // 
 // require_once(APPLICATION_PATH . '/header.php');
@@ -14,24 +11,22 @@ $tableName = "user_details";
 $tableName2 = "user_facility_map";
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
-
-        $password = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
-
         $data = array(
             'user_id'               => $general->generateUUID(),
-            //'user_alpnum_id'      =>$idOne."-".$idTwo."-".$idThree."-".$idFour."-".$idFive,
             'user_name'             => $_POST['userName'],
             'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", $_POST['interfaceUserName']))) : null,
             'email'                 => $_POST['email'],
             'login_id'              => $_POST['loginId'],
             'phone_number'          => $_POST['phoneNo'],
-            'password'              => $password,
             'role_id'               => $_POST['role'],
             'status'                => 'active',
             'app_access'            => $_POST['appAccessable'],
             'user_signature'        => $imageName,
             'force_password_reset'  => 1
         );
+        /* To update phb password */
+        $password = $userDb->passwordHash($db->escape($_POST['password']), $data['user_id']);
+        $data['password'] = $password;
 
         if (isset($_FILES['userSignature']['name']) && $_FILES['userSignature']['name'] != "") {
             if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
@@ -54,6 +49,8 @@ try {
         }
 
         $id = $db->insert($tableName, $data);
+
+
         if ($id > 0 && trim($_POST['selectedFacility']) != '') {
             if ($id > 0 && trim($_POST['selectedFacility']) != '') {
                 $selectedFacility = explode(",", $_POST['selectedFacility']);

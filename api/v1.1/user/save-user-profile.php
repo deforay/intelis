@@ -111,7 +111,30 @@ try {
     }
 
     if (!empty($post['password'])) {
-        $data['password'] = sha1($db->escape($post['password']) . SYSTEM_CONFIG['passwordSalt']);
+        /* Check hash login id exist */
+        $sha1protect = false;
+        $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm` FROM user_details WHERE `user_id` = ?";
+        $hashCheck = $db->rawQueryOne($hashCheckQuery, array($userId));
+        if (isset($hashCheck) && !empty($hashCheck['user_id']) && !empty($hashCheck['hash_algorithm'])) {
+            if ($hashCheck['hash_algorithm'] == 'sha1') {
+                $data['password'] = sha1($db->escape($post['password']) . SYSTEM_CONFIG['passwordSalt']);
+                $sha1protect = true;
+            }
+            if ($hashCheck['hash_algorithm'] == 'phb') {
+                $password = $user->passwordHash($db->escape($_POST['password']), $hashCheck['user_id']);
+                if (!password_verify($db->escape($post['password']), $hashCheck['password'])) {
+                    $user->userHistoryLog($username, $loginStatus = 'failed');
+                    $payload = array(
+                        'status' => 'failed',
+                        'message' => 'Invalid password!',
+                        'timestamp' => time(),
+                    );
+                    exit(0);
+                }
+            }
+        } else {
+            $data['password'] = sha1($db->escape($post['password']) . SYSTEM_CONFIG['passwordSalt']);
+        }
     }
     if (!empty($post['role'])) {
         $data['role_id'] =  $db->escape($post['role']);
@@ -139,7 +162,13 @@ try {
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
         $db = $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
-        /* 0     */
+
+        /* Update Phb hash password */
+        if ($sha1protect) {
+            $password = $userDb->passwordHash($db->escape($post['password']), $aRow['user_id']);
+            $db = $db->where('user_id', $aRow['user_id']);
+            $db->update('user_details', array('password' => $password, 'hash_algorithm' => 'phb'));
+        }
     } else {
         $data['status'] = 'inactive';
         $id = $db->insert("user_details", $data);

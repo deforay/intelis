@@ -3,7 +3,7 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
+$userDb = new \Vlsm\Models\Users();
 $tableName = "user_details";
 $upId = 0;
 /* To check the password update from the API */
@@ -17,15 +17,32 @@ if ($fromApiTrue) {
     $userId = base64_decode($_POST['userId']);
 }
 
-try {  
-        $password = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
-        $queryParams = array($password);
-        $admin = $db->rawQuery("SELECT * FROM user_details as ud WHERE ud.password = ?", $queryParams);
-        if (count($admin) > 0) {
-            $_SESSION['alertMsg'] = _("Your new password is too similar to your current password. Please try another password.");
+try {
+    /* Check hash login id exist */
+    $sha1protect = false;
+    $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm` FROM user_details WHERE `login_id` = ?";
+    $hashCheck = $db->rawQueryOne($hashCheckQuery, array($db->escape($_POST['userName'])));
+    if (isset($hashCheck) && !empty($hashCheck['user_id']) && !empty($hashCheck['hash_algorithm'])) {
+        if ($hashCheck['hash_algorithm'] == 'sha1') {
+            $password = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
+            $sha1protect = true;
         }
+        if ($hashCheck['hash_algorithm'] == 'phb') {
+            $password = $userDb->passwordHash($db->escape($_POST['password']), $hashCheck['user_id']);
+            if (!password_verify($db->escape($_POST['password']), $hashCheck['password'])) {
+                $_SESSION['alertMsg'] = _("Invalid password!");
+                header("location:editProfile.php");
+            }
+        }
+    } else {
+        $password = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
+    }
 
-    else if (trim($_POST['userName']) != '') {
+    $queryParams = array($password);
+    $admin = $db->rawQuery("SELECT * FROM user_details as ud WHERE ud.password = ?", $queryParams);
+    if (count($admin) > 0) {
+        $_SESSION['alertMsg'] = _("Your new password is too similar to your current password. Please try another password.");
+    } else if (trim($_POST['userName']) != '') {
         if ($fromApiFalse) {
             $data = array(
                 'user_name' => $_POST['userName'],
@@ -45,16 +62,21 @@ try {
                     $result = $client->post($url . '/api/update-password', [
                         'form_params' => [
                             'u' => $_POST['email'],
-                            't' => sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt'])
+                            't' => $password
                         ]
                     ]);
                     $response = json_decode($result->getBody()->getContents());
 
                     if ($response->status == 'fail') {
-                        error_log('Recency profile not updated! for the user->' . $_POST['userName']);
+                        error_log('Recency profile not updated! for the userDb->' . $_POST['userName']);
                     }
                 }
-                $data['password'] = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
+                /* Update Phb hash password */
+                if ($sha1protect) {
+                    $password = $userDb->passwordHash($db->escape($_POST['password']), $userId);
+                    $db = $db->where('user_id', $userId);
+                    $db->update('user_details', array('password' => $password, 'hash_algorithm' => 'phb'));
+                }
                 $data['force_password_reset'] = $_SESSION['forcePasswordReset'] = 0;
             }
             $db = $db->where('user_id', $userId);
