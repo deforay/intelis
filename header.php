@@ -41,14 +41,6 @@ if (isset(SYSTEM_CONFIG['instanceName']) && !empty(SYSTEM_CONFIG['instanceName']
 	$systemType = SYSTEM_CONFIG['instanceName'];
 }
 
-$hideResult = '';
-$hideRequest = '';
-if (isset($arr['instance_type']) && $arr['instance_type'] != '') {
-	if ($arr['instance_type'] == 'Clinic/Lab') {
-		$hideResult = "display:none;";
-	}
-}
-
 // Check if the user can access the requested page
 if (!$usersModel->isAllowed(basename($_SERVER['PHP_SELF']))) {
 	header("location:/error/401.php");
@@ -639,7 +631,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) { ?>
 						<li class="header"><?php echo _("VIRAL LOAD"); ?></li>
 						<?php if ($vlRequestMenuAccess == true) { ?>
-							<li class="treeview request" style="<?php echo $hideRequest; ?>">
+							<li class="treeview request">
 								<a href="#">
 									<span class="fa-solid fa-pen-to-square"></span>
 									<span><?php echo _("Request Management"); ?></span>
@@ -679,7 +671,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							</li>
 						<?php }
 						if ($vlTestResultMenuAccess == true) { ?>
-							<li class="treeview test" style="<?php echo $hideResult; ?>">
+							<li class="treeview test">
 								<a href="#">
 									<span class="fa-solid fa-list-check"></span>
 									<span><?php echo _("Test Result Management"); ?></span>
@@ -761,7 +753,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true && array_intersect($_SESSION['module'], array('eid'))) {  ?>
 						<li class="header"><?php echo _("EARLY INFANT DIAGNOSIS (EID)"); ?></li>
 						<?php if ($eidTestRequestMenuAccess == true) { ?>
-							<li class="treeview eidRequest" style="<?php echo $hideRequest; ?>">
+							<li class="treeview eidRequest">
 								<a href="#">
 									<span class="fa-solid fa-pen-to-square"></span>
 									<span><?php echo _("Request Management"); ?></span>
@@ -799,7 +791,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							</li>
 						<?php }
 						if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true && $eidTestResultMenuAccess == true) { ?>
-							<li class="treeview eidResults" style="<?php echo $hideResult; ?>">
+							<li class="treeview eidResults">
 								<a href="#">
 									<span class="fa-solid fa-list-check"></span>
 									<span><?php echo _("Test Result Management"); ?></span>
@@ -858,7 +850,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
 						<li class="header"><?php echo _("COVID-19"); ?></li>
 						<?php if ($covid19TestRequestMenuAccess == true) { ?>
-							<li class="treeview covid19Request" style="<?php echo $hideRequest; ?>">
+							<li class="treeview covid19Request">
 								<a href="#">
 									<span class="fa-solid fa-pen-to-square"></span>
 									<span><?php echo _("Request Management"); ?></span>
@@ -896,7 +888,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							</li>
 						<?php }
 						if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && $covid19TestResultMenuAccess == true) { ?>
-							<li class="treeview covid19Results" style="<?php echo $hideResult; ?>">
+							<li class="treeview covid19Results">
 								<a href="#">
 									<span class="fa-solid fa-list-check"></span>
 									<span><?php echo _("Test Result Management"); ?></span>
@@ -970,7 +962,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
 						<li class="header"><?php echo _("Hepatitis"); ?></li>
 						<?php if ($hepatitisTestRequestMenuAccess == true) { ?>
-							<li class="treeview hepatitisRequest" style="<?php echo $hideRequest; ?>">
+							<li class="treeview hepatitisRequest">
 								<a href="#">
 									<span class="fa-solid fa-pen-to-square"></span>
 									<span><?php echo _("Request Management"); ?></span>
@@ -1008,7 +1000,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							</li>
 						<?php }
 						if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && $hepatitisTestResultMenuAccess == true) { ?>
-							<li class="treeview hepatitisResults" style="<?php echo $hideResult; ?>">
+							<li class="treeview hepatitisResults">
 								<a href="#">
 									<span class="fa-solid fa-list-check"></span>
 									<span><?php echo _("Test Result Management"); ?></span>
@@ -1074,7 +1066,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
 						<li class="header"><?php echo _("TB"); ?></li>
 						<?php if ($tbTestRequestMenuAccess == true) { ?>
-							<li class="treeview tbRequest" style="<?php echo $hideRequest; ?>">
+							<li class="treeview tbRequest">
 								<a href="#">
 									<span class="fa-solid fa-pen-to-square"></span>
 									<span><?php echo _("Request Management"); ?></span>
@@ -1112,7 +1104,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							</li>
 						<?php }
 						if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && $tbTestResultMenuAccess == true) { ?>
-							<li class="treeview tbResults" style="<?php echo $hideResult; ?>">
+							<li class="treeview tbResults">
 								<a href="#">
 									<span class="fa-solid fa-list-check"></span>
 									<span><?php echo _("Test Result Management"); ?></span>

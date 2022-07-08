@@ -93,7 +93,8 @@ if (!class_exists('DRC_PDF')) {
             } else {
                 $generatedAtTestingLab = "";
             }
-            $this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . $generatedAtTestingLab);
+            $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'],IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
+            $this->writeHTML($formatter->format(strtotime($this->resultPrintedDate)) . ' ' . $generatedAtTestingLab);
             $this->writeHTMLCell(0, 0, 10, 290, 'Département de Virologie', 0, 0, false, true, 'C', true);
             // Page number
             //$this->SetFont('helvetica', '', 8);

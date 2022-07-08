@@ -7,15 +7,16 @@ require_once(dirname(__FILE__) . "/../../startup.php");
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
+$systemConfig = SYSTEM_CONFIG;
 
-if (!isset(SYSTEM_CONFIG['remoteURL']) || SYSTEM_CONFIG['remoteURL'] == '') {
+if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     echo "Please check if the Remote URL is set." . PHP_EOL;
     exit(0);
 }
 
 
 //update common data from remote to lab db
-$remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+$remoteUrl = rtrim($systemConfig['remoteURL'], "/");
 
 $headers = @get_headers($remoteUrl . '/vlsts-icons/favicon-16x16.png');
 
@@ -88,9 +89,9 @@ $commonDataToSync = array(
 );
 
 
-$url = SYSTEM_CONFIG['remoteURL'] . '/remote/remote/commonData.php';
+$url = $systemConfig['remoteURL'] . '/remote/remote/commonData.php';
 
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
+if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
     $data['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
     $data['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
     $data['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
@@ -115,7 +116,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == t
     );
 }
 
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
+if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
     $data['eidRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_rejection_reasons');
     $data['eidSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_type');
     $data['eidResultsLastModified'] = $general->getLastModifiedDateTime('r_eid_results ');
@@ -144,7 +145,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 }
 
 
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
+if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
     $data['covid19RejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_rejection_reasons');
     $data['covid19SampleTypesLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_type');
     $data['covid19ComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_covid19_comorbidities');
@@ -188,7 +189,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     );
 }
 
-if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
+if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
     $data['hepatitisRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_rejection_reasons');
     $data['hepatitisSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_type');
     $data['hepatitisComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_comorbidities');
@@ -255,7 +256,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $id = $db->delete('testing_labs');
             }
 
-            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
+            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
             $columnList = array_map('current', $db->rawQuery($tableColumns));
             
             foreach ($dataValues as $tableDataValues) {
@@ -291,11 +292,11 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                         if (!file_exists($labLogoFolder)) {
                             mkdir($labLogoFolder, 0777, true);
                         }
-                        $remoteFileUrl = SYSTEM_CONFIG['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
+                        $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
                         $localFilePath = $labLogoFolder . "/" . "actual-" . $tableData['facility_logo'];
                         file_put_contents($localFilePath, file_get_contents($remoteFileUrl));
 
-                        $remoteFileUrl = SYSTEM_CONFIG['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
+                        $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
                         $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
                         file_put_contents($localFilePath, file_get_contents($remoteFileUrl));
                     }
@@ -327,7 +328,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 unset($sign['signatory_id']);
                 if (isset($sign['signature']) && $sign['signature'] != "") {
                     /* To save file from the url */
-                    $remoteFileUrl = SYSTEM_CONFIG['remoteURL'] . '/uploads/labs/' . $sign['lab_id'] . '/signatures/' . $sign['signature'];
+                    $remoteFileUrl = $systemConfig['remoteURL'] . '/uploads/labs/' . $sign['lab_id'] . '/signatures/' . $sign['signature'];
                     $localFileLocation = $signaturesFolder . DIRECTORY_SEPARATOR . $sign['signature'];
                     if (file_put_contents($localFileLocation, file_get_contents($remoteFileUrl))) {
                         $db->insert('lab_report_signatories', $sign);
