@@ -47,3 +47,8 @@ Header set Access-Control-Allow-Origin "*"
     Header append Vary Accept-Encoding
   </FilesMatch>
 </IfModule>
+
+<FilesMatch ".(htaccess|htpasswd|ini|psd|log|sh|json|lock|phar|yml|md|sql|zip|hgignore|hg|hgtags|DS_Store)$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>

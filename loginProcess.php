@@ -113,9 +113,9 @@ try {
             if ($userRow['hash_algorithm'] == 'sha1') {
                 $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
                 if ($password == $userRow['password']) {
-                    $newPassword = $user->passwordHash($db->escape($_POST['password']));
-                    $db = $db->where('user_id', $userRow['user_id'], $userRow['user_id']);
-                    $db->update('user_details', array('password' => $newPassword, 'hash_algorithm' => 'phb'));
+                    $newPassword = $user->passwordHash($_POST['password']);
+                    $db->where('user_id', $userRow['user_id']);
+                    $db->update('user_details', array('hash_algorithm' => 'phb', 'password' => $newPassword));
                 } else {
                     throw new Exception(_("Please check your login credentials"));
                 }
@@ -211,7 +211,7 @@ try {
     }
 } catch (Exception $exc) {
     header("location:/login.php");
-    $_SESSION['alertMsg'] = _($exc->getMessage());
+    $_SESSION['alertMsg'] = _("Please check your login credentials");
     error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
     error_log($exc->getTraceAsString());
 }
