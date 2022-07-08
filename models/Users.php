@@ -12,11 +12,13 @@ class Users
 {
 
     protected $db = null;
+    protected $systemConfig = null;
     protected $table = 'user_details';
 
-    public function __construct($db = null)
+    public function __construct($db = null, $systemConfig = SYSTEM_CONFIG)
     {
         $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->systemConfig = $systemConfig;
     }
 
 
@@ -386,6 +388,10 @@ class Users
         if (empty($password)) {
             return null;
         }
+        if(isset($this->systemConfig['useConfigPasswordSalt']) && $this->systemConfig['useConfigPasswordSalt'] == 'yes'){
+            $salt = $this->systemConfig['passwordSalt'];
+        }
+
         $options = [
             'cost' => 14,
             'salt' => $salt,
