@@ -113,7 +113,7 @@ try {
             if ($userRow['hash_algorithm'] == 'sha1') {
                 $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
                 if ($password == $userRow['password']) {
-                    $newPassword = $user->passwordHash($db->escape($_POST['password']), $userRow['user_id']);
+                    $newPassword = $user->passwordHash($db->escape($_POST['password']));
                     $db = $db->where('user_id', $userRow['user_id']);
                     $db->update('user_details', array('password' => $newPassword, 'hash_algorithm' => 'phb'));
                 } else {

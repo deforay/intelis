@@ -16,7 +16,7 @@ $userId = $general->generateUUID();
 $general = new \Vlsm\Models\General();
 $user = new \Vlsm\Models\Users();
 
-$userPassword = $user->passwordHash($password, $userId);
+$userPassword = $user->passwordHash($password);
 
 try {
     if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {

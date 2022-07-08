@@ -25,7 +25,7 @@ try {
             'force_password_reset'  => 1
         );
         
-        $password = $userDb->passwordHash($db->escape($_POST['password']), $data['user_id']);
+        $password = $userDb->passwordHash($db->escape($_POST['password']));
         $data['password'] = $password;
         $data['hash_algorithm'] = 'phb';
 
