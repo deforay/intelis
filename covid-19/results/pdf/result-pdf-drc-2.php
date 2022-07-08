@@ -71,7 +71,9 @@ class DRC_PDF extends MYPDF
         } else {
             $generatedAtTestingLab = "";
         }
-        $this->writeHTMLCell(0, 0, 10, 290, strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . $generatedAtTestingLab, 0, 0, false, true, 'L', true);
+
+        $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'],IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
+        $this->writeHTMLCell(0, 0, 10, 290, $formatter->format(strtotime($this->resultPrintedDate)) . ' ' . $generatedAtTestingLab, 0, 0, false, true, 'L', true);
         $this->writeHTMLCell(0, 0, 10, 280, 'N 29 Av des Orchidees O. le volcan C. de Goma Tel: +243 817933409 +234 993549796', 0, 0, false, true, 'C', true);
         $this->writeHTMLCell(0, 0, 10, 285, 'E-mail : info@inrbgoma.com, inrbgoma@gmail.com', 0, 0, false, true, 'C', true);
         $this->writeHTMLCell(0, 0, 10, 290, 'inrbgoma.com', 0, 0, false, true, 'C', true);
