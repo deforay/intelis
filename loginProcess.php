@@ -100,7 +100,8 @@ try {
             );
 
             if ($loginAttemptCount['LoginIdCount'] < 3 || $loginAttemptCount['IpCount'] < 3) {
-                if ($hashCheck['hash_algorithm'] == 'sha1') {
+                if ($userRow['hash_algorithm'] == 'sha1') {
+                    $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
                     if ($password == $userRow['password']) {
                         $newPassword = $user->passwordHash($db->escape($_POST['password']), $userRow['user_id']);
                         $db = $db->where('user_id', $userRow['user_id']);
@@ -108,8 +109,8 @@ try {
                     } else {
                         header("location:/login.php");
                     }
-                } else if ($hashCheck['hash_algorithm'] == 'phb') {
-                    if (!password_verify($_POST['password'], $hashCheck['password'])) {
+                } else if ($userRow['hash_algorithm'] == 'phb') {
+                    if (!password_verify($_POST['password'], $userRow['password'])) {
                         $user->userHistoryLog($username, $loginStatus = 'failed');
                         $_SESSION['alertMsg'] = _("Invalid password");
                         header("location:/login.php");
@@ -194,6 +195,22 @@ try {
                     header("location:/login.php");
                 }
             } else if ($loginAttemptCount['LoginIdCount'] >= 3 || $loginAttemptCount['IpCount'] >= 3) {
+                if ($userRow['hash_algorithm'] == 'sha1') {
+                    $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
+                    if ($password == $userRow['password']) {
+                        $newPassword = $user->passwordHash($db->escape($_POST['password']), $userRow['user_id']);
+                        $db = $db->where('user_id', $userRow['user_id']);
+                        $db->update('user_details', array('password' => $newPassword, 'hash_algorithm' => 'phb'));
+                    } else {
+                        header("location:/login.php");
+                    }
+                } else if ($userRow['hash_algorithm'] == 'phb') {
+                    if (!password_verify($_POST['password'], $userRow['password'])) {
+                        $user->userHistoryLog($username, $loginStatus = 'failed');
+                        $_SESSION['alertMsg'] = _("Invalid password");
+                        header("location:/login.php");
+                    }
+                }
                 if ($_POST['captcha'] != '') {
                     if (isset($userRow) && !empty($userRow)) {
                         $user->userHistoryLog($username, $loginStatus = 'successful');
@@ -272,7 +289,8 @@ try {
                         $_SESSION['alertMsg'] = _("Please check your login credentials");
                         header("location:/login.php");
                     }
-                } else {
+                } 
+                else {
                     $user->userHistoryLog($username, $loginStatus = 'failed');
                     $_SESSION['alertMsg'] = _("You have exhausted maximum number of login attempts. Please try to login after sometime.");
                     header("location:/login.php");
