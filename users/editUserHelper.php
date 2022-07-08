@@ -101,6 +101,7 @@ try {
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
             $_POST['login_id'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
+            $_POST['hash_algorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['status'] = 'inactive'; // so that we can retain whatever status is on server
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
