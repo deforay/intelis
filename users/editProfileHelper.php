@@ -43,7 +43,7 @@ try {
                     header("location:editProfile.php");
                 }
                 
-                $newPassword = $userModel->passwordHash($db->escape($_POST['password']), $userId);
+                $newPassword = $userModel->passwordHash($db->escape($_POST['password']));
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
                     $client = new \GuzzleHttp\Client();

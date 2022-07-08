@@ -13,7 +13,7 @@ $password = $db->escape($_POST['password']);
 
 $user = new \Vlsm\Models\Users();
 
-$userPassword = $user->passwordHash($password, $loginId);
+$userPassword = $user->passwordHash($password);
 
 try {
     if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {

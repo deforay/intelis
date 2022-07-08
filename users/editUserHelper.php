@@ -53,7 +53,7 @@ try {
 
         if (isset($_POST['password']) && trim($_POST['password']) != "") {
 
-            $password = $userDb->passwordHash($db->escape($_POST['password']), $userId);
+            $password = $userDb->passwordHash($db->escape($_POST['password']));
 
             /* Recency cross login block */
             if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {

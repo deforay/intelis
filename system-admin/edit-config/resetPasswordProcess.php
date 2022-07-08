@@ -10,7 +10,7 @@ $user = new \Vlsm\Models\Users();
 try {
     $userId = base64_decode($_POST['userId']);
     if (isset($_POST['password']) && trim($_POST['password']) != "") {
-        $data['system_admin_password'] = $user->passwordHash($_POST['password'], $userId);
+        $data['system_admin_password'] = $user->passwordHash($_POST['password']);
         $db = $db->where('system_admin_id', $userId);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = _("Password updated successfully");

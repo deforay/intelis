@@ -112,7 +112,7 @@ try {
 
     if (!empty($post['password'])) {
         $data['hash_algorithm'] = 'phb';
-        $data['password'] = $userModel->passwordHash($post['password'], $userId);
+        $data['password'] = $userModel->passwordHash($post['password']);
     }
     if (!empty($post['role'])) {
         $data['role_id'] =  $db->escape($post['role']);
