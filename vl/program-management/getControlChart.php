@@ -32,18 +32,23 @@ $tsQuery = "SELECT DATE_FORMAT(sample_tested_datetime,'%d-%M-%Y') AS sample_test
 		           END) AS countTotal
         FROM vl_imported_controls as vl where vlsm_country_id='" . $configFormResult[0]['value'] . "'";
 
-$sWhere = '';
+$sWhere = array();
 if (isset($_POST['cType']) && trim($_POST['cType']) != '') {
-    $sWhere .= ' AND vl.control_type = "' . $_POST['cType'] . '"';
+    $sWhere[] = ' vl.control_type = "' . $_POST['cType'] . '"';
 }
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-    $sWhere .= ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
 }
-$tsQuery = $tsQuery . ' ' . $sWhere . " group by DATE_FORMAT(sample_tested_datetime,'%d-%M-%Y')";
+
+if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
+    $sWhere = implode(" AND ", $sWhere);
+}
+
+$tsQuery = $tsQuery . ' ' .'AND'. $sWhere . " group by DATE_FORMAT(sample_tested_datetime,'%d-%M-%Y')";
 $totalControlResult = $db->rawQuery($tsQuery);
 
 $sQuery = "SELECT SUM(CASE WHEN (result_value_absolute != '' AND result_value_absolute IS NOT NULL) THEN result_value_absolute ELSE 0 END) AS sumTotal FROM vl_imported_controls as vl where vlsm_country_id='" . $configFormResult[0]['value'] . "'";
-$sQuery = $sQuery . ' ' . $sWhere . "  group by control_id";
+$sQuery = $sQuery . ' ' .'AND'. $sWhere . "  group by control_id";
 $controlResult = $db->rawQuery($sQuery);
 $array = array_map('current', $controlResult);
 $mean = (isset($array) && count($array) > 0) ?  (array_sum($array) / count($array)) : 0;
