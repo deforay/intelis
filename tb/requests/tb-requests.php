@@ -213,6 +213,7 @@ foreach ($srcResults as $list) {
                                     <?php } ?>
                                     <th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
                                     <th><?php echo _("Batch Code"); ?></th>
+                                    <th><?php echo _("Testing lab"); ?></th>
                                     <th><?php echo _("Facility Name"); ?></th>
                                     <?php if ($formId == 1) { ?>
                                         <th><?php echo _("Case ID"); ?></th>
@@ -399,6 +400,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     "sClass": "center"
                 }, {
                     "sClass": "center"
+                }, {
+                    "sClass": "center"
                 },
                 <?php if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges'])) || (in_array("tb-view-request.php", $_SESSION['privileges']))) { ?> {
                         "sClass": "center action",
@@ -407,7 +410,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 <?php } ?>
             ],
             "aaSorting": [
-                [<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 10 : 9 ?>, "desc"]
+                [<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 11 : 10 ?>, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");

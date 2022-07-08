@@ -296,8 +296,8 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("Batch Code"); ?></th>
 									<th><?php echo _("Unique ART No"); ?></th>
 									<th><?php echo _("Patient's Name"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Testing Lab"); ?></th>
+									<th><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Province/State"); ?></th>
 									<th><?php echo _("District/County"); ?></th>
 									<th><?php echo _("Sample Type"); ?></th>
@@ -516,7 +516,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				<?php } ?>
 			],
 			"aaSorting": [
-				[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 11 : 10 ?>, "desc"]
+				[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 12 : 11 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
