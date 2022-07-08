@@ -30,7 +30,7 @@ $primaryKey = "eid_id";
 */
 $sampleCode = 'sample_code';
 
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'labName', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l_f.facility_name', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'labName', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -266,8 +266,8 @@ $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-echo $sQuery;
-die;
+// echo $sQuery;
+// die;
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 /* Data set length after filtering */
