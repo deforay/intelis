@@ -8,8 +8,9 @@ $general = new \Vlsm\Models\General();
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");
 
-$db->orderBy("login_attempted_datetime", "Desc");
+$db->orderBy("login_attempted_datetime", "DESC");
 $db->where("login_id", $_SESSION['loginId']);
+$db->orWhere('user_id', $_SESSION['userId']);
 $data = $db->get("user_login_history", 25);
 
 
@@ -107,7 +108,7 @@ $data = $db->get("user_login_history", 25);
         <table class="table table-striped table-bordered table-hover" id="loginAttempts">
           <thead>
             <tr>
-              
+
               <th>Login Attempt Date and Time</th>
               <th>Login ID</th>
               <th>IP Address</th>
@@ -123,7 +124,7 @@ $data = $db->get("user_login_history", 25);
 
             ?>
                 <tr>
-                  
+
                   <td><?php echo $general->humanDateFormat($project['login_attempted_datetime']); ?></td>
                   <td><?php echo $project['login_id']; ?></td>
                   <td><?php echo $project['ip_address']; ?></td>
@@ -134,16 +135,16 @@ $data = $db->get("user_login_history", 25);
               <?php
               }
               ?>
-          
-        <?php } else {
-        ?>
 
-          <tr>
-            <td class="center" colspan="6">No record found</td>
-          </tr>
-        <?php
+            <?php } else {
+            ?>
+
+              <tr>
+                <td class="center" colspan="6">No record found</td>
+              </tr>
+            <?php
             } ?>
-</tbody>
+          </tbody>
         </table>
       </div>
     </div>
