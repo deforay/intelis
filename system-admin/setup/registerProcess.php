@@ -10,7 +10,10 @@ $userName = $db->escape($_POST['username']);
 $emailId = $db->escape($_POST['email']);
 $loginId = $db->escape($_POST['loginid']);
 $password = $db->escape($_POST['password']);
-$userPassword = sha1($password . SYSTEM_CONFIG['passwordSalt']);
+
+$user = new \Vlsm\Models\Users();
+
+$userPassword = $user->passwordHash($password, $loginId);
 
 try {
     if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {

@@ -20,12 +20,10 @@ if ($fromApiTrue) {
 }
 
 try {
-    $password = sha1($_POST['password'] . SYSTEM_CONFIG['passwordSalt']);
-    $queryParams = array($password);
-    $admin = $db->rawQuery("SELECT * FROM user_details as ud WHERE ud.password = ?", $queryParams);
-    if (count($admin) > 0) {
-        $_SESSION['alertMsg'] = _("Your new password is too similar to your current password. Please try another password.");
-    } else if (trim($_POST['userName']) != '') {
+    
+    
+    
+    if (trim($_POST['userName']) != '') {
         if ($fromApiFalse) {
             $data = array(
                 'user_name' => $_POST['userName'],
@@ -39,7 +37,12 @@ try {
             $db = $db->where('user_name', $data['user_name']);
         } else {
             if (isset($_POST['password']) && trim($_POST['password']) != "") {
-
+                $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", array($userId));
+                if (password_verify($_POST['password'], $userRow['password'])) {
+                    $_SESSION['alertMsg'] = _("Your new password cannot be same as the current password. Please try another password.");
+                    header("location:editProfile.php");
+                }
+                
                 $newPassword = $userModel->passwordHash($db->escape($_POST['password']), $userId);
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {

@@ -66,9 +66,9 @@ try {
             $password = $db->escape($_POST['password']);
 
             /* Crosss Login Block Start */
-            if (empty($_GET) || empty($_GET['u']) || empty($_GET['t'])) {
-                $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
-            }
+            // if (empty($_GET) || empty($_GET['u']) || empty($_GET['t'])) {
+            //     $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
+            // }
 
             $ipaddress = '';
             if (isset($_SERVER['HTTP_CLIENT_IP'])) {
