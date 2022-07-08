@@ -6,8 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $userDb = new \Vlsm\Models\Users();
 $general = new \Vlsm\Models\General();
-$tableName = "user_details";
-$tableName2 = "user_facility_map";
+
+
 $userId = base64_decode($_POST['userId']);
 
 try {
@@ -52,25 +52,8 @@ try {
         }
 
         if (isset($_POST['password']) && trim($_POST['password']) != "") {
-            /* Check hash login id exist */
-            $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
-            $sha1protect = false;
-            $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm`, `password` FROM user_details WHERE `login_id` = ?";
-            $hashCheck = $db->rawQueryOne($hashCheckQuery, array($db->escape($_POST['userName'])));
-            if (isset($hashCheck) && !empty($hashCheck['user_id']) && !empty($hashCheck['hash_algorithm'])) {
-                if ($hashCheck['hash_algorithm'] == 'sha1') {
-                    $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
-                    $sha1protect = true;
-                }
-                if ($hashCheck['hash_algorithm'] == 'phb') {
-                    if (!password_verify($db->escape($_POST['password']), $hashCheck['password'])) {
-                        $_SESSION['alertMsg'] = _("Invalid password!");
-                        header("location:users.php");
-                    }
-                }
-            } else {
-                $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
-            }
+
+            $password = $userDb->passwordHash($db->escape($_POST['password']), $userId);
 
             /* Recency cross login block */
             if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {
@@ -88,19 +71,17 @@ try {
                 }
             }
             $data['password'] = $password;
-            /* Update Phb hash password */
-            if ($sha1protect) {
-                $data['password'] = $userDb->passwordHash($db->escape($_POST['password']), $userId);
-                $data['hash_algorithm'] = 'phb';
-            }
+            $data['hash_algorithm'] = 'phb';
             $data['force_password_reset'] = 1;
         }
 
         $db = $db->where('user_id', $userId);
-        //print_r($data);die;
-        $db->update($tableName, $data);
+        $db->update("user_details", $data);
+
+        // Deleting old mapping of user to facilities
         $db = $db->where('user_id', $userId);
-        $delId = $db->delete($tableName2);
+        $delId = $db->delete("user_facility_map");
+
         if ($userId != '' && trim($_POST['selectedFacility']) != '') {
             $selectedFacility = explode(",", $_POST['selectedFacility']);
             $uniqueFacilityId = array_unique($selectedFacility);
@@ -110,11 +91,11 @@ try {
                         'facility_id' => $uniqueFacilityId[$j],
                         'user_id' => $userId,
                     );
-                    $db->insert($tableName2, $data);
+                    $db->insert("user_facility_map", $data);
                 }
             }
         }
-        $_SESSION['alertMsg'] = _("User saved successfully!");
+        $_SESSION['alertMsg'] = _("User details updated successfully!");
 
         $userType = $general->getSystemConfig('sc_user_type');
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {

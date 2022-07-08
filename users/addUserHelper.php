@@ -24,9 +24,10 @@ try {
             'user_signature'        => $imageName,
             'force_password_reset'  => 1
         );
-        /* To update phb password */
+        
         $password = $userDb->passwordHash($db->escape($_POST['password']), $data['user_id']);
         $data['password'] = $password;
+        $data['hash_algorithm'] = 'phb';
 
         if (isset($_FILES['userSignature']['name']) && $_FILES['userSignature']['name'] != "") {
             if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
