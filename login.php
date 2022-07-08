@@ -161,7 +161,7 @@ function generate_token()
 						<input type="hidden" name="csrf_token" value="<?php echo generate_token(); ?>" />
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-							<input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter the user name'); ?>" onblur="checkNameValidation('user_login_history','login_id', this.id,'')">
+							<input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter the user name'); ?>" onblur="checkLoginAttempts('user_login_history','login_id', this.id,'')">
 						</div>
 
 						<div style="margin-bottom: 5px" class="input-group">
@@ -256,7 +256,7 @@ function generate_token()
 
 
 
-		function checkNameValidation(tableName, fieldName, id, fnct) {
+		function checkLoginAttempts(tableName, fieldName, id, fnct) {
 			if ($.trim($("#" + id).val()) != '') {
 				$.post("/check-login-id.php", {
 						tableName: tableName,

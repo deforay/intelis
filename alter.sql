@@ -3136,3 +3136,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 -- Thana 06-Jul-2022
 ALTER TABLE `user_details` ADD `hash_algorithm` VARCHAR(256) NOT NULL DEFAULT 'sha1' AFTER `app_access`;
+
+-- Amit 08-Jul-2022
+ALTER TABLE `user_login_history` CHANGE `login_id` `login_id` VARCHAR(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `user_login_history` ADD `user_id` VARCHAR(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `history_id`;
