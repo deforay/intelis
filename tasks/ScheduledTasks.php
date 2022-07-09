@@ -1,8 +1,6 @@
 <?php
 
-require_once(__DIR__ . DIRECTORY_SEPARATOR . '/../public/startup.php');
-
-//$logpath = APPLICATION_PATH . '/logs/scheduled-jobs.log';
+require_once(__DIR__ . '/../startup.php');
 
 $general = new \Vlsm\Models\General();
 $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');

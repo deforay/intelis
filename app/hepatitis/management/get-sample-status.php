@@ -2,7 +2,7 @@
 ob_start();
 
 // print_r("Prasath");die;
-$general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php
+$general = new \Vlsm\Models\General(); 
 $whereCondition = '';
 $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);

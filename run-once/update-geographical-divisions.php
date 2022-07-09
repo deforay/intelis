@@ -2,7 +2,7 @@
 
 // ini_set('memory_limit', -1);
 
-require_once(__DIR__ . DIRECTORY_SEPARATOR . '/../public/startup.php');
+require_once(__DIR__ . '/../startup.php');
 
 $general = new \Vlsm\Models\General();
 

@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . DIRECTORY_SEPARATOR . '/../public/startup.php');
+require_once(__DIR__ . '/../startup.php');
 
 $db = \MysqliDb::getInstance();
 

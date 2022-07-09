@@ -1,11 +1,13 @@
 {
     "name": "deforay/vlsm",
     "description": "Open Source LIS",
+    "homepage": "https://github.com/deforay/vlsm",
     "type": "project",
     "authors": [
         {
             "name": "Deforay",
-            "email": "hello@deforay.com"
+            "email": "hello@deforay.com",
+            "homepage": "https://deforay.com"
         }
     ],
     "require": {

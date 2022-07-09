@@ -48,12 +48,10 @@ $systemConfig['modules']['tb'] = false;
 
 ```apache
 <VirtualHost *:80>
-   DocumentRoot "/var/www/vlsm"
+   DocumentRoot "/var/www/vlsm/public"
    ServerName vlsm.example.org
 
-   <Directory "/var/www/vlsm">
-       php_value auto_prepend_file /var/www/vlsm/startup.php
-
+   <Directory "/var/www/vlsm/public">
        AddDefaultCharset UTF-8
        Options Indexes MultiViews FollowSymLinks
        AllowOverride All

@@ -1,7 +1,7 @@
 <?php
 //this file is get the data from remote db
 $data = json_decode(file_get_contents('php://input'), true);
-require_once(dirname(__FILE__) . "/../../startup.php");
+require_once(dirname(__FILE__) . "/../../../startup.php");
 
 $labId = $data['labName'];
 

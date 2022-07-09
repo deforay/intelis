@@ -6,7 +6,7 @@ $title = _("Covid-19 | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php
+$general = new \Vlsm\Models\General(); 
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
 

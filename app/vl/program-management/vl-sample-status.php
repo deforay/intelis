@@ -6,7 +6,7 @@ $title = _("VL | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php
+$general = new \Vlsm\Models\General(); 
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);

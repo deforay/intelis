@@ -1,7 +1,7 @@
 <?php
 //this file receives the lab results and updates in the remote db
 
-require_once(dirname(__FILE__) . "/../../startup.php");
+require_once(dirname(__FILE__) . "/../../../startup.php");
 
 $jsonResponse = file_get_contents('php://input');
 

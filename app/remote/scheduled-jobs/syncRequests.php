@@ -2,7 +2,7 @@
 //this file is get the value from remote and update in lab db
 
 //if (php_sapi_name() == 'cli') {
-require_once(dirname(__FILE__) . "/../../startup.php");
+    require_once(dirname(__FILE__) . "/../../../startup.php");
 //}
 
 $general = new \Vlsm\Models\General();

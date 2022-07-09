@@ -4,8 +4,8 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General(); // passing $db which is coming from startup.php
-$facilityDb = new \Vlsm\Models\Facilities(); // passing $db which is coming from startup.php
+$general = new \Vlsm\Models\General(); 
+$facilityDb = new \Vlsm\Models\Facilities(); 
 
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form' limit 1";
 $configFormResult = $db->rawQueryOne($configFormQuery);
