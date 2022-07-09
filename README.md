@@ -52,6 +52,9 @@ $systemConfig['modules']['tb'] = false;
    ServerName vlsm.example.org
 
    <Directory "/var/www/vlsm/public">
+       
+       SetEnv WEB_ROOT "/var/www/vlsm/public"
+       
        AddDefaultCharset UTF-8
        Options Indexes MultiViews FollowSymLinks
        AllowOverride All

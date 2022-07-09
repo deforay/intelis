@@ -30,19 +30,19 @@ if (php_sapi_name() !== 'cli') {
 defined('DOMAIN')
     || define('DOMAIN', $domain);
 
-defined('VLSM_ROOT')
-    || define('VLSM_ROOT', (getenv('VLSM_ROOT') ?
-        getenv('VLSM_ROOT') :
+defined('WEB_ROOT')
+    || define('WEB_ROOT', (getenv('WEB_ROOT') ?
+        getenv('WEB_ROOT') :
         realpath(__DIR__ . DIRECTORY_SEPARATOR . 'public')));
 
 defined('APPLICATION_PATH')
-    || define('APPLICATION_PATH', realpath(VLSM_ROOT . '/../app'));
+    || define('APPLICATION_PATH', realpath(WEB_ROOT . '/../app'));
 
 defined('UPLOAD_PATH')
-    || define('UPLOAD_PATH', VLSM_ROOT . DIRECTORY_SEPARATOR . 'uploads');
+    || define('UPLOAD_PATH', WEB_ROOT . DIRECTORY_SEPARATOR . 'uploads');
 
 defined('TEMP_PATH')
-    || define('TEMP_PATH', VLSM_ROOT . DIRECTORY_SEPARATOR . 'temporary');
+    || define('TEMP_PATH', WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary');
 
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ?

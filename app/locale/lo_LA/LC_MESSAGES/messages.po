@@ -6567,7 +6567,7 @@ msgid "Edit Role"
 msgstr "ຮຽບຮຽງບົດບາດ"
 
 #: roles/editRolesHelper.php:37
-msgid "Roles updated successfully"
+msgid "Role updated successfully"
 msgstr "ບົດ ບາດ ທີ່ ໄດ້ ຮັບ ການ ອັບ ເດດ ຢ່າງ ສໍາ ເລັດ ຜົນ"
 
 #: setup/index.php:11

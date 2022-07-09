@@ -95,7 +95,7 @@ try {
                 }
             }
         }
-        $_SESSION['alertMsg'] = _("User details updated successfully!");
+        $_SESSION['alertMsg'] = _("User updated successfully");
 
         $userType = $general->getSystemConfig('sc_user_type');
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {

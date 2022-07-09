@@ -72,7 +72,7 @@ if ($priInfo) {
 								<div class="form-group">
 									<label for="userName" class="col-lg-4 control-label"><?php echo _("Role Name");?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _('Role Name');?>" title="<?php echo _('Please enter user name');?>" value="<?php echo $roleInfo[0]['role_name']; ?>" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $roleInfo[0]['role_id']; ?>','<?php echo _("This role name that you entered already exists.Try another role name");?>',null)" />
+										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _('Role Name');?>" title="<?php echo _('Please enter a name for this role');?>" value="<?php echo $roleInfo[0]['role_name']; ?>" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $roleInfo[0]['role_id']; ?>','<?php echo _("This role name that you entered already exists.Try another role name");?>',null)" />
 										<input type="hidden" name="roleId" id="roleId" value="<?php echo base64_encode($roleInfo[0]['role_id']); ?>" />
 									</div>
 								</div>

@@ -57,7 +57,7 @@ $rInfo = $db->query($resourcesQuery);
 								<div class="form-group">
 									<label for="userName" class="col-lg-4 control-label"><?php echo _("Role Name");?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _('Role Name');?>" title="<?php echo _('Please enter user name');?>" onblur='checkNameValidation("roles","role_name",this,null,"<?php echo _("This role name that you entered already exists.Try another role name");?>",null)' />
+										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _('Role Name');?>" title="<?php echo _('Please enter a name for this role');?>" onblur='checkNameValidation("roles","role_name",this,null,"<?php echo _("This role name that you entered already exists.Try another role name");?>",null)' />
 									</div>
 								</div>
 							</div>
