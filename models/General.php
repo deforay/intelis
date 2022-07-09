@@ -193,7 +193,7 @@ class General
         $pQuery = "SELECT * FROM province_details WHERE province_code like ?";
         $pResult = $this->db->rawQueryOne($pQuery, array($code));
 
-        if ($pQuery) {
+        if ($pResult) {
             return $pResult['province_id'];
         } else {
             return null;

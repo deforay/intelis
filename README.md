@@ -67,7 +67,7 @@ $systemConfig['modules']['tb'] = false;
 
 Add the following in crontab (or equivalent for your Operating System)
 
-For eg. if using Ubuntu, in the terminal type : ```sudo EDITOR=gedit crontab -e```
+For e.g. if using Ubuntu, in the terminal type : ```sudo EDITOR=gedit crontab -e```
 
 At the end of the file, type this line :
 
@@ -77,7 +77,7 @@ At the end of the file, type this line :
 ```
 
 * Once you have the application set up, you can visit the vlsm URL http://vlsm.example.org/ and set up admin user
-* Once you login as admin user, add the Sample Types, Reasons for Testing, Rejection Reasons, Provinces etc. for each Test under the Admin menu 
+* Once you log in as admin user, add the Sample Types, Reasons for Testing, Rejection Reasons, Provinces etc. for each Test under the Admin menu 
 * Now you can start adding users, facilities, sample types etc. and complete the system config.
 
 

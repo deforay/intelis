@@ -396,6 +396,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name" ">
                                                 <option value="">-- Select --</option>
                                             </select>
+                                            </td>
                                             <th>Is Sample Rejected?</th>
                                             <td>
                                                 <select class=" form-control" name="isSampleRejected" id="isSampleRejected" title="Please select if the sample is rejected or not">

@@ -164,7 +164,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                             ?>
                                                                  <img src="/uploads/users-signature/<?php echo $userInfo['user_signature']; ?>" alt="Signature image">
                                                             <?php } else { ?>
-                                                                 <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+                                                                 <img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
                                                             <?php } ?>
                                                        </div>
                                                        <div>

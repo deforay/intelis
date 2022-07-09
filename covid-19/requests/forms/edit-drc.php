@@ -594,7 +594,8 @@ if (!empty($patientData)) {
                                                     if ($symptomId == 13) {
                                                         $diarrhée = "diarrhée";
                                                         $display = (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == "yes") ? "" : 'display:none;';
-                                                    } ?>
+                                                    }
+                                                    ?>
                                                     <tr class="row<?php echo $index; ?>">
                                                         <!-- <td style="display: flex;">
                                                             <label class="radio-inline" style="width:4%;margin-left:0;">

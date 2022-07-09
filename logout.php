@@ -15,7 +15,7 @@ $action = $_SESSION['userName'] . ' logged out';
 $resource = 'user';
 $general->activityLog($eventType, $action, $resource);
 
-// Unset all of the session variables.
+// Unset all the session variables.
 $_SESSION = array();
 
 if (ini_get("session.use_cookies")) {

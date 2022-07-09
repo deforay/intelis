@@ -94,4 +94,4 @@ sudo service apache2 restart
 
 ```sudo service apache2 restart```
 
-Finally use this link to install [Composer](https://getcomposer.org/download/)
+Finally, use this link to install [Composer](https://getcomposer.org/download/)

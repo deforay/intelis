@@ -61,7 +61,7 @@ foreach ($actions as $list) {
 							</td>
 							<td style=" display: contents; ">
 								<button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
-								<a href="/admin/monitoring/activity-log.php" class="btn btn-danger btn-sm" style=" margin-left: 15px; "><span><?php echo _("Clear"); ?></span></button>
+								<a href="/admin/monitoring/activity-log.php" class="btn btn-danger btn-sm" style=" margin-left: 15px; "><span><?php echo _("Clear"); ?></span></a>
 							</td>
 						</tr>
 					</table>

@@ -5,11 +5,11 @@ namespace Vlsm\Interop;
 
 class Dhis2
 {
-	private $dhis2url = "";
-	private $username = "";
-	private $password = "";
-	private $contentType = "application/json"; // can be 'application/xml' or 'application/json'
-	private $authenticated = false;
+	private string $dhis2url;
+    private string $username;
+    private string $password;
+    private string $contentType;
+	private bool $authenticated;
 
 
 	public function __construct($dhis2url, $username = "admin", $password = "district", $contentType = 'application/json')
@@ -26,7 +26,7 @@ class Dhis2
 		// Let us authenticate
 		//$urlParams[] = "authOnly=true";
 		$response = $this->get("/api/33/system/ping");
-		if ($response != false) {
+		if ($response) {
 			$this->authenticated  = true;
 			return $this;
 		} else {
@@ -35,8 +35,8 @@ class Dhis2
 		}
 	}
 
-	public function isAuthenticated()
-	{
+	public function isAuthenticated(): bool
+    {
 		return $this->authenticated;
 	}
 
@@ -216,16 +216,16 @@ class Dhis2
 		// curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
 		$return = curl_exec($ch);
-		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		//$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 
 		return $return;
 
-		if ($httpStatus === 200) {
-			return $return;
-		} else {
-			return false;
-		}
+//		if ($httpStatus === 200) {
+//			return $return;
+//		} else {
+//			return false;
+//		}
 	}
 
 	// Send POST request to DHIS2
@@ -255,11 +255,11 @@ class Dhis2
 		return $return;
 
 		
-		if ($httpStatus === 200 && !empty($return)) {
-			return $return;
-		} else {
-			return false;
-		}
+//		if ($httpStatus === 200 && !empty($return)) {
+//			return $return;
+//		} else {
+//			return false;
+//		}
 	}
 
 	// Send PUT request to DHIS2
@@ -276,7 +276,7 @@ class Dhis2
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . "{$path}{$urlParams}");
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: $this->getContentType()"));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:" . $this->getContentType()));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -309,7 +309,7 @@ class Dhis2
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . "{$path}{$urlParams}");
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: $this->getContentType()"));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: ". $this->getContentType()));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);

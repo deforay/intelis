@@ -474,7 +474,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											?>
 												<img src=".././uploads/facility-logo/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $facilityInfo['facility_logo']; ?>" alt="Logo image">
 											<?php } else { ?>
-												<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+												<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
 											<?php } ?>
 										</div>
 										<div>
@@ -507,7 +507,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											?>
 												<img src=".././uploads/facility-logo/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $facilityInfo['facility_logo']; ?>" alt="Logo image">
 											<?php } else { ?>
-												<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+												<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
 											<?php } ?>
 										</div>
 										<div>

@@ -72,7 +72,7 @@ ob_start();
                     <td style="display:none">
                       <div class="fileinput fileinput-new" data-provides="fileinput">
                         <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
-                          <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+                          <img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
                         </div>
                         <div>
                           <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>

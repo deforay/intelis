@@ -314,7 +314,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                         <th style="width:50%;"><label for="symptomDetected<?php echo $symptomId; ?>"><?php echo $symptomName; ?></label></th>
                                                         <td style="width:50%;">
                                                             <input name="symptomId[]" type="hidden" value="<?php echo $symptomId; ?>">
-                                                            <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhée; ?>" title="Please select the <?php echo $symptomName; ?>" style="width:100%">
+                                                            <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control" title="Please select the <?php echo $symptomName; ?>" style="width:100%">
                                                                 <option value="">-- Select --</option>
                                                                 <option value='yes'> Yes </option>
                                                                 <option value='no'> No </option>

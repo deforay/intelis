@@ -259,14 +259,14 @@ class Covid19
     }
     public function getCovid19SymptomsByFormId($c19Id, $allData = false)
     {
-        if (empty($c19Id)) {
+        if (!isset($c19Id) || empty($c19Id)) {
             return null;
         }
 
         $response = array();
 
         // Using this in sync requests/results
-        if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+        if (is_array($c19Id) && count($c19Id) > 0) {
             $results = $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
 
 
@@ -291,14 +291,14 @@ class Covid19
 
     public function getCovid19ComorbiditiesByFormId($c19Id, $allData = false)
     {
-        if (empty($c19Id)) {
+        if (!isset($c19Id) || empty($c19Id)) {
             return null;
         }
 
         $response = array();
 
         // Using this in sync requests/results
-        if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+        if (is_array($c19Id) && count($c19Id) > 0) {
 
             $results = $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             if ($allData) return $results;
@@ -320,14 +320,14 @@ class Covid19
 
     public function getCovid19ReasonsForTestingByFormId($c19Id, $allData = false)
     {
-        if (empty($c19Id)) {
+        if (!isset($c19Id) || empty($c19Id)) {
             return null;
         }
 
         $response = array();
 
         // Using this in sync requests/results
-        if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+        if (is_array($c19Id) && count($c19Id) > 0) {
             $results = $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             if ($allData) return $results;
             foreach ($results as $row) {
@@ -346,7 +346,7 @@ class Covid19
 
     public function getCovid19ReasonsDetailsForTestingByFormId($c19Id)
     {
-        if (empty($c19Id)) {
+        if (!isset($c19Id) || empty($c19Id)) {
             return null;
         }
         return $this->db->rawQueryOne("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ?", array($c19Id));

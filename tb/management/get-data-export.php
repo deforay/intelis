@@ -209,7 +209,7 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere = $sWhere . ' AND vl.specimen_type IN (' . $_POST['sampleType'] . ')';
 }
-/* Facility Id filter */
+/* Facility ID filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';
 }

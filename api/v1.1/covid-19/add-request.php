@@ -261,7 +261,7 @@ try {
             'source_of_alert_other'               => (!empty($data['sourceOfAlertPOE']) && $data['sourceOfAlertPOE'] == 'others') ? $data['alertPoeOthers'] : null,
             'funding_source'                      => !empty($data['fundingSource']) ? $data['fundingSource'] : null,
             'patient_id'                          => !empty($data['patientId']) ? $data['patientId'] : null,
-            'patient_name'                        => !empty($data['firstName']) ? (string)trim($data['firstName']) : null,
+            'patient_name'                        => !empty($data['firstName']) ? trim($data['firstName']) : null,
             'patient_surname'                     => !empty($data['lastName']) ? $data['lastName'] : null,
             'patient_dob'                         => !empty($data['patientDob']) ? $general->dateFormat($data['patientDob']) : null,
             'patient_gender'                      => !empty($data['patientGender']) ? $data['patientGender'] : null,

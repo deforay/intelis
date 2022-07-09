@@ -376,7 +376,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									<div class="col-lg-8">
 										<div class="fileinput fileinput-new labLogo" data-provides="fileinput">
 											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
-												<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+												<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
 											</div>
 											<div>
 												<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select image");?></span><span class="fileinput-exists"><?php echo _("Change");?></span>
@@ -397,7 +397,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									<div class="col-lg-8">
 										<div class="fileinput fileinput-new stampLogo" data-provides="fileinput">
 											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
-												<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+												<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
 											</div>
 											<div>
 												<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>

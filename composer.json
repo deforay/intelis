@@ -19,7 +19,13 @@
         "halaxa/json-machine": "^0.7.0",
         "lavary/crunz": "^3.0",
         "league/csv": "^9.0",
-        "aura/filter": "^2.3"
+        "aura/filter": "^2.3",
+        "ext-gd": "*",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "ext-gettext": "*",
+        "ext-openssl": "*",
+        "ext-fileinfo": "*"
     },
     "autoload": {
         "psr-4": {
