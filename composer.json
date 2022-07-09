@@ -25,14 +25,15 @@
         "ext-curl": "*",
         "ext-gettext": "*",
         "ext-openssl": "*",
-        "ext-fileinfo": "*"
+        "ext-fileinfo": "*",
+        "laminas/laminas-diactoros": "^2.13"
     },
     "autoload": {
         "psr-4": {
-            "Vlsm\\Models\\": "models/",
-            "Vlsm\\Interop\\": "interop/",
-            "Vlsm\\Helpers\\": "helpers/",
-            "Vlsm\\Utilities\\": "utilities/"
+            "Vlsm\\Models\\": "app/models/",
+            "Vlsm\\Interop\\": "app/interop/",
+            "Vlsm\\Helpers\\": "app/helpers/",
+            "Vlsm\\Utilities\\": "app/utilities/"
         }
     }
 }

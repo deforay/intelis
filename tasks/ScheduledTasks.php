@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . "/../startup.php");
+require_once(__DIR__ . DIRECTORY_SEPARATOR . '/../public/startup.php');
 
 //$logpath = APPLICATION_PATH . '/logs/scheduled-jobs.log';
 
@@ -10,8 +10,6 @@ $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 $timeZone = $_SESSION['APP_TIMEZONE'];
 
 $schedule = new \Crunz\Schedule();
-
-
 
 // DB Backup
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/db-backups.php")
