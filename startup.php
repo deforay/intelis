@@ -36,7 +36,7 @@ defined('VLSM_ROOT')
         realpath(__DIR__ . DIRECTORY_SEPARATOR . 'public')));
 
 defined('APPLICATION_PATH')
-    || define('APPLICATION_PATH', realpath(__DIR__ . '/app'));
+    || define('APPLICATION_PATH', realpath(VLSM_ROOT . '/../app'));
 
 defined('UPLOAD_PATH')
     || define('UPLOAD_PATH', VLSM_ROOT . DIRECTORY_SEPARATOR . 'uploads');

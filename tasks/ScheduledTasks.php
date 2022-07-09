@@ -10,7 +10,7 @@ $timeZone = $_SESSION['APP_TIMEZONE'];
 $schedule = new \Crunz\Schedule();
 
 // DB Backup
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/db-backups.php")
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/db-backups.php")
     ->everySixHours()
     ->timezone($timeZone)
     ->preventOverlapping()
@@ -18,14 +18,14 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/db-
 
 
 // Cleanup Old Files
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/cleanup.php")
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/cleanup.php")
     ->cron('0 */12 * * *')
     ->timezone($timeZone)
     ->preventOverlapping()
     ->description('Cleaning Up Old Backups and Temporary files');
 
 // Expiring/Locking Samples
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/update-sample-status.php")
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/update-sample-status.php")
     ->everySixHours()
     ->timezone($timeZone)
     ->preventOverlapping()
@@ -35,7 +35,7 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/upd
 
 // MACHINE INTERFACING
 if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled'] == true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/interface.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/interface.php")
         ->everyMinute()
         ->timezone($timeZone)
         ->preventOverlapping()
@@ -43,7 +43,7 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacin
 }
 
 // UPDATE VL RESULT INTERPRETATION
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-vl-suppression.php")
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/update-vl-suppression.php")
     ->everyMinute()
     ->timezone($timeZone)
     ->preventOverlapping()
@@ -77,7 +77,7 @@ if (!empty(SYSTEM_CONFIG['remoteURL'])) {
 // DASHBOARD JOBS START
 
 if (!empty($vldashboardUrl)) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-reference-tables.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/vldashboard/vldashboard-reference-tables.php")
         ->cron('*/20 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
@@ -86,7 +86,7 @@ if (!empty($vldashboardUrl)) {
 
 
 if (!empty($vldashboardUrl) && !empty(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-vl.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/vldashboard/vldashboard-vl.php")
         ->cron('*/25 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
@@ -94,14 +94,14 @@ if (!empty($vldashboardUrl) && !empty(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_
 }
 
 if (!empty($vldashboardUrl) && !empty(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-eid.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/vldashboard/vldashboard-eid.php")
         ->cron('*/30 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing EID data from local database to Dashboard');
 }
 if (!empty($vldashboardUrl) && !empty(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-covid19.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/vldashboard/vldashboard-covid19.php")
         ->cron('*/35 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()

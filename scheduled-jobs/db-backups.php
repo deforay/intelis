@@ -13,7 +13,7 @@ if (!is_dir($backupFolder)) {
 }
 $randomString = $general->generateRandomString(6);
 $baseFileName = 'vlsm-' . date("dmYHis") . '-' . $randomString . '.sql';
-$password = md5(SYSTEM_CONFIG['dbPassword'] . $randomString);
+$password = hash('sha1', SYSTEM_CONFIG['dbPassword'] . $randomString);
 
 try {
     exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['dbUser'] . ' --password="' . SYSTEM_CONFIG['dbPassword'] . '" --host=' . SYSTEM_CONFIG['dbHost'] . ' --port=' . SYSTEM_CONFIG['dbPort'] . ' --databases ' . SYSTEM_CONFIG['dbName'] . '  > ' . $baseFileName);
@@ -22,7 +22,7 @@ try {
 
     if (isset(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled'] == true) {
         $baseFileName = 'interfacing-' . date("dmYHis") . '-' . $randomString . '.sql';
-        $password = md5(SYSTEM_CONFIG['interfacing']['dbPassword'] . $randomString);
+        $password = hash('sha1', SYSTEM_CONFIG['interfacing']['dbPassword'] . $randomString);
         exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['interfacing']['dbUser'] . ' --password="' . SYSTEM_CONFIG['interfacing']['dbPassword'] . '" --host=' . SYSTEM_CONFIG['interfacing']['dbHost'] . ' --port=' . SYSTEM_CONFIG['interfacing']['dbPort'] . ' --databases ' . SYSTEM_CONFIG['interfacing']['dbName'] . '  > ' . $baseFileName);
         exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
     }
