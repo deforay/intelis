@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 if (isset($_SESSION['userId'])) {
-	header("location:dashboard/index.php");
+	header("location:/dashboard/index.php");
 }
 $general = new \Vlsm\Models\General();
 // If there are NO users, then we need to register the admin user
@@ -16,14 +16,6 @@ if ($count == 0) {
 $general = new \Vlsm\Models\General();
 
 $globalConfigResult = $general->getGlobalConfig();
-// //system config
-// $systemConfigQuery = "SELECT * from system_config";
-// $systemConfigResult = $db->query($systemConfigQuery);
-// $sarr = array();
-// // now we create an associative array so that we can easily create view variables
-// for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-//   $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-// }
 
 if (isset(SYSTEM_CONFIG['instanceName']) && !empty(SYSTEM_CONFIG['instanceName'])) {
 	$systemType = SYSTEM_CONFIG['instanceName'];
@@ -79,15 +71,15 @@ function generate_token()
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
 	<?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') { ?>
-		<link rel="apple-touch-icon" sizes="180x180" href="/vlsts-icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/vlsts-icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/vlsts-icons/favicon-16x16.png">
-		<link rel="manifest" href="/vlsts-icons/site.webmanifest">
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsts-icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsts-icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsts-icons/favicon-16x16.png">
+		<link rel="manifest" href="/assets/vlsts-icons/site.webmanifest">
 	<?php } else { ?>
-		<link rel="apple-touch-icon" sizes="180x180" href="/vlsm-icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/vlsm-icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/vlsm-icons/favicon-16x16.png">
-		<link rel="manifest" href="/vlsm-icons/site.webmanifest">
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsm-icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsm-icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsm-icons/favicon-16x16.png">
+		<link rel="manifest" href="/assets/vlsm-icons/site.webmanifest">
 	<?php } ?>
 
 
@@ -258,7 +250,7 @@ function generate_token()
 
 		function checkLoginAttempts(tableName, fieldName, id, fnct) {
 			if ($.trim($("#" + id).val()) != '') {
-				$.post("/check-login-id.php", {
+				$.post("/login/check-login-id.php", {
 						tableName: tableName,
 						fieldName: fieldName,
 						value: $("#" + id).val(),

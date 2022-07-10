@@ -20,7 +20,7 @@ if ($_POST["csrf_token"] != $_SESSION["csrf_token"]) {
     unset($_SESSION["csrf_token"]);
     $_SESSION['alertMsg'] = _("Request expired. Please try to login again.");
     unset($_SESSION);
-    header("location:/login.php");
+    header("location:/login/login.php");
 }
 //$dashboardUrl = $general->getGlobalConfig('vldashboard_url');
 /* Crosss Login Block Start */
@@ -106,7 +106,7 @@ try {
                 if (!isset($_POST['captcha']) || empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode']) {
                     $user->userHistoryLog($userName, 'failed');
                     $_SESSION['alertMsg'] = _("You have exhausted maximum number of login attempts. Please retry login after sometime.");
-                    header("location:/login.php");
+                    header("location:/login/login.php");
                 }
             }
 
@@ -180,7 +180,7 @@ try {
                         $redirect = $userRow['landing_page'];
                     } else {
                         $fileNameList = array('index.php', 'addVlRequest.php', 'vlRequest.php', 'batchcode.php', 'vlRequestMail.php', 'addImportResult.php', 'vlPrintResult.php', 'vlTestResult.php', 'vl-sample-status.php', 'vl-export-data.php', 'highViralLoad.php', 'roles.php', 'users.php', 'facilities.php', 'globalConfig.php', 'importConfig.php');
-                        $fileName = array('dashboard/index.php', '/vl/requests/addVlRequest.php', '/vl/requests/vlRequest.php', '/vl/batch/batchcode.php', 'mail/vlRequestMail.php', 'import-result/addImportResult.php', '/vl/results/vlPrintResult.php', '/vl/results/vlTestResult.php', 'program-management/vl-sample-status.php', 'program-management/vl-export-data.php', 'program-management/highViralLoad.php', 'roles/roles.php', 'users/$user.php', 'facilities/facilities.php', 'global-config/globalConfig.php', 'import-configs/importConfig.php');
+                        $fileName = array('/dashboard/index.php', '/vl/requests/addVlRequest.php', '/vl/requests/vlRequest.php', '/vl/batch/batchcode.php', 'mail/vlRequestMail.php', 'import-result/addImportResult.php', '/vl/results/vlPrintResult.php', '/vl/results/vlTestResult.php', 'program-management/vl-sample-status.php', 'program-management/vl-export-data.php', 'program-management/highViralLoad.php', 'roles/roles.php', 'users/$user.php', 'facilities/facilities.php', 'global-config/globalConfig.php', 'import-configs/importConfig.php');
                         foreach ($fileNameList as $redirectFile) {
                             if (in_array($redirectFile, $priId)) {
                                 $arrIndex = array_search($redirectFile, $fileNameList);
@@ -210,7 +210,7 @@ try {
         }
     }
 } catch (Exception $exc) {
-    header("location:/login.php");
+    header("location:/login/login.php");
     $_SESSION['alertMsg'] = _("Please check your login credentials");
     error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
     error_log($exc->getTraceAsString());

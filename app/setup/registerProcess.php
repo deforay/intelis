@@ -32,7 +32,7 @@ try {
         $db->insert($tableName, $insertData);
         $_SESSION['alertMsg'] = "New User Added successfully";
     }
-    header("location:/login.php");
+    header("location:/login/login.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

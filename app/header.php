@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($_SESSION['userId'])) {
-	header("location:/login.php");
+	header("location:/login/login.php");
 } else if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
 	$_SESSION['alertMsg'] = _("Please change your password to proceed.");
 	if (strpos($_SERVER['REQUEST_URI'], "editProfile.php") == false) {
@@ -166,15 +166,15 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<meta name="viewport" content="width=1024">
 
 	<?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') { ?>
-		<link rel="apple-touch-icon" sizes="180x180" href="/vlsts-icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/vlsts-icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/vlsts-icons/favicon-16x16.png">
-		<link rel="manifest" href="/vlsts-icons/site.webmanifest">
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsts-icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsts-icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsts-icons/favicon-16x16.png">
+		<link rel="manifest" href="/assets/vlsts-icons/site.webmanifest">
 	<?php } else { ?>
-		<link rel="apple-touch-icon" sizes="180x180" href="/vlsm-icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/vlsm-icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/vlsm-icons/favicon-16x16.png">
-		<link rel="manifest" href="/vlsm-icons/site.webmanifest">
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsm-icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsm-icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsm-icons/favicon-16x16.png">
+		<link rel="manifest" href="/assets/vlsm-icons/site.webmanifest">
 	<?php } ?>
 
 
@@ -327,7 +327,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									<a href="/users/editProfile.php" class=""><?php echo _("Edit Profile"); ?></a>
 								</li>
 								<li class="user-footer <?php echo $alignRight; ?>">
-									<a href="/logout.php"><?php echo _("Sign out"); ?></a>
+									<a href="/login/logout.php"><?php echo _("Sign out"); ?></a>
 								</li>
 
 							</ul>

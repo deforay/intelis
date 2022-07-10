@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($_SESSION['userId'])) {
-    header("Location:/login.php");
+    header("location:/login/login.php");
 }
 
 if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {

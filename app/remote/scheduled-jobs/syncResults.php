@@ -13,7 +13,7 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 }
 // Checking internet connection is avialable or not
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
-$headers = @get_headers($remoteUrl . '/vlsts-icons/favicon-16x16.png');
+$headers = @get_headers($remoteUrl . '/assets/vlsts-icons/favicon-16x16.png');
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
     return false;

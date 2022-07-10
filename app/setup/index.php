@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $count = $db->getValue("user_details", "count(*)");
 if ($count != 0) {
-  header("location:/login.php");
+  header("location:/login/login.php");
 }
 
 $shortName = _('Lab Sample Management System');
@@ -29,15 +29,15 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
   <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') { ?>
-    <link rel="apple-touch-icon" sizes="180x180" href="/vlsts-icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/vlsts-icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/vlsts-icons/favicon-16x16.png">
-    <link rel="manifest" href="/vlsts-icons/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsts-icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsts-icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsts-icons/favicon-16x16.png">
+    <link rel="manifest" href="/assets/vlsts-icons/site.webmanifest">
   <?php } else { ?>
-    <link rel="apple-touch-icon" sizes="180x180" href="/vlsm-icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/vlsm-icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/vlsm-icons/favicon-16x16.png">
-    <link rel="manifest" href="/vlsm-icons/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsm-icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsm-icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsm-icons/favicon-16x16.png">
+    <link rel="manifest" href="/assets/vlsm-icons/site.webmanifest">
   <?php } ?>
 
 
