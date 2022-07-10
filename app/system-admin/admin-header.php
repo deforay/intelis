@@ -22,7 +22,7 @@ if (!isset($_SESSION['adminUserId'])) {
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />
 
-  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.1.11.0.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui-timepicker-addon.css" />
 
   <!-- Bootstrap 3.3.6 -->
@@ -54,7 +54,7 @@ if (!isset($_SESSION['adminUserId'])) {
 
   <!-- Latest compiled and minified JavaScript -->
 
-  <script type="text/javascript" src="/assets/js/jquery-ui.1.11.0.js"></script>
+  <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
   <script src="/assets/js/deforayModal.js"></script>
   <script src="/assets/js/jquery.fastconfirm.js"></script>
   <!--<script type="text/javascript" src="assets/js/jquery-ui-sliderAccess.js"></script>-->

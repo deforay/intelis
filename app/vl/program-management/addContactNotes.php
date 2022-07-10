@@ -1,4 +1,4 @@
-  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.1.11.0.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
   <!-- Bootstrap 3.3.6 -->
   <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
   <!-- Font Awesome -->
@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
   <link href="/assets/css/deforayModal.css" rel="stylesheet" />
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-  <script type="text/javascript" src="/assets/js/jquery-ui.1.11.0.js"></script>
+  <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
   <script src="/assets/js/deforayModal.js"></script>
   <?php
   ob_start();
