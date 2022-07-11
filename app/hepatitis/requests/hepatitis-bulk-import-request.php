@@ -5,7 +5,7 @@ $title = "Bulk Import Test Requests";
 require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $countryFormId = $general->getGlobalConfig('vl_form');
-$fileName = APPLICATION_PATH. DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'covid-19' . DIRECTORY_SEPARATOR . $countryFormId . DIRECTORY_SEPARATOR . 'Covid19_Bulk_Import_Excel_Format.xlsx';
+$fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'covid-19' . DIRECTORY_SEPARATOR . $countryFormId . DIRECTORY_SEPARATOR . 'Covid19_Bulk_Import_Excel_Format.xlsx';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -20,7 +20,7 @@ $fileName = APPLICATION_PATH. DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATO
 
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -47,10 +47,10 @@ $fileName = APPLICATION_PATH. DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATO
                           </div>
                         </div>
                       </div>
-                      <?php if(file_exists($fileName)) {?>
-                      <div class="col-md-6">
-                        <a href="<?php echo "/files/covid-19/{$countryFormId}/Covid19_Bulk_Import_Excel_Format.xlsx"; ?>" target="_blank" class="btn btn-sm btn-primary" download><i class="fa-solid fa-download"></i> Download Example Format</a>
-                      </div>
+                      <?php if (file_exists($fileName)) { ?>
+                        <div class="col-md-6">
+                          <a href="<?php echo "/files/covid-19/{$countryFormId}/Covid19_Bulk_Import_Excel_Format.xlsx"; ?>" target="_blank" class="btn btn-sm btn-primary" download><i class="fa-solid fa-download"></i> Download Example Format</a>
+                        </div>
                       <?php } ?>
                     </div>
                   </div>
