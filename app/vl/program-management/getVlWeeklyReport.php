@@ -59,8 +59,8 @@ if (isset($_POST['iSortCol_0'])) {
          * word by word on any field. It's possible to do here, but concerned about efficiency
          * on very large tables, and MySQL's regex functionality is very limited
         */
-
-$sWhere = " WHERE vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";
+$sWhere = array();
+$sWhere[] = " WHERE vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $searchArray = explode(" ", $_POST['sSearch']);
   $sWhereSub = "";
@@ -81,16 +81,16 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     }
     $sWhereSub .= ")";
   }
-  $sWhere .= $sWhereSub;
+  $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
   if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-    if ($sWhere == "") {
-      $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+    if (count($sWhere) == 0) {
+      $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     } else {
-      $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+      $sWhere[] = " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
   }
 }
@@ -174,23 +174,28 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   if (trim($start_date) == trim($end_date)) {
-    $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
+    $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
   } else {
-    $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+    $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
   }
 }
 
 
 if (isset($_POST['lab']) && trim($_POST['lab']) != '') {
-  $sWhere = $sWhere . " AND vl.lab_id IN (" . $_POST['lab'] . ")";
+  $sWhere[] =  " vl.lab_id IN (" . $_POST['lab'] . ")";
 }
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
   if (!empty($facilityMap)) {
-    $sWhere = $sWhere . " AND vl.facility_id IN (" . $facilityMap . ")";
+    $sWhere[] =  " vl.facility_id IN (" . $facilityMap . ")";
   }
 }
 
+if (isset($sWhere) && sizeof($sWhere) > 0) {
+  $sQuery = $sQuery .' '. implode(" AND ", $sWhere);
+}
+
+echo $sQuery;
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY vl.lab_id, vl.facility_id';
 
