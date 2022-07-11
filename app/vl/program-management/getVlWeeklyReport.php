@@ -192,10 +192,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-  $sQuery = $sQuery .' '. implode(" AND ", $sWhere);
+  $sWhere = implode(" AND ", $sWhere);
 }
 
-echo $sQuery;
+
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY vl.lab_id, vl.facility_id';
 
