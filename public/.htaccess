@@ -1,0 +1,69 @@
+Options -Indexes
+
+Header always edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
+Header set X-Content-Type-Options "nosniff"
+
+Header set Access-Control-Allow-Origin "*"
+
+<IfModule mod_headers.c>
+  # Serve brotli compressed CSS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} br
+  RewriteCond %{REQUEST_FILENAME}\.br -s
+  RewriteRule ^(.*)\.css $1\.css\.br [QSA]
+
+  # Serve gzip compressed CSS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}\.gz -s
+  RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
+
+  # Serve brotli compressed JS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} br
+  RewriteCond %{REQUEST_FILENAME}\.br -s
+  RewriteRule ^(.*)\.js $1\.js\.br [QSA]
+
+  # Serve gzip compressed JS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}\.gz -s
+  RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
+
+  # Serve correct content types, and prevent mod_deflate double gzip.
+  RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
+  RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
+  RewriteRule \.css\.br$ - [T=text/css,E=no-gzip:1]
+  RewriteRule \.js\.br$ - [T=text/javascript,E=no-gzip:1]
+
+  <FilesMatch "(\.js\.gz|\.css\.gz)$">
+    # Serve correct encoding type.
+    Header set Content-Encoding gzip
+    # Force proxies to cache gzipped & non-gzipped css/js files separately.
+    Header append Vary Accept-Encoding
+  </FilesMatch>
+  <FilesMatch "(\.js\.br|\.css\.br)$">
+    # Serve correct encoding type.
+    Header set Content-Encoding br
+    # Force proxies to cache gzipped & non-gzipped css/js files separately.
+    Header append Vary Accept-Encoding
+  </FilesMatch>
+</IfModule>
+
+<FilesMatch ".(perl|py|htaccess|htpasswd|ini|psd|log|sh|json|lock|phar|yml|md|sql|zip|hgignore|hg|hgtags|DS_Store)$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+RewriteEngine On
+# The following rule tells Apache that if the requested filename
+# exists, simply serve it.
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+# The following rewrites all other queries to index.php. The 
+# condition ensures that if you are using Apache aliases to do
+# mass virtual hosting, the base path will be prepended to 
+# allow proper resolution of the index.php file; it will work
+# in non-aliased environments as well, providing a safe, one-size 
+# fits all solution.
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
+RewriteRule ^(.*) - [E=BASE:%1]
+RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]

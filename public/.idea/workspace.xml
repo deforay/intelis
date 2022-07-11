@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SCOPE_TYPE" value="3" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2f451e59-0259-492c-8197-740fad0fa9a3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ubuntu-Setup.md" beforeDir="false" afterPath="$PROJECT_DIR$/Ubuntu-Setup.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addInstanceDetails.php" beforeDir="false" afterPath="$PROJECT_DIR$/addInstanceDetails.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/monitoring/activity-log.php" beforeDir="false" afterPath="$PROJECT_DIR$/admin/monitoring/activity-log.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/v1.1/covid-19/add-request.php" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1.1/covid-19/add-request.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/plugins/datatables/jquery.dataTables.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/plugins/datatables/jquery.dataTables.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/config.interop.dist.php" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.interop.dist.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/covid-19/requests/forms/add-png.php" beforeDir="false" afterPath="$PROJECT_DIR$/covid-19/requests/forms/add-png.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/covid-19/requests/forms/edit-drc.php" beforeDir="false" afterPath="$PROJECT_DIR$/covid-19/requests/forms/edit-drc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eid/requests/forms/add-southsudan.php" beforeDir="false" afterPath="$PROJECT_DIR$/eid/requests/forms/add-southsudan.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facilities/addFacility.php" beforeDir="false" afterPath="$PROJECT_DIR$/facilities/addFacility.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facilities/editFacility.php" beforeDir="false" afterPath="$PROJECT_DIR$/facilities/editFacility.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/global-config/editGlobalConfig.php" beforeDir="false" afterPath="$PROJECT_DIR$/global-config/editGlobalConfig.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import-configs/vl/abbott-angola.php" beforeDir="false" afterPath="$PROJECT_DIR$/import-configs/vl/abbott-angola.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interop/Dhis2.php" beforeDir="false" afterPath="$PROJECT_DIR$/interop/Dhis2.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logout.php" beforeDir="false" afterPath="$PROJECT_DIR$/logout.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/Covid19.php" beforeDir="false" afterPath="$PROJECT_DIR$/models/Covid19.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/General.php" beforeDir="false" afterPath="$PROJECT_DIR$/models/General.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system-admin/admin-footer.php" beforeDir="false" afterPath="$PROJECT_DIR$/system-admin/admin-footer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tb/management/get-data-export.php" beforeDir="false" afterPath="$PROJECT_DIR$/tb/management/get-data-export.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/addUser.php" beforeDir="false" afterPath="$PROJECT_DIR$/users/addUser.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/editUser.php" beforeDir="false" afterPath="$PROJECT_DIR$/users/editUser.php" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/aranyasen/hl7" />
+      <path value="$PROJECT_DIR$/vendor/setasign/fpdi" />
+      <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/myclabs/php-enum" />
+      <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/vendor/tecnickcom/tcpdf" />
+      <path value="$PROJECT_DIR$/vendor/egulias/email-validator" />
+      <path value="$PROJECT_DIR$/vendor/maennchen/zipstream-php" />
+      <path value="$PROJECT_DIR$/vendor/webmozart/assert" />
+      <path value="$PROJECT_DIR$/vendor/psr/event-dispatcher" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/vendor/dragonmantank/cron-expression" />
+      <path value="$PROJECT_DIR$/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-normalizer" />
+      <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/vendor/symfony/dependency-injection" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php81" />
+      <path value="$PROJECT_DIR$/vendor/symfony/service-contracts" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/vendor/symfony/lock" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/config" />
+      <path value="$PROJECT_DIR$/vendor/symfony/string" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mailer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mime" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/yaml" />
+      <path value="$PROJECT_DIR$/vendor/phpoffice/phpspreadsheet" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php72" />
+      <path value="$PROJECT_DIR$/vendor/symfony/filesystem" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php73" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-idn" />
+      <path value="$PROJECT_DIR$/vendor/thingengineer/mysqli-database-class" />
+      <path value="$PROJECT_DIR$/vendor/symfony/process" />
+      <path value="$PROJECT_DIR$/vendor/markbaker/matrix" />
+      <path value="$PROJECT_DIR$/vendor/markbaker/complex" />
+      <path value="$PROJECT_DIR$/vendor/halaxa/json-machine" />
+      <path value="$PROJECT_DIR$/vendor/aura/filter" />
+      <path value="$PROJECT_DIR$/vendor/phpmailer/phpmailer" />
+      <path value="$PROJECT_DIR$/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/vendor/league/csv" />
+      <path value="$PROJECT_DIR$/vendor/laravel/serializable-closure" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/lavary/crunz" />
+    </include_path>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectId" id="2BhCaDLPaoPa6xoh8ktYOvouMeE" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/amitdugar/Sites/localhost/vlsm",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2f451e59-0259-492c-8197-740fad0fa9a3" name="Changes" comment="" />
+      <created>1657348991311</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1657348991311</updated>
+      <workItem from="1657348993821" duration="1122000" />
+      <workItem from="1657350172339" duration="1535000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="hg4idea.settings">
+    <option name="RECENT_HG_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+</project>
