@@ -3140,3 +3140,6 @@ ALTER TABLE `user_details` ADD `hash_algorithm` VARCHAR(256) NOT NULL DEFAULT 's
 -- Amit 08-Jul-2022
 ALTER TABLE `user_login_history` CHANGE `login_id` `login_id` VARCHAR(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 ALTER TABLE `user_login_history` ADD `user_id` VARCHAR(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `history_id`;
+
+-- Amit 11-Jul-2022 version 5.0.0
+UPDATE `system_config` SET `value` = '5.0.0' WHERE `system_config`.`name` = 'sc_version';
