@@ -133,7 +133,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.result_dispatched_datetime,	
                         vl.result_printed_datetime,	
                         vl.result_status,
-                        s.sample_name,
+                        UPPER(s.sample_name) as sample_name,
                         b.batch_code,
                         ts.status_name,
                         f.facility_name,

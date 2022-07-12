@@ -4,6 +4,8 @@
 
 use League\Csv\Reader;
 
+$general = new \Vlsm\Models\General();
+
 try {
 
     $db = $db->where('imported_by', $_SESSION['userId']);
@@ -62,31 +64,35 @@ try {
         $infoFromFile = array();
         foreach ($reader as $offset => $record) {
             //$newRow = array();
+            //$sampleCode = null;
             foreach ($record as $o => $v) {
-                //echo "<pre>";var_dump($record);echo "</pre><br><br><br>";
-                $v = preg_replace('/[[:cntrl:]]/', '',  $v);
+
+                $v = $general->removeCntrlCharsAndEncode($v, true);
+                // echo "<pre>";
+                // var_dump(($v));
+                // echo "</pre><br><br><br>";
                 if ($v == "End Time" || $v == "Heure de fin") {
-                    $testedOn = preg_replace('/[[:cntrl:]]/', '',  $record[1]);
+                    $testedOn = $general->removeCntrlCharsAndEncode($record[1], true);
                     $testedOn = date('Y-m-d H:i', strtotime($testedOn));
                 } elseif ($v == "User" || $v == 'Utilisateur') {
-                    $testedBy = preg_replace('/[[:cntrl:]]/', '',  $record[1]);
+                    $testedBy = $general->removeCntrlCharsAndEncode($record[1], true);
                 } else if ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
                     $sampleCode = null;
                 } else if ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
-                    $sampleCode = preg_replace('/[[:cntrl:]]/', '',  $record[1]);
+                    $sampleCode = $general->removeCntrlCharsAndEncode($record[1], true);
                     if (empty($sampleCode)) continue;
                     $infoFromFile[$sampleCode]['sampleCode'] = $sampleCode;
                     $infoFromFile[$sampleCode]['testedOn'] = $testedOn;
                     $infoFromFile[$sampleCode]['testedBy'] = $testedBy;
                 } else if ($v == "Assay" || $v == "Test") {
                     if (empty($sampleCode)) continue;
-                    $infoFromFile[$sampleCode]['assay'] = preg_replace('/[[:cntrl:]]/', '',  $record[1]);
+                    $infoFromFile[$sampleCode]['assay'] = $general->removeCntrlCharsAndEncode($record[1], true);
                 } else if ($v == "Test Result" || $v == "Résultat du test") {
                     if (empty($sampleCode)) continue;
-                    $parsedResult = (str_replace("SARS-CoV-2 ", "", preg_replace('/[[:cntrl:]]/', '',  $record[1])));
-                    if($parsedResult == 'NÉGATIF' || $parsedResult == 'NÉGATIVE'){
+                    $parsedResult = (str_replace("SARS-COV-2 ", "", strtoupper($general->removeCntrlCharsAndEncode($record[1], true))));
+                    if ($parsedResult == 'NEGATIVE' || $parsedResult == 'NÉGATIF' || $parsedResult == 'NÉGATIVE') {
                         $parsedResult = 'negative';
-                    }else if($parsedResult == 'POSITIF' || $parsedResult == 'POSITIVE'){
+                    } else if ($parsedResult == 'POSITIVE' || $parsedResult == 'POSITIF') {
                         $parsedResult = 'positive';
                     }
                     $infoFromFile[$sampleCode]['result'] = strtolower($parsedResult);
@@ -96,7 +102,9 @@ try {
         }
 
 
-        // echo "<pre>";var_dump($infoFromFile);echo "</pre>";
+        // echo "<pre>";
+        // var_dump($infoFromFile);
+        // echo "</pre>";
         // die;
         $inc = 0;
         foreach ($infoFromFile as $sampleCode => $d) {
@@ -131,8 +139,10 @@ try {
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
-            $query = "SELECT facility_id,covid19_id,result from form_covid19 where sample_code='" . $sampleCode . "'";
-            $vlResult = $db->rawQuery($query);
+            $query = "SELECT facility_id,covid19_id,result 
+                        FROM form_covid19 
+                            WHERE sample_code= ?";
+            $vlResult = $db->rawQuery($query, array($sampleCode));
 
             if (!empty($vlResult) && !empty($sampleCode)) {
                 if ($vlResult[0]['result'] != null && !empty($vlResult[0]['result'])) {

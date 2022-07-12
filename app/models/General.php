@@ -33,7 +33,7 @@ class General
 
     public function escape($inputArray, $db)
     {
-        foreach($inputArray as $key => $value) {
+        foreach ($inputArray as $key => $value) {
             $inputArray[$key] = $db->escape($value);
         }
 
@@ -817,5 +817,18 @@ class General
     public function fileExists($filePath)
     {
         return (file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+    }
+
+
+    // This function removes control characters from the strings in the CSV file.
+    // https://en.wikipedia.org/wiki/Control_character#ASCII_control_characters
+    // Also checks UTF-8 encoding and converts if needed
+    public function removeCntrlCharsAndEncode($inputString, $encodeToUTF8 = true): string
+    {
+        $inputString = preg_replace('/[[:cntrl:]]/', '',  $inputString);
+        if ($encodeToUTF8 && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
+            $inputString = utf8_encode($inputString);
+        }
+        return $inputString;
     }
 }

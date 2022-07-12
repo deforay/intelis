@@ -1,7 +1,6 @@
 <?php
 ob_start();
 
-
 $title = "Add New Specimen Referral Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -19,7 +18,7 @@ foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];
 }
 $facilities = $facilitiesDb->getHealthFacilities($module);
-$shortCode = $module;
+$shortCode = strtoupper($module);
 if ($module == 'vl') {
 	$vlDb = new \Vlsm\Models\Vl($db);
 	$sampleTypes = $vlDb->getVlSampleTypes();
@@ -38,7 +37,7 @@ if ($module == 'vl') {
 	$tbDb = new \Vlsm\Models\Tb($db);
 	$sampleTypes = $tbDb->getTbSampleTypes();
 }
-$packageNo = strtoupper($shortCode) . date('ymd') .  $general->generateRandomString(6);
+$packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomString(6));
 
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />

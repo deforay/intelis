@@ -2,15 +2,13 @@
 
 require_once(dirname(__FILE__) . "/../../../startup.php");
 
-
-
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
 $systemConfig = SYSTEM_CONFIG;
 
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
-    echo "Please check if the Remote URL is set." . PHP_EOL;
+    error_log("Please check if Remote URL is set");
     exit(0);
 }
 
@@ -18,7 +16,7 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 //update common data from remote to lab db
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
 
-$headers = @get_headers($remoteUrl . '/assets/vlsts-icons/favicon-16x16.png');
+$headers = @get_headers($remoteUrl . '/api/v1.1/version.php');
 
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");

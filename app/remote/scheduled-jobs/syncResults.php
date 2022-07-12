@@ -8,12 +8,13 @@ $app = new \Vlsm\Models\App();
 $systemConfig = SYSTEM_CONFIG;
 
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
-    echo "Please check your remote url";
-    exit();
+    error_log("Please check if Remote URL is set");
+    exit(0);
 }
+
 // Checking internet connection is avialable or not
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
-$headers = @get_headers($remoteUrl . '/assets/vlsts-icons/favicon-16x16.png');
+$headers = @get_headers($remoteUrl . '/api/v1.1/version.php');
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
     return false;

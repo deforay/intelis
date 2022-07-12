@@ -77,7 +77,7 @@ class Captcha
             $captcha_config['code'] = '';
             $length = random_int($captcha_config['min_length'], $captcha_config['max_length']);
             while (strlen($captcha_config['code']) < $length) {
-                $captcha_config['code'] .= substr($captcha_config['characters'], random_int(PHP_INT_MIN, PHP_INT_MAX) % (strlen($captcha_config['characters'])), 1);
+                $captcha_config['code'] .= substr($captcha_config['characters'], random_int(0, PHP_INT_MAX) % (strlen($captcha_config['characters'])), 1);
             }
             $captcha_config['code'] = str_shuffle(str_shuffle($captcha_config['code']));
         }

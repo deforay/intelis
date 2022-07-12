@@ -123,7 +123,6 @@ class Users
                 'add-covid19-comorbidities.php'             => 'covid19-sample-type.php',
                 'edit-covid19-comorbidities.php'            => 'covid19-sample-type.php',
                 'covid19-symptoms.php'                      => 'covid19-sample-type.php',
-                'covid19-test-reasons.php'                  => 'covid19-sample-type.php',
                 'add-covid19-sample-type.php'               => 'covid19-sample-type.php',
                 'edit-covid19-sample-type.php'              => 'covid19-sample-type.php',
                 'covid19-test-symptoms.php'                 => 'covid19-sample-type.php',
@@ -159,7 +158,6 @@ class Users
                 'hepatitis-comorbidities.php'                   => 'hepatitis-sample-type.php',
                 'add-hepatitis-comorbidities.php'               => 'hepatitis-sample-type.php',
                 'edit-hepatitis-comorbidities.php'              => 'hepatitis-sample-type.php',
-                'hepatitis-test-reasons.php'                    => 'hepatitis-sample-type.php',
                 'add-hepatitis-sample-type.php'                 => 'hepatitis-sample-type.php',
                 'edit-hepatitis-sample-type.php'                => 'hepatitis-sample-type.php',
                 'hepatitis-results.php'                         => 'hepatitis-sample-type.php',
@@ -182,7 +180,6 @@ class Users
             $sharedHepPrivileges = array(
                 'tb-update-result.php' => 'tb-manual-results.php',
                 'tb-failed-results.php' => 'tb-manual-results.php',
-                'tb-sample-rejection-reasons.php'  => 'tb-sample-type.php',
                 'add-tb-sample-type.php'           => 'tb-sample-type.php',
                 'edit-tb-sample-type.php'          => 'tb-sample-type.php',
                 'tb-sample-rejection-reasons.php'  => 'tb-sample-type.php',

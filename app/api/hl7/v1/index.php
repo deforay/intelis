@@ -3,7 +3,6 @@
 session_unset(); // no need of session in json response
 
 use Aranyasen\HL7\Message;
-use function PHPSTORM_META\type;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 

@@ -4,9 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-
-
-
 $general = new \Vlsm\Models\General();
 //system config
 
@@ -133,10 +130,13 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		} else if (trim($aRow['arv_adherance_percentage']) == 'poor') {
 			$arvAdherence = 'Poor <85%';
 		}
+		
 		//set sample rejection
-		$sampleRejection = 'No';
-		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != NULL && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		$sampleRejection = null;
+		if (trim($aRow['is_sample_rejected']) == 'yes' || $aRow['result_status'] == 4) {
 			$sampleRejection = 'Yes';
+		} else if (trim($aRow['is_sample_rejected']) == 'no'){
+			$sampleRejection = 'No';
 		}
 		//result dispatched date
 		$lastViralLoadTest = '';
@@ -188,7 +188,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow["sample_code"];
 		} else {
 			$row[] = $aRow["sample_code"];
-			$row[] = $aRow["remote_sample_code"];
+			$row[] = $aRow["remote_sample_code"] ?? null;
 		}
 		$row[] = $aRow['lab_name'];
 		$row[] = $aRow['facility_name'];
@@ -201,7 +201,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$row[] = ($aRow['patient_age_in_years'] != NULL && trim($aRow['patient_age_in_years']) != '' && $aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 		$row[] = $gender;
 		$row[] = $sampleCollectionDate;
-		$row[] = (isset($aRow['sample_name'])) ? ucwords($aRow['sample_name']) : '';
+		$row[] = $aRow['sample_name'] ?? null;
 		$row[] = $treatmentInitiationDate;
 		$row[] = $aRow['current_regimen'];
 		$row[] = $dateOfInitiationOfCurrentRegimen;

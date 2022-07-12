@@ -165,7 +165,7 @@ function generate_token()
 								<input type="text" style="height: 70%;" id="challengeResponse" name="captcha" placeholder="<?php echo _('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _('Please enter the text from the image'); ?>." maxlength="40">
 							</div>
 							<div>
-								<img id="capChaw" width="254px" height="100px" src="/includes/captcha.php/<?php echo random_int(PHP_INT_MIN, PHP_INT_MAX); ?>" />
+								<img id="capChaw" width="254px" height="100px" src="/includes/captcha.php/<?php echo random_int(0, PHP_INT_MAX); ?>" />
 								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa-solid fa-arrows-rotate"></i> <?php echo _("Get New Image"); ?></a>
 							</div>
 						</div>
