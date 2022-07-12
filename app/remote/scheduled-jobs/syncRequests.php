@@ -133,16 +133,16 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
             //check exist remote
             $exsvlQuery = "SELECT vl_sample_id,sample_code FROM form_vl AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
             $exsvlResult = $db->query($exsvlQuery);
-            if ($exsvlResult) {
+            if (!empty($exsvlResult)) {
 
-                $dataToUpdate = array();
+                // $dataToUpdate = array();
 
-                $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                $dataToUpdate['source_of_request'] = "vlsts";
-                $dataToUpdate['source_of_request'] = 'vlsts';
+                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
+                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
+                // // $dataToUpdate['source_of_request'] = "vlsts";
+                // // $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('vl_sample_id', $exsvlResult[0]['vl_sample_id']);
-                $id = $db->update('form_vl', $dataToUpdate);
+                $id = $db->update('form_vl', $request);
             } else {
                 $request['source_of_request'] = 'vlsts';
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {

@@ -371,11 +371,11 @@ class App
             'requested_by'          => $user,
             'requested_on'          => $general->getDateTime(),
             'number_of_records'     => $records,
-            'request_type'          => $type,
-            'test_type'             => $testType,
-            'api_url'               => $url,
-            'api_params'            => (isset($params) && sizeof($params) > 0) ? $params : null,
-            'data_format'           => $format
+            'request_type'          => $type ?? null,
+            'test_type'             => $testType ?? null,
+            'api_url'               => $url ?? null,
+            'api_params'            => $params ?? null,
+            'data_format'           => $format ?? null
         );
         if ($format == 'sync-api') {
             $data['facility_id'] = (isset($params['date'][0]['facilityId']) && count($params['date'][0]['facilityId']) > 0) ? $params['date'][0]['facilityId'] : null;
