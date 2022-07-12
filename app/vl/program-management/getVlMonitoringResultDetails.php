@@ -63,8 +63,8 @@ if (isset($_POST['iSortCol_0'])) {
 * word by word on any field. It's possible to do here, but concerned about efficiency
 * on very large tables, and MySQL's regex functionality is very limited
 */
-
-$sWhere = " WHERE reason_for_vl_testing != 9999 ";
+$sWhere= array();
+$sWhere[] = " WHERE reason_for_vl_testing != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -85,16 +85,16 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere .= " AND " . $sWhereSub;
+     $sWhere[] =  $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
           if ($sWhere == "") {
-               $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+               $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
           } else {
-               $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+               $sWhere[] =  $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
           }
      }
 }
@@ -158,9 +158,9 @@ $eTestDate = '';
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+          $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+          $sWhere[] = '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
 // if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
@@ -172,27 +172,30 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 // }
 
 if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-     $sWhere = $sWhere . ' AND vl.lab_id = "' . $_POST['facilityName'] . '"';
+     $sWhere[] = ' vl.lab_id = "' . $_POST['facilityName'] . '"';
 }
 
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-     $sWhere = $sWhere . " AND f.facility_district_id LIKE " . $_POST['district'];
+     $sWhere[] = " f.facility_district_id LIKE " . $_POST['district'];
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-     $sWhere = $sWhere . " AND f.facility_state_id LIKE " . $_POST['state'];
+     $sWhere[] =  " f.facility_state_id LIKE " . $_POST['state'];
 }
 
-if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+if (count($sWhere) > 0) {
+     $sWhere[] =  ' vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
 } else {
-     $sWhere = $sWhere . ' WHERE vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+     $sWhere[] = ' WHERE vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
 }
 
 if (!empty($facilityMap)) {
-     $sWhere .= " AND vl.facility_id IN ($facilityMap) ";
+     $sWhere[] = " vl.facility_id IN ($facilityMap) ";
 }
 
-
+if(isset($sWhere) && count($sWhere)>0)
+{
+     $sWhere = implode(' AND ',$sWhere);
+}
 $sQuery = $sQuery . ' ' . $sWhere;
 //echo $sQuery;die;
 $_SESSION['vlMonitoringResultQuery'] = $sQuery;

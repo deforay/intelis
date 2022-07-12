@@ -14,7 +14,7 @@ $tResult = array();
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $start_date = '';
     $end_date = '';
-    $sWhere = '';
+    $sWhere = array();
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
@@ -29,21 +29,25 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
                 INNER JOIN r_vl_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
-    $sWhere .= ' where vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND vl.vlsm_country_id = "' . $formId . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
+    $sWhere[] = ' where vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND vl.vlsm_country_id = "' . $formId . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
     if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
-        $sWhere .= ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
+        $sWhere[] = ' vl.sample_type = "' . $_POST['sampleType'] . '"';
     }
     if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
-        $sWhere .= ' AND vl.lab_id = "' . $_POST['labName'] . '"';
+        $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
     }
     if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && count($_POST['clinicName']) > 0) {
-        $sWhere .= " AND vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
+        $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
     }
     if (!empty($facilityMap)) {
-        $sWhere .= " AND vl.facility_id IN ($facilityMap)";
+        $sWhere[] = " vl.facility_id IN ($facilityMap)";
     }
 
+    if(isset($sWhere) && count($sWhere)>0)
+    {
+        $sWhere = implode(' AND ',$sWhere);
+    }
     $vlQuery = $vlQuery . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
 
     $tableResult = $db->rawQuery($vlQuery);
@@ -76,7 +80,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
             <th><?php echo _("No. of Samples");?></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody> 
         <?php
         if (isset($tableResult) && count($tableResult) > 0) {
             foreach ($tableResult as $tableRow) {
