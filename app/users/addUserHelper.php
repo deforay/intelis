@@ -24,7 +24,7 @@ try {
             'user_signature'        => $imageName,
             'force_password_reset'  => 1
         );
-        
+
         $password = $userDb->passwordHash($db->escape($_POST['password']));
         $data['password'] = $password;
         $data['hash_algorithm'] = 'phb';
@@ -91,7 +91,6 @@ try {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
         $result = curl_exec($ch);
         curl_close($ch);
-
         $deResult = json_decode($result, true);
     }
     //Add event log
