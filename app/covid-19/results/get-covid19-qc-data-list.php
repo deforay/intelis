@@ -56,7 +56,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -77,16 +77,16 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        if (count($sWhere) == 0) {
+            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
         } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
         }
     }
 }
@@ -100,9 +100,9 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS qc.*, kit.testkit_name, l_f.facility_name,
             LEFT JOIN user_details as u_d ON u_d.user_id=qc.tested_by 
             LEFT JOIN facility_details as l_f ON qc.lab_id=l_f.facility_id";
 
-if (isset($sWhere) && $sWhere != "") {
-    $sWhere = ' where ' . $sWhere;
-    $sQuery = $sQuery . ' ' . $sWhere;
+if (isset($sWhere) && count($sWhere) >0) {
+    //$sWhere = ' where ' . $sWhere;
+    $sQuery = $sQuery . ' where ' . implode(' AND ',$sWhere);
 }
 
 if (isset($sOrder) && $sOrder != "") {
