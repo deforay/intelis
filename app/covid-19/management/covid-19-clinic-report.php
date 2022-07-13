@@ -140,12 +140,11 @@ $batResult = $db->rawQuery($batQuery);
 														<th><?php echo _("Facility Name");?></th>
 														<th><?php echo _("Patient's ID");?></th>
 														<th><?php echo _("Patient's Name");?></th>
-														<th><?php echo _("Caretaker Phone No.");?></th>
 														<th><?php echo _("Sample Collection Date");?></th>
 														<th><?php echo _("Sample Tested Date");?></th>
 														<th><?php echo _("Testing Lab");?></th>
 														<th><?php echo _("Result");?></th>
-														<th><?php echo _("Status");?></th>
+														<!--<th><?php echo _("Status");?></th>-->
 													</tr>
 												</thead>
 												<tbody>
@@ -340,12 +339,12 @@ $batResult = $db->rawQuery($batQuery);
 															<option value="sample_code"><?php echo _("Sample Code");?></option>
 															<option value="sample_collection_date"><?php echo _("Sample Collection Date");?></option>
 															<option value="sample_batch_id"><?php echo _("Batch Code");?></option>
-															<option value="patient_art_no"><?php echo _("Patient ID");?></option>
-															<option value="patient_first_name"><?php echo _("Patient's Name");?></option>
-															<option value="facility_id"><?php echo _("Facility Name");?></option>
+															<option value="patient_id"><?php echo _("Patient ID");?></option>
+															<option value="patient_name"><?php echo _("Patient's Name");?></option>
+														<!--	<option value="facility_id"><?php echo _("Facility Name");?></option>
 															<option value="facility_state"><?php echo _("Province");?></option>
-															<option value="facility_district"><?php echo _("County");?></option>
-															<option value="sample_type"><?php echo _("Sample Type");?></option>
+															<option value="facility_district"><?php echo _("County");?></option> 
+															<option value="sample_type"><?php echo _("Sample Type");?></option>-->
 															<option value="result"><?php echo _("Result")?></option>
 															<option value="result_status"><?php echo _("Status");?></option>
 														</select>

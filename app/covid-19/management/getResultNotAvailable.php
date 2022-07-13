@@ -27,11 +27,11 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
-        $aColumns = array('vl.sample_code','vl.remote_sample_code','f.facility_name','vl.patient_id','vl.patient_first_name',"DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')",'fd.facility_name');
-        $orderColumns = array('vl.sample_code','vl.remote_sample_code','f.facility_name','vl.patient_id','vl.patient_first_name','vl.sample_collection_date','fd.facility_name');
+        $aColumns = array('vl.sample_code','vl.remote_sample_code','f.facility_name','vl.patient_id','vl.patient_name',"DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')",'fd.facility_name');
+        $orderColumns = array('vl.sample_code','vl.remote_sample_code','f.facility_name','vl.patient_id','vl.patient_name','vl.sample_collection_date','fd.facility_name');
         if($sarr['sc_user_type']=='standalone') {
-        $aColumns = array('vl.sample_code','f.facility_name','vl.patient_id','vl.patient_first_name',"DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')",'fd.facility_name');
-        $orderColumns = array('vl.sample_code','f.facility_name','vl.patient_id','vl.patient_first_name','vl.sample_collection_date','fd.facility_name');
+        $aColumns = array('vl.sample_code','f.facility_name','vl.patient_id','vl.patient_name',"DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')",'fd.facility_name');
+        $orderColumns = array('vl.sample_code','f.facility_name','vl.patient_id','vl.patient_name','vl.sample_collection_date','fd.facility_name');
         }
         
         /* Indexed column (used for fast and accurate table cardinality) */
@@ -70,7 +70,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
         
-        $sWhere = "";
+        $sWhere = array();
         if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 			$sWhere = " AND ";
             $searchArray = explode(" ", $_POST['sSearch']);
@@ -92,16 +92,16 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
                 }
                 $sWhereSub .= ")";
             }
-            $sWhere .= $sWhereSub;
+            $sWhere[] = $sWhereSub;
         }
         
         /* Individual column filtering */
         for ($i = 0; $i < count($aColumns); $i++) {
             if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-                if ($sWhere == "") {
-                    $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+                if (count($sWhere) == 0) {
+                    $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
                 } else {
-                    $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+                    $sWhere[] =  $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
                 }
             }
         }
@@ -115,7 +115,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 	$start_date = '';
 	$end_date = '';
 	if(isset($_POST['noResultBatchCode']) && trim($_POST['noResultBatchCode'])!= ''){
-	    $sWhere = $sWhere.' AND b.batch_code LIKE "%'.$_POST['noResultBatchCode'].'%"';
+	    $sWhere[] = ' b.batch_code LIKE "%'.$_POST['noResultBatchCode'].'%"';
 	}
 	
 	if(isset($_POST['noResultSampleTestDate']) && trim($_POST['noResultSampleTestDate'])!= ''){
@@ -128,27 +128,30 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
             $end_date = $general->dateFormat(trim($s_c_date[1]));
         }
 	    if (trim($start_date) == trim($end_date)) {
-					$sWhere = $sWhere.' AND DATE(vl.sample_collection_date) = "'.$start_date.'"';
+					$sWhere[] = '  AND DATE(vl.sample_collection_date) = "'.$start_date.'"';
 	    }else{
-	       $sWhere = $sWhere.' AND DATE(vl.sample_collection_date) >= "'.$start_date.'" AND DATE(vl.sample_collection_date) <= "'.$end_date.'"';
+	       $sWhere[] = '  AND DATE(vl.sample_collection_date) >= "'.$start_date.'" AND DATE(vl.sample_collection_date) <= "'.$end_date.'"';
 	    }
   }
 	if(isset($_POST['noResultSampleType']) && $_POST['noResultSampleType']!=''){
-		$sWhere = $sWhere.' AND s.sample_id = "'.$_POST['noResultSampleType'].'"';
+		$sWhere[] = ' s.sample_id = "'.$_POST['noResultSampleType'].'"';
 	}
 	if(isset($_POST['noResultFacilityName']) && $_POST['noResultFacilityName']!=''){
-		$sWhere = $sWhere.' AND f.facility_id IN ('.$_POST['noResultFacilityName'].')';
+		$sWhere[] = ' f.facility_id IN ('.$_POST['noResultFacilityName'].')';
 	}
 	if(isset($_POST['noResultGender']) && $_POST['noResultGender']!=''){
-		$sWhere = $sWhere.' AND vl.patient_gender = "'.$_POST['noResultGender'].'"';
+		$sWhere[] = ' vl.patient_gender = "'.$_POST['noResultGender'].'"';
 	}
 	if(isset($_POST['noResultPatientPregnant']) && $_POST['noResultPatientPregnant']!=''){
-		$sWhere = $sWhere.' AND vl.is_patient_pregnant = "'.$_POST['noResultPatientPregnant'].'"';
+		$sWhere[] = ' vl.is_patient_pregnant = "'.$_POST['noResultPatientPregnant'].'"';
 	}
 	if(isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBreastfeeding']!=''){
-		$sWhere = $sWhere.' AND vl.is_patient_breastfeeding = "'.$_POST['noResultPatientBreastfeeding'].'"';
+		$sWhere[] = ' vl.is_patient_breastfeeding = "'.$_POST['noResultPatientBreastfeeding'].'"';
 	}
-	$sWhere = $sWhere.' AND vl.vlsm_country_id="'.$arr['vl_form'].'"';
+    if(count($sWhere)>0)
+	    $sWhere[] = ' vl.vlsm_country_id="'.$arr['vl_form'].'"';
+    else
+        $sWhere[] = ' AND vl.vlsm_country_id="'.$arr['vl_form'].'"';
     $dWhere = '';
     if($sarr['sc_user_type']=='remoteuser'){
         //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -156,11 +159,14 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='".$_SESSION['userId']."'";
         $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
         if($userfacilityMapresult[0]['facility_id']!=null && $userfacilityMapresult[0]['facility_id']!=''){
-            $sWhere = $sWhere." AND vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].")   ";
+            $sWhere[] = " vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].")   ";
             $dWhere = $dWhere." AND vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].") ";
         }
     }
-    
+    if(count($sWhere) > 0)
+    {
+        $sWhere = implode(' AND ',$sWhere);
+    }
 	$sQuery = $sQuery.' '.$sWhere;
         $sQuery = $sQuery.' group by vl.covid19_id';
         if (isset($sOrder) && $sOrder != "") {
@@ -172,8 +178,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         if (isset($sLimit) && isset($sOffset)) {
             $sQuery = $sQuery.' LIMIT '.$sOffset.','. $sLimit;
         }
-        
-        // echo $sQuery;die;
+       //  echo $sQuery;die;
         $rResult = $db->rawQuery($sQuery);
        // print_r($rResult);
         /* Data set length after filtering */
@@ -207,9 +212,9 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
             }else{
                 $decrypt = 'sample_code';
             }
-            $patientFname = $general->crypto('decrypt',$aRow['patient_first_name'],$aRow[$decrypt]);
+            /*$patientFname = $general->crypto('decrypt',$aRow['patient_first_name'],$aRow[$decrypt]);
             $patientMname = $general->crypto('decrypt',$aRow['patient_middle_name'],$aRow[$decrypt]);
-            $patientLname = $general->crypto('decrypt',$aRow['patient_last_name'],$aRow[$decrypt]);
+            $patientLname = $general->crypto('decrypt',$aRow['patient_last_name'],$aRow[$decrypt]);*/
             $row = array();
 
             $row[] = $aRow['sample_code'];
@@ -218,7 +223,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
             }
             $row[] = ucwords($aRow['facility_name']);
             $row[] = $aRow['patient_id'];
-            $row[] = ucwords($patientFname." ".$patientMname." ".$patientLname);
+            $row[] = $aRow['patient_name'];
             $row[] = $aRow['sample_collection_date'];
             $row[] = ucwords($aRow['labName']);
 			$output['aaData'][] = $row;
