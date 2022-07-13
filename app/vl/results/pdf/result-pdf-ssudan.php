@@ -243,7 +243,7 @@ if (sizeof($requestResult) > 0) {
                     $showMessage = ($arr['l_vl_msg']);
                }
 
-               if (in_array(strtolower($vlResult), array("below detection limit", "below detection level", 'bdl', 'BDL', 'not detected'))) {
+               if (in_array(strtolower($vlResult), array("hiv-1 not detected", "below detection limit", "below detection level", 'bdl', 'not detected'))) {
                     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
                     $showMessage = ucfirst($arr['l_vl_msg']);
                } else if (in_array(strtolower($vlResult), array("tnd", "target not detected", 'ldl'))) {

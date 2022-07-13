@@ -89,13 +89,14 @@ function getColumnValues($db, $tableName, $sampleCode)
 			</div>
 			<?php
 			if (!empty($sampleCode)) {
+				$posts = getColumnValues($db, $tableName, $sampleCode);
 			?>
 				<div class="col-xs-12">
 					<div class="box">
 						<!-- /.box-header -->
 						<div class="box-body">
 							<h3> Audit Trail for Sample <?php echo $sampleCode; ?></h3>
-							<table>
+							<table class="table table-striped table-hover">
 								<thead>
 									<tr>
 										<?php
@@ -116,7 +117,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 
 									<?php
 
-									$posts = getColumnValues($db, $tableName, $sampleCode);
+
 									if (count($posts) > 0) {
 										for ($i = 0; $i < count($posts); $i++) {
 											$k = ($i - 1);
@@ -168,12 +169,13 @@ function getColumnValues($db, $tableName, $sampleCode)
 							<p>
 							<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
 							</p>
-							<table>
+							<table class="table table-striped table-hover">
 								<thead>
 									<tr>
 										<?php
 										$result_column = getColumns($db, $tableName2);
 										$col_arr = array();
+										$posts = getColumnValues($db, $tableName2, $sampleCode);
 										foreach ($result_column as $col) {
 											$col_arr[] = $col['COLUMN_NAME'];
 										?>
@@ -188,7 +190,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 								<tbody>
 									<?php
 
-									$posts = getColumnValues($db, $tableName2, $sampleCode);
+
 									if (count($posts) > 0) {
 										for ($i = 0; $i < count($posts); $i++) {
 											$k = ($i - 1);
@@ -288,3 +290,8 @@ require_once(APPLICATION_PATH . '/footer.php');
 		background-color: #ffc107;
 	}
 </style>
+<script>
+	$(function() {
+		$(".table").dataTable();
+	});
+</script>

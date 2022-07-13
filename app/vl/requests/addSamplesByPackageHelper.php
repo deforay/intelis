@@ -1,10 +1,5 @@
 <?php
 
-
-
-
-
-
 $general = new \Vlsm\Models\General();
 $vlObj = new \Vlsm\Models\Vl();
 

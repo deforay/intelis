@@ -117,7 +117,6 @@ try {
             curl_setopt($ch, CURLOPT_POSTFIELDS, ($post));
             $result = curl_exec($ch);
             curl_close($ch);
-
             $deResult = json_decode($result, true);
         }
     }
