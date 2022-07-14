@@ -19,16 +19,15 @@ class General
     }
 
 
-    public static function generateRandomString($length = 8)
+    public static function generateRandomString($length = 32)
     {
-        $random_string = '';
+        $randomString = '';
         for ($i = 0; $i < $length; $i++) {
             $number = random_int(0, 36);
             $character = base_convert($number, 10, 36);
-            $random_string .= $character;
+            $randomString .= $character;
         }
-
-        return $random_string;
+        return $randomString;
     }
 
     public function escape($inputArray, $db)
@@ -55,7 +54,7 @@ class General
             random_int(0, 0xff4B)
         );
         if ($attachExtraString) {
-            $uuid .= "-" . $this->generateRandomString('4');
+            $uuid .= "-" . $this->generateRandomString(4);
         }
         return $uuid;
     }
@@ -270,7 +269,8 @@ class General
                     $message,
                     $nonce,
                     $key
-                ), SODIUM_BASE64_VARIANT_URLSAFE
+                ),
+            SODIUM_BASE64_VARIANT_URLSAFE
         );
         sodium_memzero($message);
         sodium_memzero($key);
