@@ -1,4 +1,7 @@
 <?php
+
+use Vlsm\Models\General;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -20,9 +23,9 @@ if ($fromApiTrue) {
 }
 
 try {
-    
-    
-    
+
+
+
     if (trim($_POST['userName']) != '') {
         if ($fromApiFalse) {
             $data = array(
@@ -33,7 +36,8 @@ try {
         }
         if ($fromApiTrue) {
             $data['user_name'] = $_POST['userName'];
-            $data['password'] = $_POST['password'];
+            $decryptedPassword = General::decrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+            $data['password'] = $decryptedPassword;            
             $db = $db->where('user_name', $data['user_name']);
         } else {
             if (isset($_POST['password']) && trim($_POST['password']) != "") {
@@ -42,16 +46,15 @@ try {
                     $_SESSION['alertMsg'] = _("Your new password cannot be same as the current password. Please try another password.");
                     header("location:editProfile.php");
                 }
-                
-                $newPassword = $userModel->passwordHash($db->escape($_POST['password']));
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
+                    $_SESSION['crossLoginPass']  = $newCrossLoginPassword = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
                     $client = new \GuzzleHttp\Client();
                     $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
                     $result = $client->post($url . '/api/update-password', [
                         'form_params' => [
                             'u' => $_POST['email'],
-                            't' => $newPassword
+                            't' => $newCrossLoginPassword
                         ]
                     ]);
                     $response = json_decode($result->getBody()->getContents());
@@ -60,6 +63,8 @@ try {
                         error_log('Recency profile not updated! for the user->' . $_POST['userName']);
                     }
                 }
+
+                $newPassword = $userModel->passwordHash($db->escape($_POST['password']));
                 $data['password'] = $newPassword;
                 $data['hash_algorithm'] = 'phb';
                 $data['force_password_reset'] = $_SESSION['forcePasswordReset'] = 0;
