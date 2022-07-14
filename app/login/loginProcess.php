@@ -1,5 +1,7 @@
 <?php
 
+use Vlsm\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -15,15 +17,7 @@ $facilityDb = new \Vlsm\Models\Facilities();
 $user = new \Vlsm\Models\Users();
 
 
-if ($_POST["csrf_token"] != $_SESSION["csrf_token"]) {
-    // Reset token
-    unset($_SESSION["csrf_token"]);
-    $_SESSION['alertMsg'] = _("Request expired. Please try to login again.");
-    unset($_SESSION);
-    header("location:/login/login.php");
-}
-//$dashboardUrl = $general->getGlobalConfig('vldashboard_url');
-/* Crosss Login Block Start */
+
 $_SESSION['logged'] = false;
 $systemInfo = $general->getSystemConfig();
 
@@ -32,29 +26,27 @@ $_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemI
 
 
 if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
-
     $_GET['u'] = $db->escape($_GET['u']);
-    $_GET['t'] = $db->escape($_GET['t']);
-
+    //$_GET['t'] = $db->escape($_GET['t']);
     $_POST['username'] = base64_decode($_GET['u']);
-    $crossLoginQuery = "SELECT `login_id`,`password`,`user_name` FROM user_details WHERE `login_id` = ?";
-    $check = $db->rawQueryOne($crossLoginQuery, array($db->escape($_POST['username'])));
-    $_POST['password'] = "";
 
-    if ($check) {
-        $passwordCrossLoginSalt = $check['password'] . SYSTEM_CONFIG['recency']['crossloginSalt'];
-        $_POST['password'] = hash('sha256', $passwordCrossLoginSalt);
-        $password = "";
-        if ($_POST['password'] == $_GET['t']) {
-            $password = $check['password'];
-            $_SESSION['logged'] = true;
-        }
-    }
+    $decryptedPassword = General::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+    $_POST['password'] = $decryptedPassword;
 } else {
     if (!SYSTEM_CONFIG['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
-        $_SESSION['alertMsg'] = _("Sorry! Recency cross-login has not been activated. Please contact system administrator.");
+        throw new Exception(_("Please check your login credentials"));
     }
 }
+
+
+if (isset($_POST["csrf_token"]) && $_POST["csrf_token"] != $_SESSION["csrf_token"]) {
+    // Reset token
+    unset($_SESSION["csrf_token"]);
+    $_SESSION['alertMsg'] = _("Request expired. Please try to login again.");
+    unset($_SESSION);
+    throw new Exception(_("Please check your login credentials"));
+}
+
 /* Crosss Login Block End */
 
 try {
@@ -151,13 +143,17 @@ try {
 
                 $_SESSION['userId'] = $userRow['user_id'];
                 $_SESSION['loginId'] = $userRow['login_id'];
-                $_SESSION['userName'] = ucwords($userRow['user_name']);
+                $_SESSION['userName'] = ($userRow['user_name']);
                 $_SESSION['roleCode'] = $userRow['role_code'];
                 $_SESSION['roleId'] = $userRow['role_id'];
                 $_SESSION['accessType'] = $userRow['access_type'];
                 $_SESSION['email'] = $userRow['email'];
                 $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
                 $_SESSION['facilityMap'] = $facilityDb->getFacilityMap($userRow['user_id']);
+                $_SESSION['crossLoginPass'] = null;
+                if (SYSTEM_CONFIG['recency']['crosslogin']) {
+                    $_SESSION['crossLoginPass'] = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+                }
 
                 //Add event log
                 $eventType = 'login';
@@ -199,6 +195,7 @@ try {
                     $redirect = "/users/editProfile.php";
                     $_SESSION['alertMsg'] = _("Please change your password to proceed.");
                 }
+
                 header("location:" . $redirect);
             } else {
                 $user->userHistoryLog($userName, 'failed');
@@ -210,8 +207,8 @@ try {
         }
     }
 } catch (Exception $exc) {
-    header("location:/login/login.php");
     $_SESSION['alertMsg'] = _("Please check your login credentials");
     error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
     error_log($exc->getTraceAsString());
+    header("location:/login/login.php");
 }
