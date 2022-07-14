@@ -66,6 +66,42 @@ try {
         $rowData = $db->rawQuery($sQuery);
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
         $sampleFrom = '';
+
+        /* Checkng sample code and uniuque Id */
+        if (empty($data['uniqueId']) || empty($data['appSampleCode']) || empty($data['facilityId']) || empty($data['patientArtNo']) || empty($data['vlTestReason']) || empty($data['specimenType']) || empty($data['sampleCollectionDate'])) {
+            throw new Exception("Invalid request. Please check your request parameters.");
+            exit(0);
+        }
+
+        $generatedUniqueId = null;
+        $exist = $db->rawQueryOne('SELECT unique_id, app_sample_code FROM form_vl WHERE app_sample_code = "' . $data['appSampleCode'] . '"');
+        // FOR EXISTING SAMPLES:
+        if (!empty($exist['app_sample_code'])) {
+            if (empty($data['uniqueId'])) {
+                throw new Exception("Invalid request. Please check your request parameters.");
+                exit(0);
+            }
+
+            // check if API provided unique_id is matching with the one in our db
+            $exist = $db->rawQueryOne('SELECT unique_id, app_sample_code FROM form_vl WHERE app_sample_code = "' . $data['appSampleCode'] . '"');
+            if ($data['uniqueId'] != $exist['unique_id']) {
+                throw new Exception("Invalid request. Please check your request parameters.");
+                exit(0);
+            }
+        }
+        // FOR NEW SAMPLES
+        else {
+            if (empty($data['uniqueId'])) {
+                $generatedUniqueId = $app->generateUniqueId("form_vl", "unique_id");
+            } else {
+                // check if API provided unique_id is unique in our db
+                if ($db->rawQueryOne('SELECT unique_id FROM form_vl WHERE unique_id = "' . $data['uniqueId'] . '"')) {
+                    throw new Exception("Invalid request. Please check your request parameters.");
+                    exit(0);
+                }
+            }
+        }
+
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
@@ -87,6 +123,7 @@ try {
         $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
+            throw new Exception("Invalid request. Please check your request parameters.");
             exit();
         }
 
@@ -323,7 +360,7 @@ try {
         $vlFulldata = array(
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],
-            'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : null,
+            'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : $generatedUniqueId,
             'app_sample_code'                       => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_code_title'                     => (isset($data['sampleCodeTitle']) && $data['sampleCodeTitle'] != '') ? $data['sampleCodeTitle'] :  'auto',
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',
