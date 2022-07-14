@@ -1,4 +1,7 @@
 <?php
+
+use Vlsm\Models\General;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -53,16 +56,15 @@ try {
 
         if (isset($_POST['password']) && trim($_POST['password']) != "") {
 
-            $password = $userDb->passwordHash($db->escape($_POST['password']));
-
             /* Recency cross login block */
             if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {
                 $client = new \GuzzleHttp\Client();
                 $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
+                $newCrossLoginPassword = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
                 $result = $client->post($url . '/api/update-password', [
                     'form_params' => [
                         'u' => $_POST['loginId'],
-                        't' => $password
+                        't' => $newCrossLoginPassword
                     ]
                 ]);
                 $response = json_decode($result->getBody()->getContents());
@@ -70,6 +72,8 @@ try {
                     error_log('Recency profile not updated! for the user ' . $_POST['userName']);
                 }
             }
+
+            $password = $userDb->passwordHash($db->escape($_POST['password']));
             $data['password'] = $password;
             $data['hash_algorithm'] = 'phb';
             $data['force_password_reset'] = 1;

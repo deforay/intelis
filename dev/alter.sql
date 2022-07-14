@@ -2637,11 +2637,11 @@ ALTER TABLE `user_details` ADD UNIQUE(`user_name`);
 
 -- Thana 18-Nov-2021
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES 
-('VL Sample Expiry Days', 'vl_sample_expiry_after_days', '0', 'vl', 'yes', NULL, NULL, 'active'),
-('EID Sample Expiry Days', 'eid_sample_expiry_after_days', '0', 'eid', 'yes', NULL, NULL, 'active'),
-('Covid19 Sample Expiry Days', 'covid19_sample_expiry_after_days', '0', 'covid19', 'yes', NULL, NULL, 'active'),
-('Hepatitis Sample Expiry Days', 'hepatitis_sample_expiry_after_days', '0', 'hepatitis', 'yes', NULL, NULL, 'active'),
-('TB Sample Expiry Days', 'tb_sample_expiry_after_days', '0', 'tb', 'yes', NULL, NULL, 'active');
+('VL Sample Expiry Days', 'vl_sample_expiry_after_days', '9999', 'vl', 'yes', NULL, NULL, 'active'),
+('EID Sample Expiry Days', 'eid_sample_expiry_after_days', '9999', 'eid', 'yes', NULL, NULL, 'active'),
+('Covid19 Sample Expiry Days', 'covid19_sample_expiry_after_days', '9999', 'covid19', 'yes', NULL, NULL, 'active'),
+('Hepatitis Sample Expiry Days', 'hepatitis_sample_expiry_after_days', '9999', 'hepatitis', 'yes', NULL, NULL, 'active'),
+('TB Sample Expiry Days', 'tb_sample_expiry_after_days', '9999', 'tb', 'yes', NULL, NULL, 'active');
 
 -- Thana 19-Nov-2021
 INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES (10, 'Sample Expired', 'active');
@@ -3143,3 +3143,7 @@ ALTER TABLE `user_login_history` ADD `user_id` VARCHAR(1000) CHARACTER SET utf8m
 
 -- Amit 11-Jul-2022 version 5.0.0
 UPDATE `system_config` SET `value` = '5.0.0' WHERE `system_config`.`name` = 'sc_version';
+
+-- Amit 13-Jul-2022 version 5.0.0
+UPDATE  `global_config` set value = 999 WHERE `name` LIKE '%sample_expiry_after_days';
+UPDATE  `global_config` set value = 999 WHERE `name` LIKE '%sample_lock_after_days';

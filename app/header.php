@@ -298,9 +298,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin']) {
-							$password = $crossLoginResult['password'] . SYSTEM_CONFIG['recency']['crossloginSalt']; ?>
+						?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?php echo rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($crossLoginResult['login_id']) . '&t=' . hash('sha256', $password) . '&name=' . base64_encode($crossLoginResult['user_name']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span> Recency</a>
+								<a onclick="setCrossLogin();" href="<?php echo rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span> Recency</a>
 							</li>
 						<?php } ?>
 

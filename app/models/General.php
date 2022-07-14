@@ -258,6 +258,50 @@ class General
         return false;
     }
 
+    public static function encrypt($message, $key)
+    {
+        $nonce = random_bytes(
+            SODIUM_CRYPTO_SECRETBOX_NONCEBYTES
+        );
+
+        $cipher = sodium_bin2base64(
+            $nonce .
+                sodium_crypto_secretbox(
+                    $message,
+                    $nonce,
+                    $key
+                ), SODIUM_BASE64_VARIANT_URLSAFE
+        );
+        sodium_memzero($message);
+        sodium_memzero($key);
+        return $cipher;
+    }
+
+    public static function decrypt($encrypted, $key)
+    {
+        $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
+        if ($decoded === false) {
+            throw new \Exception('The message encoding failed');
+        }
+        if (mb_strlen($decoded, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
+            throw new \Exception('The message was truncated');
+        }
+        $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+        $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+
+        $plain = sodium_crypto_secretbox_open(
+            $ciphertext,
+            $nonce,
+            $key
+        );
+        if ($plain === false) {
+            throw new \Exception('The message was tampered with in transit');
+        }
+        sodium_memzero($ciphertext);
+        sodium_memzero($key);
+        return $plain;
+    }
+
     public function crypto($action, $inputString, $secretIv)
     {
 
