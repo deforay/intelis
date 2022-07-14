@@ -27,12 +27,12 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
 
 if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
-    $orderColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
+    $aColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
+    $orderColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -205,9 +205,9 @@ foreach ($rResult as $aRow) {
     } else {
         $decrypt = 'sample_code';
     }
-    $patientFname = $general->crypto('decrypt', $aRow['patient_first_name'], $aRow[$decrypt]);
+    /*$patientFname = $general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]);
     $patientMname = $general->crypto('decrypt', $aRow['patient_middle_name'], $aRow[$decrypt]);
-    $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $aRow[$decrypt]);
+    $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $aRow[$decrypt]);*/
     $row = array();
     $row[] = $aRow['sample_code'];
     if ($sarr['sc_user_type'] != 'standalone') {
@@ -215,7 +215,7 @@ foreach ($rResult as $aRow) {
     }
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
-    $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+    $row[] = $aRow['patient_name'];
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['labName'];
     $row[] = $aRow['rejection_reason_name'];

@@ -62,7 +62,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -83,16 +83,16 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere .= $sWhereSub;
+     $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          if ($sWhere == "") {
-               $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+          if (count($sWhere) == 0) {
+               $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
           } else {
-               $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+               $sWhere[] = " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
           }
      }
 }
@@ -135,13 +135,13 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      }
 }
 
-if (isset($sWhere) && $sWhere != "") {
-     $sWhere = ' where ' . $sWhere;
+if (isset($sWhere) && count($sWhere) > 0) {
+     $sWhere[0] = ' where ' . $sWhere[0];
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           if (trim($sTestDate) == trim($eTestDate)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+               $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
           } else {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           }
      }
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
@@ -157,11 +157,11 @@ if (isset($sWhere) && $sWhere != "") {
           }
           $out = $out . ')';
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out . '';
+               $sWhere[] = '  vl.lab_id IN ' . $out . '';
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.lab_id IN ' . $out . '';
+              // $sWhere = ' where ' . $sWhere;
+               $sWhere[] = ' where vl.lab_id IN ' . $out . '';
           }
      }
 } else {
@@ -176,33 +176,36 @@ if (isset($sWhere) && $sWhere != "") {
           }
           $out = $out . ')';
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out . '';
+               $sWhere[] = ' AND vl.lab_id IN ' . $out . '';
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.lab_id IN ' . $out . '';
+               //$sWhere[] = ' where ' . $sWhere;
+               $sWhere[] = ' where vl.lab_id IN ' . $out . '';
           }
      }
 
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+               $sWhere[] = '  DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+               //$sWhere = ' where ' . $sWhere;
+               $sWhere[] = ' where DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           }
      }
 }
-if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+if (count($sWhere) > 0) {
+     $sWhere[] = ' vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
 } else {
-     $sWhere = $sWhere . ' where vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+     $sWhere[] =  ' where vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
 }
 
-$sWhere .= " AND tl.test_type = 'covid19'";
+$sWhere[]= " tl.test_type = 'covid19'";
 
-
+if(count($sWhere) > 1)
+     $sWhere = implode(' AND ',$sWhere);
+     else
+     $swhere = $swhere[0];
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if ($_POST['targetType'] == 1) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
@@ -210,7 +213,7 @@ if ($_POST['targetType'] == 1) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
 $_SESSION['covid19MonitoringThresholdReportQuery'] = $sQuery;
-// die($sQuery);
+//die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
