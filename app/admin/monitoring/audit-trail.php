@@ -117,7 +117,6 @@ function getColumnValues($db, $tableName, $sampleCode)
 
 									<?php
 
-
 									if (count($posts) > 0) {
 										for ($i = 0; $i < count($posts); $i++) {
 											$k = ($i - 1);
@@ -132,8 +131,8 @@ function getColumnValues($db, $tableName, $sampleCode)
 													<td class="compare_col-<?php echo $i . '-' . $j; ?>">
 														<?php
 														if ($i > 0) {
-															if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
-																echo '<style type="text/css">
+								if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
+								echo '<style type="text/css">
 								.compare_col-' . $i . '-' . $j . ' {
 								background: orange;
 								color:black;

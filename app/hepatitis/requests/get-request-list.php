@@ -183,7 +183,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 }
 
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-     $sWhere = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+     $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
      $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
