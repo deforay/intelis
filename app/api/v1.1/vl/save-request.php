@@ -67,24 +67,23 @@ try {
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
         $sampleFrom = '';
 
-        /* Checkng sample code and uniuque Id */
+        /* Checkng required fields */
         if (empty($data['uniqueId']) || empty($data['appSampleCode']) || empty($data['facilityId']) || empty($data['patientArtNo']) || empty($data['vlTestReason']) || empty($data['specimenType']) || empty($data['sampleCollectionDate'])) {
             throw new Exception("Invalid request. Please check your request parameters.");
             exit(0);
         }
 
         $generatedUniqueId = null;
-        $exist = $db->rawQueryOne('SELECT unique_id, app_sample_code FROM form_vl WHERE app_sample_code = "' . $data['appSampleCode'] . '"');
+        $existingData = $db->rawQuery('SELECT unique_id, app_sample_code FROM form_vl WHERE app_sample_code = ? OR unique_id = ? OR sample_code = ? OR remote_sample_code = ?', array($data['appSampleCode'], $data['uniqueId'], $data['sampleCode'], $data['remoteSampleCode']));
+
         // FOR EXISTING SAMPLES:
-        if (!empty($exist['app_sample_code'])) {
-            if (empty($data['uniqueId'])) {
+        if (count($existingData) > 0) {
+            // check if API provided unique_id is matching with the one in our db
+            if (array_search($data['uniqueId'], array_column($existingData, 'unique_id'))) {
                 throw new Exception("Invalid request. Please check your request parameters.");
                 exit(0);
             }
-
-            // check if API provided unique_id is matching with the one in our db
-            $exist = $db->rawQueryOne('SELECT unique_id, app_sample_code FROM form_vl WHERE app_sample_code = "' . $data['appSampleCode'] . '"');
-            if ($data['uniqueId'] != $exist['unique_id']) {
+            if (array_search($data['appSampleCode'], array_column($existingData, 'app_sample_code'))) {
                 throw new Exception("Invalid request. Please check your request parameters.");
                 exit(0);
             }
@@ -93,12 +92,6 @@ try {
         else {
             if (empty($data['uniqueId'])) {
                 $generatedUniqueId = $app->generateUniqueId("form_vl", "unique_id");
-            } else {
-                // check if API provided unique_id is unique in our db
-                if ($db->rawQueryOne('SELECT unique_id FROM form_vl WHERE unique_id = "' . $data['uniqueId'] . '"')) {
-                    throw new Exception("Invalid request. Please check your request parameters.");
-                    exit(0);
-                }
             }
         }
 
