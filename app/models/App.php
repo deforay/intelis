@@ -575,4 +575,15 @@ class App
         }
         return $this->db->rawQueryOne("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ?", array($c19Id));
     }
+
+    public function generateUniqueId($tableName, $fieldName)
+    {
+        $general = new \Vlsm\Models\General($this->db);
+        do {
+            $uniqueId = $general->generateRandomString();
+            $dublicate = $this->db->rawQueryOne("SELECT $fieldName FROM $tableName where $fieldName = '$uniqueId'");
+        } while ($dublicate);
+
+        return $uniqueId;
+    }
 }
