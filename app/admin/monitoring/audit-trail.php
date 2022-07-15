@@ -120,7 +120,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 									if (count($posts) > 0) {
 										for ($i = 0; $i < count($posts); $i++) {
 											$k = ($i - 1);
-											$arrDiff = getDifference($posts[$i], $posts[$k]);
+											//$arrDiff = getDifference($posts[$i], $posts[$k]);
 
 									?>
 											<tr>
@@ -129,23 +129,23 @@ function getColumnValues($db, $tableName, $sampleCode)
 												for ($j = 0; $j < count($col_arr); $j++) {
 												?>
 													<td class="compare_col-<?php echo $i . '-' . $j; ?>">
-														<?php
+									<?php
 														if ($i > 0) {
-								if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
+								//if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
 								echo '<style type="text/css">
 								.compare_col-' . $i . '-' . $j . ' {
 								background: orange;
 								color:black;
 								}
 								</style>';
-															} else {
+														///	} else {
 																echo '<style type="text/css">
 								.compare_col-' . $i . '-' . $j . ' {
 								background: white;
 								color:black;
 								}
 								</style>';
-															}
+													//		}
 														}
 
 														echo $posts[$i][$col_arr[$j]];
@@ -193,7 +193,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 									if (count($posts) > 0) {
 										for ($i = 0; $i < count($posts); $i++) {
 											$k = ($i - 1);
-											$arrDiff = getDifference($posts[$i], $posts[$k]);
+											//$arrDiff = getDifference($posts[$i], $posts[$k]);
 
 									?>
 											<tr>
@@ -204,21 +204,21 @@ function getColumnValues($db, $tableName, $sampleCode)
 													<td class="compare_col-<?php echo $i . '-' . $j; ?>">
 														<?php
 														if ($i > 0) {
-															if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
+														//	if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
 																echo '<style type="text/css">
 								.compare_col-' . $i . '-' . $j . ' {
 								background: orange;
 								color:black;
 								}
 								</style>';
-															} else {
+															//} else {
 																echo '<style type="text/css">
 								.compare_col-' . $i . '-' . $j . ' {
 								background: white;
 								color:black;
 								}
 								</style>';
-															}
+														//	}
 														}
 
 														echo $posts[$i][$col_arr[$j]];
@@ -237,7 +237,6 @@ function getColumnValues($db, $tableName, $sampleCode)
 								</tbody>
 
 							</table>
-
 
 						</div>
 					</div>
@@ -289,8 +288,3 @@ require_once(APPLICATION_PATH . '/footer.php');
 		background-color: #ffc107;
 	}
 </style>
-<script>
-	$(function() {
-		$(".table").dataTable();
-	});
-</script>
