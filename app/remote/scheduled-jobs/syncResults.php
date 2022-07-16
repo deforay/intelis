@@ -1,7 +1,11 @@
 <?php
-//this fille is get the data from lab db and update in remote db
 
-require_once(dirname(__FILE__) . "/../../../startup.php");
+//this file gets the data from the local database and updates the remote database
+
+if (php_sapi_name() == 'cli') {
+    require_once(dirname(__FILE__) . "/../../../startup.php");
+}
+
 $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 

@@ -214,9 +214,9 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 /* Viral load filter */
 if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
      if ($_POST['vLoad'] == 'suppressed') {
-          $sWhere[] =   " vl.vl_result_category ='suppressed' AND vl.result_status = 7 ";
+          $sWhere[] =   " vl.vl_result_category like 'suppressed' AND vl.vl_result_category is NOT NULL AND vl.result_status = 7 ";
      } else {
-          $sWhere[] =   "  vl.vl_result_category ='not suppressed' AND vl.result_status = 7 ";
+          $sWhere[] =   "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL AND vl.result_status = 7 ";
      }
 }
 $sPrintDate = '';
@@ -321,21 +321,13 @@ $_SESSION['vlResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo($sQuery);
+//echo($sQuery);die();
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-// /* Total data set length */
-// $aResultTotal =  $db->rawQueryOne("SELECT COUNT(vl_sample_id) as total FROM form_vl as vl where result_status!=9 $cWhere");
-// // $aResultTotal = $countResult->fetch_row();
-// $iTotal = $aResultTotal['total'];
 
-/*
-          * Output
-          */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,

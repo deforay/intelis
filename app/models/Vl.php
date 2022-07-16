@@ -15,8 +15,10 @@ class Vl
     protected $db = null;
     protected $table = 'form_vl';
     protected $shortCode = 'VL';
+
+    // keep all these in lower case to make it easier to compare
     protected $suppressedArray = array(
-        'HIV-1 NOT DETECTED',
+        'hiv-1 not detected',
         'target not detected',
         'tnd',
         'not detected',
@@ -30,7 +32,7 @@ class Vl
         '<40',
         '< 839',
         '<839',
-        '< Titer min',
+        '< titer min',
         'negative',
         'negat'
     );
@@ -175,19 +177,19 @@ class Vl
     {
 
         $vlResultCategory = null;
-        if (empty($finalResult)) {
-            return null;
-        }
-        if (in_array($resultStatus, array(1, 2, 3, 10))) {
+
+        if (!isset($finalResult) || empty($finalResult)) {
+            $vlResultCategory = null;
+        } else if (in_array($resultStatus, array(1, 2, 3, 10))) {
             $vlResultCategory = null;
         } else if ($resultStatus == 4) {
             $vlResultCategory = 'rejected';
         } else if ($resultStatus == 5) {
             $vlResultCategory = 'invalid';
         } else {
-            if (is_numeric($finalResult) && (float)$finalResult > 0 && (float)$finalResult == round($finalResult, 0)) {
-                $finalResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
-
+        
+            if (is_numeric($finalResult) && (float)$finalResult >= 0) {
+                $finalResult = (float)$finalResult;
                 if ($finalResult < $this->suppressionLimit) {
                     $vlResultCategory = 'suppressed';
                 } else if ($finalResult >= $this->suppressionLimit) {
@@ -210,11 +212,8 @@ class Vl
                 }
             }
         }
-        if (!empty($vlResultCategory)) {
-            return $vlResultCategory;
-        } else {
-            return null;
-        }
+
+        return $vlResultCategory;
     }
 
     public function interpretViralLoadTextResult($result, $unit = false, $lowVlResultText = null)

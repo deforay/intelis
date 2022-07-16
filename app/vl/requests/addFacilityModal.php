@@ -50,7 +50,7 @@ $pResult = $db->rawQuery($pQuery);
   </style> 
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
   <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-  <script src="assets/js/deforayModal.js"></script>
+  <script src="/assets/js/deforayModal.js"></script>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
