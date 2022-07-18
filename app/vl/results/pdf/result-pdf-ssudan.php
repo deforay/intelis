@@ -489,7 +489,7 @@ if (sizeof($requestResult) > 0) {
 
                     $html .= '<tr>';
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-                    if (!empty($testUserSignaturePath) && file_exists($testUserSignaturePath)) {
+                    if (!empty($testUserSignaturePath) && $pdf->fileExists(($testUserSignaturePath)) {
                          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
                     } else {
                          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -511,7 +511,7 @@ if (sizeof($requestResult) > 0) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-               if (!empty($reviewedSignaturePath) && file_exists($reviewedSignaturePath)) {
+               if (!empty($reviewedSignaturePath) && $pdf->fileExists(($reviewedSignaturePath)) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -530,7 +530,7 @@ if (sizeof($requestResult) > 0) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-               if (!empty($revisedSignaturePath) && file_exists($revisedSignaturePath)) {
+               if (!empty($revisedSignaturePath) && $pdf->fileExists($revisedSignaturePath)) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -551,7 +551,7 @@ if (sizeof($requestResult) > 0) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-               if (!empty($userSignaturePath) && file_exists($userSignaturePath)) {
+               if (!empty($userSignaturePath) && $pdf->fileExists(($userSignaturePath)) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';

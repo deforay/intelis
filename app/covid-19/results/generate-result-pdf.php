@@ -101,6 +101,10 @@ class MYPDF extends TCPDF
 		$this->systemConfig = $systemConfig;
 		$this->dataSync = $dataSync;
 	}
+	public function fileExists($filePath)
+	{
+		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+	}
 	//Page header
 	public function Header()
 	{
@@ -343,25 +347,25 @@ if (sizeof($requestResult) > 0) {
 		}
 		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
 			$formats = json_decode($result['reportFormat'], true);
-			if (file_exists($formats['covid19'])) {
-				include($formats['covid19']);
+			if (!empty($formats['covid19'])) {
+				require_once($formats['covid19']);
 			} else {
 				if ($arr['vl_form'] == 1) {
-					include('pdf/result-pdf-ssudan.php');
+					require_once('pdf/result-pdf-ssudan.php');
 				} else if ($arr['vl_form'] == 2) {
-					include('pdf/result-pdf-zm.php');
+					require_once('pdf/result-pdf-zm.php');
 				} else if ($arr['vl_form'] == 3) {
-					include('pdf/result-pdf-drc.php');
+					require_once('pdf/result-pdf-drc.php');
 				} else if ($arr['vl_form'] == 4) {
-					include('pdf/result-pdf-zam.php');
+					require_once('pdf/result-pdf-zam.php');
 				} else if ($arr['vl_form'] == 5) {
-					include('pdf/result-pdf-png.php');
+					require_once('pdf/result-pdf-png.php');
 				} else if ($arr['vl_form'] == 6) {
-					include('pdf/result-pdf-who.php');
+					require_once('pdf/result-pdf-who.php');
 				} else if ($arr['vl_form'] == 7) {
-					include('pdf/result-pdf-rwanda.php');
+					require_once('pdf/result-pdf-rwanda.php');
 				} else if ($arr['vl_form'] == 8) {
-					include('pdf/result-pdf-angola.php');
+					require_once('pdf/result-pdf-angola.php');
 				}
 				// exit(0);
 			}

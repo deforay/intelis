@@ -860,7 +860,7 @@ class General
 
     public function fileExists($filePath)
     {
-        return (file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
     }
 
 

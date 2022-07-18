@@ -36,6 +36,10 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
             $this->logo = $logo;
             $this->text = $text;
          }
+         public function fileExists($filePath)
+         {
+            return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+         }
          //Page header
          public function Header()
          {

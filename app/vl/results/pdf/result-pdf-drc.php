@@ -15,16 +15,16 @@ class DRC_PDF extends MYPDF
 		if (trim($this->logo) != '') {
 			if ($this->fileExists($this->logo)) {
 				$image_file = $this->logo;
-			} else if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
+			} else if ($this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
 				$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-			} else if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+			} else if ($this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
 				$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
 			}
 			if (!empty($image_file)) {
 				$this->Image($image_file, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 			}
 		}
-		if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
+		if ($this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
 			$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
 			$this->Image($image_file, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		}
@@ -89,7 +89,7 @@ if (sizeof($requestResult) > 0) {
 		}
 		// create new PDF document
 		$pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-		if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+		if ($pdf->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
 			$logoPrintInPdf = $result['facilityLogo'];
 		} else {
 			$logoPrintInPdf = $arr['logo'];
@@ -237,7 +237,7 @@ if (sizeof($requestResult) > 0) {
 			$resultType = is_numeric($result['result']);
 			if (in_array(strtolower(trim($result['result'])), array("< 20", "< 40", "< 800", "< 400", "tnd", "target not detected", "not detected", "below detection level"))) {
 				$vlResult = 'TND*';
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
 				$showMessage = ucfirst($arr['l_vl_msg']);
 				$tndMessage = 'TND* - Target not Detected';
 			} else if (in_array(strtolower(trim($result['result'])), array("failed", "fail", "no_sample", "invalid"))) {
@@ -247,28 +247,28 @@ if (sizeof($requestResult) > 0) {
 				$messageTextSize = '14px';
 			} else if (trim($result['result']) > 1000 && $result['result'] <= 10000000) {
 				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
 				$showMessage = ucfirst($arr['h_vl_msg']);
 				$messageTextSize = '15px';
 			} else if (trim($result['result']) <= 1000 && $result['result'] >= 20) {
 				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
 				$showMessage = ucfirst($arr['l_vl_msg']);
 			} else if (trim($result['result'] > 10000000) && $resultType) {
 				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
 				//$showMessage = 'Value outside machine detection limit';
 			} else if (trim($result['result'] < 20) && $resultType) {
 				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
 				//$showMessage = 'Value outside machine detection limit';
 			} else if (trim($result['result']) == '<20') {
 				$vlResult = '&lt;20';
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
 				$showMessage = ucfirst($arr['l_vl_msg']);
 			} else if (trim($result['result']) == '>10000000') {
 				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
 				$showMessage = ucfirst($arr['h_vl_msg']);
 			} else if ($result['vl_test_platform'] == 'Roche') {
 				$chkSign = '';
@@ -289,16 +289,16 @@ if (sizeof($requestResult) > 0) {
 				//$showMessage = 'Invalid value';
 			}
 			if (isset($smileyShow) && $smileyShow != '' && $smileyShow <= $arr['viral_load_threshold_limit']) {
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
 			} else if (isset($smileyShow) && $smileyShow != '' && $smileyShow > $arr['viral_load_threshold_limit']) {
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
 			}
 		}
 		if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
 			$smileyContent = '';
 		}
 		if ($result['result_status'] == '4') {
-			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/cross.png" alt="rejected"/>';
+			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
 		}
 		$html = '<br>';
 		$html .= '<table style="padding:0px 2px 2px 2px;">';
@@ -441,7 +441,7 @@ if (sizeof($requestResult) > 0) {
 		}
 		if (!isset($signResults) || empty($signResults)) {
 
-			if (!empty($userSignaturePath) && file_exists($userSignaturePath) && !empty($resultApprovedBy)) {
+			if (!empty($userSignaturePath) && $pdf->fileExists($userSignaturePath) && !empty($resultApprovedBy)) {
 				$html .= '<tr>';
 				$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:70px;margin-top:-20px;" /><br></td>';
 				$html .= '</tr>';

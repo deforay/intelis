@@ -28,7 +28,7 @@ if (sizeof($requestResult) > 0) {
           }
           // create new PDF document
           $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-          if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+          if ($pdf->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
                $logoPrintInPdf = $result['facilityLogo'];
           } else {
                $logoPrintInPdf = $arr['logo'];
@@ -375,7 +375,7 @@ if (sizeof($requestResult) > 0) {
                $html .= '<td colspan="3" style="line-height:16px;"></td>';
                $html .= '</tr>';
           }
-          if (!empty($userSignaturePath) && file_exists($userSignaturePath)) {
+          if (!empty($userSignaturePath) && $pdf->fileExists($userSignaturePath)) {
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:70px;margin-top:-20px;" /><br></td>';
                $html .= '</tr>';

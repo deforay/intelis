@@ -99,6 +99,10 @@ class MYPDF extends TCPDF
         $this->formId = $formId;
         $this->facilityInfo = $facilityInfo;
     }
+    public function fileExists($filePath)
+    {
+        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+    }
     //Page header
     public function Header()
     {

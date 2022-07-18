@@ -19,6 +19,10 @@ class MYPDF extends TCPDF
         $this->text = $text;
         $this->labname = $labname;
     }
+    public function fileExists($filePath)
+    {
+        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+    }
     //Page header
     public function Header()
     {
@@ -86,7 +90,7 @@ if (trim($id) != '') {
                 LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id 
                 LEFT JOIN r_vl_sample_type as st ON st.sample_id=vl.sample_type 
                 WHERE pd.package_id IN($id)";
-    
+
     $result = $db->query($sQuery);
 
 
