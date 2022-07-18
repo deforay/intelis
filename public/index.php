@@ -1,8 +1,5 @@
 <?php
 
-// use Laminas\Diactoros\ServerRequestFactory;
-// use Vlsm\Utilities\Registry;
-
 /**
  * This makes our life easier when dealing with paths. Everything is relative
  * to the application root now.
@@ -35,25 +32,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
     exit(0);
 }
 
+$requestedPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), "/");
 
-// $serverRequestObject = ServerRequestFactory::fromGlobals();
-
-// Registry::set('request', $serverRequestObject);
-
-$requestURI = trim($_SERVER['REQUEST_URI'], "/");
-$requestedPath = explode("?", $requestURI);
-
-
-switch ($requestedPath[0]) {
-    case '/':
-        require APPLICATION_PATH . '/index.php';
-        break;
+switch ($requestedPath) {
+    case null:
     case '':
         require APPLICATION_PATH . '/index.php';
         break;
     default:
-        if (file_exists(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath[0]) && is_file(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath[0])) {
-            require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath[0]);
+        if (is_file(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
+            require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath);
         } else {
             require APPLICATION_PATH . '/error/404.php';
         }

@@ -3,16 +3,6 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-
-
-$formConfigQuery = "SELECT * from global_config where name='vl_form'";
-$configResult = $db->query($formConfigQuery);
-$arr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-     $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-
 $general = new \Vlsm\Models\General();
 
 $sarr = $general->getSystemConfig();
@@ -253,7 +243,7 @@ if (!isset($_POST['status']) || trim($_POST['status']) == '') {
           $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
      }
 } else {
-     $sWhere[] = " vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
+     $sWhere[] = " vl.result_status!=9 ";
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
