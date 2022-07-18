@@ -90,7 +90,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 						<!-- /.box-header -->
 						<div class="box-body">
 							<h3> Audit Trail for Sample <?php echo $sampleCode; ?></h3>
-							<table class="table table-striped table-hover">
+							<table id="auditTable" class="table table-striped table-hover">
 								<thead>
 									<tr>
 										<?php
@@ -116,7 +116,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 												<?php
 												for ($j = 0; $j < count($colArr); $j++) {
 											
-													if(!empty($posts[$i][$colArr[$j]]) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
+													if(!empty($posts[$i - 1][$colArr[$j]]) && !empty($posts[$i][$colArr[$j]]) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
 													{
 														echo '<td style="background: orange; color:black;" >'.$posts[$i][$colArr[$j]].'</td>';
 													}
@@ -236,3 +236,13 @@ require_once(APPLICATION_PATH . '/footer.php');
 		background-color: #ffc107;
 	}
 </style>
+<script type="text/javascript">
+	$(function() {
+		$("#auditTable").DataTable({
+			scrollY: '50vh',
+			scrollX: true,
+			scrollCollapse: true,
+			paging: false,
+		});
+	});
+</script>
