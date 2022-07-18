@@ -122,14 +122,19 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
+							<div class="col-md-6" id="allowResultUpload" style="display:none;">
 								<div class="form-group">
-									<label for="testingPoints" class="col-lg-4 control-label"><?php echo _("Testing Point(s)");?><br> <small><?php echo _("(comma separated)");?></small> </label>
+									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload");?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="<?php echo _('eg. VCT, PMTCT');?>" />
+										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type');?>">
+											<option value=""> <?php echo _("-- Select --");?> </option>
+											<option value="Yes">Yes</option>
+											<option value="No">No</option>
+										</select>
 									</div>
 								</div>
 							</div>
+							
 							<!--<div class="col-md-6">
                     <div class="form-group">
                         <label for="reportEmail" class="col-lg-4 control-label">Report Email(s) </label>
@@ -141,6 +146,14 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 						</div>
 						<br>
 						<div class="row">
+						<div class="col-md-6">
+								<div class="form-group">
+									<label for="testingPoints" class="col-lg-4 control-label"><?php echo _("Testing Point(s)");?><br> <small><?php echo _("(comma separated)");?></small> </label>
+									<div class="col-lg-7">
+										<input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="<?php echo _('eg. VCT, PMTCT');?>" />
+									</div>
+								</div>
+							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="Lab Manager" class="col-lg-4 control-label"><?php echo _("Lab Manager");?></label>
@@ -151,7 +164,10 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
+							
+						</div>
+						<div class="row">
+						<div class="col-md-6">
 								<div class="form-group">
 									<label for="phoneNo" class="col-lg-4 control-label"><?php echo _("Phone Number");?></label>
 									<div class="col-lg-7">
@@ -159,8 +175,6 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="state" class="col-lg-4 control-label"><?php echo _("Province/State");?> <span class="mandatory">*</span></label>
@@ -178,7 +192,11 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
+						
+						
+
+						<div class="row">
+						<div class="col-md-6">
 								<div class="form-group">
 									<label for="district" class="col-lg-4 control-label"><?php echo _("District/County");?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
@@ -191,9 +209,6 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-						</div>
-
-						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="hubName" class="col-lg-4 control-label"><?php echo _("Linked Hub Name (If Applicable)");?></label>
@@ -202,7 +217,10 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
+							
+						</div>
+						<div class="row">
+						<div class="col-md-6">
 								<div class="form-group">
 									<label for="address" class="col-lg-4 control-label"><?php echo _("Address");?></label>
 									<div class="col-lg-7">
@@ -210,8 +228,6 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="country" class="col-lg-4 control-label"><?php echo _("Country");?></label>
@@ -220,7 +236,10 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
+							
+						</div>
+						<div class="row">
+						<div class="col-md-6">
 								<div class="form-group">
 									<label for="latitude" class="col-lg-4 control-label"><?php echo _("Latitude");?></label>
 									<div class="col-lg-7">
@@ -228,8 +247,6 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="longitude" class="col-lg-4 control-label"><?php echo _("Longitude");?></label>
@@ -238,7 +255,10 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
+					
+						</div>
+						<div class="row">
+						<div class="col-md-6">
 								<div class="form-group">
 									<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type");?></label>
 									<div class="col-lg-7">
@@ -262,8 +282,6 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
 							<div class="col-md-6 availablePlatforms" style="display:none;">
 								<div class="form-group">
 									<label for="availablePlatforms" class="col-lg-4 control-label"><?php echo _("Available Platforms");?></label>
@@ -495,6 +513,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$("#allowResultUpload option[value=Yes]").attr('selected', 'selected');
 		$("#testType").multipleSelect({
 			placeholder: '<?php echo _("Select Test Type");?>',
 			width: '100%'
@@ -602,6 +621,22 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 			$('#provinceNew').hide();
 			$('#provinceNew').removeClass('isRequired');
 			$('#provinceNew').val('');
+		}
+	});
+
+	$('#facilityType').on('change', function() {
+		if (this.value == '2') {
+			$("#allowResultUpload option[value=Yes]").attr('selected', 'selected');
+			$("#allowResultUpload option[value='']").removeAttr('selected', 'selected');
+			$('#allowResultUpload').show();
+			$('#allowResultUpload').addClass('isRequired');
+			$('#allowResultUpload').focus();
+		} else {
+			$("#allowResultUpload option[value=Yes]").removeAttr('selected', 'selected');
+			$("#allowResultUpload option[value='']").attr('selected', 'selected');
+			$('#allowResultUpload').hide();
+			$('#allowResultUpload').removeClass('isRequired');
+			$('#allowResultUpload').val('');
 		}
 	});
 
