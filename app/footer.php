@@ -177,9 +177,11 @@
 						url: '<?php echo rtrim(SYSTEM_CONFIG['remoteURL'], "/"); ?>/api/v1.1/version.php',
 						cache: false,
 						success: function(data) {
+							$('.is-remote-server-reachable').fadeIn(1000);
 							$('.is-remote-server-reachable').css('color', '#4dbc3c');
 						},
 						error: function() {
+							$('.is-remote-server-reachable').fadeIn(1000);
 							$('.is-remote-server-reachable').css('color', 'red');
 						}
 					});
