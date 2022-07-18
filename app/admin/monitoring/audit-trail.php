@@ -12,17 +12,11 @@ if (isset($_POST['testType'])) {
 	$tableName2 = "";
 }
 
-function getDifference($arr1, $arr2)
-{
-	$diff = array_merge(array_diff_assoc($arr1, $arr2), array_diff_assoc($arr2, $arr1));
-	return $diff;
-}
-
 function getColumns($db, $tableName)
 {
-	$columns_sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name=?";
-	$result_column = $db->rawQuery($columns_sql, array(SYSTEM_CONFIG['dbName'], $tableName));
-	return $result_column;
+	$columnsSql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name=?";
+	$resultColumn = $db->rawQuery($columnsSql, array(SYSTEM_CONFIG['dbName'], $tableName));
+	return $resultColumn;
 }
 
 function getColumnValues($db, $tableName, $sampleCode)
@@ -100,13 +94,13 @@ function getColumnValues($db, $tableName, $sampleCode)
 								<thead>
 									<tr>
 										<?php
-										$result_column = getColumns($db, $tableName);
-										$col_arr = array();
-										foreach ($result_column as $col) {
-											$col_arr[] = $col['COLUMN_NAME'];
+										$resultColumn = getColumns($db, $tableName);
+										$colArr = array();
+										foreach ($resultColumn as $col) {
+											$colArr[] = $col['COLUMN_NAME'];
 										?>
 											<th>
-												<?php //echo ucwords(str_replace('_',' ',$col['COLUMN_NAME'])); 
+												<?php 
 												echo $col['COLUMN_NAME'];
 												?>
 											</th>
@@ -114,27 +108,21 @@ function getColumnValues($db, $tableName, $sampleCode)
 									</tr>
 								</thead>
 								<tbody>
-
 									<?php
-
 									if (count($posts) > 0) {
 										for ($i = 0; $i < count($posts); $i++) {
-											$k = ($i - 1);
-											//$arrDiff = getDifference($posts[$i], $posts[$k]);
-
 									?>
 											<tr>
 												<?php
-
-												for ($j = 0; $j < count($col_arr); $j++) {
+												for ($j = 0; $j < count($colArr); $j++) {
 											
-													if(!empty($posts[$i][$col_arr[$j]]) && $posts[$i][$col_arr[$j]]!=$posts[$i-1][$col_arr[$j]])
+													if(!empty($posts[$i][$colArr[$j]]) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
 													{
-														echo '<td style="background: orange; color:black;" >'.$posts[$i][$col_arr[$j]].'</td>';
+														echo '<td style="background: orange; color:black;" >'.$posts[$i][$colArr[$j]].'</td>';
 													}
 													else
 													{
-														echo '<td >'.$posts[$i][$col_arr[$j]].'</td>';
+														echo '<td>'.$posts[$i][$colArr[$j]].'</td>';
 													}
 														?>
 													</td>
@@ -159,14 +147,12 @@ function getColumnValues($db, $tableName, $sampleCode)
 								<thead>
 									<tr>
 										<?php
-										$result_column = getColumns($db, $tableName2);
-										$col_arr = array();
+										$resultColumn = getColumns($db, $tableName2);
 										$posts = getColumnValues($db, $tableName2, $sampleCode);
-										foreach ($result_column as $col) {
-											$col_arr[] = $col['COLUMN_NAME'];
+										foreach ($resultColumn as $col) {
 										?>
 											<th>
-												<?php //echo ucwords(str_replace('_',' ',$col['COLUMN_NAME'])); 
+												<?php 
 												echo $col['COLUMN_NAME'];
 												?>
 											</th>
@@ -175,40 +161,16 @@ function getColumnValues($db, $tableName, $sampleCode)
 								</thead>
 								<tbody>
 									<?php
-
-
 									if (count($posts) > 0) {
 										for ($i = 0; $i < count($posts); $i++) {
-											$k = ($i - 1);
-											//$arrDiff = getDifference($posts[$i], $posts[$k]);
-
 									?>
 											<tr>
 												<?php
-
-												for ($j = 0; $j < count($col_arr); $j++) {
+												for ($j = 0; $j < count($colArr); $j++) {
 												?>
-													<td class="compare_col-<?php echo $i . '-' . $j; ?>">
+													<td>
 														<?php
-														/*if ($i > 0) {
-														//	if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
-																echo '<style type="text/css">
-															.compare_col-' . $i . '-' . $j . ' {
-															background: orange;
-															color:black;
-															}
-															</style>';
-															//} else {
-																echo '<style type="text/css">
-															.compare_col-' . $i . '-' . $j . ' {
-															background: white;
-															color:black;
-															}
-															</style>';
-														//	}
-														}
-*/
-														echo $posts[$i][$col_arr[$j]];
+														echo $posts[$i][$colArr[$j]];
 														?>
 													</td>
 												<?php }
@@ -220,7 +182,6 @@ function getColumnValues($db, $tableName, $sampleCode)
 										echo "<tr align='center'><td colspan='10'>No records available</td></tr>";
 									}
 									?>
-
 								</tbody>
 
 							</table>
