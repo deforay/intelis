@@ -13,7 +13,6 @@ $jsonResponse = file_get_contents('php://input');
 // error_log("------ USER API START-----");
 // error_log($jsonResponse);
 // error_log("------ USER API END -----");
-
 try {
     ini_set('memory_limit', -1);
     $auth = $general->getHeader('Authorization');
@@ -36,8 +35,8 @@ try {
     }
     if (!empty($jsonResponse)) {
         $decode = json_decode($jsonResponse, true);
-        http_response_code(501);
-        exit(0);
+        /* http_response_code(501);
+        exit(0); */
     } else if (!empty($_REQUEST)) {
         $decode = $_REQUEST;
         $decode['post'] = json_decode($decode['post'], true);
@@ -45,7 +44,6 @@ try {
         throw new Exception("Invalid request. Please check your request parameters.");
     }
     $apiKey = isset($decode['x-api-key']) && !empty($decode['x-api-key']) ? $decode['x-api-key'] : null;
-
     if ((empty($decode['post']) || $decode['post'] === false) && !isset($user)) {
         throw new Exception("Invalid request. Please check your request parameters.");
     } else {
@@ -55,7 +53,6 @@ try {
             $post = $decode['post'];
         }
     }
-
     $filter_factory = new FilterFactory();
     $filter = $filter_factory->newSubjectFilter();
 
@@ -88,7 +85,6 @@ try {
     } else {
         $userId = !empty($post['userId']) ? $db->escape($post['userId']) : null;
     }
-
     $aRow = null;
     if (!empty($userId) || !empty($post['email'])) {
         if (!empty($userId)) {
@@ -99,11 +95,12 @@ try {
         $aRow = $db->getOne("user_details");
     }
     $data = array(
-        'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
-        'user_name' => $db->escape($post['userName']),
-        'email' => $db->escape($post['email']),
-        'interface_user_name' => json_encode(array_map('trim', explode(",", $db->escape($post['interfaceUserName'])))),
-        'phone_number' => $db->escape($post['phoneNo'])
+        'user_id'               => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
+        'user_name'             => $db->escape($post['userName']),
+        'email'                 => $db->escape($post['email']),
+        'login_id'              => $db->escape($post['loginId']),
+        'interface_user_name'   => json_encode(array_map('trim', explode(",", $db->escape($post['interfaceUserName'])))),
+        'phone_number'          => $db->escape($post['phoneNo'])
     );
 
     if (!empty($post['status'])) {
@@ -112,7 +109,7 @@ try {
 
     if (!empty($post['password'])) {
         $data['hash_algorithm'] = 'phb';
-        $data['password'] = $userModel->passwordHash($post['password']);
+        $data['password'] = $userDb->passwordHash($post['password']);
     }
     if (!empty($post['role'])) {
         $data['role_id'] =  $db->escape($post['role']);

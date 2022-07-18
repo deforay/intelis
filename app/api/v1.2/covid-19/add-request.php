@@ -51,6 +51,36 @@ try {
         $rowData = $db->rawQuery($sQuery);
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
         $sampleFrom = '';
+
+        /* Checkng required fields */
+        if (empty($data['uniqueId']) || empty($data['appSampleCode']) || empty($data['facilityId']) || empty($data['patientId']) || empty($data['reasonForCovid19Test']) || empty($data['specimenType']) || empty($data['sampleCollectionDate'])) {
+            throw new Exception("Invalid request. Please check your request parameters.");
+            exit(0);
+        }
+
+        $generatedUniqueId = null;
+        $existingData = $db->rawQuery('SELECT unique_id, app_sample_code FROM form_covid19 WHERE app_sample_code = ? OR unique_id = ? OR sample_code = ? OR remote_sample_code = ?', array($data['appSampleCode'], $data['uniqueId'], $data['sampleCode'], $data['remoteSampleCode']));
+
+        // FOR EXISTING SAMPLES:
+        if (count($existingData) > 0) {
+            // check if API provided unique_id is matching with the one in our db
+            if (array_search($data['uniqueId'], array_column($existingData, 'unique_id'))) {
+                throw new Exception("Invalid request. Please check your request parameters.");
+                exit(0);
+            }
+            if (array_search($data['appSampleCode'], array_column($existingData, 'app_sample_code'))) {
+                throw new Exception("Invalid request. Please check your request parameters.");
+                exit(0);
+            }
+        }
+        // FOR NEW SAMPLES
+        else {
+            if (empty($data['uniqueId'])) {
+                $generatedUniqueId = $app->generateUniqueId("form_covid19", "unique_id");
+            }
+        }
+
+
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
@@ -242,7 +272,7 @@ try {
         $covid19Data = array(
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $data['formId'],
-            'unique_id'                           => isset($data['uniqueId']) ? $data['uniqueId'] : null,
+            'unique_id'                           => isset($data['uniqueId']) ? $data['uniqueId'] : $generatedUniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'external_sample_code'                => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,

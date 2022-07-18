@@ -66,6 +66,35 @@ try {
         $rowData = $db->rawQuery($sQuery);
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
         $sampleFrom = '';
+
+        /* Checkng required fields */
+        if (empty($data['uniqueId']) || empty($data['appSampleCode']) || empty($data['facilityId']) || empty($data['patientArtNo']) || empty($data['vlTestReason']) || empty($data['specimenType']) || empty($data['sampleCollectionDate'])) {
+            throw new Exception("Invalid request. Please check your request parameters.");
+            exit(0);
+        }
+
+        $generatedUniqueId = null;
+        $existingData = $db->rawQuery('SELECT unique_id, app_sample_code FROM form_vl WHERE app_sample_code = ? OR unique_id = ? OR sample_code = ? OR remote_sample_code = ?', array($data['appSampleCode'], $data['uniqueId'], $data['sampleCode'], $data['remoteSampleCode']));
+
+        // FOR EXISTING SAMPLES:
+        if (count($existingData) > 0) {
+            // check if API provided unique_id is matching with the one in our db
+            if (array_search($data['uniqueId'], array_column($existingData, 'unique_id'))) {
+                throw new Exception("Invalid request. Please check your request parameters.");
+                exit(0);
+            }
+            if (array_search($data['appSampleCode'], array_column($existingData, 'app_sample_code'))) {
+                throw new Exception("Invalid request. Please check your request parameters.");
+                exit(0);
+            }
+        }
+        // FOR NEW SAMPLES
+        else {
+            if (empty($data['uniqueId'])) {
+                $generatedUniqueId = $app->generateUniqueId("form_vl", "unique_id");
+            }
+        }
+
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
@@ -87,6 +116,7 @@ try {
         $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
+            throw new Exception("Invalid request. Please check your request parameters.");
             exit();
         }
 
@@ -323,7 +353,7 @@ try {
         $vlFulldata = array(
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],
-            'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : null,
+            'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : $generatedUniqueId,
             'app_sample_code'                       => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_code_title'                     => (isset($data['sampleCodeTitle']) && $data['sampleCodeTitle'] != '') ? $data['sampleCodeTitle'] :  'auto',
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',
@@ -346,7 +376,7 @@ try {
             'consent_to_receive_sms'                => (isset($data['receiveSms']) && $data['receiveSms'] != '') ? $data['receiveSms'] :  NULL,
             'sample_type'                           => (isset($data['specimenType']) && $data['specimenType'] != '') ? $data['specimenType'] :  NULL,
             'arv_adherance_percentage'              => (isset($data['arvAdherence']) && $data['arvAdherence'] != '') ? $data['arvAdherence'] :  NULL,
-            'reason_for_vl_testing'                 => (isset($data['stViralTesting'])) ? $data['stViralTesting'] : NULL,
+            'reason_for_vl_testing'                 => (isset($data['vlTestReason'])) ? $data['vlTestReason'] : NULL,
             'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? $general->dateFormat($data['rmTestingLastVLDate']) :  NULL,
             'last_vl_result_routine'                => (isset($data['rmTestingVlValue']) && $data['rmTestingVlValue'] != '') ? $data['rmTestingVlValue'] :  NULL,
             'last_vl_date_failure_ac'               => (isset($data['repeatTestingLastVLDate']) && $data['repeatTestingLastVLDate'] != '') ? $general->dateFormat($data['repeatTestingLastVLDate']) :  NULL,

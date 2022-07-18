@@ -21,8 +21,7 @@ try {
 
         $queryParams = array($username);
         $userResult = $db->rawQueryOne(
-            "SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, ud.password, 
-                                        ud.hash_algorithm, r.*, 
+            "SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, ud.password, ud.hash_algorithm, r.*, 
                                         (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user 
                                         FROM user_details as ud 
                                         INNER JOIN roles as r ON ud.role_id=r.role_id 
@@ -86,6 +85,8 @@ try {
                     $data['appMenuName'] = $general->getGlobalConfig('app_menu_name');
                     $data['access'] = $users->getUserRolePrivileges($userResult['user_id']);
                     // print_r($data);die;
+                    unset($data['hash_algorithm']);
+                    unset($data['password']);
                     $payload = array(
                         'status' => 1,
                         'message' => 'Login Success',

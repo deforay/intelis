@@ -48,6 +48,36 @@ try {
         $rowData = $db->rawQuery($sQuery);
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
         $sampleFrom = '';
+
+
+        /* Checkng required fields */
+        if (empty($data['uniqueId']) || empty($data['appSampleCode']) || empty($data['facilityId']) || empty($data['eidTestReason']) || empty($data['childId']) || empty($data['specimenType']) || empty($data['sampleCollectionDate'])) {
+            throw new Exception("Invalid request. Please check your request parameters.");
+            exit(0);
+        }
+        $generatedUniqueId = null;
+        $existingData = $db->rawQuery('SELECT unique_id, app_sample_code FROM form_eid WHERE app_sample_code = ? OR unique_id = ? OR sample_code = ? OR remote_sample_code = ?', array($data['appSampleCode'], $data['uniqueId'], $data['sampleCode'], $data['remoteSampleCode']));
+
+        // FOR EXISTING SAMPLES:
+        if (count($existingData) > 0) {
+            // check if API provided unique_id is matching with the one in our db
+            if (array_search($data['uniqueId'], array_column($existingData, 'unique_id'))) {
+                throw new Exception("Invalid request. Please check your request parameters.");
+                exit(0);
+            }
+            if (array_search($data['appSampleCode'], array_column($existingData, 'app_sample_code'))) {
+                throw new Exception("Invalid request. Please check your request parameters.");
+                exit(0);
+            }
+        }
+        // FOR NEW SAMPLES
+        else {
+            if (empty($data['uniqueId'])) {
+                $generatedUniqueId = $app->generateUniqueId("form_eid", "unique_id");
+            }
+        }
+
+
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
@@ -280,7 +310,7 @@ try {
         $eidData = array(
             'vlsm_instance_id'                                  => $instanceId,
             'vlsm_country_id'                                   => $data['formId'],
-            'unique_id'                                         => isset($data['uniqueId']) ? $data['uniqueId'] : null,
+            'unique_id'                                         => isset($data['uniqueId']) ? $data['uniqueId'] : $generatedUniqueId,
             'app_sample_code'                                   => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'facility_id'                                       => isset($data['facilityId']) ? $data['facilityId'] : null,
             'province_id'                                       => isset($data['provinceId']) ? $data['provinceId'] : null,
@@ -311,6 +341,7 @@ try {
             'pcr_test_performed_before'                         => isset($data['pcrTestPerformedBefore']) ? $data['pcrTestPerformedBefore'] : null,
             'previous_pcr_result'                               => isset($data['prePcrTestResult']) ? $data['prePcrTestResult'] : null,
             'last_pcr_date'                                     => isset($data['previousPCRTestDate']) ? $data['previousPCRTestDate'] : null,
+            'reason_for_eid_test'                               => isset($data['eidTestReason']) ? $data['eidTestReason'] : null,
             'reason_for_pcr'                                    => isset($data['pcrTestReason']) ? $data['pcrTestReason'] : null,
             'has_infant_stopped_breastfeeding'                  => isset($data['hasInfantStoppedBreastfeeding']) ? $data['hasInfantStoppedBreastfeeding'] : null,
             'age_breastfeeding_stopped_in_months'               => isset($data['ageBreastfeedingStopped']) ? $data['ageBreastfeedingStopped'] : null,
