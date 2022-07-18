@@ -127,28 +127,15 @@ function getColumnValues($db, $tableName, $sampleCode)
 												<?php
 
 												for ($j = 0; $j < count($col_arr); $j++) {
-												?>
-													<td class="compare_col-<?php echo $i . '-' . $j; ?>">
-									<?php
-														if ($i > 0) {
-								//if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
-								echo '<style type="text/css">
-								.compare_col-' . $i . '-' . $j . ' {
-								background: orange;
-								color:black;
-								}
-								</style>';
-														///	} else {
-																echo '<style type="text/css">
-								.compare_col-' . $i . '-' . $j . ' {
-								background: white;
-								color:black;
-								}
-								</style>';
-													//		}
-														}
-
-														echo $posts[$i][$col_arr[$j]];
+											
+													if(!empty($posts[$i][$col_arr[$j]]) && $posts[$i][$col_arr[$j]]!=$posts[$i-1][$col_arr[$j]])
+													{
+														echo '<td style="background: orange; color:black;" >'.$posts[$i][$col_arr[$j]].'</td>';
+													}
+													else
+													{
+														echo '<td >'.$posts[$i][$col_arr[$j]].'</td>';
+													}
 														?>
 													</td>
 												<?php }
@@ -203,24 +190,24 @@ function getColumnValues($db, $tableName, $sampleCode)
 												?>
 													<td class="compare_col-<?php echo $i . '-' . $j; ?>">
 														<?php
-														if ($i > 0) {
+														/*if ($i > 0) {
 														//	if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
 																echo '<style type="text/css">
-								.compare_col-' . $i . '-' . $j . ' {
-								background: orange;
-								color:black;
-								}
-								</style>';
+															.compare_col-' . $i . '-' . $j . ' {
+															background: orange;
+															color:black;
+															}
+															</style>';
 															//} else {
 																echo '<style type="text/css">
-								.compare_col-' . $i . '-' . $j . ' {
-								background: white;
-								color:black;
-								}
-								</style>';
+															.compare_col-' . $i . '-' . $j . ' {
+															background: white;
+															color:black;
+															}
+															</style>';
 														//	}
 														}
-
+*/
 														echo $posts[$i][$col_arr[$j]];
 														?>
 													</td>
