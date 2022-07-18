@@ -312,7 +312,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 															echo $_SESSION['userName'];
 														} ?></span>
 								<?php if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
-									<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;;"></span>
+									<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
 								<?php } ?>
 							</a>
 							<ul class="dropdown-menu">
