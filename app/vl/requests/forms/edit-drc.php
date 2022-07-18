@@ -483,16 +483,12 @@ $sampleSuggestionDisplay = 'display:none;';
 										<h3 class="box-title">2. Réservé au Laboratoire de biologie moléculaire </h3>
 									</div>
 									<table class="table" style="width:100%">
-										<tr style="display:<?php echo ($sCode != '') ? 'none' : 'block'; ?>">
+										<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 											<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
 											<td>
 												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
 											</td>
-											<td></td>
-											<td></td>
-										</tr>
-										<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled") { ?>
-											<tr style="<?php echo (($_SESSION['userType'] == 'clinic' || $_SESSION['userType'] == 'lab') && $vlQueryInfo['result_status'] == 9) ? 'display:none;' : ''; ?>">
+											<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled") { ?>
 												<td><label for="">Décision prise </label></td>
 												<td>
 													<select class="form-control" id="status" name="status" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
@@ -502,10 +498,8 @@ $sampleSuggestionDisplay = 'display:none;';
 														<option value="4" <?php echo ($vlQueryInfo['result_status'] == 4) ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
 													</select>
 												</td>
-												<td></td>
-												<td></td>
-											</tr>
-										<?php } ?>
+											<?php } ?>
+										</tr>
 										<tr class="rejectionReason" style="display:<?php echo ($vlQueryInfo['result_status'] == 4) ? '' : 'none'; ?>;">
 											<td><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 											<td>
@@ -534,19 +528,13 @@ $sampleSuggestionDisplay = 'display:none;';
 													<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Sélectionner --'); ?>
 												</select>
 											</td>
-											<td></td>
-											<td></td>
-										</tr>
-										<tr>
-											<td colspan="4" style="height:30px;border:none;"></td>
-										</tr>
-										<tr>
 											<td><label for="">Date de réalisation de la charge virale </label></td>
 											<td>
 												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 											</td>
-											<td></td>
-											<td></td>
+										</tr>
+										<tr>
+											<td colspan="4" style="height:30px;border:none;"></td>
 										</tr>
 										<tr>
 											<td><label for="testingPlatform">Technique utilisée </label></td>

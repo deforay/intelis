@@ -379,12 +379,12 @@ $sFormat = '';
 								</div>
 								<table class="table" style="width:100%">
 									<tr>
-										<td style="width:25%;"><label for="">Date du prélèvement <span class="mandatory">*</span></label></td>
-										<td style="width:25%;">
+										<td><label for="">Date du prélèvement <span class="mandatory">*</span></label></td>
+										<td>
 											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date du prélèvement" onchange="checkSampleReceviedDate();checkSampleTestingDate();sampleCodeGeneration();" style="width:100%;" />
 										</td>
-										<td style="width:25%;"></td>
-										<td style="width:25%;"></td>
+										<td></td>
+										<td></td>
 									</tr>
 									<?php if (isset($arr['sample_type']) && trim($arr['sample_type']) == "enabled") { ?>
 										<tr>
@@ -433,15 +433,11 @@ $sFormat = '';
 									</div>
 									<table class="table" style="width:100%">
 										<tr>
-											<td style="width:25%;"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
-											<td style="width:25%;">
+											<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
+											<td>
 												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" style="width:100%;" />
 											</td>
-											<td style="width:25%;"></td>
-											<td style="width:25%;"></td>
-										</tr>
-										<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled" && $_SESSION['userType'] == '') { ?>
-											<tr>
+											<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled" && $_SESSION['userType'] == '') { ?>
 												<td><label for="">Décision prise </label></td>
 												<td>
 													<select class="form-control" id="status" name="status" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
@@ -451,10 +447,11 @@ $sFormat = '';
 														<option value="4">Echantillon rejeté</option>
 													</select>
 												</td>
+											<?php } else { ?>
 												<td></td>
 												<td></td>
-											</tr>
-										<?php } ?>
+											<?php } ?>
+										</tr>
 										<tr class="rejectionReason" style="display:none;">
 											<td><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 											<td>
@@ -478,19 +475,13 @@ $sFormat = '';
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
 												</select>
 											</td>
-											<td></td>
-											<td></td>
-										</tr>
-										<tr>
-											<td colspan="4" style="height:30px;border:none;"></td>
-										</tr>
-										<tr>
-											<td><label for="">Date de réalisation de la charge virale </label></td>
+											<td><label for="dateOfCompletionOfViralLoad">Date de réalisation de la charge virale </label></td>
 											<td>
 												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
-											<td></td>
-											<td></td>
+										</tr>
+										<tr>
+											<td colspan="4" style="height:30px;border:none;"></td>
 										</tr>
 										<tr>
 											<td><label for="testingPlatform">Technique utilisée </label></td>

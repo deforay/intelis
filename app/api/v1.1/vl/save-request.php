@@ -376,7 +376,7 @@ try {
             'consent_to_receive_sms'                => (isset($data['receiveSms']) && $data['receiveSms'] != '') ? $data['receiveSms'] :  NULL,
             'sample_type'                           => (isset($data['specimenType']) && $data['specimenType'] != '') ? $data['specimenType'] :  NULL,
             'arv_adherance_percentage'              => (isset($data['arvAdherence']) && $data['arvAdherence'] != '') ? $data['arvAdherence'] :  NULL,
-            'reason_for_vl_testing'                 => (isset($data['stViralTesting'])) ? $data['stViralTesting'] : NULL,
+            'reason_for_vl_testing'                 => (isset($data['vlTestReason'])) ? $data['vlTestReason'] : NULL,
             'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? $general->dateFormat($data['rmTestingLastVLDate']) :  NULL,
             'last_vl_result_routine'                => (isset($data['rmTestingVlValue']) && $data['rmTestingVlValue'] != '') ? $data['rmTestingVlValue'] :  NULL,
             'last_vl_date_failure_ac'               => (isset($data['repeatTestingLastVLDate']) && $data['repeatTestingLastVLDate'] != '') ? $general->dateFormat($data['repeatTestingLastVLDate']) :  NULL,

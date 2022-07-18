@@ -386,12 +386,12 @@ $disable = "disabled = 'disabled'";
 								</div>
 								<table class="table" style="width:100%">
 									<tr>
-										<td style="width:25%;"><label for="">Date du prélèvement </label></td>
-										<td style="width:25%;">
+										<td><label for="">Date du prélèvement </label></td>
+										<td>
 											<input type="text" class="form-control dateTime" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date du prélèvement" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" style="width:100%;" />
 										</td>
-										<td style="width:25%;"></td>
-										<td style="width:25%;"></td>
+										<td></td>
+										<td></td>
 									</tr>
 									<?php
 									if (isset($arr['sample_type']) && trim($arr['sample_type']) == "enabled") {
@@ -445,17 +445,11 @@ $disable = "disabled = 'disabled'";
 								</div>
 								<table class="table" style="width:100%">
 									<tr>
-										<td style="width:25%;"><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
-										<td style="width:25%;">
+										<td><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
+										<td>
 											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" onchange="checkSampleReceviedDate();" style="width:100%;" />
 										</td>
-										<td style="width:25%;"></td>
-										<td style="width:25%;"></td>
-									</tr>
-									<?php
-									if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled") {
-									?>
-										<tr>
+										<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled") { ?>
 											<td><label for="">Décision prise </label></td>
 											<td>
 												<select class="form-control" id="status" name="status" title="Please select décision prise" onchange="checkTestStatus();" style="width:100%;">
@@ -465,10 +459,8 @@ $disable = "disabled = 'disabled'";
 													<option value="4" <?php echo ($vlQueryInfo['result_status'] == 4) ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
 												</select>
 											</td>
-											<td></td>
-											<td></td>
-										</tr>
-									<?php } ?>
+										<?php } ?>
+									</tr>
 									<tr class="rejectionReason" style="display:<?php echo ($vlQueryInfo['result_status'] == 4) ? '' : 'none'; ?>;">
 										<td><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span> </label></td>
 										<td>
@@ -499,19 +491,13 @@ $disable = "disabled = 'disabled'";
 												<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Sélectionner --'); ?>
 											</select>
 										</td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr>
-										<td colspan="4" style="height:30px;border:none;"></td>
-									</tr>
-									<tr>
 										<td><label for="">Date de réalisation de la charge virale <span class="mandatory">*</span></label></td>
 										<td>
 											<input type="text" class="form-control dateTime isRequired" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 										</td>
-										<td></td>
-										<td></td>
+									</tr>
+									<tr>
+										<td colspan="4" style="height:30px;border:none;"></td>
 									</tr>
 									<tr>
 										<td><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span></label></td>
