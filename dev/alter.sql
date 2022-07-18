@@ -3147,3 +3147,6 @@ UPDATE `system_config` SET `value` = '5.0.0' WHERE `system_config`.`name` = 'sc_
 -- Amit 13-Jul-2022 version 5.0.0
 UPDATE  `global_config` set value = 999 WHERE `name` LIKE '%sample_expiry_after_days';
 UPDATE  `global_config` set value = 999 WHERE `name` LIKE '%sample_lock_after_days';
+
+-- Amit 18-Jul-2022 version 5.0.1
+UPDATE `system_config` SET `value` = '5.0.1' WHERE `system_config`.`name` = 'sc_version';
