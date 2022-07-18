@@ -1,6 +1,7 @@
 <?php
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
+$general = new \Vlsm\Models\General();
 
 if (isset($_POST['testType'])) {
 	$tableName = $_POST['testType'];
@@ -12,17 +13,11 @@ if (isset($_POST['testType'])) {
 	$tableName2 = "";
 }
 
-function getDifference($arr1, $arr2)
-{
-	$diff = array_merge(array_diff_assoc($arr1, $arr2), array_diff_assoc($arr2, $arr1));
-	return $diff;
-}
-
 function getColumns($db, $tableName)
 {
-	$columns_sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name=?";
-	$result_column = $db->rawQuery($columns_sql, array(SYSTEM_CONFIG['dbName'], $tableName));
-	return $result_column;
+	$columnsSql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name=?";
+	$resultColumn = $db->rawQuery($columnsSql, array(SYSTEM_CONFIG['dbName'], $tableName));
+	return $resultColumn;
 }
 
 function getColumnValues($db, $tableName, $sampleCode)
@@ -62,14 +57,23 @@ function getColumnValues($db, $tableName, $sampleCode)
 							<tr>
 								<td><b><?php echo _("Test Type"); ?>&nbsp;:</b></td>
 								<td>
-									<select style="width:220px;" class="form-control" id="testType" name="testType" title="<?php echo _('Type of Test'); ?>">
-										<option value="">--Choose Test Type--</option>
-										<option <?php if (isset($_POST['testType']) && $_POST['testType'] == "audit_form_vl") echo "selected='selected'"; ?> value="audit_form_vl">VL</option>
-										<option <?php if (isset($_POST['testType']) && $_POST['testType'] == "audit_form_eid") echo "selected='selected'"; ?> value="audit_form_eid">EID</option>
-										<option <?php if (isset($_POST['testType']) && $_POST['testType'] == "audit_form_covid19") echo "selected='selected'"; ?> value="audit_form_covid19">Covid-19</option>
-										<option <?php if (isset($_POST['testType']) && $_POST['testType'] == "audit_form_hepatitis") echo "selected='selected'"; ?> value="audit_form_hepatitis">Hepatitis</option>
-										<option <?php if (isset($_POST['testType']) && $_POST['testType'] == "audit_form_tb") echo "selected='selected'"; ?> value="audit_form_tb">TB</option>
-									</select>
+									<select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                    <?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) { ?>
+                                        <option value="audit_form_vl"><?php echo _("Viral Load"); ?></option>
+                                    <?php }
+                                    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) { ?>
+                                        <option value="audit_form_eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+                                    <?php }
+                                    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) { ?>
+                                        <option value="audit_form_covid19"><?php echo _("Covid-19"); ?></option>
+                                    <?php }
+                                    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) { ?>
+                                        <option value='audit_form_hepatitis'><?php echo _("Hepatitis"); ?></option>
+                                    <?php }
+                                    if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) { ?>
+                                        <option value='audit_form_tb'><?php echo _("TB"); ?></option>
+                                    <?php } ?>
+                                </select>
 								</td>
 								<td>&nbsp;<b><?php echo _("Sample Code"); ?>&nbsp;:</b></td>
 								<td>
@@ -96,17 +100,17 @@ function getColumnValues($db, $tableName, $sampleCode)
 						<!-- /.box-header -->
 						<div class="box-body">
 							<h3> Audit Trail for Sample <?php echo $sampleCode; ?></h3>
-							<table class="table table-striped table-hover">
+							<table id="auditTable" class="table-bordered table table-striped table-hover">
 								<thead>
 									<tr>
 										<?php
-										$result_column = getColumns($db, $tableName);
-										$col_arr = array();
-										foreach ($result_column as $col) {
-											$col_arr[] = $col['COLUMN_NAME'];
+										$resultColumn = getColumns($db, $tableName);
+										$colArr = array();
+										foreach ($resultColumn as $col) {
+											$colArr[] = $col['COLUMN_NAME'];
 										?>
 											<th>
-												<?php //echo ucwords(str_replace('_',' ',$col['COLUMN_NAME'])); 
+												<?php 
 												echo $col['COLUMN_NAME'];
 												?>
 											</th>
@@ -114,41 +118,22 @@ function getColumnValues($db, $tableName, $sampleCode)
 									</tr>
 								</thead>
 								<tbody>
-
 									<?php
-
 									if (count($posts) > 0) {
 										for ($i = 0; $i < count($posts); $i++) {
-											$k = ($i - 1);
-											//$arrDiff = getDifference($posts[$i], $posts[$k]);
-
 									?>
 											<tr>
 												<?php
-
-												for ($j = 0; $j < count($col_arr); $j++) {
-												?>
-													<td class="compare_col-<?php echo $i . '-' . $j; ?>">
-									<?php
-														if ($i > 0) {
-								//if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
-								echo '<style type="text/css">
-								.compare_col-' . $i . '-' . $j . ' {
-								background: orange;
-								color:black;
-								}
-								</style>';
-														///	} else {
-																echo '<style type="text/css">
-								.compare_col-' . $i . '-' . $j . ' {
-								background: white;
-								color:black;
-								}
-								</style>';
-													//		}
-														}
-
-														echo $posts[$i][$col_arr[$j]];
+												for ($j = 0; $j < count($colArr); $j++) {
+											
+													if(!empty($posts[$i - 1][$colArr[$j]]) && !empty($posts[$i][$colArr[$j]]) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
+													{
+														echo '<td style="background: orange; color:black;" >'.$posts[$i][$colArr[$j]].'</td>';
+													}
+													else
+													{
+														echo '<td>'.$posts[$i][$colArr[$j]].'</td>';
+													}
 														?>
 													</td>
 												<?php }
@@ -168,18 +153,16 @@ function getColumnValues($db, $tableName, $sampleCode)
 							<p>
 							<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
 							</p>
-							<table class="table table-striped table-hover">
+							<table class="table table-striped table-hover table-bordered">
 								<thead>
 									<tr>
 										<?php
-										$result_column = getColumns($db, $tableName2);
-										$col_arr = array();
+										$resultColumn = getColumns($db, $tableName2);
 										$posts = getColumnValues($db, $tableName2, $sampleCode);
-										foreach ($result_column as $col) {
-											$col_arr[] = $col['COLUMN_NAME'];
+										foreach ($resultColumn as $col) {
 										?>
 											<th>
-												<?php //echo ucwords(str_replace('_',' ',$col['COLUMN_NAME'])); 
+												<?php 
 												echo $col['COLUMN_NAME'];
 												?>
 											</th>
@@ -188,40 +171,16 @@ function getColumnValues($db, $tableName, $sampleCode)
 								</thead>
 								<tbody>
 									<?php
-
-
 									if (count($posts) > 0) {
 										for ($i = 0; $i < count($posts); $i++) {
-											$k = ($i - 1);
-											//$arrDiff = getDifference($posts[$i], $posts[$k]);
-
 									?>
 											<tr>
 												<?php
-
-												for ($j = 0; $j < count($col_arr); $j++) {
+												for ($j = 0; $j < count($colArr); $j++) {
 												?>
-													<td class="compare_col-<?php echo $i . '-' . $j; ?>">
+													<td>
 														<?php
-														if ($i > 0) {
-														//	if (!empty($arrDiff[$col_arr[$j]]) && $arrDiff[$col_arr[$j]] != $posts[$i][$col_arr[$j]] && !empty($posts[$i][$col_arr[$j]])) {
-																echo '<style type="text/css">
-								.compare_col-' . $i . '-' . $j . ' {
-								background: orange;
-								color:black;
-								}
-								</style>';
-															//} else {
-																echo '<style type="text/css">
-								.compare_col-' . $i . '-' . $j . ' {
-								background: white;
-								color:black;
-								}
-								</style>';
-														//	}
-														}
-
-														echo $posts[$i][$col_arr[$j]];
+														echo $posts[$i][$colArr[$j]];
 														?>
 													</td>
 												<?php }
@@ -233,7 +192,6 @@ function getColumnValues($db, $tableName, $sampleCode)
 										echo "<tr align='center'><td colspan='10'>No records available</td></tr>";
 									}
 									?>
-
 								</tbody>
 
 							</table>
@@ -255,36 +213,14 @@ function getColumnValues($db, $tableName, $sampleCode)
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
 ?>
-<style>
-	.box-body {
-		overflow: scroll;
-	}
 
-	.box-body td,
-	.box-body th {
-		border: 1px solid #999;
-		padding: 20px;
-	}
-
-	td {
-		background: white;
-	}
-
-	.primary {
-		background-color: brown;
-		position: sticky;
-	}
-
-	.box-body>th {
-		background: white;
-		font-size: 20px;
-		color: black;
-		border-radius: 0;
-		top: 0;
-		padding: 10px;
-	}
-
-	.box-body>tbody>tr:hover {
-		background-color: #ffc107;
-	}
-</style>
+<script type="text/javascript">
+	$(function() {
+		$("#auditTable").DataTable({
+			scrollY: '50vh',
+			scrollX: true,
+			scrollCollapse: true,
+			paging: false,
+		});
+	});
+</script>
