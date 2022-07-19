@@ -840,13 +840,13 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 
 	$('#facilityType').on('change', function() {
 		if (this.value == '2') {
-			$("#allowResultUpload option[value=Yes]").attr('selected', 'selected');
+			$("#allowResultUpload option[value=yes]").attr('selected', 'selected');
 			$("#allowResultUpload option[value='']").removeAttr('selected', 'selected');
 			$('.allowResultsUpload').show();
 			$('#allowResultUpload').addClass('isRequired');
 			$('#allowResultUpload').focus();
 		} else {
-			$("#allowResultUpload option[value=Yes]").removeAttr('selected', 'selected');
+			$("#allowResultUpload option[value=yes]").removeAttr('selected', 'selected');
 			$("#allowResultUpload option[value='']").attr('selected', 'selected');
 			$('.allowResultsUpload').hide();
 			$('#allowResultUpload').removeClass('isRequired');
