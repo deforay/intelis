@@ -59,7 +59,7 @@ $id = $res['covid19_id'];
                     var pdfjsLib = window['pdfjs-dist/build/pdf'];
 
                     // The workerSrc property shall be specified.
-                    pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = '//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js';
                     // If absolute URL from the remote server is provided, configure the CORS
                     // header on that server.
 
