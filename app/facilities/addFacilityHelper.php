@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 require_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
-  
+
 
 $general = new \Vlsm\Models\General();
 $geolocation = new \Vlsm\Models\GeoLocations();
@@ -155,7 +155,13 @@ try {
 						'updated_datetime' => $general->getDateTime()
 					);
 					if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
-						$data['attributes'] = json_encode($_POST['availablePlatforms']);
+						$attributes['platforms'] = $_POST['availablePlatforms'];
+					}
+					if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
+						$attributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
+					}
+					if (isset($attributes) && count($attributes) > 0) {
+						$data['attributes'] = json_encode($attributes, true);
 					}
 					$db->insert($testingLabsTable, $data);
 				}

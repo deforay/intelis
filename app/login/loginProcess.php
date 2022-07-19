@@ -25,31 +25,31 @@ $_SESSION['instanceType'] = $systemInfo['sc_user_type'];
 $_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemInfo['sc_testing_lab_id'] : null;
 
 
-if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
-    $_GET['u'] = $db->escape($_GET['u']);
-    //$_GET['t'] = $db->escape($_GET['t']);
-    $_POST['username'] = base64_decode($_GET['u']);
+try {
+    if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
+        $_GET['u'] = $db->escape($_GET['u']);
+        //$_GET['t'] = $db->escape($_GET['t']);
+        $_POST['username'] = base64_decode($_GET['u']);
 
-    $decryptedPassword = General::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
-    $_POST['password'] = $decryptedPassword;
-} else {
-    if (!SYSTEM_CONFIG['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
+        $decryptedPassword = General::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+        $_POST['password'] = $decryptedPassword;
+    } else {
+        if (!SYSTEM_CONFIG['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
+            throw new Exception(_("Please check your login credentials"));
+        }
+    }
+
+
+    if (isset($_POST["csrf_token"]) && $_POST["csrf_token"] != $_SESSION["csrf_token"]) {
+        // Reset token
+        unset($_SESSION["csrf_token"]);
+        $_SESSION['alertMsg'] = _("Request expired. Please try to login again.");
+        unset($_SESSION);
         throw new Exception(_("Please check your login credentials"));
     }
-}
 
+    /* Crosss Login Block End */
 
-if (isset($_POST["csrf_token"]) && $_POST["csrf_token"] != $_SESSION["csrf_token"]) {
-    // Reset token
-    unset($_SESSION["csrf_token"]);
-    $_SESSION['alertMsg'] = _("Request expired. Please try to login again.");
-    unset($_SESSION);
-    throw new Exception(_("Please check your login credentials"));
-}
-
-/* Crosss Login Block End */
-
-try {
     $adminCount = $db->getValue("user_details", "count(*)");
     if ($adminCount != 0) {
         if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {

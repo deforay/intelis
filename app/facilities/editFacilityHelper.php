@@ -3,7 +3,7 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-  
+
 require_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
 $general = new \Vlsm\Models\General();
@@ -157,7 +157,13 @@ try {
 							'updated_datetime' => $general->getDateTime()
 						);
 						if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
-							$data['attributes'] = json_encode($_POST['availablePlatforms']);
+							$attributes['platforms'] = $_POST['availablePlatforms'];
+						}
+						if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
+							$attributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
+						}
+						if (isset($attributes) && count($attributes) > 0) {
+							$data['attributes'] = json_encode($attributes, true);
 						}
 						$tid = $db->insert($testingLabsTable, $data);
 					}
@@ -165,7 +171,7 @@ try {
 			}
 		}
 		if (isset($_POST['removedLabLogoImage']) && trim($_POST['removedLabLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
-			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "actual-".$_POST['removedLabLogoImage']);
+			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
 			$data = array('facility_logo' => null);
 			$db = $db->where('facility_id', $lastId);

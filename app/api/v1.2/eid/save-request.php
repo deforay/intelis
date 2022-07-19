@@ -51,7 +51,7 @@ try {
 
 
         /* Checkng required fields */
-        if (empty($data['uniqueId']) || empty($data['appSampleCode']) || empty($data['facilityId']) || empty($data['eidTestReason']) || empty($data['childId']) || empty($data['specimenType']) || empty($data['sampleCollectionDate'])) {
+        if (empty($data['uniqueId']) || empty($data['appSampleCode']) || empty($data['facilityId']) || empty($data['childId']) || empty($data['specimenType']) || empty($data['sampleCollectionDate'])) {
             throw new Exception("Invalid request. Please check your request parameters.");
             exit(0);
         }
@@ -341,7 +341,7 @@ try {
             'pcr_test_performed_before'                         => isset($data['pcrTestPerformedBefore']) ? $data['pcrTestPerformedBefore'] : null,
             'previous_pcr_result'                               => isset($data['prePcrTestResult']) ? $data['prePcrTestResult'] : null,
             'last_pcr_date'                                     => isset($data['previousPCRTestDate']) ? $data['previousPCRTestDate'] : null,
-            'reason_for_eid_test'                               => isset($data['eidTestReason']) ? $data['eidTestReason'] : null,
+            // 'reason_for_eid_test'                               => isset($data['eidTestReason']) ? $data['eidTestReason'] : null,
             'reason_for_pcr'                                    => isset($data['pcrTestReason']) ? $data['pcrTestReason'] : null,
             'has_infant_stopped_breastfeeding'                  => isset($data['hasInfantStoppedBreastfeeding']) ? $data['hasInfantStoppedBreastfeeding'] : null,
             'age_breastfeeding_stopped_in_months'               => isset($data['ageBreastfeedingStopped']) ? $data['ageBreastfeedingStopped'] : null,
