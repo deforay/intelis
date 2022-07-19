@@ -5,8 +5,6 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 require_once(APPLICATION_PATH . '/includes/ImageResize.php');
 
-  
-
 $general = new \Vlsm\Models\General();
 $geolocation = new \Vlsm\Models\GeoLocations();
 /* For reference we define the table names */
@@ -103,6 +101,16 @@ try {
 			'updated_datetime' => $general->getDateTime(),
 			'status' => 'active'
 		);
+
+		$facilityAttributes = array();
+		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
+			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
+		}
+
+		if(!empty($facilityAttributes)){
+			$data['facility_attributes'] = json_encode($facilityAttributes, true);
+		}
+
 		if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $_POST['fromAPI'] == "yes") {
 			/* Facility sync to remote */
 			$url = SYSTEM_CONFIG['remoteURL'] . '/facilities/addFacilityHelper.php';
@@ -156,9 +164,6 @@ try {
 					);
 					if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
 						$attributes['platforms'] = $_POST['availablePlatforms'];
-					}
-					if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
-						$attributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 					}
 					if (isset($attributes) && count($attributes) > 0) {
 						$data['attributes'] = json_encode($attributes, true);

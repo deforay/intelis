@@ -1269,7 +1269,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
     function validateNow() {
 
         if ($("#patientDob").val() == "" && $("#patientAge").val() == "") {
-            alert("Please select or enter patient DOB or Age");
+            alert("<?= _("Please enter Patient Age or Date of Birth"); ?>");
             return false;
         }
         if ($('#isResultAuthorized').val() != "yes") {
@@ -1358,7 +1358,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             placeholder: "Nationalité du patient"
         });
         $('#labId').select2({
-            placeholder: "Select Nom du laboratoire"
+            placeholder: "Nom du laboratoire"
         });
         $('#reviewedBy').select2({
             placeholder: "Select Revu par"

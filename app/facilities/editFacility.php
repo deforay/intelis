@@ -16,6 +16,9 @@ foreach ($userResult as $user) {
 $id = base64_decode($_GET['id']);
 //$id = $_GET['id'];
 $facilityInfo = $db->rawQueryOne('SELECT * from facility_details where facility_id= ?', array($id));
+$facilityAttributes = json_decode($facilityInfo['facility_attributes']);
+
+
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
@@ -43,14 +46,13 @@ $uResult = $db->rawQuery($uQuery);
 $selectedResult = $db->rawQuery('SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id WHERE vlfm.facility_id = ?', array($id));
 
 $testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', array($id));
+$attrValue = json_decode($testTypeInfo[0]['attributes']);
+$availPlatforms = $attrValue->platforms;
+
 
 $signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=?', array($id));
-// echo "<pre>";
- //print_r($testTypeInfo);die;
-$attrValue = json_decode($testTypeInfo[0]['attributes']);
 
-//echo '<pre>'; print_r($attrValue); die;
-$availPlatforms = $attrValue->platforms;
+
 $editTestType = '';
 $div = '';
 if (count($testTypeInfo) > 0) {
@@ -204,10 +206,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type'); ?>">
+										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Allow Result File Uploads'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option <?php if($attrValue->allow_results_file_upload=='Yes') echo 'selected="selected"'; ?> value="Yes">Yes</option>
-											<option <?php if($attrValue->allow_results_file_upload=='No') echo 'selected="selected"'; ?> value="No">No</option>
+											<option <?php if($facilityAttributes->allow_results_file_upload=='yes') echo 'selected="selected"'; ?> value="yes">Yes</option>
+											<option <?php if($facilityAttributes->allow_results_file_upload=='no') echo 'selected="selected"'; ?> value="no">No</option>
 										</select>
 									</div>
 								</div>
