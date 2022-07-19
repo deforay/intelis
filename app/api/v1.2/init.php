@@ -360,27 +360,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == t
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
     $tbObj = new \Vlsm\Models\Tb();
     /* SITE INFORMATION SECTION */
-
-    /* Infant and Mother's Health Information Section */
-    // $data['eid']['mothersHIVStatus'] = $commonResultsList;
-
-    // $motherTreatmentList = array();
-    // $motherTreatmentArray = array('No ART given', 'Pregnancy', 'Labour/Delivery', 'Postnatal', 'Unknown');
-    // foreach ($motherTreatmentArray as $key => $treatment) {
-    //     $motherTreatmentList[$key]['value'] = $treatment;
-    //     $motherTreatmentList[$key]['show'] = $treatment;
-    // }
-    // $data['eid']['motherTreatment'] = $motherTreatmentList;
     $data['tb']['rapidTestResult'] = $app->generateSelectOptions($tbObj->getTbResults());
-    // $data['eid']['prePcrTestResult'] = $commonResultsList;
-
-    // $pcrTestReasonList = array();
-    // $pcrTestReasonArray = array('Confirmation of positive first EID PCR test result', 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months', 'Positive HIV rapid test result at 9 months or later', 'Other');
-    // foreach ($pcrTestReasonArray as $key => $reason) {
-    //     $pcrTestReasonList[$key]['value'] = $reason;
-    //     $pcrTestReasonList[$key]['show'] = $reason;
-    // }
-    // $data['eid']['pcrTestReason'] = $pcrTestReasonList;
     $data['tb']['specimenTypeList'] = $app->generateSelectOptions($tbObj->getTbSampleTypes());
 
     /* Rejected Reason*/
