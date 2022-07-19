@@ -44,7 +44,13 @@ try {
                     $passwordCheck = true;
                     $newPassword = $users->passwordHash($input['password']);
                     $db->where('user_id', $userResult['user_id']);
-                    $db->update('user_details', array('password' => $newPassword, 'hash_algorithm' => 'phb'));
+                    $db->update(
+                        'user_details',
+                        array(
+                            'password' => $newPassword,
+                            'hash_algorithm' => 'phb'
+                        )
+                    );
                 } else {
                     $passwordCheck = false;
                 }

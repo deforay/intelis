@@ -92,6 +92,16 @@ try {
 			'updated_datetime' => $general->getDateTime(),
 			'status' => $_POST['status']
 		);
+
+		$facilityAttributes = array();
+		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
+			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
+		}
+
+		if(!empty($facilityAttributes)){
+			$data['facility_attributes'] = json_encode($facilityAttributes, true);
+		}
+
 		$db = $db->where('facility_id', $facilityId);
 		$id = $db->update($tableName, $data);
 
@@ -159,17 +169,17 @@ try {
 						if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
 							$attributes['platforms'] = $_POST['availablePlatforms'];
 						}
-						if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
-							$attributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
-						}
 						if (isset($attributes) && count($attributes) > 0) {
 							$data['attributes'] = json_encode($attributes, true);
 						}
 						$tid = $db->insert($testingLabsTable, $data);
 					}
 				}
+				
 			}
+			
 		}
+		
 		if (isset($_POST['removedLabLogoImage']) && trim($_POST['removedLabLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);

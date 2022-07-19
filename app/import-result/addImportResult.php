@@ -12,8 +12,8 @@ $query = "SELECT config_id,machine_name,import_machine_file_name FROM import_con
 $iResult = $db->rawQuery($query);
 
 $fQuery = "SELECT * FROM facility_details as f INNER JOIN testing_labs as t ON t.facility_id=f.facility_id 
-			WHERE facility_type=2 AND attributes->>\"$.allow_results_file_upload\" = 'Yes' AND attributes->>\"$.allow_results_file_upload\" is not null";
-$fResult = $db->rawQuery($fQuery);
+			WHERE t.test_type = ? AND f.facility_type=2 AND f.facility_attributes->>\"$.allow_results_file_upload\" = 'yes' AND f.facility_attributes->>\"$.allow_results_file_upload\" is not null";
+$fResult = $db->rawQuery($fQuery, array($type));
 
 if ($type == 'vl') {
 	$lastQuery = "SELECT lab_id FROM form_vl WHERE lab_id is not NULL ORDER BY vl_sample_id DESC LIMIT 1";
@@ -78,8 +78,8 @@ $lastResult = $db->rawQueryOne($lastQuery);
 												<div class="form-group">
 													<label for="machineName" class="col-lg-4 control-label"><?php echo _("Configuration Name"); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _('Please select the import machine type');?>" onchange="getConfigMachineName();">
-															<option value=""> <?php echo _("-- Select --");?> </option>
+														<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _('Please select the import machine type'); ?>" onchange="getConfigMachineName();">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php foreach ($iResult as $val) { ?>
 																<option value="<?php echo base64_encode($val['import_machine_file_name']); ?>"><?php echo ucwords($val['machine_name']); ?></option>
 															<?php } ?>
@@ -93,8 +93,8 @@ $lastResult = $db->rawQueryOne($lastQuery);
 												<div class="form-group">
 													<label for="machineName" class="col-lg-4 control-label"><?php echo _("Configuration Machine Name"); ?></label>
 													<div class="col-lg-7">
-														<select name="configMachineName" id="configMachineName" class="form-control" title="<?php echo _('Please select the import config machine name');?>">
-															<option value=""> <?php echo _("-- Select --");?> </option>
+														<select name="configMachineName" id="configMachineName" class="form-control" title="<?php echo _('Please select the import config machine name'); ?>">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
 														</select>
 													</div>
 												</div>
@@ -105,7 +105,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 												<div class="form-group">
 													<label class="col-lg-4 control-label"><?php echo _("Upload"); ?> <?= strtoupper($type); ?> <?php echo _("File"); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="file" class="isRequired" accept=".xls,.xlsx,.csv,.txt" name="resultFile" id="resultFile" title="<?php echo _('Please choose result file');?>">
+														<input type="file" class="isRequired" accept=".xls,.xlsx,.csv,.txt" name="resultFile" id="resultFile" title="<?php echo _('Please choose result file'); ?>">
 														<?php echo _("(Upload xls, xlsx, csv, txt format)"); ?>
 													</div>
 												</div>
@@ -123,8 +123,8 @@ $lastResult = $db->rawQueryOne($lastQuery);
 												<div class="form-group">
 													<label for="labId" class="col-lg-4 control-label"><?php echo _("Lab Name"); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<select name="labId" id="labId" class="form-control isRequired" title="<?php echo _('Please select the lab name');?>">
-															<option value=""> <?php echo _("-- Select --");?> </option>
+														<select name="labId" id="labId" class="form-control isRequired" title="<?php echo _('Please select the lab name'); ?>">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($fResult as $val) {
 															?>

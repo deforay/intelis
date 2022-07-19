@@ -16,6 +16,9 @@ foreach ($userResult as $user) {
 $id = base64_decode($_GET['id']);
 //$id = $_GET['id'];
 $facilityInfo = $db->rawQueryOne('SELECT * from facility_details where facility_id= ?', array($id));
+$facilityAttributes = json_decode($facilityInfo['facility_attributes']);
+
+
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
@@ -43,14 +46,13 @@ $uResult = $db->rawQuery($uQuery);
 $selectedResult = $db->rawQuery('SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id WHERE vlfm.facility_id = ?', array($id));
 
 $testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', array($id));
+$attrValue = json_decode($testTypeInfo[0]['attributes']);
+$availPlatforms = $attrValue->platforms;
+
 
 $signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=?', array($id));
-// echo "<pre>";
- //print_r($testTypeInfo);die;
-$attrValue = json_decode($testTypeInfo[0]['attributes']);
 
-//echo '<pre>'; print_r($attrValue); die;
-$availPlatforms = $attrValue->platforms;
+
 $editTestType = '';
 $div = '';
 if (count($testTypeInfo) > 0) {
@@ -204,10 +206,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type'); ?>">
+										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Allow Result File Uploads'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option <?php if($attrValue->allow_results_file_upload=='Yes') echo 'selected="selected"'; ?> value="Yes">Yes</option>
-											<option <?php if($attrValue->allow_results_file_upload=='No') echo 'selected="selected"'; ?> value="No">No</option>
+											<option <?php if($facilityAttributes->allow_results_file_upload=='yes') echo 'selected="selected"'; ?> value="yes">Yes</option>
+											<option <?php if($facilityAttributes->allow_results_file_upload=='no') echo 'selected="selected"'; ?> value="no">No</option>
 										</select>
 									</div>
 								</div>
@@ -389,15 +391,12 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											<option value="microscopy" <?php echo (preg_match("/microscopy/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Microscopy"); ?></option>
 											<option value="xpert" <?php echo (preg_match("/xpert/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
 											<option value="lam" <?php echo (preg_match("/lam/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Lam"); ?></option>
-
 										</select>-->
 										<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
 											<option value="microscopy" <?php echo in_array('microscopy',$availPlatforms) ? "selected='selected'" :  ''; ?>><?php echo _("Microscopy"); ?></option>
 											<option value="xpert" <?php echo in_array('xpert',$availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
 											<option value="lam" <?php echo in_array('lam',$availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _("Lam"); ?></option>
-
 										</select>
-										
 									</div>
 								</div>
 							</div>
@@ -841,13 +840,13 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 
 	$('#facilityType').on('change', function() {
 		if (this.value == '2') {
-			$("#allowResultUpload option[value=Yes]").attr('selected', 'selected');
+			$("#allowResultUpload option[value=yes]").attr('selected', 'selected');
 			$("#allowResultUpload option[value='']").removeAttr('selected', 'selected');
 			$('.allowResultsUpload').show();
 			$('#allowResultUpload').addClass('isRequired');
 			$('#allowResultUpload').focus();
 		} else {
-			$("#allowResultUpload option[value=Yes]").removeAttr('selected', 'selected');
+			$("#allowResultUpload option[value=yes]").removeAttr('selected', 'selected');
 			$("#allowResultUpload option[value='']").attr('selected', 'selected');
 			$('.allowResultsUpload').hide();
 			$('#allowResultUpload').removeClass('isRequired');

@@ -3150,3 +3150,7 @@ UPDATE  `global_config` set value = 999 WHERE `name` LIKE '%sample_lock_after_da
 
 -- Amit 18-Jul-2022 version 5.0.1
 UPDATE `system_config` SET `value` = '5.0.1' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Amit 19-Jul-2022
+ALTER TABLE `facility_details` ADD `facility_attributes` JSON NULL DEFAULT NULL AFTER `facility_type`;

@@ -128,8 +128,8 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									<div class="col-lg-7">
 										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option value="Yes" "selected='selected'">Yes</option>
-											<option value="No">No</option>
+											<option value="yes" "selected='selected'">yes</option>
+											<option value="no">no</option>
 										</select>
 									</div>
 								</div>
@@ -512,6 +512,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script type="text/javascript">
+	
 	$(document).ready(function() {
 		$("#testType").multipleSelect({
 			placeholder: '<?php echo _("Select Test Type"); ?>',
@@ -568,10 +569,14 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 		});
 		$("#selectedUser").val(selVal);
 
-
 		$('#state').val($("#stateId option:selected").text());
 		$('#district').val($("#districtId option:selected").text());
-
+		tt = $("#testType").val();
+		if(tt=="")
+		{
+			alert("Please choose one test type");
+			return false;
+		}
 		flag = deforayValidator.init({
 			formId: 'addFacilityForm'
 		});
@@ -625,13 +630,13 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 
 	$('#facilityType').on('change', function() {
 		if (this.value == '2') {
-			$("#allowResultUpload option[value=Yes]").attr('selected', 'selected');
+			$("#allowResultUpload option[value=yes]").attr('selected', 'selected');
 			$("#allowResultUpload option[value='']").removeAttr('selected', 'selected');
 			$('.allowResultsUpload').show();
 			$('#allowResultUpload').addClass('isRequired');
 			$('#allowResultUpload').focus();
 		} else {
-			$("#allowResultUpload option[value=Yes]").removeAttr('selected', 'selected');
+			$("#allowResultUpload option[value=yes]").removeAttr('selected', 'selected');
 			$("#allowResultUpload option[value='']").attr('selected', 'selected');
 			$('.allowResultsUpload').hide();
 			$('#allowResultUpload').removeClass('isRequired');
