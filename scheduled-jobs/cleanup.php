@@ -3,8 +3,8 @@
 require_once(__DIR__ . "/../startup.php");
 
 $cleanup = array(
-    APPLICATION_PATH . '/../backups',
-    APPLICATION_PATH . 'temporary',
+    APPLICATION_PATH . DIRECTORY_SEPARATOR .  'backups',
+    WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary',
 );
 
 $durationToDelete = 180 * 86400; // 180 days
