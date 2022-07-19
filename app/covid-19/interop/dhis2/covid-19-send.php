@@ -17,6 +17,4 @@ $fileArray = array(
     1 => 'forms/send-southsudan.php'
 );
 
-if (file_exists($fileArray[$arr['vl_form']])) {
-    require_once($fileArray[$arr['vl_form']]);
-}
+require_once($fileArray[$arr['vl_form']]);

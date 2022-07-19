@@ -293,8 +293,4 @@ $country = array(
 	8 => 'Angola',
 );
 
-if (file_exists($fileArray[$arr['vl_form']])) {
-	require_once($fileArray[$arr['vl_form']]);
-} else {
-	require_once('pdf/result-pdf-who.php');
-}
+require_once($fileArray[$arr['vl_form']]);
