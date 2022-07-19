@@ -1,7 +1,7 @@
 <?php
 ob_start();
-
 $type = base64_decode($_GET['t']);
+//$type = $_GET['t'];
 $db = MysqliDb::getInstance();
 $title = _("Import ") . strtoupper($type) . _(" Test Results From File");
 
@@ -11,7 +11,8 @@ $general = new \Vlsm\Models\General();
 $query = "SELECT config_id,machine_name,import_machine_file_name FROM import_config WHERE status='active' ORDER BY machine_name ASC";
 $iResult = $db->rawQuery($query);
 
-$fQuery = "SELECT * FROM facility_details WHERE facility_type=2";
+$fQuery = "SELECT * FROM facility_details as f INNER JOIN testing_labs as t ON t.facility_id=f.facility_id 
+			WHERE facility_type=2 AND attributes->>\"$.allow_results_file_upload\" = 'Yes' AND attributes->>\"$.allow_results_file_upload\" is not null";
 $fResult = $db->rawQuery($fQuery);
 
 if ($type == 'vl') {

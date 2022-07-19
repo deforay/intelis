@@ -46,7 +46,11 @@ $testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?'
 
 $signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=?', array($id));
 // echo "<pre>";
-// print_r($signResults);die;
+ //print_r($testTypeInfo);die;
+$attrValue = json_decode($testTypeInfo[0]['attributes']);
+
+//echo '<pre>'; print_r($attrValue); die;
+$availPlatforms = $attrValue->platforms;
 $editTestType = '';
 $div = '';
 if (count($testTypeInfo) > 0) {
@@ -98,8 +102,13 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == t
 }
 $formats = json_decode($facilityInfo['report_format'], true);
 $labDiv = "none";
+$allowFileDiv = "none";
 if ($facilityInfo['test_type'] == 2) {
 	$labDiv = "block";
+}
+if($fType=="2")
+{
+	$allowFileDiv ="block";
 }
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo['facility_state_id']);
@@ -191,14 +200,14 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6 allowResultsUpload" style="display:none;">
+							<div class="col-md-6 allowResultsUpload" style="display:<?php echo $allowFileDiv; ?>;">
 								<div class="form-group">
 									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option value="Yes">Yes</option>
-											<option value="No">No</option>
+											<option <?php if($attrValue->allow_results_file_upload=='Yes') echo 'selected="selected"'; ?> value="Yes">Yes</option>
+											<option <?php if($attrValue->allow_results_file_upload=='No') echo 'selected="selected"'; ?> value="No">No</option>
 										</select>
 									</div>
 								</div>
@@ -376,12 +385,19 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="availablePlatforms" class="col-lg-4 control-label"><?php echo _("Available Platforms"); ?></label>
 									<div class="col-lg-7">
+										<!--<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
+											<option value="microscopy" <?php echo (preg_match("/microscopy/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Microscopy"); ?></option>
+											<option value="xpert" <?php echo (preg_match("/xpert/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
+											<option value="lam" <?php echo (preg_match("/lam/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Lam"); ?></option>
+
+										</select>-->
 										<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
-											<option value="microscopy" <?php echo (preg_match("/microscopy/i", $testTypeInfo[0]['attributes'])) ? "selected='selected'" : '';  ?>><?php echo _("Microscopy"); ?></option>
-											<option value="xpert" <?php echo (preg_match("/xpert/i", $testTypeInfo[0]['attributes'])) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
-											<option value="lam" <?php echo (preg_match("/lam/i", $testTypeInfo[0]['attributes'])) ? "selected='selected'" : '';  ?>><?php echo _("Lam"); ?></option>
+											<option value="microscopy" <?php echo in_array('microscopy',$availPlatforms) ? "selected='selected'" :  ''; ?>><?php echo _("Microscopy"); ?></option>
+											<option value="xpert" <?php echo in_array('xpert',$availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
+											<option value="lam" <?php echo in_array('lam',$availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _("Lam"); ?></option>
 
 										</select>
+										
 									</div>
 								</div>
 							</div>
