@@ -389,15 +389,12 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											<option value="microscopy" <?php echo (preg_match("/microscopy/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Microscopy"); ?></option>
 											<option value="xpert" <?php echo (preg_match("/xpert/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
 											<option value="lam" <?php echo (preg_match("/lam/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Lam"); ?></option>
-
 										</select>-->
 										<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
 											<option value="microscopy" <?php echo in_array('microscopy',$availPlatforms) ? "selected='selected'" :  ''; ?>><?php echo _("Microscopy"); ?></option>
 											<option value="xpert" <?php echo in_array('xpert',$availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
 											<option value="lam" <?php echo in_array('lam',$availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _("Lam"); ?></option>
-
 										</select>
-										
 									</div>
 								</div>
 							</div>
