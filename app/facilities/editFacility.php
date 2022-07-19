@@ -175,7 +175,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="facilityType" class="col-lg-4 control-label"><?php echo _("Facility Type"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser()' : ''; ?>;getTestType(); showSignature(this.value);">
+										<select class="form-control" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser()' : ''; ?>;getTestType(); showSignature(this.value);">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<?php
 											$k = 10;
@@ -204,10 +204,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type'); ?>">
+										<select class="form-control" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option <?php if($attrValue->allow_results_file_upload=='Yes') echo 'selected="selected"'; ?> value="Yes">Yes</option>
-											<option <?php if($attrValue->allow_results_file_upload=='No') echo 'selected="selected"'; ?> value="No">No</option>
+											<option <?php if($attrValue->allow_results_file_upload=='yes') echo 'selected="selected"'; ?> value="yes">yes</option>
+											<option <?php if($attrValue->allow_results_file_upload=='no') echo 'selected="selected"'; ?> value="no">no</option>
 										</select>
 									</div>
 								</div>
@@ -796,7 +796,12 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 		flag = deforayValidator.init({
 			formId: 'editFacilityForm'
 		});
-
+		tt = $("#testType").val();
+		if(tt=="")
+		{
+			alert("Please choose one test type");
+			return false;
+		}
 		if (flag) {
 			$.blockUI();
 			document.getElementById('editFacilityForm').submit();
@@ -838,13 +843,13 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 
 	$('#facilityType').on('change', function() {
 		if (this.value == '2') {
-			$("#allowResultUpload option[value=Yes]").attr('selected', 'selected');
+			$("#allowResultUpload option[value=yes]").attr('selected', 'selected');
 			$("#allowResultUpload option[value='']").removeAttr('selected', 'selected');
 			$('.allowResultsUpload').show();
 			$('#allowResultUpload').addClass('isRequired');
 			$('#allowResultUpload').focus();
 		} else {
-			$("#allowResultUpload option[value=Yes]").removeAttr('selected', 'selected');
+			$("#allowResultUpload option[value=yes]").removeAttr('selected', 'selected');
 			$("#allowResultUpload option[value='']").attr('selected', 'selected');
 			$('.allowResultsUpload').hide();
 			$('#allowResultUpload').removeClass('isRequired');
