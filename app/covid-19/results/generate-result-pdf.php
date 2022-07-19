@@ -294,6 +294,17 @@ class Pdf_concat extends FPDI
 	}
 }
 
+$fileArray = array(
+	1 => 'pdf/result-pdf-ssudan.php',
+	2 => 'pdf/result-pdf-zm.php',
+	3 => 'pdf/result-pdf-drc.php',
+	4 => 'pdf/result-pdf-zam.php',
+	5 => 'pdf/result-pdf-png.php',
+	6 => 'pdf/result-pdf-who.php',
+	7 => 'pdf/result-pdf-rwanda.php',
+	8 => 'pdf/result-pdf-angola.php',
+);
+
 $resultFilename = '';
 if (sizeof($requestResult) > 0) {
 	$_SESSION['rVal'] = $general->generateRandomString(6);
@@ -345,49 +356,15 @@ if (sizeof($requestResult) > 0) {
 				break;
 			}
 		}
+
+		$selectedReportFormats = array();
 		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
-			$formats = json_decode($result['reportFormat'], true);
-			if (!empty($formats['covid19'])) {
-				require_once($formats['covid19']);
-			} else {
-				if ($arr['vl_form'] == 1) {
-					require_once('pdf/result-pdf-ssudan.php');
-				} else if ($arr['vl_form'] == 2) {
-					require_once('pdf/result-pdf-zm.php');
-				} else if ($arr['vl_form'] == 3) {
-					require_once('pdf/result-pdf-drc.php');
-				} else if ($arr['vl_form'] == 4) {
-					require_once('pdf/result-pdf-zam.php');
-				} else if ($arr['vl_form'] == 5) {
-					require_once('pdf/result-pdf-png.php');
-				} else if ($arr['vl_form'] == 6) {
-					require_once('pdf/result-pdf-who.php');
-				} else if ($arr['vl_form'] == 7) {
-					require_once('pdf/result-pdf-rwanda.php');
-				} else if ($arr['vl_form'] == 8) {
-					require_once('pdf/result-pdf-angola.php');
-				}
-				// exit(0);
-			}
+			$selectedReportFormats = json_decode($result['reportFormat'], true);
+		}
+		if (!empty($selectedReportFormats) && !empty($selectedReportFormats['covid19'])) {
+			require_once($formats['covid19']);
 		} else {
-			if ($arr['vl_form'] == 1) {
-				include('pdf/result-pdf-ssudan.php');
-			} else if ($arr['vl_form'] == 2) {
-				include('pdf/result-pdf-zm.php');
-			} else if ($arr['vl_form'] == 3) {
-				include('pdf/result-pdf-drc.php');
-			} else if ($arr['vl_form'] == 4) {
-				include('pdf/result-pdf-zam.php');
-			} else if ($arr['vl_form'] == 5) {
-				include('pdf/result-pdf-png.php');
-			} else if ($arr['vl_form'] == 6) {
-				include('pdf/result-pdf-who.php');
-			} else if ($arr['vl_form'] == 7) {
-				include('pdf/result-pdf-rwanda.php');
-			} else if ($arr['vl_form'] == 8) {
-				include('pdf/result-pdf-angola.php');
-			}
-			// exit(0);
+			require_once($fileArray[$arr['vl_form']]);
 		}
 	}
 	if (count($pages) > 0) {
