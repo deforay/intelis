@@ -1,6 +1,6 @@
 <?php
 ob_start();
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $geolocation = new \Vlsm\Models\GeoLocations();
@@ -191,19 +191,19 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6" id="allowResultUpload" style="display:none;">
+							<div class="col-md-6 allowResultsUpload" style="display:none;">
 								<div class="form-group">
-									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload");?> <span class="mandatory">*</span> </label>
+									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type');?>">
-											<option value=""> <?php echo _("-- Select --");?> </option>
+										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type'); ?>">
+											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<option value="Yes">Yes</option>
 											<option value="No">No</option>
 										</select>
 									</div>
 								</div>
 							</div>
-							
+
 							<!--<div class="col-md-6">
                     <div class="form-group">
                         <label for="reportEmail" class="col-lg-4 control-label">Report Email(s) </label>
@@ -215,7 +215,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						</div>
 						<br>
 						<div class="row">
-						<div class="col-md-6">
+							<div class="col-md-6">
 								<div class="form-group">
 									<label for="testingPoints" class="col-lg-4 control-label"><?php echo _("Testing Point(s)"); ?><br> <small><?php echo _("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
@@ -233,11 +233,11 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									</div>
 								</div>
 							</div>
-							
+
 						</div>
 
 						<div class="row">
-						<div class="col-md-6">
+							<div class="col-md-6">
 								<div class="form-group">
 									<label for="phoneNo" class="col-lg-4 control-label"><?php echo _("Phone Number"); ?></label>
 									<div class="col-lg-7">
@@ -263,11 +263,11 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									</div>
 								</div>
 							</div>
-							
+
 
 						</div>
 						<div class="row">
-						<div class="col-md-6">
+							<div class="col-md-6">
 								<div class="form-group">
 									<label for="district" class="col-lg-4 control-label"><?php echo _("District/County"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
@@ -291,11 +291,11 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									</div>
 								</div>
 							</div>
-							
+
 
 						</div>
 						<div class="row">
-						<div class="col-md-6">
+							<div class="col-md-6">
 								<div class="form-group">
 									<label for="address" class="col-lg-4 control-label"><?php echo _("Address"); ?></label>
 									<div class="col-lg-7">
@@ -311,10 +311,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									</div>
 								</div>
 							</div>
-							
+
 						</div>
 						<div class="row">
-						<div class="col-md-6">
+							<div class="col-md-6">
 								<div class="form-group">
 									<label for="latitude" class="col-lg-4 control-label"><?php echo _("Latitude"); ?></label>
 									<div class="col-lg-7">
@@ -331,10 +331,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									</div>
 								</div>
 							</div>
-							
+
 						</div>
 						<div class="row">
-						<div class="col-md-6">
+							<div class="col-md-6">
 								<div class="form-group">
 									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
@@ -702,7 +702,6 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 <script type="text/javascript">
 	var deletedRowVar = [];
 	$(document).ready(function() {
-		$("#allowResultUpload option[value=Yes]").attr('selected', 'selected');
 		getTestType();
 		$("#testType").multipleSelect({
 			placeholder: '<?php echo _("Select Test Type"); ?>',
@@ -828,13 +827,13 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 		if (this.value == '2') {
 			$("#allowResultUpload option[value=Yes]").attr('selected', 'selected');
 			$("#allowResultUpload option[value='']").removeAttr('selected', 'selected');
-			$('#allowResultUpload').show();
+			$('.allowResultsUpload').show();
 			$('#allowResultUpload').addClass('isRequired');
 			$('#allowResultUpload').focus();
 		} else {
 			$("#allowResultUpload option[value=Yes]").removeAttr('selected', 'selected');
 			$("#allowResultUpload option[value='']").attr('selected', 'selected');
-			$('#allowResultUpload').hide();
+			$('.allowResultsUpload').hide();
 			$('#allowResultUpload').removeClass('isRequired');
 			$('#allowResultUpload').val('');
 		}
