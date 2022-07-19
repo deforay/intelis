@@ -103,11 +103,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if (count($sWhere) == 0) {
             $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere[] =  $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
     }
 }
 
@@ -173,17 +169,15 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
-
+if (isset($sWhere) && count($sWhere) >0) 
 $sWhere[] = '  vl.vlsm_country_id="' . $arr['vl_form'] . '"';
-if(count($sWhere) > 1)
-{
-    $sWhere = implode(' AND ', $sWhere);
-}
 else
-{
-    $sWhere = ' AND '.$sWhere[0];
+$sWhere[] = '  AND vl.vlsm_country_id="' . $arr['vl_form'] . '"';
+//$sQuery = $sQuery . ' ' . $sWhere;
+if (isset($sWhere) && count($sWhere) >0) {
+    $sWhere = implode(' AND ',$sWhere);
+    $sQuery = $sQuery .  $sWhere;
 }
-$sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' group by vl.covid19_id';
 //echo $sQuery; die();
 if (isset($sOrder) && $sOrder != "") {
@@ -195,6 +189,8 @@ if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 // error_log($sQuery);
+
+//echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
