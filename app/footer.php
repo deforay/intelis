@@ -200,7 +200,9 @@
 
 		// if instance facility name is not set, let us show the modal
 
-		if (empty($_SESSION['instanceFacilityName'])) { ?> showModal('/addInstanceDetails.php', 900, 420);
+		if (empty($_SESSION['instanceFacilityName'])) {
+		?>
+			showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 
 		$('.daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate').on('cancel.daterangepicker', function(ev, picker) {

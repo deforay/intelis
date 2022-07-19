@@ -123,7 +123,7 @@ try {
             mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777);
         }
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['sign']['name'], PATHINFO_EXTENSION));
-        $imageName = "usign-" . $userId . "." . $extension;
+        $imageName = "usign-" . $general->generateRandomString(12) . "." . $extension;
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {

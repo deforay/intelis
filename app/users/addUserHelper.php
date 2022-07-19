@@ -11,8 +11,9 @@ $tableName = "user_details";
 $tableName2 = "user_facility_map";
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
+        $userId = $general->generateUUID();
         $data = array(
-            'user_id'               => $general->generateUUID(),
+            'user_id'               => $userId,
             'user_name'             => $_POST['userName'],
             'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", $_POST['interfaceUserName']))) : null,
             'email'                 => $_POST['email'],
@@ -34,7 +35,7 @@ try {
                 mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['userSignature']['name'], PATHINFO_EXTENSION));
-            $imageName = "usign-" . $data['user_id'] . "." . $extension;
+            $imageName = "usign-" . $general->generateRandomString(12) . "." . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
                 $resizeObj = new \Vlsm\Helpers\ImageResize($signatureImagePath);
@@ -72,9 +73,10 @@ try {
     }
     $userType = $general->getSystemConfig('sc_user_type');
     if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $userType == 'vluser') {
-        $_POST['login_id'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
+        $_POST['userId'] = $userId;
+        $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
-        $_POST['hash_algorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
+        $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['status'] = 'inactive';
         $_POST['userId'] = base64_encode($data['user_id']);

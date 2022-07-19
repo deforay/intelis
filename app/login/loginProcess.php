@@ -107,7 +107,13 @@ try {
                 if ($password == $userRow['password']) {
                     $newPassword = $user->passwordHash($_POST['password']);
                     $db->where('user_id', $userRow['user_id']);
-                    $db->update('user_details', array('hash_algorithm' => 'phb', 'password' => $newPassword));
+                    $db->update(
+                        'user_details',
+                        array(
+                            'hash_algorithm' => 'phb',
+                            'password' => $newPassword
+                        )
+                    );
                 } else {
                     throw new Exception(_("Please check your login credentials"));
                 }
