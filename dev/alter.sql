@@ -3154,3 +3154,6 @@ UPDATE `system_config` SET `value` = '5.0.1' WHERE `system_config`.`name` = 'sc_
 
 -- Amit 19-Jul-2022
 ALTER TABLE `facility_details` ADD `facility_attributes` JSON NULL DEFAULT NULL AFTER `facility_type`;
+
+-- Thana 20-Jul-2022
+ALTER TABLE `form_vl` ADD `community_sample` VARCHAR(256) NULL DEFAULT NULL AFTER `funding_source`;

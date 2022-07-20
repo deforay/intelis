@@ -190,6 +190,16 @@ $sFormat = '';
                                                        </select>
                                                   </div>
                                              </div>
+                                             <div class="col-xs-4 col-md-4">
+                                                  <div class="form-group">
+                                                       <label for="communitySample">Community Sample</label>
+                                                       <select class="form-control" name="communitySample" id="communitySample" title="Please choose community sample" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <option value="yes">Yes</option>
+                                                            <option value="no">No</option>
+                                                       </select>
+                                                  </div>
+                                             </div>
                                              <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                                   <div class="col-md-4 col-md-4">
                                                        <label for="labId">Lab Name </label>
@@ -748,10 +758,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      facilityName = true;
      $(document).ready(function() {
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
-               if ($("#labId").val() !='' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
+               if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
                     $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
                }
-               if ($("#labId").val() !='' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
+               if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
                     // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
                }
           });

@@ -255,6 +255,16 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											</select>
 										</div>
 									</div>
+									<div class="col-xs-4 col-md-4">
+										<div class="form-group">
+											<label for="communitySample">Community Sample</label>
+											<select class="form-control" name="communitySample" id="communitySample" title="Please choose community sample" style="width:100%;">
+												<option value=""> -- Select -- </option>
+												<option value="yes" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
+												<option value="no" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
+											</select>
+										</div>
+									</div>
 									<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 										<div class="col-md-4 col-md-4">
 											<label for="labId">Lab Name </label>
@@ -833,10 +843,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
-			if ($("#labId").val() !='' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
 				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
 			}
-			if ($("#labId").val() !='' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
 				// $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
 			}
 		});

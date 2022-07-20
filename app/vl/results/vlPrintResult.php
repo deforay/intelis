@@ -7,8 +7,10 @@ require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
+$testingLabs = $facilitiesDb->getTestingLabs('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+$labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 
 $sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
@@ -94,6 +96,12 @@ $batResult = $db->rawQuery($batQuery);
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
+													<td><b><?php echo _("Testing Labs"); ?> :</b></td>
+													<td>
+														<select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+															<?= $labsDropdown; ?>
+														</select>
+													</td>
 													<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
 													<td>
 														<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;">
@@ -103,28 +111,18 @@ $batResult = $db->rawQuery($batQuery);
 															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
+												</tr>
+												<tr>
 													<td><b><?php echo _("ART Number"); ?>&nbsp;:</b></td>
 													<td>
 														<input type="text" id="artNo" name="artNo" class="form-control" placeholder="<?php echo _('ART Number'); ?>" style="width:220px;" onkeyup="searchVlRequestData()" />
 													</td>
-												</tr>
-												<tr>
 													<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
 													<td>
 														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
-													<td>
-
-													</td>
-													<td>
-
-													</td>
-													<td>
-
-													</td>
-													<td>
-
-													</td>
+													<td></td>
+													<td></td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
@@ -251,6 +249,12 @@ $batResult = $db->rawQuery($batQuery);
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
+													<td><b><?php echo _("Testing Labs"); ?> :</b></td>
+													<td>
+														<select class="form-control" id="printLabId" name="printLabId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+															<?= $labsDropdown; ?>
+														</select>
+													</td>
 													<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
 													<td>
 														<select name="gender" id="printGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;">
@@ -260,21 +264,18 @@ $batResult = $db->rawQuery($batQuery);
 															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
+												</tr>
+												<tr>
 													<td><b><?php echo _("ART Number"); ?>&nbsp;:</b></td>
 													<td>
 														<input type="text" id="printArtNo" name="artNo" class="form-control" placeholder="<?php echo _('ART Number'); ?>" style="width:220px;" onkeyup="searchPrintedVlRequestData()" />
 													</td>
-												</tr>
-												<tr>
 													<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
 													<td>
 														<input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
 													<td></td>
 													<td></td>
-													<td></td>
-													<td></td>
-
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
@@ -382,7 +383,7 @@ $batResult = $db->rawQuery($batQuery);
 	var oTable = null;
 	var opTable = null;
 	$(document).ready(function() {
-		$("#facility,#printFacility").select2({
+		$("#facility,#printFacility, #labId, #printLabId").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
 		$('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
@@ -555,6 +556,10 @@ $batResult = $db->rawQuery($batQuery);
 					"value": $("#facility").val()
 				});
 				aoData.push({
+					"name": "vlLab",
+					"value": $("#labId").val()
+				});
+				aoData.push({
 					"name": "sampleType",
 					"value": $("#sampleType").val()
 				});
@@ -682,6 +687,10 @@ $batResult = $db->rawQuery($batQuery);
 				aoData.push({
 					"name": "facilityName",
 					"value": $("#prinFacility").val()
+				});
+				aoData.push({
+					"name": "vlLab",
+					"value": $("#printLabId").val()
 				});
 				aoData.push({
 					"name": "sampleType",
