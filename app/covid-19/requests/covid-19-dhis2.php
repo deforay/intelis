@@ -58,7 +58,7 @@ $batResult = $db->rawQuery($batQuery);
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
 									<th>Sample Code</th>
-									<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
+									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>Remote Sample <br />Code</th>
 									<?php } ?>
 									<th>Sample Collection<br /> Date</th>
@@ -303,7 +303,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($sarr['sc_user_type'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {

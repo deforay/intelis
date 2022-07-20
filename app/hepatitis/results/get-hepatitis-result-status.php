@@ -292,7 +292,7 @@ foreach ($rResult as $aRow) {
     $row = array();
     $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['hepatitis_id'] . '"  value="' . $aRow['hepatitis_id'] . '" onclick="toggleTest(this);"  />';
     $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
-    if ($sarr['sc_user_type'] != 'standalone') {
+    if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
     $row[] = $aRow['sample_collection_date'];
