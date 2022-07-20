@@ -97,11 +97,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          if (count($sWhere) == 0) {
                $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          } else {
-               $sWhere[] =  $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          }
      }
 }
 
@@ -125,12 +121,11 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 if (isset($sWhere) && count($sWhere) > 0) {
-     $sWhere[0] = ' where ' . $sWhere[0];
      if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
           if (trim($start_date) == trim($end_date)) {
                $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
           } else {
-               $sWhere[] =  ' AND ' .' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+               $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
      if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
@@ -152,16 +147,12 @@ if (isset($sWhere) && count($sWhere) > 0) {
      }
 } else {
      if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          $setWhr = 'where';
         //  $sWhere[0] = ' where ' . $sWhere[0];
-          $sWhere[] =  ' where DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+          $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
      if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
-          if (isset($setWhr)) {
                $sWhereSubC = "  (";
-          } else {
-               $sWhereSubC = " where (";
-          }
+
           $sWhereSub = '';
           $searchArray = explode(",", $_POST['formField']);
           foreach ($searchArray as $search) {
@@ -182,14 +173,10 @@ if (isset($sWhere) && count($sWhere) > 0) {
      }
 }
 
-if (count($sWhere) >0) {
      $sWhere[] =  ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} else {
-     $sWhere[] = ' where  vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-}
+
 $dWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
-
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
      if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
@@ -200,10 +187,14 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 if(count($sWhere) > 0)
 {
-     $sWhere = implode(' AND ', $sWhere);
+     $sWhere = ' where '.implode(' AND ', $sWhere);
+}
+else
+{
+     $sWhere="";
 }
 //echo $sQuery; die();
-$sQuery = $sQuery . ' ' . $sWhere;
+$sQuery = $sQuery . $sWhere;
 // echo $sQuery;die;
 $_SESSION['vlIncompleteForm'] = $sQuery;
 if (isset($sOrder) && $sOrder != "") {
