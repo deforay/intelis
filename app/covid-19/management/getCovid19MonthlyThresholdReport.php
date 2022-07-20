@@ -89,11 +89,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          if (count($sWhere) == 0) {
                $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          } else {
-               $sWhere[] = " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          }
      }
 }
 
@@ -136,7 +132,6 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 }
 
 if (isset($sWhere) && count($sWhere) > 0) {
-     $sWhere[0] = ' where ' . $sWhere[0];
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           if (trim($sTestDate) == trim($eTestDate)) {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
@@ -147,8 +142,6 @@ if (isset($sWhere) && count($sWhere) > 0) {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $fac = explode(',', $_POST['facilityName']);
           $out = '';
-          print_r($fac);
-          die;
           for ($s = 0; $s < count($fac); $s++) {
                if ($out)
                     $out = $out . ',"' . $fac[$s] . '"';
@@ -156,13 +149,8 @@ if (isset($sWhere) && count($sWhere) > 0) {
                     $out = '("' . $fac[$s] . '"';
           }
           $out = $out . ')';
-          if (isset($setWhr)) {
-               $sWhere[] = '  vl.lab_id IN ' . $out . '';
-          } else {
-               $setWhr = 'where';
-              // $sWhere = ' where ' . $sWhere;
-               $sWhere[] = ' where vl.lab_id IN ' . $out . '';
-          }
+         
+               $sWhere[] = ' vl.lab_id IN ' . $out . '';
      }
 } else {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
@@ -175,37 +163,25 @@ if (isset($sWhere) && count($sWhere) > 0) {
                     $out = '("' . $fac[$s] . '"';
           }
           $out = $out . ')';
-          if (isset($setWhr)) {
-               $sWhere[] = ' AND vl.lab_id IN ' . $out . '';
-          } else {
-               $setWhr = 'where';
-               //$sWhere[] = ' where ' . $sWhere;
-               $sWhere[] = ' where vl.lab_id IN ' . $out . '';
-          }
+               $sWhere[] = '  vl.lab_id IN ' . $out . '';
      }
 
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-          if (isset($setWhr)) {
-               $sWhere[] = '  DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          } else {
-               $setWhr = 'where';
-               //$sWhere = ' where ' . $sWhere;
-               $sWhere[] = ' where DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
+               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
-if (count($sWhere) > 0) {
-     $sWhere[] = ' vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
-} else {
-     $sWhere[] =  ' where vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
-}
+$sWhere[] = ' vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
 
 $sWhere[]= " tl.test_type = 'covid19'";
 
-if(count($sWhere) > 1)
-     $sWhere = implode(' AND ',$sWhere);
-     else
-     $swhere = $swhere[0];
+if(isset($swhere) && count($sWhere) > 0)
+{
+     $sWhere = ' where '. implode(' AND ',$sWhere);
+}
+else
+{
+     $sWhere = "";
+}
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if ($_POST['targetType'] == 1) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';

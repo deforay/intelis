@@ -72,7 +72,6 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         
         $sWhere = array();
         if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-			$sWhere = " AND ";
             $searchArray = explode(" ", $_POST['sSearch']);
             $sWhereSub = "";
             foreach ($searchArray as $search) {
@@ -98,11 +97,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         /* Individual column filtering */
         for ($i = 0; $i < count($aColumns); $i++) {
             if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-                if (count($sWhere) == 0) {
                     $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-                } else {
-                    $sWhere[] =  $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-                }
             }
         }
         
@@ -128,9 +123,9 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
             $end_date = $general->dateFormat(trim($s_c_date[1]));
         }
 	    if (trim($start_date) == trim($end_date)) {
-					$sWhere[] = '  AND DATE(vl.sample_collection_date) = "'.$start_date.'"';
+			$sWhere[] = '  DATE(vl.sample_collection_date) = "'.$start_date.'"';
 	    }else{
-	       $sWhere[] = '  AND DATE(vl.sample_collection_date) >= "'.$start_date.'" AND DATE(vl.sample_collection_date) <= "'.$end_date.'"';
+	       $sWhere[] = '  DATE(vl.sample_collection_date) >= "'.$start_date.'" AND DATE(vl.sample_collection_date) <= "'.$end_date.'"';
 	    }
   }
 	if(isset($_POST['noResultSampleType']) && $_POST['noResultSampleType']!=''){
@@ -148,10 +143,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 	if(isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBreastfeeding']!=''){
 		$sWhere[] = ' vl.is_patient_breastfeeding = "'.$_POST['noResultPatientBreastfeeding'].'"';
 	}
-    if(count($sWhere)>0)
-	    $sWhere[] = ' vl.vlsm_country_id="'.$arr['vl_form'].'"';
-    else
-        $sWhere[] = ' AND vl.vlsm_country_id="'.$arr['vl_form'].'"';
+    $sWhere[] = ' vl.vlsm_country_id="'.$arr['vl_form'].'"';
     $dWhere = '';
     if($sarr['sc_user_type']=='remoteuser'){
         //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -163,9 +155,13 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
             $dWhere = $dWhere." AND vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].") ";
         }
     }
-    if(count($sWhere) > 0)
+    if(isset($sWhere) && count($sWhere) > 0)
     {
-        $sWhere = implode(' AND ',$sWhere);
+        $sWhere = ' AND '.implode(' AND ',$sWhere);
+    }
+    else
+    {
+        $sWhere = "";
     }
 	$sQuery = $sQuery.' '.$sWhere;
         $sQuery = $sQuery.' group by vl.covid19_id';
