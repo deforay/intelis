@@ -60,7 +60,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -81,17 +81,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
+            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -138,86 +134,58 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 if (isset($sWhere) && $sWhere != "") {
-    $sWhere = ' where ' . $sWhere;
     //$sQuery = $sQuery.' '.$sWhere;
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
-            $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
-            $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
     if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
-        $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
+        $sWhere[] =  ' s.sample_id = "' . $_POST['sampleType'] . '"';
     }
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
+        $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere[] =  " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
 } else {
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $setWhr = 'where';
-        $sWhere = ' where ' . $sWhere;
-        $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
+        $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (isset($setWhr)) {
             if (trim($start_date) == trim($end_date)) {
                 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+                    $sWhere[] = ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
                 } else {
-                    $sWhere = ' where ' . $sWhere;
-                    $sWhere = $sWhere . ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+                    $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
                 }
             }
         } else {
-            $setWhr = 'where';
-            $sWhere = ' where ' . $sWhere;
-            $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
     if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
-        if (isset($setWhr)) {
-            $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
-        } else {
-            $setWhr = 'where';
-            $sWhere = ' where ' . $sWhere;
-            $sWhere = $sWhere . ' s.sample_id = "' . $_POST['sampleType'] . '"';
-        }
+            $sWhere[] =  '  s.sample_id = "' . $_POST['sampleType'] . '"';
     }
     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-        if (isset($setWhr)) {
-            $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-        } else {
-            $setWhr = 'where';
-            $sWhere = ' where ' . $sWhere;
-            $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-        }
+            $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        if (isset($setWhr)) {
-            $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-        } else {
-            $setWhr = 'where';
-            $sWhere = ' where ' . $sWhere;
-            $sWhere = $sWhere . " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-        }
+            $sWhere[] = "  f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        if (isset($setWhr)) {
-            $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-        } else {
-            $sWhere = ' where ' . $sWhere;
-            $sWhere = $sWhere . " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-        }
+       
+            $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
 }
 $whereResult = '';
@@ -226,27 +194,25 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
     $whereResult = '(vl.result IS NULL OR vl.result = "") AND ';
 }
-if ($sWhere != '') {
-    $sWhere = $sWhere . ' AND ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} else {
-    $sWhere = $sWhere . ' where ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-}
+    $sWhere[] = $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 
     if (!empty($facilityMap)) {
-        $sWhere = $sWhere . " AND vl.facility_id IN (" . $facilityMap . ")  ";
+        $sWhere[] = "  vl.facility_id IN (" . $facilityMap . ")  ";
         $sFilter = " AND vl.facility_id IN (" . $facilityMap . ") ";
     }
 }
-if (!isset($sWhere) || $sWhere == "") {
-    $sWhere = ' where ' . $sWhere;
-    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
-} else {
-    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
-}
-$sQuery = $sQuery . ' ' . $sWhere;
-//error_log($sQuery);
+    $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
+
+    if(isset($sWhere) && count($sWhere) > 0)
+    {
+        $sWhere = implode(' AND ', $sWhere);
+    }
+
+$sQuery = $sQuery . ' where ' . $sWhere;
+//die($sQuery);
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;

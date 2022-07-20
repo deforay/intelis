@@ -250,7 +250,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sWhere[] = ' vl.result_status!=9';
 }
 
-if (!empty($sWhere)) {
+if (isset($sWhere) && count($sWhere) > 0) {
      $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
