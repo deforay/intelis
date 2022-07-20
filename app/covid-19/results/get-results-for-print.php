@@ -29,13 +29,13 @@ $primaryKey = "covid19_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'labName', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'labName', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+    $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'labName', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+    $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'labName', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
 if (isset($_POST['vlPrint'])) {
     array_unshift($orderColumns, "vl.covid19_id");
@@ -114,6 +114,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             f.facility_name,
             l_f.facility_name as labName,
+            UPPER(s.sample_name) as sample_name, 
             l_f.facility_logo as facilityLogo,
             l_f.header_text as headerText,
             l_f.report_format as reportFormat,
@@ -127,6 +128,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
             INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
             INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+            LEFT JOIN r_covid19_sample_type as s ON s.sample_id=vl.specimen_type 
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
             LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
@@ -183,6 +185,9 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 }
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
     $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+}
+if (isset($_POST['labId']) && trim($_POST['labId']) != '') {
+    $sWhere[] = ' vl.lab_id IN (' . $_POST['labId'] . ')';
 }
 if (isset($_POST['artNo']) && trim($_POST['artNo']) != '') {
     $sWhere[] = " vl.child_id LIKE '%" . $_POST['artNo'] . "%' ";
@@ -276,6 +281,8 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['patient_id'];
     $row[] = ucwords($patientFname . " " . $patientLname);
     $row[] = ucwords($aRow['facility_name']);
+    $row[] = ucwords($aRow['labName']);
+    $row[] = ucwords($aRow['sample_name']);
     $row[] = $covid19Results[$aRow['result']];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
