@@ -147,12 +147,10 @@ if (isset($sWhere) && count($sWhere) > 0) {
      }
 } else {
      if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        //  $sWhere[0] = ' where ' . $sWhere[0];
           $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
      if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
-               $sWhereSubC = "  (";
-
+          $sWhereSubC = "  (";
           $sWhereSub = '';
           $searchArray = explode(",", $_POST['formField']);
           foreach ($searchArray as $search) {

@@ -188,7 +188,6 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>
-
             </tr>
             <tr>
               <td><b><?php echo _("Target Type"); ?>&nbsp;:</b></td>
