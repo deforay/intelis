@@ -61,10 +61,10 @@ class DRC_PDF extends MYPDF
 $resultFilename = '';
 if (sizeof($requestResult) > 0) {
 	$_SESSION['rVal'] = $general->generateRandomString(6);
-	$pathFront = (UPLOAD_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
+	$pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
 	if (!file_exists($pathFront) && !is_dir($pathFront)) {
-		mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
-		$pathFront = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
+		mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
+		$pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
 	}
 
 	//$pathFront = $pathFront;

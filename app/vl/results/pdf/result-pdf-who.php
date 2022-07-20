@@ -2,10 +2,10 @@
 $resultFilename = '';
 if (sizeof($requestResult) > 0) {
      $_SESSION['rVal'] = $general->generateRandomString(6);
-     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']) && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'])) {
-          mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
+     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']) && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'])) {
+          mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
      }
-     $pathFront = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'] . '/');
+     $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'] . '/');
      $pages = array();
      $page = 1;
      foreach ($requestResult as $result) {
@@ -462,7 +462,7 @@ if (sizeof($requestResult) > 0) {
           $resultPdf->setPrintFooter(false);
           $resultPdf->concat();
           $resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
-          $resultPdf->Output(UPLOAD_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+          $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
           $general->removeDirectory($pathFront);
           unset($_SESSION['rVal']);
      }
