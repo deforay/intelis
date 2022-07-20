@@ -186,6 +186,9 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
     $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
+if (isset($_POST['labId']) && trim($_POST['labId']) != '') {
+    $sWhere[] = ' vl.lab_id IN (' . $_POST['labId'] . ')';
+}
 if (isset($_POST['artNo']) && trim($_POST['artNo']) != '') {
     $sWhere[] = " vl.child_id LIKE '%" . $_POST['artNo'] . "%' ";
 }
@@ -286,7 +289,7 @@ foreach ($rResult as $aRow) {
     $patientFname = ucwords($general->crypto('decrypt', $aRow['child_name'], $aRow[$decrypt]));
 
     $row[] = $aRow['sample_code'];
-    if ($sarr['sc_user_type'] != 'standalone') {
+    if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
     $row[] = $aRow['batch_code'];

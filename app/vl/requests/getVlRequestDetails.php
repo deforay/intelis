@@ -318,7 +318,7 @@ foreach ($rResult as $aRow) {
 
      //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="toggleTest(this);"  />';
      $row[] = $aRow['sample_code'];
-     if ($sarr['sc_user_type'] != 'standalone') {
+     if ($_SESSION['instanceType'] != 'standalone') {
           $r = array();
           $r[] = $aRow['remote_sample_code'];
 

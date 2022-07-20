@@ -2,25 +2,22 @@
 $title = _("Print Covid-19 Results");
 
 require_once(APPLICATION_PATH . '/header.php');
-// $tsQuery = "SELECT * FROM r_sample_status";
-// $tsResult = $db->rawQuery($tsQuery);
-// $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-// $configFormResult = $db->rawQuery($configFormQuery);
+/** @var MysqliDb $db */
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='covid19' AND batch_status='completed'";
-$batResult = $db->rawQuery($batQuery);
-// $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-// $fundingSourceList = $db->query($fundingSourceQry);
-// //Implementing partner list
-// $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-// $implementingPartnerList = $db->query($implementingPartnerQry);
 
+try {
+    $batResult = $db->rawQuery($batQuery);
+} catch (Exception $e) {
+}
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
+$testingLabs = $facilitiesDb->getTestingLabs('covid19');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+$labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 ?>
 <style>
@@ -68,13 +65,9 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                     <td>
                                                         <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
-                                                            <?php
-                                                            foreach ($batResult as $code) {
-                                                            ?>
+                                                            <?php foreach ($batResult as $code) { ?>
                                                                 <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-                                                            <?php
-                                                            }
-                                                            ?>
+                                                            <?php } ?>
                                                         </select>
                                                     </td>
 
@@ -90,8 +83,12 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td><b><?php echo _("Testing Labs"); ?> :</b></td>
+                                                    <td>
+                                                        <select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+                                                            <?= $labsDropdown; ?>
+                                                        </select>
+                                                    </td>
                                                     <td></td>
                                                     <td></td>
                                                 </tr>
@@ -112,7 +109,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("Sample Code"); ?></label>
                                                         </div>
                                                         <?php $i = 1;
-                                                        if ($sarr['sc_user_type'] != 'standalone') {
+                                                        if ($_SESSION['instanceType'] != 'standalone') {
                                                             $i = 2; ?>
                                                             <div class="col-md-3">
                                                                 <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
@@ -129,6 +126,9 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
@@ -152,13 +152,15 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                     <tr>
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
                                                         <th><?php echo _("Sample Code"); ?></th>
-                                                        <?php if ($sarr['sc_user_type'] != 'standalone') { ?>
+                                                        <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _("Batch Code"); ?></th>
                                                         <th><?php echo _("Patient ID"); ?></th>
                                                         <th><?php echo _("Patient Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
+                                                        <th><?php echo _("Testing Lab"); ?></th>
+                                                        <th><?php echo _("Sample Type"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -207,8 +209,12 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td><b><?php echo _("Testing Labs"); ?> :</b></td>
+                                                    <td>
+                                                        <select class="form-control" id="printLabId" name="printLabId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+                                                            <?= $labsDropdown; ?>
+                                                        </select>
+                                                    </td>
                                                     <td></td>
                                                     <td></td>
                                                 </tr>
@@ -229,7 +235,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="1" id="printiCol1" data-showhide="sample_code" class="printShowhideCheckBox" /> <label for="printiCol1"><?php echo _("Sample Code"); ?></label>
                                                         </div>
                                                         <?php $i = 1;
-                                                        if ($sarr['sc_user_type'] != 'standalone') {
+                                                        if ($_SESSION['instanceType'] != 'standalone') {
                                                             $i = 2; ?>
                                                             <div class="col-md-3">
                                                                 <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
@@ -246,6 +252,9 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="facility_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_id" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="sample_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
@@ -268,13 +277,15 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                                                     <tr>
                                                         <th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
                                                         <th><?php echo _("Sample Code"); ?></th>
-                                                        <?php if ($sarr['sc_user_type'] != 'standalone') { ?>
+                                                        <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _("Batch Code"); ?></th>
                                                         <th><?php echo _("Patient ID"); ?></th>
                                                         <th><?php echo _("Patient Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
+                                                        <th><?php echo _("Testing Lab"); ?></th>
+                                                        <th><?php echo _("Sample Type"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -314,7 +325,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
     var oTable = null;
     var opTable = null;
     $(document).ready(function() {
-        $("#facility,#printFacility").select2({
+        $("#facility,#printFacility, #labId, #printLabId").select2({
             placeholder: "<?php echo _("Select Facilities"); ?>"
         });
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
@@ -367,7 +378,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
         $("#printShowhide").hover(function() {}, function() {
             $(this).fadeOut('slow')
         });
-        var i = '<?php echo $i; ?>';
+        var i = <?php echo $i; ?>;
         for (colNo = 0; colNo <= i; colNo++) {
             $("#iCol" + colNo).attr("checked", oTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
             if (oTable.fnSettings().aoColumns[colNo].bVisible) {
@@ -416,10 +427,16 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                 {
                     "sClass": "center"
                 },
-                <?php if ($sarr['sc_user_type'] != 'standalone') { ?> {
+                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center"
                 },
                 {
@@ -445,7 +462,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                     "bSortable": false
                 },
             ],
-            <?php if ($sarr['sc_user_type'] != 'standalone') { ?> "aaSorting": [
+            <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
                     [8, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
@@ -475,6 +492,10 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                 aoData.push({
                     "name": "facilityName",
                     "value": $("#facility").val()
+                });
+                aoData.push({
+                    "name": "labId",
+                    "value": $("#labId").val()
                 });
                 aoData.push({
                     "name": "vlPrint",
@@ -520,10 +541,16 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                 {
                     "sClass": "center"
                 },
-                <?php if ($sarr['sc_user_type'] != 'standalone') { ?> {
+                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center"
                 },
                 {
@@ -549,7 +576,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                     "bSortable": false
                 },
             ],
-            <?php if ($sarr['sc_user_type'] != 'standalone') { ?> "aaSorting": [
+            <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
                     [8, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
@@ -580,7 +607,10 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
                     "name": "facilityName",
                     "value": $("#prinFacility").val()
                 });
-
+                aoData.push({
+                    "name": "labId",
+                    "value": $("#printLabId").val()
+                });
                 aoData.push({
                     "name": "vlPrint",
                     "value": 'print'

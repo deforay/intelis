@@ -235,21 +235,21 @@ if ($vlQueryInfo['patient_last_name'] != '') {
 
 
 if ($arr['vl_form'] == 1) {
-     require_once('forms/edit-southsudan.php');
+     require('forms/edit-southsudan.php');
 } else if ($arr['vl_form'] == 2) {
-     require_once('forms/edit-zimbabwe.php');
+     require('forms/edit-zimbabwe.php');
 } else if ($arr['vl_form'] == 3) {
-     require_once('forms/edit-drc.php');
+     require('forms/edit-drc.php');
 } else if ($arr['vl_form'] == 4) {
-     require_once('forms/edit-zambia.php');
+     require('forms/edit-zambia.php');
 } else if ($arr['vl_form'] == 5) {
-     require_once('forms/edit-png.php');
+     require('forms/edit-png.php');
 } else if ($arr['vl_form'] == 6) {
-     require_once('forms/edit-who.php');
+     require('forms/edit-who.php');
 } else if ($arr['vl_form'] == 7) {
-     require_once('forms/edit-rwanda.php');
+     require('forms/edit-rwanda.php');
 } else if ($arr['vl_form'] == 8) {
-     require_once('forms/edit-angola.php');
+     require('forms/edit-angola.php');
 }
 ?>
 <script>

@@ -82,8 +82,12 @@ $batResult = $db->rawQuery($batQuery);
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td><b><?php echo _("Testing Labs"); ?> :</b></td>
+                                                    <td>
+                                                        <select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+                                                            <?= $labsDropdown; ?>
+                                                        </select>
+                                                    </td>
                                                     <td></td>
                                                     <td></td>
                                                 </tr>
@@ -104,7 +108,7 @@ $batResult = $db->rawQuery($batQuery);
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("Sample Code"); ?></label>
                                                         </div>
                                                         <?php $i = 1;
-                                                        if ($sarr['sc_user_type'] != 'standalone') {
+                                                        if ($_SESSION['instanceType'] != 'standalone') {
                                                             $i = 2; ?>
                                                             <div class="col-md-3">
                                                                 <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
@@ -121,6 +125,9 @@ $batResult = $db->rawQuery($batQuery);
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
@@ -144,13 +151,14 @@ $batResult = $db->rawQuery($batQuery);
                                                     <tr>
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
                                                         <th><?php echo _("Sample Code"); ?></th>
-                                                        <?php if ($sarr['sc_user_type'] != 'standalone') { ?>
+                                                        <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _("Batch Code"); ?></th>
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
+                                                        <th><?php echo _("Testing Lab"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -199,8 +207,12 @@ $batResult = $db->rawQuery($batQuery);
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td><b><?php echo _("Testing Labs"); ?> :</b></td>
+                                                    <td>
+                                                        <select class="form-control" id="printLabId" name="printLabId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+                                                            <?= $labsDropdown; ?>
+                                                        </select>
+                                                    </td>
                                                     <td></td>
                                                     <td></td>
                                                 </tr>
@@ -221,7 +233,7 @@ $batResult = $db->rawQuery($batQuery);
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="1" id="printiCol1" data-showhide="sample_code" class="printShowhideCheckBox" /> <label for="printiCol1"><?php echo _("Sample Code"); ?></label>
                                                         </div>
                                                         <?php $i = 1;
-                                                        if ($sarr['sc_user_type'] != 'standalone') {
+                                                        if ($_SESSION['instanceType'] != 'standalone') {
                                                             $i = 2; ?>
                                                             <div class="col-md-3">
                                                                 <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
@@ -238,6 +250,9 @@ $batResult = $db->rawQuery($batQuery);
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="facility_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="sample_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
@@ -260,13 +275,14 @@ $batResult = $db->rawQuery($batQuery);
                                                     <tr>
                                                         <th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
                                                         <th><?php echo _("Sample Code"); ?></th>
-                                                        <?php if ($sarr['sc_user_type'] != 'standalone') { ?>
+                                                        <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _("Batch Code"); ?></th>
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
+                                                        <th><?php echo _("Testing Lab"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -306,7 +322,7 @@ $batResult = $db->rawQuery($batQuery);
     var oTable = null;
     var opTable = null;
     $(document).ready(function() {
-        $("#facility,#printFacility").select2({
+        $("#facility,#printFacility, #labId, #printLabId").select2({
             placeholder: "<?php echo _("Select Facilities"); ?>"
         });
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
@@ -408,7 +424,7 @@ $batResult = $db->rawQuery($batQuery);
                 {
                     "sClass": "center"
                 },
-                <?php if ($sarr['sc_user_type'] != 'standalone') { ?> {
+                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {
@@ -437,7 +453,7 @@ $batResult = $db->rawQuery($batQuery);
                     "bSortable": false
                 },
             ],
-            <?php if ($sarr['sc_user_type'] != 'standalone') { ?> "aaSorting": [
+            <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
                     [8, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
@@ -467,6 +483,10 @@ $batResult = $db->rawQuery($batQuery);
                 aoData.push({
                     "name": "facilityName",
                     "value": $("#facility").val()
+                });
+                aoData.push({
+                    "name": "labId",
+                    "value": $("#labId").val()
                 });
                 aoData.push({
                     "name": "vlPrint",
@@ -512,7 +532,7 @@ $batResult = $db->rawQuery($batQuery);
                 {
                     "sClass": "center"
                 },
-                <?php if ($sarr['sc_user_type'] != 'standalone') { ?> {
+                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
                         "sClass": "center"
                     },
                 <?php } ?> {
@@ -541,7 +561,7 @@ $batResult = $db->rawQuery($batQuery);
                     "bSortable": false
                 },
             ],
-            <?php if ($sarr['sc_user_type'] != 'standalone') { ?> "aaSorting": [
+            <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
                     [8, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
@@ -572,7 +592,10 @@ $batResult = $db->rawQuery($batQuery);
                     "name": "facilityName",
                     "value": $("#prinFacility").val()
                 });
-
+                aoData.push({
+                    "name": "labId",
+                    "value": $("#printLabId").val()
+                });
                 aoData.push({
                     "name": "vlPrint",
                     "value": 'print'

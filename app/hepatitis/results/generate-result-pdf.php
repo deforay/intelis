@@ -293,4 +293,4 @@ $country = array(
 	8 => 'Angola',
 );
 
-require_once($fileArray[$arr['vl_form']]);
+require($fileArray[$arr['vl_form']]);

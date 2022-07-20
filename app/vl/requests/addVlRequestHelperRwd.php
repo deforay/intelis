@@ -4,8 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-
-// require_once('../Vl.php');
 $general = new \Vlsm\Models\General();
 $tableName = "form_vl";
 $tableName1 = "activity_log";

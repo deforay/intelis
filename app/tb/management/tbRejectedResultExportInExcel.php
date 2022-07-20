@@ -92,7 +92,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
-          if ($sarr['sc_user_type'] != 'standalone') {
+          if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = ucwords($aRow['facility_name']);

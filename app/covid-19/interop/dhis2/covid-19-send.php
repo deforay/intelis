@@ -17,4 +17,4 @@ $fileArray = array(
     1 => 'forms/send-southsudan.php'
 );
 
-require_once($fileArray[$arr['vl_form']]);
+require($fileArray[$arr['vl_form']]);
