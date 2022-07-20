@@ -489,7 +489,7 @@ if (sizeof($requestResult) > 0) {
 
                     $html .= '<tr>';
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-                    if (!empty($testUserSignaturePath) && $pdf->fileExists(($testUserSignaturePath)) {
+                    if (!empty($testUserSignaturePath) && $pdf->fileExists(($testUserSignaturePath))) {
                          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
                     } else {
                          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -511,7 +511,7 @@ if (sizeof($requestResult) > 0) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-               if (!empty($reviewedSignaturePath) && $pdf->fileExists(($reviewedSignaturePath)) {
+               if (!empty($reviewedSignaturePath) && $pdf->fileExists(($reviewedSignaturePath))) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -551,7 +551,7 @@ if (sizeof($requestResult) > 0) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-               if (!empty($userSignaturePath) && $pdf->fileExists(($userSignaturePath)) {
+               if (!empty($userSignaturePath) && $pdf->fileExists(($userSignaturePath))) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
