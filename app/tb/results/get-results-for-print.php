@@ -272,7 +272,7 @@ foreach ($rResult as $aRow) {
     $patientLname = $general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']);
 
     $row[] = $aRow['sample_code'];
-    if ($sarr['sc_user_type'] != 'standalone') {
+    if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
     $row[] = $aRow['batch_code'];

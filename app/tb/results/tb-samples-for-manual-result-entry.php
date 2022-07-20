@@ -338,7 +338,7 @@ foreach ($rResult as $aRow) {
     }
 
     $row[] = $aRow['sample_code'];
-    if ($sarr['sc_user_type'] != 'standalone') {
+    if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
     $row[] = $aRow['batch_code'];

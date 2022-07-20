@@ -52,7 +52,7 @@ require_once(APPLICATION_PATH . '/header.php');
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
-									<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
+									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 									<?php } ?>
 									<th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
@@ -128,7 +128,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($sarr['sc_user_type'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {

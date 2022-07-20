@@ -179,7 +179,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Sample Code"); ?></label>
 								</div>
 								<?php $i = 0;
-								if ($sarr['sc_user_type'] != 'standalone') {
+								if ($_SESSION['instanceType'] != 'standalone') {
 									$i = 1; ?>
 									<div class="col-md-3">
 										<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
@@ -222,7 +222,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
-									<?php if ($sarr['sc_user_type'] != 'standalone') { ?>
+									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 									<?php } ?>
 									<th><?php echo _("Batch Code"); ?></th>
@@ -350,7 +350,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if ($sarr['sc_user_type'] != 'standalone') { ?> {
+				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
 				<?php } ?> {
