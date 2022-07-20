@@ -100,7 +100,7 @@ $fileArray = array(
     8 => 'forms/add-angola.php',
 );
 // print_r($arr['vl_form']);die;
-require_once($fileArray[$arr['vl_form']]);
+require($fileArray[$arr['vl_form']]);
 ?>
 
 <script>

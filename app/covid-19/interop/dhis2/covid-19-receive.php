@@ -19,4 +19,4 @@ $fileArray = array(
     1 => 'forms/receive-southsudan.php'
 );
 
-require_once($fileArray[$arr['vl_form']]);
+require($fileArray[$arr['vl_form']]);

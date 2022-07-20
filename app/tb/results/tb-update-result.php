@@ -150,7 +150,7 @@ $fileArray = array(
     8 => 'forms/update-angola.php',
 );
 
-require_once($fileArray[$arr['vl_form']]);
+require($fileArray[$arr['vl_form']]);
 ?>
 
 <script>

@@ -82,21 +82,21 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
 </style>
 <?php
 // if ($arr['vl_form'] == 1) {
-//     require_once('forms/add-ssudan.php');
+//     require('forms/add-ssudan.php');
 // } else if ($arr['vl_form'] == 2) {
-//     require_once('forms/add-zimbabwe.php');
+//     require('forms/add-zimbabwe.php');
 // } else if ($arr['vl_form'] == 3) {
-//     require_once('forms/add-drc.php');
+//     require('forms/add-drc.php');
 // } else if ($arr['vl_form'] == 4) {
-//     require_once('forms/add-zambia.php');
+//     require('forms/add-zambia.php');
 // } else if ($arr['vl_form'] == 5) {
-//     require_once('forms/add-png.php');
+//     require('forms/add-png.php');
 // } else if ($arr['vl_form'] == 6) {
-//     require_once('forms/add-who.php');
+//     require('forms/add-who.php');
 // } else if ($arr['vl_form'] == 7) {
-//     require_once('forms/add-rwanda.php');
+//     require('forms/add-rwanda.php');
 // } else if ($arr['vl_form'] == 8) {
-//     require_once('forms/add-angola.php');
+//     require('forms/add-angola.php');
 // }
 
 
@@ -113,7 +113,7 @@ $fileArray = array(
 );
 // print_r($arr['vl_form']);die;
 // $arr['vl_form'] = 8;
-require_once($fileArray[$arr['vl_form']]);
+require($fileArray[$arr['vl_form']]);
 
 ?>
 <script>

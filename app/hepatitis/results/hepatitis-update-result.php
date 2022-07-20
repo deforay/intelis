@@ -138,7 +138,7 @@ $fileArray = array(
 	7 => 'forms/update-rwanda-result.php'
 );
 
-require_once($fileArray[$arr['vl_form']]);
+require($fileArray[$arr['vl_form']]);
 
 ?>
 

@@ -166,7 +166,6 @@ if (sizeof($requestResult) > 0) {
                          $showMessage = ($arr['h_vl_msg']);
                          $messageTextSize = '15px';
                     } else if ($vlResult <= 1000) {
-                         $vlResult = $vlResult;
                          $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
                          $showMessage = ($arr['l_vl_msg']);
                     }

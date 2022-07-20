@@ -827,8 +827,6 @@ class General
                 $code = "00" . $code;
             } else if ($length == 2) {
                 $code = "0" . $code;
-            } else if ($length == 3) {
-                $code = $code;
             }
         } else {
             $code = '001';

@@ -77,7 +77,6 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $sWhere = " AND ";
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {

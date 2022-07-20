@@ -362,9 +362,9 @@ if (sizeof($requestResult) > 0) {
 			$selectedReportFormats = json_decode($result['reportFormat'], true);
 		}
 		if (!empty($selectedReportFormats) && !empty($selectedReportFormats['covid19'])) {
-			require_once($selectedReportFormats['covid19']);
+			require($selectedReportFormats['covid19']);
 		} else {
-			require_once($fileArray[$arr['vl_form']]);
+			require($fileArray[$arr['vl_form']]);
 		}
 	}
 	if (count($pages) > 0) {

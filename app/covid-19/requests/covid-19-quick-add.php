@@ -79,7 +79,7 @@ $fileArray = array(
     8 => 'forms/quick-add-angola.php',
 );
 
-require_once($fileArray[$arr['vl_form']]);
+require($fileArray[$arr['vl_form']]);
 
 ?>
 

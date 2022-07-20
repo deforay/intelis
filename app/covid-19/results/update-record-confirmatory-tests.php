@@ -104,21 +104,21 @@ $disable = "disabled = 'disabled'";
 </style>
 <?php
 if ($arr['vl_form'] == 1) {
-	require_once('forms/update-southsudan-result.php');
+	require('forms/update-southsudan-result.php');
 } else if ($arr['vl_form'] == 2) {
-	require_once('forms/update-zimbabwe-result.php');
+	require('forms/update-zimbabwe-result.php');
 } else if ($arr['vl_form'] == 3) {
-	require_once('forms/update-drc-result.php');
+	require('forms/update-drc-result.php');
 } else if ($arr['vl_form'] == 4) {
-	require_once('forms/update-zambia-result.php');
+	require('forms/update-zambia-result.php');
 } else if ($arr['vl_form'] == 5) {
-	require_once('forms/update-png-result.php');
+	require('forms/update-png-result.php');
 } else if ($arr['vl_form'] == 6) {
-	require_once('forms/update-who-result.php');
+	require('forms/update-who-result.php');
 } else if ($arr['vl_form'] == 7) {
-	require_once('forms/update-rwanda-result.php');
+	require('forms/update-rwanda-result.php');
 } else if ($arr['vl_form'] == 8) {
-	require_once('forms/update-angola-result.php');
+	require('forms/update-angola-result.php');
 }
 ?>
 
