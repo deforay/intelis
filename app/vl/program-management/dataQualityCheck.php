@@ -125,66 +125,36 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 }
 
-if (isset($sWhere) && count($sWhere)>0) {
-  //   $sWhere = ' where ' . $sWhere;
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          if (trim($start_date) == trim($end_date)) {
-               $sWhere[] =  ' WHERE DATE(vl.sample_collection_date) = "' . $start_date . '"';
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+     if (trim($start_date) == trim($end_date)) {
+          $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+     } else {
+          $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+     }
+}
+if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
+     $sWhereSubC = "  (";
+     $sWhereSub = '';
+     $searchArray = explode(",", $_POST['formField']);
+     foreach ($searchArray as $search) {
+          if ($sWhereSub == "") {
+               $sWhereSub .= $sWhereSubC;
+               $sWhereSub .= "(";
           } else {
-               $sWhere[] =  ' WHERE DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+               $sWhereSub .= " OR (";
           }
-     }
-     if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
-          $sWhereSub = '';
-          $sWhereSubC = " AND (";
-          $searchArray = explode(",", $_POST['formField']);
-          foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
-                    $sWhereSub .= $sWhereSubC;
-                    $sWhereSub .= "(";
-               } else {
-                    $sWhereSub .= " OR (";
-               }
-               $sWhereSub .= $search . " ='' OR " . $search . " IS NULL";
-               $sWhereSub .= ")";
-          }
+          if($search=='sample_collection_date')
+               $sWhereSub .=  'vl.'.$search . " IS NULL";
+          else
+               $sWhereSub .= 'vl.'.$search . " ='' OR " . 'vl.'.$search . " IS NULL";
           $sWhereSub .= ")";
-          $sWhere[] = $sWhereSub;
      }
-} else {
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          $setWhr = 'where';
-       //   $sWhere[] = ' where ' . $sWhere;
-          $sWhere[] = ' where DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-     }
-     if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
-          if (isset($setWhr)) {
-               $sWhereSubC = " (";
-          } else {
-               $sWhereSubC = " where (";
-          }
-          $sWhereSub = '';
-          $searchArray = explode(",", $_POST['formField']);
-          foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
-                    $sWhereSub .= $sWhereSubC;
-                    $sWhereSub .= "(";
-               } else {
-                    $sWhereSub .= " OR (";
-               }
-               $sWhereSub .= $search . " ='' OR " . $search . " IS NULL";
-               $sWhereSub .= ")";
-          }
-          $sWhereSub .= ")";
-          $sWhere[] = $sWhereSub;
-     }
+     $sWhereSub .= ")";
+     $sWhere[] = $sWhereSub;
 }
 
-if (count($sWhere)>0 ) {
      $sWhere[] =  ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} else {
-     $sWhere[] =  ' where  vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-}
+
 $dWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 
@@ -197,7 +167,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 
 if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
-     $sWhere = implode(" AND ", $sWhere);
+     $sWhere = ' where '.implode(" AND ", $sWhere);
  }
 
 $sQuery = $sQuery . ' ' . $sWhere;
