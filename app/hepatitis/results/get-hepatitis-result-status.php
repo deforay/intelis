@@ -34,13 +34,13 @@ $primaryKey = "hepatitis_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))',  'f.facility_name', 'f.facility_code', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_code',  'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))',  'f.facility_name', 'labName', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'labName', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_code',  'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_code', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
+    $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'labName', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+    $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'labName', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -106,7 +106,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -115,7 +115,11 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS *, l.facility_name as labName FROM form_hepatitis as vl 
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+            LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id 
+            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 //echo $sQuery;die;
 $start_date = '';
@@ -157,7 +161,7 @@ if (isset($sWhere) && $sWhere != "") {
 } else {
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
         $setWhr = 'WHERE';
-        $sWhere[] = ' WHERE ' ;
+        $sWhere[] = ' WHERE ';
         $sWhere[] =  ' b.batch_code = "' . $_POST['batchCode'] . '"';
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -192,7 +196,7 @@ if (isset($sWhere) && $sWhere != "") {
                 $sWhere[] = '  vl.result_status NOT IN (4,7)';
             }
         } else {
-            $sWhere[] = ' where ' ;
+            $sWhere[] = ' where ';
             if ($_POST['statusFilter'] == 'approvedOrRejected') {
                 $sWhere[] =  ' vl.result_status IN (4,7)';
             } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
@@ -218,17 +222,13 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 $sWhere[] = ' (vl.hcv_vl_count !="" OR vl.hbv_vl_count !="") ';
 
-if(isset($sWhere) && count($sWhere > 0))
-{
-    if(trim(strtolower($sWhere[0]))=='where')
-    {
-         array_shift($sWhere);
+if (isset($sWhere) && count($sWhere) > 0) {
+    if (trim(strtolower($sWhere[0])) == 'where') {
+        array_shift($sWhere);
         // echo 'aft shift<pre>'; print_r($sWhere);
-        $sWhere = ' WHERE '. implode(' AND ',$sWhere);
-    }
-    else
-    {
-        $sWhere = implode(' AND ',$sWhere);
+        $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
+    } else {
+        $sWhere = implode(' AND ', $sWhere);
     }
 }
 
@@ -299,7 +299,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];
     $row[] = $patientFname . " " . $patientLname;
-    $row[] = ($aRow['facility_name']);
+    $row[] = ucwords($aRow['facility_name']);
     $row[] = $aRow['hcv_vl_count'];
     $row[] = $aRow['hbv_vl_count'];
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
