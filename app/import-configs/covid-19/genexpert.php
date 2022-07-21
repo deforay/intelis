@@ -73,6 +73,7 @@ try {
                 // echo "</pre><br><br><br>";
                 if ($v == "End Time" || $v == "Heure de fin") {
                     $testedOn = $general->removeCntrlCharsAndEncode($record[1], true);
+                    $testedOn = str_replace("/", "-", $testedOn);
                     $testedOn = date('Y-m-d H:i', strtotime($testedOn));
                 } elseif ($v == "User" || $v == 'Utilisateur') {
                     $testedBy = $general->removeCntrlCharsAndEncode($record[1], true);
