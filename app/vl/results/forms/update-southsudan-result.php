@@ -198,9 +198,6 @@ $disable = "disabled = 'disabled'";
 							</div>
 						</div>
 
-
-
-
 						<div class="row">
 							<div class="col-xs-3 col-md-3">
 								<div class="form-group">
@@ -228,13 +225,17 @@ $disable = "disabled = 'disabled'";
 									</select>
 								</div>
 							</div>
+							<div class="col-xs-3 col-md-3">
+								<div class="form-group">
+									<label for="communitySample">Community Sample</label>
+									<select class="form-control" name="communitySample" id="communitySample" title="Please choose community sample" style="width:100%;">
+										<option value=""> -- Select -- </option>
+										<option value="yes" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
+										<option value="no" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
+									</select>
+								</div>
+							</div>
 						</div>
-
-
-
-
-
-
 					</div>
 					<div class="box box-primary">
 						<div class="box-header with-border">

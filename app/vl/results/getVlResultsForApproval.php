@@ -4,7 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 
@@ -91,11 +90,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          if ($sWhere == "") {
                $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          } else {
-               $sWhere[] = " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          }
      }
 }
 
@@ -121,7 +116,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 }
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && count($sWhere) > 0) {
     // $sWhere[] = ' WHERE ' . $sWhere;
      //$sQuery = $sQuery.' '.$sWhere;
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -149,70 +144,34 @@ if (isset($sWhere) && $sWhere != "") {
      }
 } else {
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-          $setWhr = 'WHERE';
-         // $sWhere = ' WHERE ' . $sWhere;
           $sWhere[] =  ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          if (isset($setWhr)) {
                if (trim($start_date) == trim($end_date)) {
-                    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-                         $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                    } else {
-                        // $sWhere[] = ' where ' . $sWhere;
-                         $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                    }
+                    $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
                }
-          } else {
-               $setWhr = 'WHERE';
-              // $sWhere = ' WHERE ' . $sWhere;
-               $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+               else
+               {
+                    $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+               }
      }
      if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
-          if (isset($setWhr)) {
                $sWhere[] =  ' s.sample_id = "' . $_POST['sampleType'] . '"';
-          } else {
-               $setWhr = 'where';
-           //    $sWhere = ' where ' . $sWhere;
-               $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
-          }
      }
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
-          } else {
-             //  $sWhere = ' where ' . $sWhere;
                $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-          }
-          $and = " AND";
      }
      if (isset($_POST['statusFilter']) && trim($_POST['statusFilter']) != '') {
-          if (isset($setWhr)) {
                if ($_POST['statusFilter'] == 'approvedOrRejected') {
                     $sWhere[] =  ' vl.result_status IN (4,7)';
                } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
                     $sWhere[] = ' vl.result_status NOT IN (4,7)';
                }
-          } else {
-               if (!isset($_POST['facilityName']) || trim($_POST['facilityName']) == '') {
-                  //  $sWhere = ' WHERE ' . $sWhere;
-               }
-               if ($_POST['statusFilter'] == 'approvedOrRejected') {
-                    $sWhere[] =  ' vl.result_status IN (4,7)';
-               } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-                    $sWhere[] =  ' vl.result_status NOT IN (4,7)';
-               }
-          }
      }
-     if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
-     }
+    
 }
-if ($sWhere != '') {
      $sWhere[] = '  vl.vlsm_country_id="' . $vlsmFormId . '"';
-} else {
-     $sWhere[] =  ' WHERE vl.vlsm_country_id="' . $vlsmFormId . '"';
-}
+
 if ($userType == 'remoteuser') {
      $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
      if (!empty($facilityMap)) {

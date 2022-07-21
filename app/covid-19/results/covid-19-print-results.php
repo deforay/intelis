@@ -83,9 +83,9 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td><b><?php echo _("Testing Lab"); ?> :</b></td>
+                                                    <td><b><?php echo _("Testing Labs"); ?> :</b></td>
                                                     <td>
-                                                        <select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing lab'); ?>" multiple="multiple" style="width:220px;">
+                                                        <select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
@@ -209,9 +209,9 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td><b><?php echo _("Testing Lab"); ?> :</b></td>
+                                                    <td><b><?php echo _("Testing Labs"); ?> :</b></td>
                                                     <td>
-                                                        <select class="form-control" id="printLabId" name="printLabId" title="<?php echo _('Please select testing lab'); ?>" multiple="multiple" style="width:220px;">
+                                                        <select class="form-control" id="printLabId" name="printLabId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>

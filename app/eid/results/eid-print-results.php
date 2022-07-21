@@ -82,8 +82,12 @@ $batResult = $db->rawQuery($batQuery);
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td><b><?php echo _("Testing Labs"); ?> :</b></td>
+                                                    <td>
+                                                        <select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+                                                            <?= $labsDropdown; ?>
+                                                        </select>
+                                                    </td>
                                                     <td></td>
                                                     <td></td>
                                                 </tr>
@@ -123,6 +127,9 @@ $batResult = $db->rawQuery($batQuery);
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
                                                         </div>
                                                         <div class="col-md-3">
@@ -151,6 +158,7 @@ $batResult = $db->rawQuery($batQuery);
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
+                                                        <th><?php echo _("Testing Lab"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -199,8 +207,12 @@ $batResult = $db->rawQuery($batQuery);
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td><b><?php echo _("Testing Labs"); ?> :</b></td>
+                                                    <td>
+                                                        <select class="form-control" id="printLabId" name="printLabId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+                                                            <?= $labsDropdown; ?>
+                                                        </select>
+                                                    </td>
                                                     <td></td>
                                                     <td></td>
                                                 </tr>
@@ -240,6 +252,9 @@ $batResult = $db->rawQuery($batQuery);
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="facility_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="sample_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
                                                         </div>
                                                         <div class="col-md-3">
@@ -267,6 +282,7 @@ $batResult = $db->rawQuery($batQuery);
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
+                                                        <th><?php echo _("Testing Lab"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -306,7 +322,7 @@ $batResult = $db->rawQuery($batQuery);
     var oTable = null;
     var opTable = null;
     $(document).ready(function() {
-        $("#facility,#printFacility").select2({
+        $("#facility,#printFacility, #labId, #printLabId").select2({
             placeholder: "<?php echo _("Select Facilities"); ?>"
         });
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
@@ -469,6 +485,10 @@ $batResult = $db->rawQuery($batQuery);
                     "value": $("#facility").val()
                 });
                 aoData.push({
+                    "name": "labId",
+                    "value": $("#labId").val()
+                });
+                aoData.push({
                     "name": "vlPrint",
                     "value": 'not-print'
                 });
@@ -572,7 +592,10 @@ $batResult = $db->rawQuery($batQuery);
                     "name": "facilityName",
                     "value": $("#prinFacility").val()
                 });
-
+                aoData.push({
+                    "name": "labId",
+                    "value": $("#printLabId").val()
+                });
                 aoData.push({
                     "name": "vlPrint",
                     "value": 'print'
