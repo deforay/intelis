@@ -130,12 +130,12 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		} else if (trim($aRow['arv_adherance_percentage']) == 'poor') {
 			$arvAdherence = 'Poor <85%';
 		}
-		
+
 		//set sample rejection
 		$sampleRejection = null;
 		if (trim($aRow['is_sample_rejected']) == 'yes' || $aRow['result_status'] == 4) {
 			$sampleRejection = 'Yes';
-		} else if (trim($aRow['is_sample_rejected']) == 'no'){
+		} else if (trim($aRow['is_sample_rejected']) == 'no') {
 			$sampleRejection = 'No';
 		}
 		//result dispatched date
@@ -192,7 +192,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		}
 		$row[] = $aRow['facility_name'];
 		$row[] = $aRow['lab_name'];
-		
+
 		$row[] = $aRow['facility_code'];
 		$row[] = ($aRow['facility_district']);
 		$row[] = ($aRow['facility_state']);

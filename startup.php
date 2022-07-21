@@ -1,5 +1,7 @@
 <?php
 
+//use Vlsm\Utilities\Registry;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -57,8 +59,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
 require_once(APPLICATION_PATH . '/system/system.php');
 require_once(APPLICATION_PATH . '/../vendor/autoload.php');
 
-$systemConfig = require_once(APPLICATION_PATH . "/../configs/config." . APPLICATION_ENV . ".php");
-define('SYSTEM_CONFIG', $systemConfig);
+define('SYSTEM_CONFIG', require_once(APPLICATION_PATH . "/../configs/config." . APPLICATION_ENV . ".php"));
 
 // Database Connection
 $db = new MysqliDb(array(
@@ -87,9 +88,18 @@ textdomain($domain);
 
 // Timezone
 if (empty($_SESSION['APP_TIMEZONE'])) {
-    $general = new \Vlsm\Models\General();
     $_SESSION['APP_TIMEZONE'] = $general->getGlobalConfig('default_time_zone');
     $_SESSION['APP_TIMEZONE'] = !empty($_SESSION['APP_TIMEZONE']) ? $_SESSION['APP_TIMEZONE'] : 'UTC';
 }
 
 date_default_timezone_set($_SESSION['APP_TIMEZONE']);
+
+// $request = Laminas\Diactoros\ServerRequestFactory::fromGlobals(
+//     $_SERVER,
+//     $_GET,
+//     $_POST,
+//     $_COOKIE,
+//     $_FILES
+// );
+
+// Registry::set('request', $request);

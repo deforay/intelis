@@ -8,8 +8,8 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $tableName = "user_details";
-$userName = $db->escape($_POST['username']);
-$password = $db->escape($_POST['password']);
+$userName = ($_POST['username']);
+$password = ($_POST['password']);
 
 
 $general = new \Vlsm\Models\General();
@@ -27,7 +27,7 @@ $_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemI
 
 try {
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
-        $_GET['u'] = $db->escape($_GET['u']);
+        $_GET['u'] = ($_GET['u']);
         //$_GET['t'] = $db->escape($_GET['t']);
         $_POST['username'] = base64_decode($_GET['u']);
 
@@ -54,13 +54,8 @@ try {
     if ($adminCount != 0) {
         if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
 
-            $userName = $db->escape($_POST['username']);
-            $password = $db->escape($_POST['password']);
-
-            /* Crosss Login Block Start */
-            // if (empty($_GET) || empty($_GET['u']) || empty($_GET['t'])) {
-            //     $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
-            // }
+            $userName = ($_POST['username']);
+            $password = ($_POST['password']);
 
             $ipaddress = '';
             if (isset($_SERVER['HTTP_CLIENT_IP'])) {

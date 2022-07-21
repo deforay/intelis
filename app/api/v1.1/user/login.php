@@ -14,10 +14,7 @@ try {
 
         /* Check hash login id exist */
         $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm`, `password` FROM user_details WHERE `login_id` = ?";
-        $hashCheck = $db->rawQueryOne($hashCheckQuery, array($db->escape($input['userName'])));
-
-        $username = $db->escape($input['userName']);
-        $password = $db->escape($input['password']);
+        $hashCheck = $db->rawQueryOne($hashCheckQuery, array($input['userName']));
 
         $queryParams = array($username);
         $userResult = $db->rawQueryOne(

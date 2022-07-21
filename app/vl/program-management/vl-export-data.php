@@ -2,14 +2,10 @@
 $title = _("Export Data");
 
 require_once(APPLICATION_PATH . '/header.php');
-
-
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
-
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
-
 $arr = $general->getGlobalConfig();
 
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
@@ -112,14 +108,26 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control daterangefield" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
-							<td>
-								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
-									<option value=""> <?php echo _("-- Select --"); ?> </option>
-									<option value="male"><?php echo _("Male"); ?></option>
-									<option value="female"><?php echo _("Female"); ?></option>
-									<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
-								</select>
+							<td colspan="2">
+								<div class="col-md-12">
+									<div class="col-md-6">
+										<b><?php echo _("Gender"); ?>&nbsp;:</b>
+										<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value)">
+											<option value=""> <?php echo _("-- Select --"); ?> </option>
+											<option value="male"><?php echo _("Male"); ?></option>
+											<option value="female"><?php echo _("Female"); ?></option>
+											<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
+										</select>
+									</div>
+									<div class="col-md-6">
+										<b style=" position: absolute; "><?php echo _("Community Sample"); ?>&nbsp;:</b>
+										<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;margin-top: 20px;">
+											<option value=""> <?php echo _("-- Select --"); ?> </option>
+											<option value="yes"><?php echo _("Yes"); ?></option>
+											<option value="no"><?php echo _("No"); ?></option>
+										</select>
+									</div>
+								</div>
 							</td>
 						</tr>
 						<tr>
@@ -498,6 +506,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 					"value": $("#gender").val()
 				});
 				aoData.push({
+					"name": "communitySample",
+					"value": $("#communitySample").val()
+				});
+				aoData.push({
 					"name": "showReordSample",
 					"value": $("#showReordSample").val()
 				});
@@ -548,6 +560,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 				Viral_Load: $("#vLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
 				Gender: $("#gender  option:selected").text(),
+				Community_Sample: $("#communitySample  option:selected").text(),
 				Status: $("#status  option:selected").text(),
 				Show_Reorder_Sample: $("#showReordSample option:selected").text(),
 				withAlphaNum: withAlphaNum

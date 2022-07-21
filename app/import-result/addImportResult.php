@@ -12,7 +12,7 @@ $query = "SELECT config_id,machine_name,import_machine_file_name FROM import_con
 $iResult = $db->rawQuery($query);
 
 $fQuery = "SELECT * FROM facility_details as f INNER JOIN testing_labs as t ON t.facility_id=f.facility_id 
-			WHERE t.test_type = ? AND f.facility_type=2 AND f.facility_attributes->>\"$.allow_results_file_upload\" = 'yes' AND f.facility_attributes->>\"$.allow_results_file_upload\" is null";
+			WHERE t.test_type = ? AND f.facility_type=2 AND f.facility_attributes->>\"$.allow_results_file_upload\" = 'yes' OR f.facility_attributes->>\"$.allow_results_file_upload\" is null";
 $fResult = $db->rawQuery($fQuery, array($type));
 
 if ($type == 'vl') {

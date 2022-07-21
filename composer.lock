@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "db27557550e18b3b081f833c30f0b632",
+    "content-hash": "91702f7a5046aa4ed346108a73bc32a3",
     "packages": [
         {
             "name": "aranyasen/hl7",
@@ -126,6 +126,94 @@
                 "source": "https://github.com/auraphp/Aura.Filter/tree/2.x"
             },
             "time": "2017-04-20T05:28:07+00:00"
+        },
+        {
+            "name": "crunzphp/crunz",
+            "version": "v3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/crunzphp/crunz.git",
+                "reference": "04762fb3ba7bd7f727b41751991cb9525d423954"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/crunzphp/crunz/zipball/04762fb3ba7bd7f727b41751991cb9525d423954",
+                "reference": "04762fb3ba7bd7f727b41751991cb9525d423954",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.0",
+                "dragonmantank/cron-expression": "^3.1",
+                "laravel/serializable-closure": "^1.0",
+                "php": ">=7.4",
+                "symfony/config": "^4.4.30 || ^5.4 || ^6.0",
+                "symfony/console": "^4.4.30 || ^5.4 || ^6.0",
+                "symfony/dependency-injection": "^4.4.30 || ^5.4 || ^6.0",
+                "symfony/filesystem": "^4.4.30 || ^5.4 || ^6.0",
+                "symfony/lock": "^4.4.30 || ^5.4 || ^6.0",
+                "symfony/mailer": "^5.4 || ^6.0",
+                "symfony/process": "^4.4.30 || ^5.4 || ^6.0",
+                "symfony/yaml": "^4.4.30 || ^5.4 || ^6.0"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.28",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "friendsofphp/php-cs-fixer": "^2.19 || ^3.8",
+                "phpstan/phpstan": "^1.7",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "phpstan/phpstan-strict-rules": "^1.2",
+                "phpunit/phpunit": "^9.5.5",
+                "symfony/error-handler": "^4.4.30 || ^5.4 || ^6.0",
+                "symfony/phpunit-bridge": "^5.4.0 || ^6.0"
+            },
+            "bin": [
+                "crunz"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Crunz\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Reza M. Lavaryan",
+                    "email": "mrl.8081@gmail.com"
+                },
+                {
+                    "name": "PabloKowalczyk",
+                    "homepage": "https://github.com/PabloKowalczyk",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Schedule your tasks right from the code.",
+            "homepage": "https://github.com/crunzphp/crunz",
+            "keywords": [
+                "Event Runner",
+                "Job Manager",
+                "Job Scheduler",
+                "PHP Task Scheduler",
+                "Task Scheduler",
+                "cron",
+                "cron jobs",
+                "scheduler"
+            ],
+            "support": {
+                "issues": "https://github.com/crunzphp/crunz/issues",
+                "source": "https://github.com/crunzphp/crunz/tree/v3.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/PabloKowalczyk",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-06-19T11:23:45+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -917,79 +1005,6 @@
             "time": "2022-05-16T17:09:47+00:00"
         },
         {
-            "name": "lavary/crunz",
-            "version": "v3.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lavary/crunz.git",
-                "reference": "fdf89a4fc7b47b419b0512f1daa2b524a11a5ef4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lavary/crunz/zipball/fdf89a4fc7b47b419b0512f1daa2b524a11a5ef4",
-                "reference": "fdf89a4fc7b47b419b0512f1daa2b524a11a5ef4",
-                "shasum": ""
-            },
-            "require": {
-                "dragonmantank/cron-expression": "^3.1",
-                "laravel/serializable-closure": "^1.0",
-                "php": ">=7.4",
-                "symfony/config": "^4.4.30 || ^5.4 || ^6.0",
-                "symfony/console": "^4.4.30 || ^5.4 || ^6.0",
-                "symfony/dependency-injection": "^4.4.30 || ^5.4 || ^6.0",
-                "symfony/filesystem": "^4.4.30 || ^5.4 || ^6.0",
-                "symfony/lock": "^4.4.30 || ^5.4 || ^6.0",
-                "symfony/mailer": "^5.4 || ^6.0",
-                "symfony/process": "^4.4.30 || ^5.4 || ^6.0",
-                "symfony/yaml": "^4.4.30 || ^5.4 || ^6.0"
-            },
-            "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.2",
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "phpunit/phpunit": "^9.5.5",
-                "symfony/error-handler": "^4.4.30 || ^5.4 || ^6.0",
-                "symfony/phpunit-bridge": "^4.4.30 || ^5.4.0 || ^6.0"
-            },
-            "bin": [
-                "crunz"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Crunz\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Reza M. Lavaryan",
-                    "email": "mrl.8081@gmail.com"
-                }
-            ],
-            "description": "Schedule your tasks right from the code.",
-            "homepage": "https://github.com/lavary/crunz",
-            "keywords": [
-                "Event Runner",
-                "Job Manager",
-                "Job Scheduler",
-                "PHP Task Scheduler",
-                "Task Scheduler",
-                "cron",
-                "cron jobs",
-                "scheduler"
-            ],
-            "support": {
-                "email": "mrl.8081@gmail.com",
-                "issues": "http://github.com/lavary/crunz/issues",
-                "source": "https://github.com/lavary/crunz/tree/v3.2.1"
-            },
-            "time": "2022-01-12T14:34:58+00:00"
-        },
-        {
             "name": "league/csv",
             "version": "9.8.0",
             "source": {
@@ -1393,16 +1408,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.24.0",
+            "version": "1.24.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "ebe8745c92a7cac4514d040758393b5399633b83"
+                "reference": "69991111e05fca3ff7398e1e7fca9ebed33efec6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/ebe8745c92a7cac4514d040758393b5399633b83",
-                "reference": "ebe8745c92a7cac4514d040758393b5399633b83",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/69991111e05fca3ff7398e1e7fca9ebed33efec6",
+                "reference": "69991111e05fca3ff7398e1e7fca9ebed33efec6",
                 "shasum": ""
             },
             "require": {
@@ -1491,9 +1506,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
-                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.24.0"
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.24.1"
             },
-            "time": "2022-07-09T13:49:09+00:00"
+            "time": "2022-07-18T19:50:48+00:00"
         },
         {
             "name": "psr/container",
