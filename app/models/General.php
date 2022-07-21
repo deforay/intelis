@@ -18,6 +18,10 @@ class General
         $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
+    public function setDb($db)
+    {
+        $this->db = $db;
+    }
 
     public static function generateRandomString($length = 32)
     {
@@ -30,13 +34,14 @@ class General
         return $randomString;
     }
 
-    public function escape($inputArray, $db)
+    public function escape($inputArray, $db = null)
     {
+        $db = !empty($db) ? $db : $this->db;
+        $escapedArray = array();
         foreach ($inputArray as $key => $value) {
-            $inputArray[$key] = $db->escape($value);
+            $escapedArray[$key] = $db->escape($value);
         }
-
-        return $inputArray;
+        return $escapedArray;
     }
 
     // Returns a UUID format string

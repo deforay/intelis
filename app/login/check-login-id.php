@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 $db = MysqliDb::getInstance();
-$value = $db->escape(trim($_POST['value']));
+$value = (trim($_POST['value']));
 $fnct = $_POST['fnct'];
 $ipaddress = '';
 if (isset($_SERVER['HTTP_CLIENT_IP'])) {

@@ -6,10 +6,10 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $tableName = "user_details";
-$userName = $db->escape($_POST['username']);
-$emailId = $db->escape($_POST['email']);
-$loginId = $db->escape($_POST['loginid']);
-$password = $db->escape($_POST['password']);
+$userName = ($_POST['username']);
+$emailId = ($_POST['email']);
+$loginId = ($_POST['loginid']);
+$password = ($_POST['password']);
 
 $general = new \Vlsm\Models\General();
 $userId = $general->generateUUID();

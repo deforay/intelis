@@ -233,22 +233,22 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 /* Gender filter */
 if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
      if (trim($_POST['gender']) == "not_recorded") {
-          $sWhere[] =  '  (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+          $sWhere[] =  ' (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
      } else {
-          $sWhere[] =  '  vl.patient_gender ="' . $_POST['gender'] . '"';
+          $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['gender'] . '") ';
      }
 }
 
 if (isset($_POST['communitySample']) && trim($_POST['communitySample']) != '') {
-     $sWhere[] =  '  vl.community_sample ="' . $_POST['communitySample'] . '"';
+     $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
 }
 /* Sample status filter */
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
-     $sWhere[] = '  vl.result_status =' . $_POST['status'];
+     $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
 }
 /* Show only recorded sample filter */
 if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
-     $sWhere[] =  '  vl.sample_reordered ="yes"';
+     $sWhere[] =  '  (vl.sample_reordered is NOT NULL AND vl.sample_reordered ="yes") ';
 }
 /* Is patient pregnant filter */
 if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {

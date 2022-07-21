@@ -64,7 +64,7 @@ try {
                     }
                 }
 
-                $newPassword = $userModel->passwordHash($db->escape($_POST['password']));
+                $newPassword = $userModel->passwordHash($_POST['password']);
                 $data['password'] = $newPassword;
                 $data['hash_algorithm'] = 'phb';
                 $data['force_password_reset'] = $_SESSION['forcePasswordReset'] = 0;
