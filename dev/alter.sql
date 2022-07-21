@@ -3158,3 +3158,4 @@ UPDATE `facility_details` SET `facility_attributes` = '{\"allow_results_file_upl
 
 -- Thana 20-Jul-2022
 ALTER TABLE `form_vl` ADD `community_sample` VARCHAR(256) NULL DEFAULT NULL AFTER `funding_source`;
+ALTER TABLE `audit_form_vl` ADD `community_sample` VARCHAR(256) NULL DEFAULT NULL AFTER `funding_source`;
