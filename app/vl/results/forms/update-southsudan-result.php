@@ -132,17 +132,28 @@ $disable = "disabled = 'disabled'";
 						</div>
 						<div class="box-body">
 							<div class="row">
-								<div class="col-xs-3 col-md-3">
+								<div class="col-xs-4 col-md-4">
 									<div class="form-group">
 										<label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
 										<input type="text" class="form-control " id="sampleCode" name="sampleCode" placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo $vlQueryInfo['sample_code']; ?>" <?php echo $disable; ?> style="width:100%;" />
 									</div>
 								</div>
-								<div class="col-xs-3 col-md-3">
+								<div class="col-xs-4 col-md-4">
 									<div class="form-group">
 										<label for="sampleReordered">
-											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please check sample reordered"> Sample Reordered
+											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> Sample Reordered
 										</label>
+									</div>
+								</div>
+
+								<div class="col-xs-4 col-md-4">
+									<div class="form-group">
+										<label for="communitySample">Community Sample</label>
+										<select class="form-control" name="communitySample" id="communitySample" title="Please choose if this is a community sample" style="width:100%;">
+											<option value=""> -- Select -- </option>
+											<option value="yes" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
+											<option value="no" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
+										</select>
 									</div>
 								</div>
 							</div>
@@ -222,16 +233,6 @@ $disable = "disabled = 'disabled'";
 										?>
 											<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
 										<?php } ?>
-									</select>
-								</div>
-							</div>
-							<div class="col-xs-3 col-md-3">
-								<div class="form-group">
-									<label for="communitySample">Community Sample</label>
-									<select class="form-control" name="communitySample" id="communitySample" title="Please choose community sample" style="width:100%;">
-										<option value=""> -- Select -- </option>
-										<option value="yes" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
-										<option value="no" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
 									</select>
 								</div>
 							</div>

@@ -99,7 +99,7 @@ $sFormat = '';
                                    </div>
                                    <div class="box-body">
                                         <div class="row">
-                                             <div class="col-xs-3 col-md-3">
+                                             <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
                                                        <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
@@ -108,8 +108,19 @@ $sFormat = '';
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="sampleReordered">
-                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please check sample reordered"> Sample Reordered
+                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please indicate if this is a reordered sample"> Sample Reordered
                                                        </label>
+                                                  </div>
+                                             </div>
+
+                                             <div class="col-xs-4 col-md-4">
+                                                  <div class="form-group">
+                                                       <label for="communitySample">Community Sample</label>
+                                                       <select class="form-control" name="communitySample" id="communitySample" title="Please choose if this is a community sample" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <option value="yes">Yes</option>
+                                                            <option value="no">No</option>
+                                                       </select>
                                                   </div>
                                              </div>
                                              <!-- BARCODESTUFF START -->
@@ -187,16 +198,6 @@ $sFormat = '';
                                                             ?>
                                                                  <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
                                                             <?php } ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="communitySample">Community Sample</label>
-                                                       <select class="form-control" name="communitySample" id="communitySample" title="Please choose community sample" style="width:100%;">
-                                                            <option value=""> -- Select -- </option>
-                                                            <option value="yes">Yes</option>
-                                                            <option value="no">No</option>
                                                        </select>
                                                   </div>
                                              </div>

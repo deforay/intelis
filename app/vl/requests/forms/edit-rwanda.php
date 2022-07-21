@@ -190,7 +190,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="">
                                                             <label for="sampleReordered">
-                                                                 <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please check sample reordered"> Sample Reordered
+                                                                 <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample Reordered
                                                             </label>
                                                        </div>
                                                   </div>
