@@ -6,7 +6,6 @@ ob_start();
 
 
 
-
 $general = new \Vlsm\Models\General(); 
 $whereCondition = '';
 $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";

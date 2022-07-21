@@ -107,7 +107,6 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     vl.*,
                     b.batch_code,

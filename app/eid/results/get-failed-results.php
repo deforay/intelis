@@ -36,7 +36,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code','vl.sample_collection_date', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
 
 
@@ -76,7 +76,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -97,7 +97,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
@@ -115,8 +115,6 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$aWhere = '';
-
 $sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_eid as vl 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -134,105 +132,81 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-if (isset($sWhere) && $sWhere != "") {
-    $sWhere = ' where ' . $sWhere;
+if (isset($sWhere) && count($sWhere) > 0) {
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+        $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
-            $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+            $sWhere[]=  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
-            $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
 
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
+        $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
 } else {
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $setWhr = 'where';
-        $sWhere = ' where ' . $sWhere;
-        $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
+      
+        $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        if (isset($setWhr)) {
             if (trim($start_date) == trim($end_date)) {
-                if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                } else {
-                    $sWhere = ' where ' . $sWhere;
-                    $sWhere = $sWhere . ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                }
+                    $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
             }
-        } else {
-            $setWhr = 'where';
-            $sWhere = ' where ' . $sWhere;
-            $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
+            else {
+                $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+            }
     }
-
     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-        if (isset($setWhr)) {
-            $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-        } else {
-            $setWhr = 'where';
-            $sWhere = ' where ' . $sWhere;
-            $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-        }
+            $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+       
     }
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        if (isset($setWhr)) {
-            $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-        } else {
-            $setWhr = 'where';
-            $sWhere = ' where ' . $sWhere;
-            $sWhere = $sWhere . " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-        }
+            $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+      
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        if (isset($setWhr)) {
-            $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-        } else {
-            $sWhere = ' where ' . $sWhere;
-            $sWhere = $sWhere . " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-        }
+            $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
 }
-$whereResult = '';
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-    $whereResult = 'vl.result != "" AND ';
+    $sWhere[] = ' vl.result != ""  ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-    $whereResult = '(vl.result IS NULL OR vl.result = "") AND ';
+    $sWhere[] = '(vl.result IS NULL OR vl.result = "")  ';
 }
-if ($sWhere != '') {
-    $sWhere = $sWhere . ' AND ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} else {
-    $sWhere = $sWhere . ' where ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-}
+    $sWhere[] = ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
+        $sWhere[] = "  vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
         $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
 
-if (!isset($sWhere) || $sWhere == "") {
-    $sWhere = ' where ' . $sWhere;
-    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
-} else {
-    $sWhere = $sWhere . ' AND (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
-}
+    $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
+
+    if(isset($sWhere) && count($sWhere)>0)
+    {
+        $sWhere = ' where '. implode(' AND ',$sWhere);
+    }
+    else
+    {
+        $sWhere = "";
+    }
+    
+
 $sQuery = $sQuery . ' ' . $sWhere;
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
