@@ -286,14 +286,17 @@ foreach ($rejectionTypeResult as $type) {
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
-				},
-				//{"sClass":"center","bSortable":false},
+					"sClass": "center",
+					"bSortable": false
+				}
 			],
-			"aaSorting": [
-				[colmun, "desc"]
-			],
-			"fnDrawCallback": function() {
+			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
+					[8, "desc"]
+				],
+			<?php } else { ?> "aaSorting": [
+					[7, "desc"]
+				],
+			<?php } ?> "fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
