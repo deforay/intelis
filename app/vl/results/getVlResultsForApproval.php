@@ -168,7 +168,6 @@ if (isset($sWhere) && count($sWhere) > 0) {
                     $sWhere[] = ' vl.result_status NOT IN (4,7)';
                }
      }
-    
 }
      $sWhere[] = '  vl.vlsm_country_id="' . $vlsmFormId . '"';
 

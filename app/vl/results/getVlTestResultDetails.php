@@ -46,18 +46,16 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 */
 
 $sOrder = "";
-
 if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-          if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-               $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
+	$sOrder = "";
+	for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
+		if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
+			$sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+				 	" . ($_POST['sSortDir_' . $i]) . ", ";
+		}
+	}
+	$sOrder = substr_replace($sOrder, "", -2);
 }
-
 /*
 * Filtering
 * NOTE this does not match the built-in DataTables filtering which does it
