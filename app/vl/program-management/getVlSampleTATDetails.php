@@ -109,7 +109,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
         */
 $aWhere = '';
 $sQuery = "SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
+                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
                         AND vl.result is not null
                         AND vl.result != '' ";
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -119,7 +119,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
 	}
 } else {
-	$sWhere[] = " AND vl.result_status!=9";
+	$sWhere[] = " vl.result_status!=9";
 }
 $start_date = '';
 $end_date = '';
@@ -187,11 +187,10 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (!empty($sWhere)) {
-	$_SESSION['vlTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
+if (isset($sWhere) && count($sWhere)>0) {
+	$_SESSION['vlTatData']['sWhere'] = $sWhere = ' AND '.implode(" AND ", $sWhere);
 	$sQuery = $sQuery . $sWhere;
 }
-
 if (isset($sOrder) && $sOrder != "") {
 	$_SESSION['vlTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -209,14 +208,14 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rUser = " AND vl.result_status!=9";
 }
 $aResultFilterTotal = $db->rawQuery("SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
+                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
                         AND vl.result is not null
-                        AND vl.result != '' $saWhere $rUser");
+                        AND vl.result != '' $sWhere $rUser");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
 $aResultTotal =  $db->rawQuery("SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
+                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
                         AND vl.result is not null
                         AND vl.result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' AND vl.result_status!=9 $rUser");
 // $aResultTotal = $countResult->fetch_row();
