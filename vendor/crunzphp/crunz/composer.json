@@ -1,6 +1,7 @@
 {
-    "name": "lavary/crunz",
+    "name": "crunzphp/crunz",
     "description": "Schedule your tasks right from the code.",
+    "license": "MIT",
     "type": "library",
     "keywords": [
         "scheduler",
@@ -12,20 +13,30 @@
         "Job Manager",
         "Event Runner"
     ],
-    "homepage": "https://github.com/lavary/crunz",
-    "license": "MIT",
     "authors": [
         {
             "name": "Reza M. Lavaryan",
             "email": "mrl.8081@gmail.com"
+        },
+        {
+            "name": "PabloKowalczyk",
+            "homepage": "https://github.com/PabloKowalczyk",
+            "role": "Developer"
         }
     ],
+    "homepage": "https://github.com/crunzphp/crunz",
     "support": {
-        "email": "mrl.8081@gmail.com",
-        "issues": "http://github.com/lavary/crunz/issues"
+        "issues": "https://github.com/crunzphp/crunz/issues"
     },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/PabloKowalczyk"
+        }
+    ],
     "require": {
         "php": ">=7.4",
+        "composer-runtime-api": "^2.0",
         "dragonmantank/cron-expression": "^3.1",
         "laravel/serializable-closure": "^1.0",
         "symfony/config": "^4.4.30 || ^5.4 || ^6.0",
@@ -40,11 +51,17 @@
     "require-dev": {
         "ext-json": "*",
         "ext-mbstring": "*",
-        "bamarni/composer-bin-plugin": "^1.2",
+        "ergebnis/composer-normalize": "^2.28",
+        "friendsofphp/php-cs-fixer": "^2.19 || ^3.8",
+        "phpstan/phpstan": "^1.7",
+        "phpstan/phpstan-phpunit": "^1.1",
+        "phpstan/phpstan-strict-rules": "^1.2",
         "phpunit/phpunit": "^9.5.5",
         "symfony/error-handler": "^4.4.30 || ^5.4 || ^6.0",
-        "symfony/phpunit-bridge": "^4.4.30 || ^5.4.0 || ^6.0"
+        "symfony/phpunit-bridge": "^5.4.0 || ^6.0"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Crunz\\": "src/"
@@ -58,22 +75,18 @@
     "bin": [
         "crunz"
     ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "config": {
-        "sort-packages": true,
         "allow-plugins": {
-            "bamarni/composer-bin-plugin": true
-        }
+            "ergebnis/composer-normalize": true
+        },
+        "sort-packages": true
     },
     "scripts": {
-        "crunz:cs-fix": "@php vendor/bin/php-cs-fixer fix --diff -v --ansi",
         "crunz:analyze": [
             "@php vendor/bin/php-cs-fixer fix --diff --dry-run -v",
             "@phpstan:check"
         ],
-        "crunz:link-changelog": "@php vendor/bin/changelog-linker dump-merges --dry-run --in-categories",
-        "crunz:link-changelog:since": "@php vendor/bin/changelog-linker dump-merges --dry-run --in-categories --since-id",
+        "crunz:cs-fix": "@php vendor/bin/php-cs-fixer fix --diff -v --ansi",
         "phpstan:check": "@php vendor/bin/phpstan analyse -c phpstan.neon src tests crunz config bootstrap.php"
     }
 }
