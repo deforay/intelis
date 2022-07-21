@@ -3154,4 +3154,4 @@ UPDATE `system_config` SET `value` = '5.0.1' WHERE `system_config`.`name` = 'sc_
 
 -- Amit 19-Jul-2022
 ALTER TABLE `facility_details` ADD `facility_attributes` JSON NULL DEFAULT NULL AFTER `facility_type`;
-UPDATE `facility_details` SET updated_datetime = CURRENT_TIMESTAMP, `facility_attributes` = '{\"allow_results_file_upload\": \"yes\"}' WHERE `facility_type` = 2
+UPDATE `facility_details` SET `facility_attributes` = '{\"allow_results_file_upload\": \"yes\"}' WHERE `facility_type` = 2;
