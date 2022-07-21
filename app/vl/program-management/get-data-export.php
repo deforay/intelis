@@ -186,7 +186,7 @@ if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) !=
           $eSampleReceivedDate = $general->dateFormat(trim($s_p_date[1]));
      }
 }
-$sWhere=array($sWhere);
+$sWhere = array($sWhere);
 /* Sample type filter */
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] =  ' vl.sample_type IN (' . $_POST['sampleType'] . ')';
@@ -237,6 +237,10 @@ if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
      } else {
           $sWhere[] =  '  vl.patient_gender ="' . $_POST['gender'] . '"';
      }
+}
+
+if (isset($_POST['communitySample']) && trim($_POST['communitySample']) != '') {
+     $sWhere[] =  '  vl.community_sample ="' . $_POST['communitySample'] . '"';
 }
 /* Sample status filter */
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
