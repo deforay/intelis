@@ -4,7 +4,7 @@
 ob_start();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 
-$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
