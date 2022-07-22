@@ -144,9 +144,9 @@ if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
                $sWhereSub .= " OR (";
           }
           if($search=='sample_collection_date')
-               $sWhereSub .=  'vl.'.$search . " IS NULL";
+               $sWhereSub .=  $search . " IS NULL";
           else
-               $sWhereSub .= 'vl.'.$search . " ='' OR " . 'vl.'.$search . " IS NULL";
+               $sWhereSub .= $search . " ='' OR " . $search . " IS NULL";
           $sWhereSub .= ")";
      }
      $sWhereSub .= ")";

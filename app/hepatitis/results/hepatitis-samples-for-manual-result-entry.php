@@ -144,7 +144,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 }
 
-if (isset($sWhere) && count($sWhere) > 0) {
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
@@ -181,114 +180,30 @@ if (isset($sWhere) && count($sWhere) > 0) {
      if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
           $sWhere[] = '  vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
      }
-} else {
-     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-          $setWhr = 'where';
-          // $sWhere = ' where ' . $sWhere;
-          $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-     }
 
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          if (isset($setWhr)) {
-               if (trim($start_date) == trim($end_date)) {
-                    $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-               } else {
-                    $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-               }
-          } else {
-               $setWhr = 'where';
-               //$sWhere = ' where ' . $sWhere;
-               $sWhere[] = ' where DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
-     }
-
-
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          if (isset($setWhr)) {
-               $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-          } else {
-               $setWhr = 'where';
-               // $sWhere = ' where ' . $sWhere;
-               $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-          }
-     }
-
-     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
-          if (isset($setWhr)) {
-               $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
-          } else {
-               $setWhr = 'where';
-               //  $sWhere = ' where ' . $sWhere;
-               $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
-          }
-     }
-
-     if (isset($_POST['status']) && trim($_POST['status']) != '') {
-          if (isset($setWhr)) {
-               if ($_POST['status'] == 'no_result') {
-                    $statusCondition = '  (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ="" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  ="")  AND vl.result_status !=4 ';
-               } else if ($_POST['status'] == 'result') {
-                    $statusCondition = ' ((vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !="" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !="")  AND vl.result_status !=4 )';
-               } else {
-                    $statusCondition = ' vl.result_status=4';
-               }
-               $sWhere[] = $statusCondition;
-          } else {
-               $setWhr = 'where';
-               //$sWhere = ' where ' . $sWhere;
-               if ($_POST['status'] == 'no_result') {
-                    $statusCondition = '  (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ="" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  ="")  AND vl.result_status !=4 ';
-               } else if ($_POST['status'] == 'result') {
-                    $statusCondition = ' ((vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !="" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !="")  AND vl.result_status !=4 )';
-               } else {
-                    $statusCondition = ' vl.result_status=4';
-               }
-               $sWhere[] = $statusCondition;
-          }
-     }
-
-     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-          if (isset($setWhr)) {
-               $sWhere[] = ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-          } else {
-               $setWhr = 'where';
-               //  $sWhere = ' where ' . $sWhere;
-               $sWhere[] = ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-          }
-     }
-     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-          if (isset($setWhr)) {
-               $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-          } else {
-               $setWhr = 'where';
-               //$sWhere[] = ' where ' . $sWhere;
-               $sWhere[] =  ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-          }
-     }
-}
-$dWhere = '';
+///$dWhere = '';
 // Only approved results can be printed
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      if (!isset($_POST['status']) || trim($_POST['status']) == '') {
           if (count($sWhere) > 0) {
-               $sWhere[] = " AND ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
+               $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
           } else {
                $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
           }
      }
      $sWhere[] = " vl.vlsm_country_id='" . $arr['vl_form'] . "'";
-     $dWhere = "WHERE ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND vl.vlsm_country_id='" . $arr['vl_form'] . "' AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
+     //$dWhere = "WHERE ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND vl.vlsm_country_id='" . $arr['vl_form'] . "' AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
 } else {
      if (count($sWhere) > 0) {
           $sWhere[] = " vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
      } else {
           $sWhere[] = "  vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
      }
-     $dWhere = " vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
+    // $dWhere = " vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
 }
 if ($_SESSION['instanceType'] == 'remoteuser' && isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
-     $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+    // $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
 if (count($sWhere) > 1)
