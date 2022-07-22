@@ -19,7 +19,6 @@ if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser') {
 }
 
 
-
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type='hepatitis' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 ?>

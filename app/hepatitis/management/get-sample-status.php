@@ -214,14 +214,14 @@ foreach ($tatResult as $sRow) {
     $result['date'][$j] = $sRow["monthDate"];
     $j++;
 }
-
+$sWhere=array();
 $testReasonQuery = "SELECT count(c.sample_code) AS total, tr.test_reason_name 
                     from form_hepatitis as c 
                     INNER JOIN r_hepatitis_test_reasons as tr ON c.reason_for_hepatitis_test = tr.test_reason_id 
                     JOIN facility_details as f ON c.facility_id=f.facility_id 
                     LEFT JOIN batch_details as b ON b.batch_id=c.sample_batch_id";
 
-$sWhere[] = ' WHERE c.reason_for_hepatitis_test IS NOT NULL ';
+$sWhere[] = ' c.reason_for_hepatitis_test IS NOT NULL ';
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -239,7 +239,7 @@ if (!empty($_POST['labName'])) {
 }
 
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $testReasonQuery .= implode(" AND ", $sWhere);
+    $testReasonQuery .= ' where '.implode(" AND ", $sWhere);
 }
 $testReasonQuery = $testReasonQuery . " GROUP BY tr.test_reason_name";
 $testReasonResult = $db->rawQuery($testReasonQuery);
