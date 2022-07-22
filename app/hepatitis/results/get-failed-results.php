@@ -170,7 +170,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
     $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 
-if(count($sWhere) > 1)
+if(count($sWhere) > 0)
     $sWhere = ' where ' .implode(' AND ',$sWhere);
 else
     $sWhere = "";

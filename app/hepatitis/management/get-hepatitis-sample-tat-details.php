@@ -188,7 +188,7 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (!empty($sWhere)) {
+if (!empty($sWhere) && count($sWhere) > 0) {
 	$_SESSION['hepatitisTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
 	$sQuery = $sQuery . ' AND ' .$sWhere;
 }
