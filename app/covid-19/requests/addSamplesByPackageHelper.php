@@ -31,8 +31,10 @@ foreach ($sampleResult as $sampleRow) {
         $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
         $covid19Data['result_status'] = 6;
-        $covid19Data['sample_tested_datetime'] = null;
-        $covid19Data['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+        if(!empty($_POST['testDate'])){
+            $covid19Data['sample_tested_datetime'] = null;
+            $covid19Data['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+        }        
         $covid19Data['last_modified_by'] = $_SESSION['userId'];
         $covid19Data['last_modified_datetime'] = $general->getDateTime();
 

@@ -477,13 +477,17 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 
 											<th class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
-												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Veuillez sélectionner la raison du rejet de l'échantillon">
-													<option value=''> -- Sélectionner -- </option>
-													<option value="Technical Problem" <?php echo ($eidInfo['reason_for_sample_rejection'] == 'Technical Problem') ? "selected='selected'" : ""; ?>> Problème technique </option>
-													<option value="Poor numbering" <?php echo ($eidInfo['reason_for_sample_rejection'] == 'Poor numbering') ? "selected='selected'" : ""; ?>> Mauvaise numérotation </option>
-													<option value="Insufficient sample" <?php echo ($eidInfo['reason_for_sample_rejection'] == 'Insufficient sample') ? "selected='selected'" : ""; ?>> Echantillon insuffisant </option>
-													<option value="Degraded sample or clot" <?php echo ($eidInfo['reason_for_sample_rejection'] == 'Degraded sample or clot') ? "selected='selected'" : ""; ?>> Echantillon dégradé ou caillot </option>
-													<option value="Poor packaging" <?php echo ($eidInfo['reason_for_sample_rejection'] == 'Poor packaging') ? "selected='selected'" : ""; ?>> Mauvais empaquetage </option>
+												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value="">-- Sélectionner --</option>
+													<?php foreach ($rejectionTypeResult as $type) { ?>
+														<optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
+															<?php
+															foreach ($rejectionResult as $reject) {
+																if ($type['rejection_type'] == $reject['rejection_type']) { ?>
+																	<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($eidInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+															<?php }
+															} ?>
+														</optgroup>
+													<?php }  ?>
 												</select>
 											</td>
 										</tr>
