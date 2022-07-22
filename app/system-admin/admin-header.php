@@ -105,7 +105,7 @@ if (!isset($_SESSION['adminUserId'])) {
           <ul class="nav navbar-nav">
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="<?php echo DOMAIN; ?>/assets/img/default-user.png" class="user-image" alt="User Image">
+                <img src="/assets/img/default-user.png" class="user-image" alt="User Image">
                 <span class="hidden-xs"><?php if (isset($_SESSION['adminUserName'])) {
                                           echo $_SESSION['adminUserName'];
                                         } ?></span>

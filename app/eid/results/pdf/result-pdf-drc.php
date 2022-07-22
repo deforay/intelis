@@ -173,21 +173,21 @@ if (sizeof($requestResult) > 0) {
             if ($result['result'] == 'negative') {
                 $vlResult = $eidResults[$result['result']];
                 if (isset($smileyShow) && $smileyShow != '') {
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                 }
                 $showMessage = "";
                 $tndMessage = '';
             } else if ($result['result'] == 'positive') {
                 $vlResult = $eidResults[$result['result']];
                 if (isset($smileyShow) && $smileyShow != '') {
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
                 }
                 $showMessage = '';
                 $messageTextSize = '15px';
             } else if ($result['result'] == 'indeterminate') {
                 $vlResult = $eidResults[$result['result']];
                 if (isset($smileyShow) && $smileyShow != '') {
-                    //$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/cross.png" alt="frown_face"/>';
+                    //$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="frown_face"/>';
                 }
                 $showMessage = '';
                 $messageTextSize = '15px';
