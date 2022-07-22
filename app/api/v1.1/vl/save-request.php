@@ -285,11 +285,11 @@ try {
         }
 
         //Set Dispatched From Clinic To Lab Date
-        if (isset($_POST['dateDispatchedFromClinicToLab']) && trim($_POST['dateDispatchedFromClinicToLab']) != "") {
-            $dispatchedFromClinicToLabDate = explode(" ", $_POST['dateDispatchedFromClinicToLab']);
-            $_POST['dateDispatchedFromClinicToLab'] = $general->dateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
+        if (isset($data['dateDispatchedFromClinicToLab']) && trim($data['dateDispatchedFromClinicToLab']) != "") {
+            $dispatchedFromClinicToLabDate = explode(" ", $data['dateDispatchedFromClinicToLab']);
+            $data['dateDispatchedFromClinicToLab'] = $general->dateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
         } else {
-            $_POST['dateDispatchedFromClinicToLab'] = NULL;
+            $data['dateDispatchedFromClinicToLab'] = NULL;
         }
 
         if (isset($data['patientGender']) && trim($data['patientGender']) == 'male') {
@@ -367,7 +367,7 @@ try {
             'result_dispatched_datetime'            => $data['resultDispatchedOn'],
             'is_sample_rejected'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] != '') ? $data['isSampleRejected'] : NULL,
             'reason_for_sample_rejection'           => (isset($data['rejectionReason']) && $data['rejectionReason'] != '') ? $data['rejectionReason'] :  NULL,
-            'rejection_on'                          => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
+            'rejection_on'                          => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->dateFormat($data['rejectionDate']) : null,
             'result_value_absolute'                 => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? $data['vlResult'] :  NULL,
             'result_value_absolute_decimal'         => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? number_format((float)$data['vlResult'], 2, '.', '') :  NULL,
             'result'                                => (isset($data['result']) && $data['result'] != '') ? $data['result'] :  NULL,
@@ -375,9 +375,9 @@ try {
             'tested_by'                             => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  NULL,
             'result_approved_by'                    => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
             'result_approved_datetime'              => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedOnDateTime'] :  NULL,
-            'revised_by'                            => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
-            'revised_on'                            => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
-            'reason_for_vl_result_changes'          => (!empty($_POST['reasonForVlResultChanges']) && !empty($_POST['reasonForVlResultChanges'])) ? $_POST['reasonForVlResultChanges'] : null,
+            'revised_by'                            => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
+            'revised_on'                            => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
+            'reason_for_vl_result_changes'          => (!empty($data['reasonForVlResultChanges']) && !empty($data['reasonForVlResultChanges'])) ? $data['reasonForVlResultChanges'] : null,
             'lab_tech_comments'                     => (isset($data['labComments']) && trim($data['labComments']) != '') ? trim($data['labComments']) :  NULL,
             'result_status'                         => $status,
             'funding_source'                        => (isset($data['fundingSource']) && trim($data['fundingSource']) != '') ? $data['fundingSource'] : NULL,
@@ -395,8 +395,8 @@ try {
             'last_viral_load_date'                  => (isset($data['lastViralLoadTestDate'])) ? $data['lastViralLoadTestDate'] : NULL,
             'facility_support_partner'              => (isset($data['implementingPartner']) && $data['implementingPartner'] != '') ? $data['implementingPartner'] :  NULL,
             'date_test_ordered_by_physician'        => (isset($data['dateOfDemand']) && $data['dateOfDemand'] != '') ? $data['dateOfDemand'] :  NULL,
-            'result_reviewed_by'                    => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
-            'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+            'result_reviewed_by'                    => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
+            'result_reviewed_datetime'              => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'source_of_request'                     => "app"
         );
         if (isset($data['patientFullName']) && $data['patientFullName'] != "") {

@@ -68,7 +68,7 @@ try {
         $sampleFrom = '';
 
         /* Checkng required fields */
-        if (empty($data['uniqueId']) || empty($data['appSampleCode']) || empty($data['facilityId']) || empty($data['patientArtNo']) || empty($data['vlTestReason']) || empty($data['specimenType']) || empty($data['sampleCollectionDate'])) {
+        if (empty($data['uniqueId']) || empty($data['appSampleCode']) || empty($data['facilityId']) || empty($data['patientArtNo']) || empty($data['stViralTesting']) || empty($data['specimenType']) || empty($data['sampleCollectionDate'])) {
             throw new Exception("Invalid request. Please check your request parameters.");
             exit(0);
         }
@@ -376,7 +376,7 @@ try {
             'consent_to_receive_sms'                => (isset($data['receiveSms']) && $data['receiveSms'] != '') ? $data['receiveSms'] :  NULL,
             'sample_type'                           => (isset($data['specimenType']) && $data['specimenType'] != '') ? $data['specimenType'] :  NULL,
             'arv_adherance_percentage'              => (isset($data['arvAdherence']) && $data['arvAdherence'] != '') ? $data['arvAdherence'] :  NULL,
-            'reason_for_vl_testing'                 => (isset($data['vlTestReason'])) ? $data['vlTestReason'] : NULL,
+            'reason_for_vl_testing'                 => (isset($data['stViralTesting'])) ? $data['stViralTesting'] : NULL,
             'community_sample'                      => (isset($data['communitySample'])) ? $data['communitySample'] : NULL,
             'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? $general->dateFormat($data['rmTestingLastVLDate']) :  NULL,
             'last_vl_result_routine'                => (isset($data['rmTestingVlValue']) && $data['rmTestingVlValue'] != '') ? $data['rmTestingVlValue'] :  NULL,
