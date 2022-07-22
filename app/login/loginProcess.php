@@ -28,7 +28,6 @@ $_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemI
 try {
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
         $_GET['u'] = ($_GET['u']);
-        //$_GET['t'] = $db->escape($_GET['t']);
         $_POST['username'] = base64_decode($_GET['u']);
 
         $decryptedPassword = General::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));

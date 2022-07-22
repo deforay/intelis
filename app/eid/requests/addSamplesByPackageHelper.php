@@ -36,7 +36,10 @@ foreach ($sampleResult as $sampleRow) {
         $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
         $eidData['result_status'] = 6;
-        $eidData['sample_tested_datetime'] = $_POST['testDate'];
+        if(!empty($_POST['testDate'])){
+            $eidData['sample_tested_datetime'] = null;
+            $eidData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+        }
         $eidData['last_modified_by'] = $_SESSION['userId'];
         $eidData['last_modified_datetime'] = $general->getDateTime();
 

@@ -146,7 +146,7 @@ if (sizeof($requestResult) > 0) {
                $resultType = is_numeric($result['result']);
                if (in_array(strtolower(trim($result['result'])), array("tnd", "target not detected"))) {
                     $vlResult = 'TND*';
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                     $showMessage = ucfirst($arr['l_vl_msg']);
                     $tndMessage = 'TND* - Target not Detected';
                } else if (in_array(strtolower(trim($result['result'])), array("failed", "fail", "no_sample"))) {
@@ -156,28 +156,28 @@ if (sizeof($requestResult) > 0) {
                     $messageTextSize = '14px';
                } else if (trim($result['result']) > 1000 && $result['result'] <= 10000000) {
                     $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
                     $showMessage = ucfirst($arr['h_vl_msg']);
                     $messageTextSize = '15px';
                } else if (trim($result['result']) <= 1000 && $result['result'] >= 20) {
                     $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                     $showMessage = ucfirst($arr['l_vl_msg']);
                } else if (trim($result['result'] > 10000000) && $resultType) {
                     $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
                     //$showMessage = 'Value outside machine detection limit';
                } else if (trim($result['result'] < 20) && $resultType) {
                     $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                     //$showMessage = 'Value outside machine detection limit';
                } else if (trim($result['result']) == '<20') {
                     $vlResult = '&lt;20';
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                     $showMessage = ucfirst($arr['l_vl_msg']);
                } else if (trim($result['result']) == '>10000000') {
                     $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
                     $showMessage = ucfirst($arr['h_vl_msg']);
                } else if ($result['vl_test_platform'] == 'Roche') {
                     $chkSign = '';
@@ -196,9 +196,9 @@ if (sizeof($requestResult) > 0) {
                          //$showMessage = 'Invalid value';
                     }
                     if ($smileyShow != '' && $smileyShow <= $arr['viral_load_threshold_limit']) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                     } else if ($smileyShow != '' && $smileyShow > $arr['viral_load_threshold_limit']) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
                     }
                }
           }
@@ -206,7 +206,7 @@ if (sizeof($requestResult) > 0) {
                $smileyContent = '';
           }
           if ($result['result_status'] == '4') {
-               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/cross.png" alt="rejected"/>';
+               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
           }
           $html = '';
           $html .= '<table style="padding:0px 2px 2px 2px;">';
@@ -409,11 +409,11 @@ if (sizeof($requestResult) > 0) {
           $html .= '<td colspan="3">';
           $html .= '<table>';
           $html .= '<tr>';
-          $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < = 1000 copies/ml: Continue on current regimen</td>';
+          $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < = 1000 copies/ml: Continue on current regimen</td>';
           $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL > 1000 copies/ml: copies/ml: Clinical and counselling action required</td>';
+          $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL > 1000 copies/ml: copies/ml: Clinical and counselling action required</td>';
           $html .= '</tr>';
           $html .= '</table>';
           $html .= '</td>';
