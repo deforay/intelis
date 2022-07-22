@@ -9,13 +9,13 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
-
+$sWhere = array();
 $tResult = array();
 //$rjResult = array();
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $start_date = '';
     $end_date = '';
-    $sWhere = '';
+    
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
@@ -32,22 +32,29 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id
                 ";
                 
-    $sWhere .= ' where vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND vl.vlsm_country_id = "' . $formId . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
+    $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND vl.vlsm_country_id = "' . $formId . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
     if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
-        $sWhere .= ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
+        $sWhere[] = '  s.sample_id = "' . $_POST['sampleType'] . '"';
     }
     if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
-        $sWhere .= ' AND vl.lab_id = "' . $_POST['labName'] . '"';
+        $sWhere[] = '  vl.lab_id = "' . $_POST['labName'] . '"';
     }
     if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && count($_POST['clinicName']) > 0) {
-        $sWhere .= " AND vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
+        $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
     }
     if (!empty($facilityMap)) {
-        $sWhere .= " AND vl.facility_id IN ($facilityMap)";
+        $sWhere[] = " vl.facility_id IN ($facilityMap)";
     }
-
-    $vlQuery = $vlQuery . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
+if(isset($sWhere) && count($sWhere) > 0)
+{
+    $sWhere = implode(' AND ',$sWhere);
+}
+else
+{
+    $sWhere ="";
+}
+    $vlQuery = $vlQuery . ' where ' .$sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
 
     $tableResult = $db->rawQuery($vlQuery);
     // print_r($vlQuery);die;

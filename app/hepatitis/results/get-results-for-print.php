@@ -104,11 +104,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
             $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
     }
 }
 
@@ -197,11 +193,11 @@ if (isset($_POST['artNo']) && trim($_POST['artNo']) != '') {
 }
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
     if ($_POST['status'] == 'no_result') {
-        $statusCondition = ' AND  (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ="" AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ="")';
+        $statusCondition = '  (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ="" AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ="")';
     } else if ($_POST['status'] == 'result') {
-        $statusCondition = ' AND (vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !="" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !="")';
+        $statusCondition = ' (vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !="" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !="")';
     } else {
-        $statusCondition = ' AND vl.result_status=4';
+        $statusCondition = ' vl.result_status=4';
     }
     $sWhere[] = $statusCondition;
 }

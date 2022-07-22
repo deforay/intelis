@@ -75,9 +75,8 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $sWhere = " AND ";
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
@@ -97,17 +96,14 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[]= $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
+            $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+      
     }
 }
 
@@ -115,13 +111,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$aWhere = '';
 $sQuery = "SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive'";
 $start_date = '';
 $end_date = '';
 
 if (isset($_POST['hvlBatchCode']) && trim($_POST['hvlBatchCode']) != '') {
-    $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
+    $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
 }
 /* if(isset($_POST['hvlContactStatus']) && trim($_POST['hvlContactStatus'])!= ''){
 		if($_POST['hvlContactStatus']=='all')
@@ -142,25 +137,25 @@ if (isset($_POST['hvlSampleTestDate']) && trim($_POST['hvlSampleTestDate']) != '
         $end_date = $general->dateFormat(trim($s_c_date[1]));
     }
     if (trim($start_date) == trim($end_date)) {
-        $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
+        $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
-        $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+        $sWhere[] = '  DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
     }
 }
 if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
-    $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['hvlSampleType'] . '"';
+    $sWhere[] = ' s.sample_id = "' . $_POST['hvlSampleType'] . '"';
 }
 if (isset($_POST['hvlFacilityName']) && $_POST['hvlFacilityName'] != '') {
-    $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['hvlFacilityName'] . ')';
+    $sWhere[] =  ' f.facility_id IN (' . $_POST['hvlFacilityName'] . ')';
 }
 if (isset($_POST['hvlGender']) && $_POST['hvlGender'] != '') {
-    $sWhere = $sWhere . ' AND vl.patient_gender = "' . $_POST['hvlGender'] . '"';
+    $sWhere[] = ' vl.patient_gender = "' . $_POST['hvlGender'] . '"';
 }
 if (isset($_POST['hvlPatientPregnant']) && $_POST['hvlPatientPregnant'] != '') {
-    $sWhere = $sWhere . ' AND vl.is_patient_pregnant = "' . $_POST['hvlPatientPregnant'] . '"';
+    $sWhere[] =  ' vl.is_patient_pregnant = "' . $_POST['hvlPatientPregnant'] . '"';
 }
 if (isset($_POST['hvlPatientBreastfeeding']) && $_POST['hvlPatientBreastfeeding'] != '') {
-    $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding = "' . $_POST['hvlPatientBreastfeeding'] . '"';
+    $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['hvlPatientBreastfeeding'] . '"';
 }
 $dWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -169,15 +164,22 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-        $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+        $sWhere[] =  " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
+        $dWhere = $dWhere . " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
 
-$sWhere = $sWhere . ' AND vl.vlsm_country_id="' . $arr['vl_form'] . '"';
+$sWhere[] =  ' vl.vlsm_country_id="' . $arr['vl_form'] . '"';
 
-
-$sQuery = $sQuery . ' ' . $sWhere;
+if(count($sWhere) > 0)
+{
+    $sWhere = ' AND '.implode(' AND ',$sWhere);
+}
+else{
+    $sWhere ="";
+}
+$sQuery = $sQuery . $sWhere;
+//echo $sQuery; die;
 $sQuery = $sQuery . ' group by vl.hepatitis_id';
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

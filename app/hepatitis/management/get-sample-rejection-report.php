@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 
 $general = new \Vlsm\Models\General();
@@ -27,12 +27,12 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
 
 if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
-    $orderColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
+    $aColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
+    $orderColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -71,9 +71,8 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $sWhere = " AND ";
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
@@ -93,17 +92,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
+            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";       
     }
 }
 
@@ -111,12 +106,11 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$aWhere = '';
 $sQuery = "SELECT vl.*,f.*,s.*,fd.facility_name as labName,rsrr.rejection_reason_name FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection where vl.is_sample_rejected='yes' AND vl.vlsm_country_id='" . $arr['vl_form'] . "'";
 $start_date = '';
 $end_date = '';
 if (isset($_POST['rjtBatchCode']) && trim($_POST['rjtBatchCode']) != '') {
-    $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
+    $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
 }
 
 if (isset($_POST['rjtSampleTestDate']) && trim($_POST['rjtSampleTestDate']) != '') {
@@ -129,25 +123,25 @@ if (isset($_POST['rjtSampleTestDate']) && trim($_POST['rjtSampleTestDate']) != '
         $end_date = $general->dateFormat(trim($s_c_date[1]));
     }
     if (trim($start_date) == trim($end_date)) {
-        $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
+        $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
-        $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+        $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
     }
 }
 if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {
-    $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['rjtSampleType'] . '"';
+    $sWhere[] =  ' s.sample_id = "' . $_POST['rjtSampleType'] . '"';
 }
 if (isset($_POST['rjtFacilityName']) && $_POST['rjtFacilityName'] != '') {
-    $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
+    $sWhere[] =  ' f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
 }
 if (isset($_POST['rjtGender']) && $_POST['rjtGender'] != '') {
-    $sWhere = $sWhere . ' AND vl.patient_gender = "' . $_POST['rjtGender'] . '"';
+    $sWhere[] = ' vl.patient_gender = "' . $_POST['rjtGender'] . '"';
 }
 if (isset($_POST['rjtPatientPregnant']) && $_POST['rjtPatientPregnant'] != '') {
-    $sWhere = $sWhere . ' AND vl.is_patient_pregnant = "' . $_POST['rjtPatientPregnant'] . '"';
+    $sWhere[] =  ' vl.is_patient_pregnant = "' . $_POST['rjtPatientPregnant'] . '"';
 }
 if (isset($_POST['rjtPatientBreastfeeding']) && $_POST['rjtPatientBreastfeeding'] != '') {
-    $sWhere = $sWhere . ' AND vl.is_patient_breastfeeding = "' . $_POST['rjtPatientBreastfeeding'] . '"';
+    $sWhere[] =  ' vl.is_patient_breastfeeding = "' . $_POST['rjtPatientBreastfeeding'] . '"';
 }
 
 $dWhere = '';
@@ -157,11 +151,19 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
+        $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
         $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
-$sQuery = $sQuery . ' ' . $sWhere;
+
+if(count($sWhere) > 0)
+{
+    $sWhere = ' AND '.implode(' AND ',$sWhere);
+}
+else{
+    $sWhere ="";
+}
+$sQuery = $sQuery . $sWhere;
 $sQuery = $sQuery . ' group by vl.hepatitis_id';
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
@@ -205,9 +207,8 @@ foreach ($rResult as $aRow) {
     } else {
         $decrypt = 'sample_code';
     }
-    $patientFname = $general->crypto('decrypt', $aRow['patient_first_name'], $aRow[$decrypt]);
-    $patientMname = $general->crypto('decrypt', $aRow['patient_middle_name'], $aRow[$decrypt]);
-    $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $aRow[$decrypt]);
+    $patientName = $general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]);
+   
     $row = array();
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instanceType'] != 'standalone') {
@@ -215,7 +216,7 @@ foreach ($rResult as $aRow) {
     }
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
-    $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+    $row[] = $patientName;
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['labName'];
     $row[] = $aRow['rejection_reason_name'];
