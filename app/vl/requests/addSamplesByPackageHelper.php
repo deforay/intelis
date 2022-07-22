@@ -33,7 +33,10 @@ foreach ($sampleResult as $sampleRow) {
         $vldata['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $vldata['sample_code_key'] = $sampleData['sampleCodeKey'];
         $vldata['result_status'] = 6;
-        $vldata['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+        if (!empty($_POST['testDate'])) {
+            $vldata['sample_tested_datetime'] = null;
+            $vldata['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+        }
         $db = $db->where('vl_sample_id', $sampleRow['vl_sample_id']);
         $id = $db->update('form_vl', $vldata);
         if ($id > 0) {

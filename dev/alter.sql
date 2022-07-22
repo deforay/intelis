@@ -3159,3 +3159,7 @@ UPDATE `facility_details` SET `facility_attributes` = '{\"allow_results_file_upl
 -- Thana 20-Jul-2022
 ALTER TABLE `form_vl` ADD `community_sample` VARCHAR(256) NULL DEFAULT NULL AFTER `funding_source`;
 ALTER TABLE `audit_form_vl` ADD `community_sample` VARCHAR(256) NULL DEFAULT NULL AFTER `funding_source`;
+
+
+-- Amit 22-Jul-2022 version 5.0.2
+UPDATE `system_config` SET `value` = '5.0.2' WHERE `system_config`.`name` = 'sc_version';

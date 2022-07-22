@@ -36,7 +36,10 @@ foreach ($sampleResult as $sampleRow) {
         $tbData['sample_code'] = $sampleData['sampleCode'];
         $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
-        $tbData['sample_tested_datetime'] = $_POST['testDate'];
+        if(!empty($_POST['testDate'])){
+            $tbData['sample_tested_datetime'] = null;
+            $tbData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+        }
         $tbData['result_status'] = 6;
         $tbData['last_modified_by'] = $_SESSION['userId'];
         $tbData['last_modified_datetime'] = $general->getDateTime();

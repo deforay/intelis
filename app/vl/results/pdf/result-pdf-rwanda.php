@@ -5,10 +5,10 @@
 $resultFilename = '';
 if (sizeof($requestResult) > 0) {
      $_SESSION['rVal'] = $general->generateRandomString(6);
-     $pathFront = (UPLOAD_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
+     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
      if (!file_exists($pathFront) && !is_dir($pathFront)) {
-          mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
-          $pathFront = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
+          mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
+          $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
      }
 
      $pages = array();
@@ -162,17 +162,17 @@ if (sizeof($requestResult) > 0) {
 
                if ($isResultNumeric) {
                     if ($vlResult > 1000) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
                          $showMessage = ($arr['h_vl_msg']);
                          $messageTextSize = '15px';
                     } else if ($vlResult <= 1000) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                          $showMessage = ($arr['l_vl_msg']);
                     }
                } else {
                     if (in_array(strtolower($vlResult), array("tnd", "target not detected"))) {
                          $vlResult = 'TND*';
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                          $showMessage = ($arr['l_vl_msg']);
                          $tndMessage = 'TND* - Target not Detected';
                     } else if (in_array(strtolower($vlResult), array("failed", "fail", "no_sample", "invalid"))) {
@@ -181,11 +181,11 @@ if (sizeof($requestResult) > 0) {
                          $messageTextSize = '14px';
                     } else if (in_array($vlResult, array("<20", "< 20", "<40", "< 40"))) {
                          $vlResult = str_replace("<", "&lt;", $vlResult);
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                          $showMessage = ($arr['l_vl_msg']);
                     } else if ($vlResult == '>10000000' || $vlResult == '> 10000000') {
                          $vlResult = str_replace(">", "&gt;", $vlResult);
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
                          $showMessage = ($arr['h_vl_msg']);
                     }
                }
@@ -206,9 +206,9 @@ if (sizeof($requestResult) > 0) {
                //           //$showMessage = 'Invalid value';
                //      }
                //      if ($smileyShow != '' && $smileyShow <= $arr['viral_load_threshold_limit']) {
-               //           $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face"/>';
+               //           $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
                //      } else if ($smileyShow != '' && $smileyShow > $arr['viral_load_threshold_limit']) {
-               //           $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face"/>';
+               //           $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
                //      }
                // }
           }
@@ -216,7 +216,7 @@ if (sizeof($requestResult) > 0) {
                $smileyContent = '';
           }
           if ($result['result_status'] == '4') {
-               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . DOMAIN . '/assets/img/cross.png" alt="rejected"/>';
+               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
           }
           $html = '';
           $html .= '<table style="padding:0px 2px 2px 2px;">';
@@ -421,11 +421,11 @@ if (sizeof($requestResult) > 0) {
           $html .= '<td colspan="3">';
           $html .= '<table>';
           $html .= '<tr>';
-          $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="' . DOMAIN . '/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < = 1000 copies/ml: Continue on current regimen</td>';
+          $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < = 1000 copies/ml: Continue on current regimen</td>';
           $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="' . DOMAIN . '/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL > 1000 copies/ml: copies/ml: Clinical and counselling action required</td>';
+          $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL > 1000 copies/ml: copies/ml: Clinical and counselling action required</td>';
           $html .= '</tr>';
           $html .= '</table>';
           $html .= '</td>';
