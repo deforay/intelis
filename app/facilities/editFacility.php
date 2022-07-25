@@ -195,7 +195,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="email" class="col-lg-4 control-label"><?php echo _("Email(s)"); ?> </label>
+									<label for="email" class="col-lg-4 control-label"><?php echo _("Email(s)"); ?> <br> <small><?php echo _("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('eg-email1@gmail.com,email2@gmail.com'); ?>" value="<?php echo $facilityInfo['facility_emails']; ?>" />
 									</div>
@@ -295,7 +295,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="hubName" class="col-lg-4 control-label"><?php echo _("Linked Hub Name (If Applicable)"); ?></label>
+									<label for="hubName" class="col-lg-4 control-label"><?php echo _("Linked Hub Name (if applicable)"); ?></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="hubName" name="hubName" placeholder="<?php echo _('Hub Name'); ?>" title="<?php echo _('Please enter hub name'); ?>" value="<?php echo $facilityInfo['facility_hub_name']; ?>" />
 									</div>

@@ -116,7 +116,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="email" class="col-lg-4 control-label"><?php echo _("Email(s)"); ?> </label>
+									<label for="email" class="col-lg-4 control-label"><?php echo _("Email(s)"); ?> <br> <small><?php echo _("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('eg-email1@gmail.com,email2@gmail.com'); ?>" />
 									</div>
