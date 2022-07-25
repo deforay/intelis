@@ -4637,7 +4637,7 @@ msgid "Designation"
 msgstr "ການກໍານົດ"
 
 #: facilities/addFacility.php:431 facilities/editFacility.php:547
-msgid "Upload Sign"
+msgid "Upload Signature"
 msgstr "ອັບໂຫຼດປ້າຍ"
 
 #: facilities/addFacility.php:432 facilities/editFacility.php:548

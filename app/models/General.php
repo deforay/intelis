@@ -194,11 +194,11 @@ class General
             return false;
         }
 
-        $pQuery = "SELECT * FROM province_details WHERE province_code like ?";
+        $pQuery = "SELECT * FROM geographical_divisions WHERE (geo_parent = 0) AND (geo_code like ?)";
         $pResult = $this->db->rawQueryOne($pQuery, array($code));
 
         if ($pResult) {
-            return $pResult['province_id'];
+            return $pResult['geo_id'];
         } else {
             return null;
         }

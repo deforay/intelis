@@ -124,9 +124,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 							</div>
 							<div class="col-md-6 allowResultsUpload" style="display:none;">
 								<div class="form-group">
-									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload"); ?> <span class="mandatory">*</span> </label>
+									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload?"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select facility type'); ?>">
+										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select if this testing lab can upload test results file'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<option value="yes" "selected='selected'">yes</option>
 											<option value="no">no</option>
@@ -440,16 +440,18 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								</div>
 							</div>
 
-							<div class="row labDiv" style="display:none;">
-								<table class="table table-bordered">
+							<div class="row-item labDiv" style="display:none;">
+								<hr>
+								<h4 class="col-lg-12"><?= _("The following information is sometimes used to show names and signatures in some reports."); ?></h4>
+								<table class="col-lg-12 table table-bordered">
 									<thead>
 										<tr>
-											<th><?php echo _("Name"); ?></th>
+											<th><?php echo _("Name of Signatory"); ?></th>
 											<th><?php echo _("Designation"); ?></th>
-											<th><?php echo _("Upload Sign"); ?></th>
+											<th><?php echo _("Upload Signature"); ?></th>
 											<th><?php echo _("Test Types"); ?></th>
 											<th><?php echo _("Display Order"); ?></th>
-											<th><?php echo _("Status"); ?></th>
+											<th><?php echo _("Current Status"); ?></th>
 											<th><?php echo _("Action"); ?></th>
 										</tr>
 									</thead>
@@ -467,7 +469,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 													<option value='tb'><?php echo _("TB"); ?></option>
 												</select>
 											</td>
-											<td style="width:14%;"><input type="text" class="form-control" name="sortOrder[]" id="sortOrder1" placeholder="<?php echo _('Display Order'); ?>" title="<?php echo _('Please enter the Display Order'); ?>"></td>
+											<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder1" placeholder="<?php echo _('Display Order'); ?>" title="<?php echo _('Please enter the Display Order'); ?>"></td>
 											<td style="width:14%;">
 												<select class="form-control" id="signStatus1" name="signStatus[]" title="<?php echo _('Please select the status'); ?>">
 													<option value="active"><?php echo _("Active"); ?></option>
@@ -512,7 +514,6 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script type="text/javascript">
-	
 	$(document).ready(function() {
 		$("#testType").multipleSelect({
 			placeholder: '<?php echo _("Select Test Type"); ?>',
@@ -572,8 +573,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 		$('#state').val($("#stateId option:selected").text());
 		$('#district').val($("#districtId option:selected").text());
 		tt = $("#testType").val();
-		if(tt=="")
-		{
+		if (tt == "") {
 			alert("Please choose one test type");
 			return false;
 		}
@@ -717,7 +717,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 					<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
 				</select>
 			</td>
-			<td style="width:14%;"><input type="text" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _("Display Order"); ?>" title="<?php echo _("Please enter the Display Order"); ?>"></td>
+			<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _("Display Order"); ?>" title="<?php echo _("Please enter the Display Order"); ?>"></td>
 			<td style="width:14%;">
 				<select class="form-control" id="signStatus${testCounter}" name="signStatus[]" title="<?php echo _("Please select the status"); ?>">
 					<option value="active"><?php echo _("Active"); ?></option>
