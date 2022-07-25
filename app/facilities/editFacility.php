@@ -569,7 +569,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 						</div>
 					</div>
-
+					<div class="row" id="sampleType"></div>
 					<div class="row-item labDiv" style="display:<?php echo $labDiv; ?>;">
 						<hr>
 						<h4 class="col-lg-12"><?= _("The following information is sometimes used to show names, designations and signatures in some reports."); ?></h4>
@@ -653,7 +653,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</tbody>
 						</table>
 					</div>
-					<div class="row" id="sampleType"></div>
+
 					<div class="row" id="userDetails">
 						<?php if (($facilityInfo['facility_type'] == 1 || $facilityInfo['facility_type'] == 4) && $_SESSION['instanceType'] == 'remoteuser') { ?>
 							<h4><?php echo _("User Facility Map Details"); ?></h4>

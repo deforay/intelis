@@ -439,7 +439,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-
+							<div class="row" id="sampleType"></div>
 							<div class="row-item labDiv" style="display:none;">
 								<hr>
 								<h4 class="col-lg-12"><?= _("The following information is sometimes used to show names and signatures in some reports."); ?></h4>
@@ -485,7 +485,6 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								</table>
 							</div>
 
-							<div class="row" id="sampleType"></div>
 							<div class="row" id="userDetails"></div>
 							<div class="row" id="testDetails" style="display:none;"></div>
 
