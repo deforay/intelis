@@ -485,13 +485,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								</table>
 							</div>
 
-							<div class="row" id="userDetails">
-
-							</div>
-
-							<div class="row" id="testDetails" style="display:none;">
-
-							</div>
+							<div class="row" id="sampleType"></div>
+							<div class="row" id="userDetails"></div>
+							<div class="row" id="testDetails" style="display:none;"></div>
 
 						</div>
 						<!-- /.box-body -->
@@ -699,6 +695,17 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 			// $("#testDetails").html(div); // commented the validation functionality code
 		} else {
 			$("#testDetails").html('');
+		}
+
+		if ($("#testType").val() != '') {
+			$.post("/facilities/getSampleType.php", {
+					testType: $("#testType").val()
+				},
+				function(data) {
+					$("#sampleType").html(data);
+				});
+		} else {
+			$("#sampleType").html('');
 		}
 	}
 	let testCounter = 1;

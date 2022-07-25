@@ -4,7 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 require_once(APPLICATION_PATH . '/includes/ImageResize.php');
-
 $general = new \Vlsm\Models\General();
 $geolocation = new \Vlsm\Models\GeoLocations();
 /* For reference we define the table names */
@@ -106,11 +105,14 @@ try {
 		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
-
-		if(!empty($facilityAttributes)){
+		if (!empty($_POST['sampleType']) && count($_POST['sampleType']) > 0) {
+			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {
+				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes);
+			}
+		}
+		if (!empty($facilityAttributes)) {
 			$data['facility_attributes'] = json_encode($facilityAttributes, true);
 		}
-
 		if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $_POST['fromAPI'] == "yes") {
 			/* Facility sync to remote */
 			$url = SYSTEM_CONFIG['remoteURL'] . '/facilities/addFacilityHelper.php';
