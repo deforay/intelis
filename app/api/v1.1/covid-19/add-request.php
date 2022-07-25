@@ -40,7 +40,9 @@ try {
         exit(0);
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
-
+    /* print_r($input['data']);
+    die; */
+    $responseData = array();
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
         $sampleFrom = '';
@@ -421,7 +423,6 @@ try {
             $db = $db->where('covid19_id', $data['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);
         }
-        $responseData = array();
         if ($id > 0) {
             $c19Data = $app->getTableDataUsingId('form_covid19', 'covid19_id', $data['covid19SampleId']);
             $c19SampleCode = (isset($c19Data['sample_code']) && $c19Data['sample_code']) ? $c19Data['sample_code'] : $c19Data['remote_sample_code'];

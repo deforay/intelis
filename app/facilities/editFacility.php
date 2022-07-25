@@ -156,7 +156,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-								<label for="facilityCode" class="col-lg-4 control-label"><?php echo _("Facility Code"); ?><br> <small><?php echo _("(National Unique Code)"); ?></small> </label>
+									<label for="facilityCode" class="col-lg-4 control-label"><?php echo _("Facility Code"); ?><br> <small><?php echo _("(National Unique Code)"); ?></small> </label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _('Facility Code'); ?>" title="<?php echo _('Please enter facility code'); ?>" value="<?php echo $facilityInfo['facility_code']; ?>" onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _("The code that you entered already exists.Try another code"); ?>',null)" />
 									</div>
@@ -653,7 +653,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</tbody>
 						</table>
 					</div>
-
+					<div class="row" id="sampleType"></div>
 					<div class="row" id="userDetails">
 						<?php if (($facilityInfo['facility_type'] == 1 || $facilityInfo['facility_type'] == 4) && $_SESSION['instanceType'] == 'remoteuser') { ?>
 							<h4><?php echo _("User Facility Map Details"); ?></h4>
@@ -950,6 +950,18 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			}
 		}
 		first = 1;
+
+		if ($("#testType").val() != '') {
+			$.post("/facilities/getSampleType.php", {
+					facilityId: $("#facilityId").val(),
+					testType: $("#testType").val()
+				},
+				function(data) {
+					$("#sampleType").html(data);
+				});
+		} else {
+			$("#sampleType").html('');
+		}
 	}
 
 	let testCounter = document.getElementById("signDetails").rows.length;

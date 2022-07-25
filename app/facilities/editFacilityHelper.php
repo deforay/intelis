@@ -97,8 +97,12 @@ try {
 		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
-
-		if(!empty($facilityAttributes)){
+		if (!empty($_POST['sampleType']) && count($_POST['sampleType']) > 0) {
+			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {
+				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes);
+			}
+		}
+		if (!empty($facilityAttributes)) {
 			$data['facility_attributes'] = json_encode($facilityAttributes, true);
 		}
 
@@ -175,11 +179,9 @@ try {
 						$tid = $db->insert($testingLabsTable, $data);
 					}
 				}
-				
 			}
-			
 		}
-		
+
 		if (isset($_POST['removedLabLogoImage']) && trim($_POST['removedLabLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
 			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
