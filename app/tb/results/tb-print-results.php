@@ -75,7 +75,7 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td><b><?php echo _("Testing Las"); ?> :</b></td>
+                                                    <td><b><?php echo _("Testing Labs"); ?> :</b></td>
                                                     <td>
                                                         <select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
                                                             <?= $labsDropdown; ?>

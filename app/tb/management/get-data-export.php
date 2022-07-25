@@ -35,7 +35,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
      $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $orderColumns = array('vl.sample_code','vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -107,7 +107,6 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS 
 vl.tb_id,
 vl.sample_code,
@@ -207,7 +206,7 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 }
 /* Sample type filter */
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
-     $sWhere = $sWhere . ' AND vl.specimen_type IN (' . $_POST['sampleType'] . ')';
+     $sWhere[] = ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
 }
 /* Facility ID filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
@@ -247,10 +246,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 }
 if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
-     if (trim($rstart_date) == trim($rend_date)) {
-          $sWhere[] = ' DATE(vl.sample_registered_at_lab) = "' . $rstart_date . '"';
+     if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
+          $sWhere[] = ' DATE(vl.sample_registered_at_lab) = "' . $sSampleReceivedDate . '"';
      } else {
-          $sWhere[] = ' DATE(vl.sample_registered_at_lab) >= "' . $rstart_date . '" AND DATE(vl.sample_registered_at_lab) <= "' . $rend_date . '"';
+          $sWhere[] = ' DATE(vl.sample_registered_at_lab) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_registered_at_lab) <= "' . $eSampleReceivedDate . '"';
      }
 }
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
@@ -269,23 +268,21 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 }
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) = "' . $sSampleReceivedDate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $sSampleReceivedDate . '"';
      } else {
-          $sWhere = $sWhere . ' AND DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
+          $sWhere[] =  ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
      }
 }
 
-$cWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
      if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
           $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-          $cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
 }
 $sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
-
+//echo $sQuery; die();
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;

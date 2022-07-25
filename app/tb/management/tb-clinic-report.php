@@ -140,7 +140,6 @@ $batResult = $db->rawQuery($batQuery);
 														<th><?php echo _("Facility Name");?></th>
 														<th><?php echo _("Patient's ID");?></th>
 														<th><?php echo _("Patient's Name");?></th>
-														<th><?php echo _("Caretaker Phone No");?>.</th>
 														<th><?php echo _("Sample Collection Date");?></th>
 														<th><?php echo _("Sample Tested Date");?></th>
 														<th><?php echo _("Testing Lab");?></th>
@@ -341,7 +340,7 @@ $batResult = $db->rawQuery($batQuery);
 															<option value="sample_collection_date"><?php echo _("Sample Collection Date");?></option>
 															<option value="sample_batch_id"><?php echo _("Batch Code");?></option>
 															<option value="patient_art_no"><?php echo _("Patient ID");?></option>
-															<option value="patient_first_name"><?php echo _("Patient's Name");?></option>
+															<option value="patient_name"><?php echo _("Patient's Name");?></option>
 															<option value="facility_id"><?php echo _("Facility Name");?></option>
 															<option value="facility_state"><?php echo _("Province");?></option>
 															<option value="facility_district"><?php echo _("County");?></option>
@@ -479,11 +478,10 @@ $batResult = $db->rawQuery($batQuery);
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bSortable": false
 				},
-				{
-					"sClass": "center"
-				},
+				
 			],
 			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
 					[6, "desc"]
