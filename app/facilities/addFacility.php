@@ -77,7 +77,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="facilityCode" class="col-lg-4 control-label"><?php echo _("Facility Code"); ?></label>
+									<label for="facilityCode" class="col-lg-4 control-label"><?php echo _("Facility Code"); ?><br> <small><?php echo _("(National Unique Code)"); ?></small> </label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _('Facility Code'); ?>" title="<?php echo _('Please enter facility code'); ?>" onblur='checkNameValidation("facility_details","facility_code",this,null,"<?php echo _("The code that you entered already exists.Try another code"); ?>",null)' />
 									</div>
@@ -88,9 +88,9 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="otherId" class="col-lg-4 control-label"><?php echo _("Other Id"); ?> </label>
+									<label for="otherId" class="col-lg-4 control-label"><?php echo _("Other/External Code"); ?> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?php echo _('Other Id'); ?>" />
+										<input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?php echo _('Other/External Code'); ?>" />
 									</div>
 								</div>
 							</div>
@@ -211,7 +211,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="hubName" class="col-lg-4 control-label"><?php echo _("Linked Hub Name (If Applicable)"); ?></label>
+										<label for="hubName" class="col-lg-4 control-label"><?php echo _("Linked Hub Name (If applicable)"); ?></label>
 										<div class="col-lg-7">
 											<input type="text" class="form-control" id="hubName" name="hubName" placeholder="<?php echo _('Hub Name'); ?>" title="<?php echo _('Please enter hub name'); ?>" />
 										</div>
@@ -448,7 +448,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 										<tr>
 											<th><?php echo _("Name of Signatory"); ?></th>
 											<th><?php echo _("Designation"); ?></th>
-											<th><?php echo _("Upload Signature"); ?></th>
+											<th><?php echo _("Upload Signature (jpg, png)"); ?></th>
 											<th><?php echo _("Test Types"); ?></th>
 											<th><?php echo _("Display Order"); ?></th>
 											<th><?php echo _("Current Status"); ?></th>

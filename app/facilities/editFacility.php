@@ -156,7 +156,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="facilityCode" class="col-lg-4 control-label"><?php echo _("Facility Code"); ?></label>
+								<label for="facilityCode" class="col-lg-4 control-label"><?php echo _("Facility Code"); ?><br> <small><?php echo _("(National Unique Code)"); ?></small> </label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _('Facility Code'); ?>" title="<?php echo _('Please enter facility code'); ?>" value="<?php echo $facilityInfo['facility_code']; ?>" onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _("The code that you entered already exists.Try another code"); ?>',null)" />
 									</div>
@@ -166,9 +166,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="otherId" class="col-lg-4 control-label"><?php echo _("Other Id"); ?> </label>
+									<label for="otherId" class="col-lg-4 control-label"><?php echo _("Other/External Code"); ?> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?php echo _('Other Id'); ?>" value="<?php echo $facilityInfo['other_id']; ?>" />
+										<input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?php echo _('Other/External Code'); ?>" value="<?php echo $facilityInfo['other_id']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -203,7 +203,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 							<div class="col-md-6 allowResultsUpload" style="display:<?php echo $allowFileDiv; ?>;">
 								<div class="form-group">
-									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload"); ?> <span class="mandatory">*</span> </label>
+									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select if this testing lab can upload test results file'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -578,7 +578,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<tr>
 									<th><?php echo _("Name of Signatory"); ?></th>
 									<th><?php echo _("Designation"); ?></th>
-									<th><?php echo _("Upload Signature"); ?></th>
+									<th><?php echo _("Upload Signature (jpg, png)"); ?></th>
 									<th><?php echo _("Test Types"); ?></th>
 									<th><?php echo _("Display Order"); ?></th>
 									<th><?php echo _("Current Status"); ?></th>
