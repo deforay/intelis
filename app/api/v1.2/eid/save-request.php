@@ -39,7 +39,7 @@ try {
         exit(0);
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
-
+    $responseData = array();
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
         $sampleFrom = '';

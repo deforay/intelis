@@ -116,7 +116,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="email" class="col-lg-4 control-label"><?php echo _("Email(s)"); ?> </label>
+									<label for="email" class="col-lg-4 control-label"><?php echo _("Email(s)"); ?> <br> <small><?php echo _("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('eg-email1@gmail.com,email2@gmail.com'); ?>" />
 									</div>
@@ -439,7 +439,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 									</div>
 								</div>
 							</div>
-
+							<div class="row" id="sampleType"></div>
 							<div class="row-item labDiv" style="display:none;">
 								<hr>
 								<h4 class="col-lg-12"><?= _("The following information is sometimes used to show names and signatures in some reports."); ?></h4>
@@ -485,13 +485,8 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								</table>
 							</div>
 
-							<div class="row" id="userDetails">
-
-							</div>
-
-							<div class="row" id="testDetails" style="display:none;">
-
-							</div>
+							<div class="row" id="userDetails"></div>
+							<div class="row" id="testDetails" style="display:none;"></div>
 
 						</div>
 						<!-- /.box-body -->
@@ -699,6 +694,17 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 			// $("#testDetails").html(div); // commented the validation functionality code
 		} else {
 			$("#testDetails").html('');
+		}
+
+		if ($("#testType").val() != '') {
+			$.post("/facilities/getSampleType.php", {
+					testType: $("#testType").val()
+				},
+				function(data) {
+					$("#sampleType").html(data);
+				});
+		} else {
+			$("#sampleType").html('');
 		}
 	}
 	let testCounter = 1;

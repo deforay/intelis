@@ -156,7 +156,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-								<label for="facilityCode" class="col-lg-4 control-label"><?php echo _("Facility Code"); ?><br> <small><?php echo _("(National Unique Code)"); ?></small> </label>
+									<label for="facilityCode" class="col-lg-4 control-label"><?php echo _("Facility Code"); ?><br> <small><?php echo _("(National Unique Code)"); ?></small> </label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _('Facility Code'); ?>" title="<?php echo _('Please enter facility code'); ?>" value="<?php echo $facilityInfo['facility_code']; ?>" onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _("The code that you entered already exists.Try another code"); ?>',null)" />
 									</div>
@@ -195,7 +195,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="email" class="col-lg-4 control-label"><?php echo _("Email(s)"); ?> </label>
+									<label for="email" class="col-lg-4 control-label"><?php echo _("Email(s)"); ?> <br> <small><?php echo _("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('eg-email1@gmail.com,email2@gmail.com'); ?>" value="<?php echo $facilityInfo['facility_emails']; ?>" />
 									</div>
@@ -295,7 +295,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="hubName" class="col-lg-4 control-label"><?php echo _("Linked Hub Name (If Applicable)"); ?></label>
+									<label for="hubName" class="col-lg-4 control-label"><?php echo _("Linked Hub Name (if applicable)"); ?></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="hubName" name="hubName" placeholder="<?php echo _('Hub Name'); ?>" title="<?php echo _('Please enter hub name'); ?>" value="<?php echo $facilityInfo['facility_hub_name']; ?>" />
 									</div>
@@ -569,7 +569,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 						</div>
 					</div>
-
+					<div class="row" id="sampleType"></div>
 					<div class="row-item labDiv" style="display:<?php echo $labDiv; ?>;">
 						<hr>
 						<h4 class="col-lg-12"><?= _("The following information is sometimes used to show names, designations and signatures in some reports."); ?></h4>
@@ -950,6 +950,18 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			}
 		}
 		first = 1;
+
+		if ($("#testType").val() != '') {
+			$.post("/facilities/getSampleType.php", {
+					facilityId: $("#facilityId").val(),
+					testType: $("#testType").val()
+				},
+				function(data) {
+					$("#sampleType").html(data);
+				});
+		} else {
+			$("#sampleType").html('');
+		}
 	}
 
 	let testCounter = document.getElementById("signDetails").rows.length;
