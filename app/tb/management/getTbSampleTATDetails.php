@@ -99,11 +99,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
 	if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-		if ($sWhere == "") {
 			$sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-		} else {
-			$sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-		}
 	}
 }
 
@@ -111,8 +107,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01' AND DATE(vl.sample_collection_date) !='0000-00-00')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
+$sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01')
+                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
                         AND vl.result is not null
                         AND vl.result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "'";
 if ($sarr['sc_user_type'] == 'remoteuser') {
@@ -196,7 +192,7 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 }
 if (!empty($sWhere)) {
 	$_SESSION['tbTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-	$sQuery = $sQuery . $sWhere;
+	$sQuery = $sQuery . ' AND '. $sWhere;
 }
 
 if (isset($sOrder) && $sOrder != "") {
@@ -215,15 +211,15 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
 } else {
 	$rUser = " AND vl.result_status!=9";
 }
-$aResultFilterTotal = $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01' AND DATE(vl.sample_collection_date) !='0000-00-00')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
+$aResultFilterTotal = $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01')
+                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01')
                         AND vl.result is not null
                         AND vl.result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' $rUser");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01' AND DATE(vl.sample_collection_date) !='0000-00-00')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
+$aResultTotal =  $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01')
+                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01')
                         AND vl.result is not null
                         AND vl.result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' AND vl.result_status!=9 $rUser");
 // $aResultTotal = $countResult->fetch_row();
