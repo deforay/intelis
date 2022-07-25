@@ -478,6 +478,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 											<th class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value="">-- Sélectionner --</option>
+													<option value="">-- Sélectionner --</option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
 														<optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
 															<?php
