@@ -12,19 +12,8 @@ $input = json_decode(file_get_contents("php://input"), true);
 try {
     if (isset($input['userName']) && !empty($input['userName']) && isset($input['password']) && !empty($input['password'])) {
 
-        /* Check hash login id exist */
-        $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm`, `password` FROM user_details WHERE `login_id` = ?";
-        $hashCheck = $db->rawQueryOne($hashCheckQuery, array($input['userName']));
-
-        $queryParams = array($username);
-        $userResult = $db->rawQueryOne(
-            "SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, ud.password, ud.hash_algorithm, r.*, 
-                                        (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user 
-                                        FROM user_details as ud 
-                                        INNER JOIN roles as r ON ud.role_id=r.role_id 
-                                        WHERE ud.login_id = ?",
-            $queryParams
-        );
+        $sQuery = "SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, ud.password, ud.hash_algorithm, r.*, (CASE WHEN (r.access_type = 'testing-lab') THEN 'yes' ELSE 'no' END) as testing_user FROM user_details as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE ud.login_id = ?";
+        $userResult = $db->rawQueryOne($sQuery, array($input['userName']));
 
         if ($userResult['testing_user'] == 'yes') {
             $remoteUser = "yes";
@@ -33,8 +22,6 @@ try {
         }
         if (count($userResult) > 0) {
             /* Update Phb hash password */
-
-
             if ($userResult['hash_algorithm'] == 'sha1') {
                 $password = sha1($input['password'] . SYSTEM_CONFIG['passwordSalt']);
                 if ($password == $userResult['password']) {
