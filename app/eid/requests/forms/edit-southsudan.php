@@ -669,6 +669,19 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                 // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
+
+            if ($("#labId").val() != "") {
+                $.post("/includes/get-sample-type.php", {
+                        facilityId: $('#labId').val(),
+                        testType: 'eid',
+                        sampleId: '<?php echo $eidInfo['specimen_type']; ?>'
+                    },
+                    function(data) {
+                        if (data != "") {
+                            $("#specimenType").html(data);
+                        }
+                    });
+            }
         });
 
         $("#labId,#facilityId,#sampleCollectionDate").trigger('change');

@@ -813,11 +813,24 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
     $(document).ready(function() {
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
-            if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+            if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
-            if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
+            if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                 // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+            }
+
+            if ($("#labId").val() != "") {
+                $.post("/includes/get-sample-type.php", {
+                        facilityId: $('#labId').val(),
+                        testType: 'covid19',
+                        sampleId: '<?php echo $covid19Info['specimen_type']; ?>'
+                    },
+                    function(data) {
+                        if (data != "") {
+                            $("#specimenType").html(data);
+                        }
+                    });
             }
         });
 
