@@ -174,7 +174,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<div class="form-group">
 											<label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
 											<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','This sample number already exists.Try another number',null)" />
-											<input type="hidden" name="sampleCodeCol" value="<?php echo $vlQueryInfo['sample_code']; ?>"  style="width:100%;">
+											<input type="hidden" name="sampleCodeCol" value="<?php echo $vlQueryInfo['sample_code']; ?>" style="width:100%;">
 										</div>
 									</div>
 									<div class="col-xs-4 col-md-4">
@@ -850,6 +850,18 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
 				// $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
 			}
+			if ($("#labId").val() != "") {
+				$.post("/includes/get-sample-type.php", {
+						facilityId: $('#labId').val(),
+						testType: 'vl',
+						sampleId: '<?php echo $vlQueryInfo['sample_type']; ?>'
+					},
+					function(data) {
+						if (data != "") {
+							$("#specimenType").html(data);
+						}
+					});
+			}
 		});
 
 		$("#labId,#fName,#sampleCollectionDate").trigger('change');
@@ -1260,7 +1272,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 		}
 	});
 	$("#vlRequestFormRwd .labSection").on("change", function() {
-		if ($.trim(result) != '') {
+		if ($.trim($("#result").val()) != '') {
 			if ($("#vlRequestFormRwd .labSection").serialize() == $(__clone).serialize()) {
 				$(".reasonForResultChanges").css("display", "block");
 				$("#reasonForResultChanges").removeClass("isRequired");
