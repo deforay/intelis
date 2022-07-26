@@ -978,13 +978,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     $(document).ready(function() {
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
-			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
-			}
-			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
-				// $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
-			}
-		});
+            if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+                $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+            }
+            if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
+                // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+            }
+
+            if ($("#labId").val() != "") {
+                $.post("/includes/get-sample-type.php", {
+                        facilityId: $('#labId').val(),
+                        testType: 'covid19'
+                    },
+                    function(data) {
+                        if (data != "") {
+                            $("#specimenType").html(data);
+                        }
+                    });
+            }
+        });
 
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,

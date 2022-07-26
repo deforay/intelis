@@ -665,6 +665,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                 // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
+
+            if ($("#labId").val() != "") {
+                $.post("/includes/get-sample-type.php", {
+                        facilityId: $('#labId').val(),
+                        testType: 'eid'
+                    },
+                    function(data) {
+                        if (data != "") {
+                            $("#specimenType").html(data);
+                        }
+                    });
+            }
         });
 
         $("#sampleCollectionDate").datetimepicker({
