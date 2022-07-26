@@ -187,7 +187,7 @@ class Vl
         } else if ($resultStatus == 5) {
             $vlResultCategory = 'invalid';
         } else {
-        
+
             if (is_numeric($finalResult) && (float)$finalResult >= 0) {
                 $finalResult = (float)$finalResult;
                 if ($finalResult < $this->suppressionLimit) {
