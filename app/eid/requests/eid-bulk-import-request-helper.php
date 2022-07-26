@@ -21,9 +21,9 @@ try {
     $sarr = array();
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
+        $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
     }
-    
+
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
     $ranNumber = \Vlsm\Models\General::generateRandomString(12);
@@ -31,7 +31,7 @@ try {
     $fileName = $ranNumber . "." . $extension;
 
     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request")) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request", 0777);
+        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request", 0777, true);
     }
     if (move_uploaded_file($_FILES['requestFile']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
 
@@ -42,7 +42,7 @@ try {
         $sheetData   = $spreadsheet->getActiveSheet();
         $sheetData   = $sheetData->toArray(null, true, true, true);
 
-        $resultArray = array_slice($sheetData,1);
+        $resultArray = array_slice($sheetData, 1);
         // echo "<pre>";print_r($resultArray);die;
 
         foreach ($resultArray as $rowIndex => $rowData) {
@@ -71,7 +71,7 @@ try {
                 } else {
                     $sampleReceivedDate = null;
                 }
-                
+
                 if (trim($rowData['AD']) != '') {
                     $sampleTestDate = date('Y-m-d H:i:s', strtotime($rowData['AD']));
                 } else {
@@ -94,14 +94,13 @@ try {
                     $status = 4;
                 }
 
-                if(!empty($rowData['I'])){
+                if (!empty($rowData['I'])) {
                     $rowData['I'] = strtolower($rowData['I']);
-                    if($rowData['I'] == 'm' || $rowData['I'] == 'male'){
+                    if ($rowData['I'] == 'm' || $rowData['I'] == 'male') {
                         $rowData['I'] = 'male';
-                    }
-                    else if($rowData['I'] == 'f' || $rowData['I'] == 'female'){
+                    } else if ($rowData['I'] == 'f' || $rowData['I'] == 'female') {
                         $rowData['I'] = 'female';
-                    }else{
+                    } else {
                         $rowData['I'] = null;
                     }
                 }
@@ -123,12 +122,12 @@ try {
                     'mother_hiv_status'                                 => isset($rowData['M']) ? $rowData['M'] : null,
                     'mother_treatment'                                  => isset($rowData['N']) ? $rowData['N'] : null,
                     'rapid_test_performed'                              => isset($rowData['O']) ? strtolower($rowData['O']) : null,
-                    'rapid_test_date'                                   => isset($rowData['P']) ? date('Y-M-d',strtotime($rowData['P'])) : null,
+                    'rapid_test_date'                                   => isset($rowData['P']) ? date('Y-M-d', strtotime($rowData['P'])) : null,
                     'rapid_test_result'                                 => isset($rowData['Q']) ? strtolower($rowData['Q']) : null,
                     'has_infant_stopped_breastfeeding'                  => isset($rowData['R']) ? strtolower($rowData['R']) : null,
                     'age_breastfeeding_stopped_in_months'               => isset($rowData['S']) ? $rowData['S'] : null,
                     'pcr_test_performed_before'                         => isset($rowData['T']) ? strtolower($rowData['T']) : null,
-                    'last_pcr_date'                                     => isset($rowData['U']) ? date('Y-M-d',strtotime($rowData['U'])) : null,
+                    'last_pcr_date'                                     => isset($rowData['U']) ? date('Y-M-d', strtotime($rowData['U'])) : null,
                     'reason_for_pcr'                                    => isset($rowData['V']) ? $rowData['V'] : null,
                     'sample_collection_date'                            => $sampleCollectionDate,
                     'sample_requestor_name'                             => isset($rowData['X']) ? $rowData['X'] : null,

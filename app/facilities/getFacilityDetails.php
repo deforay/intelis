@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $tableName = "facility_details";
 $primaryKey = "facility_id";
@@ -96,7 +96,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT * FROM facility_details as f_d LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * 
+            FROM facility_details as f_d 
+            LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type";
 
 if (isset($sWhere) && $sWhere != "") {
     $sWhere = ' where ' . $sWhere;
@@ -115,16 +117,9 @@ if (isset($sLimit) && isset($sOffset)) {
 // echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
-/* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM facility_details as f_d LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type $sWhere order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(facility_id) as total FROM facility_details");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = $aResultTotal[0]['total'];
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
          * Output
@@ -139,11 +134,11 @@ $output = array(
 foreach ($rResult as $aRow) {
     $row = array();
     $row[] = $aRow['facility_code'];
-    $row[] = ucwords($aRow['facility_name']);
+    $row[] = ($aRow['facility_name']);
     $row[] = ucwords($aRow['facility_type_name']);
     $row[] = ucwords($aRow['status']);
     if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) {
-        $row[] = '<a href="editFacility.php?id=' . base64_encode($aRow['facility_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><i class="fa-solid fa-pen-to-square"></i> '. _("Edit").'</i></a>';
+        $row[] = '<a href="editFacility.php?id=' . base64_encode($aRow['facility_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Edit") . '</i></a>';
     }
     $output['aaData'][] = $row;
 }

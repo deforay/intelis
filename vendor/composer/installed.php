@@ -37,6 +37,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'dcarbone/php-fhir-generated' => array(
+            'pretty_version' => 'v2.0.5',
+            'version' => '2.0.5.0',
+            'reference' => '52075aac90a167a40097ba4329544c5e1aa44856',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../dcarbone/php-fhir-generated',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'deforay/vlsm' => array(
             'pretty_version' => 'dev-default',
             'version' => 'dev-default',

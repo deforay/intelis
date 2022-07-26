@@ -125,7 +125,7 @@ try {
 
     if (isset($_FILES['sign']['name']) && $_FILES['sign']['name'] != "") {
         if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
-            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777);
+            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777, true);
         }
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['sign']['name'], PATHINFO_EXTENSION));
         $imageName = "usign-" . $general->generateRandomString(12) . "." . $extension;

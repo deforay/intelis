@@ -260,8 +260,6 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['request_created_datetime'] = $general->getDateTime();
         $updateColumns = array_keys($formData);
 
-
-
         $formData['unique_id'] = $uniqueID;
 
         $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, $general->humanDateFormat($formData['sample_collection_date']));

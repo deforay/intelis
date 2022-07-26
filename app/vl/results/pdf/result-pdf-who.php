@@ -3,7 +3,7 @@ $resultFilename = '';
 if (sizeof($requestResult) > 0) {
      $_SESSION['rVal'] = $general->generateRandomString(6);
      if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']) && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'])) {
-          mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
+          mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
      }
      $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'] . '/');
      $pages = array();

@@ -28,7 +28,8 @@
         "ext-gettext": "*",
         "ext-openssl": "*",
         "ext-fileinfo": "*",
-        "laminas/laminas-diactoros": "^2.13"
+        "laminas/laminas-diactoros": "^2.13",
+        "dcarbone/php-fhir-generated": "^2.0"
     },
     "autoload": {
         "psr-4": {

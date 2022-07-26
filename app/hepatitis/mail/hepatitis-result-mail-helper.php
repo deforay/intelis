@@ -106,7 +106,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
          //put file in sync path
          if (file_exists($configSyncResult[0]['value']) && $_POST['storeFile'] == 'yes') {
             if (!file_exists($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email") && !is_dir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email")) {
-               mkdir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email");
+               mkdir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email", 0777, true);
             }
             copy($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile1'], $configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile1']);
             copy($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2'], $configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile2']);
