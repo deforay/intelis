@@ -12,11 +12,7 @@ $input = json_decode(file_get_contents("php://input"), true);
 try {
     if (isset($input['userName']) && !empty($input['userName']) && isset($input['password']) && !empty($input['password'])) {
 
-        /* Check hash login id exist */
-        $hashCheckQuery = "SELECT `user_id`, `login_id`, `hash_algorithm`, `password` FROM user_details WHERE `login_id` = ?";
-        $hashCheck = $db->rawQueryOne($hashCheckQuery, array($input['userName']));
-
-        $queryParams = array($username);
+        $queryParams = array($input['userName']);
         $userResult = $db->rawQueryOne(
             "SELECT ud.user_id, ud.user_name, ud.email, ud.phone_number, ud.login_id, ud.status, ud.app_access, ud.password, 
                                         ud.hash_algorithm, r.*, 
@@ -103,7 +99,8 @@ try {
                     );
                 }
             }
-        } else {
+        } 
+        else {
             $payload = array(
                 'status' => 2,
                 'message' => 'Login failed. Please contact system administrator.',
