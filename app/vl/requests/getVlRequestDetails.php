@@ -22,8 +22,8 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_coll
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-     $orderColumns = array('vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name','f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name','f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -41,7 +41,7 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 /*
 * Ordering
 */
-
+//  echo intval($_POST['iSortingCols']); 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
      $sOrder = "";
@@ -53,7 +53,7 @@ if (isset($_POST['iSortCol_0'])) {
      }
      $sOrder = substr_replace($sOrder, "", -2);
 }
-
+//echo '<pre>'; print_r($sOrder); die;
 /*
 * Filtering
 * NOTE this does not match the built-in DataTables filtering which does it
@@ -96,7 +96,6 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$aWhere = '';
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS 
                         vl.vl_sample_id,
@@ -259,7 +258,7 @@ if (isset($sOrder) && $sOrder != "") {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-
+//echo $sQuery; DIE;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
@@ -271,8 +270,8 @@ $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-
+//$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+$iTotal = $aResultFilterTotal['totalCount'];
 
 /*
           * Output
@@ -280,7 +279,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalDisplayRecords" => $iTotal,
      "aaData" => array()
 );
 $editRequest = false;
@@ -321,17 +320,11 @@ foreach ($rResult as $aRow) {
      if ($_SESSION['instanceType'] != 'standalone') {
           $r = array();
           $r[] = $aRow['remote_sample_code'];
-
-          if (!empty($aRow['app_sample_code'])) {
-               //$r[] = $aRow['app_sample_code'];
-          }
-
           $row[] = implode("/", $r);
      }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
-     // $row[] = ucwords($patientFname);
      $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ucwords($aRow['lab_name']);
      $row[] = ucwords($aRow['facility_name']);
