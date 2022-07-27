@@ -17,14 +17,14 @@ $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name','testingLab.facility_name' ,'s.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 $sampleCode = 'sample_code';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -53,7 +53,6 @@ if (isset($_POST['iSortCol_0'])) {
      }
      $sOrder = substr_replace($sOrder, "", -2);
 }
-
 /*
 * Filtering
 * NOTE this does not match the built-in DataTables filtering which does it
@@ -61,7 +60,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = " WHERE (reason_for_vl_testing != 9999 or reason_for_vl_testing is null) ";
+$sWhere[] = " (reason_for_vl_testing != 9999 or reason_for_vl_testing is null) ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -82,17 +81,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere .= " AND " . $sWhereSub;
+     $sWhere[]= $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          if ($sWhere == "") {
-               $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          } else {
-               $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          }
+               $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -100,7 +95,6 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.vl_sample_id,
                         vl.sample_code,
@@ -186,7 +180,6 @@ if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) !=
           $eSampleReceivedDate = $general->dateFormat(trim($s_p_date[1]));
      }
 }
-$sWhere = array($sWhere);
 /* Sample type filter */
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] =  ' vl.sample_type IN (' . $_POST['sampleType'] . ')';
@@ -301,31 +294,30 @@ if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) !=
 }
 
 
-$cWhere = '';
+//$cWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      if (!empty($facilityMap)) {
           $sWhere[] =  "  vl.facility_id IN (" . $facilityMap . ")   ";
-          $cWhere = " AND vl.facility_id IN (" . $facilityMap . ")  ";
+          //$cWhere = " AND vl.facility_id IN (" . $facilityMap . ")  ";
      }
 }
-if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && sizeof($sWhere) > 0) {
      $sWhere = implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' ' . $sWhere;
+$sQuery = $sQuery . ' where ' . $sWhere;
 
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 
-
 $_SESSION['vlResultQuery'] = $sQuery;
 
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo($sQuery);die();
+
 $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");

@@ -187,7 +187,7 @@ $batResult = $db->rawQuery($batQuery);
 															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
 														<th><?php echo _("Batch Code"); ?></th>
-														<th><?php echo _("Patient ID"); ?></th>
+														<th><?php echo _("Unique ART No."); ?></th>
 														<th><?php echo _("Patient's Name"); ?></th>
 														<th><?php echo _("Facility Name"); ?></th>
 														<th><?php echo _("Testing Lab"); ?></th>
@@ -339,7 +339,7 @@ $batResult = $db->rawQuery($batQuery);
 															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
 														<th><?php echo _("Batch Code"); ?></th>
-														<th><?php echo _("Patient ID"); ?></th>
+														<th><?php echo _("Unique ART No"); ?></th>
 														<th><?php echo _("Patient's Name"); ?></th>
 														<th><?php echo _("Facility Name"); ?></th>
 														<th><?php echo _("Testing Lab"); ?></th>
@@ -525,10 +525,10 @@ $batResult = $db->rawQuery($batQuery);
 				},
 			],
 			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[9, "desc"]
+					[8, "desc"]
 				],
 			<?php } else { ?> "aaSorting": [
-					[8, "desc"]
+					[7, "desc"]
 				],
 			<?php } ?> "fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -818,7 +818,6 @@ $batResult = $db->rawQuery($batQuery);
 						$(".checkPrintedRows").prop('checked', false);
 						$("#checkPrintedRowsData").prop('checked', false);
 					}
-
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});

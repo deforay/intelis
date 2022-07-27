@@ -11,24 +11,22 @@ $configFormResult = $db->rawQuery($configFormQuery);
 
 $userType = $general->getSystemConfig('sc_user_type');
 
-$whereCondition = '';
-
 if ($userType == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` ORDER BY `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
-        $whereCondition = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
+        $whereCondition = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
     }
 }
 
 if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
-    $recencyWhere = " AND reason_for_vl_testing = 9999 ";
+    $recencyWhere = " reason_for_vl_testing = 9999 ";
     $sampleStatusOverviewContainer  = "recencySampleStatusOverviewContainer";
     $samplesVlOverview              = "recencySmplesVlOverview";
     $labAverageTat                  = "recencyLabAverageTat";
 } else {
-    $recencyWhere = " AND reason_for_vl_testing != 9999 ";
+    $recencyWhere = " reason_for_vl_testing != 9999 ";
     $sampleStatusOverviewContainer  = "vlSampleStatusOverviewContainer";
     $samplesVlOverview              = "vlSmplesVlOverview";
     $labAverageTat                  = "vlLabAverageTat";
@@ -98,11 +96,12 @@ $tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name
     FROM " . $table . " as vl 
     JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
     JOIN facility_details as f ON vl.lab_id=f.facility_id 
-    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-    WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'" . $whereCondition . $recencyWhere;
-
+    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id "  ;
 //filter
 $sWhere = array();
+if(!empty($whereCondition))
+    $sWhere[] = $whereCondition;
+$sWhere[] = $recencyWhere;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -118,11 +117,11 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
+
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $tQuery .= " AND " . implode(" AND ", $sWhere);
+    $tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
-
 $tResult = $db->rawQuery($tQuery);
 
 $sWhere = array();
@@ -140,11 +139,11 @@ $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         
         JOIN facility_details as f ON vl.lab_id=f.facility_id 
         
-        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-        WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'" .
-    $whereCondition  .
-    $recencyWhere;
+        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
+        if(!empty($whereCondition))
+            $sWhere[] = $whereCondition;
 
+    $sWhere[] = $recencyWhere;
 $sWhere[] = " (vl.result_status = 7) ";
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -162,7 +161,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
+    $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
@@ -191,12 +190,13 @@ $tatSampleQuery = "SELECT
         vl.result is not null
         AND vl.result != ''
         AND DATE(vl.sample_tested_datetime) >= '$start_date'
-        AND DATE(vl.sample_tested_datetime) <= '$end_date' 
-        $whereCondition 
-        $recencyWhere ";
+        AND DATE(vl.sample_tested_datetime) <= '$end_date'  ";
 
 $sWhere = array();
+if(!empty($whereCondition))
+    $sWhere[] = $whereCondition;
 
+$sWhere[] = $recencyWhere;
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
     $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
 }
@@ -220,7 +220,6 @@ if (isset($sWhere) && sizeof($sWhere) > 0) {
 $tatSampleQuery .= " GROUP BY monthDate";
 //$tatSampleQuery .= " HAVING ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) < 120";
 $tatSampleQuery .= " ORDER BY sample_tested_datetime";
-//echo $tatSampleQuery;die;
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;
 foreach ($tatResult as $sRow) {

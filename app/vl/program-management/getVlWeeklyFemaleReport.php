@@ -84,11 +84,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
   if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-    if (count($sWhere) == 0) {
       $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-    } else {
-      $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-    }
   }
 }
 
@@ -157,12 +153,6 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   }
 }
 
-if (isset($sWhere) && trim($sWhere) != '') {
-  $sWhere[] =  ' AND vl.vlsm_country_id = ' . $country;
-} else {
-  $sWhere[] = ' AND vl.vlsm_country_id = ' . $country;
-}
-
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   if($start_date!='0000-00-00' && $end_date!='0000-00-00')
   {
@@ -207,7 +197,7 @@ if(isset($sWhere) && count($sWhere)>0)
   $sWhere = implode(' AND ',$sWhere);
 }
 
-$sQuery = $sQuery . ' ' . $sWhere;
+$sQuery = $sQuery . ' AND ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY vl.facility_id';
 
 

@@ -17,13 +17,13 @@ $primaryKey = "vl_sample_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code','b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      array_unshift($orderColumns, "vl.vl_sample_id");
@@ -56,6 +56,7 @@ if (isset($_POST['iSortCol_0'])) {
 	}
 	$sOrder = substr_replace($sOrder, "", -2);
 }
+
 /*
 * Filtering
 * NOTE this does not match the built-in DataTables filtering which does it
@@ -232,7 +233,7 @@ if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
 if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
      $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
 }
-$dWhere = '';
+
 // Only approved results can be printed
 if (!isset($_POST['status']) || trim($_POST['status']) == '') {
      if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
@@ -253,22 +254,21 @@ if (isset($sWhere) && sizeof($sWhere) > 0) {
      $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
 }
 $_SESSION['vlResultQuery'] = $sQuery;
-//echo $_SESSION['vlResultQuery'];die;
 
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
-
+//echo $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+//$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+$iTotal = $aResultFilterTotal['totalCount'];
 
 /*
 * Output
@@ -276,7 +276,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalDisplayRecords" => $iTotal,
      "aaData" => array()
 );
 

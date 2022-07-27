@@ -11,7 +11,6 @@ $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 
-
 $sQuery = "SELECT * FROM r_vl_sample_type";
 $sResult = $db->rawQuery($sQuery);
 
