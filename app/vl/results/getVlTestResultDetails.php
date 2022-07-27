@@ -44,7 +44,6 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 /*
 * Ordering
 */
-
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
 	$sOrder = "";
@@ -56,7 +55,7 @@ if (isset($_POST['iSortCol_0'])) {
 	}
 	$sOrder = substr_replace($sOrder, "", -2);
 }
-
+//echo $sOrder;
 /*
 * Filtering
 * NOTE this does not match the built-in DataTables filtering which does it

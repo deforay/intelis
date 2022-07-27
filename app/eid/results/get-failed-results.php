@@ -103,11 +103,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
+            $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -132,7 +128,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-if (isset($sWhere) && count($sWhere) > 0) {
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
         $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
@@ -153,31 +148,7 @@ if (isset($sWhere) && count($sWhere) > 0) {
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
         $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
-} else {
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-      
-        $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-    }
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-            if (trim($start_date) == trim($end_date)) {
-                    $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-            }
-            else {
-                $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-            }
-    }
-    if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-            $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-       
-    }
-    if (isset($_POST['district']) && trim($_POST['district']) != '') {
-            $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-      
-    }
-    if (isset($_POST['state']) && trim($_POST['state']) != '') {
-            $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-    }
-}
+
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
     $sWhere[] = ' vl.result != ""  ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
