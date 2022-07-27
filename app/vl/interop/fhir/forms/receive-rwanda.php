@@ -1,80 +1,132 @@
 <?php
 
-// this file is included in /hepatitis/interop/dhis2/hepatitis-receive.php
+// this file is included in /vl/interop/fhir/vl-receive.php
 
-
-$dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
-
+use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
+use Vlsm\Interop\Fhir;
 
 $general = new \Vlsm\Models\General();
-$hepatitisModel = new \Vlsm\Models\Hepatitis();
+$vlModel = new \Vlsm\Models\Vl();
 
 $vlsmSystemConfig = $general->getSystemConfig();
+
+$fhir = new Fhir('https://oh-route.gicsandbox.org/fhir', 'Custom test');
 
 $receivedCounter = 0;
 $processedCounter = 0;
 
 $data = array();
-//$data[] = "lastUpdatedDuration=90m";
-$data[] = "lastUpdatedDuration=15d";
-$data[] = "ou=Hjw70Lodtf2"; // Rwanda
-$data[] = "ouMode=DESCENDANTS";
-$data[] = "program=LEhPhsbgfFB";
-$data[] = "fields=attributes[attribute,code,value],enrollments[*],orgUnit,trackedEntityInstance";
-$data[] = "paging=false";
-$data[] = "skipPaging=true";
 
-$url = "/api/trackedEntityInstances.json";
+$data[] = "modified=ge2022-01-01";
+$data[] = "requester=Organization/101282";
+$data[] = "_include=Task:based-on:ServiceRequest";
+$data[] = "status=requested";
 
-$jsonResponse = $dhis2->get($url, $data);
+$json = $fhir->get('/Task', $data);
 
-if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('No Response from API');
+$parser = new PHPFHIRResponseParser();
 
-$trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
+$metaResource = $parser->parse($json);
+$entries = $metaResource->getEntry();
 
-$dhis2GenderOptions = array('Male' => 'male', '1' => 'male', 'Female' => 'female', '2' => 'female');
-$dhis2SocialCategoryOptions = array('1' => 'A', '2' => 'B', '3' => 'C', '4' => 'D');
-//$dhis2VlTestReasonOptions = array('I_VL001' => 'Initial HBV VL', 'HBV_F0012' => 'Follow up HBV VL', 'SVR12_HCV01' => 'SVR12 HCV VL');
+foreach ($entries as $entry) {
+    $resource = $entry->getResource();
 
-$dhis2VlTestReasonOptions = array(
-    'I_VL001' => 'Initial HBV VL',
-    'HBV_F0012' => 'Follow up HBV VL',
-    'SVR12_HCV01' => 'SVR12 HCV VL',
-    'SVR12_HCV02' => 'SVR12 HCV VL - Second Line'
-);
+    if ($resource->getIntent() == 'TaskIntent') {
 
-$attributesDataElementMapping = [
-    'iwzGzKTlYGR' => 'external_sample_code', //dhis2 case id
-    'bVXK3FxmU1L' => 'patient_id',
-    'JtuGgGPsSuZ' => 'patient_province',
-    'yvkYfTjxEJU' => 'patient_district',
-    //'' => 'patient_city',
-    'qYpyifGg6Yi' => 'patient_occupation',
-    'EEAIP0aO4aR' => 'patient_marital_status',
-    'iUkIkQbkxI1' => 'patient_phone_number',
-    'BzEcIK9udqH' => 'patient_insurance',
-    'p2e195R27TO' => 'patient_name',
-    'mtRPhPyLDsv' => 'patient_dob',
-    'DP8JyLEof33' => 'social_category',
-    'IeduuuWaWa4' => 'patient_gender',
-    //'' => 'patient_nationality'
-];
+        // echo "<h1> Entry " . $i++ . " </h1>";
+        $organization = $fhir->getFHIRReference($resource->getRequester()->getReference());
+
+        $status = $resource->getStatus()->getValue();
+        $id = $resource->getId();
 
 
+        echo ("Type of Request: " . $resource->getIntent()->getValue()) . "<br>";
+        echo ("Order ID: " . $resource->getIdentifier()[0]->getValue()) . "<br>";
+        //echo ("Task ID: " . $id) . "<br>";
+        echo ("<strong>FACILITY DETAILS</strong>") . "<hr>";
+        // echo "<pre>";
+        // var_dump($organization);
+        // echo "</pre>" . "<hr>";
+        $orgParsed = $parser->parse($organization);
+
+        //echo "<pre>" . $orgParsed->getId() . "<br>";
+        echo "<strong>Facility Name: </strong>" . $orgParsed->getName() . "<br>";
+        echo "<strong>Facility Code: </strong>" . $orgParsed->getIdentifier()[0]->getValue() . "<br>";
+        echo "<strong>Facility State: </strong>" . $orgParsed->getAddress()[0]->getState() . "<br>";
+        echo "<strong>Facility District: </strong>" . $orgParsed->getAddress()[0]->getDistrict() . "<br>";
+
+        //var_dump($organization->getAddress());
+
+        echo ("Task Status:" . $status) . "<br>";
+        echo "<br>";
+        //var_dump(($resource));
+        //var_dump($resource->getId());
+        //var_dump($resource->getId());
+
+        //echo ($resource->getBasedOn()[0]->getReference()) . "<br>";
+
+    } else if ($resource->getIntent() == 'RequestIntent') {
+
+        //echo "<h1> Entry " . $i++ . " </h1>";
+        $requestor = $resource->getRequester()->getReference();
+        $status = $resource->getStatus()->getValue();
+        $id = $resource->getId();
+        //echo ("Type of Intent:" . $resource->getIntent()->getValue()) . "<br>";
+        //echo ("ServiceRequest ID:" . $id) . "<br>";
+
+        $patient = $fhir->getFHIRReference($resource->getSubject()->getReference());
+        $patientParsed = $parser->parse($patient);
+        echo ("<strong>PATIENT DETAILS</strong>") . "<hr>";
+        //echo "<pre>" . $patient . "</pre>";
+
+        //echo $patientParsed->getId() . "<br>";
+
+        $patientIdentifiers = $patientParsed->getIdentifier();
+        foreach ($patientIdentifiers as $pid) {
+
+            $system = $pid->getSystem()->getValue();
+            if (strpos($system, '/passport') !== false) {
+                echo "<strong>Passport: </strong>" . $pid->getValue() . "<br>";
+            }
+            if (strpos($system, '/art') !== false) {
+                echo "<strong>Patient ART No: </strong>" . $pid->getValue() . "<br>";
+            }
+        }
 
 
-$eventsDataElementMapping = [
-    'GWoBWpKWlWJ' => 'sample_collection_date',
-    'hvznTv3ZjXv' => 'hbsag_result',
-    'szTAjn4r7yM' => 'anti_hcv_result',
-    'Di17rUJDIWZ' => 'hbv_vl_count',
-    'Oem0BXNDPWL' => 'hcv_vl_count',
-    //'Mpc3ftVuSvK' => 'hepatitis_test_type',
-    'DMQSNcqWRvI' => 'lab_id',
-    'G8K0RLiK9lu' => 'hepatitis_test_type',
-    'KPFLSlmiY89' => 'reason_for_vl_test'
-];
 
+
+        echo "<strong>Patient First Name: </strong>" .  ($patientParsed->getName()[0]->getGiven()[0]) . "<br>";
+        echo "<strong>Patient Last Name: </strong>" .  ($patientParsed->getName()[0]->getFamily()) . "<br>";
+        echo "<strong>Patient DOB: </strong>" .  ($patientParsed->getBirthDate()->getValue()) . "<br>";
+        echo "<strong>Patient Gender: </strong>" .  ($patientParsed->getGender()->getValue()) . "<br>";
+        echo "<strong>Patient Marital Status: </strong>" .  ($patientParsed->getMaritalStatus()->getCoding()[0]->getCode()) . "<br>";
+
+
+
+        echo "<br>";
+
+        $requestor = $fhir->getFHIRReference($resource->getRequester()->getReference());
+        $requestorParsed = $parser->parse($requestor);
+
+        echo ("<strong>Requested By</strong>") . "<hr>";
+        echo "<strong>Requesting Clinician First Name: </strong>" .  ($requestorParsed->getName()[0]->getGiven()[0]) . "<br>";
+        echo "<strong>Requesting Clinician Last Name: </strong>" .  ($requestorParsed->getName()[0]->getFamily()) . "<br>";
+        echo "<strong>Requesting Clinician Phone: </strong>" .  ($requestorParsed->getTelecom()[0]->getValue()) . "<br>";
+
+
+        $specimen = $fhir->getFHIRReference($resource->getSpecimen()[0]->getReference());
+        $specimenParsed = $parser->parse($specimen);
+        echo ("<strong>Specimen Details</strong>") . "<hr>";
+        echo "<strong>Specimen Type: </strong>" .  ($specimenParsed->getType()->getCoding()[0]->getCode()) . "<br>";
+        echo "<strong>Specimen Collection Date: </strong>" .  ($specimenParsed->getCollection()->getCollectedDateTime()) . "<br>";
+        echo ("Service Status:" . $status) . "<br>";
+    }
+}
+
+
+die;
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 

@@ -311,13 +311,9 @@ $sFormat = '';
                                                             <label for="specimenType">Sample Type <span class="mandatory">*</span></label>
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
                                                                  <option value=""> -- Select -- </option>
-                                                                 <?php
-                                                                 foreach ($sResult as $name) {
-                                                                 ?>
+                                                                 <?php foreach ($sResult as $name) { ?>
                                                                       <option value="<?php echo $name['sample_id']; ?>"><?php echo ucwords($name['sample_name']); ?></option>
-                                                                 <?php
-                                                                 }
-                                                                 ?>
+                                                                 <?php } ?>
                                                             </select>
                                                        </div>
                                                   </div>
@@ -764,6 +760,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
                     // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+               }
+
+               if ($("#labId").val() != "") {
+                    $.post("/includes/get-sample-type.php", {
+                              facilityId: $('#labId').val(),
+                              testType: 'vl'
+                         },
+                         function(data) {
+                              if (data != "") {
+                                   $("#specimenType").html(data);
+                              }
+                         });
                }
           });
           $("#sampleCollectionDate").datetimepicker({

@@ -41,7 +41,7 @@ try {
 
     if (isset($_FILES['instanceLogo']['name']) && $_FILES['instanceLogo']['name'] != "") {
         if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo")) {
-            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo");
+            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo", 0777, true);
         }
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['instanceLogo']['name'], PATHINFO_EXTENSION));
         $string = $general->generateRandomString(6) . ".";
@@ -75,7 +75,7 @@ try {
     }
     if (isset($_FILES['logo']['name']) && $_FILES['logo']['name'] != "") {
         if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo")) {
-            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
+            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo", 0777, true);
         }
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
         $string = $general->generateRandomString(6) . ".";

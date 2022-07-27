@@ -722,11 +722,24 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 
 	$(document).ready(function() {
 		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
-			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
 				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
 			}
-			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
 				// $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+			}
+
+			if ($("#labId").val() != "") {
+				$.post("/includes/get-sample-type.php", {
+						facilityId: $('#labId').val(),
+						testType: 'tb',
+						sampleId: '<?php echo $tbInfo['specimen_type']; ?>'
+					},
+					function(data) {
+						if (data != "") {
+							$("#specimenType").html(data);
+						}
+					});
 			}
 		});
 

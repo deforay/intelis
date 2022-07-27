@@ -52,7 +52,7 @@ $barcodeFormat = isset($barcodeFormat) && $barcodeFormat != null ? $barcodeForma
 if ($id > 0) {
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode")) {
-        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode");
+        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode", 0777, true);
     }
     $lQuery = "SELECT * from global_config where name='logo'";
     $lResult = $db->query($lQuery);

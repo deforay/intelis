@@ -97,7 +97,7 @@ if (trim($id) != '') {
     $labname = isset($result[0]['lab_name']) ? $result[0]['lab_name'] : "";
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "package_barcode") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "package_barcode")) {
-        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "package_barcode");
+        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "package_barcode", 0777, true);
     }
     $configQuery = "SELECT * from global_config";
     $configResult = $db->query($configQuery);
