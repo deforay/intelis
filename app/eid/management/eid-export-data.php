@@ -413,6 +413,9 @@ $eidResults = $general->getEidResults();
 					"sClass": "center"
 				},
 				{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center",
 					"bSortable": false
 				},
