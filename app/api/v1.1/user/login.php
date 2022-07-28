@@ -56,7 +56,6 @@ try {
                 }
             }
 
-
             if ($userResult['status'] != 'active' || $passwordCheck == false) {
                 $payload = array(
                     'status' => 2,
@@ -99,8 +98,7 @@ try {
                     );
                 }
             }
-        } 
-        else {
+        } else {
             $payload = array(
                 'status' => 2,
                 'message' => 'Login failed. Please contact system administrator.',
