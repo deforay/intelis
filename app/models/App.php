@@ -79,6 +79,7 @@ class App
                         f.facility_district_id, 
                         f.facility_district, 
                         f.testing_points, 
+                        f.facility_attributes, 
                         f.status, 
                         pd.province_id, 
                         pd.province_name
