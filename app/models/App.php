@@ -79,6 +79,7 @@ class App
                         f.facility_district_id, 
                         f.facility_district, 
                         f.testing_points, 
+                        f.facility_attributes, 
                         f.status, 
                         pd.province_id, 
                         pd.province_name
@@ -153,6 +154,7 @@ class App
                 $response[$key]['facility_state']       = $row['facility_state'];
                 $response[$key]['facility_district_id'] = $row['facility_district_id'];
                 $response[$key]['facility_district']    = $row['facility_district'];
+                $response[$key]['facility_attributes']  = $row['facility_attributes'];
                 $response[$key]['testing_points']       = $row['testing_points'];
                 $response[$key]['status']               = $row['status'];
             }
