@@ -16,7 +16,7 @@ if ($userType == 'remoteuser') {
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
-        $whereCondition = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
+        $whereCondition = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
     }
 }
 
@@ -82,10 +82,12 @@ $tQuery = "SELECT COUNT(covid19_id) as total,status_id,status_name
                 JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                 JOIN facility_details as f ON vl.lab_id=f.facility_id 
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+                WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'";
 
 //filter
 $sWhere = array();
+if(!empty(trim($whereCondition)))
+    $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -110,6 +112,8 @@ $tResult = $db->rawQuery($tQuery);
 
 //HVL and LVL Samples
 $sWhere = array();
+if(!empty(trim($whereCondition)))
+    $sWhere[] = $whereCondition;
 $vlSuppressionQuery = "SELECT   COUNT(covid19_id) as total,
     SUM(CASE
             WHEN (vl.result = 'positive' and vl.result!='' and vl.result is not null) THEN 1
@@ -126,7 +130,7 @@ $vlSuppressionQuery = "SELECT   COUNT(covid19_id) as total,
     status_id,
     status_name 
     
-    FROM form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+    FROM form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'";
 
 // $sWhere = " AND (vl.result!='' and vl.result is not null) ";
 
@@ -180,8 +184,10 @@ $tatSampleQuery = "SELECT
     AND vl.result != ''
     AND DATE(vl.sample_tested_datetime) >= '$start_date'
     AND DATE(vl.sample_tested_datetime) <= '$end_date'
-    AND vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+    AND vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'";
 $sWhere = array();
+if(!empty(trim($whereCondition)))
+    $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -213,13 +219,15 @@ foreach ($tatResult as $sRow) {
 }
 
 $sWhere = array();
+if(!empty(trim($whereCondition)))
+    $sWhere[] = $whereCondition;
 $testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name 
                     from form_covid19 as vl 
                     INNER JOIN r_covid19_test_reasons as tr ON vl.reason_for_covid19_test = tr.test_reason_id 
                     JOIN facility_details as f ON vl.facility_id=f.facility_id 
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-$sWhere[] = ' WHERE vl.reason_for_covid19_test IS NOT NULL ' . $whereCondition;
+$sWhere[] = ' vl.reason_for_covid19_test IS NOT NULL ';
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -236,7 +244,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $testReasonQuery .= implode(" AND ", $sWhere);
+    $testReasonQuery .= ' where '. implode(" AND ", $sWhere);
 }
 $testReasonQuery .= " GROUP BY tr.test_reason_name";
 $testReasonResult = $db->rawQuery($testReasonQuery);

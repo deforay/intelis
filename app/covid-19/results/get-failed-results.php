@@ -29,14 +29,14 @@ $primaryKey = "covid19_id";
 */
 $sampleCode = 'sample_code';
 
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code','f.facility_name',  'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+    $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+    $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code','f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
 
 
@@ -62,13 +62,13 @@ if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
         if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-            $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+            if(!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
+                $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
                " . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
     $sOrder = substr_replace($sOrder, "", -2);
 }
-
 /*
 * Filtering
 * NOTE this does not match the built-in DataTables filtering which does it
@@ -105,19 +105,16 @@ for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
         if (count($sWhere) == 0) {
             $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
     }
+}
 }
 
 /*
           * SQL queries
           * Get data to display
           */
-$aWhere = '';
 
-$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_covid19 as vl 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, ts.status_name, b.batch_code FROM form_covid19 as vl 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
@@ -134,10 +131,8 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-if (isset($sWhere) && count($sWhere) > 0) {
-    //$sWhere = ' where ' . $sWhere;
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $sWhere[] = ' where AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
@@ -156,90 +151,35 @@ if (isset($sWhere) && count($sWhere) > 0) {
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
         $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
-} else {
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $setWhr = 'where';
-      //  $sWhere = ' where ' . $sWhere;
-        $sWhere[] =  ' where b.batch_code = "' . $_POST['batchCode'] . '"';
-    }
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        if (isset($setWhr)) {
-            if (trim($start_date) == trim($end_date)) {
-                if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-                    $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                } else {
-                   // $sWhere[] = ' where ' . $sWhere;
-                    $sWhere[] = ' where DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                }
-            }
-        } else {
-            $setWhr = 'where';
-           // $sWhere = ' where ' . $sWhere;
-            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
-    }
 
-    if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-        if (isset($setWhr)) {
-            $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-        } else {
-            $setWhr = 'where';
-           // $sWhere = ' where ' . $sWhere;
-            $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-        }
-    }
-    if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        if (isset($setWhr)) {
-            $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-        } else {
-            $setWhr = 'where';
-           // $sWhere = ' where ' . $sWhere;
-            $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-        }
-    }
-    if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        if (isset($setWhr)) {
-            $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-        } else {
-           // $sWhere = ' where ' . $sWhere;
-            $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-        }
-    }
-}
 $whereResult = '';
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-    $whereResult = ' vl.result != "" AND ';
+    $whereResult = ' vl.result != "" ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-    $whereResult = ' (vl.result IS NULL OR vl.result = "") AND ';
+    $whereResult = ' (vl.result IS NULL OR vl.result = "") ';
 }
-if ($sWhere != '') {
-    $sWhere[] = ' where '. $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} else {
-    $sWhere[] = ' WHERE ' . $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-}
-$sFilter = '';
+if(!empty($whereResult))
+    $sWhere[] =  $whereResult;
+
+//$sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $sWhere[] = "  vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-        $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+        //$sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
 
-if (!isset($sWhere) || count($sWhere) == 0) {
-    //$sWhere = ' where ' . $sWhere;
-    $sWhere[] =  '  (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
-} else {
-    $sWhere[] = '  (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
-}
+    $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 if(isset($sWhere) && count($sWhere) > 0)
 {
-     $sWhere = implode(' AND ',$sWhere);
+     $sWhere = ' where '. implode(' AND ',$sWhere);
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sOrder) && $sOrder != "") {
+//echo $sOrder.' ---';
+if (isset($sOrder) && !empty(trim($sOrder))) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
@@ -247,16 +187,17 @@ $_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// echo $sQuery;die;
+ //echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
+/* Data set length after filtering 
 $aResultFilterTotal = $db->rawQuery("SELECT vl.covid19_id FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
+/* Total data set length 
 $aResultTotal =  $db->rawQuery("SELECT COUNT(covid19_id) as total FROM form_covid19 as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-$iTotal = $aResultTotal[0]['total'];
-
+$iTotal = $aResultTotal[0]['total'];*/
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
@@ -295,7 +236,6 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
     $row[] = $aRow['patient_name'];
-    $row[] = $aRow['patient_surname'];
 
     $row[] = ucwords($aRow['facility_state']);
     $row[] = ucwords($aRow['facility_district']);
@@ -303,7 +243,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['last_modified_datetime'];
     $row[] = ucwords($aRow['status_name']);
 
-    if ($editRequest) {
+    if ($editRequest==true) {
         $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Test Sample Again") . '" onclick="retestSample(\'' . trim(base64_encode($aRow['covid19_id'])) . '\')"><i class="fa-solid fa-arrows-rotate"></i> ' . _("Retest") . '</a>';
     }
     $output['aaData'][] = $row;

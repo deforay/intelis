@@ -118,8 +118,7 @@ $batResult = $db->rawQuery($batQuery);
                                     <th><?php echo _("Batch Code");?></th>
                                     <th><?php echo _("Facility Name");?></th>
                                     <th><?php echo _("Patient ID");?></th>
-                                    <th><?php echo _("Patient First Name");?></th>
-                                    <th><?php echo _("Patient Last Name");?></th>
+                                    <th><?php echo _("Patient Name");?></th>
                                     <th><?php echo _("Province/State");?></th>
                                     <th><?php echo _("District/County");?></th>
                                     <th><?php echo _("Result");?></th>
