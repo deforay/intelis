@@ -307,8 +307,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                     "sClass": "center"
                 },
                 {
-                    "sClass": "center",
-                    "bSortable": false
+                    "sClass": "center"
                 },
                 {
                     "sClass": "center",

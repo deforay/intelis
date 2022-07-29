@@ -102,7 +102,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * SQL queries
 * Get data to display
 */
-$sQuery = "SELECT vl.*,b.*,ts.*,f.facility_name,
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,f.facility_name,
     l_f.facility_name as labName,
     l_f.facility_logo as facilityLogo,
     l_f.header_text as headerText,
@@ -207,14 +207,16 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 // echo ($sQuery);die;
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
+/* Data set length after filtering 
 
 $aResultFilterTotal = $db->rawQuery("SELECT * FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
-/* Total data set length */
+/* Total data set length 
 $aResultTotal =  $db->rawQuery("SELECT * FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere order by $sOrder");
-$iTotal = count($aResultTotal);
+$iTotal = count($aResultTotal);*/
 
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
 * Output
 */

@@ -111,7 +111,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$sQuery = "SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > " . $thresholdLimit;
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > " . $thresholdLimit;
 $start_date = '';
 $end_date = '';
 
@@ -157,7 +157,7 @@ if (isset($_POST['hvlPatientPregnant']) && $_POST['hvlPatientPregnant'] != '') {
 if (isset($_POST['hvlPatientBreastfeeding']) && $_POST['hvlPatientBreastfeeding'] != '') {
     $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['hvlPatientBreastfeeding'] . '"';
 }
-$dWhere = '';
+//$dWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
     //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -165,7 +165,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $sWhere[] =  " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-        $dWhere = $dWhere . " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+      //  $dWhere = $dWhere . " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
 
@@ -190,14 +190,17 @@ if (isset($sLimit) && isset($sOffset)) {
 
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
-/* Data set length after filtering */
+/* Data set length after filtering 
 
 $aResultFilterTotal = $db->rawQuery("SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > $thresholdLimit $sWhere group by vl.tb_id order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
+/* Total data set length 
 $aResultTotal =  $db->rawQuery("select COUNT(tb_id) as total FROM form_tb as vl where result_status=7 AND result > $thresholdLimit AND vlsm_country_id='" . $arr['vl_form'] . "' $dWhere");
-$iTotal = $aResultTotal[0]['total'];
+$iTotal = $aResultTotal[0]['total'];*/
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
          * Output
         */

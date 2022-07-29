@@ -113,7 +113,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT * FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 //echo $sQuery;die;
 $start_date = '';
@@ -181,14 +181,15 @@ if (isset($sLimit) && isset($sOffset)) {
 $_SESSION['tbRequestSearchResultQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
-/* Data set length after filtering */
+/* Data set length after filtering 
 
 $aResultFilterTotal = $db->rawQuery("SELECT * FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id  $sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 
 $aResultTotal = $db->rawQuery("SELECT * FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iTotal = count($aResultTotal);
-
+$iTotal = count($aResultTotal);*/
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
           * Output
           */

@@ -49,7 +49,8 @@ if (isset($_POST['iSortCol_0'])) {
 	$sOrder = "";
 	for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
 		if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-			$sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+			if(!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
+               $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
 				 	" . ($_POST['sSortDir_' . $i]) . ", ";
 		}
 	}

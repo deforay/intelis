@@ -107,10 +107,10 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.sample_code, vl.remote_sample_code from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
+$sQuery = "select SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.sample_code, vl.remote_sample_code from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01')
                         AND vl.hcv_vl_result is not null
-                        AND vl.hcv_vl_result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "'";
+                        AND vl.hcv_vl_result != '' ";
 if ($sarr['sc_user_type'] == 'remoteuser') {
 	$whereCondition = '';
 	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
@@ -202,7 +202,7 @@ if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
+/* Data set length after filtering 
 $rUser = '';
 if ($sarr['sc_user_type'] == 'remoteuser') {
 	$rUser = $rUser . $whereCondition;
@@ -215,14 +215,17 @@ $aResultFilterTotal = $db->rawQuery("select vl.sample_collection_date,vl.sample_
                         AND vl.hcv_vl_result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' $rUser");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
+/* Total data set length 
 $aResultTotal =  $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
                         AND vl.hcv_vl_result is not null
                         AND vl.hcv_vl_result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' AND vl.result_status!=9 $rUser");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
-$iTotal = count($aResultTotal);
+$iTotal = count($aResultTotal);*/
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
          * Output
