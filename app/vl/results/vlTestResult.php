@@ -354,10 +354,10 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 				},
 			],
 			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[8, "desc"]
+					[9, "desc"]
 				],
 			<?php } else { ?> "aaSorting": [
-					[7, "desc"]
+					[8, "desc"]
 				],
 			<?php } ?> "bProcessing": true,
 			"bServerSide": true,

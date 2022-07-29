@@ -371,6 +371,13 @@ class ComposerStaticInit875176bab5a0faa4ff3f5311f8e483cb
                 0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
             ),
         ),
+        'D' => 
+        array (
+            'DCarbone\\PHPFHIRGenerated\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/dcarbone/php-fhir-generated/src',
+            ),
+        ),
     );
 
     public static $classMap = array (

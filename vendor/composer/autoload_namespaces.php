@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
+    'DCarbone\\PHPFHIRGenerated\\' => array($vendorDir . '/dcarbone/php-fhir-generated/src'),
 );
