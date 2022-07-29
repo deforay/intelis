@@ -1,8 +1,4 @@
 <?php
-ob_start();
-
-
-
 
 $general = new \Vlsm\Models\General(); 
 $facilityDb = new \Vlsm\Models\Facilities(); 

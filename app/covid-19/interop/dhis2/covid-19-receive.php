@@ -1,10 +1,9 @@
 <?php
 
-require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+require_once(__DIR__ . "/../../../../../startup.php");
 
 $general = new \Vlsm\Models\General();
 $arr = $general->getGlobalConfig();
-
 
 
 // let us do init first

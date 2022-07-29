@@ -16,6 +16,11 @@ $vlUserFacilityMapTable = "user_facility_map";
 $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
 $signTableName = "lab_report_signatories";
+
+$facilityRow = $db->rawQueryOne('SELECT facility_attributes from facility_details where facility_id= ?', array($facilityId));
+$facilityAttributes = json_decode($facilityRow['facility_attributes'],true);
+
+
 try {
 	//Province Table
 	if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != "") {
@@ -93,7 +98,7 @@ try {
 			'status' => $_POST['status']
 		);
 
-		$facilityAttributes = array();
+		//$facilityAttributes = array();
 		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}

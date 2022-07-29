@@ -1,7 +1,4 @@
 <?php
-ob_start();
-
-
 
 $general = new \Vlsm\Models\General();
 $tableName = "form_vl";
@@ -17,11 +14,11 @@ try {
         );
         /* Check if already have reviewed and approved by */
         $db = $db->where('vl_sample_id', $id[$i]);
-        $reviewd = $db->getOne($tableName, array("result_reviewed_by", "result_approved_by"));
-        if (empty($reviewd['result_reviewed_by'])) {
+        $vlRow = $db->getOne($tableName);
+        if (empty($vlRow['result_reviewed_by'])) {
             $status['result_reviewed_by'] = $_SESSION['userId'];
         }
-        if (empty($reviewd['result_approved_by'])) {
+        if (empty($vlRow['result_approved_by'])) {
             $status['result_approved_by'] = $_SESSION['userId'];
         }
         if ($_POST['status'] == '4') {
@@ -36,11 +33,14 @@ try {
             $status['is_sample_rejected'] = 'no';
         }
 
+        
+
         /* Updating the high and low viral load data */
         if ($status['result_status'] == 4 || $status['result_status'] == 7) {
             $vlDb = new \Vlsm\Models\Vl();
-            $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $status['result']);
+            $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $vlRow['result']);
         }
+
         // echo "<pre>";print_r($status);die;
         $db = $db->where('vl_sample_id', $id[$i]);
         $db->update($tableName, $status);

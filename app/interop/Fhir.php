@@ -84,4 +84,21 @@ class Fhir
 		$res = $client->sendAsync($request)->wait();
 		return $res->getBody()->getContents();
 	}
+
+	public function post($path = null, $body = array())
+	{
+
+		$client = new Client();
+		$headers = [
+			'Content-Type' => $this->getContentType(),
+			'Authorization' => $this->getBearerToken()
+		];
+
+		$url = $this->getFhirURL().$path;
+
+		$request = new Request('POST', $url, $headers, $body);
+		$res = $client->sendAsync($request)->wait();
+
+		return $res->getBody()->getContents();
+	}
 }
