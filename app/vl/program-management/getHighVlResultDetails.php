@@ -111,7 +111,6 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.facility_name, b.batch_code,fd.facility_name as labName 
     FROM form_vl as vl 
     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
@@ -166,7 +165,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $sWhere[] =  " vl.facility_id IN (" . $facilityMap . ") ";
     }
 }
-if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && sizeof($sWhere) > 0) {
     $sWhere = implode(" AND ", $sWhere);
 }
 

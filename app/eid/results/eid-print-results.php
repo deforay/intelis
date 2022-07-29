@@ -449,6 +449,9 @@ $batResult = $db->rawQuery($batQuery);
                     "sClass": "center"
                 },
                 {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center",
                     "bSortable": false
                 },
@@ -536,6 +539,9 @@ $batResult = $db->rawQuery($batQuery);
                         "sClass": "center"
                     },
                 <?php } ?> {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center"
                 },
                 {

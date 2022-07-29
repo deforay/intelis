@@ -133,8 +133,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-if (isset($sWhere) && $sWhere != "") {
-    //$sQuery = $sQuery.' '.$sWhere;
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
         $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
@@ -155,36 +153,7 @@ if (isset($sWhere) && $sWhere != "") {
             $sWhere[] = ' vl.result_status NOT IN (4,7)';
         }
     }
-} else {
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $sWhere[] =' b.batch_code = "' . $_POST['batchCode'] . '"';
-    }
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        if (trim($start_date) == trim($end_date)) {
-                $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-        }
-        else {
-            $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
-}
-    if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-            $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-    }
-    if (isset($_POST['statusFilter']) && trim($_POST['statusFilter']) != '') {
-            if ($_POST['statusFilter'] == 'approvedOrRejected') {
-                $sWhere[] =  ' vl.result_status IN (4,7)';
-        } else {
-           
-            if ($_POST['statusFilter'] == 'approvedOrRejected') {
-                $sWhere[] = ' vl.result_status IN (4,7)';
-            } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-                $sWhere[] =  ' vl.result_status NOT IN (4,7)';
-            }
-        }
-    }
-}
 
-    $sWhere[] = ' vl.vlsm_country_id="' . $arr['vl_form'] . '"';
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";

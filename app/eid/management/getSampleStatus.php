@@ -13,14 +13,14 @@ $configFormResult = $db->rawQuery($configFormQuery);
 
 $userType = $general->getSystemConfig('sc_user_type');
 
-$whereCondition = '';
+$whereCondition = '';  
 
 if ($userType == 'remoteuser') {
 	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` ORDER BY `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 	$userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
 	if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
 		$userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
-		$whereCondition = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
+		$whereCondition = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
 	}
 }
 
@@ -81,15 +81,18 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 		$testedEndDate = $general->dateFormat(trim($s_c_date[1]));
 	}
 }
+$sWhere = array();
+if(!empty($whereCondition))
+	$sWhere[] = $whereCondition;
+
 $tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name 
                 FROM form_eid as vl 
                 JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                 JOIN facility_details as f ON vl.lab_id=f.facility_id 
-                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 //filter
-$sWhere = array();
+
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -106,7 +109,7 @@ if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-	$tQuery .= " AND " . implode(" AND ", $sWhere);
+	$tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 
@@ -116,6 +119,8 @@ $tResult = $db->rawQuery($tQuery);
 
 //HVL and LVL Samples
 $sWhere = array();
+if(!empty($whereCondition))
+	$sWhere[] = $whereCondition;
 $vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
 		SUM(CASE
 				WHEN (vl.result = 'positive') THEN 1
@@ -128,7 +133,7 @@ $vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
 		status_id,
 		status_name 
 		
-		FROM form_eid as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+		FROM form_eid as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $sWhere[] = " (vl.result!='' and vl.result is not null) ";
 
@@ -151,7 +156,7 @@ if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-	$vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
+	$vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
@@ -161,6 +166,9 @@ if ($start_date == '' && $end_date == '') {
 	$start_date = date('Y-m-d', $date);
 	$end_date = date('Y-m-d');
 }
+$sWhere = array();
+if(!empty($whereCondition))
+	$sWhere[] = $whereCondition;
 $tatSampleQuery = "SELECT 
         count(*) as 'totalSamples',
 		DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
@@ -178,9 +186,8 @@ $tatSampleQuery = "SELECT
 		vl.result is not null
 		AND vl.result != ''
 		AND DATE(vl.sample_tested_datetime) >= '$start_date'
-		AND DATE(vl.sample_tested_datetime) <= '$end_date'
-		AND vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
-$sWhere = array();
+		AND DATE(vl.sample_tested_datetime) <= '$end_date' ";
+
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }

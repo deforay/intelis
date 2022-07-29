@@ -29,22 +29,22 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
                 INNER JOIN r_eid_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
-    $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND vl.vlsm_country_id = "' . $formId . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
+    $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
     if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
         $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
     }
     if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
-        $sWhere = ' vl.lab_id = "' . $_POST['labName'] . '"';
+        $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
     }
     if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && count($_POST['clinicName']) > 0) {
-        $sWhere = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
+        $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
     }
     if (!empty($facilityMap)) {
-        $sWhere = " vl.facility_id IN ($facilityMap)";
+        $sWhere[] = " vl.facility_id IN ($facilityMap)";
     }
 
-echo $vlQuery; die;
+//echo $vlQuery; die;
     $vlQuery = $vlQuery . ' where ' .implode(' AND ',$sWhere) . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
 
     $tableResult = $db->rawQuery($vlQuery);

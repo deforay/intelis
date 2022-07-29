@@ -210,7 +210,6 @@ if (isset($sWhere) && count($sWhere) > 0) {
      }
 
      if (isset($_POST['status']) && trim($_POST['status']) != '') {
-          if (isset($setWhr)) {
                if ($_POST['status'] == 'no_result') {
                     $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status !=4 ';
                } else if ($_POST['status'] == 'result') {
@@ -219,18 +218,6 @@ if (isset($sWhere) && count($sWhere) > 0) {
                     $statusCondition = ' vl.result_status=4';
                }
                $sWhere[] =  $statusCondition;
-          } else {
-               $setWhr = 'where';
-               // $sWhere = ' where ' . $sWhere;
-               if ($_POST['status'] == 'no_result') {
-                    $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status !=4 ';
-               } else if ($_POST['status'] == 'result') {
-                    $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status !=4 )';
-               } else {
-                    $statusCondition = ' vl.result_status=4';
-               }
-               $sWhere[] = $statusCondition;
-          }
      }
 
      if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
@@ -245,9 +232,8 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      if (!isset($_POST['status']) || trim($_POST['status']) == '') {
           $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
      }
-     $sWhere[] = " vl.vlsm_country_id='" . $arr['vl_form'] . "'";
 } else {
-     $sWhere[] = " vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
+     $sWhere[] = " vl.result_status!=9";
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";

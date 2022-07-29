@@ -99,11 +99,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
 	if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-		if (count($sWhere) == 0) {
 			$sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-		} else {
-			$sWhere[] =  $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-		}
 	}
 }
 
@@ -111,21 +107,18 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$aWhere = '';
-$sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01')
+$sQuery = "select SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01')
                         AND vl.result is not null
-                        AND vl.result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "'";
+                        AND vl.result != ''";
 if ($sarr['sc_user_type'] == 'remoteuser') {
-	$whereCondition = '';
 	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
 	if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-		$whereCondition = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
+		$sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
 	}
-	$sQuery = $sQuery . $whereCondition;
 } else {
-	$sQuery = $sQuery . " AND vl.result_status!=9";
+	$sWhere[] =  " vl.result_status!=9";
 }
 $start_date = '';
 $end_date = '';
@@ -164,15 +157,15 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 }
 $seWhere = array();
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-	$seWhere[] =  ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
+	$seWhere[] =  ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	if($start_date!='0000-00-00')
 	{
 		if (trim($start_date) == trim($end_date)) {
-			$seWhere[] = ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+			$seWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
 		} else {
-			$seWhere[] =  ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+			$seWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 		}
 	}
 }
@@ -202,14 +195,12 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 }
 
 
-if (count($sWhere) > 0) {
-	$saWhere = "AND " . implode(' AND ',$sWhere) . ' ' . implode(' AND ',$seWhere);
-	$sQuery = $sQuery . ' ' . $saWhere;
-} else {
-	$saWhere = implode(' AND ',$sWhere) . ' ' . implode(' AND ',$seWhere);
-	$sQuery = $sQuery . ' ' . $saWhere;
+if (isset($sWhere) && count($sWhere) > 0) {
+	$sQuery = $sQuery . ' AND ' . implode(' AND ',$sWhere) ;
+} 
+if (isset($seWhere) && count($seWhere) > 0) {
+	$sQuery = $sQuery . ' AND ' . implode(' AND ',$seWhere) ;
 }
-//echo $sQuery;die;
 $_SESSION['covid19TATQuery'] = $sQuery;
 if (isset($sOrder) && $sOrder != "") {
 	$sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

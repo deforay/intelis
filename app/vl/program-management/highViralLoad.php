@@ -542,7 +542,8 @@ $batResult = $db->rawQuery($batQuery);
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bSortable": false
 				},
 			],
 			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [

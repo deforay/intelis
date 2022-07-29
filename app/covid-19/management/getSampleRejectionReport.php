@@ -106,8 +106,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$aWhere = '';
-$sQuery = "SELECT vl.*,f.*,s.*,fd.facility_name as labName,rsrr.rejection_reason_name FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection where vl.is_sample_rejected='yes' AND vl.vlsm_country_id='" . $arr['vl_form'] . "'";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName,rsrr.rejection_reason_name FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection where vl.is_sample_rejected='yes' AND vl.vlsm_country_id='" . $arr['vl_form'] . "'";
 $start_date = '';
 $end_date = '';
 if (isset($_POST['rjtBatchCode']) && trim($_POST['rjtBatchCode']) != '') {
@@ -145,7 +144,7 @@ if (isset($_POST['rjtPatientBreastfeeding']) && $_POST['rjtPatientBreastfeeding'
     $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['rjtPatientBreastfeeding'] . '"';
 }
 
-$dWhere = '';
+//$dWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
     //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -153,7 +152,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-        $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+       // $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
 if(isset($sWhere) && count($sWhere)>0)
@@ -180,14 +179,17 @@ if (isset($sLimit) && isset($sOffset)) {
 // echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
-/* Data set length after filtering */
+/* Data set length after filtering 
 
 $aResultFilterTotal = $db->rawQuery("SELECT vl.*,f.*,s.*,fd.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection where vl.is_sample_rejected='yes' AND vlsm_country_id='" . $arr['vl_form'] . "' $sWhere group by vl.covid19_id order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
+/* Total data set length 
 $aResultTotal =  $db->rawQuery("select COUNT(covid19_id) as total FROM form_covid19 as vl JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection where is_sample_rejected='yes' AND vlsm_country_id='" . $arr['vl_form'] . "' $dWhere");
-$iTotal = $aResultTotal[0]['total'];
+$iTotal = $aResultTotal[0]['total'];*/
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
          * Output
         */

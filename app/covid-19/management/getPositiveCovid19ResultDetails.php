@@ -110,8 +110,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries.
          * Get data to display
         */
-$aWhere = '';
-$sQuery = "SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > " . $thresholdLimit;
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > " . $thresholdLimit;
 $start_date = '';
 $end_date = '';
 
@@ -137,9 +136,9 @@ if (isset($_POST['hvlSampleTestDate']) && trim($_POST['hvlSampleTestDate']) != '
         $end_date = $general->dateFormat(trim($s_c_date[1]));
     }
     if (trim($start_date) == trim($end_date)) {
-        $sWhere[] = ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
+        $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
-        $sWhere[] =  ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+        $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
     }
 }
 if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
@@ -168,14 +167,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
-if (isset($sWhere) && count($sWhere) >0) 
-$sWhere[] = '  vl.vlsm_country_id="' . $arr['vl_form'] . '"';
-else
-$sWhere[] = '  AND vl.vlsm_country_id="' . $arr['vl_form'] . '"';
+
 //$sQuery = $sQuery . ' ' . $sWhere;
 if (isset($sWhere) && count($sWhere) >0) {
-    $sWhere = implode(' AND ',$sWhere);
-    $sQuery = $sQuery .  $sWhere;
+    $sWhere = ' AND '. implode(' AND ',$sWhere);
+    $sQuery = $sQuery .' '. $sWhere;
 }
 $sQuery = $sQuery . ' group by vl.covid19_id';
 //echo $sQuery; die();
@@ -192,14 +188,17 @@ if (isset($sLimit) && isset($sOffset)) {
 //echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
-/* Data set length after filtering */
+/* Data set length after filtering 
 
 $aResultFilterTotal = $db->rawQuery("SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > $thresholdLimit $sWhere group by vl.covid19_id order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
+/* Total data set length 
 $aResultTotal =  $db->rawQuery("select COUNT(covid19_id) as total FROM form_covid19 as vl where result_status=7 AND result > $thresholdLimit AND vlsm_country_id='" . $arr['vl_form'] . "' $dWhere");
-$iTotal = $aResultTotal[0]['total'];
+$iTotal = $aResultTotal[0]['total'];*/
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
          * Output
         */

@@ -308,8 +308,7 @@ $lastUrl2 = '';
 					"sClass": "center"
 				},
 				{
-					"sClass": "center",
-					"bSortable": false
+					"sClass": "center"
 				},
 				{
 					"sClass": "center",

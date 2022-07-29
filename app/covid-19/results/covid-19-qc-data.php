@@ -125,6 +125,27 @@ require_once(APPLICATION_PATH . '/header.php');
 			"bScrollCollapse": true,
 			//"bStateSave" : true,
 			"bRetrieve": true,
+            "aoColumns": [{
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center",
+                    "bSortable": false
+                }
+            ],
             "aaSorting": [
                 [7, "desc"]
             ],

@@ -18,8 +18,8 @@ $sarr = $general->getSystemConfig();
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('facility_state', 'facility_district', 'facility_name', 'facility_code', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.lab_tech_comments');
-$orderColumns = array('facility_state', 'facility_district', 'facility_name', 'sample_tested_datetime', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'vl.lab_tech_comments');
+$aColumns = array('f.facility_state', 'f.facility_district', 'f.facility_name', 'f.facility_code', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.lab_tech_comments');
+$orderColumns = array('f.facility_state', 'f.facility_district', 'f.facility_name', 'sample_tested_datetime', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'vl.lab_tech_comments');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -41,7 +41,6 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 $sOrder = "";
 
 
-
 if (isset($_POST['iSortCol_0'])) {
   $sOrder = "";
   for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
@@ -60,7 +59,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 $sWhere = array();
-$sWhere[] = " WHERE vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";
+$sWhere[] = " vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $searchArray = explode(" ", $_POST['sSearch']);
   $sWhereSub = "";
@@ -87,11 +86,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
   if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-    if (count($sWhere) == 0) {
       $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-    } else {
-      $sWhere[] = " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-    }
   }
 }
 
@@ -174,9 +169,9 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   if (trim($start_date) == trim($end_date)) {
-    $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
+    $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
   } else {
-    $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+    $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
   }
 }
 
@@ -196,7 +191,7 @@ if (isset($sWhere) && sizeof($sWhere) > 0) {
 }
 
 
-$sQuery = $sQuery . ' ' . $sWhere;
+$sQuery = $sQuery . ' where ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY vl.lab_id, vl.facility_id';
 
 

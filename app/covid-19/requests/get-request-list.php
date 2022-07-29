@@ -34,8 +34,8 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_coll
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l_f.facility_name','vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'l_f.facility_name','f.facility_name','vl.patient_id', 'vl.patient_name',  'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
 
 
@@ -110,8 +110,6 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * SQL queries
 * Get data to display
 */
-$aWhere = '';
-$sQuery = '';
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTxt,
           rtr.test_reason_name,
@@ -260,7 +258,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 
 
-if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && sizeof($sWhere) > 0) {
      $_SESSION['covid19RequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }

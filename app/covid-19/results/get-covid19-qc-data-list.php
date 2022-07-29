@@ -83,11 +83,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if (count($sWhere) == 0) {
             $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
     }
 }
 
@@ -101,7 +97,6 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS qc.*, kit.testkit_name, l_f.facility_name,
             LEFT JOIN facility_details as l_f ON qc.lab_id=l_f.facility_id";
 
 if (isset($sWhere) && count($sWhere) >0) {
-    //$sWhere = ' where ' . $sWhere;
     $sQuery = $sQuery . ' where ' . implode(' AND ',$sWhere);
 }
 
