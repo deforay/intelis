@@ -31,13 +31,6 @@ if (trim($sarr['sc_testing_lab_id']) == '') {
     $sarr['sc_testing_lab_id'] = "''";
 }
 
-function var_error_log($object = null)
-{
-    ob_start();
-    var_dump($object);
-    error_log(ob_get_clean());
-}
-
 
 $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_vl'";
 $allColResult = $db->rawQuery($allColumns);

@@ -114,7 +114,7 @@ $ftResult = $db->rawQuery($fQuery);
                                    </div>
                               </div>
 
-                              <div class="row show-token" style="display: <?php echo ($userInfo['role_code'] != "" && $userInfo['role_code'] == "API") ? 'block' : 'none'; ?>;">
+                              <div class="row show-token" style="display: <?php echo ($roleCode != "" && $roleCode == "API") ? 'block' : 'none'; ?>;">
                                    <div class="col-md-6">
                                         <div class="form-group">
                                              <label for="authToken" class="col-lg-4 control-label"><?php echo _("AuthToken"); ?> <span class="mandatory">*</span></label>
