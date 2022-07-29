@@ -82,11 +82,11 @@ $tQuery = "SELECT COUNT(tb_id) as total,status_id,status_name
                 FROM form_tb as vl 
                 JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                 JOIN facility_details as f ON vl.lab_id=f.facility_id 
-                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
-
+                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = array();
+if(!empty($whereCondition))
+    $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -103,7 +103,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $tQuery .= " AND " . implode(" AND ", $sWhere);
+    $tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 // echo $tQuery;die;
@@ -125,10 +125,12 @@ $vlSuppressionQuery = "SELECT   COUNT(tb_id) as total,
                                 status_id,
                                 status_name 
                                 
-                                FROM form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+                                FROM form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 // $sWhere = " AND (vl.result!='' and vl.result is not null) ";
 $sWhere = array();
+if(!empty($whereCondition))
+    $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -148,7 +150,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
+    $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
@@ -176,9 +178,10 @@ $tatSampleQuery = "SELECT
     vl.result is not null
     AND vl.result != ''
     AND DATE(vl.sample_tested_datetime) >= '$start_date'
-    AND DATE(vl.sample_tested_datetime) <= '$end_date'
-    AND vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+    AND DATE(vl.sample_tested_datetime) <= '$end_date'";
 $sWhere = array();
+if(!empty($whereCondition))
+    $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -218,7 +221,9 @@ $testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name
                     JOIN facility_details as f ON vl.facility_id=f.facility_id 
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-$sWhere[] = ' WHERE vl.reason_for_tb_test IS NOT NULL ' . $whereCondition;
+$sWhere[] = ' vl.reason_for_tb_test IS NOT NULL ';
+if(!empty($whereCondition))
+    $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -235,7 +240,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $testReasonQuery .= implode(" AND ", $sWhere);
+    $testReasonQuery .= ' where '.implode(" AND ", $sWhere);
 }
 $testReasonQuery = $testReasonQuery . " GROUP BY tr.test_reason_name";
 $testReasonResult = $db->rawQuery($testReasonQuery);

@@ -49,6 +49,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     {
         $sWhere = " where ". implode(' AND ',$sWhere);
     }
+    else
+    {
+        $sWhere="";
+    }
 
     $vlQuery = $vlQuery . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
 
