@@ -150,21 +150,19 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $sWhere[] =  " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
 
-$whereResult = '';
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-    $whereResult = 'vl.result != "" AND ';
+    $sWhere[] = 'vl.result != "" ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-    $whereResult = '(vl.result IS NULL OR vl.result = "") AND ';
+    $sWhere[] = '(vl.result IS NULL OR vl.result = "") ';
 }
-    $sWhere[] =  $whereResult . 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 
-$sFilter = '';
+//$sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $sWhere[] =  " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-        $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+       // $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
 
@@ -186,13 +184,15 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 // echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
+/* Data set length after filtering 
 $aResultFilterTotal = $db->rawQuery("SELECT vl.hepatitis_id FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
+/* Total data set length 
 $aResultTotal =  $db->rawQuery("SELECT COUNT(hepatitis_id) as total FROM form_hepatitis as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-$iTotal = $aResultTotal[0]['total'];
+$iTotal = $aResultTotal[0]['total'];*/
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 $output = array(
     "sEcho" => intval($_POST['sEcho']),

@@ -142,7 +142,6 @@ $batResult = $db->rawQuery($batQuery);
 														<th><?php echo _("Facility Name");?></th>
 														<th><?php echo _("Patient's ID");?></th>
 														<th><?php echo _("Patient's Name");?></th>
-														<th><?php echo _("Caretaker Phone No");?>.</th>
 														<th><?php echo _("Sample Collection Date");?></th>
 														<th><?php echo _("Sample Tested Date");?></th>
 														<th><?php echo _("Testing Lab");?></th>
@@ -486,10 +485,8 @@ $batResult = $db->rawQuery($batQuery);
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
+					"sClass": "center",
+					"bSortable": false
 				},
 			],
 			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [

@@ -82,11 +82,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
                $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        
      }
 }
 
-$sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange, f.*, vl.*, hf.monthly_target FROM testing_labs as hf INNER JOIN form_hepatitis as vl ON vl.lab_id=hf.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange, f.*, vl.*, hf.monthly_target FROM testing_labs as hf INNER JOIN form_hepatitis as vl ON vl.lab_id=hf.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
 
 $start_date = '';
 $end_date = '';
@@ -137,11 +136,8 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
          
      }
 
-if ($sWhere != '') {
-     $sWhere[] = '  vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
-} else {
-     $sWhere[] = '  vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
-}
+     $sWhere[] = '  vl.result_status!=9';
+
 
 if (!empty($facilityMap)) {
      $sWhere[]= " vl.facility_id IN ($facilityMap) ";
@@ -159,14 +155,18 @@ $sQuery = $sQuery . ' ' . $sWhere;
 $_SESSION['hepatitisMonitoringThresholdReportQuery'] = $sQuery;
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
-
+/*
 $aResultFilterTotal = $db->rawQuery($sQuery);
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
+/* Total data set length 
 $aResultTotal =  $db->rawQuery($sQuery);
 // $aResultTotal = $countResult->fetch_row();
-$iTotal = count($aResultTotal);
+$iTotal = count($aResultTotal);*/
+
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
           * Output
