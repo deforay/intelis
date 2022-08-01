@@ -182,19 +182,23 @@ $sources = array(
             "aoColumns": [{
                 "sClass": "center"
             }, {
-                "sClass": "center"
+                "sClass": "center",
+                "bSortable": false
             }, {
-                "sClass": "center"
+                "sClass": "center",
+                "bSortable": false
             }, {
-                "sClass": "center"
+                "sClass": "center",
+                "bSortable": false
             }, {
-                "sClass": "center"
+                "sClass": "center",
+                "bSortable": false
             }, {
                 "sClass": "center"
             }, {
                 "sClass": "center"
             }],
-            "aaSorting": [2, "desc"],
+            "aaSorting": [0, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-sources-of-requests.php",

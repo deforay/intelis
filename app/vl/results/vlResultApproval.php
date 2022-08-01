@@ -298,7 +298,8 @@ foreach ($rejectionTypeResult as $type) {
           "sClass": "center"
         },
         {
-          "sClass": "center"
+          "sClass": "center",
+          "bSortable":false
         },
         //{"sClass":"center","bSortable":false},
       ],

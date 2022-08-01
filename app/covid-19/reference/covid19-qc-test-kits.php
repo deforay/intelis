@@ -79,7 +79,8 @@ require_once(APPLICATION_PATH . '/header.php');
                     "sClass": "center"
                 },
                 {
-                    "sClass": "center"
+                    "sClass": "center",
+                    "bSortable": false
                 },
                 <?php if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?> {
                         "sClass": "center action",
