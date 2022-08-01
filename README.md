@@ -11,7 +11,7 @@ A simple, open source Sample Management System for Viral Load, EID, Covid-19 and
 
 #### How do I get started?
 * Download the Source Code and put it into your server's root folder (www or htdocs).
-* Run ```composer update``` inside the project folder
+* Run ```composer update``` inside the VLSM folder
 * Open phpMyAdmin or any MySQL client and create a blank database called ```vlsm```
 * Import the initial sql file from the releases page
 * Rename the file configs/config.production.dist.php to configs/config.production.php
@@ -66,22 +66,20 @@ $systemConfig['modules']['tb'] = false;
 
 #### Completing Setup
 
-* Run ```composer update``` in the root of your vlsm folder
-
-* Add the following in crontab (or equivalent for your Operating System)
+* Add the following in the crontab (or equivalent scheduler for your Operating System)
 
     For e.g. if using Ubuntu, in the terminal type : ```sudo EDITOR=gedit crontab -e```
 
-    At the end of the file, type this line :
+    This opens the crontab file. At the end of the crontab file, type this line :
 
 
 ```
 * * * * * cd /var/www/vlsm/ && ./vendor/bin/crunz schedule:run
 ```
 
-* Once you have the application set up, you can visit the vlsm URL http://vlsm.example.org/ and set up admin user
-* Once you log in as admin user, add the Sample Types, Reasons for Testing, Rejection Reasons, Provinces etc. for each Test under the Admin menu 
-* Now you can start adding users, facilities, sample types etc. and complete the system config.
+* Once you have the application set up, you can visit the vlsm virtualhost URL http://vlsm.example.org/ and set up the admin user.
+* Once you log in as the admin user, add the Sample Types, Reasons for Testing, Rejection Reasons etc. for each Test under the Admin menu.
+* Continue the setup by adding users, provinces, districts, facilities etc. and complete the system configuration.
 
 
 #### Who do I talk to?
