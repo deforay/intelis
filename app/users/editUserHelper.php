@@ -103,17 +103,30 @@ try {
 
         $userType = $general->getSystemConfig('sc_user_type');
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
-            $nUser = array();
+            // $nUser = array();
+            // $_POST['userId'] = $userId;
+            // $nUser['userName'] = $_POST['userName']; 
+            // $nUser['email'] = $_POST['email']; 
+            // $nUser['phoneNo'] = $_POST['phoneNo']; 
+            // $nUser['interfaceUserName'] = $_POST['interfaceUserName']; 
+            // $nUser['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
+            // $nUser['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
+            // $nUser['hash_algorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
+            // $nUser['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
+            // $nUser['status'] = 'inactive';
+            // $nUser['userId'] = base64_encode($data['user_id']);
+
             $_POST['userId'] = $userId;
-            $nUser['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
-            $nUser['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
-            $nUser['hash_algorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
-            $nUser['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
-            $nUser['status'] = 'inactive';
-            $nUser['userId'] = base64_encode($data['user_id']);
+            $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
+            $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
+            $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
+            $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
+            $_POST['status'] = 'inactive';
+            $_POST['userId'] = base64_encode($data['user_id']);
+
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array(
-                'post' => json_encode($nUser),
+                'post' => json_encode($_POST),
                 'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null,
                 'x-api-key' => $general->generateRandomString(18)
             );

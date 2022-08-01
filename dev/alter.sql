@@ -3173,3 +3173,13 @@ ALTER TABLE `form_eid` ADD `form_attributes` JSON NULL DEFAULT NULL AFTER `resul
 ALTER TABLE `form_covid19` ADD `form_attributes` JSON NULL DEFAULT NULL AFTER `result_sent_to_source`;
 ALTER TABLE `form_hepatitis` ADD `form_attributes` JSON NULL DEFAULT NULL AFTER `result_sent_to_source`;
 ALTER TABLE `form_tb` ADD `form_attributes` JSON NULL DEFAULT NULL AFTER `result_sent_to_source`;
+
+-- Amit 29-Jul-2022
+ALTER TABLE `audit_form_vl` ADD `form_attributes` JSON NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_eid` ADD `form_attributes` JSON NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_covid19` ADD `form_attributes` JSON NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_hepatitis` ADD `form_attributes` JSON NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_tb` ADD `form_attributes` JSON NULL DEFAULT NULL AFTER `result_sent_to_source`;
+
+-- Amit 29-Jul-2022 version 5.0.4
+UPDATE `system_config` SET `value` = '5.0.4' WHERE `system_config`.`name` = 'sc_version';

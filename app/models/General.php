@@ -861,7 +861,7 @@ class General
         }
     }
 
-    public function fileExists($filePath)
+    public function fileExists($filePath): bool
     {
         return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
     }
@@ -877,5 +877,13 @@ class General
             $inputString = utf8_encode($inputString);
         }
         return $inputString;
+    }
+
+    //dump the contents of a variable to the error log in a readable format
+    public function var_error_log($object = null) :void
+    {
+        ob_start();
+        var_dump($object);
+        error_log(ob_get_clean());
     }
 }
