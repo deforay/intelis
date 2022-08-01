@@ -1,5 +1,4 @@
 <?php
-ob_start();
 
 $general = new \Vlsm\Models\General(); 
 

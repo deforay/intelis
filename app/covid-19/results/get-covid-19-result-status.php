@@ -105,11 +105,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if (count($sWhere) == 0) {
             $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
     }
 }
 
@@ -117,8 +113,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$aWhere = '';
-$sQuery = "SELECT * FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 //echo $sQuery;die;
 $start_date = '';
@@ -134,9 +129,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-if (isset($sWhere) && count($sWhere) > 0) {
-    //$sWhere = ' WHERE ' . $sWhere;
-    //$sQuery = $sQuery.' '.$sWhere;
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
         $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
@@ -157,63 +149,7 @@ if (isset($sWhere) && count($sWhere) > 0) {
             $sWhere[] = ' vl.result_status NOT IN (4,7)';
         }
     }
-} else {
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $setWhr = 'WHERE';
-      //  $sWhere[] = ' WHERE ' . $sWhere;
-        $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-    }
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        if (isset($setWhr)) {
-            if (trim($start_date) == trim($end_date)) {
-                if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-                    $sWhere[] = ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                } else {
-                   // $sWhere = ' where ' . $sWhere;
-                    $sWhere[] =  ' where DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                }
-            }
-        } else {
-            $setWhr = 'WHERE';
-           // $sWhere = ' WHERE ' . $sWhere;
-            $sWhere[] = ' where DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
-    }
-    if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-        if (isset($setWhr)) {
-            $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-        } else {
-           // $sWhere = ' where ' . $sWhere;
-            $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-        }
-        $and = " AND";
-    }
-    if (isset($_POST['statusFilter']) && trim($_POST['statusFilter']) != '') {
-        if (isset($setWhr)) {
-            if ($_POST['statusFilter'] == 'approvedOrRejected') {
-                $sWhere[] = ' vl.result_status IN (4,7)';
-            } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-                $sWhere[] =  ' vl.result_status NOT IN (4,7)';
-            }
-        } else {
-            if (!isset($_POST['facilityName']) || trim($_POST['facilityName']) == '') {
-                //$sWhere = ' where ' . $sWhere;
-            }
-            if ($_POST['statusFilter'] == 'approvedOrRejected') {
-                $sWhere[] =  ' where vl.result_status IN (4,7)';
-            } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-                $sWhere[] = ' where vl.result_status NOT IN (4,7)';
-            }
-        }
-    }
-    if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
-    }
-}
-if (count($sWhere) > 0) {
-    $sWhere[] = '  vl.vlsm_country_id="' . $arr['vl_form'] . '"';
-} else {
-    $sWhere[] =  ' WHERE vl.vlsm_country_id="' . $arr['vl_form'] . '"';
-}
+
 if ($_SESSION['instanceType'] == 'remoteuser') {
     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
@@ -225,7 +161,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $sWhere[] =  ' vl.result!=""';
 if(isset($sWhere) && count($sWhere) > 0)
 {
-     $sWhere = implode(' AND ',$sWhere);
+     $sWhere = ' WHERE '.implode(' AND ',$sWhere);
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;

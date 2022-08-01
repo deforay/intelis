@@ -2,6 +2,7 @@ syntax: regexp
 ^.idea
 ^public/uploads/(?!.htaccess)
 ^public/temporary/(?!.htaccess)
+^vendor/dcarbone/(?!.htaccess)
 ^interop/dhis2/examples/(?!index.php)
 .pid$
 .log$
@@ -15,6 +16,7 @@ Thumbs.db
 Thumbs.db.orig
 .DS_Store
 .DS_Store.orig
+.env
 .git
 .idea
 .git/*

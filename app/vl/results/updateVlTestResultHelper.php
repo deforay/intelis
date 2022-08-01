@@ -77,7 +77,6 @@ try {
     $finalResult = null;
     $textResult = null;
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
-        $vl_result_category = 'rejected';
         $isRejected = true;
         $finalResult = $_POST['vlResult'] = $_POST['vlLog'] = null;
     }
@@ -148,8 +147,7 @@ try {
         'last_modified_datetime' => $db->now(),
         'manual_result_entry' => 'yes',
         'data_sync' => 0,
-        'result_printed_datetime' => NULL,
-        'vl_result_category' => $vl_result_category
+        'result_printed_datetime' => NULL
     );
 
 

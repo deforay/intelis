@@ -280,7 +280,7 @@ try {
 		return 1;
 	} else {
 		$_SESSION['alertMsg'] = _("Facility details added successfully");
-		header("location:facilities.php");
+		header("location:/facilities/facilities.php");
 	}
 } catch (Exception $exc) {
 	error_log($exc->getMessage());

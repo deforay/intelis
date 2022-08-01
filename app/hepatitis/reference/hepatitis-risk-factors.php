@@ -75,7 +75,8 @@ require_once(APPLICATION_PATH . '/header.php');
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
+					"sClass": "center",
+					"bSortable" : false
 				}
 			],
 			"aaSorting": [

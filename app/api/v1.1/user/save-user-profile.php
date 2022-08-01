@@ -2,8 +2,6 @@
 
 header('Content-Type: application/json');
 
-use Aura\Filter\FilterFactory;
-
 session_unset(); // no need of session in json response
 $general = new \Vlsm\Models\General();
 $userDb = new \Vlsm\Models\Users();
@@ -42,12 +40,14 @@ try {
         $decode = $_REQUEST;
         $decode['post'] = json_decode($decode['post'], true);
     } else {
-        throw new Exception("Invalid request. Please check your request parameters.");
+        $general->var_error_log($decode);
+        throw new Exception("2 Invalid request. Please check your request parameters.");
     }
     $apiKey = isset($decode['x-api-key']) && !empty($decode['x-api-key']) ? $decode['x-api-key'] : null;
 
     if ((empty($decode['post']) || $decode['post'] === false) && !isset($user)) {
-        throw new Exception("Invalid request. Please check your request parameters.");
+        $general->var_error_log($decode);
+        throw new Exception("3 Invalid request. Please check your request parameters.");
     } else {
         if (isset($user)) {
             $post = $decode;
@@ -56,32 +56,10 @@ try {
         }
     }
 
-    $filter_factory = new FilterFactory();
-    $filter = $filter_factory->newSubjectFilter();
-
-    $filter->validate('userId')->isNotBlank();
-    $filter->validate('email')->is('email');
     $post['loginId'] = $post['loginId'] ?? $post['login_id'] ?? null;
     $post['role'] = $post['role'] ?? $post['role_id'] ?? null;
     $post['hashAlgorithm'] = $post['hashAlgorithm'] ?? $post['hash_algorithm'] ?? 'phb';
-    if (!isset($user)) {
-        $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/', $post['interfaceUserName']);
-        $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/', '');
-        $filter->sanitize('loginId')->to('regex', '/^[a-zA-Z0-9_]+$/', $post['loginId']);
-    } else {
-        $filter->sanitize('interfaceUserName')->to('regex', '/^[a-zA-Z0-9_]+$/', $post['interfaceUserName']);
-        $filter->sanitize('userId')->to('regex', '/^[a-zA-Z0-9-]+$/', '');
-        $filter->sanitize('loginId')->to('regex', '/^[a-zA-Z0-9_]+$/', $post['loginId']);
-    }
-    $filter->sanitize('password')->to('alnum');
-    $filter->sanitize('role')->to('int');
-    // filter the object and see if there were failures
-    $success = $filter->apply($post);
-    if (!$success) {
-        // get the failures
-        $failures = $filter->getFailures();
-        throw new Exception("Invalid request. Please check your request parameters.");
-    }
+    
     if (!isset($user)) {
         if (!$apiKey) {
             throw new Exception("Invalid API Key. Please check your request parameters.");
@@ -114,7 +92,7 @@ try {
 
     if (!empty($post['password'])) {
         $data['hash_algorithm'] = $post['hashAlgorithm'];
-        $data['password'] = $userModel->passwordHash($post['password']);
+        $data['password'] = $userDb->passwordHash($post['password']);
     }
     if (!empty($post['role'])) {
         $data['role_id'] =  $db->escape($post['role']);

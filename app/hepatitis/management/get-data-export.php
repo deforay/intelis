@@ -107,7 +107,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT 
+$sQuery = "SELECT       SQL_CALC_FOUND_ROWS
                         vl.*,
                         b.batch_code,
                         ts.status_name,
@@ -229,7 +229,7 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 
      $sWhere[] = '  vl.result_status!=9';
 
-$cWhere = '';
+//$cWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
      //$cWhere = " AND request_created_by='".$_SESSION['userId']."'";
@@ -237,7 +237,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
      if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
           $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-          $cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
+          //$cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
 }
 if(count($sWhere) > 0)
@@ -260,7 +260,7 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
+/* Data set length after filtering 
 
 $aResultFilterTotal = $db->rawQuery("SELECT vl.hepatitis_id 
           
@@ -283,11 +283,12 @@ $aResultFilterTotal = $db->rawQuery("SELECT vl.hepatitis_id
 
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
+/* Total data set length 
 $aResultTotal =  $db->rawQuery("select COUNT(*) as total FROM form_hepatitis as vl where result_status!=9 $cWhere");
 // $aResultTotal = $countResult->fetch_row();
-$iTotal = $aResultTotal[0]['total'];
-
+$iTotal = $aResultTotal[0]['total'];*/
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
           * Output
           */

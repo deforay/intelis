@@ -191,25 +191,15 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
                $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
           }
      }
-     $sWhere[] = " vl.vlsm_country_id='" . $arr['vl_form'] . "'";
-     //$dWhere = "WHERE ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND vl.vlsm_country_id='" . $arr['vl_form'] . "' AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
-} else {
-     if (count($sWhere) > 0) {
-          $sWhere[] = " vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
-     } else {
-          $sWhere[] = "  vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
-     }
-    // $dWhere = " vl.vlsm_country_id='" . $arr['vl_form'] . "' AND vl.result_status!=9";
-}
+} 
 if ($_SESSION['instanceType'] == 'remoteuser' && isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
     // $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
-if (count($sWhere) > 1)
+if (isset($sWhere) && count($sWhere) > 0)
      $sWhere = implode(' AND ', $sWhere);
-else
-     $sWhere = $sWhere[0];
+
 
 $sQuery = $sQuery . ' where ' . $sWhere;
 //echo $sQuery; die();

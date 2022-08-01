@@ -81,11 +81,13 @@ $tQuery = "SELECT COUNT(hepatitis_id) as total,status_id,status_name
                 FROM form_hepatitis as vl 
                 JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                 JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 //filter
 $sWhere = array();
+if(!empty($whereCondition))
+    $sWhere[]=$whereCondition;
+
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -102,7 +104,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $tQuery .= " AND " . implode(" AND ", $sWhere);
+    $tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 $tResult = $db->rawQuery($tQuery);
@@ -110,6 +112,8 @@ $tResult = $db->rawQuery($tQuery);
 
 //HVL and LVL Samples
 $sWhere = array();
+if(!empty($whereCondition))
+    $sWhere[]=$whereCondition;
 $vlSuppressionQuery = "SELECT   COUNT(hepatitis_id) as total,
                                 SUM(CASE
                                         WHEN (vl.hcv_vl_result = 'positive') THEN 1
@@ -130,7 +134,7 @@ $vlSuppressionQuery = "SELECT   COUNT(hepatitis_id) as total,
                                 status_id,
                                 status_name 
                                 
-                                FROM form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "' $whereCondition";
+                                FROM form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 $sWhere[] = " (vl.hcv_vl_result!='' and vl.hcv_vl_result is not null) ";
 
@@ -153,7 +157,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
+    $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 // print_r($vlSuppressionResult);die;
@@ -179,8 +183,7 @@ $tatSampleQuery = "SELECT
                         
                         WHERE 
                         vl.result is not null
-                        AND vl.result != ''
-                        AND vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'";
+                        AND vl.result != ''"; // No where condition
 $sWhere = array();
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';

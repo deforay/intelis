@@ -5,6 +5,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new \Vlsm\Models\General();
 $table = "form_vl";
+$primaryKey = "vl_sample_id";
+
 $testType = 'vl';
 
 $sources = array(
@@ -43,8 +45,8 @@ if (isset($testType) && $testType == 'tb') {
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('l.facility_name', 'samples', 'samplesWithResults', 'rejected', 'source_of_request');
-$orderColumns = array('l.facility_name', 'samples', 'samplesWithResults', 'rejected', 'source_of_request');
+$aColumns = array('l.facility_name',  'vl.source_of_request','vl.request_created_datetime');
+$orderColumns = array('l.facility_name', '','','','', 'vl.source_of_request','vl.request_created_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;

@@ -66,6 +66,24 @@ class Facilities
         return $this->db->getOne("facility_details");
     }
 
+    public function getFacilityByAttribute($attributeName, $attibuteValue)
+    {
+        $fQuery = "SELECT * FROM facility_details as f
+                    WHERE f.facility_attributes->>\"$.$attributeName\" = ? 
+                    AND f.facility_attributes->>\"$.$attributeName\" is NOT NULL";
+
+        return $this->db->rawQueryOne($fQuery, array($attibuteValue));
+    }
+
+    public function getAllFacilitiesByAttribute($attributeName, $attibuteValue)
+    {
+        $fQuery = "SELECT * FROM facility_details as f
+                    WHERE f.facility_attributes->>\"$.$attributeName\" = ? 
+                    AND f.facility_attributes->>\"$.$attributeName\" is NOT NULL";
+
+        return $this->db->rawQuery($fQuery, array($attibuteValue));
+    }
+
     public function getTestingPoints($facilityId)
     {
 

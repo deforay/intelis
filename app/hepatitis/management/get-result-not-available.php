@@ -27,11 +27,11 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
-        $aColumns = array('vl.sample_code','vl.remote_sample_code','f.facility_name','vl.patient_id','vl.patient_first_name',"DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')",'fd.facility_name');
-        $orderColumns = array('vl.sample_code','vl.remote_sample_code','f.facility_name','vl.patient_id','vl.patient_first_name','vl.sample_collection_date','fd.facility_name');
+        $aColumns = array('vl.sample_code','vl.remote_sample_code','f.facility_name','vl.patient_id','vl.patient_name',"DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')",'fd.facility_name');
+        $orderColumns = array('vl.sample_code','vl.remote_sample_code','f.facility_name','vl.patient_id','vl.patient_name','vl.sample_collection_date','fd.facility_name');
         if($sarr['sc_user_type']=='standalone') {
-        $aColumns = array('vl.sample_code','f.facility_name','vl.patient_id','vl.patient_first_name',"DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')",'fd.facility_name');
-        $orderColumns = array('vl.sample_code','f.facility_name','vl.patient_id','vl.patient_first_name','vl.sample_collection_date','fd.facility_name');
+        $aColumns = array('vl.sample_code','f.facility_name','vl.patient_id','vl.patient_name',"DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')",'fd.facility_name');
+        $orderColumns = array('vl.sample_code','f.facility_name','vl.patient_id','vl.patient_name','vl.sample_collection_date','fd.facility_name');
         }
         
         /* Indexed column (used for fast and accurate table cardinality) */
@@ -98,7 +98,6 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         for ($i = 0; $i < count($aColumns); $i++) {
             if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
                     $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-               
             }
         }
         
@@ -106,7 +105,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
          * SQL queries
          * Get data to display
         */
-	$sQuery="SELECT vl.*,f.*,s.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status!=4 AND vl.sample_code is NOT NULL AND (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='')";
+	$sQuery="SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status!=4 AND vl.sample_code is NOT NULL AND (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='')";
 	$start_date = '';
 	$end_date = '';
 	if(isset($_POST['noResultBatchCode']) && trim($_POST['noResultBatchCode'])!= ''){
@@ -143,8 +142,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 	if(isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBreastfeeding']!=''){
 		$sWhere[] = ' vl.is_patient_breastfeeding = "'.$_POST['noResultPatientBreastfeeding'].'"';
 	}
-	$sWhere[] = ' vl.vlsm_country_id="'.$arr['vl_form'].'"';
-    $dWhere = '';
+   // $dWhere = '';
     if($sarr['sc_user_type']=='remoteuser'){
         //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
         //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -152,7 +150,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
         if($userfacilityMapresult[0]['facility_id']!=null && $userfacilityMapresult[0]['facility_id']!=''){
             $sWhere[] = " vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].")   ";
-            $dWhere = $dWhere." AND vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].") ";
+          //  $dWhere = $dWhere." AND vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].") ";
         }
     }
     
@@ -178,14 +176,17 @@ else{
         // echo $sQuery;die;
         $rResult = $db->rawQuery($sQuery);
        // print_r($rResult);
-        /* Data set length after filtering */
+        /* Data set length after filtering 
         
         $aResultFilterTotal =$db->rawQuery("SELECT vl.*,f.*,s.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status!=4 AND vl.sample_code is NOT NULL AND  (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='') $sWhere group by vl.hepatitis_id order by $sOrder");
         $iFilteredTotal = count($aResultFilterTotal);
 
-        /* Total data set length */
+        /* Total data set length 
         $aResultTotal =  $db->rawQuery("select COUNT(hepatitis_id) as total FROM form_hepatitis as vl where result_status!=4 AND  vl.sample_code is NOT NULL AND (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='') AND vlsm_country_id='".$arr['vl_form']."' $dWhere");
-        $iTotal = $aResultTotal[0]['total'];
+        $iTotal = $aResultTotal[0]['total'];*/
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
         /*
          * Output
         */
@@ -209,9 +210,8 @@ else{
             }else{
                 $decrypt = 'sample_code';
             }
-            $patientFname = $general->crypto('decrypt',$aRow['patient_first_name'],$aRow[$decrypt]);
-            $patientMname = $general->crypto('decrypt',$aRow['patient_middle_name'],$aRow[$decrypt]);
-            $patientLname = $general->crypto('decrypt',$aRow['patient_last_name'],$aRow[$decrypt]);
+            $patientName = $general->crypto('decrypt',$aRow['patient_name'],$aRow[$decrypt]);
+          
             $row = array();
 
             $row[] = $aRow['sample_code'];
@@ -220,7 +220,7 @@ else{
             }
             $row[] = ucwords($aRow['facility_name']);
             $row[] = $aRow['patient_id'];
-            $row[] = ucwords($patientFname." ".$patientMname." ".$patientLname);
+            $row[] = ucwords($patientName);
             $row[] = $aRow['sample_collection_date'];
             $row[] = ucwords($aRow['labName']);
 			$output['aaData'][] = $row;
