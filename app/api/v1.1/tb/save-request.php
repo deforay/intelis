@@ -92,11 +92,11 @@ try {
                 $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
                 $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
             } else {
-                $sampleJson = $app->generateSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user, 'tb');
+                $sampleJson = $tbModel->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
                 $sampleData = json_decode($sampleJson, true);
             }
         } else {
-            $sampleJson = $app->generateSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user, 'tb');
+            $sampleJson = $tbModel->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
             $sampleData = json_decode($sampleJson, true);
         }
 

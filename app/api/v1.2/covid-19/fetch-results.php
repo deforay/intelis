@@ -266,10 +266,10 @@ try {
 
     foreach ($rowData as $key => $row) {
         $rowData[$key]['c19Tests'] = $app->getCovid19TestsByC19Id($row['covid19Id']);
-        $rowData[$key]['c19Symptoms'] = $app->getCovid19SymptomsByFormId($row['covid19Id']);
-        $rowData[$key]['c19Comorbidities'] = $app->getCovid19ComorbiditiesByFormId($row['covid19Id']);
-        $rowData[$key]['c19ReasonForTesting'] = $app->getCovid19ReasonsForTestingByFormId($row['covid19Id']);
-        $rowData[$key]['c19ReasonDetails'] = $app->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id']);
+        $rowData[$key]['c19Symptoms'] = $c19Db->getCovid19SymptomsByFormId($row['covid19Id'], false, true);
+        $rowData[$key]['c19Comorbidities'] = $c19Db->getCovid19ComorbiditiesByFormId($row['covid19Id'], false, true);
+        $rowData[$key]['c19ReasonForTesting'] = $c19Db->getCovid19ReasonsForTestingByFormId($row['covid19Id'], false, true);
+        $rowData[$key]['c19ReasonDetails'] = $c19Db->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id']);
     }
     $payload = array(
         'status' => 'success',
