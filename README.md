@@ -66,11 +66,13 @@ $systemConfig['modules']['tb'] = false;
 
 #### Completing Setup
 
-Add the following in crontab (or equivalent for your Operating System)
+* Run ```composer update``` in the root of your vlsm folder
 
-For e.g. if using Ubuntu, in the terminal type : ```sudo EDITOR=gedit crontab -e```
+* Add the following in crontab (or equivalent for your Operating System)
 
-At the end of the file, type this line :
+    For e.g. if using Ubuntu, in the terminal type : ```sudo EDITOR=gedit crontab -e```
+
+    At the end of the file, type this line :
 
 
 ```
