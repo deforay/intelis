@@ -80,19 +80,19 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input id="login-username" type="text" class="form-control isRequired" name="userName" value="" placeholder="<?= _("User Name"); ?>" title="Please enter the user name">
+              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?= _("User Name"); ?>" title="Please enter your name">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _("Email ID"); ?>" title="Please enter the email id">
+              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _("Email ID"); ?>" title="Please enter your email id">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-log-in"></i></span>
-              <input id="login-id" type="text" class="form-control isRequired" name="loginId" value="" placeholder="<?= _("Login ID"); ?>" title="Please enter the login id">
+              <input id="login-id" type="text" class="form-control isRequired" name="loginId" value="" placeholder="<?= _("Login ID"); ?>" title="Please enter your login id">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?= _("Password"); ?>" title="Please enter the password" />
+              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?= _("Password"); ?>" title="Please enter your password" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
