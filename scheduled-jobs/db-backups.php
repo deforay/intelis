@@ -11,7 +11,7 @@ $backupFolder = APPLICATION_PATH . '/../backups';
 if (!is_dir($backupFolder)) {
     mkdir($backupFolder, 0777, true);
 }
-$randomString = $general->generateRandomString(6);
+$randomString = $general->generateRandomString(12);
 $baseFileName = 'vlsm-' . date("dmYHis") . '-' . $randomString . '.sql';
 $password = hash('sha1', SYSTEM_CONFIG['dbPassword'] . $randomString);
 

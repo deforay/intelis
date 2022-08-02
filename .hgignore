@@ -1,11 +1,13 @@
 syntax: regexp
-^.idea
 ^public/uploads/(?!.htaccess)
 ^public/temporary/(?!.htaccess)
 ^vendor/dcarbone/(?!.htaccess)
 ^interop/dhis2/examples/(?!index.php)
-.pid$
-.log$
+^backups/(?!index.php)
+^backup/(?!index.php)
+^.*\.idea$
+^.*\.pid$
+^.*\.log$
 
 syntax: glob
 error_log
@@ -22,14 +24,10 @@ Thumbs.db.orig
 .git/*
 .gitattributes
 .gitignore
-config.production.php
-config.interop.php
-config.testing.php
-config.staging.php
-config.development.php
-index-new.php
+configs/config.production.php
+configs/config.interop.php
+configs/config.testing.php
+configs/config.staging.php
+configs/config.development.php
 configs/bg.png
 configs/bg.jpg
-scheduled-jobs.log
-logs/scheduled-jobs.log
-

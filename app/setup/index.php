@@ -80,7 +80,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?= _("User Name"); ?>" title="Please enter your name">
+              <input id="login-username" type="text" class="form-control isRequired" name="userName" value="" placeholder="<?= _("User Name"); ?>" title="Please enter your name">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>

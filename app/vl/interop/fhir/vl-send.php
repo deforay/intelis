@@ -12,7 +12,7 @@ $sarr = $general->getSystemConfig();
 
 
 $fileArray = array(
-    7 => 'forms/send-rwanda.php'
+    7 => 'forms/rwanda/send-rwanda.php'
 );
 
 

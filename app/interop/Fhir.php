@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\Request;
 class Fhir
 {
 	private string $fhirURL;
+	public string $requestUrl;
 	private string $bearerToken;
 	private string $contentType;
 	private bool $authenticated;
@@ -73,16 +74,24 @@ class Fhir
 			$urlParams = "";
 		}
 
-		$url = $this->getFhirURL() . "{$path}{$urlParams}";
+		$this->requestUrl = $this->getFhirURL() . "{$path}{$urlParams}";
+
+		//echo $this->requestUrl."\n\n\n\n";
 
 		$client = new Client();
 		$headers = [
 			'Content-Type' => $this->getContentType(),
 			'Authorization' => $this->getBearerToken()
 		];
-		$request = new Request('GET', $url, $headers);
+
+		$request = new Request('GET', $this->requestUrl, $headers);
 		$res = $client->sendAsync($request)->wait();
 		return $res->getBody()->getContents();
+	}
+
+	public function getRequestUrl(): string
+	{
+		return $this->requestUrl;
 	}
 
 	public function post($path = null, $body = array())
@@ -94,9 +103,9 @@ class Fhir
 			'Authorization' => $this->getBearerToken()
 		];
 
-		$url = $this->getFhirURL().$path;
+		$this->requestUrl = $this->getFhirURL() . $path;
 
-		$request = new Request('POST', $url, $headers, $body);
+		$request = new Request('POST', $this->requestUrl, $headers, $body);
 		$res = $client->sendAsync($request)->wait();
 
 		return $res->getBody()->getContents();

@@ -6,21 +6,23 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $tableName = "user_details";
-$userName = ($_POST['username']);
+$userName = ($_POST['userName']);
 $emailId = ($_POST['email']);
-$loginId = ($_POST['loginid']);
+$loginId = ($_POST['loginId']);
 $password = ($_POST['password']);
 
 $general = new \Vlsm\Models\General();
-$userId = $general->generateUUID();
-
 
 $user = new \Vlsm\Models\Users();
 
-$userPassword = $user->passwordHash($password);
 
 try {
-    if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
+    if (isset($userName) && !empty($userName) && isset($password) && !empty($password)) {
+
+        $userPassword = $user->passwordHash($password);
+        $userId = $general->generateUUID();
+
+        
         $insertData = array(
             'user_id'           => $userId,
             'user_name'         => $userName,
