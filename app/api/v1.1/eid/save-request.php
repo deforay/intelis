@@ -103,11 +103,11 @@ try {
                     $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : null;
                 }
             } else {
-                $sampleJson = $app->generateSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user, 'eid');
+                $sampleJson = $eidModel->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
                 $sampleData = json_decode($sampleJson, true);
             }
         } else {
-            $sampleJson = $app->generateSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user, 'eid');
+            $sampleJson = $eidModel->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
             $sampleData = json_decode($sampleJson, true);
         }
         if (!isset($data['countryId']) || $data['countryId'] == '') {

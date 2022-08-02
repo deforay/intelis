@@ -20,7 +20,7 @@ class Covid19
         $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
-    public function generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null)
+    public function generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
         $general = new \Vlsm\Models\General($this->db);
@@ -38,6 +38,12 @@ class Covid19
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
+        if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
+            $remotePrefix = 'R';
+            $sampleCodeKeyCol = 'remote_sample_code_key';
+            $sampleCodeCol = 'remote_sample_code';
+        }
+
         $sampleColDateTimeArray = explode(" ", $sampleCollectionDate);
         $sampleCollectionDate = $general->dateFormat($sampleColDateTimeArray[0]);
         $sampleColDateArray = explode("-", $sampleCollectionDate);
@@ -126,7 +132,7 @@ class Covid19
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol]);
+            return $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user = null);
         }
 
         return json_encode($sCodeKey);
@@ -257,12 +263,18 @@ class Covid19
 
         return $response;
     }
-    public function getCovid19SymptomsByFormId($c19Id, $allData = false)
+    public function getCovid19SymptomsByFormId($c19Id, $allData = false, $api = false)
     {
         if (!isset($c19Id) || empty($c19Id)) {
             return null;
         }
-
+        if ($api) {
+            if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+                return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+            } else {
+                return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = $c19Id");
+            }
+        }
         $response = array();
 
         // Using this in sync requests/results
@@ -289,12 +301,18 @@ class Covid19
     }
 
 
-    public function getCovid19ComorbiditiesByFormId($c19Id, $allData = false)
+    public function getCovid19ComorbiditiesByFormId($c19Id, $allData = false, $api = false)
     {
         if (!isset($c19Id) || empty($c19Id)) {
             return null;
         }
-
+        if ($api) {
+            if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+                return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+            } else {
+                return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` = $c19Id");
+            }
+        }
         $response = array();
 
         // Using this in sync requests/results
@@ -318,12 +336,18 @@ class Covid19
         return $response;
     }
 
-    public function getCovid19ReasonsForTestingByFormId($c19Id, $allData = false)
+    public function getCovid19ReasonsForTestingByFormId($c19Id, $allData = false, $api = false)
     {
         if (!isset($c19Id) || empty($c19Id)) {
             return null;
         }
-
+        if ($api) {
+            if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+                return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+            } else {
+                return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = $c19Id");
+            }
+        }
         $response = array();
 
         // Using this in sync requests/results

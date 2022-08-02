@@ -44,19 +44,24 @@ class Vl
         $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
-    public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null)
+    public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
         $general = new \Vlsm\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
-        $sampleID = '';
 
 
         $remotePrefix = '';
         $sampleCodeKeyCol = 'sample_code_key';
         $sampleCodeCol = 'sample_code';
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            $remotePrefix = 'R';
+            $sampleCodeKeyCol = 'remote_sample_code_key';
+            $sampleCodeCol = 'remote_sample_code';
+        }
+
+        if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
             $remotePrefix = 'R';
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
@@ -148,7 +153,7 @@ class Vl
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol]);
+            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $null);
         }
         return json_encode($sCodeKey);
     }

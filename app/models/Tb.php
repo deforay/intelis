@@ -20,7 +20,7 @@ class Tb
         $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
-    public function generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null)
+    public function generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
         $general = new \Vlsm\Models\General($this->db);
@@ -34,6 +34,11 @@ class Tb
         $sampleCodeKeyCol = 'sample_code_key';
         $sampleCodeCol = 'sample_code';
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            $remotePrefix = 'R';
+            $sampleCodeKeyCol = 'remote_sample_code_key';
+            $sampleCodeCol = 'remote_sample_code';
+        }
+        if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
             $remotePrefix = 'R';
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
@@ -126,7 +131,7 @@ class Tb
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol]);
+            return $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user = null);
         }
 
         return json_encode($sCodeKey);
@@ -352,7 +357,6 @@ class Tb
 
                 // If this sample code exists, let us regenerate
                 return $this->insertSampleCode($params);
-
             } else {
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                     $tbData['unique_id'] = $general->generateRandomString(32);

@@ -9,8 +9,7 @@ $arr = $general->getGlobalConfig();
 // $instanceId = $instanceResult['vlsm_instance_id'];
 
 $fileArray = array(
-    7 => 'forms/receive-rwanda.php'
+    7 => 'forms/rwanda/receive-rwanda.php'
 );
 
-//require($fileArray[$arr['vl_form']]);
-require('forms/receive-rwanda.php');
+require($fileArray[$arr['vl_form']]);

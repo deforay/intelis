@@ -20,7 +20,7 @@ class Eid
         $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
-    public function generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null)
+    public function generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
         $general = new \Vlsm\Models\General($this->db);
@@ -37,7 +37,11 @@ class Eid
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-
+        if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
+            $remotePrefix = 'R';
+            $sampleCodeKeyCol = 'remote_sample_code_key';
+            $sampleCodeCol = 'remote_sample_code';
+        }
         $sampleColDateTimeArray = explode(" ", $sampleCollectionDate);
         $sampleCollectionDate = $general->dateFormat($sampleColDateTimeArray[0]);
         $sampleColDateArray = explode("-", $sampleCollectionDate);
@@ -126,7 +130,7 @@ class Eid
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol]);
+            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user = null);
         }
         return json_encode($sCodeKey);
     }
