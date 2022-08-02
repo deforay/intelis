@@ -311,7 +311,7 @@ if ($table == "form_covid19") {
     </div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-    <div class="dashboard-stat2 " style="cursor:pointer;">
+    <div class="dashboard-stat2" style="cursor:pointer;">
         <div class="display">
             <div class="number">
                 <h3 class="font-blue-sharp">

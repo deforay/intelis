@@ -91,7 +91,7 @@ if ($table == "form_eid") {
 				ELSE 0
 			END) AS acceptCount,
 		SUM(CASE
-			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND result_printed_datetime != '0000-00-00 00:00:00') THEN 1
+			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
 				ELSE 0
 			END) AS printCount
 		FROM " . $table . " as eid JOIN facility_details as f ON f.facility_id=eid.facility_id";
@@ -128,7 +128,7 @@ if ($table == "form_eid") {
 				ELSE 0
 			END) AS acceptCount,
 		SUM(CASE
-			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND result_printed_datetime != '0000-00-00 00:00:00') THEN 1
+			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
 				ELSE 0
 			END) AS printCount
 		FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id
