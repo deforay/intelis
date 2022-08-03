@@ -266,17 +266,17 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											</select>
 										</div>
 									</div>
-									<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+									
 										<div class="col-md-4 col-md-4">
-											<label for="labId">Lab Name </label>
-											<select name="labId" id="labId" class="form-control" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
+											<label for="labId">Testing Lab <span class="mandatory">*</span></label>
+											<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($lResult as $labName) { ?>
 													<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($labName['facility_name']); ?></option>
 												<?php } ?>
 											</select>
 										</div>
-									<?php } ?>
+									
 								</div>
 							</div>
 						</div>
@@ -624,7 +624,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										</div>
 										<div class="box-body">
 											<div class="row">
-												<div class="col-md-4">
+												<!-- <div class="col-md-4">
 													<label for="labId" class="col-lg-5 control-label">Lab Name </label>
 													<div class="col-lg-7">
 														<select name="labId" id="labId" class="select2 form-control labSection" title="Please choose lab" onchange="autoFillFocalDetails();">
@@ -634,7 +634,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 															<?php } ?>
 														</select>
 													</div>
-												</div>
+												</div> -->
 												<div class="col-md-4">
 													<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
 													<div class="col-lg-7">

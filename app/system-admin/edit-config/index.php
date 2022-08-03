@@ -16,7 +16,7 @@ $fResult = $db->query($fDetails);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1 class="fa fa-gears"> <?php echo _("Edit System Configuration"); ?></h1>
+    <h1><i class="fa fa-gears"></i> <?php echo _("Edit System Configuration"); ?></h1>
     <ol class="breadcrumb">
       <li><a href="index.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
       <li class="active"><?php echo _("Manage System Config"); ?></li>

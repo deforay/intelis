@@ -201,17 +201,17 @@ $sFormat = '';
                                                        </select>
                                                   </div>
                                              </div>
-                                             <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                                  <div class="col-md-4 col-md-4">
-                                                       <label for="labId">Lab Name </label>
-                                                       <select name="labId" id="labId" class="select2 form-control" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
-                                                            <option value="">-- Select --</option>
-                                                            <?php foreach ($lResult as $labName) { ?>
-                                                                 <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?php echo ucwords($labName['facility_name']); ?></option>
-                                                            <?php } ?>
-                                                       </select>
-                                                  </div>
-                                             <?php } ?>
+
+                                             <div class="col-md-4 col-md-4">
+                                                  <label for="labId">Testing Lab <span class="mandatory">*</span></label>
+                                                  <select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
+                                                       <option value="">-- Select --</option>
+                                                       <?php foreach ($lResult as $labName) { ?>
+                                                            <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?php echo ucwords($labName['facility_name']); ?></option>
+                                                       <?php } ?>
+                                                  </select>
+                                             </div>
+
                                         </div>
                                    </div>
                               </div>
@@ -407,7 +407,7 @@ $sFormat = '';
                                              </div>
                                              <div class="box box-primary">
                                                   <div class="box-header with-border">
-                                                       <h3 class="box-title">Indication for Viral Load Testing</h3><small> (Please tick one):(To be completed by clinician)</small>
+                                                       <h3 class="box-title">Indication for Viral Load Testing</h3><small> (Please choose one):(To be completed by clinician)</small>
                                                   </div>
                                                   <div class="box-body">
                                                        <div class="row">
@@ -528,17 +528,17 @@ $sFormat = '';
                                                        </div>
                                                        <div class="box-body">
                                                             <div class="row">
-                                                                 <div class="col-md-4">
+                                                                 <!-- <div class="col-md-4">
                                                                       <label for="labId" class="col-lg-5 control-label">Lab Name </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="labId" id="labId" class="select2 form-control" title="Please choose lab" onchange="autoFillFocalDetails();">
+                                                                           <select name="labId" id="labId" class="select2 form-control" title="Please choose the testing lab" onchange="autoFillFocalDetails();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($lResult as $labName) { ?>
                                                                                      <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?php echo ucwords($labName['facility_name']); ?></option>
                                                                                 <?php } ?>
                                                                            </select>
                                                                       </div>
-                                                                 </div>
+                                                                 </div> -->
                                                                  <div class="col-md-4">
                                                                       <label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
                                                                       <div class="col-lg-7">

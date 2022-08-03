@@ -308,15 +308,7 @@ if ($arr['vl_form'] == 1) {
                var scd = changeFormat(scdf[0]);
                var std = changeFormat(stdl[0]);
                if (moment(scd + ' ' + scdf[1]).isAfter(std + ' ' + stdl[1])) {
-                    <?php if ($arr['vl_form'] == '3') { ?>
-                         //french
-                         alert("L'échantillon de données reçues ne peut pas être antérieur à la date de collecte de l'échantillon!");
-                    <?php } else if ($arr['vl_form'] == '8') { ?>
-                         //portugese
-                         alert("Amostra de Data Recebida no Laboratório de Teste não pode ser anterior ao Data Hora de colheita!");
-                    <?php } else { ?>
-                         alert("Sample Received Date cannot be earlier than Sample Collection Date!");
-                    <?php } ?>
+                    alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
                     $("#sampleTestingDateAtLab").val("");
                }
           }
@@ -331,15 +323,7 @@ if ($arr['vl_form'] == 1) {
                var scd = changeFormat(scdf[0]);
                var srd = changeFormat(srdf[0]);
                if (moment(scd + ' ' + scdf[1]).isAfter(srd + ' ' + srdf[1])) {
-                    <?php if ($arr['vl_form'] == '3') { ?>
-                         //french
-                         alert("L'échantillon de données reçues ne peut pas être antérieur à la date de collecte de l'échantillon!");
-                    <?php } else if ($arr['vl_form'] == '8') { ?>
-                         //portugese
-                         alert("Amostra de Data Recebida no Laboratório de Teste não pode ser anterior ao Data Hora de colheita!");
-                    <?php } else { ?>
-                         alert("Sample Received Date cannot be earlier than Sample Collection Date!");
-                    <?php } ?>
+                    alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
                     $('#sampleReceivedDate').val('');
                }
           }
@@ -354,15 +338,7 @@ if ($arr['vl_form'] == 1) {
                var scd = changeFormat(scdf[0]);
                var std = changeFormat(stdl[0]);
                if (moment(scd + ' ' + scdf[1]).isAfter(std + ' ' + stdl[1])) {
-                    <?php if ($arr['vl_form'] == '3') { ?>
-                         //french
-                         alert("La date d'essai de l'échantillon ne peut pas être antérieure à la date de collecte de l'échantillon!");
-                    <?php } else if ($arr['vl_form'] == '8') { ?>
-                         //french
-                         alert("Data de Teste de Amostras não pode ser anterior ao Data Hora de colheita!");
-                    <?php } else { ?>
-                         alert("Sample Testing Date cannot be earlier than Sample Collection Date!");
-                    <?php } ?>
+                    alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
                     $("#sampleTestingDateAtLab").val("");
                }
           }
@@ -374,15 +350,7 @@ if ($arr['vl_form'] == 1) {
           if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
                var artInitiationDate = changeFormat($("#dateOfArtInitiation").val());
                if (moment(dob).isAfter(artInitiationDate)) {
-                    <?php if ($arr['vl_form'] == '3') { ?>
-                         //french
-                         alert("La date d'ouverture de l'ART ne peut pas être antérieure à!");
-                    <?php } else if ($arr['vl_form'] == '8') { ?>
-                         //portugese
-                         alert("Data de início de TARV não pode ser anterior ao Data de nascimento!");
-                    <?php } else { ?>
-                         alert("ART Initiation Date cannot be earlier than DOB!");
-                    <?php } ?>
+                    alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
                     $("#dateOfArtInitiation").val("");
                }
           }
@@ -471,4 +439,4 @@ if ($arr['vl_form'] == 1) {
           }
      }
 </script>
-<?php require_once(APPLICATION_PATH . '/footer.php'); ?>
+<?php require_once(APPLICATION_PATH . '/footer.php');

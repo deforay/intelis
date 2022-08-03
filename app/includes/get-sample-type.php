@@ -4,11 +4,14 @@ if (empty($_POST)) {
 }
 $db = $db->where('facility_id', $_POST['facilityId']);
 $facilityDetails = $db->getOne('facility_details', array('facility_attributes'));
-$sampleId = json_decode($facilityDetails['facility_attributes'], true);
+$facilityAttributes = json_decode($facilityDetails['facility_attributes'], true);
 if (!empty($_POST['testType'])) {
     $table = 'r_' . $_POST['testType'] . '_sample_type';
 }
-$db = $db->where("sample_id IN(" . $sampleId['sampleType'][$_POST['testType']] . ")");
+if (isset($facilityAttributes) && isset($facilityAttributes['sampleType']) && !empty($facilityAttributes['sampleType'])) {
+    $db->where("sample_id IN(" . $facilityAttributes['sampleType'][$_POST['testType']] . ")");
+}
+$db->where("status = 'active'");
 $sampleTypes = $db->get($table);
 ?>
 <?php if (!empty($sampleTypes)) { ?>

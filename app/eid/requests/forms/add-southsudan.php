@@ -144,14 +144,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
-                                            <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
-                                            <td>
-                                                <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                        <?php } ?>
+
+                                        <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+                                        <td>
+                                            <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
+                                                <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                            </select>
+                                        </td>
+
                                     </tr>
                                 </table>
                                 <br>
@@ -378,25 +378,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </div>
                                     <table class="table" style="width:100%">
                                         <tr>
-                                            <th>Testing Laboratory <span class="mandatory">*</span></th>
+                                            <!-- <th>Testing Laboratory <span class="mandatory">*</span></th>
                                             <td>
                                                 <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                 </select>
-                                            </td>
+                                            </td> -->
                                             <th>Testing Platform </th>
                                             <td><select name="eidPlatform" id="eidPlatform" class="form-control result-optional" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
 
-                                        <tr>
+                                        
                                             <th>Machine used to test </th>
                                             <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name" ">
                                                 <option value="">-- Select --</option>
                                             </select>
                                             </td>
+                                            <tr>
                                             <th>Is Sample Rejected?</th>
                                             <td>
                                                 <select class=" form-control" name="isSampleRejected" id="isSampleRejected" title="Please select if the sample is rejected or not">
@@ -406,8 +406,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             </td>
-                                        </tr>
-                                        <tr class="rejected" style="display: none;">
                                             <th class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for sample rejection">
