@@ -29,19 +29,19 @@ require_once(APPLICATION_PATH . '/header.php');
 		<div class="bs-example bs-example-tabs">
 			<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
-					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab"><?php echo _("Viral Load Tests");?></a></li>
+					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab" onclick="generateDashboard('vl');"><?php echo _("Viral Load Tests");?></a></li>
 				<?php } ?>
 				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
-					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab"><?php echo _("EID Tests");?></a></li>
+					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');"><?php echo _("EID Tests");?></a></li>
 				<?php } ?>
 				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
-					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab"><?php echo _("Covid-19 Tests");?></a></li>
+					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab" onclick="generateDashboard('covid19');"><?php echo _("Covid-19 Tests");?></a></li>
 				<?php } ?>
 				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
-					<li><a href="#hepatitisDashboard" data-toggle="tab"><?php echo _("Hepatitis Tests");?></a></li>
+					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');"><?php echo _("Hepatitis Tests");?></a></li>
 				<?php } ?>
 				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
-					<li><a href="#tbDashboard" data-toggle="tab">TB Tests</a></li>
+					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
 				<?php } ?>
 				<?php
 				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
@@ -212,7 +212,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					<div class="tab-pane fade in" id="hepatitisDashboard">
 						<!-- COVID-19 content -->
 						<section class="content">
-							<div id="contHepatitis"> </div>
+							<div id="contCovid"> </div>
 							<!-- Small boxes (Stat box) -->
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
@@ -253,7 +253,7 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="tab-pane fade in" id="tbDashboard">
 	<!-- TB content -->
 	<section class="content">
-		<div id="conttb"> </div>
+		<div id="contCovid"> </div>
 		<!-- Small boxes (Stat box) -->
 		<div class="row" style="padding-top:10px;padding-bottom:20px;">
 			<div class="col-lg-7">
@@ -299,197 +299,11 @@ require_once(APPLICATION_PATH . '/header.php');
 <script src="/assets/js/exporting.js"></script>	
 <script src="/assets/js/accessibility.js"></script>
 <script>
-function isOnScreen(elem) {
-        // if the element doesn't exist, abort
-        if (elem.length == 0) {
-            return;
-        }
-        var $window = jQuery(window)
-        var viewport_top = $window.scrollTop()
-        var viewport_height = $window.height()
-        var viewport_bottom = viewport_top + viewport_height
-        var $elem = jQuery(elem)
-        //console.log($elem.offset().top);
-        var top = $elem.offset().top
-        var height = $elem.height()
-        var bottom = top + height
-
-        return (top >= viewport_top && top < viewport_bottom) ||
-            (bottom > viewport_top && bottom <= viewport_bottom) ||
-            (height > viewport_height && top <= viewport_top && bottom >= viewport_bottom)
-    }
-var scrollCounterVl1 = 0;
-var scrollCounterVl2 = 0;
-var scrollCounterVl3 = 0;
-var scrollCounterVl4 = 0;
-var scrollCounterVl5 = 0;
-var scrollCounterEid1 = 0;
-var scrollCounterEid2 = 0;
-var scrollCounterEid3 = 0;
-var scrollCounterCov1 = 0;
-var scrollCounterCov2 = 0;
-var scrollCounterCov3 = 0;
-var scrollCounterHep1 = 0;
-var scrollCounterHep2 = 0;
-var scrollCounterHep3 = 0;
-var scrollCounterTb1 = 0;
-var scrollCounterTb2 = 0;
-var scrollCounterTb3 = 0;
-var scrollContVl = 0;
-var scrollContEid = 0;
-var scrollContCov = 0;
-var scrollContHep = 0;
-var scrollContTb = 0;
 	$(function() {
-		window.addEventListener('scroll', function(e) {
-            // we dont want to call it each time there is a scroll event
-            if (scrollCounterVl1 == 0) {
-				if (isOnScreen(jQuery('#vlNoOfSampleCount'))) {
-					scrollCounterVl1++;
-                    getNoOfSampleCount('vl');
-                }
-            }
-			if (scrollCounterVl2 == 0) {
-				if (isOnScreen(jQuery('#vlSampleResultDetails'))){
-				scrollCounterVl2++;
-				searchVlRequestData('vl');
-			}
-			}
-			if (scrollCounterVl3 == 0) {
-				if (isOnScreen(jQuery('#vlPieChartDiv'))){
-					scrollCounterVl3++;
-					getSamplesOverview('vl');
-				}
-			}
-			if (scrollCounterVl4 == 0) {
-				if (isOnScreen(jQuery('#cont'))){
-					scrollCounterVl4++;
-					getVlMonthlyTargetsReport();
-				}
-			}
-			/* Eid ajax calls */
-			if (scrollCounterEid1 == 0) {
-				if (isOnScreen(jQuery('#eidNoOfSampleCount'))) {
-					scrollCounterEid1++;
-                    getNoOfSampleCount('eid');
-                }
-            }
-			if (scrollCounterEid2 == 0) {
-				if (isOnScreen(jQuery('#eidSampleResultDetails'))) {
-					scrollCounterEid2++;
-                    searchVlRequestData('eid');
-                }
-            }
-			if (scrollCounterEid3 == 0) {
-				if (isOnScreen(jQuery('#eidPieChartDiv'))) {
-					scrollCounterEid3++;
-                    getSamplesOverview('eid');
-                }
-            }
-			/* Covid 19 ajax calls */
-			if (scrollCounterCov1 == 0) {
-				if (isOnScreen(jQuery('#covid19NoOfSampleCount'))) {
-					scrollCounterCov1++;
-                    getNoOfSampleCount('covid19');
-                }
-            }
-			if (scrollCounterCov2 == 0) {
-				if (isOnScreen(jQuery('#covid19SampleResultDetails'))) {
-					scrollCounterCov2++;
-                    searchVlRequestData('covid19');
-                }
-            }
-			if (scrollCounterCov3 == 0) {
-				if (isOnScreen(jQuery('#covid19PieChartDiv'))) {
-					scrollCounterCov3++;
-                    getSamplesOverview('covid19');
-                }
-            }
-			/* Hepatitis ajax calls */
-			if (scrollCounterHep1 == 0) {
-				if (isOnScreen(jQuery('#hepatitisNoOfSampleCount'))) {
-					scrollCounterHep1++;
-                    getNoOfSampleCount('hepatitis');
-                }
-            }
-			if (scrollCounterHep2 == 0) {
-				if (isOnScreen(jQuery('#hepatitisSampleResultDetails'))) {
-					scrollCounterHep2++;
-                    searchVlRequestData('hepatitis');
-                }
-            }
-			if (scrollCounterHep3 == 0) {
-				if (isOnScreen(jQuery('#hepatitisPieChartDiv'))) {
-					scrollCounterHep3++;
-                    getSamplesOverview('hepatitis');
-                }
-            }
-			/* TB ajax calls */
-			if (scrollCounterTb1 == 0) {
-				if (isOnScreen(jQuery('#tbNoOfSampleCount'))) {
-					scrollCounterTb1++;
-                    getNoOfSampleCount('tb');
-                }
-            }
-			if (scrollCounterTb2 == 0) {
-				if (isOnScreen(jQuery('#tbSampleResultDetails'))) {
-					scrollCounterTb2++;
-                    searchVlRequestData('tb');
-                }
-            }
-			if (scrollCounterTb3 == 0) {
-				if (isOnScreen(jQuery('#tbPieChartDiv'))) {
-					scrollCounterTb3++;
-                    getSamplesOverview('tb');
-                }
-            }
-			
-			<?php if (!empty($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') { ?>
-				if(scrollContVl==0)
-				{	
-					if (isOnScreen(jQuery('#contVL'))){
-						scrollContVl++;
 
-						getVlSuppressionTargetReport();
-					}
-				}
-				if(scrollContEid==0)
-				{
-					if (isOnScreen(jQuery('#contEid'))){
-						scrollContEid++;
-						getEidMonthlyTargetsReport()
-					}
-				}
-				if(scrollContCov==0)
-				{
-					if (isOnScreen(jQuery('#contCovid'))){
-						scrollContCov++;
-						getEidMonthlyTargetsReport();
-					}
-				}
-				if(scrollContHep==0)
-				{
-					if (isOnScreen(jQuery('#contHepatitis'))){
-						scrollContHep++;
-						getHepatitisMonthlyTargetsReport();
-					}
-				}
-				if(scrollContTb==0)
-				{
-					if (isOnScreen(jQuery('#conttb'))){
-						scrollContTb++;
-						getTbMonthlyTargetsReport();
-					}
-				}
-					<?php
-					}
-					?>
 
-		});
-			
-		
-	//	$("#myTab li:first-child").addClass("active");
-	//	$("#myTabContent div:first-child").addClass("active");
+		$("#myTab li:first-child").addClass("active");
+		$("#myTabContent div:first-child").addClass("active");
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
 
 
@@ -516,7 +330,8 @@ var scrollContTb = 0;
 				endDate = end.format('YYYY-MM-DD');
 			});
 
-		//$("#myTab li:first-child > a").trigger("click");
+
+		$("#myTab li:first-child > a").trigger("click");
 	});
 
 	function generateDashboard(requestType) {
@@ -538,6 +353,7 @@ var scrollContTb = 0;
 				getTbMonthlyTargetsReport();
 			}
 		<?php } ?>
+
 
 	}
 
@@ -812,6 +628,7 @@ var scrollContTb = 0;
 				}
 
 
+
 			});
 		$.unblockUI();
 	}
@@ -855,8 +672,10 @@ var scrollContTb = 0;
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
 				<span >' + data['aaData'].length + ' <?php echo _("Hepatitis testing lab(s) did not meet the monthly test target");?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?php echo _("more");?> </a>\
 				</div>';
-					$("#contHepatitis").html(div);
+					$("#contCovid").html(div);
 				}
+
+
 
 			});
 		$.unblockUI();
