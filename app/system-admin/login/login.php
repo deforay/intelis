@@ -25,7 +25,7 @@ $path = '/assets/img/remote-bg.jpg';
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 
     <!-- Theme style -->
-    <link rel="stylesheet" href="/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
     <link href="/assets/css/deforayModal.css" rel="stylesheet" />
     <!-- iCheck -->
     <style>

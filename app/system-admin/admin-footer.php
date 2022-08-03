@@ -47,7 +47,7 @@
     $(".manage").addClass('active');
     $(".allMenu").removeClass('active');
     $(".instanceOverviewMenu").addClass('active');
-  } else if (splitsUrl == 'apiIndex.php') {
+  } else if (splitsUrl == 'api-stats.php') {
     $(".manage").addClass('active');
     $(".allMenu").removeClass('active');
     $(".apiStatsMenu").addClass('active');

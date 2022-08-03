@@ -40,10 +40,13 @@ $query = "SELECT vl.*, rej.rejection_reason_name, tester.user_name as tester_nam
             LEFT JOIN r_vl_sample_rejection_reasons as rej ON rej.rejection_reason_id = vl.reason_for_sample_rejection
             LEFT JOIN user_details as tester ON vl.tested_by = tester.user_id 
             WHERE ((source_of_request LIKE 'fhir' AND source_of_request is NOT NULL) OR (unique_id like 'fhir%'))
-            AND (result IS NOT NULL OR (is_sample_rejected IS NOT NULL AND is_sample_rejected = 'yes'))";
+            AND (result IS NOT NULL OR (is_sample_rejected IS NOT NULL AND is_sample_rejected = 'yes'))
+            AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')
+            ";
 
 $formResults = $db->rawQuery($query);
 
+//var_dump($formResults);die;
 
 $counter = 0;
 
@@ -88,15 +91,15 @@ foreach ($formResults as $row) {
     }
 
 
-    // echo "<pre>";
-    // echo $json;
-    // echo "</pre>";
-    // die;
+    // echo "\n\n\n";
+    // echo prettyJson($json);
+    // continue;
+
     $resp = $fhir->post(null, $json);
 
 
 
-    echo prettyJson($resp);
+    //echo prettyJson($resp);
 
 
     $updateData = array('result_sent_to_source' => 'sent');

@@ -1,7 +1,7 @@
 <?php
-$title = "User-Login-History";
+$title = _("User Login History") . " - " . _("System Admin");
 
-include('../admin-header.php');
+require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $sQuery = "SELECT * FROM user_login_history";
 $sResult = $db->rawQuery($sQuery);
 ?>
@@ -201,6 +201,4 @@ $sResult = $db->rawQuery($sQuery);
   });
 </script>
 <?php
-include('../admin-footer.php');
-
-?>
+require_once(APPLICATION_PATH . '/system-admin/admin-footer.php');

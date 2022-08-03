@@ -1,7 +1,6 @@
 <?php
-ob_start();
-
-include('../admin-header.php');
+$title = _("VLSM Instance Overview") . " - " . _("System Admin");
+require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $instanceValues = "SELECT * FROM s_vlsm_instance";
 $data = $db->rawQuery($instanceValues);
 ?>
@@ -249,5 +248,4 @@ $data = $db->rawQuery($instanceValues);
 </script>
 
 <?php
-include('../admin-footer.php');
-?>
+require_once(APPLICATION_PATH . '/system-admin/admin-footer.php');

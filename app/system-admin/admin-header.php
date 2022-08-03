@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>VLSM</span>";
@@ -26,19 +26,19 @@ if (!isset($_SESSION['adminUserId'])) {
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui-timepicker-addon.css" />
 
   <!-- Bootstrap 3.3.6 -->
-  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="/assets/css/font-awesome.min.4.5.0.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/font-awesome.min.6.1.1.css">
 
   <!-- Ionicons -->
   <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
   <!-- DataTables -->
-  <link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="/assets/plugins/datatables/dataTables.bootstrap.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/AdminLTE.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="/assets/css/skins/_all-skins.min.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/skins/_all-skins.min.css">
   <!-- iCheck -->
 
   <link href="/assets/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
@@ -48,7 +48,7 @@ if (!isset($_SESSION['adminUserId'])) {
   <link href="/assets/css/deforayModal.css" rel="stylesheet" />
   <link href="/assets/css/jquery.fastconfirm.css" rel="stylesheet" />
 
-  
+
 
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
@@ -113,10 +113,10 @@ if (!isset($_SESSION['adminUserId'])) {
               <ul class="dropdown-menu">
                 <!-- Menu Footer-->
                 <li class="user-footer">
-									<a href="/system-admin/edit-config/resetPassword.php" class=""><?php echo _("Change Password");?></a>
-								</li>
+                  <a href="/system-admin/edit-config/resetPassword.php" class=""><?php echo _("Change Password"); ?></a>
+                </li>
                 <li class="user-footer">
-                  <a href="/system-admin/login/logout.php" class=""><?php echo _("Sign out");?></a>
+                  <a href="/system-admin/login/logout.php" class=""><?php echo _("Sign out"); ?></a>
                 </li>
               </ul>
             </li>
@@ -134,29 +134,29 @@ if (!isset($_SESSION['adminUserId'])) {
           <li class="treeview manage">
             <a href="#">
               <i class="fa-solid fa-gears"></i>
-              <span><?php echo _("Admin");?></span>
+              <span><?php echo _("Admin"); ?></span>
               <span class="pull-right-container">
                 <i class="fa-solid fa-angle-left pull-right"></i>
               </span>
             </a>
             <ul class="treeview-menu">
               <li class="allMenu systemConfigmenu">
-                <a href="/system-admin/edit-config/index.php"><i class="fa-regular fa-circle"></i><?php echo _("System Configuration");?></a>
+                <a href="/system-admin/edit-config/index.php"><i class="fa-regular fa-circle"></i><?php echo _("System Configuration"); ?></a>
               </li>
             </ul>
             <ul class="treeview-menu">
               <li class="allMenu instanceOverviewMenu">
-                <a href="/system-admin/instance-overview/instanceIndex.php"><i class="fa-regular fa-circle"></i><?php echo _("Instance Overview");?></a>
+                <a href="/system-admin/instance-overview/instanceIndex.php"><i class="fa-regular fa-circle"></i><?php echo _("Instance Overview"); ?></a>
               </li>
             </ul>
             <ul class="treeview-menu">
               <li class="allMenu apiStatsMenu">
-                <a href="/system-admin/api-stats/apiIndex.php"><i class="fa-regular fa-circle"></i><?php echo _("Api Stats");?></a>
+                <a href="/system-admin/api-stats/api-stats.php"><i class="fa-regular fa-circle"></i><?php echo _("API Stats"); ?></a>
               </li>
             </ul>
             <ul class="treeview-menu">
               <li class="allMenu userLoginMenu">
-                <a href="/system-admin/user-login-history/userLoginIndex.php"><i class="fa-regular fa-circle"></i><?php echo _("User Login History");?></a>
+                <a href="/system-admin/user-login-history/userLoginIndex.php"><i class="fa-regular fa-circle"></i><?php echo _("User Login History"); ?></a>
               </li>
             </ul>
           </li>
@@ -168,5 +168,5 @@ if (!isset($_SESSION['adminUserId'])) {
     <!-- content-wrapper -->
     <div id="dDiv" class="dialog">
       <div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div>
-      <iframe id="dFrame" src="" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"><?php echo _("some problem");?></iframe>
+      <iframe id="dFrame" src="" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"><?php echo _("some problem"); ?></iframe>
     </div>

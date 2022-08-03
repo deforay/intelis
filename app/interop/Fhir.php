@@ -36,13 +36,13 @@ class Fhir
 
 	protected function getBearerToken(): string
 	{
-		return $this->bearerToken;
+		return $this->bearerToken ?? "";
 	}
 
 	// Get content type
 	public function getContentType(): string
 	{
-		return $this->contentType;
+		return $this->contentType ?? 'application/fhir+json';
 	}
 
 	// Get FHIR URL without trailing slash
@@ -91,7 +91,7 @@ class Fhir
 
 	public function getRequestUrl(): string
 	{
-		return $this->requestUrl;
+		return $this->requestUrl ?? "";
 	}
 
 	public function post($path = null, $body = array())

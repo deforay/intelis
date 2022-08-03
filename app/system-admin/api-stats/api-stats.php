@@ -1,17 +1,17 @@
 <?php
-$title = _("Api Stats");
- 
-include('../admin-header.php');
+$title = _("API Stats") . " - " . _("System Admin");
+
+require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 ?>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <i class="fa-solid fa-gears"></i> <?php echo _("Api Stats");?></h1>
+    <h1> <i class="fa-solid fa-gears"></i> <?php echo _("API Stats"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/system-admin/edit-config/index.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
-      <li class="active"><?php echo _("Manage Api Stats");?></li>
+      <li><a href="/system-admin/edit-config/index.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+      <li class="active"><?php echo _("API Stats"); ?></li>
     </ol>
   </section>
 
@@ -27,18 +27,18 @@ include('../admin-header.php');
             <table id="apiStatsDataTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th><?php echo _("Requested On");?></th>
-                  <th><?php echo _("Number of Records");?></th>
-                  <th><?php echo _("Request Type");?></th>
-                  <th><?php echo _("Test_Type");?></th>
-                  <th><?php echo _("Api Url");?></th>
-                  <th><?php echo _("Date Format");?></th>
-                  
+                  <th><?php echo _("Requested On"); ?></th>
+                  <th><?php echo _("Number of Records"); ?></th>
+                  <th><?php echo _("Request Type"); ?></th>
+                  <th><?php echo _("Test_Type"); ?></th>
+                  <th><?php echo _("Api Url"); ?></th>
+                  <th><?php echo _("Date Format"); ?></th>
+
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                 </tr>
               </tbody>
 
@@ -111,6 +111,4 @@ include('../admin-header.php');
   });
 </script>
 <?php
-include('../admin-footer.php');
-
-?>
+require_once(APPLICATION_PATH . '/system-admin/admin-footer.php');

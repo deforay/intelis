@@ -211,7 +211,7 @@ foreach ($srcResults as $list) {
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 								&nbsp;
 								<?php if (isset($_SESSION['privileges']) && in_array("export-vl-requests.php", $_SESSION['privileges'])) { ?>
-									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
+									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa-solid fa-file-excel"></i>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 							</td>
 						</tr>
@@ -227,8 +227,10 @@ foreach ($srcResults as $list) {
 								?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 								<?php if (isset($_SESSION['privileges']) && in_array("export-vl-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa-solid fa-file-excel"></i>&nbsp;&nbsp;<?php echo _("Export Excel"); ?></a>
 								<?php } ?>
+								<!-- &nbsp;<a class="btn btn-info btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><i class="fa-solid fa-paper-plane"></i> <?php echo _("EMR SEND RESULTS"); ?></a>
+								&nbsp;<a class="btn btn-info btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><i class="fa-solid fa-download"></i> <?php echo _("EMR GET REQUESTS"); ?></a> -->
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
 							</td>
 						</tr>
@@ -742,6 +744,65 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			}
 		}
 	<?php } ?>
+
+	function receiveEMRDataFromFHIR() {
+		$.blockUI({
+			message: "<h3><?php echo _("Trying to sync from EMR/FHIR"); ?> " + "<br><?php echo _("Please wait"); ?>...</h3>"
+		});
+
+		if (remoteSync && remoteUrl != null && remoteUrl != '') {
+			var jqxhr = $.ajax({
+					url: "/vl/interop/fhir/vl-receive.php",
+				})
+				.done(function(data) {
+					//console.log(data);
+					//alert( "success" );
+					$.unblockUI();
+					alert(data.received + " records received and " + data.processed + " records added");
+					if (data.error) {
+						alert(data.error);
+					}
+					oTable.fnDraw();
+					$.unblockUI();
+				})
+				.fail(function() {
+					$.unblockUI();
+				})
+				.always(function() {
+					oTable.fnDraw();
+					$.unblockUI();
+				});
+		}
+	}
+	function sendEMRDataToFHIR() {
+		$.blockUI({
+			message: "<h3><?php echo _("Trying to sync to EMR/FHIR"); ?> " + "<br><?php echo _("Please wait"); ?>...</h3>"
+		});
+
+		if (remoteSync && remoteUrl != null && remoteUrl != '') {
+			var jqxhr = $.ajax({
+					url: "/vl/interop/fhir/vl-send.php",
+				})
+				.done(function(data) {
+					//console.log(data);
+					//alert( "success" );
+					$.unblockUI();
+					alert(data.processed + " records sent to EMR/FHIR");
+					if (data.error) {
+						alert(data.error);
+					}
+					oTable.fnDraw();
+					$.unblockUI();
+				})
+				.fail(function() {
+					$.unblockUI();
+				})
+				.always(function() {
+					oTable.fnDraw();
+					$.unblockUI();
+				});
+		}
+	}	
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

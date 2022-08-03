@@ -23,6 +23,10 @@ return '{
             "intent": "order",
             "identifier": [
                 {
+                "system": "OHRI_ENCOUNTER_UUID",
+                "value": "' . $formAttributes['fhir']['OHRI_ENCOUNTER_UUID'] . '"
+                },
+                {
                     "system": "http://openhie.org/fhir/lab-integration/test-order-number",
                     "value": "' . $row['external_sample_code'] . '"
                 }

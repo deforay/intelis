@@ -32,14 +32,15 @@ $errors = [];
 
 $data = [];
 
-$data[] = "modified=ge2022-01-01";
-//$data[] = "requester=Organization/101282";
+$data[] = "modified=ge2022-08-03T11:41:42.649+00:00";
+$data[] = "requester=Organization/101282";
 $data[] = "_include=Task:based-on:ServiceRequest";
 $data[] = "status=requested";
+$data[] = "_count=200";
 
 $json = $fhir->get('/Task', $data);
 
-// var_dump($json);die;
+echo prettyJson($json);
 // die;
 
 
@@ -109,11 +110,23 @@ foreach ($entries as $entry) {
             $facilityRow = $facilityDb->getFacilityByAttribute('facility_fhir_id', $orgFhirId);
             $formData[$basedOnServiceRequest]['facility_id'] = $facilityRow['facility_id'];
 
-            if(empty($resource->getIdentifier()) || empty($resource->getIdentifier()[0]->getValue())){
+            if (empty($resource->getIdentifier()) || empty($resource->getIdentifier()[0]->getValue())) {
                 throw new Exception("Order ID is missing for Task/$taskId");
             }
 
-            $formData[$basedOnServiceRequest]['external_sample_code'] = (string) $resource->getIdentifier()[0]->getValue();
+
+            $orderIdentifiers = $resource->getIdentifier();
+            foreach ($orderIdentifiers as $oid) {
+                $system = $oid->getSystem()->getValue();
+                if (strpos($system, 'OHRI_ENCOUNTER_UUID') !== false) {
+                    $taskAttributes[$basedOnServiceRequest]['OHRI_ENCOUNTER_UUID'] = (string) $oid->getValue();
+                }
+                if (strpos($system, '/test-order-number') !== false) {
+                    $formData[$basedOnServiceRequest]['external_sample_code'] = (string) $oid->getValue();
+                }
+            }
+
+
 
             // echo ("Type of Request: " . (string) $resource->getIntent()->getValue()) . "<br>";
             // echo ("Order ID: " . (string) $resource->getIdentifier()[0]->getValue()) . "<br>";
@@ -157,6 +170,9 @@ foreach ($entries as $entry) {
             $specimenParsed = $parser->parse($specimen);
             $specimenFhirId = (string) $specimenParsed->getId();
 
+            if (empty($resource->getRequester())) {
+                throw new Exception("Requester is missing for ServiceRequest/$basedOnServiceRequest");
+            }
             $requestor = $fhir->getFHIRReference($resource->getRequester()->getReference());
             $requestorParsed = $parser->parse($requestor);
             $requestorFhirId = (string) $requestorParsed->getId();
@@ -175,6 +191,7 @@ foreach ($entries as $entry) {
 
             $patientIdentifiers = $patientParsed->getIdentifier();
             foreach ($patientIdentifiers as $pid) {
+                if (empty($pid) || empty($pid->getSystem())) continue;
                 $system = $pid->getSystem()->getValue();
                 if (strpos($system, '/art') !== false) {
                     $formData[$basedOnServiceRequest]['patient_art_no'] = (string) $pid->getValue();
@@ -184,19 +201,25 @@ foreach ($entries as $entry) {
             $formData[$basedOnServiceRequest]['patient_gender'] = (string) $patientParsed->getGender()->getValue();
             $formData[$basedOnServiceRequest]['patient_dob'] = (string) $patientParsed->getBirthDate()->getValue();
             $formData[$basedOnServiceRequest]['patient_first_name'] = (string) ($patientParsed->getName()[0]->getGiven()[0] . " " . $patientParsed->getName()[0]->getFamily());
-            $formData[$basedOnServiceRequest]['patient_province'] = (string) $patientParsed->getAddress()[0]->getState();
-            $formData[$basedOnServiceRequest]['patient_district'] = (string) $patientParsed->getAddress()[0]->getDistrict();
-            $patientNationality = (string) $patientParsed->getAddress()[0]->getCountry();
-            if (!empty($patientNationality)) {
-                $db->where("iso3", $patientNationality);
-                $country = $db->getOne("r_countries");
-                if (!empty($country)) {
-                    $formData[$basedOnServiceRequest]['patient_nationality'] = $country['id'];
+            if (!empty($patientParsed->getAddress())) {
+                $formData[$basedOnServiceRequest]['patient_province'] = (string) $patientParsed->getAddress()[0]->getState();
+                $formData[$basedOnServiceRequest]['patient_district'] = (string) $patientParsed->getAddress()[0]->getDistrict();
+
+                $patientNationality = (string) $patientParsed->getAddress()[0]->getCountry();
+                if (!empty($patientNationality)) {
+                    $db->where("iso3", $patientNationality);
+                    $country = $db->getOne("r_countries");
+                    if (!empty($country)) {
+                        $formData[$basedOnServiceRequest]['patient_nationality'] = $country['id'];
+                    }
                 }
             }
 
             $formData[$basedOnServiceRequest]['request_clinician_name'] = (string) ($requestorParsed->getName()[0]->getGiven()[0] . " " . $requestorParsed->getName()[0]->getFamily());
-            $formData[$basedOnServiceRequest]['request_clinician_phone_number'] = (string) $requestorParsed->getTelecom()[0]->getValue();
+            if (!empty($requestorParsed->getTelecom())) {
+                $formData[$basedOnServiceRequest]['request_clinician_phone_number'] = (string) $requestorParsed->getTelecom()[0]->getValue();
+            }
+
 
             $formData[$basedOnServiceRequest]['sample_collection_date'] = (string) $specimenParsed->getCollection()->getCollectedDateTime();
 
@@ -299,7 +322,7 @@ $response = array(
     'processed' => $processedCounter
 );
 
-if(!empty($errors)) {
+if (!empty($errors)) {
     $response['errors'] = $errors;
 }
 
