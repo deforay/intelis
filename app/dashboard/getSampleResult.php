@@ -262,9 +262,8 @@ if ($table == "form_covid19") {
     }
 }
 ?>
-<link href="/assets/css/select2.min.css" rel="stylesheet" />
-<link href="/assets/css/select2.live.min.css" rel="stylesheet" />
-<script src="/assets/js/select2.min.js"></script>
+
+
 <style>
     .select2-container .select2-selection--single {
         height: 34px !important;
@@ -411,7 +410,6 @@ if ($table == "form_covid19") {
         </div>
     </div>
 </div>
-<script src="/assets/js/select2.js"></script>
 <script>
     $(document).ready(function() {
         $('#facilityId<?php echo $unique; ?>').select2({
