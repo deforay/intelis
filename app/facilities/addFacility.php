@@ -126,7 +126,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								<div class="form-group">
 									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload?"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select if this testing lab can upload test results file'); ?>">
+										<select class="form-control" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select if this lab can upload test results file'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<option value="yes" "selected='selected'">yes</option>
 											<option value="no">no</option>

@@ -205,7 +205,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _("Allow Results File Upload"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select if this testing lab can upload test results file'); ?>">
+									<select class="form-control" id="allowResultUpload" name="allowResultUpload" title="<?php echo _('Please select if this lab can upload test results file'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<option <?php if ($facilityAttributes->allow_results_file_upload == 'yes') echo 'selected="selected"'; ?> value="yes">Yes</option>
 											<option <?php if ($facilityAttributes->allow_results_file_upload == 'no') echo 'selected="selected"'; ?> value="no">No</option>
@@ -718,7 +718,11 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 <script type="text/javascript">
 	var deletedRowVar = [];
 	$(document).ready(function() {
+		
 		getTestType();
+		
+		$('#facilityType').trigger('change');
+
 		$("#testType").multipleSelect({
 			placeholder: '<?php echo _("Select Test Type"); ?>',
 			width: '100%'
