@@ -20,6 +20,15 @@ require_once(APPLICATION_PATH . '/header.php');
 	.close {
 		color: #960014 !important;
 	}
+	.sampleCountsDatatableDiv{
+     	float:left;
+		width:100%;
+	}
+	.samplePieChartDiv
+	{
+		float:left;
+		width:100%;
+	}
 </style>
 
 <!-- Content Wrapper. Contains page content -->
@@ -75,9 +84,9 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 							<div class="row">
-								<div id="vlSampleResultDetails"></div>
-								<div class="box-body" id="vlNoOfSampleCount"></div>
-								<div id="vlPieChartDiv"></div>
+								<div class="searchVlRequestDataDiv" id="vlSampleResultDetails"></div>
+								<div class="box-body sampleCountsDatatableDiv" id="vlNoOfSampleCount"></div>
+								<div class="samplePieChartDiv" id="vlPieChartDiv"></div>
 							</div>
 
 							<!-- /.row -->
@@ -114,9 +123,10 @@ require_once(APPLICATION_PATH . '/header.php');
 							</div>
 							<div class="row">
 								<div id="recencySampleResultDetails"></div>
-								<div class="box-body" id="recencyNoOfSampleCount"></div>
-								<div id="recencyPieChartDiv"></div>
+								<div class="box-body sampleCountsDatatableDiv" id="recencyNoOfSampleCount"></div>
+								<div class="samplePieChartDiv" id="recencyPieChartDiv"></div>
 							</div>
+							
 							<!-- /.row -->
 							<!-- Main row -->
 							<!-- /.row (main row) -->
@@ -151,9 +161,9 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 							<div class="row">
-								<div id="eidSampleResultDetails"></div>
-								<div class="box-body" id="eidNoOfSampleCount"></div>
-								<div id="eidPieChartDiv"></div>
+								<div class="searchVlRequestDataDiv" id="eidSampleResultDetails"></div>
+								<div class="box-body sampleCountsDatatableDiv" id="eidNoOfSampleCount"></div>
+								<div class="samplePieChartDiv" id="eidPieChartDiv"></div>
 							</div>
 
 							<!-- /.row -->
@@ -191,9 +201,9 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 							<div class="row">
-								<div id="covid19SampleResultDetails"></div>
-								<div class="box-body" id="covid19NoOfSampleCount"></div>
-								<div id="covid19PieChartDiv"></div>
+								<div class="searchVlRequestDataDiv" id="covid19SampleResultDetails"></div>
+								<div class="box-body sampleCountsDatatableDiv" id="covid19NoOfSampleCount"></div>
+								<div class="samplePieChartDiv" id="covid19PieChartDiv"></div>
 							</div>
 
 							<!-- /.row -->
@@ -233,8 +243,8 @@ require_once(APPLICATION_PATH . '/header.php');
 							</div>
 							<div class="row">
 								<div id="hepatitisSampleResultDetails"></div>
-								<div class="box-body" id="hepatitisNoOfSampleCount"></div>
-								<div id="hepatitisPieChartDiv"></div>
+								<div class="box-body sampleCountsDatatableDiv" id="hepatitisNoOfSampleCount"></div>
+								<div class="samplePieChartDiv" id="hepatitisPieChartDiv"></div>
 							</div>
 
 							<!-- /.row -->
@@ -274,8 +284,8 @@ require_once(APPLICATION_PATH . '/header.php');
 		</div>
 		<div class="row">
 			<div id="tbSampleResultDetails"></div>
-			<div class="box-body" id="tbNoOfSampleCount"></div>
-			<div id="tbPieChartDiv"></div>
+			<div class="box-body sampleCountsDatatableDiv" id="tbNoOfSampleCount"></div>
+			<div class="samplePieChartDiv" id="tbPieChartDiv"></div>
 		</div>
 
 		<!-- /.row -->
@@ -298,9 +308,33 @@ require_once(APPLICATION_PATH . '/header.php');
 <script src="/assets/js/highcharts.js"></script>
 <script src="/assets/js/exporting.js"></script>	
 <script src="/assets/js/accessibility.js"></script>
-<script>
-	$(function() {
 
+
+<script>
+
+	let currentRequestType = null;
+	
+  	function isOnScreen(elem) {
+        // if the element doesn't exist, abort
+        if (elem.length == 0) {
+            return;
+        }
+        var $window = jQuery(window)
+        var viewport_top = $window.scrollTop()
+        var viewport_height = $window.height()
+        var viewport_bottom = viewport_top + viewport_height
+        var $elem = jQuery(elem)
+        //console.log($elem.offset().top);
+        var top = $elem.offset().top
+        var height = $elem.height()
+        var bottom = top + height
+
+        return (top >= viewport_top && top < viewport_bottom) ||
+            (bottom > viewport_top && bottom <= viewport_bottom) ||
+            (height > viewport_height && top <= viewport_top && bottom >= viewport_bottom)
+    }
+
+	$(function() {
 
 		$("#myTab li:first-child").addClass("active");
 		$("#myTabContent div:first-child").addClass("active");
@@ -329,16 +363,34 @@ require_once(APPLICATION_PATH . '/header.php');
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-
-
-		$("#myTab li:first-child > a").trigger("click");
+			$("#myTab li:first-child > a").trigger("click");	
 	});
 
 	function generateDashboard(requestType) {
-
-		getNoOfSampleCount(requestType);
+		currentRequestType = requestType;
+		sampleCountsDatatableCounter = 0;
+		samplePieChartCounter = 0;
+		//getNoOfSampleCount(requestType);
 		searchVlRequestData(requestType);
-		getSamplesOverview(requestType);
+		//getSamplesOverview(requestType);
+
+		window.addEventListener('scroll', function(e) {
+			if (sampleCountsDatatableCounter == 0) {
+				if (isOnScreen(jQuery('.sampleCountsDatatableDiv'))) {
+					sampleCountsDatatableCounter++;
+					getNoOfSampleCount(currentRequestType);
+				}
+			}
+		});
+		window.addEventListener('scroll', function(e) {
+			if (samplePieChartCounter == 0) {
+				if (isOnScreen(jQuery('.samplePieChartDiv'))) {
+					samplePieChartCounter++;
+					getSamplesOverview(currentRequestType);
+				}
+			}
+		});
+		removeEventListener('scroll', listener);
 		<?php if (!empty($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') { ?>
 			if (requestType == 'vl') {
 				getVlMonthlyTargetsReport();
@@ -353,7 +405,6 @@ require_once(APPLICATION_PATH . '/header.php');
 				getTbMonthlyTargetsReport();
 			}
 		<?php } ?>
-
 
 	}
 
