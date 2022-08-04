@@ -285,7 +285,7 @@ require($fileArray[$arr['vl_form']]);
                     $.unblockUI();
                     //$("#sampleCollectionDate").val('');
                     sampleCodeGeneration();
-                    alert("<? _("Could not save this form. Please try again."); ?>");
+                    alert("<?= _("Could not save this form. Please try again."); ?>");
                 }
             });
     }
