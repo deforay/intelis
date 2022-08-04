@@ -20,12 +20,7 @@ require_once(APPLICATION_PATH . '/header.php');
 		color: #960014 !important;
 	}
 
-	.sampleCountsDatatableDiv {
-		float: left;
-		width: 100%;
-	}
-
-	.samplePieChartDiv {
+	.sampleCountsDatatableDiv, .samplePieChartDiv {
 		float: left;
 		width: 100%;
 	}
@@ -121,7 +116,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									</form>
 								</div>
 							</div>
-							<div class="row">
+							<div class="row recency">
 								<div id="recencySampleResultDetails"></div>
 								<div class="box-body sampleCountsDatatableDiv" id="recencyNoOfSampleCount"></div>
 								<div class="samplePieChartDiv" id="recencyPieChartDiv"></div>
@@ -241,7 +236,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									</form>
 								</div>
 							</div>
-							<div class="row">
+							<div class="row hepatitis">
 								<div id="hepatitisSampleResultDetails"></div>
 								<div class="box-body sampleCountsDatatableDiv" id="hepatitisNoOfSampleCount"></div>
 								<div class="samplePieChartDiv" id="hepatitisPieChartDiv"></div>
@@ -282,7 +277,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									</form>
 								</div>
 							</div>
-							<div class="row">
+							<div class="row tb">
 								<div id="tbSampleResultDetails"></div>
 								<div class="box-body sampleCountsDatatableDiv" id="tbNoOfSampleCount"></div>
 								<div class="samplePieChartDiv" id="tbPieChartDiv"></div>
@@ -386,7 +381,6 @@ require_once(APPLICATION_PATH . '/header.php');
 		//getSamplesOverview(requestType);
 
 		$(window).on('scroll', function() {
-			console.log("sampleCountsDatatableCounter: " + sampleCountsDatatableCounter);
 			if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
 				if (sampleCountsDatatableCounter == 0) {
 					sampleCountsDatatableCounter++;
