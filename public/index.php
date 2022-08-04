@@ -24,6 +24,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
     exit(0);
 }
 
+$_SERVER['REQUEST_URI'] = preg_replace('/([\/.])\1+/', '$1', $_SERVER['REQUEST_URI']);
 $requestedPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), "/");
 
 switch ($requestedPath) {
@@ -32,7 +33,9 @@ switch ($requestedPath) {
         require APPLICATION_PATH . '/index.php';
         break;
     default:
-        if (is_file(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
+        if (is_dir(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
+            require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath . '/index.php');
+        } else if (is_file(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
             require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath);
         } else {
             require APPLICATION_PATH . '/error/404.php';

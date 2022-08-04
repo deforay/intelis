@@ -40,7 +40,7 @@ $data[] = "_count=200";
 
 $json = $fhir->get('/Task', $data);
 
-echo prettyJson($json);
+//echo prettyJson($json);
 // die;
 
 

@@ -750,60 +750,59 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			message: "<h3><?php echo _("Trying to sync from EMR/FHIR"); ?> " + "<br><?php echo _("Please wait"); ?>...</h3>"
 		});
 
-		if (remoteSync && remoteUrl != null && remoteUrl != '') {
-			var jqxhr = $.ajax({
-					url: "/vl/interop/fhir/vl-receive.php",
-				})
-				.done(function(data) {
-					//console.log(data);
-					//alert( "success" );
-					$.unblockUI();
-					alert(data.received + " records received and " + data.processed + " records added");
-					if (data.error) {
-						alert(data.error);
-					}
-					oTable.fnDraw();
-					$.unblockUI();
-				})
-				.fail(function() {
-					$.unblockUI();
-				})
-				.always(function() {
-					oTable.fnDraw();
-					$.unblockUI();
-				});
-		}
+
+		var jqxhr = $.ajax({
+				url: "/vl/interop/fhir/vl-receive.php",
+			})
+			.done(function(data) {
+				//console.log(data);
+				//alert( "success" );
+				$.unblockUI();
+				alert(data.processed + " records added from EMR/FHIR");
+				if (data.error) {
+					alert(data.error);
+				}
+				oTable.fnDraw();
+				$.unblockUI();
+			})
+			.fail(function() {
+				$.unblockUI();
+			})
+			.always(function() {
+				oTable.fnDraw();
+				$.unblockUI();
+			});
+
 	}
+
 	function sendEMRDataToFHIR() {
 		$.blockUI({
 			message: "<h3><?php echo _("Trying to sync to EMR/FHIR"); ?> " + "<br><?php echo _("Please wait"); ?>...</h3>"
 		});
 
-		if (remoteSync && remoteUrl != null && remoteUrl != '') {
-			var jqxhr = $.ajax({
-					url: "/vl/interop/fhir/vl-send.php",
-				})
-				.done(function(data) {
-					//console.log(data);
-					//alert( "success" );
-					$.unblockUI();
-					alert(data.processed + " records sent to EMR/FHIR");
-					if (data.error) {
-						alert(data.error);
-					}
-					oTable.fnDraw();
-					$.unblockUI();
-				})
-				.fail(function() {
-					$.unblockUI();
-				})
-				.always(function() {
-					oTable.fnDraw();
-					$.unblockUI();
-				});
-		}
-	}	
+		var jqxhr = $.ajax({
+				url: "/vl/interop/fhir/vl-send.php",
+			})
+			.done(function(data) {
+				//console.log(data);
+				//alert( "success" );
+				$.unblockUI();
+				alert(data.processed + " records sent to EMR/FHIR");
+				if (data.error) {
+					alert(data.error);
+				}
+				oTable.fnDraw();
+				$.unblockUI();
+			})
+			.fail(function() {
+				$.unblockUI();
+			})
+			.always(function() {
+				oTable.fnDraw();
+				$.unblockUI();
+			});
+
+	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -87,7 +87,7 @@ $commonDataToSync = array(
 );
 
 
-$url = $systemConfig['remoteURL'] . '/remote/remote/commonData.php';
+$url = $remoteUrl . '/remote/remote/commonData.php';
 
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
     $data['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
@@ -256,7 +256,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
             $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
             $columnList = array_map('current', $db->rawQuery($tableColumns));
-            
+
             foreach ($dataValues as $tableDataValues) {
 
                 $tableData = array();

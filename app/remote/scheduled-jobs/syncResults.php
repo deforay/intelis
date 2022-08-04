@@ -110,7 +110,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
 
 
-    $url = $systemConfig['remoteURL'] . '/remote/remote/testResults.php';
+    $url = $remoteUrl . '/remote/remote/testResults.php';
 
     $data = array(
         "result" => $vlLabResult,
@@ -161,7 +161,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     }
     $eidLabResult = $db->rawQuery($eidQuery);
 
-    $url = $systemConfig['remoteURL'] . '/remote/remote/eid-test-results.php';
+    $url = $$remoteUrl . '/remote/remote/eid-test-results.php';
     $data = array(
         "result" => $eidLabResult,
         "Key" => "vlsm-lab-data--",
@@ -224,7 +224,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($forms);
     $testResults = $covid19Obj->getCovid19TestsByFormId($forms);
 
-    $url = $systemConfig['remoteURL'] . '/remote/remote/covid-19-test-results.php';
+    $url = $remoteUrl . '/remote/remote/covid-19-test-results.php';
     $data = array(
         "result" => $c19LabResult,
         "testResults" => $testResults,
@@ -288,7 +288,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     // $risks = $hepatitisObj->getRiskFactorsByHepatitisId($forms);
     // $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($forms);
 
-    $url = $systemConfig['remoteURL'] . '/remote/remote/hepatitis-test-results.php';
+    $url = $remoteUrl . '/remote/remote/hepatitis-test-results.php';
     $data = array(
         "result" => $hepLabResult,
         "Key" => "vlsm-lab-data--",

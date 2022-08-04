@@ -50,7 +50,7 @@ $request = array();
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
     //$remoteSampleCodeList = array();
 
-    $url = $systemConfig['remoteURL'] . '/remote/remote/getRequests.php';
+    $url = $remoteUrl . '/remote/remote/getRequests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'vl',
@@ -176,7 +176,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 $request = array();
 //$remoteSampleCodeList = array();
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
-    $url = $systemConfig['remoteURL'] . '/remote/remote/eid-test-requests.php';
+    $url = $remoteUrl . '/remote/remote/eid-test-requests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'eid',
@@ -292,7 +292,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 $request = array();
 //$remoteSampleCodeList = array();
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
-    $url = $systemConfig['remoteURL'] . '/remote/remote/covid-19-test-requests.php';
+    $url = $remoteUrl . '/remote/remote/covid-19-test-requests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'covid19',
@@ -449,7 +449,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 $request = array();
 //$remoteSampleCodeList = array();
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
-    $url = $systemConfig['remoteURL'] . '/remote/remote/hepatitis-test-requests.php';
+    $url = $remoteUrl . '/remote/remote/hepatitis-test-requests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'hepatitis',
@@ -604,7 +604,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 $request = array();
 //$remoteSampleCodeList = array();
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
-    $url = $systemConfig['remoteURL'] . '/remote/remote/tb-test-requests.php';
+    $url = $remoteUrl . '/remote/remote/tb-test-requests.php';
     $data = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'tb',
