@@ -341,7 +341,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	$(function() {
-
+		$(window).scroll(); 
 		$("#myTab li:first-child").addClass("active");
 		$("#myTabContent div:first-child").addClass("active");
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
@@ -388,6 +388,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				}
 			}
 		});
+		$(window).scroll();
 		$(window).on('scroll', function() {
 			if (samplePieChartCounter == 0) {
 				if ($("." + currentRequestType + " .samplePieChartDiv").isInViewport()) {
@@ -396,6 +397,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				}
 			}
 		});
+		$(window).scroll();
 		<?php if (!empty($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') { ?>
 			if (requestType == 'vl') {
 				getVlMonthlyTargetsReport();
