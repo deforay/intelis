@@ -146,13 +146,13 @@ return '{
                 "id": "ViralLoadSuppressionMostRecentTestResultExample",
                 "meta": {
                     "profile": [
-                        "http://openhie.org/StructureDefinition/hiv-viral-load-suppression-most-recent-test-result"
+                        "http://example.org/StructureDefinition/hiv-viral-load-suppression-most-recent-test-result"
                     ]
                 },
                 "code": {
                     "coding": [
                         {
-                            "code": "HIV-RECENCY-TEST-CONDUCTED",
+                            "code": "VL-MOST-RECENT-TEST-RESULT",
                             "system": "http://example.org/CodeSystem/cs-hiv-obs-codes",
                             "display": "VL most recent test result"
                         }
@@ -162,6 +162,7 @@ return '{
                 "subject": {
                     "reference": "Patient/' . $formAttributes['fhir']['patient'] . '"
                 },
+                "effectiveDateTime": "' . date('Y-m-d') . '",
                 "valueString": "' . $row['result'] . '",
                 "interpretation": [
                     {
