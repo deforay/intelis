@@ -127,7 +127,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 												for ($j = 0; $j < count($colArr); $j++) {
 													
 													//if(!empty($posts[$i - 1][$colArr[$j]]) && !empty($posts[$i][$colArr[$j]]) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
-													if(($i > 3) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
+													if(($j > 3) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
 													{
 														echo '<td style="background: orange; color:black;" >'.$posts[$i][$colArr[$j]].'</td>';
 													}
