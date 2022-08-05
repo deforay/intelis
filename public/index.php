@@ -38,6 +38,7 @@ switch ($requestedPath) {
         } else if (is_file(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
             require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath);
         } else {
+            http_response_code(404);
             require APPLICATION_PATH . '/error/404.php';
         }
         break;
