@@ -20,7 +20,8 @@ require_once(APPLICATION_PATH . '/header.php');
 		color: #960014 !important;
 	}
 
-	.sampleCountsDatatableDiv, .samplePieChartDiv {
+	.sampleCountsDatatableDiv,
+	.samplePieChartDiv {
 		float: left;
 		width: 100%;
 	}
@@ -318,34 +319,14 @@ require_once(APPLICATION_PATH . '/header.php');
 
 	let currentRequestType = null;
 	let sampleCountsDatatableCounter = 0;
-		let samplePieChartCounter = 0;	
+	let samplePieChartCounter = 0;
 
-	function isOnScreen(elem) {
-		// if the element doesn't exist, abort
-		if (elem.length == 0) {
-			return;
-		}
-		var $window = jQuery(window)
-		var viewport_top = $window.scrollTop()
-		var viewport_height = $window.height()
-		var viewport_bottom = viewport_top + viewport_height
-		var $elem = jQuery(elem)
-		//console.log($elem.offset().top);
-		var top = $elem.offset().top
-		var height = $elem.height()
-		var bottom = top + height
-
-		return (top >= viewport_top && top < viewport_bottom) ||
-			(bottom > viewport_top && bottom <= viewport_bottom) ||
-			(height > viewport_height && top <= viewport_top && bottom >= viewport_bottom)
-	}
 
 	$(function() {
-		$(window).scroll(); 
+
 		$("#myTab li:first-child").addClass("active");
 		$("#myTabContent div:first-child").addClass("active");
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
-
 
 		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate').daterangepicker({
 				locale: {
@@ -376,11 +357,16 @@ require_once(APPLICATION_PATH . '/header.php');
 		currentRequestType = requestType;
 		sampleCountsDatatableCounter = 0;
 		samplePieChartCounter = 0;
-		//getNoOfSampleCount(requestType);
-		searchVlRequestData(currentRequestType);
-		//getSamplesOverview(requestType);
 
-		$(window).on('scroll', function() {
+		$.when(
+			searchVlRequestData(currentRequestType),
+		)
+		.done(function() {
+			$.unblockUI();
+			$(window).scroll();
+		});
+
+		$(window).on('resize scroll', function() {
 			if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
 				if (sampleCountsDatatableCounter == 0) {
 					sampleCountsDatatableCounter++;
@@ -388,8 +374,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				}
 			}
 		});
-		$(window).scroll();
-		$(window).on('scroll', function() {
+		$(window).on('resize scroll', function() {
 			if (samplePieChartCounter == 0) {
 				if ($("." + currentRequestType + " .samplePieChartDiv").isInViewport()) {
 					samplePieChartCounter++;
@@ -397,7 +382,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				}
 			}
 		});
-		$(window).scroll();
+
 		<?php if (!empty($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') { ?>
 			if (requestType == 'vl') {
 				getVlMonthlyTargetsReport();
@@ -418,7 +403,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	function searchVlRequestData(requestType) {
 		$.blockUI();
 		if (requestType == 'vl') {
-			$.post("/dashboard/getSampleResult.php", {
+			return $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					type: 'vl'
 				},
@@ -428,7 +413,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'recency') {
-			$.post("/dashboard/getSampleResult.php", {
+			return $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					type: 'recency'
 				},
@@ -438,7 +423,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'eid') {
-			$.post("/dashboard/getSampleResult.php", {
+			return $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					type: 'eid'
 				},
@@ -448,7 +433,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'covid19') {
-			$.post("/dashboard/getSampleResult.php", {
+			return $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
 					type: 'covid19'
 				},
@@ -458,7 +443,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'hepatitis') {
-			$.post("/dashboard/getSampleResult.php", {
+			return $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#hepatitisSampleCollectionDate").val(),
 					type: 'hepatitis'
 				},
@@ -468,7 +453,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'tb') {
-			$.post("/dashboard/getSampleResult.php", {
+			return $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
 					type: 'tb'
 				},
@@ -478,7 +463,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		}
-		$.unblockUI();
+		
 
 	}
 
