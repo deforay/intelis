@@ -58,35 +58,34 @@ function getColumnValues($db, $tableName, $sampleCode)
 								<td><b><?php echo _("Test Type"); ?>&nbsp;:</b></td>
 								<td>
 									<select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
-                                    <?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) { ?>
-                                        <option value="audit_form_vl"><?php echo _("Viral Load"); ?></option>
+                                    <option value="">-- Choose Test Type--</option>
+									<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) { ?>
+                                        <option <?php echo (isset($_POST['testType']) && $_POST['testType']=='audit_form_vl') ? "selected='selected'" : ""; ?> value="audit_form_vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
                                     if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) { ?>
-                                        <option value="audit_form_eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+                                        <option <?php echo (isset($_POST['testType']) && $_POST['testType']=='audit_form_eid') ? "selected='selected'" : ""; ?> value="audit_form_eid"><?php echo _("Early Infant Diagnosis"); ?></option>
                                     <?php }
                                     if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) { ?>
-                                        <option value="audit_form_covid19"><?php echo _("Covid-19"); ?></option>
+                                        <option <?php echo (isset($_POST['testType']) && $_POST['testType']=='audit_form_covid19') ? "selected='selected'" : ""; ?> value="audit_form_covid19"><?php echo _("Covid-19"); ?></option>
                                     <?php }
                                     if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) { ?>
-                                        <option value='audit_form_hepatitis'><?php echo _("Hepatitis"); ?></option>
+                                        <option <?php echo (isset($_POST['testType']) && $_POST['testType']=='audit_form_hepatitis') ? "selected='selected'" : ""; ?> value='audit_form_hepatitis'><?php echo _("Hepatitis"); ?></option>
                                     <?php }
                                     if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) { ?>
-                                        <option value='audit_form_tb'><?php echo _("TB"); ?></option>
+                                        <option <?php echo (isset($_POST['testType']) && $_POST['testType']=='audit_form_tb') ? "selected='selected'" : ""; ?> value='audit_form_tb'><?php echo _("TB"); ?></option>
                                     <?php } ?>
                                 </select>
 								</td>
 								<td>&nbsp;<b><?php echo _("Sample Code"); ?>&nbsp;:</b></td>
 								<td>
-									<input type="text" value="<?php if (isset($_POST['sampleCode'])) echo $_POST['sampleCode'];
+									<input type="text" value="<?php if (isset($_POST['sampleCode'])) echo htmlspecialchars($_POST['sampleCode']);
 																else echo ""; ?>" name="sampleCode" id="sampleCode" class="form-control" />
 								</td>
-
 							<tr>
 								<td colspan="4">&nbsp;<input type="submit" value="<?php echo _("Submit"); ?>" class="btn btn-success btn-sm">
 									&nbsp;<button type="reset" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
 								</td>
 							</tr>
-
 						</table>
 					</form>
 				</div>
@@ -99,7 +98,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 					<div class="box">
 						<!-- /.box-header -->
 						<div class="box-body">
-							<h3> Audit Trail for Sample <?php echo $sampleCode; ?></h3>
+							<h3> Audit Trail for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
 							<table id="auditTable" class="table-bordered table table-striped table-hover">
 								<thead>
 									<tr>
@@ -126,8 +125,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 												<?php
 												for ($j = 0; $j < count($colArr); $j++) {
 													
-													//if(!empty($posts[$i - 1][$colArr[$j]]) && !empty($posts[$i][$colArr[$j]]) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
-													if(($j > 3) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
+													if(($j > 3) && ($i > 0) && $posts[$i][$colArr[$j]]!=$posts[$i-1][$colArr[$j]])
 													{
 														echo '<td style="background: orange; color:black;" >'.$posts[$i][$colArr[$j]].'</td>';
 													}
