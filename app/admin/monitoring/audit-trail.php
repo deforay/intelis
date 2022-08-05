@@ -83,7 +83,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 
 							<tr>
 								<td colspan="4">&nbsp;<input type="submit" value="<?php echo _("Submit"); ?>" class="btn btn-success btn-sm">
-									&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+									&nbsp;<button type="reset" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
 								</td>
 							</tr>
 
