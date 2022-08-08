@@ -19,6 +19,7 @@ $rejectedDate = '';
 $i = 0;
 if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $table = "form_eid";
+    $primaryKey = "eid_id";
     $samplesReceivedChart   = "eidSamplesReceivedChart";
     $samplesTestedChart     = "eidSamplesTestedChart";
     $samplesRejectedChart   = "eidSamplesRejectedChart";
@@ -28,6 +29,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $unique = "Test2";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
     $table = "form_covid19";
+    $primaryKey = "covid19_id";
     $samplesReceivedChart   = "covid19SamplesReceivedChart";
     $samplesTestedChart     = "covid19SamplesTestedChart";
     $samplesNotTestedChart  = "covid19SamplesNotTestedChart";
@@ -38,6 +40,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $unique = "Test3";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
     $table = "form_hepatitis";
+    $primaryKey = "hepatitis_id";
     $samplesReceivedChart   = "hepatitisSamplesReceivedChart";
     $samplesTestedChart     = "hepatitisSamplesTestedChart";
     $samplesRejectedChart   = "hepatitisSamplesRejectedChart";
@@ -49,6 +52,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
 
     $recencyWhere = " reason_for_vl_testing != 9999 ";
     $table = "form_vl";
+    $primaryKey = "vl_sample_id";
     $samplesReceivedChart   = "vlSamplesReceivedChart";
     $samplesTestedChart     = "vlSamplesTestedChart";
     $samplesRejectedChart   = "vlSamplesRejectedChart";
@@ -59,6 +63,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
     $table = "form_vl";
+    $primaryKey = "vl_sample_id";
     $samplesReceivedChart   = "recencySamplesReceivedChart";
     $samplesTestedChart     = "recencySamplesTestedChart";
     $samplesRejectedChart   = "recencySamplesRejectedChart";
@@ -68,6 +73,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $unique = "Test5";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
     $table = "form_tb";
+    $primaryKey = "tb_id";
     $samplesReceivedChart   = "tbSamplesReceivedChart";
     $samplesTestedChart     = "tbSamplesTestedChart";
     $samplesRejectedChart   = "tbSamplesRejectedChart";
@@ -183,15 +189,6 @@ AND DATE(vl.sample_collection_date) >= '" . $lastSevenDay . "'";
 // die($aggregateQuery);
 $aggregateResult = $db->rawQueryOne($aggregateQuery);
 
-//get collection data
-$collectionQuery = "SELECT COUNT($primaryKey) as total, facility_name, DATE(vl.sample_collection_date) as `collection_date` FROM " . $table . " as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE vlsm_country_id = '" . $configFormResult['value'] . "' AND DATE(vl.sample_collection_date) <= '" . $cDate . "' AND DATE(vl.sample_collection_date) >= '" . $lastSevenDay . "'  GROUP BY f.facility_id having `total` > 0 ORDER BY total DESC";
-$collectionResult = $db->rawQuery($collectionQuery); //collection result
-$collectionTotal = 0;
-if (sizeof($collectionResult) > 0) {
-    foreach ($collectionResult as $total) {
-        $collectionTotal = $collectionTotal + $total['total'];
-    }
-}
 
 $tRes = $db->rawQuery($accessionQuery); //overall result
 $tResult = array();

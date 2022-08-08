@@ -12,11 +12,13 @@ $start_date = date('Y-m-d', strtotime('-7 days'));
 $u = $general->getSystemConfig('sc_user_type');
 if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $table = "form_eid";
+    $primaryKey = "eid_id";
     $requestCountDataTable = "eidRequestCountDataTable";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
 
     $recencyWhere = " AND reason_for_vl_testing != 9999";
     $table = "form_vl";
+    $primaryKey = "vl_sample_id";
     $requestCountDataTable = "vlRequestCountDataTable";
 }
 
@@ -25,6 +27,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
 else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $recencyWhere = " AND reason_for_vl_testing = 9999";
     $table = "form_vl";
+    $primaryKey = "vl_sample_id";
     $requestCountDataTable = "recencyRequestCountDataTable";
 }
 

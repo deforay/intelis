@@ -54,6 +54,9 @@ if (!empty($data['manifestCode'])) {
 
 $eidRemoteResult = $db->rawQuery($eidQuery);
 if (count($eidRemoteResult) > 0) {
+  $sampleIds = array_column($eidRemoteResult, 'eid_id');
+  $db->where('eid_id', $sampleIds, 'IN')
+      ->update('form_eid', array('data_sync' => 1));
   $trackId = $app->addApiTracking(null, count($eidRemoteResult), 'requests', 'eid', null, $sarr['sc_testing_lab_id'], 'sync-api');
 }
 echo json_encode($eidRemoteResult);

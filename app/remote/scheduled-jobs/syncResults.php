@@ -109,7 +109,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     }
     $eidLabResult = $db->rawQuery($eidQuery);
 
-    $url = $$remoteUrl . '/remote/remote/eid-test-results.php';
+    $url = $remoteUrl . '/remote/remote/eid-test-results.php';
     $data = array(
         "labId" => $sarr['sc_testing_lab_id'],
         "result" => $eidLabResult,

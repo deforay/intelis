@@ -56,15 +56,13 @@ $data = array();
 if (!empty($covid19RemoteResult) && count($covid19RemoteResult) > 0) {
 
   $trackId = $app->addApiTracking(null, count($covid19RemoteResult), 'requests', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
-  $forms = array();
-  foreach ($covid19RemoteResult as $row) {
-    $forms[] = $row['covid19_id'];
-  }
+  
+  $sampleIds = array_column($covid19RemoteResult, 'covid19_id');
 
   $covid19Obj = new \Vlsm\Models\Covid19();
-  $symptoms = $covid19Obj->getCovid19SymptomsByFormId($forms);
-  $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($forms);
-  $testResults = $covid19Obj->getCovid19TestsByFormId($forms);
+  $symptoms = $covid19Obj->getCovid19SymptomsByFormId($sampleIds);
+  $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($sampleIds);
+  $testResults = $covid19Obj->getCovid19TestsByFormId($sampleIds);
 
   $data = array();
   $data['result'] = $covid19RemoteResult;
@@ -75,7 +73,7 @@ if (!empty($covid19RemoteResult) && count($covid19RemoteResult) > 0) {
   $updata = array(
     'data_sync' => 1
   );
-  $db->where('covid19_id', $forms, 'IN');
+  $db->where('covid19_id', $sampleIds, 'IN');
 
   if (!$db->update('form_covid19', $updata))
     error_log('update failed: ' . $db->getLastError());

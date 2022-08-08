@@ -56,17 +56,15 @@ $data = array();
 
 if (!empty($tbRemoteResult) && count($tbRemoteResult) > 0) {
     $trackId = $app->addApiTracking(null, count($tbRemoteResult), 'requests', 'tb', null, $sarr['sc_testing_lab_id'], 'sync-api');
-    $forms = array();
-    foreach ($tbRemoteResult as $row) {
-        $forms[] = $row['tb_id'];
-    }
+
+    $sampleIds = array_column($tbRemoteResult, 'tb_id');
 
     $data['result'] = $tbRemoteResult;
 
     $updata = array(
         'data_sync' => 1
     );
-    $db->where('tb_id', $forms, 'IN');
+    $db->where('tb_id', $sampleIds, 'IN');
 
     if (!$db->update('form_tb', $updata))
         error_log('update failed: ' . $db->getLastError());

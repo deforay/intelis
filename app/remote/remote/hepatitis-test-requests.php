@@ -58,14 +58,16 @@ $data = array();
 
 if (!empty($hepatitisRemoteResult) && count($hepatitisRemoteResult) > 0) {
     $trackId = $app->addApiTracking(null, count($hepatitisRemoteResult), 'requests', 'hepatitis', null, $sarr['sc_testing_lab_id'], 'sync-api');
-    $forms = array();
-    foreach ($hepatitisRemoteResult as $row) {
-        $forms[] = $row['hepatitis_id'];
-    }
+    // $forms = array();
+    // foreach ($hepatitisRemoteResult as $row) {
+    //     $forms[] = $row['hepatitis_id'];
+    // }
+
+    $sampleIds = array_column($hepatitisRemoteResult, 'hepatitis_id');
 
     $hepatitisObj = new \Vlsm\Models\Hepatitis();
-    $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($forms);
-    $risks = $hepatitisObj->getRiskFactorsByHepatitisId($forms);
+    $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($sampleIds);
+    $risks = $hepatitisObj->getRiskFactorsByHepatitisId($sampleIds);
 
 
     $data['result'] = $hepatitisRemoteResult;
@@ -76,7 +78,7 @@ if (!empty($hepatitisRemoteResult) && count($hepatitisRemoteResult) > 0) {
     $updata = array(
         'data_sync' => 1
     );
-    $db->where('hepatitis_id', $forms, 'IN');
+    $db->where('hepatitis_id', $sampleIds, 'IN');
 
     if (!$db->update('form_hepatitis', $updata))
         error_log('update failed: ' . $db->getLastError());

@@ -359,28 +359,33 @@ require_once(APPLICATION_PATH . '/header.php');
 		samplePieChartCounter = 0;
 
 		$.when(
-			searchVlRequestData(currentRequestType),
-		)
-		.done(function() {
-			$.unblockUI();
-			$(window).scroll();
-		});
+				searchVlRequestData(currentRequestType),
+			)
+			.done(function() {
+				$.unblockUI();
+				$(window).scroll();
+			});
 
 		$(window).on('resize scroll', function() {
-			if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
-				if (sampleCountsDatatableCounter == 0) {
+			if (sampleCountsDatatableCounter == 0) {
+				if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
 					sampleCountsDatatableCounter++;
-					getNoOfSampleCount(currentRequestType);
+					$.blockUI();
+					$.when(
+						getNoOfSampleCount(currentRequestType),
+					).done(function() {
+						getSamplesOverview(currentRequestType);
+					}).done(function() {
+						$.unblockUI();
+					});
 				}
 			}
-		});
-		$(window).on('resize scroll', function() {
-			if (samplePieChartCounter == 0) {
-				if ($("." + currentRequestType + " .samplePieChartDiv").isInViewport()) {
-					samplePieChartCounter++;
-					getSamplesOverview(currentRequestType);
-				}
-			}
+			// if (samplePieChartCounter == 0) {
+			// 	if ($("." + currentRequestType + " .samplePieChartDiv").isInViewport()) {
+			// 		samplePieChartCounter++;
+			// 		getSamplesOverview(currentRequestType);
+			// 	}
+			// }
 		});
 
 		<?php if (!empty($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') { ?>
@@ -463,14 +468,13 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		}
-		
+
 
 	}
 
 	function getNoOfSampleCount(requestType) {
-		$.blockUI();
 		if (requestType == 'vl') {
-			$.post("/dashboard/getSampleCount.php", {
+			return $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					type: 'vl'
 				},
@@ -480,7 +484,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'recency') {
-			$.post("/dashboard/getSampleCount.php", {
+			return $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					type: 'recency'
 				},
@@ -490,7 +494,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'eid') {
-			$.post("/dashboard/getSampleCount.php", {
+			return $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					type: 'eid'
 				},
@@ -500,13 +504,12 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		}
-		$.unblockUI();
 	}
 
 	function getSamplesOverview(requestType) {
-		$.blockUI();
+
 		if (requestType == 'vl') {
-			$.post("/vl/program-management/getSampleStatus.php", {
+			return $.post("/vl/program-management/getSampleStatus.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -520,7 +523,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'recency') {
-			$.post("/vl/program-management/getSampleStatus.php", {
+			return $.post("/vl/program-management/getSampleStatus.php", {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -534,7 +537,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'eid') {
-			$.post("/eid/management/getSampleStatus.php", {
+			return $.post("/eid/management/getSampleStatus.php", {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -548,7 +551,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'covid19') {
-			$.post("/covid-19/management/getSampleStatus.php", {
+			return $.post("/covid-19/management/getSampleStatus.php", {
 					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -562,7 +565,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'tb') {
-			$.post("/tb/management/getSampleStatus.php", {
+			return $.post("/tb/management/getSampleStatus.php", {
 					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -576,7 +579,6 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		}
-		$.unblockUI();
 	}
 
 	function resetSearchVlRequestData(requestType) {
