@@ -135,12 +135,6 @@ class ComposerStaticInit875176bab5a0faa4ff3f5311f8e483cb
             'Cron\\' => 5,
             'Complex\\' => 8,
         ),
-        'A' => 
-        array (
-            'Aura\\Filter\\_Config\\' => 20,
-            'Aura\\Filter\\' => 12,
-            'Aranyasen\\' => 10,
-        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -349,18 +343,6 @@ class ComposerStaticInit875176bab5a0faa4ff3f5311f8e483cb
         array (
             0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
         ),
-        'Aura\\Filter\\_Config\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/aura/filter/config',
-        ),
-        'Aura\\Filter\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/aura/filter/src',
-        ),
-        'Aranyasen\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/aranyasen/hl7/src',
-        ),
     );
 
     public static $prefixesPsr0 = array (
@@ -369,13 +351,6 @@ class ComposerStaticInit875176bab5a0faa4ff3f5311f8e483cb
             'HTMLPurifier' => 
             array (
                 0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
-            ),
-        ),
-        'D' => 
-        array (
-            'DCarbone\\PHPFHIRGenerated\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/dcarbone/php-fhir-generated/src',
             ),
         ),
     );
