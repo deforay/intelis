@@ -1,3 +1,10 @@
+<style>
+.current {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+	</style>
 <?php
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
@@ -152,7 +159,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 							<p>
 							<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
 							</p>
-							<table class="table table-striped table-hover table-bordered">
+							<table class="current table table-striped table-hover table-bordered">
 								<thead>
 									<tr>
 										<?php
@@ -175,7 +182,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 									?>
 											<tr>
 												<?php
-												for ($j = 0; $j < count($colArr); $j++) {
+												for ($j = 3; $j < count($colArr); $j++) {
 												?>
 													<td>
 														<?php
