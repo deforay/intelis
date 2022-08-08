@@ -758,7 +758,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				//console.log(data);
 				//alert( "success" );
 				$.unblockUI();
-				alert(data.processed + " records added from EMR/FHIR");
+				//alert(data.processed + " records added from EMR/FHIR");
+				alert("EMR/FHIR sync completed");
 				if (data.error) {
 					alert(data.error);
 				}
