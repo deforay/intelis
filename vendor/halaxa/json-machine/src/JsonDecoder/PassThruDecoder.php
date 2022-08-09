@@ -1,15 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JsonMachine\JsonDecoder;
 
-use JsonMachine\JsonDecoder\Decoder;
-
-class PassThruDecoder implements Decoder
+class PassThruDecoder implements ItemDecoder
 {
-    use JsonDecodingTrait;
-
-    public function decodeValue($jsonValue)
+    public function decode($jsonValue)
     {
-        return new DecodingResult(true, $jsonValue);
+        return new ValidResult($jsonValue);
     }
 }

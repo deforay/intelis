@@ -246,7 +246,10 @@ $jsonResponse = $response->getBody()->getContents();
 
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
-    $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
+    $options = [
+        'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+    ];
+    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
     foreach ($parsedData as $dataType => $dataValues) {
 
         if (isset($dataToSync[$dataType]) && !empty($dataValues)) {

@@ -16,19 +16,28 @@ $oneDimensionalArray = array_map('current', $allColResult);
 $sampleCode = array();
 $labId = null;
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
-    
-    // Getting Single Scalar Value of Lab ID from JsonMachine
-    $jsonData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/labId");
-    $labId = iterator_to_array($jsonData)['labId'];
 
-    $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+
+    $resultData = array();
+    $options = [
+        'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+    ];
+    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+    foreach ($parsedData as $name => $data) {
+        if ($name === 'labId') {
+            $labId = $data;
+        } else if ($name === 'result') {
+            $resultData = $data;
+        }
+    }
+
     $counter = 0;
-    foreach ($parsedData as $key => $remoteData) {
+    foreach ($resultData as $key => $resultRow) {
         $counter++;
         $lab = array();
         foreach ($oneDimensionalArray as $columnName) {
-            if (isset($remoteData[$columnName])) {
-                $lab[$columnName] = $remoteData[$columnName];
+            if (isset($resultRow[$columnName])) {
+                $lab[$columnName] = $resultRow[$columnName];
             } else {
                 $lab[$columnName] = null;
             }
@@ -47,12 +56,12 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         }
 
 
-        if (isset($remoteData['approved_by_name']) && $remoteData['approved_by_name'] != '') {
+        if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
-            $lab['result_approved_by'] = $usersModel->addUserIfNotExists($remoteData['approved_by_name']);
+            $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
             $lab['result_approved_datetime'] =  $general->getDateTime();
             // we dont need this now
-            //unset($remoteData['approved_by_name']);
+            //unset($resultRow['approved_by_name']);
         }
 
 
@@ -104,7 +113,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         }
     }
     if ($counter > 0) {
-        $app->addApiTracking(null, $counter, 'results', 'vl', null, $labId, 'sync-api');
+        $app->addApiTracking(null, $counter, 'results', 'vl', null, $jsonResponse, 'sync-api');
     }
 }
 

@@ -60,7 +60,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
         $payload['manifestCode'] = $manifestCode;
     }
     $columnList = array();
-    
+
     $client = new GuzzleHttp\Client();
     $response = $client->post(
         $url,
@@ -72,12 +72,15 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
             'decode_content' => 'gzip'
         ]
     );
-    
+
     $jsonResponse = $response->getBody()->getContents();
-    
+
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
+        $options = [
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_vl'";
         $allColResult = $db->rawQuery($allColumns);
@@ -202,7 +205,10 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
+        $options = [
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
 
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_eid'";
@@ -341,7 +347,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $columnList = array_diff($columnList, $removeKeys);
 
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
@@ -393,7 +403,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/symptoms");
+        $options = [
+            'pointer' => '/symptoms',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $symptoms) {
             $db = $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_patient_symptoms");
@@ -406,7 +420,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/comorbidities");
+        $options = [
+            'pointer' => '/comorbidities',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $comorbidities) {
             $db = $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_patient_comorbidities");
@@ -420,7 +438,12 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/testResults");
+        $options = [
+            'pointer' => '/testResults',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+
         foreach ($parsedData as $covid19Id => $testResults) {
             $db = $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_tests");
@@ -503,7 +526,11 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $request = array();
@@ -547,7 +574,11 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/risks");
+        $options = [
+            'pointer' => '/risks',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $hepatitisId => $risks) {
             $db = $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_risk_factors");
@@ -567,7 +598,11 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/comorbidities");
+        $options = [
+            'pointer' => '/comorbidities',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $hepatitisId => $comorbidities) {
             $db = $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_patient_comorbidities");
@@ -651,7 +686,11 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $request = array();

@@ -1,80 +1,62 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JsonMachineTest\JsonDecoder;
 
+use JsonMachine\Items;
 use JsonMachine\JsonDecoder\DecodingError;
-use JsonMachine\JsonDecoder\DecodingResult;
 use JsonMachine\JsonDecoder\ErrorWrappingDecoder;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
-use JsonMachine\JsonMachine;
+use JsonMachine\JsonDecoder\InvalidResult;
+use JsonMachine\JsonDecoder\ValidResult;
 use PHPUnit_Framework_TestCase;
 
+/**
+ * @covers \JsonMachine\JsonDecoder\ErrorWrappingDecoder
+ */
 class ErrorWrappingDecoderTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider data_testTrueFalseMatrix
-     * @param array $case
+     * @dataProvider data_testCorrectlyWrapsResults
      */
-    public function testTrueFalseMatrix(array $case)
+    public function testCorrectlyWrapsResults(array $case)
     {
-        $innerDecoder = new StubDecoder($case['decodeKey'], $case['decodeValue']);
+        $innerDecoder = new StubDecoder($case['result']);
         $decoder = new ErrorWrappingDecoder($innerDecoder);
 
-        $keyResult = $decoder->decodeKey('"json"');
-        $valueResult = $decoder->decodeValue('"json"');
+        $result = $decoder->decode('"json"');
 
-        $this->assertTrue($keyResult->isOk());
-        $this->assertTrue($valueResult->isOk());
-        $this->assertEquals($case['wrappedDecodeValue'], $valueResult);
-        $this->assertEquals($case['wrappedDecodeKey'], $keyResult);
+        $this->assertTrue($result->isOk());
+        $this->assertEquals($case['wrappedResult'], $result);
     }
 
-    public function data_testTrueFalseMatrix()
+    public function data_testCorrectlyWrapsResults()
     {
-        $notOkResult = new DecodingResult(false, null, 'Error happened.');
-        $okResult = new DecodingResult(true, 'json');
-        $wrappedNotOkResult = new DecodingResult(true, new DecodingError('"json"', 'Error happened.'));
+        $notOkResult = new InvalidResult('Error happened.');
+        $okResult = new ValidResult('json');
+        $wrappedNotOkResult = new ValidResult(new DecodingError('"json"', 'Error happened.'));
         $wrappedOkResult = $okResult;
 
         return [
             [
                 [
-                    'decodeValue' => $notOkResult,
-                    'decodeKey'   => $notOkResult,
-                    'wrappedDecodeValue' => $wrappedNotOkResult,
-                    'wrappedDecodeKey' => $wrappedNotOkResult,
-                ]
+                    'result' => $notOkResult,
+                    'wrappedResult' => $wrappedNotOkResult,
+                ],
             ],
             [
                 [
-                    'decodeValue' => $notOkResult,
-                    'decodeKey'   => $okResult,
-                    'wrappedDecodeValue' => $wrappedNotOkResult,
-                    'wrappedDecodeKey' => $wrappedOkResult,
-                ]
-            ],
-            [
-                [
-                    'decodeValue' => $okResult,
-                    'decodeKey'   => $notOkResult,
-                    'wrappedDecodeValue' => $wrappedOkResult,
-                    'wrappedDecodeKey' => $wrappedNotOkResult,
-                ]
-            ],
-            [
-                [
-                    'decodeValue' => $okResult,
-                    'decodeKey'   => $okResult,
-                    'wrappedDecodeValue' => $wrappedOkResult,
-                    'wrappedDecodeKey' => $wrappedOkResult,
-                ]
+                    'result' => $okResult,
+                    'wrappedResult' => $wrappedOkResult,
+                ],
             ],
         ];
     }
 
     public function testCatchesErrorInsideIteratedJsonChunk()
     {
-        $json = /** @lang JSON */ '
+        $json = /* @lang JSON */ '
         {
             "results": [
                 {"correct": "correct"},
@@ -84,7 +66,10 @@ class ErrorWrappingDecoderTest extends PHPUnit_Framework_TestCase
         }
         ';
 
-        $items = JsonMachine::fromString($json, '/results', new ErrorWrappingDecoder(new ExtJsonDecoder(true)));
+        $items = Items::fromString($json, [
+            'pointer' => '/results',
+            'decoder' => new ErrorWrappingDecoder(new ExtJsonDecoder(true)),
+        ]);
         $result = iterator_to_array($items);
 
         $this->assertSame('correct', $result[0]['correct']);

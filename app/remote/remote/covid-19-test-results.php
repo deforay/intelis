@@ -28,7 +28,11 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $counter = 0;
 
     $lab = array();
-    $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+    $options = [
+        'pointer' => '/result',
+        'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+    ];    
+    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
     foreach ($parsedData as $key => $remoteData) {
         $counter++;
         foreach ($oneDimensionalArray as $result) {
@@ -95,7 +99,8 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         }
     }
 
-    // $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/symptoms");
+    
+    // $parsedData = \JsonMachine\Items::fromString($jsonResponse, "/symptoms");
     // foreach ($parsedData as $covid19Id => $symptoms) {
     //     $db = $db->where('covid19_id', $covid19Id);
     //     $db->delete("covid19_patient_symptoms");
@@ -108,7 +113,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     //     }
     // }
 
-    // $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/comorbidities");
+    // $parsedData = \JsonMachine\Items::fromString($jsonResponse, "/comorbidities");
     // foreach ($parsedData as $covid19Id => $comorbidities) {
     //     $db = $db->where('covid19_id', $covid19Id);
     //     $db->delete("covid19_patient_comorbidities");
@@ -122,7 +127,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     //     }
     // }
 
-    // $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/testResults");
+    // $parsedData = \JsonMachine\Items::fromString($jsonResponse, "/testResults");
     // foreach ($parsedData as $covid19Id => $testResults) {
     //     $db = $db->where('covid19_id', $covid19Id);
     //     $db->delete("covid19_tests");

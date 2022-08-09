@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JsonMachine;
 
 use JsonMachine\Exception\InvalidArgumentException;
@@ -14,12 +16,12 @@ class StreamChunks implements \IteratorAggregate
 
     /**
      * @param resource $stream
-     * @param int $chunkSize
+     * @param int      $chunkSize
      */
     public function __construct($stream, $chunkSize = 1024 * 8)
     {
-        if (! is_resource($stream) || get_resource_type($stream) !== 'stream') {
-            throw new InvalidArgumentException("Argument \$stream must be a valid stream resource.");
+        if ( ! is_resource($stream) || get_resource_type($stream) !== 'stream') {
+            throw new InvalidArgumentException('Argument $stream must be a valid stream resource.');
         }
         $this->stream = $stream;
         $this->chunkSize = $chunkSize;

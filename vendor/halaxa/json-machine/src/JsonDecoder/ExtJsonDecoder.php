@@ -1,20 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JsonMachine\JsonDecoder;
 
-use JsonMachine\JsonDecoder\Decoder;
-
-class ExtJsonDecoder implements Decoder
+class ExtJsonDecoder implements ItemDecoder
 {
-    use JsonDecodingTrait;
+    /**
+     * @var bool
+     */
+    private $assoc;
 
-    public function decodeValue($jsonValue)
+    /**
+     * @var int
+     */
+    private $depth;
+
+    /**
+     * @var int
+     */
+    private $options;
+
+    public function __construct($assoc = false, $depth = 512, $options = 0)
     {
-        // inlined
+        $this->assoc = $assoc;
+        $this->depth = $depth;
+        $this->options = $options;
+    }
+
+    public function decode($jsonValue)
+    {
         $decoded = json_decode($jsonValue, $this->assoc, $this->depth, $this->options);
-        if ($decoded === null && $jsonValue !== 'null') {
-            return new DecodingResult(false, null, json_last_error_msg());
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return new InvalidResult(json_last_error_msg());
         }
-        return new DecodingResult(true, $decoded);
+
+        return new ValidResult($decoded);
     }
 }

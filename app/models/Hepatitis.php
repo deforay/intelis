@@ -271,6 +271,7 @@ class Hepatitis
             }
 
             $hepatitisData = array();
+
             $hepatitisData = array(
                 'vlsm_country_id' => $params['countryId'],
                 'sample_collection_date' => $sampleCollectionDate,
@@ -278,9 +279,9 @@ class Hepatitis
                 'hepatitis_test_type' => $prefix,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $this->db->now(),
+                'request_created_datetime' => $general->getDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $this->db->now()
+                'last_modified_datetime' => $general->getDateTime()
             );
 
             if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -314,6 +315,11 @@ class Hepatitis
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                     $hepatitisData['unique_id'] = $general->generateRandomString(32);
                     $id = $this->db->insert("form_hepatitis", $hepatitisData);
+                    echo "<pre>";
+                    print_r($hepatitisData);
+                    error_log('Insert Hepatitis Sample : ' . $this->db->getLastErrno());
+                    error_log('Insert Hepatitis Sample : ' . $this->db->getLastError());
+                    error_log('Insert Hepatitis Sample : ' . $this->db->getLastQuery());
                 }
             }
             if ($id > 0) {

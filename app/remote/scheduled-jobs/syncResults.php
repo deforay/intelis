@@ -88,7 +88,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
         $id = $db->update('form_vl', array('data_sync' => 1));
     }
     if (count($vlLabResult) > 0) {
-        $trackId = $app->addApiTracking('vlsm-system', count($vlLabResult), 'results', 'vl', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+        $trackId = $app->addApiTracking('vlsm-system', count($vlLabResult), 'results', 'vl', $url, $json_data, 'sync-api');
     }
 }
 
@@ -140,7 +140,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $id = $db->update('form_eid', array('data_sync' => 1));
     }
     if (count($eidLabResult) > 0) {
-        $trackId = $app->addApiTracking('vlsm-system', count($eidLabResult), 'results', 'eid', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+        $trackId = $app->addApiTracking('vlsm-system', count($eidLabResult), 'results', 'eid', $url, $json_data, 'sync-api');
     }
 }
 
@@ -209,7 +209,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         //}
     }
     if (count($c19LabResult) > 0) {
-        $trackId = $app->addApiTracking('vlsm-system', count($c19LabResult), 'results', 'covid19', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+        $trackId = $app->addApiTracking('vlsm-system', count($c19LabResult), 'results', 'covid19', $url, $json_data, 'sync-api');
     }
 }
 
@@ -272,7 +272,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         //}
     }
     if (count($hepLabResult) > 0) {
-        $trackId = $app->addApiTracking('vlsm-system', count($hepLabResult), 'common-data', 'hepatitis', $url, null, 'sync-api');
+        $trackId = $app->addApiTracking('vlsm-system', count($hepLabResult), 'common-data', 'hepatitis', $url, $json_data, 'sync-api');
     }
 }
 /* Get instance id for update last_remote_results_sync */
