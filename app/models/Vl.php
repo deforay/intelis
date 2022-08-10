@@ -152,16 +152,15 @@ class Vl
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
+            $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
+            $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
+            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
-            $sCodeKey['sampleCode'] = $sCodeKey['sampleCode'] + 1;
-            $sCodeKey['sampleCodeInText'] = $sCodeKey['sampleCodeInText'] + 1;
-            $sCodeKey['sampleCodeFormat'] = $sCodeKey['sampleCodeFormat'] + 1;
         }
         /* if ($checkResult !== null) {
             return $this->generateVLSampleID($provinceCode, $humanFormatSampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         } */
-	return json_encode($sCodeKey);
+        return json_encode($sCodeKey);
     }
 
     public function getVlSampleTypesByName($name = "")
