@@ -145,7 +145,7 @@ class Hepatitis
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateHepatitisSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol]);
+            return $this->generateHepatitisSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null);
         }
 
         return json_encode($sCodeKey);
@@ -223,7 +223,7 @@ class Hepatitis
             $response[$row['sample_id']] = $row['sample_name'];
         }
         return $response;
-    }    
+    }
 
     public function getHepatitisReasonsForTesting()
     {
@@ -315,11 +315,6 @@ class Hepatitis
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                     $hepatitisData['unique_id'] = $general->generateRandomString(32);
                     $id = $this->db->insert("form_hepatitis", $hepatitisData);
-                    echo "<pre>";
-                    print_r($hepatitisData);
-                    error_log('Insert Hepatitis Sample : ' . $this->db->getLastErrno());
-                    error_log('Insert Hepatitis Sample : ' . $this->db->getLastError());
-                    error_log('Insert Hepatitis Sample : ' . $this->db->getLastQuery());
                 }
             }
             if ($id > 0) {
@@ -328,7 +323,10 @@ class Hepatitis
                 return 0;
             }
         } catch (\Exception $e) {
+
+            error_log('Insert Hepatitis Sample : ' . $this->db->getLastErrno());
             error_log('Insert Hepatitis Sample : ' . $this->db->getLastError());
+            error_log('Insert Hepatitis Sample : ' . $this->db->getLastQuery());
             error_log('Insert Hepatitis Sample : ' . $e->getMessage());
         }
     }

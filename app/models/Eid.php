@@ -130,7 +130,7 @@ class Eid
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user = null);
+            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null, $user);
         }
         return json_encode($sCodeKey);
     }

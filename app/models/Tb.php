@@ -131,7 +131,7 @@ class Tb
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user = null);
+            return $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null, $user);
         }
 
         return json_encode($sCodeKey);
