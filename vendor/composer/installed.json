@@ -92,6 +92,67 @@
             "install-path": "../crunzphp/crunz"
         },
         {
+            "name": "dcarbone/php-fhir-generated",
+            "version": "v2.0.5",
+            "version_normalized": "2.0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dcarbone/php-fhir-generated.git",
+                "reference": "52075aac90a167a40097ba4329544c5e1aa44856"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dcarbone/php-fhir-generated/zipball/52075aac90a167a40097ba4329544c5e1aa44856",
+                "reference": "52075aac90a167a40097ba4329544c5e1aa44856",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "phpunit/phpunit": "@stable"
+            },
+            "time": "2019-12-26T15:50:30+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "DCarbone\\PHPFHIRGenerated\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel Paul Carbone",
+                    "email": "daniel.p.carbone@gmail.com"
+                }
+            ],
+            "description": "Pre-generated classes from dcarbone/php-fhir",
+            "homepage": "https://github.com/dcarbone/php-fhir-generated",
+            "keywords": [
+                "ehr",
+                "fhir",
+                "hl7",
+                "php",
+                "php-fhir"
+            ],
+            "support": {
+                "issues": "https://github.com/dcarbone/php-fhir-generated/issues",
+                "source": "https://github.com/dcarbone/php-fhir-generated/tree/v2.0.5"
+            },
+            "install-path": "../dcarbone/php-fhir-generated"
+        },
+        {
             "name": "doctrine/lexer",
             "version": "1.2.3",
             "version_normalized": "1.2.3.0",
@@ -4048,5 +4109,7 @@
         }
     ],
     "dev": true,
-    "dev-package-names": []
+    "dev-package-names": [
+        "dcarbone/php-fhir-generated"
+    ]
 }

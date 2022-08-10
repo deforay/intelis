@@ -15,8 +15,8 @@ $receivedCounter = 0;
 $processedCounter = 0;
 
 $data = array();
-//$data[] = "lastUpdatedDuration=90m";
-$data[] = "lastUpdatedDuration=15d";
+$data[] = "lastUpdatedDuration=90m";
+//$data[] = "lastUpdatedDuration=15d";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=LEhPhsbgfFB";
