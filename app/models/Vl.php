@@ -52,6 +52,12 @@ class Vl
         $vlsmSystemConfig = $general->getSystemConfig();
         // $humanFormatSampleCollectionDate = $sampleCollectionDate;
 
+        $dateObj = new \DateTime($sampleCollectionDate);
+
+        $year = $dateObj->format('y');
+        $month = $dateObj->format('m');
+        $day = $dateObj->format('d');        
+
         $remotePrefix = '';
         $sampleCodeKeyCol = 'sample_code_key';
         $sampleCodeCol = 'sample_code';
@@ -67,24 +73,18 @@ class Vl
             $sampleCodeCol = 'remote_sample_code';
         }
 
-        $sampleColDateTimeArray = explode(" ", $sampleCollectionDate);
-        $sampleCollectionDate = $general->dateFormat($sampleColDateTimeArray[0]);
-        $sampleColDateArray = explode("-", $sampleCollectionDate);
-        $samColDate = substr($sampleColDateArray[0], -2);
-        $start_date = $sampleColDateArray[0] . '-01-01';
-        $end_date = $sampleColDateArray[0] . '-12-31';
-        $mnthYr = $samColDate[0];
+        $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = isset($globalConfig['sample_code']) ? $globalConfig['sample_code'] : 'MMYY';
         $prefixFromConfig = isset($globalConfig['sample_code_prefix']) ? $globalConfig['sample_code_prefix'] : '';
 
         if ($sampleCodeFormat == 'MMYY') {
-            $mnthYr = $sampleColDateArray[1] . $samColDate;
+            $mnthYr = $month . $year;
         } else if ($sampleCodeFormat == 'YY') {
-            $mnthYr = $samColDate;
+            $mnthYr = $year;
         }
 
-        $autoFormatedString = $samColDate . $sampleColDateArray[1] . $sampleColDateArray[2];
+        $autoFormatedString = $year . $month . $day;
 
 
         if ($maxCodeKeyVal == null) {
@@ -100,7 +100,7 @@ class Vl
                 }
             }
 
-            $this->db->where('DATE(sample_collection_date)', array($start_date, $end_date), 'BETWEEN');
+            $this->db->where('YEAR(sample_collection_date)', array($dateObj->format('Y')));
             $this->db->where($sampleCodeCol, NULL, 'IS NOT');
             $this->db->orderBy($sampleCodeKeyCol, "DESC");
             $svlResult = $this->db->getOne($this->table, array($sampleCodeKeyCol));
