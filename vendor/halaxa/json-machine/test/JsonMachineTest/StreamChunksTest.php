@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JsonMachineTest;
 
 use JsonMachine\Exception\InvalidArgumentException;
 use JsonMachine\StreamChunks;
 
+/**
+ * @covers \JsonMachine\StreamChunks
+ */
 class StreamChunksTest extends \PHPUnit_Framework_TestCase
 {
     public function testThrowsIfNoResource()

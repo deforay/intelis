@@ -16,19 +16,20 @@
         "tecnickcom/tcpdf": "^6.3",
         "phpmailer/phpmailer": "^6.6",
         "thingengineer/mysqli-database-class": "dev-master",
-        "aranyasen/hl7": "^2.0",
         "guzzlehttp/guzzle": "^7.3",
-        "halaxa/json-machine": "^0.7.0",
+        "halaxa/json-machine": "^1.1",
         "crunzphp/crunz": "^3.3",
         "league/csv": "^9.0",
-        "aura/filter": "^2.3",
         "ext-gd": "*",
         "ext-json": "*",
         "ext-curl": "*",
         "ext-gettext": "*",
         "ext-openssl": "*",
         "ext-fileinfo": "*",
-        "laminas/laminas-diactoros": "^2.13",
+        "laminas/laminas-diactoros": "^2.13"
+    },
+    "suggest": {
+        "aranyasen/hl7": "^2.0",
         "dcarbone/php-fhir-generated": "^2.0"
     },
     "autoload": {

@@ -26,8 +26,12 @@ class Eid
         $general = new \Vlsm\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
-        $sampleID = '';
 
+        $dateObj = new \DateTime($sampleCollectionDate);
+
+        $year = $dateObj->format('y');
+        $month = $dateObj->format('m');
+        $day = $dateObj->format('d');
 
         $remotePrefix = '';
         $sampleCodeKeyCol = 'sample_code_key';
@@ -42,24 +46,19 @@ class Eid
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-        $sampleColDateTimeArray = explode(" ", $sampleCollectionDate);
-        $sampleCollectionDate = $general->dateFormat($sampleColDateTimeArray[0]);
-        $sampleColDateArray = explode("-", $sampleCollectionDate);
-        $samColDate = substr($sampleColDateArray[0], -2);
-        $start_date = $sampleColDateArray[0] . '-01-01';
-        $end_date = $sampleColDateArray[0] . '-12-31';
-        $mnthYr = $samColDate[0];
+
+        $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = isset($globalConfig['eid_sample_code']) ? $globalConfig['eid_sample_code'] : 'MMYY';
         $prefixFromConfig = isset($globalConfig['eid_sample_code_prefix']) ? $globalConfig['eid_sample_code_prefix'] : '';
 
         if ($sampleCodeFormat == 'MMYY') {
-            $mnthYr = $sampleColDateArray[1] . $samColDate;
+            $mnthYr = $month . $year;
         } else if ($sampleCodeFormat == 'YY') {
-            $mnthYr = $samColDate;
+            $mnthYr = $year;
         }
 
-        $autoFormatedString = $samColDate . $sampleColDateArray[1] . $sampleColDateArray[2];
+        $autoFormatedString = $year . $month . $day;
 
 
         if ($maxCodeKeyVal == null) {
@@ -75,7 +74,7 @@ class Eid
                 }
             }
 
-            $this->db->where('DATE(sample_collection_date)', array($start_date, $end_date), 'BETWEEN');
+            $this->db->where('YEAR(sample_collection_date)', array($dateObj->format('Y')));
             $this->db->where($sampleCodeCol, NULL, 'IS NOT');
             $this->db->orderBy($sampleCodeKeyCol, "DESC");
             $svlResult = $this->db->getOne($this->table, array($sampleCodeKeyCol));
@@ -130,7 +129,7 @@ class Eid
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user = null);
+            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null, $user);
         }
         return json_encode($sCodeKey);
     }
@@ -469,7 +468,9 @@ class Eid
                 return 0;
             }
         } catch (\Exception $e) {
+            error_log('Insert EID Sample : ' . $this->db->getLastErrno());
             error_log('Insert EID Sample : ' . $this->db->getLastError());
+            error_log('Insert EID Sample : ' . $this->db->getLastQuery());
             error_log('Insert EID Sample : ' . $e->getMessage());
         }
     }

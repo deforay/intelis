@@ -9,6 +9,11 @@ if (php_sapi_name() == 'cli') {
 $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 
+
+$arr = $general->getGlobalConfig();
+$sarr = $general->getSystemConfig();
+
+// putting this into a variable to make this editable
 $systemConfig = SYSTEM_CONFIG;
 
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
@@ -16,69 +21,12 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     exit(0);
 }
 
-// Checking internet connection is avialable or not
+// Checking if the network connection is available
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
 $headers = @get_headers($remoteUrl . '/api/v1.1/version.php');
 if (strpos($headers[0], '200') === false) {
-    error_log("No internet connectivity while trying remote sync.");
+    error_log("No network connectivity while trying remote sync.");
     return false;
-}
-
-$url = $remoteUrl . '/remote/remote/facilityMap.php';
-$data = array(
-    "Key" => "vlsm-lab-data--",
-);
-//open connection
-$ch = curl_init($url);
-$json_data = json_encode($data);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt(
-    $ch,
-    CURLOPT_HTTPHEADER,
-    array(
-        'Content-Type: application/json',
-        'Content-Length: ' . strlen($json_data)
-    )
-);
-// execute post
-$curl_response = curl_exec($ch);
-//close connection
-curl_close($ch);
-$result = json_decode($curl_response, true);
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-//global config
-$cQuery = "SELECT * FROM global_config";
-$cResult = $db->query($cQuery);
-$arr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($cResult); $i++) {
-    $arr[$cResult[$i]['name']] = $cResult[$i]['value'];
-}
-//get facility map id
-
-if ($result != "" && count($result) > 0) {
-    $fMapResult = implode(",", $result);
-} else {
-    $fMapResult = "";
-}
-//get remote data
-if (trim($sarr['sc_testing_lab_id']) == '') {
-    $sarr['sc_testing_lab_id'] = "''";
-}
-
-if (isset($fMapResult) && $fMapResult != '' && $fMapResult != null) {
-    $where = "(lab_id =" . $sarr['sc_testing_lab_id'] . " OR facility_id IN (" . $fMapResult . "))";
-} else {
-    $where = "lab_id =" . $sarr['sc_testing_lab_id'];
 }
 
 $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
@@ -108,14 +56,14 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
     $vlLabResult = $db->rawQuery($vlQuery);
 
-
-
     $url = $remoteUrl . '/remote/remote/testResults.php';
 
     $data = array(
+        "labId" => $sarr['sc_testing_lab_id'],
         "result" => $vlLabResult,
         "Key" => "vlsm-lab-data--",
     );
+
     //open connection
     $ch = curl_init($url);
     $json_data = json_encode($data);
@@ -140,7 +88,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
         $id = $db->update('form_vl', array('data_sync' => 1));
     }
     if (count($vlLabResult) > 0) {
-        $trackId = $app->addApiTracking(null, count($vlLabResult), 'results', 'vl', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+        $trackId = $app->addApiTracking('vlsm-system', count($vlLabResult), 'results', 'vl', $url, $json_data, 'sync-api');
     }
 }
 
@@ -161,8 +109,9 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     }
     $eidLabResult = $db->rawQuery($eidQuery);
 
-    $url = $$remoteUrl . '/remote/remote/eid-test-results.php';
+    $url = $remoteUrl . '/remote/remote/eid-test-results.php';
     $data = array(
+        "labId" => $sarr['sc_testing_lab_id'],
         "result" => $eidLabResult,
         "Key" => "vlsm-lab-data--",
     );
@@ -191,7 +140,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $id = $db->update('form_eid', array('data_sync' => 1));
     }
     if (count($eidLabResult) > 0) {
-        $trackId = $app->addApiTracking(null, count($eidLabResult), 'results', 'eid', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+        $trackId = $app->addApiTracking('vlsm-system', count($eidLabResult), 'results', 'eid', $url, $json_data, 'sync-api');
     }
 }
 
@@ -226,6 +175,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
     $url = $remoteUrl . '/remote/remote/covid-19-test-results.php';
     $data = array(
+        "labId" => $sarr['sc_testing_lab_id'],
         "result" => $c19LabResult,
         "testResults" => $testResults,
         "symptoms" => $symptoms,
@@ -259,7 +209,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         //}
     }
     if (count($c19LabResult) > 0) {
-        $trackId = $app->addApiTracking(null, count($c19LabResult), 'results', 'covid19', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+        $trackId = $app->addApiTracking('vlsm-system', count($c19LabResult), 'results', 'covid19', $url, $json_data, 'sync-api');
     }
 }
 
@@ -290,6 +240,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
     $url = $remoteUrl . '/remote/remote/hepatitis-test-results.php';
     $data = array(
+        "labId" => $sarr['sc_testing_lab_id'],
         "result" => $hepLabResult,
         "Key" => "vlsm-lab-data--",
     );
@@ -321,7 +272,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         //}
     }
     if (count($hepLabResult) > 0) {
-        $trackId = $app->addApiTracking(null, count($hepLabResult), 'common-data', 'hepatitis', $url, null, 'sync-api');
+        $trackId = $app->addApiTracking('vlsm-system', count($hepLabResult), 'common-data', 'hepatitis', $url, $json_data, 'sync-api');
     }
 }
 /* Get instance id for update last_remote_results_sync */

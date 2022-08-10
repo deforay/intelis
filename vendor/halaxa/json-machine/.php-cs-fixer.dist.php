@@ -2,13 +2,19 @@
 
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
+    ->exclude('ext')
 ;
 
 $config = new PhpCsFixer\Config();
 return $config->setRules([
-    '@PSR12' => true,
-    'array_syntax' => ['syntax' => 'short'],
+    '@Symfony' => true,
+    'not_operator_with_space' => true,
+    'yoda_style' => false,
+    'single_line_throw' => false,
+    'unary_operator_spaces' => false,
     'visibility_required' => false,
+    'php_unit_test_class_requires_covers' => true,
+    'declare_strict_types' => true,
 ])
     ->setFinder($finder)
 ;

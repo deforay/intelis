@@ -57,7 +57,4 @@ return array(
     'Crunz\\' => array($vendorDir . '/crunzphp/crunz/src'),
     'Cron\\' => array($vendorDir . '/dragonmantank/cron-expression/src/Cron'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
-    'Aura\\Filter\\_Config\\' => array($vendorDir . '/aura/filter/config'),
-    'Aura\\Filter\\' => array($vendorDir . '/aura/filter/src'),
-    'Aranyasen\\' => array($vendorDir . '/aranyasen/hl7/src'),
 );

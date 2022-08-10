@@ -38,7 +38,11 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $oneDimensionalArray = array_map('current', $allColResult);
     $sampleCode = array();
 
-    $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+    $options = [
+        'pointer' => '/result',
+        'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+    ];    
+    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
     $lab = array();
     $counter = 0;
     foreach ($parsedData as $key => $remoteData) {

@@ -72,7 +72,11 @@ $jsonResponse = $dhis2->get($url, $data);
 
 if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('No Response from API');
 
-$trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
+$options = [
+    'pointer' => '/trackedEntityInstances',
+    'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+];
+$trackedEntityInstances = \JsonMachine\Items::fromString($jsonResponse, $options);
 
 foreach ($trackedEntityInstances as $tracker) {
 

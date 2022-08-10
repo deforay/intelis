@@ -1,7 +1,13 @@
 <?php
+require_once(dirname(__FILE__) . "/../../../startup.php");
+
+header('Content-Type: application/json');
+
 //this file is get the data from remote db
 $data = json_decode(file_get_contents('php://input'), true);
-require_once(dirname(__FILE__) . "/../../../startup.php");
+
+$encoding = $general->getHeader('Accept-Encoding');
+$payload = array();
 
 $labId = $data['labName'];
 
@@ -49,12 +55,26 @@ $vlQuery = "SELECT * FROM form_vl
 if (!empty($data['manifestCode'])) {
   $vlQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
 } else {
-  $vlQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( NOW(), INTERVAL $dataSyncInterval DAY)";
+  $vlQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( NOW(), INTERVAL $dataSyncInterval DAY)";
 }
-
 
 $vlRemoteResult = $db->rawQuery($vlQuery);
+
 if ($db->count > 0) {
   $trackId = $app->addApiTracking(null, $db->count, 'requests', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
+  
+  $sampleIds = array_column($vlRemoteResult, 'vl_sample_id');
+  $db->where('vl_sample_id', $sampleIds, 'IN')
+    ->update('form_vl', array('data_sync' => 1));
+
+  $payload = json_encode($vlRemoteResult);
+} else {
+  $payload = json_encode([]);
 }
-echo json_encode($vlRemoteResult);
+
+if (!empty($encoding) && $encoding === 'gzip') {
+  header("Content-Encoding: gzip");
+  $payload = gzencode($payload);
+}
+
+echo $payload;

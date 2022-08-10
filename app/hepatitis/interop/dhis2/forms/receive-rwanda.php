@@ -15,8 +15,8 @@ $receivedCounter = 0;
 $processedCounter = 0;
 
 $data = array();
-//$data[] = "lastUpdatedDuration=90m";
-$data[] = "lastUpdatedDuration=15d";
+$data[] = "lastUpdatedDuration=90m";
+//$data[] = "lastUpdatedDuration=15d";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=LEhPhsbgfFB";
@@ -30,7 +30,11 @@ $jsonResponse = $dhis2->get($url, $data);
 
 if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('No Response from API');
 
-$trackedEntityInstances = \JsonMachine\JsonMachine::fromString($jsonResponse, "/trackedEntityInstances");
+$options = [
+    'pointer' => '/trackedEntityInstances',
+    'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+];
+$trackedEntityInstances = \JsonMachine\Items::fromString($jsonResponse, $options);
 
 $dhis2GenderOptions = array('Male' => 'male', '1' => 'male', 'Female' => 'female', '2' => 'female');
 $dhis2SocialCategoryOptions = array('1' => 'A', '2' => 'B', '3' => 'C', '4' => 'D');
@@ -229,7 +233,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['province_id'] = !empty($prov['province_id']) ? $prov['province_id'] : 1;
 
         $formData['specimen_type'] = 1; // Always Whole Blood
-        $formData['result_status'] = 6;
+        $formData['result_status'] = 9; // Registered on VLSTS but not in Testing Lab
 
         $formData['social_category'] = (!empty($formData['social_category']) ? $dhis2SocialCategoryOptions[$formData['social_category']] : null);
         $formData['patient_gender'] = (!empty($formData['patient_gender']) ? $dhis2GenderOptions[$formData['patient_gender']] : null);

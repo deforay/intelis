@@ -151,7 +151,7 @@ try {
                 $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
                 $_SESSION['facilityMap'] = $facilityDb->getFacilityMap($userRow['user_id']);
                 $_SESSION['crossLoginPass'] = null;
-                if (SYSTEM_CONFIG['recency']['crosslogin']) {
+                if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
                     $_SESSION['crossLoginPass'] = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
                 }
 
@@ -165,7 +165,7 @@ try {
                 //set role and privileges
                 $priQuery = "SELECT p.privilege_name, rp.privilege_id, r.module FROM roles_privileges_map as rp INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id INNER JOIN resources as r ON r.resource_id=p.resource_id  where rp.role_id='" . $userRow['role_id'] . "'";
                 $priInfo = $db->query($priQuery);
-                $priId = array();
+                $module = $priId = array();
                 if ($priInfo) {
                     foreach ($priInfo as $id) {
                         $priId[] = $id['privilege_name'];
@@ -189,7 +189,7 @@ try {
                 //check clinic or lab user
                 $_SESSION['userType']   = '';
                 $_SESSION['privileges'] = $priId;
-                $_SESSION['module']     = $module;
+                $_SESSION['module'] = $module ?? array();
 
                 if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
                     $redirect = "/users/editProfile.php";

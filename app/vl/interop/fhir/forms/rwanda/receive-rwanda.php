@@ -32,15 +32,29 @@ $errors = [];
 
 $data = [];
 
-$data[] = "modified=ge2022-08-04T11:41:42.649+00:00";
+$data[] = "modified=ge2022-08-05";
 $data[] = "requester=Organization/101282";
 $data[] = "_include=Task:based-on:ServiceRequest";
 $data[] = "status=requested";
 $data[] = "_count=200";
 
 $json = $fhir->get('/Task', $data);
+// echo prettyJson($json);
 
-//echo prettyJson($json);
+// echo "\n\n\n\n\n\n";
+// $json = $fhir->get('/ServiceRequest/107150');
+// echo prettyJson($json);
+// echo "\n\n\n\n\n\n";
+// $json = $fhir->get('/Patient/107164');
+// echo prettyJson($json);
+// echo "\n\n\n\n\n\n";
+// $json = $fhir->get('/Specimen/107169');
+// echo prettyJson($json);
+// echo "\n\n\n\n\n\n";
+// $json = $fhir->get('/Practitioner/107167');
+// echo prettyJson($json);
+
+
 // die;
 
 
@@ -166,6 +180,7 @@ foreach ($entries as $entry) {
             if (empty($resource->getSpecimen())) {
                 throw new Exception("Specimen is missing for ServiceRequest/$basedOnServiceRequest");
             }
+            
             $specimen = $fhir->getFHIRReference($resource->getSpecimen()[0]->getReference());
             $specimenParsed = $parser->parse($specimen);
             $specimenFhirId = (string) $specimenParsed->getId();
@@ -189,15 +204,16 @@ foreach ($entries as $entry) {
             );
 
 
-            $patientIdentifiers = $patientParsed->getIdentifier();
-            foreach ($patientIdentifiers as $pid) {
-                if (empty($pid) || empty($pid->getSystem())) continue;
-                $system = $pid->getSystem()->getValue();
-                if (strpos($system, '/art') !== false) {
-                    $formData[$basedOnServiceRequest]['patient_art_no'] = (string) $pid->getValue();
-                }
-            }
+            //$patientIdentifiers = $patientParsed->getIdentifier();
+            // foreach ($patientIdentifiers as $pid) {
+            //     if (empty($pid) || empty($pid->getSystem())) continue;
+            //     $system = $pid->getSystem()->getValue();
+            //     if (strpos($system, '/art') !== false) {
+            //         $formData[$basedOnServiceRequest]['patient_art_no'] = (string) $pid->getValue();
+            //     }
+            // }
 
+            $formData[$basedOnServiceRequest]['patient_art_no'] = (string) $patientParsed->getIdentifier()[0]->getValue();
             $formData[$basedOnServiceRequest]['patient_gender'] = (string) $patientParsed->getGender()->getValue();
             $formData[$basedOnServiceRequest]['patient_dob'] = (string) $patientParsed->getBirthDate()->getValue();
             $formData[$basedOnServiceRequest]['patient_first_name'] = (string) ($patientParsed->getName()[0]->getGiven()[0] . " " . $patientParsed->getName()[0]->getFamily());

@@ -50,7 +50,13 @@ class Vl
         $general = new \Vlsm\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
+        // $humanFormatSampleCollectionDate = $sampleCollectionDate;
 
+        $dateObj = new \DateTime($sampleCollectionDate);
+
+        $year = $dateObj->format('y');
+        $month = $dateObj->format('m');
+        $day = $dateObj->format('d');
 
         $remotePrefix = '';
         $sampleCodeKeyCol = 'sample_code_key';
@@ -67,24 +73,18 @@ class Vl
             $sampleCodeCol = 'remote_sample_code';
         }
 
-        $sampleColDateTimeArray = explode(" ", $sampleCollectionDate);
-        $sampleCollectionDate = $general->dateFormat($sampleColDateTimeArray[0]);
-        $sampleColDateArray = explode("-", $sampleCollectionDate);
-        $samColDate = substr($sampleColDateArray[0], -2);
-        $start_date = $sampleColDateArray[0] . '-01-01';
-        $end_date = $sampleColDateArray[0] . '-12-31';
-        $mnthYr = $samColDate[0];
+        $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = isset($globalConfig['sample_code']) ? $globalConfig['sample_code'] : 'MMYY';
         $prefixFromConfig = isset($globalConfig['sample_code_prefix']) ? $globalConfig['sample_code_prefix'] : '';
 
         if ($sampleCodeFormat == 'MMYY') {
-            $mnthYr = $sampleColDateArray[1] . $samColDate;
+            $mnthYr = $month . $year;
         } else if ($sampleCodeFormat == 'YY') {
-            $mnthYr = $samColDate;
+            $mnthYr = $year;
         }
 
-        $autoFormatedString = $samColDate . $sampleColDateArray[1] . $sampleColDateArray[2];
+        $autoFormatedString = $year . $month . $day;
 
 
         if ($maxCodeKeyVal == null) {
@@ -100,7 +100,7 @@ class Vl
                 }
             }
 
-            $this->db->where('DATE(sample_collection_date)', array($start_date, $end_date), 'BETWEEN');
+            $this->db->where('YEAR(sample_collection_date)', array($dateObj->format('Y')));
             $this->db->where($sampleCodeCol, NULL, 'IS NOT');
             $this->db->orderBy($sampleCodeKeyCol, "DESC");
             $svlResult = $this->db->getOne($this->table, array($sampleCodeKeyCol));
@@ -139,8 +139,8 @@ class Vl
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         } else if ($sampleCodeFormat == 'auto2') {
-            $sCodeKey['sampleCode'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
+            $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
+            $sCodeKey['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
             $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
         } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
@@ -149,11 +149,16 @@ class Vl
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         }
-
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
+        // if ($checkResult !== null) {
+        //     $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
+        //     $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
+        //     $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
+        //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
+        // }
         if ($checkResult !== null) {
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $null);
+            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null, $user);
         }
         return json_encode($sCodeKey);
     }
@@ -441,7 +446,9 @@ class Vl
                 return 0;
             }
         } catch (\Exception $e) {
+            error_log('Insert VL Sample : ' . $this->db->getLastErrno());
             error_log('Insert VL Sample : ' . $this->db->getLastError());
+            error_log('Insert VL Sample : ' . $this->db->getLastQuery());
             error_log('Insert VL Sample : ' . $e->getMessage());
         }
     }

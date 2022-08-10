@@ -31,7 +31,11 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     }
 
     $lab = array();
-    $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+    $options = [
+        'pointer' => '/result',
+        'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+    ];    
+    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
     foreach ($parsedData as $key => $remoteData) {
         $couner++;
         foreach ($oneDimensionalArray as $result) {

@@ -62,6 +62,11 @@ $systemConfig['interfacing']['dbCharset'] = 'utf8mb4';
 
 $systemConfig['recency'] = array();
 
+// Enable/Disable Cross Login with Recency
+// true => Enabled
+// false => Disabled
+$systemConfig['recency']['crosslogin'] = false;
+
 // Domain URL of the Recency Web Application
 $systemConfig['recency']['url'] = '';
 
@@ -73,12 +78,7 @@ $systemConfig['recency']['url'] = '';
 $systemConfig['recency']['vlsync'] = false;
 
 
-// Enable/Disable Cross Login with Recency
-// true => Enabled
-// false => Disabled
-$systemConfig['recency']['crosslogin'] = false;
-
 // This Salt should match the Salt on Recency Web app 
-$systemConfig['recency']['crossloginSalt'] = "PUT-A-RANDOM-STRING-HERE";
+$systemConfig['recency']['crossloginSalt'] = "VALID LIBSODIUM KEY";
 
 return $systemConfig;

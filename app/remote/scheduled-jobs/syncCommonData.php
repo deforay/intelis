@@ -38,7 +38,7 @@ $covid19DataToSync = array();
 $hepatitisDataToSync = array();
 
 
-$data = array(
+$payload = array(
     'globalConfigLastModified'      => $general->getLastModifiedDateTime('global_config', 'updated_on'),
     'provinceLastModified'          => $general->getLastModifiedDateTime('province_details'),
     'facilityLastModified'          => $general->getLastModifiedDateTime('facility_details'),
@@ -90,9 +90,9 @@ $commonDataToSync = array(
 $url = $remoteUrl . '/remote/remote/commonData.php';
 
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
-    $data['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
-    $data['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
-    $data['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
+    $payload['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
+    $payload['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
+    $payload['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
 
 
 
@@ -115,10 +115,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 }
 
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
-    $data['eidRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_rejection_reasons');
-    $data['eidSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_type');
-    $data['eidResultsLastModified'] = $general->getLastModifiedDateTime('r_eid_results ');
-    $data['eidReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_eid_test_reasons  ');
+    $payload['eidRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_rejection_reasons');
+    $payload['eidSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_type');
+    $payload['eidResultsLastModified'] = $general->getLastModifiedDateTime('r_eid_results ');
+    $payload['eidReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_eid_test_reasons  ');
 
 
     // This array is used to sync data that we will later receive from the API call
@@ -144,13 +144,13 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
 
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
-    $data['covid19RejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_rejection_reasons');
-    $data['covid19SampleTypesLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_type');
-    $data['covid19ComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_covid19_comorbidities');
-    $data['covid19ResultsLastModified'] = $general->getLastModifiedDateTime('r_covid19_results');
-    $data['covid19SymptomsLastModified'] = $general->getLastModifiedDateTime('r_covid19_symptoms');
-    $data['covid19ReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_covid19_test_reasons');
-    $data['covid19QCTestKitsLastModified'] = $general->getLastModifiedDateTime('r_covid19_qc_testkits');
+    $payload['covid19RejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_rejection_reasons');
+    $payload['covid19SampleTypesLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_type');
+    $payload['covid19ComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_covid19_comorbidities');
+    $payload['covid19ResultsLastModified'] = $general->getLastModifiedDateTime('r_covid19_results');
+    $payload['covid19SymptomsLastModified'] = $general->getLastModifiedDateTime('r_covid19_symptoms');
+    $payload['covid19ReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_covid19_test_reasons');
+    $payload['covid19QCTestKitsLastModified'] = $general->getLastModifiedDateTime('r_covid19_qc_testkits');
 
 
 
@@ -188,11 +188,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 }
 
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
-    $data['hepatitisRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_rejection_reasons');
-    $data['hepatitisSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_type');
-    $data['hepatitisComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_comorbidities');
-    $data['hepatitisResultsLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_results');
-    $data['hepatitisReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_test_reasons');
+    $payload['hepatitisRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_rejection_reasons');
+    $payload['hepatitisSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_type');
+    $payload['hepatitisComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_comorbidities');
+    $payload['hepatitisResultsLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_results');
+    $payload['hepatitisReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_test_reasons');
 
     // This array is used to sync data that we will later receive from the API call
     $hepatitisDataToSync = array(
@@ -231,15 +231,25 @@ $dataToSync = array_merge(
 
 $client = new GuzzleHttp\Client();
 
-$response = $client->post($url, [
-    GuzzleHttp\RequestOptions::JSON => $data
-]);
+$response = $client->post(
+    $url,
+    [
+        GuzzleHttp\RequestOptions::JSON => $payload
+    ],
+    [
+        'headers'        => ['Accept-Encoding' => 'gzip'],
+        'decode_content' => 'gzip'
+    ]
+);
 
 $jsonResponse = $response->getBody()->getContents();
 
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
-    $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
+    $options = [
+        'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+    ];
+    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
     foreach ($parsedData as $dataType => $dataValues) {
 
         if (isset($dataToSync[$dataType]) && !empty($dataValues)) {

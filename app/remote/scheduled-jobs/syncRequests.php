@@ -51,36 +51,36 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     //$remoteSampleCodeList = array();
 
     $url = $remoteUrl . '/remote/remote/getRequests.php';
-    $data = array(
+    $payload = array(
         'labName' => $sarr['sc_testing_lab_id'],
         'module' => 'vl',
         "Key" => "vlsm-lab-data--",
     );
     if (!empty($forceSyncModule) && trim($forceSyncModule) == "vl" && !empty($manifestCode) && trim($manifestCode) != "") {
-        $data['manifestCode'] = $manifestCode;
+        $payload['manifestCode'] = $manifestCode;
     }
     $columnList = array();
-    //open connection
-    $ch = curl_init($url);
-    $json_data = json_encode($data);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt(
-        $ch,
-        CURLOPT_HTTPHEADER,
-        array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($json_data)
-        )
+
+    $client = new GuzzleHttp\Client();
+    $response = $client->post(
+        $url,
+        [
+            GuzzleHttp\RequestOptions::JSON => $payload
+        ],
+        [
+            'headers'        => ['Accept-Encoding' => 'gzip'],
+            'decode_content' => 'gzip'
+        ]
     );
 
-    $jsonResponse = curl_exec($ch);
-    curl_close($ch);
+    $jsonResponse = $response->getBody()->getContents();
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
+        $options = [
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_vl'";
         $allColResult = $db->rawQuery($allColumns);
@@ -205,7 +205,10 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse);
+        $options = [
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
 
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='form_eid'";
@@ -258,12 +261,12 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
-                $dataToUpdate = array();
-                $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                $dataToUpdate['source_of_request'] = 'vlsts';
+                // $dataToUpdate = array();
+                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
+                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
+                // $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('eid_id', $exsvlResult[0]['eid_id']);
-                $id = $db->update('form_eid', $dataToUpdate);
+                $id = $db->update('form_eid', $request);
             } else {
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $request['request_created_by'] = 0;
@@ -344,7 +347,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $columnList = array_diff($columnList, $removeKeys);
 
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
@@ -375,12 +382,12 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
-                $dataToUpdate = array();
-                $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                $dataToUpdate['source_of_request'] = 'vlsts';
+                // $dataToUpdate = array();
+                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
+                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
+                // $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('covid19_id', $exsvlResult[0]['covid19_id']);
-                $db->update('form_covid19', $dataToUpdate);
+                $db->update('form_covid19', $request);
                 $id = $exsvlResult[0]['covid19_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
@@ -396,7 +403,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/symptoms");
+        $options = [
+            'pointer' => '/symptoms',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $symptoms) {
             $db = $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_patient_symptoms");
@@ -409,7 +420,11 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/comorbidities");
+        $options = [
+            'pointer' => '/comorbidities',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $comorbidities) {
             $db = $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_patient_comorbidities");
@@ -423,7 +438,12 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/testResults");
+        $options = [
+            'pointer' => '/testResults',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+
         foreach ($parsedData as $covid19Id => $testResults) {
             $db = $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_tests");
@@ -506,7 +526,11 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $request = array();
@@ -529,12 +553,12 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
-                $dataToUpdate = array();
-                $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                $dataToUpdate['source_of_request'] = 'vlsts';
+                // $dataToUpdate = array();
+                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
+                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
+                // $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('hepatitis_id', $exsvlResult[0]['hepatitis_id']);
-                $db->update('form_hepatitis', $dataToUpdate);
+                $db->update('form_hepatitis', $request);
                 $id = $exsvlResult[0]['hepatitis_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
@@ -550,7 +574,11 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/risks");
+        $options = [
+            'pointer' => '/risks',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $hepatitisId => $risks) {
             $db = $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_risk_factors");
@@ -570,7 +598,11 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             }
         }
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/comorbidities");
+        $options = [
+            'pointer' => '/comorbidities',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $hepatitisId => $comorbidities) {
             $db = $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_patient_comorbidities");
@@ -654,7 +686,11 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);
 
-        $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        ];
+        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $request = array();
@@ -676,12 +712,12 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
-                $dataToUpdate = array();
-                $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                $dataToUpdate['source_of_request'] = 'vlsts';
+                // $dataToUpdate = array();
+                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
+                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
+                // $dataToUpdate['source_of_request'] = 'vlsts';
                 $db = $db->where('tb_id', $exsvlResult[0]['tb_id']);
-                $db->update('form_tb', $dataToUpdate);
+                $db->update('form_tb', $request);
                 $id = $exsvlResult[0]['tb_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {

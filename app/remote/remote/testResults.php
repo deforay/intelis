@@ -5,52 +5,44 @@ require_once(dirname(__FILE__) . "/../../../startup.php");
 //this file receives the lab results and updates in the remote db
 $jsonResponse = file_get_contents('php://input');
 
-
-$cQuery = "SELECT * FROM global_config";
-$cResult = $db->query($cQuery);
-$arr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($cResult); $i++) {
-    $arr[$cResult[$i]['name']] = $cResult[$i]['value'];
-}
-
 $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
 $app = new \Vlsm\Models\App();
-
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-//get remote data
-if (trim($sarr['sc_testing_lab_id']) == '') {
-    $sarr['sc_testing_lab_id'] = "''";
-}
-
 
 $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_vl'";
 $allColResult = $db->rawQuery($allColumns);
 $oneDimensionalArray = array_map('current', $allColResult);
 
 $sampleCode = array();
+$labId = null;
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
-    $parsedData = \JsonMachine\JsonMachine::fromString($jsonResponse, "/result");
+
+
+    $resultData = array();
+    $options = [
+        'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+    ];
+    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+    foreach ($parsedData as $name => $data) {
+        if ($name === 'labId') {
+            $labId = $data;
+        } else if ($name === 'result') {
+            $resultData = $data;
+        }
+    }
+
     $counter = 0;
-    foreach ($parsedData as $key => $remoteData) {
+    foreach ($resultData as $key => $resultRow) {
         $counter++;
         $lab = array();
         foreach ($oneDimensionalArray as $columnName) {
-            if (isset($remoteData[$columnName])) {
-                $lab[$columnName] = $remoteData[$columnName];
+            if (isset($resultRow[$columnName])) {
+                $lab[$columnName] = $resultRow[$columnName];
             } else {
                 $lab[$columnName] = null;
             }
         }
-        //remove unwanted columns
+        //remove unwan  ted columns
         $unwantedColumns = array(
             'vl_sample_id',
             'sample_package_id',
@@ -64,12 +56,12 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         }
 
 
-        if (isset($remoteData['approved_by_name']) && $remoteData['approved_by_name'] != '') {
+        if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
-            $lab['result_approved_by'] = $usersModel->addUserIfNotExists($remoteData['approved_by_name']);
+            $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
             $lab['result_approved_datetime'] =  $general->getDateTime();
             // we dont need this now
-            //unset($remoteData['approved_by_name']);
+            //unset($resultRow['approved_by_name']);
         }
 
 
@@ -121,7 +113,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         }
     }
     if ($counter > 0) {
-        $app->addApiTracking(null, $counter, 'results', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
+        $app->addApiTracking(null, $counter, 'results', 'vl', null, $jsonResponse, 'sync-api');
     }
 }
 

@@ -4,8 +4,14 @@ require_once(dirname(__FILE__) . "/../../../startup.php");
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
+header('Content-Type: application/json');
+
 $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
+
+
+$encoding = $general->getHeader('Accept-Encoding');
+$payload = array();
 
 //system config
 $systemConfigQuery = "SELECT * FROM system_config";
@@ -237,6 +243,21 @@ if ($data['Key'] == 'vlsm-get-remote') {
     }
     $response['geoDivisions'] = $general->fetchDataFromTable('geographical_divisions', $condition);
 
-    // using array_filter without callback will remove keys with empty values
-    echo json_encode(array_filter($response));
+
+    if (!empty($response)) {
+        // using array_filter without callback will remove keys with empty values
+        $payload = json_encode(array_filter($response));
+    }else{
+        $payload = json_encode([]);
+    }
+
+
+    if (!empty($encoding) && $encoding === 'gzip') {
+        header("Content-Encoding: gzip");
+        $payload = gzencode($payload);
+    }
+
+    echo $payload;
+} else {
+    echo json_encode(array('status' => 'error', 'message' => 'Invalid request'));
 }

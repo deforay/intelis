@@ -280,7 +280,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, $hepatitisInfo['lab_id'], '-- Select --'); ?>
+                                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
@@ -562,8 +562,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             formId: 'addHepatitisRequestForm'
         });
         if (flag) {
-            $('.btn-disabled').attr('disabled', 'yes');
-            $(".btn-disabled").prop("onclick", null).off("click");
 
             if ($('#antiHcv').val() != "" || $('#HBsAg').val() != "") {
 
@@ -601,6 +599,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 document.getElementById('addHepatitisRequestForm').submit();
             <?php
             } ?>
+
+
+            // $('.btn-disabled').attr('disabled', 'yes');
+            // $(".btn-disabled").prop("onclick", null).off("click");
         }
     }
 

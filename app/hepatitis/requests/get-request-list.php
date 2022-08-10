@@ -4,24 +4,12 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-     $gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
 $general = new \Vlsm\Models\General();
+
+
+$gconfig = $general->getGlobalConfig();
+$sarr = $general->getSystemConfig();
+
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 
@@ -30,14 +18,14 @@ $primaryKey = "hepatitis_id";
 */
 $sampleCode = 'sample_code';
 
-$aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name','f.facility_name', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name', 'f.facility_name', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'l.facility_name', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name','f.facility_name','vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'l.facility_name','f.facility_name','vl.patient_id', 'vl.patient_name',  'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name', 'f.facility_name', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'l.facility_name', 'f.facility_name', 'vl.patient_id', 'vl.patient_name',  'f.facility_state', 'f.facility_district', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */

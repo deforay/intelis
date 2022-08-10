@@ -45,8 +45,12 @@ class Hepatitis
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
-        $sampleID = '';
 
+        $dateObj = new \DateTime($sampleCollectionDate);
+
+        $year = $dateObj->format('y');
+        $month = $dateObj->format('m');
+        $day = $dateObj->format('d');
 
         $remotePrefix = '';
         $sampleCodeKeyCol = 'sample_code_key';
@@ -56,24 +60,19 @@ class Hepatitis
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-        $sampleColDateTimeArray = explode(" ", $sampleCollectionDate);
-        $sampleCollectionDate = $general->dateFormat($sampleColDateTimeArray[0]);
-        $sampleColDateArray = explode("-", $sampleCollectionDate);
-        $samColDate = substr($sampleColDateArray[0], -2);
-        $start_date = $sampleColDateArray[0] . '-01-01';
-        $end_date = $sampleColDateArray[0] . '-12-31';
-        $mnthYr = $samColDate[0];
+
+        $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = isset($globalConfig['hepatitis_sample_code']) ? $globalConfig['hepatitis_sample_code'] : 'MMYY';
         $prefixFromConfig = isset($globalConfig['hepatitis_sample_code_prefix']) ? $globalConfig['hepatitis_sample_code_prefix'] : '';
 
         if ($sampleCodeFormat == 'MMYY') {
-            $mnthYr = $sampleColDateArray[1] . $samColDate;
+            $mnthYr = $month . $year;
         } else if ($sampleCodeFormat == 'YY') {
-            $mnthYr = $samColDate;
+            $mnthYr = $year;
         }
 
-        $autoFormatedString = $samColDate . $sampleColDateArray[1] . $sampleColDateArray[2];
+        $autoFormatedString = $year . $month . $day;
 
 
         if ($maxCodeKeyVal == null) {
@@ -89,7 +88,7 @@ class Hepatitis
                 }
             }
 
-            $this->db->where('DATE(sample_collection_date)', array($start_date, $end_date), 'BETWEEN');
+            $this->db->where('YEAR(sample_collection_date)', array($dateObj->format('Y')));
             $this->db->where($sampleCodeCol, NULL, 'IS NOT');
             $this->db->orderBy($sampleCodeKeyCol, "DESC");
             $svlResult = $this->db->getOne($this->table, array($sampleCodeKeyCol));
@@ -145,7 +144,7 @@ class Hepatitis
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateHepatitisSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol]);
+            return $this->generateHepatitisSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null);
         }
 
         return json_encode($sCodeKey);
@@ -223,7 +222,7 @@ class Hepatitis
             $response[$row['sample_id']] = $row['sample_name'];
         }
         return $response;
-    }    
+    }
 
     public function getHepatitisReasonsForTesting()
     {
@@ -271,6 +270,7 @@ class Hepatitis
             }
 
             $hepatitisData = array();
+
             $hepatitisData = array(
                 'vlsm_country_id' => $params['countryId'],
                 'sample_collection_date' => $sampleCollectionDate,
@@ -278,9 +278,9 @@ class Hepatitis
                 'hepatitis_test_type' => $prefix,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $this->db->now(),
+                'request_created_datetime' => $general->getDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $this->db->now()
+                'last_modified_datetime' => $general->getDateTime()
             );
 
             if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -322,7 +322,10 @@ class Hepatitis
                 return 0;
             }
         } catch (\Exception $e) {
+
+            error_log('Insert Hepatitis Sample : ' . $this->db->getLastErrno());
             error_log('Insert Hepatitis Sample : ' . $this->db->getLastError());
+            error_log('Insert Hepatitis Sample : ' . $this->db->getLastQuery());
             error_log('Insert Hepatitis Sample : ' . $e->getMessage());
         }
     }

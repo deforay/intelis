@@ -1,34 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JsonMachine\JsonDecoder;
 
-class ErrorWrappingDecoder implements Decoder
+class ErrorWrappingDecoder implements ItemDecoder
 {
     /**
-     * @var Decoder
+     * @var ItemDecoder
      */
     private $innerDecoder;
 
-    public function __construct(Decoder $innerDecoder)
+    public function __construct(ItemDecoder $innerDecoder)
     {
         $this->innerDecoder = $innerDecoder;
     }
 
-    public function decodeKey($jsonScalarKey)
+    public function decode($jsonValue)
     {
-        $result = $this->innerDecoder->decodeKey($jsonScalarKey);
-        if (! $result->isOk()) {
-            return new DecodingResult(true, new DecodingError($jsonScalarKey, $result->getErrorMessage()));
+        $result = $this->innerDecoder->decode($jsonValue);
+        if ( ! $result->isOk()) {
+            return new ValidResult(new DecodingError($jsonValue, $result->getErrorMessage()));
         }
-        return $result;
-    }
 
-    public function decodeValue($jsonValue)
-    {
-        $result = $this->innerDecoder->decodeValue($jsonValue);
-        if (! $result->isOk()) {
-            return new DecodingResult(true, new DecodingError($jsonValue, $result->getErrorMessage()));
-        }
         return $result;
     }
 }
