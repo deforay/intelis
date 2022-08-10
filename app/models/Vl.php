@@ -50,7 +50,7 @@ class Vl
         $general = new \Vlsm\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
-
+        // $humanFormatSampleCollectionDate = $sampleCollectionDate;
 
         $remotePrefix = '';
         $sampleCodeKeyCol = 'sample_code_key';
@@ -149,12 +149,17 @@ class Vl
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         }
-
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $null);
+            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
+            $sCodeKey['sampleCode'] = $sCodeKey['sampleCode'] + 1;
+            $sCodeKey['sampleCodeInText'] = $sCodeKey['sampleCodeInText'] + 1;
+            $sCodeKey['sampleCodeFormat'] = $sCodeKey['sampleCodeFormat'] + 1;
         }
+        /* if ($checkResult !== null) {
+            return $this->generateVLSampleID($provinceCode, $humanFormatSampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
+        } */
         return json_encode($sCodeKey);
     }
 
