@@ -158,7 +158,7 @@ class Vl
         //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
         // }
         if ($checkResult !== null) {
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null, $user);
+            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
         return json_encode($sCodeKey);
     }
@@ -371,7 +371,9 @@ class Vl
                 }
             }
 
-            $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId);
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+
+            $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
             $sameplCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
@@ -392,6 +394,7 @@ class Vl
                 'last_modified_datetime' => $this->db->now()
             );
 
+            $oldSampleCodeKey = null;
             if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
                 $vlData['remote_sample_code'] = $sampleData['sampleCode'];
                 $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
@@ -427,6 +430,7 @@ class Vl
                 // $params['vlSampleId'] = $rowData['vl_sample_id'];
 
                 // If this sample code exists, let us regenerate
+                $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
             } else {
                 if (isset($params['api']) && $params['api'] = "yes") {
