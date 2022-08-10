@@ -158,7 +158,7 @@ class Vl
         //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
         // }
         if ($checkResult !== null) {
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
+            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null, $user);
         }
         return json_encode($sCodeKey);
     }
