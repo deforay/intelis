@@ -97,8 +97,6 @@ foreach ($formResults as $row) {
 
     $resp = $fhir->post(null, $json);
 
-    var_dump($resp);die;
-
     echo prettyJson($resp);
 
 

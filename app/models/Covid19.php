@@ -506,7 +506,9 @@ class Covid19
                 return 0;
             }
         } catch (\Exception $e) {
+            error_log('Insert Covid-19 Sample : ' . $this->db->getLastErrno());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastError());
+            error_log('Insert Covid-19 Sample : ' . $this->db->getLastQuery());
             error_log('Insert Covid-19 Sample : ' . $e->getMessage());
         }
     }
