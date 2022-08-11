@@ -80,7 +80,6 @@ try {
         vl.previous_pcr_result                               as prePcrTestResult,
         vl.last_pcr_date                                     as previousPCRTestDate,
         vl.reason_for_pcr                                    as pcrTestReason,
-        vl.community_sample                                  as communitySample,
         vl.has_infant_stopped_breastfeeding                  as hasInfantStoppedBreastfeeding,
         vl.age_breastfeeding_stopped_in_months               as ageBreastfeedingStopped,
         vl.choice_of_feeding                                 as choiceOfFeeding,

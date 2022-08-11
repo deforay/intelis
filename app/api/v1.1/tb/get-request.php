@@ -65,7 +65,6 @@ try {
         vl.patient_type                         as patientType,
         vl.hiv_status                           as hivStatus,
         vl.reason_for_tb_test                   as reasonFortbTest,
-        vl.community_sample                     as communitySample,
         vl.tests_requested                      as testTypeRequested,
         vl.specimen_type                        as specimenType,
         vl.sample_collection_date               as sampleCollectionDate,

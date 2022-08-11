@@ -87,7 +87,6 @@ try {
         vl.reason_of_visit                      as reasonOfVisit,
         vl.is_sample_collected                  as isSampleCollected,
         vl.reason_for_covid19_test              as reasonForCovid19Test,
-        vl.community_sample                     as communitySample,
         vl.type_of_test_requested               as testTypeRequested,
         vl.specimen_type                        as specimenType,
         vl.sample_collection_date               as sampleCollectionDate,

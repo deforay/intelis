@@ -287,7 +287,6 @@ try {
             'reason_of_visit'                     => !empty($data['reasonOfVisit']) ? $data['reasonOfVisit'] : null,
             'is_sample_collected'                 => !empty($data['isSampleCollected']) ? $data['isSampleCollected'] : null,
             'reason_for_covid19_test'             => !empty($data['reasonForCovid19Test']) ? $data['reasonForCovid19Test'] : null,
-            'community_sample'                    => (isset($data['communitySample'])) ? $data['communitySample'] : NULL,
             'type_of_test_requested'              => !empty($data['testTypeRequested']) ? $data['testTypeRequested'] : null,
             'specimen_type'                       => !empty($data['specimenType']) ? $data['specimenType'] : null,
             'sample_collection_date'              => !empty($data['sampleCollectionDate']) ? $data['sampleCollectionDate'] : null,
