@@ -41,11 +41,11 @@ class Eid
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-        if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
-            $remotePrefix = 'R';
-            $sampleCodeKeyCol = 'remote_sample_code_key';
-            $sampleCodeCol = 'remote_sample_code';
-        }
+        // if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
+        //     $remotePrefix = 'R';
+        //     $sampleCodeKeyCol = 'remote_sample_code_key';
+        //     $sampleCodeCol = 'remote_sample_code';
+        // }
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
@@ -61,7 +61,7 @@ class Eid
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal == null) {
+        if ($maxCodeKeyVal === null) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
@@ -85,8 +85,7 @@ class Eid
             }
         }
 
-
-        if (!empty($maxCodeKeyVal)) {
+        if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
             $strparam = strlen($maxId);
             $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
@@ -95,11 +94,7 @@ class Eid
             $maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
         }
 
-        //error_log($maxCodeKeyVal);
-
         $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
-
-
 
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
@@ -129,7 +124,7 @@ class Eid
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null, $user);
+            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
         return json_encode($sCodeKey);
     }
@@ -382,7 +377,8 @@ class Eid
 
             $rowData = false;
 
-            $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+            $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
             $sampleCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
@@ -417,6 +413,7 @@ class Eid
                 );
             }
 
+            $oldSampleCodeKey = null;
             if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
                 $eidData['remote_sample_code'] = $sampleData['sampleCode'];
                 $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
@@ -441,6 +438,7 @@ class Eid
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
+
             $rowData = $this->db->rawQueryOne($sQuery);
             $id = 0;
             if ($rowData) {
@@ -449,6 +447,7 @@ class Eid
                 // $params['eidSampleId'] = $rowData['eid_id'];
 
                 // If this sample code exists, let us regenerate
+                $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
             } else {
 

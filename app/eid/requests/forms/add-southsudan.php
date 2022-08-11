@@ -631,9 +631,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         });
 
         if (flag) {
-            $('.btn-disabled').attr('disabled', 'yes');
-            $(".btn-disabled").prop("onclick", null).off("click");
-            $.blockUI();
+            // $('.btn-disabled').attr('disabled', 'yes');
+            // $(".btn-disabled").prop("onclick", null).off("click");
+            //$.blockUI();
             <?php
             if ($arr['eid_sample_code'] == 'auto' || $arr['eid_sample_code'] == 'YY' || $arr['eid_sample_code'] == 'MMYY') {
             ?>

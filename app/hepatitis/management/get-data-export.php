@@ -150,6 +150,19 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $end_date = $general->dateFormat(trim($s_c_date[1]));
      }
 }
+/* Sample recieved date filter */
+$rstart_date = '';
+$rend_date = '';
+if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
+     $s_r_date = explode("to", $_POST['sampleRecievedDate']);
+     //print_r($s_r_date);die;
+     if (isset($s_r_date[0]) && trim($s_r_date[0]) != "") {
+          $rstart_date = $general->dateFormat(trim($s_r_date[0]));
+     }
+     if (isset($s_r_date[1]) && trim($s_r_date[1]) != "") {
+          $rend_date = $general->dateFormat(trim($s_r_date[1]));
+     }
+}
 $sTestDate = '';
 $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
@@ -192,6 +205,13 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
                $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
           } else {
                $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+          }
+     }
+     if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
+          if (trim($rstart_date) == trim($rend_date)) {
+               $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $rstart_date . '"';
+          } else {
+               $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $rstart_date . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $rend_date . '"';
           }
      }
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {

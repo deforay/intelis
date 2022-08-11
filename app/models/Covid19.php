@@ -42,11 +42,11 @@ class Covid19
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-        if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
-            $remotePrefix = 'R';
-            $sampleCodeKeyCol = 'remote_sample_code_key';
-            $sampleCodeCol = 'remote_sample_code';
-        }
+        // if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
+        //     $remotePrefix = 'R';
+        //     $sampleCodeKeyCol = 'remote_sample_code_key';
+        //     $sampleCodeCol = 'remote_sample_code';
+        // }
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
@@ -116,8 +116,8 @@ class Covid19
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         } else if ($sampleCodeFormat == 'auto2') {
-            $sCodeKey['sampleCode'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
+            $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
+            $sCodeKey['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
             $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
         } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
@@ -130,7 +130,7 @@ class Covid19
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null, $user);
+            return $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
 
         return json_encode($sCodeKey);
@@ -410,7 +410,8 @@ class Covid19
             }
 
 
-            $sampleJson = $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+            $sampleJson = $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
 
@@ -490,6 +491,7 @@ class Covid19
                 // $id = $this->db->update("form_covid19", $covid19Data);
 
                 // If this sample code exists, let us regenerate
+                $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
             } else {
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {

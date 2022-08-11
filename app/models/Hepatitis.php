@@ -38,7 +38,7 @@ class Hepatitis
         $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
-    public function generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null)
+    public function generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
         $general = new \Vlsm\Models\General($this->db);
@@ -60,6 +60,11 @@ class Hepatitis
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
+        // if (isset($user) && isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
+        //     $remotePrefix = 'R';
+        //     $sampleCodeKeyCol = 'remote_sample_code_key';
+        //     $sampleCodeCol = 'remote_sample_code';
+        // }
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
@@ -130,8 +135,8 @@ class Hepatitis
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $prefixFromConfig . $provinceCode . $autoFormatedString);
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         } else if ($sampleCodeFormat == 'auto2') {
-            $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
+            $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
+            $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $provinceCode . $autoFormatedString;
             $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
         } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
@@ -144,7 +149,7 @@ class Hepatitis
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateHepatitisSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, null);
+            return $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
 
         return json_encode($sCodeKey);
@@ -259,7 +264,9 @@ class Hepatitis
                     exit();
                 }
             }
-            $sampleJson = $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, null, $provinceId);
+
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+            $sampleJson = $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
 
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
@@ -309,6 +316,7 @@ class Hepatitis
                 // $id = $this->db->update("form_hepatitis", $hepatitisData);
 
                 // If this sample code exists, let us regenerate
+                $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
             } else {
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {

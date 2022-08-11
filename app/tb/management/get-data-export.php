@@ -266,13 +266,7 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
           $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
-if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-     if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $sSampleReceivedDate . '"';
-     } else {
-          $sWhere[] =  ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
-     }
-}
+
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
