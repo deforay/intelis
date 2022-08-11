@@ -312,6 +312,7 @@ try {
             'previous_pcr_result'                               => isset($data['prePcrTestResult']) ? $data['prePcrTestResult'] : null,
             'last_pcr_date'                                     => isset($data['previousPCRTestDate']) ? $data['previousPCRTestDate'] : null,
             'reason_for_pcr'                                    => isset($data['pcrTestReason']) ? $data['pcrTestReason'] : null,
+            'community_sample'                                  => (isset($data['communitySample'])) ? $data['communitySample'] : NULL,
             'has_infant_stopped_breastfeeding'                  => isset($data['hasInfantStoppedBreastfeeding']) ? $data['hasInfantStoppedBreastfeeding'] : null,
             'age_breastfeeding_stopped_in_months'               => isset($data['ageBreastfeedingStopped']) ? $data['ageBreastfeedingStopped'] : null,
             'choice_of_feeding'                                 => isset($data['choiceOfFeeding']) ? $data['choiceOfFeeding'] : null,

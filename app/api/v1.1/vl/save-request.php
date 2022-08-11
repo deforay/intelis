@@ -346,6 +346,7 @@ try {
             'sample_type'                           => (isset($data['specimenType']) && $data['specimenType'] != '') ? $data['specimenType'] :  NULL,
             'arv_adherance_percentage'              => (isset($data['arvAdherence']) && $data['arvAdherence'] != '') ? $data['arvAdherence'] :  NULL,
             'reason_for_vl_testing'                 => (isset($data['stViralTesting'])) ? $data['stViralTesting'] : NULL,
+            'community_sample'                      => (isset($data['communitySample'])) ? $data['communitySample'] : NULL,
             'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? $general->isoDateFormat($data['rmTestingLastVLDate']) :  NULL,
             'last_vl_result_routine'                => (isset($data['rmTestingVlValue']) && $data['rmTestingVlValue'] != '') ? $data['rmTestingVlValue'] :  NULL,
             'last_vl_date_failure_ac'               => (isset($data['repeatTestingLastVLDate']) && $data['repeatTestingLastVLDate'] != '') ? $general->isoDateFormat($data['repeatTestingLastVLDate']) :  NULL,

@@ -268,6 +268,7 @@ try {
             'other_patient_type'                  => !empty($data['otherPatientType']) ? $data['otherPatientType'] : null,
             'hiv_status'                          => !empty($data['hivStatus']) ? $data['hivStatus'] : null,
             'reason_for_tb_test'                  => !empty($data['reasonFortbTest']) ? json_encode($data['reasonFortbTest']) : null,
+            'community_sample'                    => (isset($data['communitySample'])) ? $data['communitySample'] : NULL,
             'tests_requested'                     => !empty($data['testTypeRequested']) ? json_encode($data['testTypeRequested']) : null,
             'specimen_type'                       => !empty($data['specimenType']) ? $data['specimenType'] : null,
             'other_specimen_type'                 => !empty($data['otherSpecimenType']) ? $data['otherSpecimenType'] : null,
