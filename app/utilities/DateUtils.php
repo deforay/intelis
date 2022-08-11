@@ -38,7 +38,7 @@ class DateUtils
     }
 
     // Returns the given date in d-M-Y format (with or without time depending on the $includeTime parameter)
-    public function humanReadableDateFormat($date, $includeTime = true)
+    public function humanReadableDateFormat($date, $includeTime = false)
     {
         $date = trim($date);
         if (false === $this->verifyIfDateValid($date)) {
@@ -82,5 +82,5 @@ class DateUtils
         $diff = $today->diff($bday);
         // printf(' Your age : %d years, %d month, %d days', $diff->y, $diff->m, $diff->d);
         return array("year" => $diff->y, "months" => $diff->m, "days" => $diff->d);
-    }    
+    }
 }

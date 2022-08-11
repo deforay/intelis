@@ -82,7 +82,7 @@ class General
         return $utils->isoDateFormat($date);
     }
 
-    public function humanReadableDateFormat($date, $includeTime = true)
+    public function humanReadableDateFormat($date, $includeTime = false)
     {
         $utils = new DateUtils();
         return $utils->humanReadableDateFormat($date, $includeTime);
@@ -489,7 +489,7 @@ class General
         return $diff->format('%m') + 12 * $diff->format('%y');
     }
 
-    
+
 
     public function getRejectionReasons($testType)
     {
