@@ -47,7 +47,7 @@ class DateUtils
             $dateObj = new DateTimeImmutable($date);
 
             if ($includeTime === true) {
-                return $dateObj->format("d-M-Y H:i");
+                return $dateObj->format("d-M-Y H:i:s");
             } else {
                 return $dateObj->format("d-M-Y");
             }
