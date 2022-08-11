@@ -37,13 +37,13 @@ try {
 
     //Set Date of demand
     if (isset($_POST['dateOfDemand']) && trim($_POST['dateOfDemand']) != "") {
-        $_POST['dateOfDemand'] = $general->dateFormat($_POST['dateOfDemand']);
+        $_POST['dateOfDemand'] = $general->isoDateFormat($_POST['dateOfDemand']);
     } else {
         $_POST['dateOfDemand'] = NULL;
     }
     //Set dob
     if (isset($_POST['dob']) && trim($_POST['dob']) != "") {
-        $_POST['dob'] = $general->dateFormat($_POST['dob']);
+        $_POST['dob'] = $general->isoDateFormat($_POST['dob']);
     } else {
         $_POST['dob'] = NULL;
     }
@@ -54,7 +54,7 @@ try {
     } else if ($_POST['isPatientNew'] == "yes") {
         //Ser ARV initiation date
         if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-            $_POST['dateOfArtInitiation'] = $general->dateFormat($_POST['dateOfArtInitiation']);
+            $_POST['dateOfArtInitiation'] = $general->isoDateFormat($_POST['dateOfArtInitiation']);
         } else {
             $_POST['dateOfArtInitiation'] = NULL;
         }
@@ -88,7 +88,7 @@ try {
         $data = array(
             'art_code' => $_POST['newArtRegimen'],
             'parent_art' => 3,
-            'updated_datetime' => $general->getDateTime(),
+            'updated_datetime' => $general->getCurrentDateTime(),
         );
 
         $result = $db->insert('r_vl_art_regimen', $data);
@@ -105,7 +105,7 @@ try {
         $_POST['dateOfArvRegimenChange'] = NULL;
     } else if (trim($_POST['hasChangedRegimen']) == "yes") {
         if (isset($_POST['dateOfArvRegimenChange']) && trim($_POST['dateOfArvRegimenChange']) != "") {
-            $_POST['dateOfArvRegimenChange'] = $general->dateFormat($_POST['dateOfArvRegimenChange']);
+            $_POST['dateOfArvRegimenChange'] = $general->isoDateFormat($_POST['dateOfArvRegimenChange']);
         }
     }
     //Set VL Test reason
@@ -131,14 +131,14 @@ try {
     }
     //Set last VL test date
     if (isset($_POST['lastViralLoadTestDate']) && trim($_POST['lastViralLoadTestDate']) != "") {
-        $_POST['lastViralLoadTestDate'] = $general->dateFormat($_POST['lastViralLoadTestDate']);
+        $_POST['lastViralLoadTestDate'] = $general->isoDateFormat($_POST['lastViralLoadTestDate']);
     } else {
         $_POST['lastViralLoadTestDate'] = NULL;
     }
     //Set sample collection date
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
         $sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-        $_POST['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+        $_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
         $_POST['sampleCollectionDate'] = NULL;
     }
@@ -156,7 +156,7 @@ try {
     //Set sample received date
     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-        $_POST['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+        $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = NULL;
     }
@@ -167,7 +167,7 @@ try {
                 $data = array(
                     'rejection_reason_name' => $_POST['newRejectionReason'],
                     'rejection_reason_status' => 'active',
-                    'updated_datetime' => $general->getDateTime(),
+                    'updated_datetime' => $general->getCurrentDateTime(),
                 );
                 $id = $db->insert('r_vl_sample_rejection_reasons', $data);
                 $_POST['rejectionReason'] = $id;
@@ -186,21 +186,21 @@ try {
     //Set result prinetd date time
     if (isset($_POST['sampleTestingDateAtLab']) && trim($_POST['sampleTestingDateAtLab']) != "") {
         $sampleTestedDate = explode(" ", $_POST['sampleTestingDateAtLab']);
-        $_POST['sampleTestingDateAtLab'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+        $_POST['sampleTestingDateAtLab'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
         $_POST['sampleTestingDateAtLab'] = NULL;
     }
     //Set Dispatched From Clinic To Lab Date
     if (isset($_POST['dateDispatchedFromClinicToLab']) && trim($_POST['dateDispatchedFromClinicToLab']) != "") {
         $dispatchedFromClinicToLabDate = explode(" ", $_POST['dateDispatchedFromClinicToLab']);
-        $_POST['dateDispatchedFromClinicToLab'] = $general->dateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
+        $_POST['dateDispatchedFromClinicToLab'] = $general->isoDateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
     } else {
         $_POST['dateDispatchedFromClinicToLab'] = NULL;
     }
     //Set sample testing date
     if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletionOfViralLoad']) != "") {
         $dateofCompletionofViralLoad = explode(" ", $_POST['dateOfCompletionOfViralLoad']);
-        $_POST['dateOfCompletionOfViralLoad'] = $general->dateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
+        $_POST['dateOfCompletionOfViralLoad'] = $general->isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
     } else {
         $_POST['dateOfCompletionOfViralLoad'] = NULL;
     }
@@ -242,14 +242,14 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = NULL;
     }
 
     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
         $approvedOn = explode(" ", $_POST['approvedOn']);
-        $_POST['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+        $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
         $_POST['approvedOn'] = NULL;
     }
@@ -356,7 +356,7 @@ try {
         } else {
             $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
             $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
-            $vldata['sample_registered_at_lab'] = $general->getDateTime();
+            $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
         }
         $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '' ? $_POST['sampleCodeFormat'] :  NULL);
         $id = $db->insert($tableName, $vldata);
@@ -375,7 +375,7 @@ try {
         // 'event_type'=>$eventType,
         // 'action'=>$action,
         // 'resource'=>$resource,
-        // 'date_time'=>$general->getDateTime()
+        // 'date_time'=>$general->getCurrentDateTime()
         // );
         // $db->insert($tableName1,$data);
 

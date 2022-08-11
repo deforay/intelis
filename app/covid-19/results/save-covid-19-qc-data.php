@@ -20,7 +20,7 @@ try {
             'qc_code'               => $_POST['qcCode'],
             'testkit'               => base64_decode($_POST['testKit']),
             'lot_no'                => $_POST['lotNo'],
-            'expiry_date'           => $general->dateFormat($_POST['expiryDate']),
+            'expiry_date'           => $general->isoDateFormat($_POST['expiryDate']),
             'lab_id'                => $_POST['labName'],
             'testing_point'                => $_POST['testingPoint'],
             'tested_by'             => $_POST['testerName'],

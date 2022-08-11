@@ -8,6 +8,8 @@
 
 namespace Vlsm\Models;
 
+use Vlsm\Utilities\DateUtils;
+
 class General
 {
 
@@ -74,58 +76,22 @@ class General
      * Used to format date from dd-mmm-yyyy to yyyy-mm-dd for storing in database
      *
      */
-    public function dateFormat($date)
+    public function isoDateFormat($date)
     {
-        $date = trim($date);
-        if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
-            return null;
-        } else {
-            $dateArray = explode('-', $date);
-            if (sizeof($dateArray) == 0) {
-                return;
-            }
-            $newDate = $dateArray[2] . "-";
-
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = 1;
-            $mon += array_search(ucfirst($dateArray[1]), $monthsArray);
-
-            if (strlen($mon) == 1) {
-                $mon = "0" . $mon;
-            }
-            return $newDate .= $mon . "-" . $dateArray[0];
-        }
+        $utils = new DateUtils();
+        return $utils->isoDateFormat($date);
     }
 
-    public function humanDateFormat($date, $returnTimePart = true)
+    public function humanReadableDateFormat($date, $includeTime = true)
     {
-        $date = trim($date);
-        if ($date == null || $date == "" || $date == "0000-00-00" || substr($date, 0, strlen("0000-00-00")) === "0000-00-00") {
-            return null;
-        } else {
-
-            $dateTimeArray = explode(' ', $date);
-
-            $dateArray = explode('-', $dateTimeArray[0]);
-            $newDate = $dateArray[2] . "-";
-
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = $monthsArray[$dateArray[1] - 1];
-
-            $newDate .= $mon . "-" . $dateArray[0];
-
-            if ($returnTimePart && isset($dateTimeArray[1]) && $dateTimeArray[1] != '') {
-                $newDate .= " " . $dateTimeArray[1];
-            }
-
-            return $newDate;
-        }
+        $utils = new DateUtils();
+        return $utils->humanReadableDateFormat($date, $includeTime);
     }
 
-    public static function getDateTime($returnFormat = 'Y-m-d H:i:s')
+    public static function getCurrentDateTime($returnFormat = 'Y-m-d H:i:s')
     {
-        $date = new \DateTime(date('Y-m-d H:i:s'));
-        return $date->format($returnFormat);
+        $utils = new DateUtils();
+        return $utils->getCurrentDateTime($returnFormat);
     }
 
     public function removeDirectory($dirname)
@@ -184,23 +150,6 @@ class General
             } else {
                 return null;
             }
-        }
-    }
-
-    // get province id from the province table
-    public function getProvinceIDFromCode($code)
-    {
-        if ($this->db == null) {
-            return false;
-        }
-
-        $pQuery = "SELECT * FROM geographical_divisions WHERE (geo_parent = 0) AND (geo_code like ?)";
-        $pResult = $this->db->rawQueryOne($pQuery, array($code));
-
-        if ($pResult) {
-            return $pResult['geo_id'];
-        } else {
-            return null;
         }
     }
 
@@ -363,7 +312,7 @@ class General
             'action' => $action,
             'resource' => $resource,
             'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
-            'date_time' => $this->getDateTime(),
+            'date_time' => $this->getCurrentDateTime(),
             'ip_address' => $ipaddress,
         );
 
@@ -375,7 +324,7 @@ class General
 
         $data = array(
             'no_of_results_imported' => $numberOfResults,
-            'imported_on' => $this->getDateTime(),
+            'imported_on' => $this->getCurrentDateTime(),
             'import_mode' => $importMode,
             'imported_by' => $importedBy,
         );
@@ -383,20 +332,6 @@ class General
         $this->db->insert('result_import_stats', $data);
     }
 
-    public function getLowVLResultTextFromImportConfigs($machineFile = null)
-    {
-        if ($this->db == null) {
-            return false;
-        }
-
-        if (!empty($machineFile)) {
-            $this->db->where('import_machine_file_name', $machineFile);
-        }
-
-        $this->db->where("low_vl_result_text", NULL, 'IS NOT');
-        $this->db->where("status", 'active', 'like');
-        return $this->db->getValue('import_config', 'low_vl_result_text', null);
-    }
 
     public function getFacilitiesByUser($userId = null)
     {
@@ -549,19 +484,12 @@ class General
 
     public function ageInMonth($date)
     {
-        $birthday = new \DateTime($date);
-        $diff = $birthday->diff(new \DateTime());
+        $birthday = new \DateTimeImmutable($date);
+        $diff = $birthday->diff(new \DateTimeImmutable());
         return $diff->format('%m') + 12 * $diff->format('%y');
     }
 
-    public function ageInYearMonthDays($date)
-    {
-        $bday = new \DateTime($date); // Your date of birth
-        $today = new \Datetime(date('m.d.y'));
-        $diff = $today->diff($bday);
-        // printf(' Your age : %d years, %d month, %d days', $diff->y, $diff->m, $diff->d);
-        return array("year" => $diff->y, "months" => $diff->m, "days" => $diff->d);
-    }
+    
 
     public function getRejectionReasons($testType)
     {
@@ -715,7 +643,7 @@ class General
             'sample_code' => $sampleCode,
             'browser' => $this->getBrowser($userAgent),
             'operating_system' => $this->getOperatingSystem($userAgent),
-            'date_time' => $this->getDateTime(),
+            'date_time' => $this->getCurrentDateTime(),
             'ip_address' => $this->getIPAddress(),
         );
 
@@ -880,7 +808,7 @@ class General
     }
 
     //dump the contents of a variable to the error log in a readable format
-    public function var_error_log($object = null) :void
+    public function var_error_log($object = null): void
     {
         ob_start();
         var_dump($object);

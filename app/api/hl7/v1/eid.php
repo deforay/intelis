@@ -440,9 +440,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                         => isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,
-            'request_created_datetime'                             => $general->getDateTime(),
-            'sample_registered_at_lab'                             => $general->getDateTime(),
-            'last_modified_datetime'                             => $general->getDateTime()
+            'request_created_datetime'                             => $general->getCurrentDateTime(),
+            'sample_registered_at_lab'                             => $general->getCurrentDateTime(),
+            'last_modified_datetime'                             => $general->getCurrentDateTime()
         );
 
         $eidData['source_of_request'] = 'hl7';

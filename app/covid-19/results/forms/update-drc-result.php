@@ -228,7 +228,7 @@ $patienZones["other"] = "Other";
                                     </td>
                                     <th><label for="patientDob">Date de naissance <span class="mandatory">*</span> </label></th>
                                     <td>
-                                        <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo $general->humanDateFormat($covid19Info['patient_dob']); ?>" />
+                                        <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo $general->humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -507,11 +507,11 @@ $patienZones["other"] = "Other";
                                 <tr>
                                     <th style="width:15% !important">Date d'apparition des symptômes </th>
                                     <td style="width:35% !important;">
-                                        <input class="form-control date" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo $general->humanDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
+                                        <input class="form-control date" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo $general->humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
                                     </td>
                                     <th style="width:15% !important">Date de la consultation initiale</th>
                                     <td style="width:35% !important;">
-                                        <input class="form-control date" type="text" name="dateOfInitialConsultation" id="dateOfInitialConsultation" placeholder="Date of Initial Consultation" value="<?php echo $general->humanDateFormat($covid19Info['date_of_initial_consultation']); ?> " />
+                                        <input class="form-control date" type="text" name="dateOfInitialConsultation" id="dateOfInitialConsultation" placeholder="Date of Initial Consultation" value="<?php echo $general->humanReadableDateFormat($covid19Info['date_of_initial_consultation']); ?> " />
                                     </td>
                                 </tr>
                                 <tr>
@@ -685,7 +685,7 @@ $patienZones["other"] = "Other";
                                 <tr>
                                     <th style="width: 15% !important;"><label for="returnDate">Date de retour</label></th>
                                     <td style="width:35% !important;">
-                                        <input type="text" value="<?php echo $general->humanDateFormat($covid19Info['travel_return_date']); ?>" class="form-control date" id="returnDate" name="returnDate" placeholder="e.g 09-Jan-1992" title="Date de retour" />
+                                        <input type="text" value="<?php echo $general->humanReadableDateFormat($covid19Info['travel_return_date']); ?>" class="form-control date" id="returnDate" name="returnDate" placeholder="e.g 09-Jan-1992" title="Date de retour" />
                                     </td>
 
                                     <th>Compagnie aérienne</th>
@@ -696,7 +696,7 @@ $patienZones["other"] = "Other";
                                     <td><input type="text" class="form-control " value="<?php echo $covid19Info['flight_seat_no']; ?>" id="seatNo" name="seatNo" placeholder="Numéro de siège" title="Numéro de siège" style="width:100%;" /></td>
 
                                     <th>Date et heure d'arrivée</th>
-                                    <td><input type="text" class="form-control dateTime" value="<?php echo $general->humanDateFormat($covid19Info['flight_arrival_datetime']); ?>" id="arrivalDateTime" name="arrivalDateTime" placeholder="Date et heure d'arrivée" title="Date et heure d'arrivée" style="width:100%;" /></td>
+                                    <td><input type="text" class="form-control dateTime" value="<?php echo $general->humanReadableDateFormat($covid19Info['flight_arrival_datetime']); ?>" id="arrivalDateTime" name="arrivalDateTime" placeholder="Date et heure d'arrivée" title="Date et heure d'arrivée" style="width:100%;" /></td>
                                 </tr>
                                 <tr>
                                     <th>Aeroport DE DEPART</th>
@@ -741,7 +741,7 @@ $patienZones["other"] = "Other";
                                     <tr>
                                         <th><label for="">Date de réception de l'échantillon <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Date de réception de l'échantillon" value="<?php echo $general->humanDateFormat($covid19Info['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                            <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Date de réception de l'échantillon" value="<?php echo $general->humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                         </td>
                                         <th><label for="sampleCondition">Condition de l'échantillon</label></th>
                                         <td>
@@ -787,7 +787,7 @@ $patienZones["other"] = "Other";
                                             </select>
                                         </td>
                                         <th class="show-rejection" style="display: none;">Date de rejet<span class="mandatory">*</span></th>
-                                        <td class="show-rejection" style="display: none;"><input value="<?php echo $general->humanDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Date de rejet" /></td>
+                                        <td class="show-rejection" style="display: none;"><input value="<?php echo $general->humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Date de rejet" /></td>
                                     </tr>
                                     <tr>
                                         <td colspan="4">
@@ -825,7 +825,7 @@ $patienZones["other"] = "Other";
                                                                     } ?>
                                                                     <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?php echo ($indexKey + 1); ?>" class="form-control  testInputOther<?php echo ($indexKey + 1); ?>" title="Veuillez saisir le nom du test pour les lignes <?php echo ($indexKey + 1); ?>" placeholder="Entrez le nom du test <?php echo ($indexKey + 1); ?>" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                 </td>
-                                                                <td><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime isRequired" placeholder="Testé sur" title="Veuillez saisir la ligne testée pour<?php echo ($indexKey + 1); ?>" /></td>
+                                                                <td><input type="text" value="<?php echo $general->humanReadableDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime isRequired" placeholder="Testé sur" title="Veuillez saisir la ligne testée pour<?php echo ($indexKey + 1); ?>" /></td>
                                                                 <td><select class="form-control test-result test-name-table-input result-focus isRequired" name="testResult[]" id="testResult<?php echo ($indexKey + 1); ?>" title="Veuillez sélectionner le résultat pour la ligne<?php echo ($indexKey + 1); ?>">
                                                                         <option value=''> -- Sélectionner -- </option>
                                                                         <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>

@@ -76,11 +76,11 @@ if ($id > 0) {
     $reviewed = '';
     if (isset($dateResult[0]['sample_tested_datetime']) && $dateResult[0]['sample_tested_datetime'] != '' && $dateResult[0]['sample_tested_datetime'] != NULL && $dateResult[0]['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $sampleTestedDate = explode(" ", $dateResult[0]['sample_tested_datetime']);
-        $resulted = $general->humanDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+        $resulted = $general->humanReadableDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     }
     if (isset($dateResult[0]['result_reviewed_datetime']) && $dateResult[0]['result_reviewed_datetime'] != '' && $dateResult[0]['result_reviewed_datetime'] != NULL && $dateResult[0]['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
         $resultReviewdDate = explode(" ", $dateResult[0]['result_reviewed_datetime']);
-        $reviewed = $general->humanDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
+        $reviewed = $general->humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
     }
     if (count($bResult) > 0) {
         // Extend the TCPDF class to create custom Header and Footer
@@ -262,7 +262,7 @@ if ($id > 0) {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
-                            $lotExpirationDate .= $general->humanDateFormat($sampleResult[0]['lot_expiration_date']);
+                            $lotExpirationDate .= $general->humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
                         }
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
@@ -319,7 +319,7 @@ if ($id > 0) {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
-                            $lotExpirationDate .= $general->humanDateFormat($sampleResult[0]['lot_expiration_date']);
+                            $lotExpirationDate .= $general->humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
                         }
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
@@ -436,7 +436,7 @@ if ($id > 0) {
                     if (trim($sample['lot_number']) != '') {
                         $lotExpirationDate .= '<br>';
                     }
-                    $lotExpirationDate .= $general->humanDateFormat($sample['lot_expiration_date']);
+                    $lotExpirationDate .= $general->humanReadableDateFormat($sample['lot_expiration_date']);
                 }
                 $lotDetails = $sample['lot_number'] . $lotExpirationDate;
 

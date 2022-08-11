@@ -371,7 +371,7 @@ class App
         $general = new \Vlsm\Models\General($this->db);
         $data = array(
             'requested_by'          => $user ?? 'vlsm-system',
-            'requested_on'          => $general->getDateTime(),
+            'requested_on'          => $general->getCurrentDateTime(),
             'number_of_records'     => $records ?? 0,
             'request_type'          => $type ?? null,
             'test_type'             => $testType ?? null,

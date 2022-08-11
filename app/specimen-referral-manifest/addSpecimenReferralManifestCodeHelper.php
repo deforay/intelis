@@ -16,7 +16,7 @@ try {
             'added_by'                  => $_SESSION['userId'],
             'lab_id'                    => $_POST['testingLab'],
             'package_status'            => 'pending',
-            'request_created_datetime'  => $general->getDateTime()
+            'request_created_datetime'  => $general->getCurrentDateTime()
         );
         //var_dump($data);die;
         $db->insert($packageTable, $data);

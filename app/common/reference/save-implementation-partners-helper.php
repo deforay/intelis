@@ -17,7 +17,7 @@ try {
 		$data = array(
 			'i_partner_name' 	=> $_POST['partnerName'],
 			'i_partner_status' 	=> $_POST['partnerStatus'],
-			'updated_datetime'	=> $general->getDateTime()
+			'updated_datetime'	=> $general->getCurrentDateTime()
 		);
 		if(isset($_POST['partnerId']) && $_POST['partnerId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['partnerId']));

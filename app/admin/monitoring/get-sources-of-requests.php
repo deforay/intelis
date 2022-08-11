@@ -132,10 +132,10 @@ $end_date = '';
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
     $s_c_date = explode("to", $_POST['dateRange']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->dateFormat(trim($s_c_date[0]));
+        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->dateFormat(trim($s_c_date[1]));
+        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -191,7 +191,7 @@ foreach ($rResult as $key => $aRow) {
     $row[] = $aRow['samplesWithResults'];
     $row[] = $aRow['rejected'];
     $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper($aRow['source_of_request']);
-    $row[] = $general->humanDateFormat($aRow['lastRequest']);
+    $row[] = $general->humanReadableDateFormat($aRow['lastRequest']);
 
     $output['aaData'][] = $row;
 }

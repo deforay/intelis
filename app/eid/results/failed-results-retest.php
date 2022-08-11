@@ -42,7 +42,7 @@ try {
                     'facility_id'           => (isset($result['facility_id']) && $result['facility_id'] != "") ? $result['facility_id'] : null,
                     'result'                => (isset($result['result']) && $result['result'] != "") ? $result['result'] : null,
                     'result_status'         => (isset($result['result_status']) && $result['result_status'] != "") ? $result['result_status'] : null,
-                    'updated_datetime'      => $general->getDateTime(),
+                    'updated_datetime'      => $general->getCurrentDateTime(),
                     'update_by'             => $_SESSION['userId']
                 ));
             }

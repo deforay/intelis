@@ -92,7 +92,8 @@ class Vl
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $provinceId = $general->getProvinceIDFromCode($provinceCode);
+                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -344,6 +345,22 @@ class Vl
         );
     }
 
+
+    public function getLowVLResultTextFromImportConfigs($machineFile = null)
+    {
+        if ($this->db == null) {
+            return false;
+        }
+
+        if (!empty($machineFile)) {
+            $this->db->where('import_machine_file_name', $machineFile);
+        }
+
+        $this->db->where("low_vl_result_text", NULL, 'IS NOT');
+        $this->db->where("status", 'active', 'like');
+        return $this->db->getValue('import_config', 'low_vl_result_text', null);
+    }    
+
     public function insertSampleCode($params)
     {
         try {
@@ -376,7 +393,7 @@ class Vl
             $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sameplCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sameplCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;

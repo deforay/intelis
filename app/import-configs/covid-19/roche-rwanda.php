@@ -239,7 +239,7 @@ try {
             }
             //echo "<pre>";var_dump($data);echo "</pre>";continue;
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
-                $data['result_imported_datetime'] = $general->getDateTime();
+                $data['result_imported_datetime'] = $general->getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
             }
@@ -260,7 +260,7 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $id,
             'test_type' => 'covid19',
-            'updated_on' => $general->getDateTime(),
+            'updated_on' => $general->getCurrentDateTime(),
         );
         $db->insert("log_result_updates", $data);
     }

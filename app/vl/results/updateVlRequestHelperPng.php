@@ -15,41 +15,41 @@ try {
 
     if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
         $failedtestDate = explode(" ", $_POST['failedTestDate']);
-        $_POST['failedTestDate'] = $general->dateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
+        $_POST['failedTestDate'] = $general->isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
     } else {
         $_POST['failedTestDate'] = NULL;
     }
 
     if (isset($_POST['regStartDate']) && trim($_POST['regStartDate']) != "") {
-        $_POST['regStartDate'] = $general->dateFormat($_POST['regStartDate']);
+        $_POST['regStartDate'] = $general->isoDateFormat($_POST['regStartDate']);
     } else {
         $_POST['regStartDate'] = NULL;
     }
 
     if (isset($_POST['receivedDate']) && trim($_POST['receivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['receivedDate']);
-        $_POST['receivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+        $_POST['receivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['receivedDate'] = NULL;
     }
     if (isset($_POST['testDate']) && trim($_POST['testDate']) != "") {
         $sampletestDate = explode(" ", $_POST['testDate']);
-        $_POST['testDate'] = $general->dateFormat($sampletestDate[0]) . " " . $sampletestDate[1];
+        $_POST['testDate'] = $general->isoDateFormat($sampletestDate[0]) . " " . $sampletestDate[1];
     } else {
         $_POST['testDate'] = NULL;
     }
     if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
-        $_POST['qcDate'] = $general->dateFormat($_POST['qcDate']);
+        $_POST['qcDate'] = $general->isoDateFormat($_POST['qcDate']);
     } else {
         $_POST['qcDate'] = NULL;
     }
     if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
-        $_POST['reportDate'] = $general->dateFormat($_POST['reportDate']);
+        $_POST['reportDate'] = $general->isoDateFormat($_POST['reportDate']);
     } else {
         $_POST['reportDate'] = NULL;
     }
     if (isset($_POST['clinicDate']) && trim($_POST['clinicDate']) != "") {
-        $_POST['clinicDate'] = $general->dateFormat($_POST['clinicDate']);
+        $_POST['clinicDate'] = $general->isoDateFormat($_POST['clinicDate']);
     } else {
         $_POST['clinicDate'] = NULL;
     }
@@ -72,7 +72,7 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = NULL;
     }
@@ -80,7 +80,7 @@ try {
     $vldata = array(
         'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] : NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : NULL,
-        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
+        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
         'batch_quality' => (isset($_POST['batchQuality']) && $_POST['batchQuality'] != '' ? $_POST['batchQuality'] : NULL),
         'sample_test_quality' => (isset($_POST['testQuality']) && $_POST['testQuality'] != '' ? $_POST['testQuality'] : NULL),
         'sample_batch_id' => (isset($_POST['batchNo']) && $_POST['batchNo'] != '' ? $_POST['batchNo'] : NULL),
@@ -106,7 +106,7 @@ try {
         'clinic_date' => $_POST['clinicDate'],
         'report_date' => $_POST['reportDate'],
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => $db->now(),
         'data_sync' => 0,
@@ -133,7 +133,7 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $_POST['vlSampleId'],
             'test_type' => 'vl',
-            'updated_on' => $general->getDateTime()
+            'updated_on' => $general->getCurrentDateTime()
         );
         $db->insert($tableName2, $data);
     } else {

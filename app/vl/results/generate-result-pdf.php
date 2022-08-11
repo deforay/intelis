@@ -62,7 +62,7 @@ if (empty($requestResult) || $requestResult == false) {
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
-$printDate = $general->humanDateFormat($expStr[0]);
+$printDate = $general->humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 
 $_SESSION['nbPages'] = sizeof($requestResult);

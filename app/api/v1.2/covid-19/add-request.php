@@ -151,9 +151,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => null,
-            'request_created_datetime' => $general->getDateTime(),
+            'request_created_datetime' => $general->getCurrentDateTime(),
             'last_modified_by' => null,
-            'last_modified_datetime' => $general->getDateTime()
+            'last_modified_datetime' => $general->getCurrentDateTime()
         );
 
         if ($user['access_type'] != 'testing-lab') {
@@ -191,7 +191,7 @@ try {
         }
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = $general->dateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+            $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
         } else {
             $data['arrivalDateTime'] = NULL;
         }
@@ -222,7 +222,7 @@ try {
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
         } else {
             $data['sampleCollectionDate'] = NULL;
         }
@@ -230,41 +230,41 @@ try {
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
             $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
         } else {
             $data['sampleReceivedDate'] = NULL;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
             $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
         } else {
             $data['sampleTestedDateTime'] = NULL;
         }
 
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = $general->dateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+            $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
         } else {
             $data['arrivalDateTime'] = NULL;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
             $revisedOn = explode(" ", $data['revisedOn']);
-            $data['revisedOn'] = $general->dateFormat($revisedOn[0]) . " " . $revisedOn[1];
+            $data['revisedOn'] = $general->isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
         } else {
             $data['revisedOn'] = NULL;
         }
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
             $approvedOn = explode(" ", $data['approvedOn']);
-            $data['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+            $data['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
         } else {
             $data['approvedOn'] = NULL;
         }
 
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
             $reviewedOn = explode(" ", $data['reviewedOn']);
-            $data['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+            $data['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
         } else {
             $data['reviewedOn'] = NULL;
         }
@@ -293,7 +293,7 @@ try {
             'patient_id'                          => !empty($data['patientId']) ? $data['patientId'] : null,
             'patient_name'                        => !empty($data['firstName']) ? trim($data['firstName']) : null,
             'patient_surname'                     => !empty($data['lastName']) ? $data['lastName'] : null,
-            'patient_dob'                         => !empty($data['patientDob']) ? $general->dateFormat($data['patientDob']) : null,
+            'patient_dob'                         => !empty($data['patientDob']) ? $general->isoDateFormat($data['patientDob']) : null,
             'patient_gender'                      => !empty($data['patientGender']) ? $data['patientGender'] : null,
             'is_patient_pregnant'                 => !empty($data['isPatientPregnant']) ? $data['isPatientPregnant'] : null,
             'patient_age'                         => !empty($data['patientAge']) ? $data['patientAge'] : null,
@@ -319,13 +319,13 @@ try {
             'specimen_type'                       => !empty($data['specimenType']) ? $data['specimenType'] : null,
             'sample_collection_date'              => !empty($data['sampleCollectionDate']) ? $data['sampleCollectionDate'] : null,
             'health_outcome'                      => !empty($data['healthOutcome']) ? $data['healthOutcome'] : null,
-            'health_outcome_date'                 => !empty($data['outcomeDate']) ? $general->dateFormat($data['outcomeDate']) : null,
+            'health_outcome_date'                 => !empty($data['outcomeDate']) ? $general->isoDateFormat($data['outcomeDate']) : null,
             // 'is_sampledata_mortem'                => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,
             'priority_status'                     => !empty($data['priorityStatus']) ? $data['priorityStatus'] : null,
             'number_of_days_sick'                 => !empty($data['numberOfDaysSick']) ? $data['numberOfDaysSick'] : null,
             'suspected_case'                      => !empty($data['suspectedCase']) ? $data['suspectedCase'] : null,
-            'date_of_symptom_onset'               => !empty($data['dateOfSymptomOnset']) ? $general->dateFormat($data['dateOfSymptomOnset']) : null,
-            'date_of_initial_consultation'        => !empty($data['dateOfInitialConsultation']) ? $general->dateFormat($data['dateOfInitialConsultation']) : null,
+            'date_of_symptom_onset'               => !empty($data['dateOfSymptomOnset']) ? $general->isoDateFormat($data['dateOfSymptomOnset']) : null,
+            'date_of_initial_consultation'        => !empty($data['dateOfInitialConsultation']) ? $general->isoDateFormat($data['dateOfInitialConsultation']) : null,
             'fever_temp'                          => !empty($data['feverTemp']) ? $data['feverTemp'] : null,
             'medical_history'                     => !empty($data['medicalHistory']) ? $data['medicalHistory'] : null,
             'recent_hospitalization'              => !empty($data['recentHospitalization']) ? $data['recentHospitalization'] : null,
@@ -338,7 +338,7 @@ try {
             'contact_with_confirmed_case'         => !empty($data['contactWithConfirmedCase']) ? $data['contactWithConfirmedCase'] : null,
             'has_recent_travel_history'           => !empty($data['hasRecentTravelHistory']) ? $data['hasRecentTravelHistory'] : null,
             'travel_country_names'                => !empty($data['countryName']) ? $data['countryName'] : null,
-            'travel_return_date'                  => !empty($data['returnDate']) ? $general->dateFormat($data['returnDate']) : null,
+            'travel_return_date'                  => !empty($data['returnDate']) ? $general->isoDateFormat($data['returnDate']) : null,
             'sample_received_at_vl_lab_datetime'  => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
             'sample_condition'                    => !empty($data['sampleCondition']) ? $data['sampleCondition'] : (isset($data['specimenQuality']) ? $data['specimenQuality'] : null),
             'asymptomatic'                        => !empty($data['asymptomatic']) ? $data['asymptomatic'] : null,
@@ -351,7 +351,7 @@ try {
             'is_result_authorised'                => !empty($data['isResultAuthorized']) ? $data['isResultAuthorized'] : null,
             'lab_tech_comments'                   => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'authorized_by'                       => !empty($data['authorizedBy']) ? $data['authorizedBy'] : null,
-            'authorized_on'                       => !empty($data['authorizedOn']) ? $general->dateFormat($data['authorizedOn']) : null,
+            'authorized_on'                       => !empty($data['authorizedOn']) ? $general->isoDateFormat($data['authorizedOn']) : null,
             'revised_by'                          => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
             'revised_on'                          => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
             'result_reviewed_by'                  => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
@@ -359,18 +359,18 @@ try {
             'result_approved_by'                  => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
             'result_approved_datetime'            => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  NULL,
             'reason_for_changing'                 => (!empty($_POST['reasonForCovid19ResultChanges']) && !empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
-            'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->dateFormat($data['rejectionDate']) : null,
+            'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
             'source_of_request'                   => "app"
         );
         if ($rowData) {
-            $covid19Data['last_modified_datetime']  = $general->getDateTime();
+            $covid19Data['last_modified_datetime']  = $general->getCurrentDateTime();
             $covid19Data['last_modified_by']  = $user['user_id'];
         } else {
-            $covid19Data['request_created_datetime']  = (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : $general->getDateTime();
-            $covid19Data['sample_registered_at_lab']  = $general->getDateTime();
+            $covid19Data['request_created_datetime']  = (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : $general->getCurrentDateTime();
+            $covid19Data['sample_registered_at_lab']  = $general->getCurrentDateTime();
             $covid19Data['request_created_by']  = $user['user_id'];
         }
 
@@ -422,7 +422,7 @@ try {
                     if (isset($test['testName']) && !empty($test['testName'])) {
                         if (isset($test['testDate']) && trim($test['testDate']) != "") {
                             $testedDateTime = explode(" ", $test['testDate']);
-                            $test['testDate'] = $general->dateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
+                            $test['testDate'] = $general->isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
                         } else {
                             $test['testDate'] = NULL;
                         }
@@ -433,7 +433,7 @@ try {
                             'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($test['testDate'])),
                             'testing_platform'       => isset($test['testingPlatform']) ? $test['testingPlatform'] : null,
                             'kit_lot_no'             => (strpos($test['testName'], 'RDT') !== false) ? $test['kitLotNo'] : null,
-                            'kit_expiry_date'        => (strpos($test['testName'], 'RDT') !== false) ? $general->dateFormat($test['kitExpiryDate']) : null,
+                            'kit_expiry_date'        => (strpos($test['testName'], 'RDT') !== false) ? $general->isoDateFormat($test['kitExpiryDate']) : null,
                             'result'                 => $test['testResult'],
                         );
                         $db->insert($testTableName, $covid19TestData);

@@ -80,7 +80,7 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
           $sampleCollectionDate = '';
           if($aRow['sample_collection_date']!= NULL && trim($aRow['sample_collection_date'])!='' && $aRow['sample_collection_date']!='0000-00-00 00:00:00'){
                $expStr = explode(" ",$aRow['sample_collection_date']);
-               $sampleCollectionDate =  $general->humanDateFormat($expStr[0]);
+               $sampleCollectionDate =  $general->humanReadableDateFormat($expStr[0]);
           }
 
           if($aRow['remote_sample']=='yes'){

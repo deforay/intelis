@@ -85,7 +85,8 @@ class Hepatitis
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $provinceId = $general->getProvinceIDFromCode($provinceCode);
+                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);                    
                 }
 
                 if (!empty($provinceId)) {
@@ -270,7 +271,7 @@ class Hepatitis
             $sampleData = json_decode($sampleJson, true);
 
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sampleCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
@@ -285,9 +286,9 @@ class Hepatitis
                 'hepatitis_test_type' => $prefix,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $general->getDateTime(),
+                'request_created_datetime' => $general->getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $general->getDateTime()
+                'last_modified_datetime' => $general->getCurrentDateTime()
             );
 
             if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {

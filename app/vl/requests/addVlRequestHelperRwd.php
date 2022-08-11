@@ -44,22 +44,22 @@ try {
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
         $sampleDate = explode(" ", $_POST['sampleCollectionDate']);
-        $_POST['sampleCollectionDate'] = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+        $_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
     } else {
         $_POST['sampleCollectionDate'] = NULL;
     }
     if (isset($_POST['dob']) && trim($_POST['dob']) != "") {
-        $_POST['dob'] = $general->dateFormat($_POST['dob']);
+        $_POST['dob'] = $general->isoDateFormat($_POST['dob']);
     } else {
         $_POST['dob'] = NULL;
     }
     if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-        $_POST['dateOfArtInitiation'] = $general->dateFormat($_POST['dateOfArtInitiation']);
+        $_POST['dateOfArtInitiation'] = $general->isoDateFormat($_POST['dateOfArtInitiation']);
     } else {
         $_POST['dateOfArtInitiation'] = NULL;
     }
     if (isset($_POST['regimenInitiatedOn']) && trim($_POST['regimenInitiatedOn']) != "") {
-        $_POST['regimenInitiatedOn'] = $general->dateFormat($_POST['regimenInitiatedOn']);
+        $_POST['regimenInitiatedOn'] = $general->isoDateFormat($_POST['regimenInitiatedOn']);
     } else {
         $_POST['regimenInitiatedOn'] = NULL;
     }
@@ -70,7 +70,7 @@ try {
             $data = array(
                 'art_code' => $_POST['newArtRegimen'],
                 'parent_art' => '7',
-                'updated_datetime' => $general->getDateTime(),
+                'updated_datetime' => $general->getCurrentDateTime(),
             );
             $result = $db->insert('r_vl_art_regimen', $data);
             $_POST['artRegimen'] = $_POST['newArtRegimen'];
@@ -105,19 +105,19 @@ try {
     }
     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDateLab = explode(" ", $_POST['sampleReceivedDate']);
-        $_POST['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDateLab[0]) . " " . $sampleReceivedDateLab[1];
+        $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDateLab[0]) . " " . $sampleReceivedDateLab[1];
     } else {
         $_POST['sampleReceivedDate'] = NULL;
     }
     if (isset($_POST['sampleTestingDateAtLab']) && trim($_POST['sampleTestingDateAtLab']) != "") {
         $sampleTestingDateAtLab = explode(" ", $_POST['sampleTestingDateAtLab']);
-        $_POST['sampleTestingDateAtLab'] = $general->dateFormat($sampleTestingDateAtLab[0]) . " " . $sampleTestingDateAtLab[1];
+        $_POST['sampleTestingDateAtLab'] = $general->isoDateFormat($sampleTestingDateAtLab[0]) . " " . $sampleTestingDateAtLab[1];
     } else {
         $_POST['sampleTestingDateAtLab'] = NULL;
     }
     if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != "") {
         $resultDispatchedOn = explode(" ", $_POST['resultDispatchedOn']);
-        $_POST['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+        $_POST['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
     } else {
         $_POST['resultDispatchedOn'] = NULL;
     }
@@ -129,7 +129,7 @@ try {
                 'rejection_reason_name' => $_POST['newRejectionReason'],
                 'rejection_type' => 'general',
                 'rejection_reason_status' => 'active',
-                'updated_datetime' => $general->getDateTime(),
+                'updated_datetime' => $general->getCurrentDateTime(),
             );
             $id = $db->insert('r_vl_sample_rejection_reasons', $data);
             $_POST['rejectionReason'] = $id;
@@ -225,13 +225,13 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = NULL;
     }
     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
         $approvedOn = explode(" ", $_POST['approvedOn']);
-        $_POST['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+        $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
         $_POST['approvedOn'] = NULL;
     }
@@ -257,15 +257,15 @@ try {
         'sample_type' => (isset($_POST['specimenType']) && $_POST['specimenType'] != '') ? $_POST['specimenType'] :  NULL,
         'arv_adherance_percentage' => (isset($_POST['arvAdherence']) && $_POST['arvAdherence'] != '') ? $_POST['arvAdherence'] :  NULL,
         'reason_for_vl_testing' => (isset($_POST['stViralTesting'])) ? $_POST['stViralTesting'] : NULL,
-        'last_vl_date_routine' => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? $general->dateFormat($_POST['rmTestingLastVLDate']) :  NULL,
+        'last_vl_date_routine' => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? $general->isoDateFormat($_POST['rmTestingLastVLDate']) :  NULL,
         'last_vl_result_routine' => $rmVLValue,
-        'last_vl_date_failure_ac' => (isset($_POST['repeatTestingLastVLDate']) && $_POST['repeatTestingLastVLDate'] != '') ? $general->dateFormat($_POST['repeatTestingLastVLDate']) :  NULL,
+        'last_vl_date_failure_ac' => (isset($_POST['repeatTestingLastVLDate']) && $_POST['repeatTestingLastVLDate'] != '') ? $general->isoDateFormat($_POST['repeatTestingLastVLDate']) :  NULL,
         'last_vl_result_failure_ac' => $repeatTestingVLValue,
-        'last_vl_date_failure' => (isset($_POST['suspendTreatmentLastVLDate']) && $_POST['suspendTreatmentLastVLDate'] != '') ? $general->dateFormat($_POST['suspendTreatmentLastVLDate']) :  NULL,
+        'last_vl_date_failure' => (isset($_POST['suspendTreatmentLastVLDate']) && $_POST['suspendTreatmentLastVLDate'] != '') ? $general->isoDateFormat($_POST['suspendTreatmentLastVLDate']) :  NULL,
         'last_vl_result_failure' => $suspendedTreatmentVLValue,
         'request_clinician_name' => (isset($_POST['reqClinician']) && $_POST['reqClinician'] != '') ? $_POST['reqClinician'] :  NULL,
         'request_clinician_phone_number' => (isset($_POST['reqClinicianPhoneNumber']) && $_POST['reqClinicianPhoneNumber'] != '') ? $_POST['reqClinicianPhoneNumber'] :  NULL,
-        'test_requested_on' => (isset($_POST['requestDate']) && $_POST['requestDate'] != '') ? $general->dateFormat($_POST['requestDate']) :  NULL,
+        'test_requested_on' => (isset($_POST['requestDate']) && $_POST['requestDate'] != '') ? $general->isoDateFormat($_POST['requestDate']) :  NULL,
         'vl_focal_person' => (isset($_POST['vlFocalPerson']) && $_POST['vlFocalPerson'] != '') ? $_POST['vlFocalPerson'] :  NULL,
         'vl_focal_person_phone_number' => (isset($_POST['vlFocalPersonPhoneNumber']) && $_POST['vlFocalPersonPhoneNumber'] != '') ? $_POST['vlFocalPersonPhoneNumber'] :  NULL,
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] :  NULL,
@@ -331,7 +331,7 @@ try {
         } else {
             $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
             $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
-            $vldata['sample_registered_at_lab'] = $general->getDateTime();
+            $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
         }
         $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  NULL;
 
@@ -350,7 +350,7 @@ try {
         //  'event_type'=>$eventType,
         //  'action'=>$action,
         //  'resource'=>$resource,
-        //  'date_time'=>$general->getDateTime()
+        //  'date_time'=>$general->getCurrentDateTime()
         //  );
         //  $db->insert($tableName1,$data);
 

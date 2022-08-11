@@ -17,7 +17,7 @@ try {
 		$data = array(
 			'funding_source_name' 	=> $_POST['fundingSrcName'],
 			'funding_source_status' => $_POST['fundingStatus'],
-			'updated_datetime'		=> $general->getDateTime()
+			'updated_datetime'		=> $general->getCurrentDateTime()
 		);
 		if(isset($_POST['fundingId']) && $_POST['fundingId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['fundingId']));

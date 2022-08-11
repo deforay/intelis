@@ -66,6 +66,23 @@ class GeoLocations
         return $returnArr;
     }
 
+    // get province id from the province table
+    public function getProvinceIDFromCode($code)
+    {
+        if ($this->db == null) {
+            return false;
+        }
+
+        $pQuery = "SELECT * FROM geographical_divisions WHERE (geo_parent = 0) AND (geo_code like ?)";
+        $pResult = $this->db->rawQueryOne($pQuery, array($code));
+
+        if ($pResult) {
+            return $pResult['geo_id'];
+        } else {
+            return null;
+        }
+    }
+
     function addGeoLocation($geoName, $parent = 0)
     {
         $general = new \Vlsm\Models\General($this->db);
@@ -74,8 +91,8 @@ class GeoLocations
             'geo_name'         => $geoName,
             'geo_status'       => 'active',
             'created_by'       => $_SESSION['userId'],
-            'created_on'       => $general->getDateTime(),
-            'updated_datetime' => $general->getDateTime(),
+            'created_on'       => $general->getCurrentDateTime(),
+            'updated_datetime' => $general->getCurrentDateTime(),
             'data_sync'       => 0
         );
         if ($parent > 0) {

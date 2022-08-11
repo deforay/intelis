@@ -15,7 +15,7 @@ try {
     //Set sample received date
     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-        $_POST['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+        $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = NULL;
     }
@@ -37,14 +37,14 @@ try {
     //Set result prinetd date time
     if (isset($_POST['sampleTestingDateAtLab']) && trim($_POST['sampleTestingDateAtLab']) != "") {
         $sampleTestingDateLab = explode(" ", $_POST['sampleTestingDateAtLab']);
-        $_POST['sampleTestingDateAtLab'] = $general->dateFormat($sampleTestingDateLab[0]) . " " . $sampleTestingDateLab[1];
+        $_POST['sampleTestingDateAtLab'] = $general->isoDateFormat($sampleTestingDateLab[0]) . " " . $sampleTestingDateLab[1];
     } else {
         $_POST['sampleTestingDateAtLab'] = NULL;
     }
     //Set sample testing date
     if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletionOfViralLoad']) != "") {
         $dateofCompletionofViralLoad = explode(" ", $_POST['dateOfCompletionOfViralLoad']);
-        $_POST['dateOfCompletionOfViralLoad'] = $general->dateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
+        $_POST['dateOfCompletionOfViralLoad'] = $general->isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
     } else {
         $_POST['dateOfCompletionOfViralLoad'] = NULL;
     }
@@ -78,12 +78,12 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = NULL;
     }
     $vldata = array(
-        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['noResult'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
+        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['noResult'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
         //'sample_code'=>$_POST['sampleCode'],
         'sample_tested_datetime' => $_POST['dateOfCompletionOfViralLoad'],
@@ -97,7 +97,7 @@ try {
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] :  NULL),
         'data_sync' => 0,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
         'result_printed_datetime' => NULL,
         'result_dispatched_datetime' => NULL,
         'vl_result_category' => $vl_result_category
@@ -128,7 +128,7 @@ try {
     // 'event_type'=>$eventType,
     // 'action'=>$action,
     // 'resource'=>$resource,
-    // 'date_time'=>$general->getDateTime()
+    // 'date_time'=>$general->getCurrentDateTime()
     // );
     // $db->insert($tableName1,$data);
     //Add update result log
@@ -136,7 +136,7 @@ try {
         'user_id' => $_SESSION['userId'],
         'vl_sample_id' => $_POST['vlSampleId'],
         'test_type' => 'vl',
-        'updated_on' => $general->getDateTime()
+        'updated_on' => $general->getCurrentDateTime()
     );
     $db->insert($tableName2, $data);
     header("location:vlTestResult.php");

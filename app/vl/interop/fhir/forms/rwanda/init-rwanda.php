@@ -86,7 +86,7 @@ foreach ($entries as $entry) {
     $data['facility_district_id'] = $facilityDistrictId;
     $data['facility_district'] = $facilityDistrict;
     $data['vlsm_instance_id'] = $instanceId;
-    $data['updated_datetime'] = $general->getDateTime();
+    $data['updated_datetime'] = $general->getCurrentDateTime();
     $data['facility_type'] = 1;
     $data['status'] = 'active';
 
@@ -101,7 +101,7 @@ foreach ($entries as $entry) {
     $dataTest = array(
         'test_type' => 'vl',
         'facility_id' => $id,
-        "updated_datetime" => $general->getDateTime()
+        "updated_datetime" => $general->getCurrentDateTime()
     );
     $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);    
 }

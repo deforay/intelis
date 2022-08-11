@@ -59,7 +59,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
             $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
-            $lab['result_approved_datetime'] =  $general->getDateTime();
+            $lab['result_approved_datetime'] =  $general->getCurrentDateTime();
             // we dont need this now
             //unset($resultRow['approved_by_name']);
         }
@@ -67,7 +67,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
         $lab['data_sync'] = 1;
-        $lab['last_modified_datetime'] = $general->getDateTime();
+        $lab['last_modified_datetime'] = $general->getCurrentDateTime();
 
         // unset($lab['request_created_by']);
         // unset($lab['last_modified_by']);

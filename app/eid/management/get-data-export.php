@@ -140,10 +140,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->dateFormat(trim($s_c_date[0]));
+          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->dateFormat(trim($s_c_date[1]));
+          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
 $sReceivedDate = '';
@@ -151,10 +151,10 @@ $eReceivedDate = '';
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleReceivedDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sReceivedDate = $general->dateFormat(trim($s_t_date[0]));
+          $sReceivedDate = $general->isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eReceivedDate = $general->dateFormat(trim($s_t_date[1]));
+          $eReceivedDate = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Sample test date filter */
@@ -163,10 +163,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = $general->dateFormat(trim($s_t_date[0]));
+          $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = $general->dateFormat(trim($s_t_date[1]));
+          $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Print date filter */
@@ -175,10 +175,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = $general->dateFormat(trim($s_p_date[0]));
+          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = $general->dateFormat(trim($s_p_date[1]));
+          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Facility id filter */

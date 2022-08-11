@@ -171,20 +171,20 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
     $row[] = $patientFname . " " . $patientLname;
-    $row[] = $general->humanDateFormat($aRow['patient_dob']);
+    $row[] = $general->humanReadableDateFormat($aRow['patient_dob']);
     $row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
     $row[] = ucwords($aRow['patient_gender']);
-    $row[] = $general->humanDateFormat($aRow['sample_collection_date']);
+    $row[] = $general->humanReadableDateFormat($aRow['sample_collection_date']);
     $row[] = ucwords($aRow['test_reason_name']);
-    $row[] = $general->humanDateFormat($aRow['sample_received_at_lab_datetime']);
-    $row[] = $general->humanDateFormat($aRow['request_created_datetime']);
+    $row[] = $general->humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+    $row[] = $general->humanReadableDateFormat($aRow['request_created_datetime']);
     $row[] = ucwords($aRow['status_name']);
     $row[] = ucwords($aRow['sample_name']);
-    $row[] = $general->humanDateFormat($aRow['sample_tested_datetime']);
+    $row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
     $row[] = ucwords($testPlatform);
     $row[] = ucwords($testMethod);
     $row[] = $tbResults[$aRow['result']];
-    $row[] = $general->humanDateFormat($aRow['result_printed_datetime']);
+    $row[] = $general->humanReadableDateFormat($aRow['result_printed_datetime']);
 
     $output[] = $row;
     $no++;

@@ -185,7 +185,7 @@ foreach ($rResult as $aRow) {
     $date = '';
     if ($aRow['last_tested_date'] != '0000-00-00 00:00:00' && $aRow['last_tested_date'] != null) {
         $exp = explode(" ", $aRow['last_tested_date']);
-        $lastDate = $general->humanDateFormat($exp[0]);
+        $lastDate = $general->humanReadableDateFormat($exp[0]);
     }
     $row[] = ucwords($aRow['batch_code']);
     $row[] = $aRow['total_samples'];

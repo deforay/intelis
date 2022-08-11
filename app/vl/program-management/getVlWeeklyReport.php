@@ -160,10 +160,10 @@ $end_date = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   $s_t_date = explode("to", $_POST['sampleTestDate']);
   if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-    $start_date = $general->dateFormat(trim($s_t_date[0]));
+    $start_date = $general->isoDateFormat(trim($s_t_date[0]));
   }
   if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-    $end_date = $general->dateFormat(trim($s_t_date[1]));
+    $end_date = $general->isoDateFormat(trim($s_t_date[1]));
   }
 }
 

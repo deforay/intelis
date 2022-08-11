@@ -103,7 +103,7 @@ if (sizeof($requestResult) > 0) {
 
         if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_collection_date']);
-            $result['sample_collection_date'] = $general->humanDateFormat($expStr[0]);
+            $result['sample_collection_date'] = $general->humanReadableDateFormat($expStr[0]);
             $sampleCollectionTime = $expStr[1];
         } else {
             $result['sample_collection_date'] = '';
@@ -113,20 +113,20 @@ if (sizeof($requestResult) > 0) {
         $sampleReceivedTime = '';
         if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-            $sampleReceivedDate = $general->humanDateFormat($expStr[0]);
+            $sampleReceivedDate = $general->humanReadableDateFormat($expStr[0]);
             $sampleReceivedTime = $expStr[1];
         }
         $sampleDispatchDate = '';
         $sampleDispatchTime = '';
         if (isset($result['result_dispatched_datetime']) && trim($result['result_dispatched_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['result_dispatched_datetime']);
-            $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
+            $sampleDispatchDate = $general->humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         }
 
         if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_tested_datetime']);
-            $result['sample_tested_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+            $result['sample_tested_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
         } else {
             $result['sample_tested_datetime'] = '';
         }
@@ -330,7 +330,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         }
 
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $general->humanDateFormat($result['result_approved_datetime']) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $general->humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -376,7 +376,7 @@ if (sizeof($requestResult) > 0) {
                 'event_type' => $eventType,
                 'action' => $action,
                 'resource' => $resource,
-                'date_time' => $general->getDateTime()
+                'date_time' => $general->getCurrentDateTime()
             );
             $db->insert($tableName1, $data);
             //Update print datetime in VL tbl.
@@ -384,7 +384,7 @@ if (sizeof($requestResult) > 0) {
             $vlResult = $db->query($vlQuery);
             if ($vlResult[0]['result_printed_datetime'] == NULL || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                 $db = $db->where('eid_id', $result['eid_id']);
-                $db->update($tableName2, array('result_printed_datetime' => $general->getDateTime()));
+                $db->update($tableName2, array('result_printed_datetime' => $general->getCurrentDateTime()));
             }
         }
     }

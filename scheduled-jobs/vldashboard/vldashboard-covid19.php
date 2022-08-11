@@ -82,7 +82,7 @@ try {
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
         $data = array(
-            'covid19_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : $general->getDateTime())
+            'covid19_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : $general->getCurrentDateTime())
         );
         $db->update('s_vlsm_instance', $data);
     }

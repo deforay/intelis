@@ -13,7 +13,7 @@ try {
             'testkit_name'                  => $_POST['testKitName'],
             'status'                        => $_POST['testKitStatus'],
             'labels_and_expected_results'   => json_encode(array("label" => $_POST['qcTestLable'], 'expected' => $_POST['expectedResult'])),
-            'updated_datetime'              => $general->getDateTime(),
+            'updated_datetime'              => $general->getCurrentDateTime(),
         );
 
         // echo "<pre>";print_r($data);die;

@@ -67,7 +67,8 @@ class Covid19
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $provinceId = $general->getProvinceIDFromCode($provinceCode);
+                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -415,7 +416,7 @@ class Covid19
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
 
-            $sampleCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
             }

@@ -61,7 +61,7 @@ $sCode = isset($_GET['c']) ? $_GET['c'] : null;
 if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
     $vlObj = new \Vlsm\Models\Eid();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = $general->humanDateFormat($sampleCollectionDate[0]);
+    $sampleCollectionDate = $general->humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateEIDSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
     $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
@@ -217,7 +217,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                     <tr>
                                         <th><label for="childDob">Date of Birth <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo $general->humanDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                         </td>
                                         <th><label for="childGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -290,7 +290,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
 
                                         <th>If yes, test date :</th>
                                         <td>
-                                            <input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="if yes, test date" value="<?php echo $general->humanDateFormat($eidInfo['rapid_test_date']); ?>">
+                                            <input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="if yes, test date" value="<?php echo $general->humanReadableDateFormat($eidInfo['rapid_test_date']); ?>">
                                         </td>
                                     </tr>
                                     <tr>
@@ -333,7 +333,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                     <tr>
                                         <th>Previous PCR test date :</th>
                                         <td>
-                                            <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo $general->humanDateFormat($eidInfo['last_pcr_date']); ?>" />
+                                            <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo $general->humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
                                         </td>
 
                                         <th>Reason for 2nd PCR :</th>
@@ -392,7 +392,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         <tr>
                                             <th><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                             </td>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>
@@ -430,7 +430,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         <tr>
                                             <td style="width:25%;"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                             </td>
 
 

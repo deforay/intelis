@@ -115,7 +115,7 @@ try {
         }
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
         } else {
             $data['sampleCollectionDate'] = NULL;
         }
@@ -125,9 +125,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
-            'request_created_datetime' => $general->getDateTime(),
+            'request_created_datetime' => $general->getCurrentDateTime(),
             'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => $general->getDateTime()
+            'last_modified_datetime' => $general->getCurrentDateTime()
         );
 
         if ($user['access_type'] != 'testing-lab') {
@@ -193,7 +193,7 @@ try {
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
             $approvedOn = explode(" ", $data['approvedOn']);
-            $data['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+            $data['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
         } else {
             $data['approvedOn'] = NULL;
         }
@@ -201,45 +201,45 @@ try {
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
             $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
         } else {
             $data['sampleReceivedDate'] = NULL;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
             $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
         } else {
             $data['sampleTestedDateTime'] = NULL;
         }
 
         if (isset($data['rapidtestDate']) && trim($data['rapidtestDate']) != "") {
-            $data['rapidtestDate'] = $general->dateFormat($data['rapidtestDate']);
+            $data['rapidtestDate'] = $general->isoDateFormat($data['rapidtestDate']);
         } else {
             $data['rapidtestDate'] = NULL;
         }
 
         if (isset($data['childDob']) && trim($data['childDob']) != "") {
-            $data['childDob'] = $general->dateFormat($data['childDob']);
+            $data['childDob'] = $general->isoDateFormat($data['childDob']);
         } else {
             $data['childDob'] = NULL;
         }
 
         if (isset($data['mothersDob']) && trim($data['mothersDob']) != "") {
-            $data['mothersDob'] = $general->dateFormat($data['mothersDob']);
+            $data['mothersDob'] = $general->isoDateFormat($data['mothersDob']);
         } else {
             $data['mothersDob'] = NULL;
         }
 
 
         if (isset($data['motherTreatmentInitiationDate']) && trim($data['motherTreatmentInitiationDate']) != "") {
-            $data['motherTreatmentInitiationDate'] = $general->dateFormat($data['motherTreatmentInitiationDate']);
+            $data['motherTreatmentInitiationDate'] = $general->isoDateFormat($data['motherTreatmentInitiationDate']);
         } else {
             $data['motherTreatmentInitiationDate'] = NULL;
         }
 
         if (isset($data['previousPCRTestDate']) && trim($data['previousPCRTestDate']) != "") {
             $previousPCRTestDate = explode(" ", $data['previousPCRTestDate']);
-            $data['previousPCRTestDate'] = $general->dateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
+            $data['previousPCRTestDate'] = $general->isoDateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
         } else {
             $data['previousPCRTestDate'] = NULL;
         }
@@ -252,27 +252,27 @@ try {
             $motherVlResult = null;
         }
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
-            $data['reviewedOn'] = $general->dateFormat($data['reviewedOn']);
+            $data['reviewedOn'] = $general->isoDateFormat($data['reviewedOn']);
         } else {
             $data['reviewedOn'] = NULL;
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
             $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+            $data['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
         } else {
             $data['resultDispatchedOn'] = NULL;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
             $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = $general->dateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+            $data['sampleDispatchedOn'] = $general->isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
         } else {
             $data['sampleDispatchedOn'] = NULL;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $data['revisedOn'] = $general->dateFormat($data['revisedOn']);
+            $data['revisedOn'] = $general->isoDateFormat($data['revisedOn']);
         } else {
             $data['revisedOn'] = NULL;
         }
@@ -344,15 +344,15 @@ try {
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                       => isset($data['sampleRejectionReason']) ? $data['sampleRejectionReason'] : null,
-            'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->dateFormat($data['rejectionDate']) : null,
+            'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
             'source_of_request'                                 => "app"
         );
 
         if ($rowData) {
-            $eidData['last_modified_datetime']  = $general->getDateTime();
+            $eidData['last_modified_datetime']  = $general->getCurrentDateTime();
             $eidData['last_modified_by']  = $user['user_id'];
         } else {
-            $eidData['sample_registered_at_lab']  = $general->getDateTime();
+            $eidData['sample_registered_at_lab']  = $general->getCurrentDateTime();
             $eidData['request_created_by']  = $user['user_id'];
         }
 

@@ -13,8 +13,8 @@ try {
         $data = array(
             'contact_notes' => $_POST['notes'],
             'treament_contact_id' => $_POST['treamentId'],
-            'collected_on' => $general->dateFormat($_POST['dateVal']),
-            'added_on' => $general->getDateTime()
+            'collected_on' => $general->isoDateFormat($_POST['dateVal']),
+            'added_on' => $general->getCurrentDateTime()
         );
         //print_r($data);die;
         $result = $db->insert($tableName, $data);

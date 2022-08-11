@@ -172,15 +172,15 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         /* To get Symptoms and Comorbidities details */
         $row[] = implode(',',$sysmtomsArr);
         $row[] = implode(',',$comorbiditiesArr);
-		/* $row[] = $general->humanDateFormat($aRow['date_of_symptom_onset']);
+		/* $row[] = $general->humanReadableDateFormat($aRow['date_of_symptom_onset']);
 		$row[] = ucwords($aRow['contact_with_confirmed_case']);
 		$row[] = ucwords($aRow['has_recent_travel_history']);
 		$row[] = ucwords($aRow['travel_country_names']);
-		$row[] = $general->humanDateFormat($aRow['travel_return_date']); */
+		$row[] = $general->humanReadableDateFormat($aRow['travel_return_date']); */
 		$row[] = $sampleRejection;
 		$row[] = $sampleTestedOn;
 		$row[] = $eidResults[$aRow['result']];
-		$row[] = $general->humanDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ucfirst($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';

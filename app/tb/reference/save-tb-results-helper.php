@@ -15,7 +15,7 @@ try {
 			'result_type' 		=> ucfirst($_POST['resultType']),
 			'result' 		=> ucfirst($_POST['resultName']),
 			'status' 	    => $_POST['resultStatus'],
-			'updated_datetime' 	=> $general->getDateTime(),
+			'updated_datetime' 	=> $general->getCurrentDateTime(),
 		);
 		if(isset($_POST['resultId']) && $_POST['resultId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['resultId']))->where('result', $_POST['oldResultName'])->where('result_type', $_POST['oldResultType']);

@@ -146,10 +146,10 @@ $end_date = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   $s_t_date = explode("to", $_POST['sampleTestDate']);
   if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-    $start_date = $general->dateFormat(trim($s_t_date[0]));
+    $start_date = $general->isoDateFormat(trim($s_t_date[0]));
   }
   if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-    $end_date = $general->dateFormat(trim($s_t_date[1]));
+    $end_date = $general->isoDateFormat(trim($s_t_date[1]));
   }
 }
 
@@ -166,10 +166,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
   $s_t_date = explode("to", $_POST['sampleCollectionDate']);
   if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-    $start_date = $general->dateFormat(trim($s_t_date[0]));
+    $start_date = $general->isoDateFormat(trim($s_t_date[0]));
   }
   if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-    $end_date = $general->dateFormat(trim($s_t_date[1]));
+    $end_date = $general->isoDateFormat(trim($s_t_date[1]));
   }
   if($start_date!='0000-00-00' && $end_date!='0000-00-00')
   {

@@ -18,7 +18,7 @@ foreach ($sampleResult as $sampleRow) {
     }
     if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
         $testDate = explode(" ", $_POST['testDate']);
-        $_POST['testDate'] = $general->dateFormat($testDate[0]);
+        $_POST['testDate'] = $general->isoDateFormat($testDate[0]);
         $_POST['testDate'] .= " " . $testDate[1];
     } else {
         $_POST['testDate'] = null;
@@ -26,7 +26,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $vlObj->generateVLSampleID($provinceCode, $general->humanDateFormat($sampleRow['sample_collection_date']));
+        $sampleJson = $vlObj->generateVLSampleID($provinceCode, $general->humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
         //$vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code'] = $sampleData['sampleCode'];

@@ -79,25 +79,25 @@ foreach ($rResult as $aRow) {
 	}
 	if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['sample_received_at_vl_lab_datetime']);
-		$sampleRecievedDate = $general->humanDateFormat($xplodDate[0]);
+		$sampleRecievedDate = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$sampleRecievedDate = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['sample_tested_datetime']);
-		$testDate = $general->humanDateFormat($xplodDate[0]);
+		$testDate = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$testDate = '';
 	}
 	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['result_printed_datetime']);
-		$printDate = $general->humanDateFormat($xplodDate[0]);
+		$printDate = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$printDate = '';
 	}
 	if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['result_mail_datetime']);
-		$mailDate = $general->humanDateFormat($xplodDate[0]);
+		$mailDate = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$mailDate = '';
 	}

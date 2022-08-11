@@ -28,7 +28,7 @@ try {
 
 	if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
 		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-		$_POST['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+		$_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
 	} else {
 		$_POST['sampleCollectionDate'] = NULL;
 	}
@@ -36,14 +36,14 @@ try {
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = NULL;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = NULL;
 	}
@@ -51,7 +51,7 @@ try {
 
 	if (isset($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
 		$arrivalDate = explode(" ", $_POST['arrivalDateTime']);
-		$_POST['arrivalDateTime'] = $general->dateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+		$_POST['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
 	} else {
 		$_POST['arrivalDateTime'] = NULL;
 	}
@@ -103,7 +103,7 @@ try {
 
 	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+		$_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = NULL;
 	}
@@ -120,7 +120,7 @@ try {
 		'patient_id'                          => isset($_POST['patientId']) ? $_POST['patientId'] : null,
 		'patient_name'                        => isset($_POST['firstName']) ? $_POST['firstName'] : null,
 		'patient_surname'                     => isset($_POST['lastName']) ? $_POST['lastName'] : null,
-		'patient_dob'                         => isset($_POST['patientDob']) ? $general->dateFormat($_POST['patientDob']) : null,
+		'patient_dob'                         => isset($_POST['patientDob']) ? $general->isoDateFormat($_POST['patientDob']) : null,
 		'patient_gender'                      => isset($_POST['patientGender']) ? $_POST['patientGender'] : null,
 		'patient_age'                         => isset($_POST['patientAge']) ? $_POST['patientAge'] : null,
 		'patient_marital_status'              => isset($_POST['maritalStatus']) ? $_POST['maritalStatus'] : null,
@@ -156,10 +156,10 @@ try {
 		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
 		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
-		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->dateFormat($_POST['authorizedOn']) : null,
+		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
-		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
+		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
+		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status'                       => $status,
 		'result_sent_to_source'               => $resultSentToSource,
 		'data_sync'                           => 0,
@@ -220,7 +220,7 @@ try {
 		// 'event_type'=>$eventType,
 		// 'action'=>$action,
 		// 'resource'=>$resource,
-		// 'date_time'=>$general->getDateTime()
+		// 'date_time'=>$general->getCurrentDateTime()
 		// );
 		// $db->insert($tableName1,$data);
 

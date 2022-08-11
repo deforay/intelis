@@ -17,7 +17,7 @@ try {
             'rejection_type' 			=> $_POST['rejectionType'],
             'rejection_reason_code'	=> $_POST['rejectionReasonCode'],
             'rejection_reason_status' 	=> $_POST['rejectionReasonStatus'],
-			'updated_datetime' 			=> $general->getDateTime()
+			'updated_datetime' 			=> $general->getCurrentDateTime()
 		);
 
 		if(isset($_POST['rejectionReasonId']) && $_POST['rejectionReasonId'] != ""){

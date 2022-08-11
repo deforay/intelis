@@ -60,7 +60,7 @@ try {
                     $pocDev = 'yes';
                 }
                 if (trim($_POST['configMachineName'][$c]) != '') {
-                    $configMachineData = array('config_id' => $id, 'config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => $general->getDateTime());
+                    $configMachineData = array('config_id' => $id, 'config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => $general->getCurrentDateTime());
                     $db->insert($importMachineTable, $configMachineData);
                 }
             }

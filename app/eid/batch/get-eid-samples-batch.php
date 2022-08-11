@@ -13,20 +13,20 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->dateFormat(trim($s_c_date[0]));
+        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->dateFormat(trim($s_c_date[1]));
+        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
     }
 }
 if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) != '') {
     $s_c_date = explode("to", $_POST['sampleReceivedAtLab']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $sampleReceivedStartDate = $general->dateFormat(trim($s_c_date[0]));
+        $sampleReceivedStartDate = $general->isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $sampleReceivedEndDate = $general->dateFormat(trim($s_c_date[1]));
+        $sampleReceivedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
     }
 }
 

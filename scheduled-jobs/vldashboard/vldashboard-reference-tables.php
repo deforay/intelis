@@ -93,7 +93,7 @@ try {
 
 
 
-    $currentDate = $general->getDateTime();
+    $currentDate = $general->getCurrentDateTime();
 
 
     $filename = 'reference-data-' . $currentDate . '.json';

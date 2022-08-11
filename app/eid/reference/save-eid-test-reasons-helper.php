@@ -13,7 +13,7 @@ try {
 			'test_reason_name' 		=> $_POST['testReasonName'],
 			'parent_reason' 		=> (isset($_POST['parentReason']) && $_POST['parentReason'] != "")?$_POST['parentReason']:0,
 			'test_reason_status'    => $_POST['testReasonStatus'],
-			'updated_datetime'  	=> $general->getDateTime(),
+			'updated_datetime'  	=> $general->getCurrentDateTime(),
 		);
 		if(isset($_POST['testReasonId']) && $_POST['testReasonId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['testReasonId']));

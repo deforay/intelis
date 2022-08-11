@@ -109,10 +109,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = $general->dateFormat(trim($s_t_date[0]));
+          $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = $general->dateFormat(trim($s_t_date[1]));
+          $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
 

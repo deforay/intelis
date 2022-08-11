@@ -134,10 +134,10 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->dateFormat(trim($s_c_date[0]));
+          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->dateFormat(trim($s_c_date[1]));
+          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -146,10 +146,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
      $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $labStartDate = $general->dateFormat(trim($s_c_date[0]));
+          $labStartDate = $general->isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $labEnddate = $general->dateFormat(trim($s_c_date[1]));
+          $labEnddate = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -158,10 +158,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleTestedDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $testedStartDate = $general->dateFormat(trim($s_c_date[0]));
+          $testedStartDate = $general->isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $testedEndDate = $general->dateFormat(trim($s_c_date[1]));
+          $testedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -297,13 +297,13 @@ foreach ($rResult as $aRow) {
      $barcode = '';
      if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['sample_collection_date']);
-          $aRow['sample_collection_date'] = $general->humanDateFormat($xplodDate[0]);
+          $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
      } else {
           $aRow['sample_collection_date'] = '';
      }
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-          $aRow['last_modified_datetime'] = $general->humanDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+          $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
      } else {
           $aRow['last_modified_datetime'] = '';
      }

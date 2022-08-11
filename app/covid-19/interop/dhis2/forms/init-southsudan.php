@@ -32,7 +32,7 @@ foreach ($initOptionSets as $t => $id) {
                 'other_id' => $lab['id'],
                 'facility_type' => 2,
                 'test_type' => 'covid19',
-                'updated_datetime' => $general->getDateTime(),
+                'updated_datetime' => $general->getCurrentDateTime(),
                 'status' => 'active'
             );
             $updateColumns = array("other_id", "updated_datetime");
@@ -45,7 +45,7 @@ foreach ($initOptionSets as $t => $id) {
                 'facility_id' => $id,
                 'monthly_target' => null,
                 'suppressed_monthly_target' => null,
-                "updated_datetime" => $general->getDateTime()
+                "updated_datetime" => $general->getCurrentDateTime()
             );
             $db->setQueryOption(array('IGNORE'))->insert('testing_labs', $dataTest);
         }
@@ -84,7 +84,7 @@ foreach ($initOptionSets as $t => $id) {
 //         'other_id' => $facility['id'],
 //         'facility_type' => 1,
 //         'test_type' => 'covid19',
-//         'updated_datetime' => $general->getDateTime(),
+//         'updated_datetime' => $general->getCurrentDateTime(),
 //         'status' => 'active'
 //     );
 //     $updateColumns = array("other_id", "updated_datetime");
@@ -96,7 +96,7 @@ foreach ($initOptionSets as $t => $id) {
 //     $dataTest = array(
 //         'test_type' => 'covid19',
 //         'facility_id' => $id,
-//         "updated_datetime" => $general->getDateTime()
+//         "updated_datetime" => $general->getCurrentDateTime()
 //     );
 //     $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);
 // }

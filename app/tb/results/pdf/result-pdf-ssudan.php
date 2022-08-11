@@ -72,6 +72,8 @@ class SouthSudan_PDF extends MYPDF
     }
 }
 
+
+$dateUtils = new \Vlsm\Utilities\DateUtils();
 $tbLamResults = $tbObj->getTbResults('lam');
 $tbXPertResults = $tbObj->getTbResults('x-pert');
 
@@ -101,7 +103,7 @@ if (sizeof($requestResult) > 0) {
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
 
-        $currentTime = $general->getDateTime();
+        $currentTime = $general->getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';
@@ -180,14 +182,14 @@ if (sizeof($requestResult) > 0) {
         $ageCalc = 0;
         $age = 'Unknown';
         if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
-            $ageCalc = $general->ageInYearMonthDays($result['patient_dob']);
+            $ageCalc = $dateUtils->ageInYearMonthDays($result['patient_dob']);
         } elseif (isset($result['patient_age']) && trim($result['patient_age']) != '' && trim($result['patient_age']) > 0) {
             $age = $result['patient_age'];
         }
 
         if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_collection_date']);
-            $result['sample_collection_date'] = $general->humanDateFormat($expStr[0]);
+            $result['sample_collection_date'] = $general->humanReadableDateFormat($expStr[0]);
             $sampleCollectionTime = $expStr[1];
         } else {
             $result['sample_collection_date'] = '';
@@ -197,18 +199,18 @@ if (sizeof($requestResult) > 0) {
         $sampleReceivedTime = '';
         if (isset($result['sample_received_at_lab_datetime']) && trim($result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_received_at_lab_datetime']);
-            $sampleReceivedDate = $general->humanDateFormat($expStr[0]);
+            $sampleReceivedDate = $general->humanReadableDateFormat($expStr[0]);
             $sampleReceivedTime = $expStr[1];
         }
         $resultDispatchedDate = '';
         $resultDispatchedTime = '';
         if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['result_printed_datetime']);
-            $resultDispatchedDate = $general->humanDateFormat($expStr[0]);
+            $resultDispatchedDate = $general->humanReadableDateFormat($expStr[0]);
             $resultDispatchedTime = $expStr[1];
         } else {
             $expStr = explode(" ", $currentTime);
-            $resultDispatchedDate = $general->humanDateFormat($expStr[0]);
+            $resultDispatchedDate = $general->humanReadableDateFormat($expStr[0]);
             $resultDispatchedTime = $expStr[1];
         }
 
@@ -216,11 +218,11 @@ if (sizeof($requestResult) > 0) {
         $approvedOnTime = '';
         if (isset($result['result_approved_datetime']) && trim($result['result_approved_datetime']) != '' && $result['result_approved_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['result_approved_datetime']);
-            $approvedOnDate = $general->humanDateFormat($expStr[0]);
+            $approvedOnDate = $general->humanReadableDateFormat($expStr[0]);
             $approvedOnTime = $expStr[1];
         } else {
             $expStr = explode(" ", $currentTime);
-            $approvedOnDate = $general->humanDateFormat($expStr[0]);
+            $approvedOnDate = $general->humanReadableDateFormat($expStr[0]);
             $approvedOnTime = $expStr[1];
         }
 
@@ -239,7 +241,7 @@ if (sizeof($requestResult) > 0) {
 
         if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_tested_datetime']);
-            $result['sample_tested_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+            $result['sample_tested_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
         } else {
             $result['sample_tested_datetime'] = '';
         }
@@ -531,7 +533,7 @@ if (sizeof($requestResult) > 0) {
         $resultPdf->setPrintHeader(false);
         $resultPdf->setPrintFooter(false);
         $resultPdf->concat();
-        $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6). '.pdf';
+        $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
         $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
         $general->removeDirectory($pathFront);
         unset($_SESSION['rVal']);

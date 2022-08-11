@@ -15,14 +15,14 @@ try {
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = NULL;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = NULL;
 	}
@@ -40,7 +40,7 @@ try {
 
 	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+		$_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = NULL;
 	}
@@ -60,20 +60,20 @@ try {
 		'result_approved_datetime' 			  => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  NULL,
 		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
-		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->dateFormat($_POST['authorizedOn']) : null,
+		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getDateTime() : "",
+		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
 		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
 		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'reason_for_changing'				  => (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
-		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
+		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status'                       => 8,
 		'data_sync'                           => 0,
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'last_modified_by'                     => $_SESSION['userId'],
 		'result_printed_datetime' 			  => NULL,
 		'result_dispatched_datetime' 		  => NULL,
-		'last_modified_datetime'               => $general->getDateTime()
+		'last_modified_datetime'               => $general->getCurrentDateTime()
 	);
 
 	if (!empty($_POST['labId'])) {
@@ -100,7 +100,7 @@ try {
 				if (trim($_POST['testName'][$testKey]) != "") {
 					if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
 						$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
-						$_POST['testDate'][$testKey] = $general->dateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
+						$_POST['testDate'][$testKey] = $general->isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
 					} else {
 						$_POST['testDate'][$testKey] = NULL;
 					}
@@ -111,7 +111,7 @@ try {
 						'sample_tested_datetime' => $_POST['testDate'][$testKey],
 						'testing_platform'      => isset($_POST['testingPlatform'][$testKey]) ? $_POST['testingPlatform'][$testKey] : null,
 						'kit_lot_no'      		=> (strpos($testName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-						'kit_expiry_date'      	=> (strpos($testName, 'RDT') !== false) ? $general->dateFormat($_POST['expDate'][$testKey]) : null,
+						'kit_expiry_date'      	=> (strpos($testName, 'RDT') !== false) ? $general->isoDateFormat($_POST['expDate'][$testKey]) : null,
 						'result'				=> $_POST['testResult'][$testKey],
 					);
 					if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
@@ -151,7 +151,7 @@ try {
 		'user_id' => $_SESSION['userId'],
 		'vl_sample_id' => $_POST['covid19SampleId'],
 		'test_type' => 'covid19',
-		'updated_on' => $general->getDateTime()
+		'updated_on' => $general->getCurrentDateTime()
 	);
 	$db->insert($tableName2, $data);
 

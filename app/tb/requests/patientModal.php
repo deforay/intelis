@@ -82,7 +82,7 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_id'] . strtolower($patient['patient_name']) . strtolower($patient['patient_surname']) . $patient['patient_age'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . $general->humanDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_id'];
+										$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . $general->humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_id'];
 								?>
 										<tr>
 											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value="<?php echo $patientDetails; ?>" onclick="getPatientDetails(this.value);"></td>

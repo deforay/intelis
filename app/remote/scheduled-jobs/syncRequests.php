@@ -121,7 +121,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
             }
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check wheather sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
@@ -148,7 +148,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     $request['source_of_request'] = "vlsts";
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
@@ -247,7 +247,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check whether sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
@@ -271,7 +271,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
@@ -367,7 +367,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check whether sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
@@ -393,7 +393,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                 if (!empty($request['sample_collection_date'])) {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
@@ -545,7 +545,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check exist remote
             $exsvlQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
@@ -564,7 +564,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                 if (!empty($request['sample_collection_date'])) {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
@@ -704,7 +704,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
             }
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check exist remote
             $exsvlQuery = "SELECT tb_id,sample_code FROM form_tb AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
@@ -723,7 +723,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
                 if (!empty($request['sample_collection_date'])) {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
@@ -744,7 +744,7 @@ $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_n
 
 /* Update last_remote_results_sync in s_vlsm_instance */
 $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-$id = $db->update('s_vlsm_instance', array('last_remote_requests_sync' => $general->getDateTime()));
+$id = $db->update('s_vlsm_instance', array('last_remote_requests_sync' => $general->getCurrentDateTime()));
 
 if (isset($forceSyncModule) && trim($forceSyncModule) != "" && isset($manifestCode) && trim($manifestCode) != "") {
     return 1;

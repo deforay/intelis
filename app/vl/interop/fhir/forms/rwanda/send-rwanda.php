@@ -95,7 +95,7 @@ foreach ($formResults as $row) {
     // echo prettyJson($json);
     // continue;
 
-    $resp = $fhir->post(null, $json);
+    $resp = $fhir->post("/", $json);
 
     echo prettyJson($resp);
 

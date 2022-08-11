@@ -22,7 +22,7 @@ try {
         //$db->where('facility_id', $_POST['mappedFacilities'], 'NOT IN');
         $db->delete($tableName);
 
-        $currentDateTime = $general->getDateTime();
+        $currentDateTime = $general->getCurrentDateTime();
         $data = array();
         foreach ($_POST['mappedFacilities'] as $facility) {
             $data[] = array(

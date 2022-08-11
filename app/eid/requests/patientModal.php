@@ -82,7 +82,7 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['child_id'] . strtolower($patient['child_name']) . strtolower($patient['child_surname']) . $patient['mother_age_in_years'] . strtolower($patient['child_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . $general->humanDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . $general->humanDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
+										$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . $general->humanReadableDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . $general->humanReadableDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
 								?>
 										<tr>
 											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value="<?php echo $patientDetails; ?>" onclick="getPatientDetails(this.value);"></td>

@@ -47,7 +47,7 @@ try {
         if (isset($_POST['authToken']) && !empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             // $data['testing_user'] = $_POST['testingUser'];
-            $data['api_token_generated_datetime'] = $general->getDateTime();
+            $data['api_token_generated_datetime'] = $general->getCurrentDateTime();
         }
 
         $id = $db->insert($tableName, $data);

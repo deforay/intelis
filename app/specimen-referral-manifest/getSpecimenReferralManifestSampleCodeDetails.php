@@ -42,10 +42,10 @@ if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 	$dateRange = explode("to", $_POST['daterange']);
 	//print_r($dateRange);die;
 	if (isset($dateRange[0]) && trim($dateRange[0]) != "") {
-		$startDate = $general->dateFormat(trim($dateRange[0]));
+		$startDate = $general->isoDateFormat(trim($dateRange[0]));
 	}
 	if (isset($dateRange[1]) && trim($dateRange[1]) != "") {
-		$endDate = $general->dateFormat(trim($dateRange[1]));
+		$endDate = $general->isoDateFormat(trim($dateRange[1]));
 	}
 
 	$query .= " AND DATE(vl.sample_collection_date) >= '" . $startDate . "' AND DATE(vl.sample_collection_date) <= '" . $endDate . "'";
