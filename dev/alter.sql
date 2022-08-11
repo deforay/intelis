@@ -3188,3 +3188,6 @@ UPDATE `system_config` SET `value` = '5.0.4' WHERE `system_config`.`name` = 'sc_
 -- Amit 09-Aug-2022
 ALTER TABLE `form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `external_sample_code`; 
 ALTER TABLE `audit_form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `external_sample_code`; 
+
+-- Amit 11-Aug-2022 version 5.0.5
+UPDATE `system_config` SET `value` = '5.0.5' WHERE `system_config`.`name` = 'sc_version';

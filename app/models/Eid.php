@@ -41,11 +41,11 @@ class Eid
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-        if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
-            $remotePrefix = 'R';
-            $sampleCodeKeyCol = 'remote_sample_code_key';
-            $sampleCodeCol = 'remote_sample_code';
-        }
+        // if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
+        //     $remotePrefix = 'R';
+        //     $sampleCodeKeyCol = 'remote_sample_code_key';
+        //     $sampleCodeCol = 'remote_sample_code';
+        // }
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
@@ -376,8 +376,8 @@ class Eid
             }
 
             $rowData = false;
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
 
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
             $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
@@ -448,7 +448,6 @@ class Eid
 
                 // If this sample code exists, let us regenerate
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
-
                 return $this->insertSampleCode($params);
             } else {
 

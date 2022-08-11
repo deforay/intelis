@@ -67,11 +67,11 @@ class Vl
             $sampleCodeCol = 'remote_sample_code';
         }
 
-        if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
-            $remotePrefix = 'R';
-            $sampleCodeKeyCol = 'remote_sample_code_key';
-            $sampleCodeCol = 'remote_sample_code';
-        }
+        // if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
+        //     $remotePrefix = 'R';
+        //     $sampleCodeKeyCol = 'remote_sample_code_key';
+        //     $sampleCodeCol = 'remote_sample_code';
+        // }
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
