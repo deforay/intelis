@@ -306,11 +306,15 @@ try {
         } else {
             $data['revisedOn'] = NULL;
         }
-
+        $formAttributes = "";
+        if (isset($data['app_udid']) && !empty($data['app_udid']) && isset($data['app_version']) && !empty($data['app_version'])) {
+            $formAttributes = array('app_udid' => $data['app_udid'], 'app_version' => $data['app_version']);
+        }
         $eidData = array(
             'vlsm_instance_id'                                  => $instanceId,
             'vlsm_country_id'                                   => $data['formId'],
             'unique_id'                                         => isset($data['uniqueId']) ? $data['uniqueId'] : $generatedUniqueId,
+            'form_attributes'                                   => (isset($formAttributes) && !empty($formAttributes)) ? json_encode($formAttributes) : null,
             'app_sample_code'                                   => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'facility_id'                                       => isset($data['facilityId']) ? $data['facilityId'] : null,
             'province_id'                                       => isset($data['provinceId']) ? $data['provinceId'] : null,
