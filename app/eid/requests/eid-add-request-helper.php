@@ -31,7 +31,6 @@ try {
 	if (empty($instanceId) && $_POST['instanceId']) {
 		$instanceId = $_POST['instanceId'];
 	}
-
 	if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
 		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
 		$_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];

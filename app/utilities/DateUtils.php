@@ -38,7 +38,7 @@ class DateUtils
     }
 
     // Returns the given date in d-M-Y format (with or without time depending on the $includeTime parameter)
-    public function humanReadableDateFormat($date, $includeTime = true)
+    public function humanReadableDateFormat($date, $includeTime = false)
     {
         $date = trim($date);
         if (false === $this->verifyIfDateValid($date)) {
