@@ -45,13 +45,12 @@ class DateUtils
             return null;
         } else {
             $dateObj = new DateTimeImmutable($date);
-            $newDate = $dateObj->format("d-M-Y");
 
             if ($includeTime === true) {
-                $newDate .= " " . $dateObj->format("H:i:s");
+                return $dateObj->format("d-M-Y H:i");
+            } else {
+                return $dateObj->format("d-M-Y");
             }
-
-            return $newDate;
         }
     }
 
@@ -82,5 +81,5 @@ class DateUtils
         $diff = $today->diff($bday);
         // printf(' Your age : %d years, %d month, %d days', $diff->y, $diff->m, $diff->d);
         return array("year" => $diff->y, "months" => $diff->m, "days" => $diff->d);
-    }    
+    }
 }
