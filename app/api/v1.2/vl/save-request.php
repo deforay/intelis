@@ -349,11 +349,15 @@ try {
         } else {
             $data['revisedOn'] = NULL;
         }
-
+        $formAttributes = "";
+        if (isset($data['app_udid']) && !empty($data['app_udid']) && isset($data['app_version']) && !empty($data['app_version'])) {
+            $formAttributes = array('app_udid' => $data['app_udid'], 'app_version' => $data['app_version']);
+        }
         $vlFulldata = array(
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],
             'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : $generatedUniqueId,
+            'form_attributes'                       => (isset($formAttributes) && !empty($formAttributes)) ? json_encode($formAttributes) : null,
             'app_sample_code'                       => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_code_title'                     => (isset($data['sampleCodeTitle']) && $data['sampleCodeTitle'] != '') ? $data['sampleCodeTitle'] :  'auto',
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',

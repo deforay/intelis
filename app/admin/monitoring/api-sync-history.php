@@ -39,6 +39,7 @@ $general = new \Vlsm\Models\General();
 									<th><?php echo _("Test Type"); ?></th>
 									<th><?php echo _("URL"); ?></th>
 									<th><?php echo _("Synced On"); ?></th>
+									<th><?php echo _("Action"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -113,6 +114,9 @@ $general = new \Vlsm\Models\General();
 				"sClass": "center"
 			}, {
 				"sClass": "center"
+			}, {
+				"sClass": "center",
+				"bSortable": false
 			}],
 			"aaSorting": [4, "desc"],
 			"bProcessing": true,

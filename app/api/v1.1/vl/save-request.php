@@ -319,7 +319,6 @@ try {
         } else {
             $data['revisedOn'] = NULL;
         }
-
         $vlFulldata = array(
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],

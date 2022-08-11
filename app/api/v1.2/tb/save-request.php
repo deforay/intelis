@@ -270,11 +270,15 @@ try {
         } else {
             $data['sampleDispatchedDate'] = NULL;
         }
-
+        $formAttributes = "";
+        if (isset($data['app_udid']) && !empty($data['app_udid']) && isset($data['app_version']) && !empty($data['app_version'])) {
+            $formAttributes = array('app_udid' => $data['app_udid'], 'app_version' => $data['app_version']);
+        }
         $tbData = array(
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $data['formId'],
             'unique_id'                           => isset($data['uniqueId']) ? $data['uniqueId'] : $generatedUniqueId,
+            'form_attributes'                     => (isset($formAttributes) && !empty($formAttributes)) ? json_encode($formAttributes) : null,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_reordered'                    => !empty($data['sampleReordered']) ? $data['sampleReordered'] : null,
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,
