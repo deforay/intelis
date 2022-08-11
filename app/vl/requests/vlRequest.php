@@ -3,6 +3,11 @@ $title = _("View All Requests");
 
 require_once(APPLICATION_PATH . '/header.php');
 
+$interopConfig = array();
+if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
+	$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+}
+
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
@@ -229,8 +234,11 @@ foreach ($srcResults as $list) {
 								<?php if (isset($_SESSION['privileges']) && in_array("export-vl-requests.php", $_SESSION['privileges'])) { ?>
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa-solid fa-file-excel"></i>&nbsp;&nbsp;<?php echo _("Export Excel"); ?></a>
 								<?php } ?>
-								<!-- &nbsp;<a class="btn btn-info btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><i class="fa-solid fa-paper-plane"></i> <?php echo _("EMR SEND RESULTS"); ?></a>
-								&nbsp;<a class="btn btn-info btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><i class="fa-solid fa-download"></i> <?php echo _("EMR GET REQUESTS"); ?></a> -->
+
+								<?php if (isset($interopConfig['FHIR']['url']) && !empty($interopConfig['FHIR']['url'])) { ?>
+									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><i class="fa-solid fa-paper-plane"></i> <?php echo _("EMR/FHIR - SEND RESULTS"); ?></a>
+									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><i class="fa-solid fa-download"></i> <?php echo _("EMR/FHIR - GET TESTS"); ?></a>
+								<?php } ?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
 							</td>
 						</tr>
