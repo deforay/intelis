@@ -8,9 +8,39 @@ require_once(APPLICATION_PATH . '/header.php');
 		border: 1px solid #3598DC;
 	}
 
-	.searchVlRequestDataDiv dashboard-stat2 {
-		min-height: 150px;
+	.searchVlRequestDataDiv .dashboard-stat2 {
+		min-height: 120px;
 	}
+
+	.dashloader {
+		width: 8px;
+		height: 18px;
+		display: block;
+		margin: 60px auto;
+		left: -20px;
+		position: relative;
+		
+		border-radius: 4px;
+		box-sizing: border-box;
+		animation: animloader 1s linear infinite alternate;
+	}
+
+	@keyframes animloader {
+		0% {
+			box-shadow: 20px 0 rgba(0, 0, 0, 0.25), 40px 0 white, 60px 0 white;
+		}
+
+		50% {
+			box-shadow: 20px 0 white, 40px 0 rgba(0, 0, 0, 0.25), 60px 0 white;
+		}
+
+		100% {
+			box-shadow: 20px 0 white, 40px 0 white, 60px 0 rgba(0, 0, 0, 0.25);
+		}
+	}
+
+
+
 
 	.input-mini {
 		width: 100% !important;
@@ -313,8 +343,6 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 <script>
-	$(".searchVlRequestDataDiv").html('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> </div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2" style="cursor:pointer;"> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> </div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> </div> </div>');
-
 	$.fn.isInViewport = function() {
 		var elementTop = $(this).offset().top;
 		var elementBottom = elementTop + $(this).outerHeight();
@@ -333,7 +361,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	$(function() {
 
 
-
+		$(".searchVlRequestDataDiv").html('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2" style="cursor:pointer;"><span class="dashloader"></span> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div>');
 		$("#myTab li:first-child").addClass("active");
 		$("#myTabContent div:first-child").addClass("active");
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
