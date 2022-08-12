@@ -814,4 +814,23 @@ class General
         var_dump($object);
         error_log(ob_get_clean());
     }
+
+    public function getCSRF()
+    {
+        if (!isset($_SESSION['csrf_token']) || empty($_SESSION['csrf_token'])) {
+            $token = $_SESSION['csrf_token'] = $this->generateRandomString(64);
+        } else {
+            $token = $_SESSION['csrf_token'];
+        }
+        return $token;
+    }
+
+    public function verifyCSRF($input , $token)
+    {
+        if ($input === $token) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

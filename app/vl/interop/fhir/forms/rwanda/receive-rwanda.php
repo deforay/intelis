@@ -32,14 +32,15 @@ $errors = [];
 
 $data = [];
 
-$data[] = "modified=ge2022-08-05";
-$data[] = "requester=Organization/101282";
+//$data[] = "modified=ge2020-08-05";
+//$data[] = "requester=Organization/101282";
+$data[] = "modified=ge" . date("Y-m-d", strtotime("-1 day"));
 $data[] = "_include=Task:based-on:ServiceRequest";
 $data[] = "status=requested";
 $data[] = "_count=200";
 
 $json = $fhir->get('/Task', $data);
-// echo prettyJson($json);
+//echo prettyJson($json);
 
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/ServiceRequest/107150');
@@ -55,7 +56,7 @@ $json = $fhir->get('/Task', $data);
 // echo prettyJson($json);
 
 
-// die;
+//die;
 
 
 
@@ -239,7 +240,9 @@ foreach ($entries as $entry) {
 
             $formData[$basedOnServiceRequest]['sample_collection_date'] = (string) $specimenParsed->getCollection()->getCollectedDateTime();
 
-            $specimenCode = (string) $specimenParsed->getType()->getCoding()[0]->getCode();
+            if (!empty($specimenParsed->getType())) {
+                $specimenCode = (string) $specimenParsed->getType()->getCoding()[0]->getCode();
+            }
 
             if (!empty($specimenCode)) {
                 $db->where("sample_name", $specimenCode);

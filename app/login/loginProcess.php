@@ -39,9 +39,9 @@ try {
     }
 
 
-    if (isset($_POST["csrf_token"]) && $_POST["csrf_token"] != $_SESSION["csrf_token"]) {
+    if (isset($_POST["csrf_token"]) && $_POST["csrf_token"] != $_SESSION['csrf_token']) {
         // Reset token
-        unset($_SESSION["csrf_token"]);
+        unset($_SESSION['csrf_token']);
         $_SESSION['alertMsg'] = _("Request expired. Please try to login again.");
         unset($_SESSION);
         throw new Exception(_("Please check your login credentials"));
@@ -120,6 +120,7 @@ try {
             }
 
             if (isset($userRow) && !empty($userRow)) {
+
                 $user->userHistoryLog($userName, 'successful', $userRow['user_id']);
                 //add random key
                 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");

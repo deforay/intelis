@@ -1,8 +1,13 @@
 <?php
 
-//use Vlsm\Utilities\Registry;
-
 if (session_status() == PHP_SESSION_NONE) {
+    session_set_cookie_params([
+        'domain' => $_SERVER['HTTP_HOST'],
+        'path' => '/',
+        'samesite' => 'lax',
+        'secure' => true,
+        'httponly' => true
+    ]);
     session_start();
 }
 $domain = '';
@@ -94,6 +99,15 @@ if (empty($_SESSION['APP_TIMEZONE'])) {
 
 date_default_timezone_set($_SESSION['APP_TIMEZONE']);
 
+
+// if (
+//     isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+//     strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0
+// ) {
+//     //Set our $isAjaxRequest to true.
+//     error_log("Ajax Request from " . $_SERVER['REQUEST_URI']);
+// }
+    
 // $request = Laminas\Diactoros\ServerRequestFactory::fromGlobals(
 //     $_SERVER,
 //     $_GET,

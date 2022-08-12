@@ -320,9 +320,11 @@ require_once(APPLICATION_PATH . '/header.php');
 	let currentRequestType = null;
 	let sampleCountsDatatableCounter = 0;
 	let samplePieChartCounter = 0;
-
+	let currentXHR = null;
 
 	$(function() {
+
+
 
 		$("#myTab li:first-child").addClass("active");
 		$("#myTabContent div:first-child").addClass("active");
@@ -366,7 +368,15 @@ require_once(APPLICATION_PATH . '/header.php');
 				$(window).scroll();
 			});
 
+
+		$(window).on('beforeunload', function() {
+			if (currentXHR !== null && currentXHR !== undefined) {
+				currentXHR.abort();
+			}
+		});
+
 		$(window).on('resize scroll', function() {
+
 			if (sampleCountsDatatableCounter == 0) {
 				if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
 					sampleCountsDatatableCounter++;
@@ -406,9 +416,9 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function searchVlRequestData(requestType) {
-		$.blockUI();
+		//$.blockUI();
 		if (requestType == 'vl') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					type: 'vl'
 				},
@@ -418,7 +428,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'recency') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					type: 'recency'
 				},
@@ -428,7 +438,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'eid') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					type: 'eid'
 				},
@@ -438,7 +448,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'covid19') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
 					type: 'covid19'
 				},
@@ -448,7 +458,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'hepatitis') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#hepatitisSampleCollectionDate").val(),
 					type: 'hepatitis'
 				},
@@ -458,7 +468,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'tb') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
 					type: 'tb'
 				},
@@ -469,12 +479,13 @@ require_once(APPLICATION_PATH . '/header.php');
 				});
 		}
 
+		return currentXHR;
 
 	}
 
 	function getNoOfSampleCount(requestType) {
 		if (requestType == 'vl') {
-			return $.post("/dashboard/getSampleCount.php", {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					type: 'vl'
 				},
@@ -484,7 +495,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'recency') {
-			return $.post("/dashboard/getSampleCount.php", {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					type: 'recency'
 				},
@@ -494,7 +505,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'eid') {
-			return $.post("/dashboard/getSampleCount.php", {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					type: 'eid'
 				},
@@ -504,12 +515,14 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		}
+
+		return currentXHR;
 	}
 
 	function getSamplesOverview(requestType) {
 
 		if (requestType == 'vl') {
-			return $.post("/vl/program-management/getSampleStatus.php", {
+			currentXHR = $.post("/vl/program-management/getSampleStatus.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -523,7 +536,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'recency') {
-			return $.post("/vl/program-management/getSampleStatus.php", {
+			currentXHR = $.post("/vl/program-management/getSampleStatus.php", {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -537,7 +550,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'eid') {
-			return $.post("/eid/management/getSampleStatus.php", {
+			currentXHR = $.post("/eid/management/getSampleStatus.php", {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -551,7 +564,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'covid19') {
-			return $.post("/covid-19/management/getSampleStatus.php", {
+			currentXHR = $.post("/covid-19/management/getSampleStatus.php", {
 					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -565,7 +578,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'tb') {
-			return $.post("/tb/management/getSampleStatus.php", {
+			currentXHR = $.post("/tb/management/getSampleStatus.php", {
 					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -579,6 +592,8 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		}
+
+		return currentXHR;
 	}
 
 	function resetSearchVlRequestData(requestType) {

@@ -18,7 +18,6 @@ $receivedCounter = 0;
 $processedCounter = 0;
 
 $json = $fhir->get('/Organization');
-echo "<pre>";
 //var_dump($json);die;
 
 $organizations = json_decode($json, true);

@@ -49,7 +49,7 @@ $formResults = $db->rawQuery($query);
 //var_dump($formResults);die;
 
 $counter = 0;
-
+$json = "";
 foreach ($formResults as $row) {
 
 
@@ -97,7 +97,7 @@ foreach ($formResults as $row) {
 
     $resp = $fhir->post("/", $json);
 
-    echo prettyJson($resp);
+    //echo prettyJson($resp);
 
 
     $updateData = array('result_sent_to_source' => 'sent');
@@ -110,4 +110,4 @@ foreach ($formResults as $row) {
 $response = json_encode(array('timestamp' => time(), 'processed' => $counter, 'response' => $resp));
 $app = new \Vlsm\Models\App();
 $trackId = $app->addApiTracking('vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json);
-echo "\n\n\n\n" . prettyJson($response);
+echo prettyJson($response);

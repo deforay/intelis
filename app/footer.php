@@ -54,6 +54,14 @@
 </script>
 
 <script type="text/javascript">
+	window.csrf = {
+		csrf_token: '<?php echo $_SESSION['csrf_token']; ?>'
+	};
+
+	$.ajaxSetup({
+		data: window.csrf
+	});
+
 	function setCrossLogin() {
 		if (typeof(Storage) !== "undefined") {
 			sessionStorage.setItem("crosslogin", "true");
@@ -195,7 +203,7 @@
 			$_SESSION['alertMsg'] = '';
 			unset($_SESSION['alertMsg']);
 		}
-		if ($_SESSION['logged']) { ?> setCrossLogin();
+		if (isset($_SESSION['logged']) && $_SESSION['logged']) { ?> setCrossLogin();
 		<?php }
 
 		// if instance facility name is not set, let us show the modal

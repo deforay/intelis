@@ -2,6 +2,11 @@
 
 require_once(__DIR__ . "/../../../../startup.php");
 
+if (php_sapi_name() !== 'cli' && !isset($_SESSION['userId'])) {
+    http_response_code(403);
+    exit(0);
+}
+
 
 $general = new \Vlsm\Models\General();
 $arr = $general->getGlobalConfig();
