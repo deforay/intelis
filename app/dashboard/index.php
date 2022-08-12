@@ -8,6 +8,10 @@ require_once(APPLICATION_PATH . '/header.php');
 		border: 1px solid #3598DC;
 	}
 
+	.searchVlRequestDataDiv dashboard-stat2 {
+		min-height: 150px;
+	}
+
 	.input-mini {
 		width: 100% !important;
 	}
@@ -80,7 +84,9 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 							<div class="row vl">
-								<div class="searchVlRequestDataDiv" id="vlSampleResultDetails"></div>
+								<div class="searchVlRequestDataDiv" id="vlSampleResultDetails">
+
+								</div>
 								<div class="box-body sampleCountsDatatableDiv" id="vlNoOfSampleCount"></div>
 								<div class="samplePieChartDiv" id="vlPieChartDiv"></div>
 							</div>
@@ -238,7 +244,7 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 							<div class="row hepatitis">
-								<div id="hepatitisSampleResultDetails"></div>
+								<div class="searchVlRequestDataDiv" id="hepatitisSampleResultDetails"></div>
 								<div class="box-body sampleCountsDatatableDiv" id="hepatitisNoOfSampleCount"></div>
 								<div class="samplePieChartDiv" id="hepatitisPieChartDiv"></div>
 							</div>
@@ -279,7 +285,7 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 							<div class="row tb">
-								<div id="tbSampleResultDetails"></div>
+								<div class="searchVlRequestDataDiv" id="tbSampleResultDetails"></div>
 								<div class="box-body sampleCountsDatatableDiv" id="tbNoOfSampleCount"></div>
 								<div class="samplePieChartDiv" id="tbPieChartDiv"></div>
 							</div>
@@ -307,6 +313,8 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 <script>
+	$(".searchVlRequestDataDiv").html('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> </div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2" style="cursor:pointer;"> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> </div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> </div> </div>');
+
 	$.fn.isInViewport = function() {
 		var elementTop = $(this).offset().top;
 		var elementBottom = elementTop + $(this).outerHeight();
@@ -380,7 +388,7 @@ require_once(APPLICATION_PATH . '/header.php');
 			if (sampleCountsDatatableCounter == 0) {
 				if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
 					sampleCountsDatatableCounter++;
-					$.blockUI();
+					// $.blockUI();
 					$.when(
 						getNoOfSampleCount(currentRequestType),
 					).done(function() {
@@ -623,7 +631,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getEidMonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/eid/management/getEidMonthlyThresholdReport.php", {
 				targetType: '1',
@@ -647,7 +655,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getVlMonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/vl/program-management/getVlMonthlyThresholdReport.php", {
 				targetType: '1',
@@ -671,7 +679,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getVlSuppressionTargetReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/vl/program-management/getSuppressedTargetReport.php", {
 				targetType: '1',
@@ -694,7 +702,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getCovid19MonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/covid-19/management/getCovid19MonthlyThresholdReport.php", {
 				targetType: '1',
@@ -718,7 +726,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getHepatitisMonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/hepatitis/management/get-hepatitis-monthly-threshold-report.php", {
 				targetType: '1',
@@ -739,7 +747,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getTbMonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/tb/management/get-tb-monthly-threshold-report.php", {
 				targetType: '1',
