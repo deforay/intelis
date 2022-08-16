@@ -181,7 +181,7 @@ try {
         if (!empty($facilityMap)) {
             $where[] = " vl.facility_id IN (" . $facilityMap . ")";
         } else {
-            $where[] = " (vl.request_created_by = '" . $user['user_id'] . "' OR vl.vlsm_country_id = '" . $arr['vl_form'] . "')";
+            $where[] = " (vl.request_created_by = '" . $user['user_id'] . "')";
         }
     }
 

@@ -39,9 +39,10 @@ foreach ($syncedTypeResults as $synced) {
 							<td>
 								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
 							</td>
-							<td><b><?php echo _("Test Types"); ?>&nbsp;:</b></td>
+							<td><b><?php echo _("Test Type"); ?>&nbsp;:</b></td>
 							<td>
 								<select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+									<option value=""><?php echo _("-- Select --"); ?></option>
 									<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) { ?>
 										<option value="vl"><?php echo _("Viral Load"); ?></option>
 									<?php }
