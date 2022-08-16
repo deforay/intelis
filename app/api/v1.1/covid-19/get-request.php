@@ -192,7 +192,7 @@ try {
         if (!empty($facilityMap)) {
             $where[] = " vl.facility_id IN (" . $facilityMap . ")";
         } else {
-            $where[] = " (request_created_by = '" . $user['user_id'] . "' OR vlsm_country_id = '" . $arr['vl_form'] . "')";
+            $where[] = " (request_created_by = '" . $user['user_id'] . "')";
         }
     }
     /* To check the sample code filter */
