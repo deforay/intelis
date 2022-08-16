@@ -732,10 +732,10 @@ class General
 
         return $browser;
     }
-    public function getLatestSynDateTime()
+    public function getLastSyncDateTime()
     {
         if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
-            $dateTime = $this->db->rawQueryOne("SELECT requested_on AS dateTime FROM track_api_requests ORDER BY requested_on desc");
+            $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime` FROM `track_api_requests`");
         } else {
             $dateTime = $this->db->rawQueryOne("SELECT GREATEST(COALESCE(last_remote_requests_sync, 0), COALESCE(last_remote_results_sync, 0), COALESCE(last_remote_reference_data_sync, 0)) AS dateTime FROM s_vlsm_instance");
         }
@@ -825,7 +825,7 @@ class General
         return $token;
     }
 
-    public function verifyCSRF($input , $token)
+    public function verifyCSRF($input, $token)
     {
         if ($input === $token) {
             return true;

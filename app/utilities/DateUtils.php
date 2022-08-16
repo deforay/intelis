@@ -27,13 +27,24 @@ class DateUtils
     // Function to get the verify if date is valid or not
     public function verifyIfDateValid($date): bool
     {
-        $dateTime = new DateTimeImmutable($date);
+        $date = trim($date);
 
-        $errors = DateTimeImmutable::getLastErrors();
-        if (!empty($errors['warning_count']) || !empty($errors['error_count'])) {
+        if (empty($date) || 'undefined' === $date || 'null' === $date) {
             return false;
         } else {
-            return true;
+            try {
+                $dateTime = new DateTimeImmutable($date);
+                $errors = DateTimeImmutable::getLastErrors();
+                if (!empty($errors['warning_count']) || !empty($errors['error_count'])) {
+                    error_log("Invalid date :: $date");
+                    return false;
+                } else {
+                    return true;
+                }
+            } catch (Exception $e) {
+                error_log("Invalid date :: $date :: " . $e->getMessage());
+                return false;
+            }
         }
     }
 

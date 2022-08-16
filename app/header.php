@@ -15,7 +15,7 @@ $usersModel = new \Vlsm\Models\Users();
 $_SESSION['module'] = $_SESSION['module'] ?? array();
 
 
-$syncLatestTime = $general->getLatestSynDateTime();
+$syncLatestTime = $general->getLastSyncDateTime();
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();

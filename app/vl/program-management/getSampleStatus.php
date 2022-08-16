@@ -4,20 +4,23 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-$general = new \Vlsm\Models\General(); 
+$general = new \Vlsm\Models\General();
 $whereCondition = '';
-$configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
+// $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
+// $configFormResult = $db->rawQuery($configFormQuery);
 
-$userType = $general->getSystemConfig('sc_user_type');
+//$userType = $general->getSystemConfig('sc_user_type');
 
-if ($userType == 'remoteuser') {
-    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` ORDER BY `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
-    $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-    if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
-        $whereCondition = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
-    }
+// if ($userType == 'remoteuser') {
+//     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` ORDER BY `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+//     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
+//     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
+//         $userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
+//         $whereCondition = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
+//     }
+//}
+if (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
+    $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
 if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
@@ -96,10 +99,10 @@ $tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name
     FROM " . $table . " as vl 
     JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
     JOIN facility_details as f ON vl.lab_id=f.facility_id 
-    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id "  ;
+    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 //filter
 $sWhere = array();
-if(!empty($whereCondition))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $sWhere[] = $recencyWhere;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -140,10 +143,10 @@ $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         JOIN facility_details as f ON vl.lab_id=f.facility_id 
         
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
-        if(!empty($whereCondition))
-            $sWhere[] = $whereCondition;
+if (!empty($whereCondition))
+    $sWhere[] = $whereCondition;
 
-    $sWhere[] = $recencyWhere;
+$sWhere[] = $recencyWhere;
 $sWhere[] = " (vl.result_status = 7) ";
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -193,7 +196,7 @@ $tatSampleQuery = "SELECT
         AND DATE(vl.sample_tested_datetime) <= '$end_date'  ";
 
 $sWhere = array();
-if(!empty($whereCondition))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 
 $sWhere[] = $recencyWhere;

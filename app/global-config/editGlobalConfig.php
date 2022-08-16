@@ -180,7 +180,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											<div class="col-lg-8">
 												<select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _('Please select the VLSM Locale'); ?>">
 													<?php foreach ($localeLists as $locale) { ?>
-														<option value="<?php echo $locale; ?>" <?php echo ($arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
+														<option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
 													<?php } ?>
 												</select>
 											</div>

@@ -1,13 +1,6 @@
 <?php
 
 if (session_status() == PHP_SESSION_NONE) {
-    session_set_cookie_params([
-        'domain' => $_SERVER['HTTP_HOST'],
-        'path' => '/',
-        'samesite' => 'lax',
-        'secure' => true,
-        'httponly' => true
-    ]);
     session_start();
 }
 $domain = '';

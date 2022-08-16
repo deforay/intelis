@@ -7,7 +7,7 @@ $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form' limit 1";
 $configFormResult = $db->rawQueryOne($configFormQuery);
 $cDate = date('Y-m-d');
 $lastSevenDay = date('Y-m-d', strtotime('-7 days'));
-$facilityInfo = $facilityDb->getAllFacilities();
+//$facilityInfo = $facilityDb->getAllFacilities();
 
 
 $waitingTotal = 0;
@@ -78,19 +78,15 @@ if ($u != 'remoteuser') {
     $whereCondition = " result_status!=9  AND ";
 } else {
     $whereCondition = "";
-    //get user facility map ids
-    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-    if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
+    if (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
         if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
-            $whereCondition = " eid.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") AND ";
+            $whereCondition = " eid.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else if (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
-            $whereCondition = " covid19.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") AND ";
+            $whereCondition = " covid19.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else if (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
-            $whereCondition = " tb.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") AND ";
+            $whereCondition = " tb.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else {
-            $whereCondition = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  AND ";
+            $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  AND ";
         }
     }
 }
