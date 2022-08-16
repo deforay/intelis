@@ -98,9 +98,15 @@ if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
           $end_date = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
-
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
      $sWhere[] = ' DATE(a.requested_on) >= "' . $start_date . '" AND DATE(a.requested_on) <= "' . $end_date . '"';
+}
+
+if (isset($_POST['syncedType']) && trim($_POST['syncedType']) != '') {
+     $sWhere[] = ' a.request_type like "' . $_POST['syncedType'] . '"';
+}
+if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
+     $sWhere[] = ' a.test_type like "' . $_POST['testType'] . '"';
 }
 
 /* Implode all the where fields for filtering the data */
