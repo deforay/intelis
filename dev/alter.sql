@@ -3191,3 +3191,7 @@ ALTER TABLE `audit_form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER 
 
 -- Amit 11-Aug-2022 version 5.0.5
 UPDATE `system_config` SET `value` = '5.0.5' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Amit 16-Aug-2022
+ALTER TABLE `track_api_requests` ADD INDEX(`requested_on`);

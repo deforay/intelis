@@ -123,7 +123,7 @@ class Vl
             $maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
         }
 
-        //error_log($maxCodeKeyVal);
+        error_log(" ===== MAXX CODE KEY ====== ".$maxCodeKeyVal);
 
         $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
 
@@ -159,6 +159,9 @@ class Vl
         //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
         // }
         if ($checkResult !== null) {
+            error_log(" ===== Sample Code ====== ".$sCodeKey['sampleCode']);
+            error_log(" ===== Sample Code ====== ".$checkResult[$sampleCodeKeyCol]);
+            error_log('Insert VL Sample : ' . $this->db->getLastQuery());
             return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
         return json_encode($sCodeKey);
