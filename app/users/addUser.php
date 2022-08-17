@@ -1,6 +1,6 @@
 <?php
 ob_start();
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 $query = "SELECT * FROM roles where status='active' GROUP BY role_code";
 $result = $db->rawQuery($query);
@@ -219,13 +219,9 @@ $ftResult = $db->rawQuery($fQuery);
                                                   <div class="col-lg-7">
                                                        <select class="form-control" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="getFacility()">
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
-                                                            <?php
-                                                            foreach ($ftResult as $type) {
-                                                            ?>
+                                                            <?php foreach ($ftResult as $type) { ?>
                                                                  <option value="<?php echo $type['facility_type_id']; ?>"><?php echo ucwords($type['facility_type_name']); ?></option>
-                                                            <?php
-                                                            }
-                                                            ?>
+                                                            <?php } ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -425,9 +421,11 @@ $ftResult = $db->rawQuery($fQuery);
           var fType = $("#facilityType").val();
           if (dName != '') {
                getFacilities();
-          } else if (pName != '') {
+          }
+          if (pName != '') {
                getProvinceDistricts();
-          } else if (fType != '') {
+          }
+          if (fType != '') {
                $.post("/includes/siteInformationDropdownOptions.php", {
                          fType: fType,
                          comingFromUser: 'yes'
