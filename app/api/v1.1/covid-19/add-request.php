@@ -484,6 +484,7 @@ try {
     } else {
         $payload['token'] = null;
     }
+    $general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'covid19', $requestUrl, $params, json_encode($payload), 'json', $params['data'][0]['facilityId']);
     http_response_code(200);
     echo json_encode($payload);
     exit(0);

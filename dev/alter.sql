@@ -3195,3 +3195,6 @@ UPDATE `system_config` SET `value` = '5.0.5' WHERE `system_config`.`name` = 'sc_
 
 -- Amit 16-Aug-2022
 ALTER TABLE `track_api_requests` ADD INDEX(`requested_on`);
+
+-- Thana 17-Aug-2022
+ALTER TABLE `track_api_requests` ADD `request_data` TEXT NULL DEFAULT NULL AFTER `api_params`, ADD `response_data` TEXT NULL DEFAULT NULL AFTER `request_data`;
