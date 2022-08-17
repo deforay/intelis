@@ -137,22 +137,20 @@ try {
             'last_modified_datetime' => $general->getCurrentDateTime()
         );
 
-        if ($user['access_type'] != 'testing-lab') {
-            $vlData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $vlData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $vlData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
-            $vlData['remote_sample'] = 'yes';
-            $vlData['result_status'] = 9;
-            /* if ($roleUser['access_type'] == 'testing-lab') {
-                $vlData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
-            } */
-        } else {
-            $vlData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $vlData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $vlData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
-            $vlData['remote_sample'] = 'no';
-            $vlData['result_status'] = 6;
-        }
+        //if ($user['access_type'] != 'testing-lab') {
+        $vlData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+        $vlData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+        $vlData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+        $vlData['remote_sample'] = 'yes';
+        $vlData['result_status'] = 9;
+
+        // } else {
+        //     $vlData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
+        //     $vlData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
+        //     $vlData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+        //     $vlData['remote_sample'] = 'no';
+        //     $vlData['result_status'] = 6;
+        // }
 
         $id = 0;
         if ($rowData) {

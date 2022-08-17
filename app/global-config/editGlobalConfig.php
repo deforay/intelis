@@ -112,9 +112,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															<?php
 															if (isset($instanceResult[0]['instance_facility_logo']) && trim($instanceResult[0]['instance_facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $instanceResult[0]['instance_facility_logo'])) {
 															?>
-																<img src=".././uploads/instance-logo/<?php echo $instanceResult[0]['instance_facility_logo']; ?>" alt="Logo image">
+																<img src="/uploads/instance-logo/<?php echo $instanceResult[0]['instance_facility_logo']; ?>" alt="Logo image">
 															<?php } else { ?>
-																<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+																
 															<?php } ?>
 														</div>
 														<div>
@@ -208,9 +208,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														<?php
 														if (isset($arr['logo']) && trim($arr['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) {
 														?>
-															<img src=".././uploads/logo/<?php echo $arr['logo']; ?>" alt="Logo image">
+															<img src="/uploads/logo/<?php echo $arr['logo']; ?>" alt="Logo image">
 														<?php } else { ?>
-															<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+															
 														<?php } ?>
 													</div>
 													<div>

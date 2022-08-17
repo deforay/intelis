@@ -1,16 +1,19 @@
-.mandatory, .text-danger {
+.mandatory,
+.text-danger {
     color: rgb(245, 92, 92);
 }
+
 .readonly {
     background: #fff !important;
 }
-.treeview-menu li{
-    margin-left:10px !important;
+
+.treeview-menu li {
+    margin-left: 10px !important;
 }
 
-.sectionHeader{
+.sectionHeader {
     border-top: 2px solid #f4f4f4;
-    background:#f4f4f4 !important;
-    margin-top:30px;
+    background: #f4f4f4 !important;
+    margin-top: 30px;
     text-transform: uppercase;
 }

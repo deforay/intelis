@@ -47,6 +47,11 @@ class Vl
     public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
+        if (!empty($maxCodeKeyVal)) {
+            error_log(" ===== MAXX Code ====== " . $maxCodeKeyVal);
+        }
+
+
         $general = new \Vlsm\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -123,11 +128,9 @@ class Vl
             $maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
         }
 
-        error_log(" ===== MAXX CODE KEY ====== ".$maxCodeKeyVal);
-
         $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
 
-
+        error_log(" ===== NEW MAX ID ====== " . $maxId);
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
             $remotePrefix = $remotePrefix . "R";
@@ -159,8 +162,8 @@ class Vl
         //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
         // }
         if ($checkResult !== null) {
-            error_log(" ===== Sample Code ====== ".$sCodeKey['sampleCode']);
-            error_log(" ===== Sample Code ====== ".$checkResult[$sampleCodeKeyCol]);
+            error_log(" ===== Sample Code ====== " . $sCodeKey['sampleCode']);
+            error_log(" ===== Sample Key Code ====== " . $checkResult[$sampleCodeKeyCol]);
             error_log('Insert VL Sample : ' . $this->db->getLastQuery());
             return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
@@ -362,7 +365,7 @@ class Vl
         $this->db->where("low_vl_result_text", NULL, 'IS NOT');
         $this->db->where("status", 'active', 'like');
         return $this->db->getValue('import_config', 'low_vl_result_text', null);
-    }    
+    }
 
     public function insertSampleCode($params)
     {

@@ -504,9 +504,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 
 											if (isset($facilityInfo['facility_logo']) && trim($facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
 											?>
-												<img src=".././uploads/facility-logo/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $facilityInfo['facility_logo']; ?>" alt="Logo image">
+												<img src="/uploads/facility-logo/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $facilityInfo['facility_logo']; ?>" alt="Logo image">
 											<?php } else { ?>
-												<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+												
 											<?php } ?>
 										</div>
 										<div>
@@ -537,9 +537,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 
 											if (isset($facilityInfo['facility_logo']) && trim($facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
 											?>
-												<img src=".././uploads/facility-logo/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $facilityInfo['facility_logo']; ?>" alt="Logo image">
+												<img src="/uploads/facility-logo/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $facilityInfo['facility_logo']; ?>" alt="Logo image">
 											<?php } else { ?>
-												<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+												
 											<?php } ?>
 										</div>
 										<div>
