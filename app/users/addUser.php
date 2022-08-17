@@ -141,7 +141,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                   <div class="fileinput fileinput-new userSignature" data-provides="fileinput">
                                                        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
 
-                                                            <img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+                                                            
 
                                                        </div>
                                                        <div>
