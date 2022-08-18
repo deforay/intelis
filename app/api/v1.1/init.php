@@ -347,6 +347,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == t
         $testPlatformList[$row['machine_name']] = $row['machine_name'];
     }
     $data['vl']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
+    $data['vl']['reasonForFailure'] = $vlObj->getReasonForFailure(false);
 
     $data['vl']['statusFilterList'] = array(
         array('value' => '7', 'show' => 'Approved'),

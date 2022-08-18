@@ -707,6 +707,26 @@ $disable = "disabled = 'disabled'";
 															<input type="text" class="form-control labSection" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
 														</div>
 													</div>
+													<div class="col-md-4 hivDetection" style="display: none;">
+														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
+														<div class="col-lg-7">
+															<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
+																<option value="">-- Select --</option>
+																<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected'); ?>>HIV-1 Detected</option>
+																<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected'); ?>>HIV-1 Not Detected</option>
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 reasonForFailure" style="display: none;">
+														<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
+														<div class="col-lg-7">
+															<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
+																<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="row">
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
@@ -715,8 +735,6 @@ $disable = "disabled = 'disabled'";
 															</select>
 														</div>
 													</div>
-												</div>
-												<div class="row">
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
@@ -931,6 +949,22 @@ $disable = "disabled = 'disabled'";
 		}
 	});
 
+	$('#tnd,#bdl').change(function() {
+		if ($('#bdl').prop('checked') || $('#tnd').prop('checked')) {
+			$('.reasonForFailure').show();
+			$('#reasonForFailure').addClass('isRequired');
+		} else {
+			$('.reasonForFailure').hide();
+			$('#reasonForFailure').removeClass('isRequired');
+		}
+	});
+	$('#testingPlatform').change(function() {
+		if ($(this).val() == 'GeneXpert') {
+			$('.hivDetection').show();
+		} else {
+			$('.hivDetection').hide();
+		}
+	});
 	$("#vlRequestFormSudan .labSection").on("change", function() {
 		if ($.trim(result) != '') {
 			if ($("#vlRequestFormSudan .labSection").serialize() == $(__clone).serialize()) {

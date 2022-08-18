@@ -481,4 +481,19 @@ class Vl
             error_log('Insert VL Sample : ' . $e->getMessage());
         }
     }
+
+    public function getReasonForFailure($option = true)
+    {
+        $result = array();
+        $this->db->where('status', 'active');
+        $results = $this->db->get('r_vl_test_failure_reasons');
+        if ($option) {
+            foreach ($results as $row) {
+                $result[$row['failure_id']] = $row['failure_reason'];
+            }
+            return $result;
+        } else {
+            return $results;
+        }
+    }
 }

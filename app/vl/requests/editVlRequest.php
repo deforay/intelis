@@ -8,10 +8,12 @@ $sCode = $labFieldDisabled = '';
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
+$vlDb = new \Vlsm\Models\Vl();
+
 $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
 
-
+$reasonForFailure = $vlDb->getReasonForFailure();
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $labFieldDisabled = 'disabled="disabled"';
 }

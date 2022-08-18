@@ -8,6 +8,7 @@ $labFieldDisabled = '';
 
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$vlDb = new \Vlsm\Models\Vl();
 $usersModel = new \Vlsm\Models\Users();
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
@@ -18,6 +19,7 @@ $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('import_config', $condition);
 $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
+$reasonForFailure = $vlDb->getReasonForFailure();
 $userInfo = array();
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ucwords($user['user_name']);

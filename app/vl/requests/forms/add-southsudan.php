@@ -645,6 +645,26 @@ $sFormat = '';
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
                                                                  </div>
+                                                                 <div class="col-md-4 hivDetection" style="display: none;">
+                                                                      <label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
+                                                                                <option value="">-- Select --</option>
+                                                                                <option value="HIV-1 Detected">HIV-1 Detected</option>
+                                                                                <option value="HIV-1 Not Detected">HIV-1 Not Detected</option>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-4 reasonForFailure" style="display: none;">
+                                                                      <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
+                                                                                <?= $general->generateSelectOptions($reasonForFailure, null, '-- Select --'); ?>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                            </div><br />
+                                                            <div class="row">
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -653,8 +673,6 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                            </div><br />
-                                                            <div class="row">
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -669,6 +687,8 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -677,8 +697,6 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -726,8 +744,12 @@ $sFormat = '';
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
                                              <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
                                         </div>
+                                   </div>
+                              </div>
+                         </div>
                     </form>
                </div>
+          </div>
      </section>
 </div>
 <!-- BARCODESTUFF START -->
@@ -1142,9 +1164,17 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#approvedOnDateTime').removeClass('isRequired');
           }
      });
+     $('#testingPlatform').change(function() {
+          if ($(this).val() == 'GeneXpert') {
+               $('.hivDetection').show();
+          } else {
+               $('.hivDetection').hide();
+          }
+     });
      $('#bdl').change(function() {
           if ($('#bdl').is(':checked')) {
                $('#vlResult,#vlLog').attr('readonly', true);
+               $('#vlResult,#vlLog').removeClass('isRequired');
                $('#tnd').prop('checked', false).attr('disabled', true);
           } else {
                $('#vlResult,#vlLog').attr('readonly', false);
@@ -1164,6 +1194,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#tnd,#bdl').attr('disabled', true);
           } else {
                $('#tnd,#bdl').attr('disabled', false);
+          }
+     });
+     $('#tnd,#bdl').change(function() {
+          if ($('#bdl').prop('checked') || $('#tnd').prop('checked')) {
+               $('.reasonForFailure').show();
+               $('#reasonForFailure').addClass('isRequired');
+          } else {
+               $('.reasonForFailure').hide();
+               $('#reasonForFailure').removeClass('isRequired');
           }
      });
 

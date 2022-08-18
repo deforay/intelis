@@ -3202,3 +3202,13 @@ ALTER TABLE `audit_form_covid19` CHANGE `patient_gender` `patient_gender` VARCHA
 
 -- Thana 17-Aug-2022
 ALTER TABLE `track_api_requests` ADD `request_data` TEXT NULL DEFAULT NULL AFTER `api_params`, ADD `response_data` TEXT NULL DEFAULT NULL AFTER `request_data`;
+
+-- Thana 18-Aug-2022
+CREATE TABLE `r_vl_test_failure_reasons` (
+ `failure_id` int NOT NULL AUTO_INCREMENT,
+ `failure_reason` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (`failure_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ALTER TABLE `form_vl` ADD `reason_for_failure` INT(11) NULL DEFAULT NULL AFTER `failed_vl_result`, ADD `result_value_hiv_detection` INT(11) NULL DEFAULT NULL AFTER `vl_test_platform`;
