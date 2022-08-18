@@ -157,8 +157,6 @@ try {
     $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100 ";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
-    $app = new \Vlsm\Models\App();
-    $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'get-request', 'tb', $requestUrl, $params, 'json');
     // No data found
     if (!$rowData) {
         // array_splice($rowData, 1, 2);
@@ -188,7 +186,7 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($rowData), 'get-request', 'tb', $requestUrl, $params, json_encode($payload), 'json', $params['data'][0]['facilityId']);
+    $general->addApiTracking($user['user_id'], count($rowData), 'get-request', 'tb', $requestUrl, $params, json_encode($payload), 'json');
     http_response_code(200);
     echo json_encode($payload);
     exit(0);

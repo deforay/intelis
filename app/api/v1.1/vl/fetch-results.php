@@ -245,8 +245,6 @@ try {
 
         );
 
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, 'json');
         http_response_code(200);
         echo json_encode($response);
         exit(0);
@@ -261,7 +259,7 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, json_encode($payload), 'json', $params['data'][0]['facilityId']);
+    $general->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, json_encode($payload), 'json');
     http_response_code(200);
     echo json_encode($payload);
     exit(0);

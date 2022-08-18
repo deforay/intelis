@@ -188,6 +188,10 @@ try {
           $_POST['vlResult'] = 'Below Detection Level';
           $_POST['vlLog'] = '';
      }
+     if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
+          $_POST['vlResult'] = 'Failed';
+          $_POST['vlLog'] = '';
+     }
 
      $_POST['result'] = '';
      if (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') {
@@ -324,7 +328,6 @@ try {
           $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
      }
      $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
-
      $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
      if (isset($_POST['api']) && $_POST['api'] = "yes") {
