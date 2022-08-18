@@ -380,7 +380,7 @@ class App
             'data_format'           => $format ?? null
         );
         if ($format == 'sync-api') {
-            $data['facility_id'] = (isset($params['date'][0]['facilityId']) && count($params['date'][0]['facilityId']) > 0) ? $params['date'][0]['facilityId'] : null;
+            $data['facility_id'] = (isset($params['data'][0]['facilityId']) && count($params['data'][0]['facilityId']) > 0) ? $params['data'][0]['facilityId'] : null;
         }
         return $this->db->insert("track_api_requests", $data);
     }
