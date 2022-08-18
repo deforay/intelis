@@ -1198,8 +1198,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      });
      $('#tnd,#bdl').change(function() {
           if ($('#bdl').prop('checked') || $('#tnd').prop('checked')) {
-               $('.reasonForFailure').show();
-               $('#reasonForFailure').addClass('isRequired');
+               //$('.reasonForFailure').show();
+               //$('#reasonForFailure').addClass('isRequired');
           } else {
                $('.reasonForFailure').hide();
                $('#reasonForFailure').removeClass('isRequired');

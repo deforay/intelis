@@ -951,8 +951,8 @@ $disable = "disabled = 'disabled'";
 
 	$('#tnd,#bdl').change(function() {
 		if ($('#bdl').prop('checked') || $('#tnd').prop('checked')) {
-			$('.reasonForFailure').show();
-			$('#reasonForFailure').addClass('isRequired');
+			// $('.reasonForFailure').show();
+			// $('#reasonForFailure').addClass('isRequired');
 		} else {
 			$('.reasonForFailure').hide();
 			$('#reasonForFailure').removeClass('isRequired');
