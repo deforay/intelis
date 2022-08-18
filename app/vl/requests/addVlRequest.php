@@ -250,8 +250,9 @@ require($fileArray[$arr['vl_form']]);
                 function(data) {
                     if (data != 0) {
                         <?php if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
-                            alert(alrt);
-                            $("#" + id).val('');
+                            //alert(alrt);
+                            //$("#" + id).val('');
+                            sampleCodeGeneration();
                             <?php if ($arr['vl_form'] == '3') { ?>
                                 $("#sampleCodeValue").html('').hide();
                             <?php }

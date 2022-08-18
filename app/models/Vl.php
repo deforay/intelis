@@ -162,9 +162,9 @@ class Vl
         //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
         // }
         if ($checkResult !== null) {
-            error_log(" ===== Sample Code ====== " . $sCodeKey['sampleCode']);
-            error_log(" ===== Sample Key Code ====== " . $checkResult[$sampleCodeKeyCol]);
-            error_log('Insert VL Sample : ' . $this->db->getLastQuery());
+            error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
+            error_log("DUP::: Sample Key Code ====== " . $checkResult[$sampleCodeKeyCol]);
+            error_log('DUP::: ' . $this->db->getLastQuery());
             return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
         return json_encode($sCodeKey);
@@ -452,6 +452,8 @@ class Vl
                 // $id = $this->db->update("form_vl", $vlData);
                 // $params['vlSampleId'] = $rowData['vl_sample_id'];
 
+
+                error_log('Insert VL Sample : ' . $this->db->getLastQuery());                
                 // If this sample code exists, let us regenerate
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
