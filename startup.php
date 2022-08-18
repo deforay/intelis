@@ -4,8 +4,14 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+/**
+ * This makes our life easier when dealing with paths. Everything is relative
+ * to the application root now.
+ */
+chdir(__DIR__);
+
 defined('ROOT_PATH')
-    || define('ROOT_PATH', realpath(__DIR__));
+    || define('ROOT_PATH', realpath(dirname(__FILE__)));
 
 defined('WEB_ROOT')
     || define(
@@ -34,6 +40,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
 
 require_once(APPLICATION_PATH . '/system/system.php');
 require_once(ROOT_PATH . '/vendor/autoload.php');
+
 
 define('SYSTEM_CONFIG', require_once(ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php"));
 
@@ -69,22 +76,3 @@ if (empty($_SESSION['APP_TIMEZONE'])) {
 }
 
 date_default_timezone_set($_SESSION['APP_TIMEZONE']);
-
-
-// if (
-//     isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-//     strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0
-// ) {
-//     //Set our $isAjaxRequest to true.
-//     error_log("Ajax Request from " . $_SERVER['REQUEST_URI']);
-// }
-    
-// $request = Laminas\Diactoros\ServerRequestFactory::fromGlobals(
-//     $_SERVER,
-//     $_GET,
-//     $_POST,
-//     $_COOKIE,
-//     $_FILES
-// );
-
-// Registry::set('request', $request);

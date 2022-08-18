@@ -32,19 +32,19 @@ try {
 
         $decryptedPassword = General::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
         $_POST['password'] = $decryptedPassword;
-    } else {
-        if (!SYSTEM_CONFIG['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
-            throw new Exception(_("Please check your login credentials"));
-        }
     }
+    //  else {
+    //     if (!SYSTEM_CONFIG['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
+    //         throw new Exception(_("Please check your login credentials"));
+    //     }
+    // }
 
 
-    if (isset($_POST["csrf_token"]) && $_POST["csrf_token"] != $_SESSION['csrf_token']) {
+    if (!isset($_POST["csrf_token"]) || $_POST["csrf_token"] != $_SESSION['csrf_token']) {
         // Reset token
         unset($_SESSION['csrf_token']);
-        $_SESSION['alertMsg'] = _("Request expired. Please try to login again.");
         unset($_SESSION);
-        throw new Exception(_("Please check your login credentials"));
+        throw new Exception(_("Request expired. Please try to login again."));
     }
 
     /* Crosss Login Block End */

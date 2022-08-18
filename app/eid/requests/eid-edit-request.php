@@ -151,7 +151,6 @@ require($fileArray[$arr['vl_form']]);
                     if (data != 0) {
                         <?php if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
                             alert(alrt);
-                            $("#" + id).val('');
                         <?php } else { ?>
                             data = data.split("##");
                             document.location.href = " /eid/requests/eid-edit-request.php?id=" + data[0] + "&c=" + data[1];

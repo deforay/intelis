@@ -1,12 +1,6 @@
 <?php
 
-/**
- * This makes our life easier when dealing with paths. Everything is relative
- * to the application root now.
- */
-chdir(dirname(__DIR__));
-
-require_once(__DIR__ . DIRECTORY_SEPARATOR . '/../startup.php');
+require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'startup.php');
 
 
 // Allow from any origin
