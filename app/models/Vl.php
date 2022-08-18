@@ -92,7 +92,7 @@ class Vl
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal == null) {
+        if ($maxCodeKeyVal === null) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
@@ -106,27 +106,23 @@ class Vl
                 }
             }
 
-            $this->db->where('YEAR(sample_collection_date)', array($dateObj->format('Y')));
-            $this->db->where($sampleCodeCol, NULL, 'IS NOT');
-            $this->db->orderBy($sampleCodeKeyCol, "DESC");
-            $svlResult = $this->db->getOne($this->table, array($sampleCodeKeyCol));
-
-            if ($svlResult) {
-                $maxCodeKeyVal = $svlResult[$sampleCodeKeyCol];
-            } else {
-                $maxCodeKeyVal = null;
-            }
+            $this->db->where('YEAR(sample_collection_date) = ?', array($dateObj->format('Y')));
+            $maxCodeKeyVal = $this->db->getValue($this->table, "MAX($sampleCodeKeyCol)");
         }
 
 
-        if (!empty($maxCodeKeyVal)) {
+        if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
-            $strparam = strlen($maxId);
-            $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
-            $maxId = $zeros . $maxId;
+            // $strparam = strlen($maxId);
+            // $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
+            // $maxId = $zeros . $maxId;
+            $maxId = sprintf("%04d", (int) $maxId);
         } else {
-            $maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
+            //$maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
+            $maxId = 1;
         }
+
+        $maxId = sprintf("%04d", (int) $maxId);
 
         $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
 

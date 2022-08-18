@@ -55,7 +55,7 @@
 
 <script type="text/javascript">
 	window.csrf = {
-		csrf_token: '<?php echo $_SESSION['csrf_token']; ?>'
+		csrf_token: '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? $general->generateRandomString(64); ?>'
 	};
 
 	$.ajaxSetup({
