@@ -24,13 +24,13 @@ class DateUtils
                 if ($strict) {
                     $errors = DateTimeImmutable::getLastErrors();
                     if (!empty($errors['warning_count']) || !empty($errors['error_count'])) {
-                        error_log("Invalid date format ($format) :: $date");
+                        //error_log("Invalid date format ($format) :: $date");
                         return false;
                     }
                 }
                 return $dateTime !== false;
             } catch (Exception $e) {
-                error_log("Invalid date format ($format) :: $date :: " . $e->getMessage());
+                //error_log("Invalid date format ($format) :: $date :: " . $e->getMessage());
                 return false;
             }
         }
@@ -48,13 +48,13 @@ class DateUtils
                 $dateTime = new DateTimeImmutable($date);
                 $errors = DateTimeImmutable::getLastErrors();
                 if (!empty($errors['warning_count']) || !empty($errors['error_count'])) {
-                    error_log("Invalid date :: $date");
+                    //error_log("Invalid date :: $date");
                     return false;
                 } else {
                     return true;
                 }
             } catch (Exception $e) {
-                error_log("Invalid date :: $date :: " . $e->getMessage());
+                //error_log("Invalid date :: $date :: " . $e->getMessage());
                 return false;
             }
         }

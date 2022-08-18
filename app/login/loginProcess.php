@@ -40,10 +40,11 @@ try {
     // }
 
 
-    if (!isset($_POST["csrf_token"]) || $_POST["csrf_token"] != $_SESSION['csrf_token']) {
-        // Reset token
+    if (isset($_POST['csrf_token']) && $_POST['csrf_token'] != $_SESSION['csrf_token']) {
+        // clear/reset token
+        $_SESSION['csrf_token'] = null;
         unset($_SESSION['csrf_token']);
-        unset($_SESSION);
+        //unset($_SESSION);
         throw new Exception(_("Request expired. Please try to login again."));
     }
 
@@ -198,6 +199,7 @@ try {
                 }
 
                 header("location:" . $redirect);
+                
             } else {
                 $user->userHistoryLog($userName, 'failed');
 

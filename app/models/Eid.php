@@ -125,6 +125,9 @@ class Eid
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
+            error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
+            error_log("DUP::: Sample Key Code ====== " . $checkResult[$sampleCodeKeyCol]);
+            error_log('DUP::: ' . $this->db->getLastQuery());
             return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
         return json_encode($sCodeKey);

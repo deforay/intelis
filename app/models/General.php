@@ -815,25 +815,6 @@ class General
         error_log(ob_get_clean());
     }
 
-    public function getCSRF()
-    {
-        if (!isset($_SESSION['csrf_token']) || empty($_SESSION['csrf_token'])) {
-            $token = $_SESSION['csrf_token'] = $this->generateRandomString(64);
-        } else {
-            $token = $_SESSION['csrf_token'];
-        }
-        return $token;
-    }
-
-    public function verifyCSRF($input, $token)
-    {
-        if ($input === $token) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public function addApiTracking($user, $records, $type, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
     {
         $data = array(

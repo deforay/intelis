@@ -36,32 +36,17 @@ if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser
 	$path = '/assets/img/bg.jpg';
 }
 
-if (file_exists(APPLICATION_PATH . DIRECTORY_SEPARATOR . "configs/bg.jpg")) {
-	$path = '/configs/bg.jpg';
-} else if (file_exists(APPLICATION_PATH . DIRECTORY_SEPARATOR . "configs/bg.png")) {
-	$path = '/configs/bg.png';
+if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
+	$path = '/uploads/bg.jpg';
+} else if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.png")) {
+	$path = '/uploads/bg.png';
 }
 
 
 ?>
 
 <!-- CSRF TOKEN -->
-<?php
-function generate_token()
-{
-	// Check if a token is present for the current session
-	if (!isset($_SESSION['csrf_token'])) {
-		// No token present, generate a new one
-		$token = bin2hex(random_bytes(64));
-		$_SESSION['csrf_token'] = $token;
-	} else {
-		// Reuse the token
-		$token = $_SESSION['csrf_token'];
-	}
-	// print_r($token);die;
-	return $token;
-}
-?>
+<?php $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? $general->generateRandomString(64); ?>
 <!DOCTYPE html>
 <html>
 
@@ -152,7 +137,7 @@ function generate_token()
 				<div style="padding-top:10px;" class="panel-body">
 					<div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
 					<form id="loginForm" name="loginForm" class="form-horizontal" role="form" method="post" action="loginProcess.php" onsubmit="validateNow();return false;">
-						<input type="hidden" name="csrf_token" value="<?= $general->getCSRF(); ?>" />
+						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
 							<input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter the user name'); ?>" onblur="checkLoginAttempts('user_login_history','login_id', this.id,'')">
