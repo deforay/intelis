@@ -708,13 +708,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
           $("#vlResult, #vlLog").on('keyup keypress blur change paste', function() {
-			if ($(this).val() != '') {
-				if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
-					$(this).val('');
-					alert('Please enter only numeric values for Viral Load Result')
-				}
-			}
-		});
+               if ($(this).val() != '') {
+                    if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
+                         $(this).val('');
+                         alert('Please enter only numeric values for Viral Load Result')
+                    }
+               }
+          });
 
           $('#fName').select2({
                placeholder: "Select Clinic/Health Center"
