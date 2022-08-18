@@ -111,6 +111,8 @@ try {
         vl.sample_tested_datetime                            as sampleTestingDateAtLab,
         vl.sample_dispatched_datetime                        as sampleDispatchedOn,
         vl.result_dispatched_datetime                        as resultDispatchedOn,
+        vl.result_value_hiv_detection                        as hivDetection,
+        vl.reason_for_failure                                as reasonForFailure,
         vl.reason_for_sample_rejection                       as rejectionReasonId,
         vl.rejection_on                                      as rejectionDate,
         vl.result_value_absolute                             as vlResult,
