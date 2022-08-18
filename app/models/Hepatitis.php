@@ -101,12 +101,7 @@ class Hepatitis
 
         if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
-            // $strparam = strlen($maxId);
-            // $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
-            // $maxId = $zeros . $maxId;
-            $maxId = sprintf("%04d", (int) $maxId);
         } else {
-            //$maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
             $maxId = 1;
         }
 
@@ -287,20 +282,24 @@ class Hepatitis
                 'last_modified_by' => $_SESSION['userId'],
                 'last_modified_datetime' => $general->getCurrentDateTime()
             );
-
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            $oldSampleCodeKey = null;
+            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $hepatitisData['remote_sample_code'] = $sampleData['sampleCode'];
                 $hepatitisData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $hepatitisData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $hepatitisData['remote_sample'] = 'yes';
                 $hepatitisData['result_status'] = 9;
+                if ($_SESSION['accessType'] == 'testing-lab') {
+                    $hepatitisData['sample_code'] = $sampleData['sampleCode'];
+                    $hepatitisData['result_status'] = 6;
+                }
             } else {
                 $hepatitisData['sample_code'] = $sampleData['sampleCode'];
                 $hepatitisData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $hepatitisData['sample_code_key'] = $sampleData['sampleCodeKey'];
                 $hepatitisData['remote_sample'] = 'no';
                 $hepatitisData['result_status'] = 6;
-            }
+            }            
             $sQuery = "SELECT hepatitis_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_hepatitis ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";

@@ -92,19 +92,27 @@ try {
 
         $update = "no";
         $rowData = false;
-        if ((isset($data['sampleCode']) && !empty($data['sampleCode'])) || (isset($data['remoteSampleCode']) && !empty($data['uniqueId'])) || (isset($data['uniqueId']) && !empty($data['uniqueId']))) {
+        if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
+
             $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
+
+            $sQueryWhere = array();
+
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
-                $sQuery .= "where unique_id like '" . $data['uniqueId'] . "'";
-            } else if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
-                $sQuery .= "where sample_code like '" . $data['sampleCode'] . "'";
-            } else if (isset($data['remoteSampleCode']) != "" && !empty($data['remoteSampleCode'])) {
-                $sQuery .= "where remote_sample_code like '" . $data['sampleCode'] . "'";
+                $uniqueId = $data['uniqueId'];
+                $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
+            } else if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+                $sQueryWhere[] = " app_sample_code like '" . $data['sampleCode'] . "'";
             }
-            $sQuery .= "limit 1";
+
+            if (!empty($sQueryWhere)) {
+                $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
+            }
+
             $rowData = $db->rawQueryOne($sQuery);
             if ($rowData) {
                 $update = "yes";
+                $uniqueId = $rowData['unique_id'];
                 $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
                 $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
                 $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
@@ -116,6 +124,11 @@ try {
             $sampleJson = $vlModel->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
             $sampleData = json_decode($sampleJson, true);
         }
+
+        if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
+            $uniqueId = $general->generateRandomString(64);
+        }
+
         if (!isset($data['countryId']) || $data['countryId'] == '') {
             $data['countryId'] = '';
         }
@@ -127,7 +140,8 @@ try {
             $data['sampleCollectionDate'] = NULL;
         }
         $vlData = array(
-            'vlsm_country_id' => $data['countryId'],
+            'vlsm_country_id' => $data['formId'] ?? null,
+            'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
@@ -137,20 +151,20 @@ try {
             'last_modified_datetime' => $general->getCurrentDateTime()
         );
 
-        //if ($user['access_type'] != 'testing-lab') {
-        $vlData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-        $vlData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-        $vlData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
-        $vlData['remote_sample'] = 'yes';
-        $vlData['result_status'] = 9;
-
-        // } else {
-        //     $vlData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-        //     $vlData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-        //     $vlData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
-        //     $vlData['remote_sample'] = 'no';
-        //     $vlData['result_status'] = 6;
-        // }
+        if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
+            $vlData['remote_sample_code'] = $sampleData['sampleCode'];
+            $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+            $vlData['remote_sample'] = 'yes';
+            if ($user['access_type'] === 'testing-lab') {
+                $vlData['sample_code'] = $sampleData['sampleCode'];
+            }
+        } else {
+            $vlData['sample_code'] = $sampleData['sampleCode'];
+            $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
+            $vlData['remote_sample'] = 'no';
+        }
 
         $id = 0;
         if ($rowData) {

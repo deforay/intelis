@@ -89,19 +89,28 @@ try {
         }
         $update = "no";
         $rowData = false;
-        if ((isset($data['sampleCode']) && !empty($data['sampleCode'])) || (isset($data['remoteSampleCode']) && !empty($data['uniqueId'])) || (isset($data['uniqueId']) && !empty($data['uniqueId']))) {
+        $uniqueId = null;
+        if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
+            
             $sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
+
+            $sQueryWhere = array();
+
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
-                $sQuery .= "where unique_id like '" . $data['uniqueId'] . "'";
-            } else if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
-                $sQuery .= "where sample_code like '" . $data['sampleCode'] . "'";
-            } else if (isset($data['remoteSampleCode']) != "" && !empty($data['remoteSampleCode'])) {
-                $sQuery .= "where remote_sample_code like '" . $data['sampleCode'] . "'";
+                $uniqueId = $data['uniqueId'];
+                $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
+            } else if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+                $sQueryWhere[] = " app_sample_code like '" . $data['sampleCode'] . "'";
             }
-            $sQuery .= "limit 1";
+
+            if (!empty($sQueryWhere)) {
+                $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
+            }
+
             $rowData = $db->rawQueryOne($sQuery);
             if ($rowData) {
                 $update = "yes";
+                $uniqueId = $rowData['unique_id'];
                 $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
                 $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
                 $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
@@ -114,11 +123,13 @@ try {
             $sampleData = json_decode($sampleJson, true);
         }
 
-        if (!isset($data['formId']) || $data['formId'] == '') {
-            $data['formId'] = '';
+        if(empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null'){
+            $uniqueId = $general->generateRandomString(64);
         }
+
         $covid19Data = array(
-            'vlsm_country_id' => $data['formId'],
+            'vlsm_country_id' => $data['formId'] ?? null,
+            'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
@@ -128,22 +139,22 @@ try {
             'last_modified_datetime' => $general->getCurrentDateTime()
         );
 
-        if ($user['access_type'] != 'testing-lab') {
-            $covid19Data['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $covid19Data['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $covid19Data['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+
+        if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
+            $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
+            $covid19Data['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $covid19Data['remote_sample'] = 'yes';
-            $covid19Data['result_status'] = 9;
-            /* if ($roleUser['access_type'] == 'testing-lab') {
-                $covid19Data['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
-            } */
+            if ($user['access_type'] === 'testing-lab') {
+                $covid19Data['sample_code'] = $sampleData['sampleCode'];
+            }
         } else {
-            $covid19Data['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $covid19Data['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $covid19Data['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+            $covid19Data['sample_code'] = $sampleData['sampleCode'];
+            $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
             $covid19Data['remote_sample'] = 'no';
-            $covid19Data['result_status'] = 6;
         }
+
         $id = 0;
         if ($rowData) {
             $db = $db->where('covid19_id', $rowData['covid19_id']);
@@ -335,7 +346,7 @@ try {
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
-            'source_of_request'                   => "app"
+            'source_of_request'                   => $data['sourceOfRequest'] ?? "api"
         );
         if ($rowData) {
             $covid19Data['last_modified_datetime']  = $general->getCurrentDateTime();

@@ -83,12 +83,7 @@ class Tb
 
         if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
-            // $strparam = strlen($maxId);
-            // $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
-            // $maxId = $zeros . $maxId;
-            $maxId = sprintf("%04d", (int) $maxId);
         } else {
-            //$maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
             $maxId = 1;
         }
 
@@ -319,16 +314,16 @@ class Tb
                 'last_modified_datetime' => $this->db->now()
             );
 
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            $oldSampleCodeKey = null;
+
+            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $tbData['remote_sample_code'] = $sampleData['sampleCode'];
                 $tbData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $tbData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $tbData['remote_sample'] = 'yes';
                 $tbData['result_status'] = 9;
-                if ($_SESSION['accessType'] == 'testing-lab') {
+                if ($_SESSION['accessType'] === 'testing-lab') {
                     $tbData['sample_code'] = $sampleData['sampleCode'];
-                    $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                    $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tbData['result_status'] = 6;
                 }
             } else {

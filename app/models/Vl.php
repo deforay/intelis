@@ -113,12 +113,7 @@ class Vl
 
         if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
-            // $strparam = strlen($maxId);
-            // $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
-            // $maxId = $zeros . $maxId;
-            $maxId = sprintf("%04d", (int) $maxId);
         } else {
-            //$maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
             $maxId = 1;
         }
 
@@ -414,17 +409,15 @@ class Vl
             );
 
             $oldSampleCodeKey = null;
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+
+            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $vlData['remote_sample_code'] = $sampleData['sampleCode'];
                 $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $vlData['remote_sample'] = 'yes';
                 $vlData['result_status'] = 9;
-
-                if ($_SESSION['accessType'] == 'testing-lab') {
+                if ($_SESSION['accessType'] === 'testing-lab') {
                     $vlData['sample_code'] = $sampleData['sampleCode'];
-                    $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                    $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $vlData['result_status'] = 6;
                 }
             } else {
@@ -449,7 +442,7 @@ class Vl
                 // $params['vlSampleId'] = $rowData['vl_sample_id'];
 
 
-                error_log('Insert VL Sample : ' . $this->db->getLastQuery());                
+                error_log('Insert VL Sample : ' . $this->db->getLastQuery());
                 // If this sample code exists, let us regenerate
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);

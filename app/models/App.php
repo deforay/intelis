@@ -402,7 +402,7 @@ class App
     {
         $general = new \Vlsm\Models\General($this->db);
         do {
-            $uniqueId = $general->generateRandomString(32);
+            $uniqueId = $general->generateRandomString(64);
             $dublicate = $this->db->rawQueryOne("SELECT $fieldName FROM $tableName where $fieldName = '$uniqueId'");
         } while ($dublicate);
 

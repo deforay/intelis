@@ -82,12 +82,7 @@ class Eid
 
         if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
-            // $strparam = strlen($maxId);
-            // $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
-            // $maxId = $zeros . $maxId;
-            $maxId = sprintf("%04d", (int) $maxId);
         } else {
-            //$maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
             $maxId = 1;
         }
 
@@ -416,16 +411,15 @@ class Eid
             }
 
             $oldSampleCodeKey = null;
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+
+            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $eidData['remote_sample_code'] = $sampleData['sampleCode'];
                 $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $eidData['remote_sample'] = 'yes';
                 $eidData['result_status'] = 9;
-                if ($_SESSION['accessType'] == 'testing-lab') {
+                if ($_SESSION['accessType'] === 'testing-lab') {
                     $eidData['sample_code'] = $sampleData['sampleCode'];
-                    $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                    $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $eidData['result_status'] = 6;
                 }
             } else {
@@ -435,6 +429,7 @@ class Eid
                 $eidData['remote_sample'] = 'no';
                 $eidData['result_status'] = 6;
             }
+
             $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";

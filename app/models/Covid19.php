@@ -83,12 +83,7 @@ class Covid19
 
         if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
-            // $strparam = strlen($maxId);
-            // $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
-            // $maxId = $zeros . $maxId;
-            $maxId = sprintf("%04d", (int) $maxId);
         } else {
-            //$maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
             $maxId = 1;
         }
 
@@ -429,16 +424,14 @@ class Covid19
                 'last_modified_datetime' => $this->db->now()
             );
 
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
                 $covid19Data['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $covid19Data['remote_sample'] = 'yes';
                 $covid19Data['result_status'] = 9;
-                if ($_SESSION['accessType'] == 'testing-lab') {
+                if ($_SESSION['accessType'] === 'testing-lab') {
                     $covid19Data['sample_code'] = $sampleData['sampleCode'];
-                    $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                    $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $covid19Data['result_status'] = 6;
                 }
             } else {
