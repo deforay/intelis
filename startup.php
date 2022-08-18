@@ -3,40 +3,18 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-$domain = '';
-if (php_sapi_name() !== 'cli') {
-    // base directory
-    $baseDir = __DIR__ . "/../";
 
-    $docRoot = preg_replace("!${_SERVER['SCRIPT_NAME']}$!", '', $_SERVER['SCRIPT_FILENAME']);
-
-    // server protocol
-    $protocol = (!empty($_SERVER['HTTPS'])  && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-
-    // domain name
-    $domain = $_SERVER['SERVER_NAME'];
-
-    // base url
-    $baseUrl = preg_replace("!^${docRoot}!", '', $baseDir);
-
-    // server port
-    $port = $_SERVER['SERVER_PORT'];
-    $dispPort = ($protocol == 'http' && $port == 80 || $protocol == 'https' && $port == 443) ? '' : ":$port";
-
-    // put em all together to get the complete base URL
-    $domain = "${protocol}://${domain}${dispPort}${baseUrl}";
-}
-
-defined('DOMAIN')
-    || define('DOMAIN', $domain);
+defined('ROOT_PATH')
+    || define('ROOT_PATH', realpath(__DIR__));
 
 defined('WEB_ROOT')
-    || define('WEB_ROOT', (getenv('WEB_ROOT') ?
-        getenv('WEB_ROOT') :
-        realpath(__DIR__ . DIRECTORY_SEPARATOR . 'public')));
+    || define(
+        'WEB_ROOT',
+        (getenv('WEB_ROOT') ?? (ROOT_PATH . DIRECTORY_SEPARATOR . 'public'))
+    );
 
 defined('APPLICATION_PATH')
-    || define('APPLICATION_PATH', realpath(WEB_ROOT . '/../app'));
+    || define('APPLICATION_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'app');
 
 defined('UPLOAD_PATH')
     || define('UPLOAD_PATH', WEB_ROOT . DIRECTORY_SEPARATOR . 'uploads');
@@ -55,9 +33,9 @@ set_include_path(implode(PATH_SEPARATOR, array(
 )));
 
 require_once(APPLICATION_PATH . '/system/system.php');
-require_once(APPLICATION_PATH . '/../vendor/autoload.php');
+require_once(ROOT_PATH . '/vendor/autoload.php');
 
-define('SYSTEM_CONFIG', require_once(APPLICATION_PATH . "/../configs/config." . APPLICATION_ENV . ".php"));
+define('SYSTEM_CONFIG', require_once(ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php"));
 
 // Database Connection
 $db = new MysqliDb(array(

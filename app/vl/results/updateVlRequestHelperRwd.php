@@ -173,10 +173,10 @@ try {
             'updated_on' => $general->getCurrentDateTime()
         );
         $db->insert($tableName2, $data);
-        header("location:/vl/results/vlTestResult.php");
     } else {
         $_SESSION['alertMsg'] = "Please try again later";
     }
+    header("location:/vl/results/vlTestResult.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
