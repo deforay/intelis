@@ -94,6 +94,11 @@ try {
     } else if ($_POST['vlLog'] != '') {
         $finalResult = (float)$_POST['vlLog'];
     }
+    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
+        $finalResult = $textResult = 'Failed';
+        $_POST['vlResult'] = 'Failed';
+        $_POST['vlLog'] = '';
+    }
 
     $reasonForChanges = '';
     $allChange = '';

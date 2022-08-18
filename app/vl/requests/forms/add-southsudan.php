@@ -628,7 +628,8 @@ $sFormat = '';
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" style="width:100%;" onchange="calculateLogValue(this)" disabled />
                                                                            <!-- <span style="display: none;"><input type="hidden" class="" id="tnd" name="tnd" value="yes" title="Please check tnd"> Target Not Detected<br></span> -->
-                                                                           <input type="checkbox" class="" id="bdl" name="bdl" value="yes" title="Please check bdl" disabled> Below Detection Level
+                                                                           <input type="checkbox" class="" id="bdl" name="bdl" value="yes" title="Please check bdl" disabled> Below Detection Level<br>
+                                                                           <input type="checkbox" class="specialResults" id="failed" name="failed" value="yes" title="Please check failed" disabled> Failed<br>
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -637,12 +638,6 @@ $sFormat = '';
                                                                       <label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" style="width:100%;" onchange="calculateLogValue(this);" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched</label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4 hivDetection" style="display: none;">
@@ -661,6 +656,12 @@ $sFormat = '';
                                                                            <select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
                                                                                 <?= $general->generateSelectOptions($reasonForFailure, null, '-- Select --'); ?>
                                                                            </select>
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-4">
+                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched</label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
                                                                  </div>
                                                             </div><br />
@@ -1116,10 +1117,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.vlResult').css('display', 'none');
                $('.vlLog').css('display', 'none');
                $("#sampleTestingDateAtLab, #vlResult").val("");
-               $('#bdl').prop('checked', false);
+               $('#bdl, #failed').prop('checked', false);
                $(".result-fields").val("");
-               $(".result-fields, #bdl").attr("disabled", true);
-               $(".result-fields, #bdl").removeClass("isRequired");
+               $(".result-fields, #bdl, #failed").attr("disabled", true);
+               $(".result-fields, #bdl, #failed").removeClass("isRequired");
                $(".result-span").hide();
                $(".review-approve-span").show();
                $('#rejectionReason').addClass('isRequired');
@@ -1130,7 +1131,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#approvedOnDateTime').addClass('isRequired');
                $(".result-optional").removeClass("isRequired");
           } else if ($(this).val() == 'no') {
-               $(".result-fields, #bdl").attr("disabled", false);
+               $(".result-fields, #bdl, #failed").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
                $(".result-span").show();
                $(".review-approve-span").show();
@@ -1145,7 +1146,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#approvedBy').addClass('isRequired');
                $('#approvedOnDateTime').addClass('isRequired');
           } else {
-               $(".result-fields, #bdl").attr("disabled", false);
+               $(".result-fields, #bdl, #failed").attr("disabled", false);
                $(".result-fields").removeClass("isRequired");
                $(".result-optional").removeClass("isRequired");
                $(".result-span").show();
@@ -1171,8 +1172,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.hivDetection').hide();
           }
      });
-     $('#bdl').change(function() {
-          if ($('#bdl').is(':checked')) {
+     $('#bdl, #failed').change(function() {
+          if ($('#bdl, #failed').is(':checked')) {
+               if ($('#failed').is(':checked')) {
+                    $('#bdl').attr('disabled', true);
+               } else {
+                    $('#failed').attr('disabled', true);
+               }
                $('#vlResult,#vlLog').attr('readonly', true);
                $('#vlResult,#vlLog').removeClass('isRequired');
                $('#tnd').prop('checked', false).attr('disabled', true);
@@ -1196,10 +1202,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#tnd,#bdl').attr('disabled', false);
           }
      });
-     $('#tnd,#bdl').change(function() {
-          if ($('#bdl').prop('checked') || $('#tnd').prop('checked')) {
-               //$('.reasonForFailure').show();
-               //$('#reasonForFailure').addClass('isRequired');
+     $('#failed').change(function() {
+          if ($('#failed').prop('checked')) {
+               $('.reasonForFailure').show();
+               $('#reasonForFailure').addClass('isRequired');
+               $('#vlResult').removeClass('isRequired');
           } else {
                $('.reasonForFailure').hide();
                $('#reasonForFailure').removeClass('isRequired');

@@ -182,8 +182,12 @@ try {
     }
 
 
-    if (isset($_POST['bdl']) && $_POST['bdl'] == 'bdl' && $isRejection == false) {
+    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejection == false) {
         $_POST['vlResult'] = 'Below Detection Level';
+        $_POST['vlLog'] = '';
+    }
+    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
+        $_POST['vlResult'] = 'Failed';
         $_POST['vlLog'] = '';
     }
     // else if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
