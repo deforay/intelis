@@ -703,7 +703,7 @@ $disable = "disabled = 'disabled'";
 															<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 														</div>
 													</div>
-													<div class="col-md-4 hivDetection" style="display: none;">
+													<div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
 														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
 														<div class="col-lg-7">
 															<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
@@ -967,7 +967,9 @@ $disable = "disabled = 'disabled'";
 		}
 	});
 	$('#testingPlatform').change(function() {
-		if ($(this).val() == 'GeneXpert') {
+		var text = this.value;
+		var str1 = text.split("##");
+		if (str1[0] == 'GeneXpert') {
 			$('.hivDetection').show();
 		} else {
 			$('.hivDetection').hide();

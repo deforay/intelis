@@ -1166,7 +1166,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
      $('#testingPlatform').change(function() {
-          if ($(this).val() == 'GeneXpert') {
+          var text = this.value;
+          var str1 = text.split("##");
+          if (str1[0] == 'GeneXpert') {
                $('.hivDetection').show();
           } else {
                $('.hivDetection').hide();

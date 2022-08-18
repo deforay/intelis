@@ -742,17 +742,17 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 														<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 													</div>
 												</div>
-												<div class="col-md-4 hivDetection" style="display: none;">
+												<div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
 													<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
 													<div class="col-lg-7">
 														<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
 															<option value="">-- Select --</option>
-															<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected'); ?>>HIV-1 Detected</option>
-															<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected'); ?>>HIV-1 Not Detected</option>
+															<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
+															<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
 														</select>
 													</div>
 												</div>
-												<div class="col-md-4 reasonForFailure" style="<?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] != 'failed') ? 'display: none;' : ''; ?>">
+												<div class="col-md-4 reasonForFailure" style="<?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
 													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
 														<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
@@ -1285,7 +1285,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 		}
 	});
 	$('#testingPlatform').change(function() {
-		if ($(this).val() == 'GeneXpert') {
+		var text = this.value;
+		var str1 = text.split("##");
+		if (str1[0] == 'GeneXpert') {
 			$('.hivDetection').show();
 		} else {
 			$('.hivDetection').hide();
