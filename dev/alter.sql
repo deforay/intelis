@@ -3216,3 +3216,7 @@ ALTER TABLE `audit_form_vl` ADD `reason_for_failure` INT(11) NULL DEFAULT NULL A
 
 -- Thana 19-Aug-2022
 ALTER TABLE `r_vl_test_failure_reasons` ADD `data_sync` INT NULL DEFAULT NULL AFTER `updated_datetime`;
+
+
+-- Amit 20-Aug-2022 version 5.0.6
+UPDATE `system_config` SET `value` = '5.0.6' WHERE `system_config`.`name` = 'sc_version';
