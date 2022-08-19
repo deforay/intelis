@@ -3213,3 +3213,6 @@ CREATE TABLE `r_vl_test_failure_reasons` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ALTER TABLE `form_vl` ADD `reason_for_failure` INT(11) NULL DEFAULT NULL AFTER `failed_vl_result`, ADD `result_value_hiv_detection` VARCHAR(256) NULL DEFAULT NULL AFTER `vl_test_platform`;
 ALTER TABLE `audit_form_vl` ADD `reason_for_failure` INT(11) NULL DEFAULT NULL AFTER `failed_vl_result`, ADD `result_value_hiv_detection` VARCHAR(256) NULL DEFAULT NULL AFTER `vl_test_platform`;
+
+-- Thana 19-Aug-2022
+ALTER TABLE `r_vl_test_failure_reasons` ADD `data_sync` INT NULL DEFAULT NULL AFTER `updated_datetime`;

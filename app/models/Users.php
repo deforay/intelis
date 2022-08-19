@@ -75,6 +75,9 @@ class Users
                 'vl-test-reasons.php'                   => 'vl-art-code-details.php',
                 'add-vl-test-reasons.php'               => 'vl-art-code-details.php',
                 'edit-vl-test-reasons.php'              => 'vl-art-code-details.php',
+                'vl-test-failure-reasons.php'           => 'vl-art-code-details.php',
+                'add-vl-test-failure-reason.php'        => 'vl-art-code-details.php',
+                'edit-vl-test-failure-reason.php'       => 'vl-art-code-details.php',
                 'vlTestingTargetReport.php'             => 'vlMonthlyThresholdReport.php',
                 'vlSuppressedTargetReport.php'          => 'vlMonthlyThresholdReport.php'
             );

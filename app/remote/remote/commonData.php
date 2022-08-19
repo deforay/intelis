@@ -57,7 +57,13 @@ if ($data['Key'] == 'vlsm-get-remote') {
         }
         $response['vlArtCodes'] = $general->fetchDataFromTable('r_vl_art_regimen', $condition);
 
-        $count = (count($response['vlRejectionReasons']) + count($response['vlSampleTypes']) + count($response['vlArtCodes']));
+        $condition = null;
+        if (isset($data['vlFailureReasonsLastModified']) && !empty($data['vlFailureReasonsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['vlFailureReasonsLastModified'] . "'";
+        }
+        $response['vlFailureReasons'] = $general->fetchDataFromTable('r_vl_test_failure_reasons', $condition);
+
+        $count = (count($response['vlRejectionReasons']) + count($response['vlSampleTypes']) + count($response['vlArtCodes']) + count($response['vlFailureReasons']));
         if ($count > 0) {
             $trackId = $app->addApiTracking(null, $count, 'common-data', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
         }
@@ -247,7 +253,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
     if (!empty($response)) {
         // using array_filter without callback will remove keys with empty values
         $payload = json_encode(array_filter($response));
-    }else{
+    } else {
         $payload = json_encode([]);
     }
 

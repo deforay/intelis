@@ -93,6 +93,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     $payload['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
     $payload['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
     $payload['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
+    $payload['vlFailureReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_test_failure_reasons');
 
 
 
@@ -110,6 +111,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
         'vlRejectionReasons' => array(
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_vl_sample_rejection_reasons',
+        ),
+        'vlFailureReasons' => array(
+            'primaryKey' => 'failure_id',
+            'tableName' => 'r_vl_test_failure_reasons',
         )
     );
 }
@@ -243,7 +248,6 @@ $response = $client->post(
 );
 
 $jsonResponse = $response->getBody()->getContents();
-
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
     $options = [
@@ -253,7 +257,6 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
     foreach ($parsedData as $dataType => $dataValues) {
 
         if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
-
             if ($dataType == 'healthFacilities' && !empty($dataValues)) {
                 $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
                 $db = $db->where('facility_id', $updatedFacilities, 'IN');
@@ -268,7 +271,6 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
             $columnList = array_map('current', $db->rawQuery($tableColumns));
 
             foreach ($dataValues as $tableDataValues) {
-
                 $tableData = array();
                 $updateColumns = array();
                 foreach ($columnList as $colName) {

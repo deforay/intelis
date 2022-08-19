@@ -577,6 +577,11 @@
 		$(".vl-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".vl-test-reasons").addClass('active');
+	} else if (splitsUrl == 'vl-test-failure-reasons.php' || splitsUrl == 'add-vl-test-failure-reason.php' || splitsUrl == 'edit-vl-test-failure-reason.php') {
+		$(".manage").addClass('active');
+		$(".vl-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".vl-test-failure-reasons").addClass('active');
 	} else if (splitsUrl == 'eid-sample-rejection-reasons.php' || splitsUrl == 'add-eid-sample-rejection-reasons.php' || splitsUrl == 'edit-eid-sample-rejection-reasons.php') {
 		$(".manage").addClass('active');
 		$(".eid-reference-manage").addClass('active');
