@@ -8,6 +8,7 @@
 
 namespace Vlsm\Models;
 
+use Ramsey\Uuid\Uuid;
 use Vlsm\Utilities\DateUtils;
 
 class General
@@ -47,19 +48,23 @@ class General
     }
 
     // Returns a UUID format string
-    public function generateUUID($attachExtraString = true)
+    public function generateUUID($attachExtraString = false)
     {
-        $uuid = sprintf(
-            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            random_int(0, 0xffff),
-            random_int(0, 0xffff),
-            random_int(0, 0xffff),
-            random_int(0, 0x0C2f) | 0x4000,
-            random_int(0, 0x3fff) | 0x8000,
-            random_int(0, 0x2Aff),
-            random_int(0, 0xffD3),
-            random_int(0, 0xff4B)
-        );
+        // $uuid = sprintf(
+        //     '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        //     random_int(0, 0xffff),
+        //     random_int(0, 0xffff),
+        //     random_int(0, 0xffff),
+        //     random_int(0, 0x0C2f) | 0x4000,
+        //     random_int(0, 0x3fff) | 0x8000,
+        //     random_int(0, 0x2Aff),
+        //     random_int(0, 0xffD3),
+        //     random_int(0, 0xff4B)
+        // );
+
+        $uuid = Uuid::uuid4();
+        $uuid = $uuid->toString();
+
         if ($attachExtraString) {
             $uuid .= "-" . $this->generateRandomString(4);
         }
@@ -79,7 +84,7 @@ class General
     public function isoDateFormat($date, $includeTime = false)
     {
         $utils = new DateUtils();
-        return $utils->isoDateFormat($date,$includeTime);
+        return $utils->isoDateFormat($date, $includeTime);
     }
 
     public function humanReadableDateFormat($date, $includeTime = false)

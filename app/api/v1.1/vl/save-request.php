@@ -128,7 +128,7 @@ try {
         }
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
-            $uniqueId = $general->generateRandomString(64);
+            $uniqueId = $general->generateUUID();
         }
 
         if (!isset($data['countryId']) || $data['countryId'] == '') {

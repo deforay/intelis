@@ -353,7 +353,7 @@ class Tb
                 return $this->insertSampleCode($params);
             } else {
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                    $tbData['unique_id'] = $general->generateRandomString(32);
+                    $tbData['unique_id'] = $general->generateUUID();
                     $id = $this->db->insert("form_tb", $tbData);
                 }
             }

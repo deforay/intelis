@@ -453,7 +453,7 @@ class Eid
                     $params['eidSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                        $eidData['unique_id'] = $general->generateRandomString(32);
+                        $eidData['unique_id'] = $general->generateUUID();
                         $id = $this->db->insert("form_eid", $eidData);
                     }
                 }

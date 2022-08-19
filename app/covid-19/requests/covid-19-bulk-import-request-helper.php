@@ -69,7 +69,7 @@ try {
                 $data = array(
                     'vlsm_instance_id'                      => $instanceId['vlsm_instance_id'],
                     'sample_code'                           => $rowData['A'],
-                    'unique_id'                             => $general->generateRandomString(32),
+                    'unique_id'                             => $general->generateUUID(),
                     'vlsm_country_id'                       => $arr['vl_form'],
                     'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "") ? strtolower(str_replace(" ", "-", $rowData['B'])) : null,
                     'source_of_alert_other'                 => $rowData['C'],

@@ -456,7 +456,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $status = 4;
         }
         $covid19Data = array(
-            'unique_id'                           => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateRandomString(32),
+            'unique_id'                           => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateUUID(),
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $_POST['formId'],
             'external_sample_code'                => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,

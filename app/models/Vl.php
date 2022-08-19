@@ -451,7 +451,7 @@ class Vl
                     $params['vlSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                        $vlData['unique_id'] = $general->generateRandomString(32);
+                        $vlData['unique_id'] = $general->generateUUID();
                         $id = $this->db->insert("form_vl", $vlData);
                     }
                 }

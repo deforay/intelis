@@ -110,7 +110,7 @@ try {
         }
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
-            $uniqueId = $data['uniqueId'] = $general->generateRandomString(64);
+            $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
 
         if (!isset($data['formId']) || $data['formId'] == '') {
