@@ -501,6 +501,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<li class="allMenu vl-test-reasons">
 												<a href="/vl/reference/vl-test-reasons.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Reasons"); ?></a>
 											</li>
+											<li class="allMenu vl-test-failure-reasons">
+												<a href="/vl/reference/vl-test-failure-reasons.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Failure Reasons"); ?></a>
+											</li>
 										</ul>
 									</li>
 								<?php }
