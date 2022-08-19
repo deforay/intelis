@@ -51,43 +51,52 @@ try {
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
         $sampleFrom = '';
         /* V1 name to Id mapping */
-        if (!is_numeric($data['provinceId'])) {
+        if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
             if (isset($province) && count($province) > 0) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'province_name', 'province_details', 'province_id', true);
         }
-        if (!is_numeric($data['implementingPartner'])) {
+        if (isset($data['implementingPartner']) && !is_numeric($data['implementingPartner'])) {
             $data['implementingPartner'] = $general->getValueByName($data['implementingPartner'], 'i_partner_name', 'r_implementation_partners', 'i_partner_id');
         }
-        if (!is_numeric($data['fundingSource'])) {
+        if (isset($data['fundingSource']) && !is_numeric($data['fundingSource'])) {
             $data['fundingSource'] = $general->getValueByName($data['fundingSource'], 'funding_source_name', 'r_funding_sources', 'funding_source_id');
         }
 
         $data['api'] = "yes";
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate']= (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
-            exit();
+            continue;
         }
         $update = "no";
         $rowData = false;
-        if ((isset($data['sampleCode']) && !empty($data['sampleCode'])) || (isset($data['remoteSampleCode']) && !empty($data['uniqueId'])) || (isset($data['uniqueId']) && !empty($data['uniqueId']))) {
-            $sQuery = "SELECT tb_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
+        $uniqueId = null;
+        if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
+            $sQuery = "SELECT tb_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
+            $sQueryWhere = array();
+
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
-                $sQuery .= "where unique_id like '" . $data['uniqueId'] . "'";
-            } else if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
-                $sQuery .= "where sample_code like '" . $data['sampleCode'] . "'";
-            } else if (isset($data['remoteSampleCode']) != "" && !empty($data['remoteSampleCode'])) {
-                $sQuery .= "where remote_sample_code like '" . $data['sampleCode'] . "'";
+                $uniqueId = $data['uniqueId'];
+                $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             }
-            $sQuery .= "limit 1";
+            if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+                $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
+            }
+
+            if (!empty($sQueryWhere)) {
+                $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
+            }
+
             $rowData = $db->rawQueryOne($sQuery);
+
             if ($rowData) {
                 $update = "yes";
+                $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
                 $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
                 $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
                 $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
@@ -100,11 +109,16 @@ try {
             $sampleData = json_decode($sampleJson, true);
         }
 
+        if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
+            $uniqueId = $data['uniqueId'] = $general->generateRandomString(64);
+        }
+
         if (!isset($data['formId']) || $data['formId'] == '') {
             $data['formId'] = '';
         }
         $tbData = array(
-            'vlsm_country_id' => $data['formId'],
+            'vlsm_country_id' => $data['formId'] ?? null,
+            'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
@@ -114,22 +128,21 @@ try {
             'last_modified_datetime' => $general->getCurrentDateTime()
         );
 
-        if ($user['access_type'] != 'testing-lab') {
-            $tbData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $tbData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $tbData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+        if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
+            $tbData['remote_sample_code'] = $sampleData['sampleCode'];
+            $tbData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $tbData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $tbData['remote_sample'] = 'yes';
-            $tbData['result_status'] = 9;
-            /* if ($roleUser['access_type'] == 'testing-lab') {
-                $tbData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
-            } */
+            if ($user['access_type'] === 'testing-lab') {
+                $tbData['sample_code'] = $sampleData['sampleCode'];
+            }
         } else {
-            $tbData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $tbData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $tbData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+            $tbData['sample_code'] = $sampleData['sampleCode'];
+            $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
             $tbData['remote_sample'] = 'no';
-            $tbData['result_status'] = 6;
         }
+
         $id = 0;
         if ($rowData) {
             $db = $db->where('tb_id', $rowData['tb_id']);
@@ -244,7 +257,7 @@ try {
         $tbData = array(
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $data['formId'],
-            'unique_id'                           => isset($data['uniqueId']) ? $data['uniqueId'] : $general->generateRandomString(32),
+            'unique_id'                           => $uniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_reordered'                    => !empty($data['sampleReordered']) ? $data['sampleReordered'] : null,
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,
@@ -404,7 +417,7 @@ try {
     exit(0);
 } catch (Exception $exc) {
 
-    http_response_code(500);
+    // http_response_code(500);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),

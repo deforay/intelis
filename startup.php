@@ -14,10 +14,7 @@ defined('ROOT_PATH')
     || define('ROOT_PATH', realpath(dirname(__FILE__)));
 
 defined('WEB_ROOT')
-    || define(
-        'WEB_ROOT',
-        (getenv('WEB_ROOT') ?? (ROOT_PATH . DIRECTORY_SEPARATOR . 'public'))
-    );
+    || define('WEB_ROOT', ROOT_PATH . DIRECTORY_SEPARATOR . 'public');
 
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'app');

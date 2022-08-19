@@ -46,15 +46,14 @@ try {
 
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {
-        $response = array(
-            'status' => 'failed',
-            'timestamp' => time(),
-            'error' => 'Bearer Token Invalid',
-            'data' => array()
-        );
+        // $response = array(
+        //     'status' => 'failed',
+        //     'timestamp' => time(),
+        //     'error' => 'Bearer Token Invalid',
+        //     'data' => array()
+        // );
         http_response_code(401);
-        echo json_encode($response);
-        exit(0);
+        throw new Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = array();
@@ -62,7 +61,7 @@ try {
         $data = $field;
         $sampleFrom = '';
         $data['formId'] = $data['countryId'] = $general->getGlobalConfig('vl_form');
-        $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
+        $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
         $rowData = $db->rawQuery($sQuery);
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
         $sampleFrom = '';
@@ -87,22 +86,25 @@ try {
         $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
-            exit();
+            continue;
+            //throw new Exception(_("Sample Collection Date is required"));
         }
 
         $update = "no";
         $rowData = false;
+        $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
 
-            $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
+            $sQuery = "SELECT vl_sample_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
 
             $sQueryWhere = array();
 
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            } else if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
-                $sQueryWhere[] = " app_sample_code like '" . $data['sampleCode'] . "'";
+            }  
+            if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+                $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
 
             if (!empty($sQueryWhere)) {
@@ -135,9 +137,9 @@ try {
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $sampleCollectionDate = $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
         } else {
-            $data['sampleCollectionDate'] = NULL;
+            $sampleCollectionDate = $data['sampleCollectionDate'] = NULL;
         }
         $vlData = array(
             'vlsm_country_id' => $data['formId'] ?? null,
@@ -334,7 +336,7 @@ try {
         $vlFulldata = array(
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],
-            'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : null,
+            'unique_id'                             => $uniqueId,
             'app_sample_code'                       => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_code_title'                     => (isset($data['sampleCodeTitle']) && $data['sampleCodeTitle'] != '') ? $data['sampleCodeTitle'] :  'auto',
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',
@@ -460,7 +462,8 @@ try {
                 );
             }
             http_response_code(200);
-        } else {
+        } 
+        else {
             if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
                 $responseData[$rootKey] = array(
                     'status' => 'failed'
@@ -506,15 +509,13 @@ try {
     exit(0);
 } catch (Exception $exc) {
 
-    http_response_code(500);
+    // http_response_code(500);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
         'data' => array()
     );
-
-
     echo json_encode($payload);
 
     error_log($exc->getMessage());

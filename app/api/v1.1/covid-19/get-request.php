@@ -261,7 +261,7 @@ try {
     exit(0);
 } catch (Exception $exc) {
 
-    http_response_code(500);
+    // http_response_code(500);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),

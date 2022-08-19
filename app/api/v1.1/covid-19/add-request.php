@@ -54,20 +54,20 @@ try {
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
         $sampleFrom = '';
         /* V1 name to Id mapping */
-        if (!is_numeric($data['provinceId'])) {
+        if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
             if (isset($province) && count($province) > 0) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'province_name', 'province_details', 'province_id', true);
         }
-        if (!is_numeric($data['implementingPartner'])) {
+        if (isset($data['implementingPartner']) && !is_numeric($data['implementingPartner'])) {
             $data['implementingPartner'] = $general->getValueByName($data['implementingPartner'], 'i_partner_name', 'r_implementation_partners', 'i_partner_id');
         }
-        if (!is_numeric($data['fundingSource'])) {
+        if (isset($data['fundingSource']) && !is_numeric($data['fundingSource'])) {
             $data['fundingSource'] = $general->getValueByName($data['fundingSource'], 'funding_source_name', 'r_funding_sources', 'funding_source_id');
         }
-        if (!is_numeric($data['patientNationality'])) {
+        if (isset($data['patientNationality']) && !is_numeric($data['patientNationality'])) {
             $iso = explode("(", $data['patientNationality']);
             if (isset($iso) && count($iso) > 0) {
                 $data['patientNationality'] = trim($iso[0]);
@@ -82,25 +82,27 @@ try {
         $data['api'] = "yes";
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $general->isoDateFormat($data['sampleCollectionDate'], true) : null;
 
         if (empty($sampleCollectionDate)) {
-            exit();
+            continue;
         }
         $update = "no";
         $rowData = false;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
             
-            $sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
+            $sQuery = "SELECT covid19_id, sample_code, unique_id, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
 
             $sQueryWhere = array();
 
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            } else if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
-                $sQueryWhere[] = " app_sample_code like '" . $data['sampleCode'] . "'";
+            } 
+            
+            if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+                $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
 
             if (!empty($sQueryWhere)) {
@@ -108,6 +110,9 @@ try {
             }
 
             $rowData = $db->rawQueryOne($sQuery);
+
+            $general->var_error_log($sQuery);
+
             if ($rowData) {
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
@@ -164,6 +169,11 @@ try {
             $id = $db->insert("form_covid19", $covid19Data);
             $data['covid19SampleId'] = $id;
         }
+
+        // $general->var_error_log($data);
+        // $general->var_error_log($db->getLastQuery());
+        // $general->var_error_log($db->getLastError());
+
         $tableName = "form_covid19";
         $tableName1 = "activity_log";
         $testTableName = 'covid19_tests';
@@ -255,7 +265,7 @@ try {
         $covid19Data = array(
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $data['formId'],
-            'unique_id'                           => isset($data['uniqueId']) ? $data['uniqueId'] : null,
+            'unique_id'                           => $uniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'external_sample_code'                => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,
@@ -434,6 +444,10 @@ try {
             $db = $db->where('covid19_id', $data['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);
         }
+
+        // $general->var_error_log($db->getLastQuery());
+        // $general->var_error_log($db->getLastError());
+
         if ($id > 0) {
             $c19Data = $app->getTableDataUsingId('form_covid19', 'covid19_id', $data['covid19SampleId']);
             $c19SampleCode = (isset($c19Data['sample_code']) && $c19Data['sample_code']) ? $c19Data['sample_code'] : $c19Data['remote_sample_code'];
@@ -499,7 +513,7 @@ try {
     exit(0);
 } catch (Exception $exc) {
 
-    http_response_code(500);
+    // http_response_code(500);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),

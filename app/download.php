@@ -11,6 +11,11 @@ if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
 
 $file = base64_decode($_GET['f']);
 
+error_log($file);
+if(!is_file($file)) {
+   // exit(0);
+}
+
 $disposition = (isset($_GET['d']) && $_GET['d'] = 'a') ? 'attachment' : 'inline';
 
 $mime = mime_content_type($file);

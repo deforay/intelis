@@ -84,13 +84,17 @@ class DateUtils
     }
 
     // Returns the given date in Y-m-d format
-    public function isoDateFormat($date)
+    public function isoDateFormat($date, $includeTime = false)
     {
         $date = trim($date);
         if (false === $this->verifyIfDateValid($date)) {
             return null;
         } else {
-            return (new DateTimeImmutable($date))->format("Y-m-d");            
+            $format = "Y-m-d";
+            if ($includeTime === true) {
+                $format = $format . " H:i:s";
+            }
+            return (new DateTimeImmutable($date))->format($format);            
         }
     }
 

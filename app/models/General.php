@@ -76,10 +76,10 @@ class General
      * Used to format date from dd-mmm-yyyy to yyyy-mm-dd for storing in database
      *
      */
-    public function isoDateFormat($date)
+    public function isoDateFormat($date, $includeTime = false)
     {
         $utils = new DateUtils();
-        return $utils->isoDateFormat($date);
+        return $utils->isoDateFormat($date,$includeTime);
     }
 
     public function humanReadableDateFormat($date, $includeTime = false)
