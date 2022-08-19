@@ -122,7 +122,7 @@ if (isset($_POST['noResultSampleTestDate']) && trim($_POST['noResultSampleTestDa
         $end_date = $general->isoDateFormat(trim($s_c_date[1]));
     }
     if (trim($start_date) == trim($end_date)) {
-        $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+        $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
     } else {
         $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
     }

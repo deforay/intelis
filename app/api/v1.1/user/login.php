@@ -69,18 +69,26 @@ try {
                     'timestamp' => time(),
                 );
             } else {
-                $randomString = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
+                //$randomString = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
 
-                $userData['api_token'] = $randomString;
-                $userData['api_token_generated_datetime'] = $general->getCurrentDateTime();
-                $db = $db->where('user_id', $userResult['user_id']);
-                $upId = $db->update('user_details', $userData);
-                if ($upId) {
+                // $userData['api_token'] = $randomString;
+                // $userData['api_token_generated_datetime'] = $general->getCurrentDateTime();
+                // $db = $db->where('user_id', $userResult['user_id']);
+                // $upId = $db->update('user_details', $userData);
+
+                $tokenData = $users->getAuthToken(null, $userResult['user_id']);
+
+                if (!empty($tokenData)) {
                     $data = array();
 
+                    unset($userResult['password']);
+                    unset($userResult['hash_algorithm']);
+                    unset($userResult['app_access']);
+                    
                     $data['user'] = $userResult;
                     $data['form'] = $general->getGlobalConfig('vl_form');
-                    $data['api_token'] = $randomString;
+                    $data['api_token'] = $tokenData['token'];
+                    $data['new_token'] = $tokenData['token_updated'];
                     $data['appMenuName'] = $general->getGlobalConfig('app_menu_name');
                     $data['access'] = $users->getUserRolePrivileges($userResult['user_id']);
                     // print_r($data);die;

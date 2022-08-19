@@ -138,7 +138,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
-            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+            $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
         } else {
             $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }

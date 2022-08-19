@@ -212,39 +212,39 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 /* Date time filters */
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
-          $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $start_date . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      if (trim($sReceivedDate) == trim($eReceivedDate)) {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $sReceivedDate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) like "' . $sReceivedDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eReceivedDate . '"';
      }
 }
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     if (trim($sTestDate) == trim($eTestDate)) {
-          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+     if (!empty($sTestDate) && trim($sTestDate) == trim($eTestDate)) {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) like "' . $sTestDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (trim($sPrintDate) == trim($eTestDate)) {
-          $sWhere[] = ' DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+          $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
-if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-     if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
-          $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) = "' . $sSampleReceivedDate . '"';
-     } else {
-          $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
-     }
-}
+// if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
+//      if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
+//           $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) like "' . $sSampleReceivedDate . '"';
+//      } else {
+//           $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
+//      }
+// }
 //$cWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -270,7 +270,7 @@ $_SESSION['eidExportResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
+//$general->var_error_log($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 

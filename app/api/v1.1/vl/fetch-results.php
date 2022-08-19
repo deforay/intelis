@@ -267,7 +267,7 @@ try {
 
     // http_response_code(500);
     $payload = array(
-        'status' => 'error',
+        'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
         'data' => array()

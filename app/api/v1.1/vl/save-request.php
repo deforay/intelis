@@ -102,7 +102,7 @@ try {
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            }  
+            }
             if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
@@ -158,14 +158,18 @@ try {
             $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
             $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $vlData['remote_sample'] = 'yes';
+            $vlData['result_status'] = 9;
+            
             if ($user['access_type'] === 'testing-lab') {
                 $vlData['sample_code'] = $sampleData['sampleCode'];
+                $vlData['result_status'] = 6;
             }
         } else {
             $vlData['sample_code'] = $sampleData['sampleCode'];
             $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
             $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
             $vlData['remote_sample'] = 'no';
+            $vlData['result_status'] = 6;
         }
 
         $id = 0;
@@ -415,6 +419,9 @@ try {
             'result_reviewed_datetime'              => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'source_of_request'                     => "app"
         );
+
+
+
         if (isset($data['patientFullName']) && $data['patientFullName'] != "") {
             $vlFulldata['patient_first_name'] = $general->crypto('encrypt', $data['patientFullName'], $vlFulldata['patient_art_no']);
         }
@@ -441,7 +448,6 @@ try {
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update($tableName, $vlFulldata);
-            // print_r($db->getLastError());
             // echo "ID=>" . $id;
         }
         if ($id > 0) {
@@ -462,8 +468,7 @@ try {
                 );
             }
             http_response_code(200);
-        } 
-        else {
+        } else {
             if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
                 $responseData[$rootKey] = array(
                     'status' => 'failed'
@@ -480,9 +485,9 @@ try {
         }
     }
     if ($update == "yes") {
-        $msg = 'Successfully updated.';
+        $msg = 'Successfully updated';
     } else {
-        $msg = 'Successfully added.';
+        $msg = 'Successfully added';
     }
     if (isset($responseData) && count($responseData) > 0) {
         $payload = array(

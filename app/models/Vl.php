@@ -121,7 +121,6 @@ class Vl
 
         $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
 
-        error_log(" ===== NEW MAX ID ====== " . $maxId);
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
             $remotePrefix = $remotePrefix . "R";

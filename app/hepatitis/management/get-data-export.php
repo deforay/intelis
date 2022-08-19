@@ -202,7 +202,7 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 
      if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
           if (trim($start_date) == trim($end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
           } else {
                $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
@@ -223,7 +223,7 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      }
      if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
           if (trim($sPrintDate) == trim($eTestDate)) {
-               $sWhere[] = ' DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+               $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
           } else {
                $sWhere[] =  ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
           }

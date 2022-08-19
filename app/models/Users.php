@@ -275,43 +275,60 @@ class Users
 
 
 
-    public function getAuthToken($token)
+    public function getAuthToken($token = null, $userId = null)
     {
 
-        if (empty($token)) {
+        if (empty($token) && empty($userId)) {
             return null;
         }
 
         $result = array();
 
-        $query = "SELECT * FROM $this->table as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE api_token = ? and ud.`status` = 'active'";
-        $result = $this->db->rawQueryOne($query, array($token));
+        if (!empty($userId)) {
+            $this->db->where('user_id', $userId);
+        }
+        if (!empty($token)) {
+            $this->db->where('api_token', $token);
+        }
+
+        $this->db->where('ud.status', 'active');
+        $this->db->join("roles r", "ud.role_id=r.role_id", "INNER");
+        $result = $this->db->getOne("$this->table as ud");
+
+        //error_log($this->db->getLastQuery());
+        // $query = "SELECT * FROM $this->table as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE api_token = ? and ud.`status` = 'active'";
+        // $result = $this->db->rawQueryOne($query, array($token));
         $tokenExpiration = !empty($result['api_token_exipiration_days']) ? $result['api_token_exipiration_days'] : 0;
 
 
+        $id = false;
+        $data = array();
         // Tokens with expiration = 0 are tokens that never expire
-        if ($tokenExpiration != 0) {
+        if ($tokenExpiration != 0 || empty($result['api_token'])) {
             $today = new \DateTime();
             $lastTokenDate = null;
             if (!empty($result['api_token_generated_datetime'])) {
                 $lastTokenDate = new \DateTime($result['api_token_generated_datetime']);
             }
-            if ((empty($lastTokenDate) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
+            if ((empty($result['api_token_generated_datetime']) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
                 $general = new \Vlsm\Models\General($this->db);
                 $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
                 $data['api_token_generated_datetime'] = $general->getCurrentDateTime();
 
                 $this->db = $this->db->where('user_id', $result['user_id']);
                 $id = $this->db->update($this->table, $data);
-
-                if ($id > 0) {
-                    $result['token_updated'] = true;
-                    $result['new_token'] = $data['api_token'];
-                } else {
-                    $result['token_updated'] = false;
-                }
             }
         }
+
+        if ($id === true) {
+            $result['token_updated'] = true;
+            $result['new_token'] = $data['api_token'];
+            $result['token'] = $data['api_token'];
+        } else {
+            $result['token_updated'] = false;
+            $result['token'] = $result['api_token'];
+        }
+
 
         return $result;
     }
