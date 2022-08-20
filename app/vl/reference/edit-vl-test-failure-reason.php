@@ -56,7 +56,7 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <input type="hidden" name="failureId" value="<?php echo $_GET['id']; ?>" />
+                    <input type="hidden" name="failureId" value="<?php echo htmlspecialchars($_GET['id']); ?>" />
                     <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
                     <a href="vl-art-code-details.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
                 </div>

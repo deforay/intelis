@@ -249,7 +249,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
       $pathFront = realpath(TEMP_PATH);
       $filename = 'vlsm-result-' . date('d-M-Y-H-i-s') . '.pdf';
       $pdf->Output($pathFront . DIRECTORY_SEPARATOR . $filename, "F");
-      $downloadFile1 = TEMP_PATH . DIRECTORY_SEPARATOR . $_POST['pdfFile'];
+      $downloadFile1 = TEMP_PATH . DIRECTORY_SEPARATOR . (htmlspecialchars($_POST['pdfFile']));
       $downloadFile2 = TEMP_PATH . DIRECTORY_SEPARATOR . $filename;
    } else {
       $_SESSION['alertMsg'] = 'Unable to generate test result pdf. Please check the result fields.';
@@ -301,12 +301,12 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
                </div>
             </div>
             <div class="row">
-               <input type="hidden" id="subject" name="subject" value="<?php echo $_POST['subject']; ?>" />
-               <input type="hidden" id="toEmail" name="toEmail" value="<?php echo $_POST['toEmail']; ?>" />
-               <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo $_POST['reportEmail']; ?>" />
-               <input type="hidden" id="message" name="message" value="<?php echo $_POST['message']; ?>" />
+               <input type="hidden" id="subject" name="subject" value="<?php echo htmlspecialchars($_POST['subject']); ?>" />
+               <input type="hidden" id="toEmail" name="toEmail" value="<?php echo htmlspecialchars($_POST['toEmail']); ?>" />
+               <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo htmlspecialchars($_POST['reportEmail']); ?>" />
+               <input type="hidden" id="message" name="message" value="<?php echo htmlspecialchars($_POST['message']); ?>" />
                <input type="hidden" id="sample" name="sample" value="<?php echo implode(',', $resultOlySamples); ?>" />
-               <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo $_POST['pdfFile']; ?>" />
+               <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo htmlspecialchars($_POST['pdfFile']); ?>" />
                <input type="hidden" id="pdfFile2" name="pdfFile2" value="<?php echo $filename; ?>" />
                <input type="hidden" id="storeFile" name="storeFile" value="no" />
                <div class="col-lg-12" style="text-align:center;padding-left:0;">

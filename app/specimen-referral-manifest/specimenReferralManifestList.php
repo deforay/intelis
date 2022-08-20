@@ -25,7 +25,7 @@ require_once(APPLICATION_PATH . '/header.php');
         <div class="box">
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("addSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
-              <a href="addSpecimenReferralManifest.php?t=<?php echo $_GET['t']; ?>" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> Add Specimen Referral Manifest</a>
+              <a href="addSpecimenReferralManifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> Add Specimen Referral Manifest</a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>

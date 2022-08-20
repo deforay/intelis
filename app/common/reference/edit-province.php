@@ -58,7 +58,7 @@ $provinceInfo = $db->query($query);
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <input type="hidden" name="provinceId" name="provinceId" value="<?php echo $_GET['id'];?>">
+                        <input type="hidden" name="provinceId" name="provinceId" value="<?php echo htmlspecialchars($_GET['id']);?>">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
                         <a href="province-details.php" class="btn btn-default"> Cancel</a>
                     </div>

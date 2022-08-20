@@ -571,7 +571,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 					alert("<?php echo _("Unable to generate excel"); ?>.");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
+					window.location.href = '/download.php?f=' + data;
 				}
 			});
 	}

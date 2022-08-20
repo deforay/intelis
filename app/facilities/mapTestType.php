@@ -104,7 +104,7 @@ require_once(APPLICATION_PATH . '/header.php');
 						</div>
 						<!-- /.box-body -->
 						<div class="box-footer">
-							<input type="hidden" name="facilityType" class="form-control" id="facilityType" value="<?php echo $type; ?>" />
+							<input type="hidden" name="facilityType" class="form-control" id="facilityType" value="<?php echo htmlspecialchars($type); ?>" />
 							<input type="hidden" name="mappedFacilities" id="mappedFacilities" value="" />
 							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
 							<a href="facilities.php" class="btn btn-default"> <?php echo _("Cancel");?></a>

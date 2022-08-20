@@ -4,21 +4,48 @@ if (!isset($_SESSION['userId'])) {
     header("location:/login/login.php");
 }
 
+$webRootPath = realpath(WEB_ROOT);
+
+$general = new \Vlsm\Models\General();
+
 if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
     header("Location:" . $redirect);
 }
 
-$file = base64_decode($_GET['f']);
 
-error_log($file);
-if(!is_file($file)) {
-   // exit(0);
+$allowedMimeTypes = [
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel',
+    // 'application/msword',
+    // 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+];
+
+// $disallowedMimeTypes = [
+//     'application/x-httpd-php',
+//     'text/x-php',
+//     'application/json',
+//     'text/javascript',
+//     'text/html',
+//     'application/gzip',
+//     'application/zip',
+// ];
+
+$file = realpath(urldecode(base64_decode($_GET['f'])));
+
+$mime = mime_content_type($file);
+
+// Checking if the file path is inside the VLSM public folder (to avoid path injection)
+// Checking if the file even exists
+// Checking if file is in allowed types
+if (!$general->startsWith($file, $webRootPath) || !in_array($mime, $allowedMimeTypes) || !$general->fileExists($file)) {
+    http_response_code(403);
+    exit(0);
 }
 
 $disposition = (isset($_GET['d']) && $_GET['d'] = 'a') ? 'attachment' : 'inline';
 
-$mime = mime_content_type($file);
 
 header('Content-Description: File Transfer');
 header('Content-Type: ' . (($mime !== false) ? $mime : 'application/octet-stream'));

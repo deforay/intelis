@@ -269,7 +269,7 @@ $tableResult = $db->rawQuery($sQuery);
                 primaryKey: '<?php echo $primaryKey; ?>',
                 facilityId: $('#facilityId<?php echo $unique; ?>').val(),
                 cDate: <?php echo $cDate; ?>,
-                sampleCollectionDate: '<?php echo $_POST['sampleCollectionDate']; ?>',
+                sampleCollectionDate: '<?php echo htmlspecialchars($_POST['sampleCollectionDate']); ?>',
             },
             function(data) {
                 $("#collectionSite<?php echo $unique; ?>").html(data);

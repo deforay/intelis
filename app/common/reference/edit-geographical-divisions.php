@@ -86,7 +86,7 @@ $geoInfo = $db->rawQueryOne($query);
                         </div>
                     </div>
                     <div class="box-footer">
-                        <input type="hidden" name="geoId" name="geoId" value="<?php echo $_GET['id']; ?>">
+                        <input type="hidden" name="geoId" name="geoId" value="<?php echo htmlspecialchars($_GET['id']); ?>">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
                         <a href="geographical-divisions-details.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
                     </div>

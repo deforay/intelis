@@ -4,7 +4,7 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $confFileName = base64_decode($_POST['machineName']);
 
