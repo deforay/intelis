@@ -29,12 +29,11 @@ try {
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
-
-    $vlResult = null;
     $logVal = null;
     $absDecimalVal = null;
     $absVal = null;
     $txtVal = null;
+    $finalResult = null;
 
     $input = json_decode(file_get_contents("php://input"), true);
 
@@ -148,7 +147,7 @@ try {
             $sampleCollectionDate = $data['sampleCollectionDate'] = NULL;
         }
         $vlData = array(
-            'vlsm_country_id' => $data['formId'] ?: null,
+            'vlsm_country_id' => $data['formId'] ?? null,
             'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
@@ -201,20 +200,6 @@ try {
         $status = 6;
         if ($roleUser['access_type'] != 'testing-lab') {
             $status = 9;
-        }
-
-        if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
-            $data['result'] = null;
-            $status = 4;
-        } else if (
-            isset($globalConfig['vl_auto_approve_api_results']) &&
-            $globalConfig['vl_auto_approve_api_results'] == "yes" &&
-            (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
-            (isset($data['result']) && !empty($data['result']))
-        ) {
-            $status = 7;
-        } else if ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
-            $status = 8;
         }
 
         if (isset($data['approvedOnDateTime']) && trim($data['approvedOnDateTime']) != "") {
@@ -330,34 +315,33 @@ try {
             $data['vlLog'] = '';
         }
 
-        $data['result'] = null;
-        if (isset($data['vlResult']) && trim($data['vlResult']) != '') {
-            $data['result'] = $vlResult = trim($data['vlResult']);
-            $vlResult = strtolower($vlResult);
-            $vlResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
-            $vlResult = str_replace('-', '', $vlResult);
-            $vlResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
-
-            if ($vlResult == "-1.00") {
-                $data['result'] = $vlResult = "Not Detected";
-            }
-
-            if (is_numeric($vlResult)) {
-                //passing only number 
-                $interpretedResults = $vlModel->interpretViralLoadNumericResult($vlResult);
+        if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
+            $finalResult = null;
+            $status = 4;
+        } else if (isset($data['vlResult']) && trim($data['vlResult']) != '') {
+            if ($data['vlResult'] === 'Failed' || $data['vlResult'] === 'Fail') {
+                //Result is saved as entered
+                $finalResult  = $data['vlResult'];
+                $status = 5; // Invalid/Failed
             } else {
-                //Passing orginal result value for text results
-                $interpretedResults = $vlModel->interpretViralLoadTextResult($data['result']);
-            }            
 
-            //$vlResult = $data['vlResult'];
-            $logVal = $interpretedResults['logVal'];
-            $absDecimalVal = $interpretedResults['absDecimalVal'];
-            $absVal = $interpretedResults['absVal'];
-            $txtVal = $interpretedResults['txtVal'];
+                $interpretedResults = $vlModel->interpretViralLoadResult($data['vlResult']);
+
+                //Result is saved as entered
+                $finalResult  = $data['vlResult'];
+                $logVal = $interpretedResults['logVal'];
+                $absDecimalVal = $interpretedResults['absDecimalVal'];
+                $absVal = $interpretedResults['absVal'];
+                $txtVal = $interpretedResults['txtVal'];
+            }
+            $status = 8;
+            if (
+                isset($globalConfig['vl_auto_approve_api_results']) &&
+                $globalConfig['vl_auto_approve_api_results'] == "yes"
+            ) {
+                $status = 7;
+            }
         }
-
-
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
             $revisedOn = explode(" ", $data['revisedOn']);
@@ -411,16 +395,15 @@ try {
             'sample_tested_datetime'                => $data['sampleTestingDateAtLab'],
             'sample_dispatched_datetime'            => $data['sampleDispatchedOn'],
             'result_dispatched_datetime'            => $data['resultDispatchedOn'],
-            'result_value_hiv_detection'            => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  NULL,
-            'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
+            'result_value_hiv_detection'            => (isset($data['hivDetection']) && $data['hivDetection'] != '') ? $data['hivDetection'] :  NULL,
+            'reason_for_failure'                    => (isset($data['reasonForFailure']) && $data['reasonForFailure'] != '') ? $data['reasonForFailure'] :  NULL,
             'is_sample_rejected'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] != '') ? $data['isSampleRejected'] : NULL,
             'reason_for_sample_rejection'           => (isset($data['rejectionReason']) && $data['rejectionReason'] != '') ? $data['rejectionReason'] :  NULL,
             'rejection_on'                          => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
-            'result_value_absolute'                 => $absVal ?: null,
-            'result_value_absolute_decimal'         => $absDecimalVal ?: null,
-            'result_value_text'                     => $txtVal ?: null,
-            'result'                                => $data['result'] ?: null,
-            'result_value_log'                      => $logVal ?: null,
+            'result_value_absolute'                 => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? $data['vlResult'] :  NULL,
+            'result_value_absolute_decimal'         => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? number_format((float)$data['vlResult'], 2, '.', '') :  NULL,
+            'result'                                => $finalResult,
+            'result_value_log'                      => (isset($data['vlLog']) && $data['vlLog'] != '') ? $data['vlLog'] :  NULL,
             'tested_by'                             => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  NULL,
             'result_approved_by'                    => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
             'result_approved_datetime'              => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedOnDateTime'] :  NULL,
@@ -434,6 +417,7 @@ try {
             'request_created_datetime'              => $general->getCurrentDateTime(),
             'last_modified_datetime'                => $general->getCurrentDateTime(),
             'manual_result_entry'                   => 'yes',
+            'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
             'external_sample_code'                  => isset($data['serialNo']) ? $data['serialNo'] : null,
             'is_patient_new'                        => (isset($data['isPatientNew']) && $data['isPatientNew'] != '') ? $data['isPatientNew'] :  NULL,
             'has_patient_changed_regimen'           => (isset($data['hasChangedRegimen']) && $data['hasChangedRegimen'] != '') ? $data['hasChangedRegimen'] :  NULL,
