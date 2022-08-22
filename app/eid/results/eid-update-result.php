@@ -58,7 +58,12 @@ $machine = array();
 foreach ($iResult as $val) {
 	$machine[$val['config_machine_id']] = $val['config_machine_name'];
 }
-
+if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
+	$eidInfo['result_dispatched_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+} else {
+	$eidInfo['result_dispatched_datetime'] = '';
+}
 ?>
 
 <style>

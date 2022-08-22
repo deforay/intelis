@@ -157,6 +157,17 @@ if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) !=
           $eReceivedDate = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
+$sResultDispatchedDate = '';
+$eResultDispatchedDate = '';
+if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != '') {
+     $s_t_date = explode("to", $_POST['resultDispatchedOn']);
+     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
+          $sResultDispatchedDate = $general->isoDateFormat(trim($s_t_date[0]));
+     }
+     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
+          $eResultDispatchedDate = $general->isoDateFormat(trim($s_t_date[1]));
+     }
+}
 /* Sample test date filter */
 $sTestDate = '';
 $eTestDate = '';
@@ -224,6 +235,13 @@ if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) !=
           $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eReceivedDate . '"';
      }
 }
+if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != '') {
+     if (trim($sResultDispatchedDate) == trim($eResultDispatchedDate)) {
+          $sWhere[] = ' DATE(vl.result_dispatched_datetime) like "' . $sResultDispatchedDate . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.result_dispatched_datetime) >= "' . $sResultDispatchedDate . '" AND DATE(vl.result_dispatched_datetime) <= "' . $eResultDispatchedDate . '"';
+     }
+}
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      if (!empty($sTestDate) && trim($sTestDate) == trim($eTestDate)) {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) like "' . $sTestDate . '"';
@@ -238,14 +256,29 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
           $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
-
-if ($_SESSION['instanceType'] == 'remoteuser' && isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
-     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
+// if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
+//      if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
+//           $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) like "' . $sSampleReceivedDate . '"';
+//      } else {
+//           $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
+//      }
+// }
+//$cWhere = '';
+if ($_SESSION['instanceType'] == 'remoteuser') {
+     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
+     //$cWhere = " AND request_created_by='".$_SESSION['userId']."'";
+     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
+     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
+          $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
+          // $cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
+     }
 }
-
-$sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
-//echo $sQuery;die;
-
+if (isset($sWhere) && sizeof($sWhere) > 0) {
+     $sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
+} else {
+     $sQuery = $sQuery . ' WHERE result_status is NOT NULL ';
+}
 
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
