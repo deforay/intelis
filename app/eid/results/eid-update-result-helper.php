@@ -41,7 +41,12 @@ try {
   } else {
     $_POST['reviewedOn'] = NULL;
   }
-
+  if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != "") {
+    $resultDispatchedOn = explode(" ", $_POST['resultDispatchedOn']);
+    $_POST['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+  } else {
+    $_POST['resultDispatchedOn'] = NULL;
+  }
 
   $eidData = array(
     'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
@@ -52,13 +57,14 @@ try {
     'lab_id'                            => isset($_POST['labId']) ? $_POST['labId'] : null,
     'result'                            => isset($_POST['result']) ? $_POST['result'] : null,
     'tested_by'                         => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
-    'lab_tech_comments'                     => (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  NULL,
+    'lab_tech_comments'                 => (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  NULL,
     'result_approved_by'                => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
     'result_approved_datetime'          => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
     'revised_by'                        => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
     'revised_on'                        => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
     'result_reviewed_by'                => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
     'result_reviewed_datetime'          => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+    'result_dispatched_datetime'        => (isset($_POST['resultDispatchedOn']) && $_POST['resultDispatchedOn'] != "") ? $_POST['resultDispatchedOn'] : null,
     'reason_for_changing'               => (!empty($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
     'result_status'                     => 8,
     'data_sync'                         => 0,

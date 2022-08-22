@@ -121,6 +121,13 @@ if (isset($eidInfo['result_reviewed_datetime']) && trim($eidInfo['result_reviewe
 } else {
     $eidInfo['result_reviewed_datetime'] = '';
 }
+
+if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+    $expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
+    $eidInfo['result_dispatched_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+} else {
+    $eidInfo['result_dispatched_datetime'] = '';
+}
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-zimbabwe.php',
