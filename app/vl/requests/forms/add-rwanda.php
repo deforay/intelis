@@ -639,7 +639,7 @@ $sFormat = '';
                                                             <div class="col-md-8">
                                                                  <label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
                                                                  <div class="col-lg-10">
-                                                                      <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?> style="width:100%"></textarea>
+                                                                      <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?> style="width: 94% !important;margin-left: 23px;"></textarea>
                                                                  </div>
                                                             </div>
                                                        </div>

@@ -713,14 +713,16 @@ $disable = "disabled = 'disabled'";
 															</select>
 														</div>
 													</div>
-													<div class="col-md-4 reasonForFailure" style="<?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'failed') ? '' : 'display: none;'; ?>">
-														<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
-														<div class="col-lg-7">
-															<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
-																<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
-															</select>
+													<?php if (count($reasonForFailure) > 0) { ?>
+														<div class="col-md-4 reasonForFailure" style="<?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'failed') ? '' : 'display: none;'; ?>">
+															<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
+															<div class="col-lg-7">
+																<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
+																	<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
+																</select>
+															</div>
 														</div>
-													</div>
+													<?php } ?>
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
 														<div class="col-lg-7">

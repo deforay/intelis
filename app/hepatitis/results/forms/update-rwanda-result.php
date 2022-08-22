@@ -536,6 +536,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
         $("#vlTestingSite").select2({
             placeholder: "Select Vl Testing Site"
         });
+        $('#authorizedBy').select2({
+            placeholder: "Select Authorized By"
+        });
         getfacilityProvinceDetails($("#facilityId"));
         $('#isResultAuthorized').change(function(e) {
             checkIsResultAuthorized();

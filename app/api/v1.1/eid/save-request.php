@@ -84,8 +84,8 @@ try {
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            } 
-            
+            }
+
             if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
@@ -291,7 +291,7 @@ try {
             'caretaker_contact_consent'                         => isset($data['caretakerConsentForContact']) ? $data['caretakerConsentForContact'] : null,
             'caretaker_phone_number'                            => isset($data['caretakerPhoneNumber']) ? $data['caretakerPhoneNumber'] : null,
             'caretaker_address'                                 => isset($data['caretakerAddress']) ? $data['caretakerAddress'] : null,
-            'mother_name'                                       => isset($data['mothersName']) ? $data['mothersName'] : null,
+            'mother_name'                                       => (isset($data['mothersName']) && !empty($data['mothersName']) && $data['mothersName'] != 'undefined') ? $data['mothersName'] : null,
             'mother_dob'                                        => isset($data['mothersDob']) ? $data['mothersDob'] : null,
             'mother_marital_status'                             => isset($data['mothersMaritalStatus']) ? $data['mothersMaritalStatus'] : null,
             'mother_treatment'                                  => isset($data['motherTreatment']) ? implode(",", $data['motherTreatment']) : null,
