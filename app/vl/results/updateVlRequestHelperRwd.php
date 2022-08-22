@@ -10,9 +10,16 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
+$vlModel = new \Vlsm\Models\Vl();
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
-$vl_result_category = NULL;
+
+$logVal = null;
+$absDecimalVal = null;
+$absVal = null;
+$txtVal = null;
+$finalResult = null;
+
 try {
     //var_dump($_POST);die;
     $instanceId = '';
@@ -59,43 +66,50 @@ try {
         }
     }
 
-    $isRejection = false;
+    $isRejected = false;
     $textValue = NULL;
+    $finalResult = null;
+    $resultStatus = 8; // Awaiting Approval    
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
-        $vl_result_category = 'rejected';
-        $isRejection = true;
-        $_POST['vlResult'] = '';
-        $_POST['vlLog'] = '';
+        $isRejected = true;
+        $finalResult = $_POST['vlResult'] = null;
+        $_POST['vlLog'] = null;
+        $resultStatus = 4;
     }
 
 
-    if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = '<20';
+    if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejected == false) {
+        $_POST['vlResult'] = '< 20';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = '<40';
+    } else if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejected == false) {
+        $_POST['vlResult'] = '< 40';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
+    } else if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = $textValue = 'Target Not Detected';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejection == false) {
+    } else if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = '';
     }
-    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = 'Failed';
+    
+    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = 'Failed';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = 'Invalid';
+        $resultStatus = 5; // Invalid/Failed
+    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = 'Invalid';
         $_POST['vlLog'] = '';
-    }
+        $resultStatus = 5; // Invalid/Failed
+    } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+        $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
 
-    if (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') {
-        $_POST['result'] = $_POST['vlResult'];
+        //Result is saved as entered
+        $finalResult  = $_POST['vlResult'];
+
+        $logVal = $interpretedResults['logVal'];
+        $absDecimalVal = $interpretedResults['absDecimalVal'];
+        $absVal = $interpretedResults['absVal'];
+        $txtVal = $interpretedResults['txtVal'];
     }
 
     $reasonForChanges = '';
@@ -131,11 +145,12 @@ try {
         'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  NULL,
         'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
-        'result_value_log' => (isset($_POST['vlLog']) && $_POST['vlLog'] != '') ? $_POST['vlLog'] :  NULL,
-        'result_value_absolute' => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Below Detection Level')) ? $_POST['vlResult'] :  NULL,
-        'result_value_text' => $textValue,
-        'result_value_absolute_decimal' => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Below Detection Level')) ? number_format((float)$_POST['vlResult'], 2, '.', '') :  NULL,
-        'result' => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] :  NULL,
+        'result_value_absolute'                 => $absVal ?: null,
+        'result_value_absolute_decimal'         => $absDecimalVal ?: null,
+        'result_value_text'                     => $txtVal ?: null,
+        'result'                                => $finalResult ?: null,
+        'result_value_log'                      => $logVal ?: null,
+        'result_status'                         => $resultStatus,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
@@ -148,18 +163,16 @@ try {
         'manual_result_entry' => 'yes',
         'data_sync' => 0,
         'result_printed_datetime' => NULL,
-        'result_dispatched_datetime' => NULL,
-        'vl_result_category' => $vl_result_category
+        'result_dispatched_datetime' => NULL
     );
 
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $vldata['result_status'] = 4;
     }
     /* Updating the high and low viral load data */
-    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-        $vlDb = new \Vlsm\Models\Vl();
-        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    }
+    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+    $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    //}
     //echo "<pre>";var_dump($vldata);die;
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);

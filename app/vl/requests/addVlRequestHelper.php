@@ -174,20 +174,20 @@ try {
         }
     }
 
-    $isRejection = false;
+    $isRejected = false;
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $vl_result_category = 'rejected';
-        $isRejection = true;
+        $isRejected = true;
         $_POST['vlResult'] = '';
         $_POST['vlLog'] = '';
     }
 
 
-    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejection == false) {
+    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = null;
     }
-    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
+    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Failed';
         $_POST['vlLog'] = null;
         $status = 5; // Invalid/Failed

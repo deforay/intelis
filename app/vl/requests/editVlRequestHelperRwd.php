@@ -7,11 +7,18 @@ ob_start();
 
 //echo "<pre>";var_dump($_POST);die;
 $general = new \Vlsm\Models\General();
+$vlModel = new \Vlsm\Models\Vl();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
-$vl_result_category = NULL;
+
+$logVal = null;
+$absDecimalVal = null;
+$absVal = null;
+$txtVal = null;
+$finalResult = null;
+
 try {
     $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
     $chkValidation = $general->checkMandatoryFields($validateField);
@@ -154,43 +161,54 @@ try {
         }
     }
 
-    $isRejection = false;
+    $isRejected = false;
+    //$resultStatus = 8; // Awaiting Approval    
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
-        $vl_result_category = 'rejected';
-        $isRejection = true;
-        $_POST['vlResult'] = '';
-        $_POST['vlLog'] = '';
+        $isRejected = true;
+        $finalResult = $_POST['vlResult'] = null;
+        $_POST['vlLog'] = null;
+        $resultStatus = 4;
     }
 
-    if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
+    if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Target Not Detected';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = '<20';
+        $resultStatus = 8; // Awaiting Approval    
+    } else if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejected == false) {
+        $_POST['vlResult'] = '< 20';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = '<40';
+        $resultStatus = 8; // Awaiting Approval    
+    } else if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejected == false) {
+        $_POST['vlResult'] = '< 40';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejection == false) {
+        $resultStatus = 8; // Awaiting Approval    
+    } else if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = 'Failed';
-        $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = 'Invalid';
-        $_POST['vlLog'] = '';
+        $resultStatus = 8; // Awaiting Approval    
     }
 
-    if (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') {
-        $_POST['result'] = $_POST['vlResult'];
-    } else if (isset($_POST['vlLog']) && trim($_POST['vlLog']) != '') {
-        $_POST['result_value_log'] = $_POST['vlLog'];
+    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = 'Failed';
+        $_POST['vlLog'] = '';
+        $resultStatus = 5; // Invalid/Failed
+    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = 'Invalid';
+        $_POST['vlLog'] = '';
+        $resultStatus = 5; // Invalid/Failed
+    } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+        
+        $resultStatus = 8; // Awaiting Approval    
+
+        $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
+
+        //Result is saved as entered
+        $finalResult  = $_POST['vlResult'];
+
+        $logVal = $interpretedResults['logVal'];
+        $absDecimalVal = $interpretedResults['absDecimalVal'];
+        $absVal = $interpretedResults['absVal'];
+        $txtVal = $interpretedResults['txtVal'];
     }
 
 
@@ -298,11 +316,13 @@ try {
         'is_sample_rejected' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
         'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] : NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : NULL,
-        'result_value_log' => (isset($_POST['vlLog']) && $_POST['vlLog'] != '') ? $_POST['vlLog'] : NULL,
-        'result_value_absolute' => !empty($_POST['vlResult']) ? $_POST['vlResult'] : NULL,
-        'result_value_text' => NULL,
-        'result_value_absolute_decimal' => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected'  && $_POST['vlResult'] != 'Below Detection Level')) ? number_format((float)$_POST['vlResult'], 2, '.', '') : NULL,
-        'result' => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] : NULL,
+        'result_value_absolute'                 => $absVal ?: null,
+        'result_value_absolute_decimal'         => $absDecimalVal ?: null,
+        'result_value_text'                     => $txtVal ?: null,
+        'result'                                => $finalResult ?: null,
+        'result_value_log'                      => $logVal ?: null,
+        'result_status'                         => $resultStatus,
+        //'result_status' => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] : NULL,        
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : NULL,
@@ -314,59 +334,57 @@ try {
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => $db->now(),
         'manual_result_entry' => 'yes',
-        'data_sync' => 0,
-        'vl_result_category' => $vl_result_category
+        'data_sync' => 0
     );
     /* Updating the high and low viral load data */
-    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-        $vlDb = new \Vlsm\Models\Vl();
-        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    }
+    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+    $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    //}
 
-    if ($_SESSION['instanceType'] == 'remoteuser') {
-        $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;
-    } else {
-        if ($_POST['sampleCodeCol'] != '') {
-            $vldata['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : NULL;
-        } else {
-            //Since Sample Code does not exist, today is the date
-            //sample is being registered at the lab.
-            $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
+    // if ($_SESSION['instanceType'] == 'remoteuser') {
+    //     $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;
+    // } else {
+    //     if ($_POST['sampleCodeCol'] != '') {
+    //         $vldata['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : NULL;
+    //     } else {
+    //         //Since Sample Code does not exist, today is the date
+    //         //sample is being registered at the lab.
+    //         $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
 
-            //update sample code generation
-            $sExpDT = explode(" ", $_POST['sampleCollectionDate']);
-            $sExpDate = explode("-", $sExpDT[0]);
-            $start_date = date($sExpDate[0] . '-01-01') . " " . '00:00:00';
-            $end_date = date($sExpDate[0] . '-12-31') . " " . '23:59:59';
-            $mnthYr = substr($sExpDate[0], -2);
-            if ($arr['sample_code'] == 'MMYY') {
-                $mnthYr = $sExpDate[1] . substr($sExpDate[0], -2);
-            } else if ($arr['sample_code'] == 'YY') {
-                $mnthYr = substr($sExpDate[0], -2);
-            }
-            $auto = substr($sExpDate[0], -2) . $sExpDate[1] . $sExpDate[2];
+    //         //update sample code generation
+    //         $sExpDT = explode(" ", $_POST['sampleCollectionDate']);
+    //         $sExpDate = explode("-", $sExpDT[0]);
+    //         $start_date = date($sExpDate[0] . '-01-01') . " " . '00:00:00';
+    //         $end_date = date($sExpDate[0] . '-12-31') . " " . '23:59:59';
+    //         $mnthYr = substr($sExpDate[0], -2);
+    //         if ($arr['sample_code'] == 'MMYY') {
+    //             $mnthYr = $sExpDate[1] . substr($sExpDate[0], -2);
+    //         } else if ($arr['sample_code'] == 'YY') {
+    //             $mnthYr = substr($sExpDate[0], -2);
+    //         }
+    //         $auto = substr($sExpDate[0], -2) . $sExpDate[1] . $sExpDate[2];
 
-            $svlQuery = 'SELECT sample_code_key FROM form_vl as vl WHERE DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND sample_code!="" ORDER BY sample_code_key DESC LIMIT 1';
-            $svlResult = $db->query($svlQuery);
-            $prefix = $arr['sample_code_prefix'];
-            if (isset($svlResult[0]['sample_code_key']) && $svlResult[0]['sample_code_key'] != '' && $svlResult[0]['sample_code_key'] != NULL) {
-                $maxId = $svlResult[0]['sample_code_key'] + 1;
-                $strparam = strlen($maxId);
-                $zeros = substr("000", $strparam);
-                $maxId = $zeros . $maxId;
-            } else {
-                $maxId = '001';
-            }
-            if ($arr['sample_code'] == 'auto') {
-                $vldata['sample_code'] = $auto . $maxId;
-                $vldata['sample_code_key'] = $maxId;
-            } else if ($arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') {
-                $vldata['sample_code'] = $prefix . $mnthYr . $maxId;
-                $vldata['sample_code_format'] = $prefix . $mnthYr;
-                $vldata['sample_code_key'] =  $maxId;
-            }
-        }
-    }
+    //         $svlQuery = 'SELECT sample_code_key FROM form_vl as vl WHERE DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND sample_code!="" ORDER BY sample_code_key DESC LIMIT 1';
+    //         $svlResult = $db->query($svlQuery);
+    //         $prefix = $arr['sample_code_prefix'];
+    //         if (isset($svlResult[0]['sample_code_key']) && $svlResult[0]['sample_code_key'] != '' && $svlResult[0]['sample_code_key'] != NULL) {
+    //             $maxId = $svlResult[0]['sample_code_key'] + 1;
+    //             $strparam = strlen($maxId);
+    //             $zeros = substr("000", $strparam);
+    //             $maxId = $zeros . $maxId;
+    //         } else {
+    //             $maxId = '001';
+    //         }
+    //         if ($arr['sample_code'] == 'auto') {
+    //             $vldata['sample_code'] = $auto . $maxId;
+    //             $vldata['sample_code_key'] = $maxId;
+    //         } else if ($arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') {
+    //             $vldata['sample_code'] = $prefix . $mnthYr . $maxId;
+    //             $vldata['sample_code_format'] = $prefix . $mnthYr;
+    //             $vldata['sample_code_key'] =  $maxId;
+    //         }
+    //     }
+    // }
     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
 
     //var_dump($vldata);die;
@@ -383,13 +401,6 @@ try {
 
         $general->activityLog($eventType, $action, $resource);
 
-        //  $data=array(
-        //  'event_type'=>$eventType,
-        //  'action'=>$action,
-        //  'resource'=>$resource,
-        //  'date_time'=>$general->getCurrentDateTime()
-        //  );
-        //  $db->insert($tableName1,$data);
 
     } else {
         $_SESSION['alertMsg'] = "Please try again later";

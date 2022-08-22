@@ -80,7 +80,6 @@ try {
 
     $isRejected = false;
     $finalResult = null;
-    $textResult = null;
     $resultStatus = 8; // Awaiting Approval
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $isRejected = true;
@@ -88,27 +87,12 @@ try {
         $resultStatus = 4;
     }
 
-    // // if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
-    // //     $finalResult = $textResult = 'Target Not Detected';
-    // //     $_POST['vlResult'] = $_POST['vlLog'] = null;
-    // // } else 
+    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
+        $_POST['vlResult'] = 'Below Detection Level';
+    }
 
-    // if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
-    //     $finalResult = $textResult = 'Below Detection Level';
-    //     $_POST['vlResult'] = $_POST['vlLog'] = null;
-    // } else if (!empty($_POST['vlResult'])) {
-    //     $finalResult = (float)$_POST['vlResult'];
-    // } else if ($_POST['vlLog'] != '') {
-    //     $finalResult = (float)$_POST['vlLog'];
-    // }
-    // if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
-    //     $finalResult = $textResult = 'Failed';
-    //     $_POST['vlResult'] = 'Failed';
-    //     $_POST['vlLog'] = '';
-    // }
-
-    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = 'Failed';
+    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
+        $finalResult  = $_POST['vlResult'] = 'Failed';
         $_POST['vlLog'] = null;
         $resultStatus = 5; // Invalid/Failed
     } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {

@@ -4,7 +4,7 @@ require_once(dirname(__FILE__) . "/../../../startup.php");
 header('Content-Type: application/json');
 
 //this file is get the data from remote db
-$data = json_decode(file_get_contents('php://input'), true);
+$origData = $data = json_decode(file_get_contents('php://input'), true);
 
 $encoding = $general->getHeader('Accept-Encoding');
 $payload = array();
@@ -19,6 +19,8 @@ $general = new \Vlsm\Models\General();
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
 $app = new \Vlsm\Models\App();
+
+$counter = 0;
 
 $facilityDb = new \Vlsm\Models\Facilities();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
@@ -41,8 +43,9 @@ if (!empty($data['manifestCode'])) {
 $vlRemoteResult = $db->rawQuery($vlQuery);
 
 if ($db->count > 0) {
-  $trackId = $app->addApiTracking(null, $db->count, 'requests', 'vl', null, $labId, 'sync-api');
   
+  $counter = $db->count;
+
   $sampleIds = array_column($vlRemoteResult, 'vl_sample_id');
   $db->where('vl_sample_id', $sampleIds, 'IN')
     ->update('form_vl', array('data_sync' => 1));
@@ -51,6 +54,9 @@ if ($db->count > 0) {
 } else {
   $payload = json_encode([]);
 }
+
+
+$general->addApiTracking('vlsm-system', $counter, 'requests', 'vl', null, $origData, $payload, 'json', $labId);
 
 if (!empty($encoding) && $encoding === 'gzip') {
   header("Content-Encoding: gzip");
