@@ -13,9 +13,6 @@ $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
 $facilitiesModel = new \Vlsm\Models\Facilities();
 
-
-var_dump($facilitiesModel->getTestingLabFacilityMap(2));
-
 $_SESSION['module'] = $_SESSION['module'] ?: array();
 
 
