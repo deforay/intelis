@@ -776,6 +776,18 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $('#province').select2({
             placeholder: "Province"
         });
+        $('#labId').select2({
+            placeholder: "Select Lab Name"
+        });
+        $('#reviewedBy').select2({
+            placeholder: "Select Reviewed By"
+        });
+        $('#approvedBy').select2({
+            placeholder: "Select Approved By"
+        });
+        $('#authorizedBy').select2({
+            placeholder: "Select Authorized By"
+        });
         getfacilityProvinceDetails($("#facilityId").val());
         <?php if (isset($covid19Info['mother_treatment']) && in_array('Other', $covid19Info['mother_treatment'])) { ?> $('#motherTreatmentOther').prop('disabled', false);
         <?php } ?>
