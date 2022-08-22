@@ -12,7 +12,7 @@ if (!isset($_SESSION['userId'])) {
 $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
 
-$_SESSION['module'] = $_SESSION['module'] ?? array();
+$_SESSION['module'] = $_SESSION['module'] ?: array();
 
 
 $syncLatestTime = $general->getLastSyncDateTime();

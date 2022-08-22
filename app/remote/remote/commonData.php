@@ -13,18 +13,7 @@ $app = new \Vlsm\Models\App();
 $encoding = $general->getHeader('Accept-Encoding');
 $payload = array();
 
-//system config
-$systemConfigQuery = "SELECT * FROM system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-//get remote data
-if (trim($sarr['sc_testing_lab_id']) == '') {
-    $sarr['sc_testing_lab_id'] = "''";
-}
+
 
 $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
@@ -32,6 +21,8 @@ $data = json_decode($jsonData, true);
 //error_log($jsonData);
 
 if ($data['Key'] == 'vlsm-get-remote') {
+
+    $labId = $data['labId'] ?: null;
 
     $response = array();
 
@@ -65,7 +56,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
         $count = (count($response['vlRejectionReasons']) + count($response['vlSampleTypes']) + count($response['vlArtCodes']) + count($response['vlFailureReasons']));
         if ($count > 0) {
-            $trackId = $app->addApiTracking(null, $count, 'common-data', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $count, 'common-data', 'vl', null, $labId, 'sync-api');
         }
     }
 
@@ -99,7 +90,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
         $count = (count($response['eidRejectionReasons']) + count($response['eidSampleTypes']) + count($response['eidResults']) + count($response['eidReasonForTesting']));
         if ($count > 0) {
-            $trackId = $app->addApiTracking(null, $count, 'common-data', 'eid', null, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $count, 'common-data', 'eid', null, $labId, 'sync-api');
         }
     }
 
@@ -150,7 +141,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
         $count = (count($response['covid19RejectionReasons']) + count($response['covid19SampleTypes']) + count($response['covid19Comorbidities']) + count($response['covid19Results']) + count($response['covid19Symptoms']) + count($response['covid19ReasonForTesting']) + count($response['covid19QCTestKits']));
         if ($count > 0) {
-            $trackId = $app->addApiTracking(null, $count, 'common-data', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $count, 'common-data', 'covid19', null, $labId, 'sync-api');
         }
     }
 
@@ -189,7 +180,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
         $count = (count($response['hepatitisRejectionReasons']) + count($response['hepatitisSampleTypes']) + count($response['hepatitisComorbidities']) + count($response['hepatitisResults']) + count($response['hepatitisReasonForTesting']));
         if ($count > 0) {
-            $trackId = $app->addApiTracking(null, $count, 'common-data', 'hepatitis', null, $sarr['sc_testing_lab_id'], 'sync-api');
+            $trackId = $app->addApiTracking(null, $count, 'common-data', 'hepatitis', null, $labId, 'sync-api');
         }
     }
 

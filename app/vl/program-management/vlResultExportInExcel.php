@@ -188,7 +188,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow["sample_code"];
 		} else {
 			$row[] = $aRow["sample_code"];
-			$row[] = $aRow["remote_sample_code"] ?? null;
+			$row[] = $aRow["remote_sample_code"] ?: null;
 		}
 		$row[] = $aRow['facility_name'];
 		$row[] = $aRow['lab_name'];
@@ -202,7 +202,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$row[] = ($aRow['patient_age_in_years'] != NULL && trim($aRow['patient_age_in_years']) != '' && $aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 		$row[] = $gender;
 		$row[] = $sampleCollectionDate;
-		$row[] = $aRow['sample_name'] ?? null;
+		$row[] = $aRow['sample_name'] ?: null;
 		$row[] = $treatmentInitiationDate;
 		$row[] = $aRow['current_regimen'];
 		$row[] = $dateOfInitiationOfCurrentRegimen;

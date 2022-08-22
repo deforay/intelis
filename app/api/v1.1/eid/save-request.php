@@ -123,7 +123,7 @@ try {
             $data['sampleCollectionDate'] = NULL;
         }
         $eidData = array(
-            'vlsm_country_id' => $data['formId'] ?? null,
+            'vlsm_country_id' => $data['formId'] ?: null,
             'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],

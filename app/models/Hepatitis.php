@@ -258,7 +258,7 @@ class Hepatitis
                 }
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
             $sampleJson = $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
 

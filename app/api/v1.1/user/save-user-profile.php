@@ -56,9 +56,9 @@ try {
         }
     }
 
-    $post['loginId'] = $post['loginId'] ?? $post['login_id'] ?? null;
-    $post['role'] = $post['role'] ?? $post['role_id'] ?? null;
-    $post['hashAlgorithm'] = $post['hashAlgorithm'] ?? $post['hash_algorithm'] ?? 'phb';
+    $post['loginId'] = $post['loginId'] ?: $post['login_id'] ?: null;
+    $post['role'] = $post['role'] ?: $post['role_id'] ?: null;
+    $post['hashAlgorithm'] = $post['hashAlgorithm'] ?: $post['hash_algorithm'] ?: 'phb';
     
     if (!isset($user)) {
         if (!$apiKey) {

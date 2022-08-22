@@ -27,8 +27,7 @@ if (strpos($headers[0], '200') === false) {
 $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 
-$globalConfigQuery = "SELECT * FROM system_config";
-$configResult = $db->query($globalConfigQuery);
+$labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $dataToSync = array();
 $commonDataToSync = array();
@@ -232,6 +231,9 @@ $dataToSync = array_merge(
     $covid19DataToSync,
     $hepatitisDataToSync
 );
+
+
+$payload['labId'] = $labId;
 
 
 $client = new GuzzleHttp\Client();

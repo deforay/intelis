@@ -293,7 +293,7 @@ class Tb
             }
 
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
             $sampleJson = $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
