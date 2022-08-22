@@ -3,7 +3,7 @@
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();

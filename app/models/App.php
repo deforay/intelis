@@ -88,7 +88,7 @@ class App
                     INNER JOIN province_details as pd ON pd.province_name=f.facility_state";
         $where = "";
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getFacilityMap($user);
+            $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 if (isset($where) && trim($where) != "") {
                     $where .= " AND ";
@@ -176,7 +176,7 @@ class App
                     LEFT JOIN province_details as pd ON pd.province_name=f.facility_state";
         $where = "";
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getFacilityMap($user);
+            $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 if (isset($where) && trim($where) != "") {
                     $where .= " AND ";
@@ -246,7 +246,7 @@ class App
                     LEFT JOIN facility_details as f ON pd.province_name=f.facility_state";
         $where = "";
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getFacilityMap($user);
+            $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 if (isset($where) && trim($where) != "") {
                     $where .= " AND ";
@@ -288,7 +288,7 @@ class App
                     LEFT JOIN facility_details as f ON pd.province_name=f.facility_state";
         $where = "";
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getFacilityMap($user);
+            $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 if (isset($where) && trim($where) != "") {
                     $where .= " AND ";

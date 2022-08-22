@@ -245,7 +245,7 @@ if (!isset($_POST['status']) || trim($_POST['status']) == '') {
      $sWhere[] = " vl.result_status!=9 ";
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+     $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
      if (!empty($facilityMap)) {
           $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")";
      }

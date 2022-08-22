@@ -11,7 +11,7 @@ $primaryKey = "vl_sample_id";
 $country = $general->getGlobalConfig('vl_form');
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $sarr = $general->getSystemConfig();
 /* Array of database columns which should be read and sent back to DataTables. Use a space where

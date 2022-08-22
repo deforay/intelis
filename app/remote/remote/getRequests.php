@@ -20,15 +20,8 @@ $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
 $app = new \Vlsm\Models\App();
 
-//get facility map id
-$facilityMapQuery = "SELECT facility_id FROM testing_lab_health_facilities_map where vl_lab_id= ?";
-$fMapResult = $db->rawQuery($facilityMapQuery, $labId);
-if ($db->count > 0) {
-  $fMapResult = array_map('current', $fMapResult);
-  $fMapResult = implode(",", $fMapResult);
-} else {
-  $fMapResult = null;
-}
+$facilityDb = new \Vlsm\Models\Facilities();
+$fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
   $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";

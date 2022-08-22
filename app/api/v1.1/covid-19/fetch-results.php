@@ -189,7 +189,7 @@ try {
 
     $where = array();
     if (!empty($user)) {
-        $facilityMap = $facilityDb->getFacilityMap($user['user_id'], 1);
+        $facilityMap = $facilityDb->getUserFacilityMap($user['user_id'], 1);
         if (!empty($facilityMap)) {
             $where[] = " vl.facility_id IN (" . $facilityMap . ")";
         } else {

@@ -11,6 +11,7 @@ if (!isset($_SESSION['userId'])) {
 
 $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
+$facilitiesModel = new \Vlsm\Models\Facilities();
 
 $_SESSION['module'] = $_SESSION['module'] ?: array();
 

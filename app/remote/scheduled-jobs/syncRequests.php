@@ -52,7 +52,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
     $url = $remoteUrl . '/remote/remote/getRequests.php';
     $payload = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $sarr['sc_testing_lab_id'],
         'module' => 'vl',
         "Key" => "vlsm-lab-data--",
     );
@@ -178,7 +178,7 @@ $request = array();
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
     $url = $remoteUrl . '/remote/remote/eid-test-requests.php';
     $data = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $sarr['sc_testing_lab_id'],
         'module' => 'eid',
         "Key" => "vlsm-lab-data--",
     );
@@ -297,7 +297,7 @@ $request = array();
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
     $url = $remoteUrl . '/remote/remote/covid-19-test-requests.php';
     $data = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $sarr['sc_testing_lab_id'],
         'module' => 'covid19',
         "Key" => "vlsm-lab-data--",
     );
@@ -471,7 +471,7 @@ $request = array();
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
     $url = $remoteUrl . '/remote/remote/hepatitis-test-requests.php';
     $data = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $sarr['sc_testing_lab_id'],
         'module' => 'hepatitis',
         "Key" => "vlsm-lab-data--",
     );
@@ -638,7 +638,7 @@ $request = array();
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
     $url = $remoteUrl . '/remote/remote/tb-test-requests.php';
     $data = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $sarr['sc_testing_lab_id'],
         'module' => 'tb',
         "Key" => "vlsm-lab-data--",
     );
