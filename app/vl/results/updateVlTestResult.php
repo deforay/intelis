@@ -20,7 +20,7 @@ $importQuery = "SELECT * FROM import_config WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
 
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $userInfo = array();
 foreach ($userResult as $user) {

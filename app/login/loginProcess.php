@@ -151,7 +151,7 @@ try {
                 $_SESSION['accessType'] = $userRow['access_type'];
                 $_SESSION['email'] = $userRow['email'];
                 $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
-                $_SESSION['facilityMap'] = $facilityDb->getFacilityMap($userRow['user_id']);
+                $_SESSION['facilityMap'] = $facilityDb->getUserFacilityMap($userRow['user_id']);
                 $_SESSION['crossLoginPass'] = null;
                 if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
                     $_SESSION['crossLoginPass'] = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));

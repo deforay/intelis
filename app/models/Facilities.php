@@ -101,7 +101,7 @@ class Facilities
     // $facilityType = 1 for getting all mapped health facilities
     // $facilityType = 2 for getting all mapped testing labs
     // $facilityType = null for getting all mapped facilities
-    public function getFacilityMap($userId, $facilityType = null)
+    public function getUserFacilityMap($userId, $facilityType = null)
     {
         if (empty($userId)) return null;
 
@@ -120,6 +120,23 @@ class Facilities
     }
 
 
+    public function getTestingLabFacilityMap($labId)
+    {
+        if (empty($labId)) return null;
+
+        $fMapResult = "";
+        $this->db->where ("vl_lab_id", $labId);
+        $fMapResult = $this->db->getValue('testing_lab_health_facilities_map', 'facility_id', null);
+
+        if (count($fMapResult) > 0) {
+            //$fMapResult = array_map('current', $fMapResult);
+            $fMapResult = implode(",", $fMapResult);
+        }
+
+        return $fMapResult;
+    }
+
+
 
     // $testType = vl, eid, covid19 or any other tests that might be there. 
     // Default $testType is null and returns all facilities
@@ -127,11 +144,12 @@ class Facilities
     // $condition = WHERE condition (for eg. "facility_state = 1")
     // $allColumns = (false -> only facility_id and facility_name, true -> all columns)
     // $onlyActive = true/false
-    public function getHealthFacilities($testType = null, $byPassFacilityMap = false, $allColumns = false, $condition = null, $onlyActive = true)
+    public function getHealthFacilities($testType = null, $byPassFacilityMap = false, $allColumns = false, $condition = null, $onlyActive = true, $userId = null)
     {
 
-        if (!$byPassFacilityMap && !empty($_SESSION['userId'])) {
-            $facilityMap = $this->getFacilityMap($_SESSION['userId']);
+        $userId = $userId ?: $_SESSION['userId'] ?: null;
+        if (!$byPassFacilityMap && !empty($userId)) {
+            $facilityMap = $this->getUserFacilityMap($userId);
             if (!empty($facilityMap)) {
                 $this->db->where("`facility_id` IN (" . $facilityMap . ")");
             }
@@ -181,11 +199,11 @@ class Facilities
     // $condition = WHERE condition (for eg. "facility_state = 1")
     // $allColumns = (false -> only facility_id and facility_name, true -> all columns)
     // $onlyActive = true/false
-    public function getTestingLabs($testType = null, $byPassFacilityMap = true, $allColumns = false, $condition = null, $onlyActive = true)
+    public function getTestingLabs($testType = null, $byPassFacilityMap = true, $allColumns = false, $condition = null, $onlyActive = true, $userId = null)
     {
-
-        if (!$byPassFacilityMap && !empty($_SESSION['userId'])) {
-            $facilityMap = $this->getFacilityMap($_SESSION['userId'], 2);
+        $userId = $userId ?: $_SESSION['userId'] ?: null;
+        if (!$byPassFacilityMap && !empty($userId)) {
+            $facilityMap = $this->getUserFacilityMap($userId, 2);
             if (!empty($facilityMap)) {
                 $this->db->where("`facility_id` IN (" . $facilityMap . ")");
             }

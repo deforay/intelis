@@ -18,7 +18,7 @@ $country = $configResult[0]['value'];
 // $rpResult = $db->rawQuery($rpQuery);
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'remote_sample_code';
-	$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+	$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 } else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
 	$sCode = 'sample_code';
 }

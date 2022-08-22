@@ -41,7 +41,7 @@ $facilityTypeTable = !empty($facilityTypeRequested) ? $facilityTypeTableList[$fa
 
 $facilityMap = null;
 if (empty($_POST['comingFromUser']) || $_POST['comingFromUser'] != 'yes') {
-	$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId'], null);
+	$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId'], null);
 }
 if (!empty($facilityIdRequested)) {
 	$db->where("f.facility_id", $facilityIdRequested);

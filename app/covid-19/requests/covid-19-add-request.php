@@ -33,7 +33,7 @@ $usersModel = new \Vlsm\Models\Users();
 // $arr = $general->getGlobalConfig();
 // $sarr = $general->getSystemConfig();
 
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $labTechniciansResults = array();
 foreach ($userResult as $user) {

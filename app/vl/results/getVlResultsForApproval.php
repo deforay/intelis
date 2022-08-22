@@ -141,7 +141,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 
 if ($userType == 'remoteuser') {
-     $facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+     $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
      if (!empty($facilityMap)) {
           $sWhere[] =  " vl.facility_id IN (" . $facilityMap . ")  ";
      }

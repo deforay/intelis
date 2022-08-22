@@ -37,7 +37,7 @@ $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesDb->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $userDb->getActiveUsers($facilityMap);
 $labTechniciansResults = array();
 foreach ($userResult as $user) {
