@@ -277,6 +277,9 @@ $eidResults = $general->getEidResults();
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
+		$("#testingLab").select2({
+			placeholder: "<?php echo _("Select Testing Lab"); ?>"
+		});
 		$('#sampleCollectionDate,#sampleTestDate,#printDate').daterangepicker({
 				locale: {
 					cancelLabel: 'Clear'
