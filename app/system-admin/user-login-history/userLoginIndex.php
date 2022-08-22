@@ -92,10 +92,7 @@ $sResult = $db->rawQuery($sQuery);
   var startDate = "";
   var endDate = "";
   var oTable = null;
-  $(function() {
-    //$("#example1").DataTable();
 
-  });
 
   function loadUserLoginRequestData() {
     $.blockUI();

@@ -370,14 +370,14 @@ class App
     {
         $general = new \Vlsm\Models\General($this->db);
         $data = array(
-            'requested_by'          => $user ?? 'vlsm-system',
+            'requested_by'          => $user ?: 'vlsm-system',
             'requested_on'          => $general->getCurrentDateTime(),
-            'number_of_records'     => $records ?? 0,
-            'request_type'          => $type ?? null,
-            'test_type'             => $testType ?? null,
-            'api_url'               => $url ?? null,
-            'api_params'            => $params ?? null,
-            'data_format'           => $format ?? null
+            'number_of_records'     => $records ?: 0,
+            'request_type'          => $type ?: null,
+            'test_type'             => $testType ?: null,
+            'api_url'               => $url ?: null,
+            'api_params'            => $params ?: null,
+            'data_format'           => $format ?: null
         );
         if ($format == 'sync-api') {
             $data['facility_id'] = (isset($params['data'][0]['facilityId']) && count($params['data'][0]['facilityId']) > 0) ? $params['data'][0]['facilityId'] : null;

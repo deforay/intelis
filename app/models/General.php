@@ -48,7 +48,7 @@ class General
     }
 
     // Returns a UUID format string
-    public function generateUUID($attachExtraString = false)
+    public function generateUUID($attachExtraString = true)
     {
         // $uuid = sprintf(
         //     '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -65,7 +65,7 @@ class General
         $uuid = Uuid::uuid4();
         $uuid = $uuid->toString();
 
-        if ($attachExtraString) {
+        if ($attachExtraString === true) {
             $uuid .= "-" . $this->generateRandomString(4);
         }
         return $uuid;
@@ -113,7 +113,7 @@ class General
 
         // Loop through the folder
         $dir = dir($dirname);
-        while (false !== $entry = $dir->read()) {
+        while (false !== ($entry = $dir->read())) {
             // Skip pointers
             if ($entry == '.' || $entry == '..') {
                 continue;
@@ -147,7 +147,7 @@ class General
             $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
         }
 
-        if ($name == null) {
+        if (empty($name)) {
             return $sarr;
         } else {
             if (isset($sarr[$name])) {
@@ -823,16 +823,16 @@ class General
     public function addApiTracking($user, $records, $type, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
     {
         $data = array(
-            'requested_by'      => $user ?? 'vlsm-system',
+            'requested_by'      => $user ?: 'vlsm-system',
             'requested_on'      => $this->getCurrentDateTime(),
-            'number_of_records' => $records ?? 0,
-            'request_type'      => $type ?? null,
-            'test_type'         => $testType ?? null,
-            'api_url'           => $url ?? null,
-            'request_data'      => $requestData ?? null,
-            'response_data'     => $responseData ?? null,
-            'facility_id'       => $facilityId ?? null,
-            'data_format'       => $format ?? null
+            'number_of_records' => $records ?: 0,
+            'request_type'      => $type ?: null,
+            'test_type'         => $testType ?: null,
+            'api_url'           => $url ?: null,
+            'request_data'      => $requestData ?: null,
+            'response_data'     => $responseData ?: null,
+            'facility_id'       => $facilityId ?: null,
+            'data_format'       => $format ?: null
         );
         return $this->db->insert("track_api_requests", $data);
     }

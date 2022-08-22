@@ -133,7 +133,7 @@ try {
         }
 
         $covid19Data = array(
-            'vlsm_country_id' => $data['formId'] ?? null,
+            'vlsm_country_id' => $data['formId'] ?: null,
             'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
@@ -356,7 +356,7 @@ try {
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
-            'source_of_request'                   => $data['sourceOfRequest'] ?? "api"
+            'source_of_request'                   => $data['sourceOfRequest'] ?: "api"
         );
         if ($rowData) {
             $covid19Data['last_modified_datetime']  = $general->getCurrentDateTime();

@@ -54,23 +54,13 @@
 </script>
 
 <script type="text/javascript">
-	window.csrf = {
-		csrf_token: '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? $general->generateRandomString(64); ?>'
+	window.additionalXHRParams = {
+		layout: 0,
+		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateRandomString(64); ?>'
 	};
 
 	$.ajaxSetup({
-		data: window.csrf
-	});
-
-	$(document).on('select2:open', (e) => {
-		const selectId = e.target.id
-
-		$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
-			key,
-			value,
-		) {
-			value.focus();
-		})
+		headers: window.additionalXHRParams
 	});
 
 	function setCrossLogin() {

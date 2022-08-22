@@ -46,7 +46,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 ?>
 
 <!-- CSRF TOKEN -->
-<?php $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? $general->generateRandomString(64); ?>
+<?php $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateRandomString(64); ?>
 <!DOCTYPE html>
 <html>
 
