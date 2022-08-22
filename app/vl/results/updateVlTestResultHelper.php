@@ -4,12 +4,17 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-
-
 $general = new \Vlsm\Models\General();
+$vlModel = new \Vlsm\Models\Vl();
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
 $vl_result_category = NULL;
+$vlResult = null;
+$logVal = null;
+$absDecimalVal = null;
+$absVal = null;
+$txtVal = null;
+$finalResult = null;
 try {
     //var_dump($_POST);die;
     $instanceId = '';
@@ -76,28 +81,46 @@ try {
     $isRejected = false;
     $finalResult = null;
     $textResult = null;
+    $resultStatus = 8; // Awaiting Approval
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $isRejected = true;
         $finalResult = $_POST['vlResult'] = $_POST['vlLog'] = null;
+        $resultStatus = 4;
     }
 
-    // if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
-    //     $finalResult = $textResult = 'Target Not Detected';
+    // // if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
+    // //     $finalResult = $textResult = 'Target Not Detected';
+    // //     $_POST['vlResult'] = $_POST['vlLog'] = null;
+    // // } else 
+
+    // if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
+    //     $finalResult = $textResult = 'Below Detection Level';
     //     $_POST['vlResult'] = $_POST['vlLog'] = null;
-    // } else 
+    // } else if (!empty($_POST['vlResult'])) {
+    //     $finalResult = (float)$_POST['vlResult'];
+    // } else if ($_POST['vlLog'] != '') {
+    //     $finalResult = (float)$_POST['vlLog'];
+    // }
+    // if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
+    //     $finalResult = $textResult = 'Failed';
+    //     $_POST['vlResult'] = 'Failed';
+    //     $_POST['vlLog'] = '';
+    // }
 
-    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
-        $finalResult = $textResult = 'Below Detection Level';
-        $_POST['vlResult'] = $_POST['vlLog'] = null;
-    } else if (!empty($_POST['vlResult'])) {
-        $finalResult = (float)$_POST['vlResult'];
-    } else if ($_POST['vlLog'] != '') {
-        $finalResult = (float)$_POST['vlLog'];
-    }
     if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
-        $finalResult = $textResult = 'Failed';
         $_POST['vlResult'] = 'Failed';
-        $_POST['vlLog'] = '';
+        $_POST['vlLog'] = null;
+        $resultStatus = 5; // Invalid/Failed
+    } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+        $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
+
+        //Result is saved as entered
+        $finalResult  = $_POST['vlResult'];
+
+        $logVal = $interpretedResults['logVal'];
+        $absDecimalVal = $interpretedResults['absDecimalVal'];
+        $absVal = $interpretedResults['absVal'];
+        $txtVal = $interpretedResults['txtVal'];
     }
 
     $reasonForChanges = '';
@@ -132,11 +155,11 @@ try {
         'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  NULL,
         'rejection_on' => (!empty($_POST['rejectionDate'])) ? $general->isoDateFormat($_POST['rejectionDate']) : null,
-        'result_value_log' => (isset($_POST['vlLog']) && $_POST['vlLog'] != '') ? $_POST['vlLog'] :  NULL,
-        'result_value_absolute' => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Below Detection Level')) ? $_POST['vlResult'] :  NULL,
-        'result_value_text' => $textResult,
-        'result_value_absolute_decimal' => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Below Detection Level')) ? number_format((float)$_POST['vlResult'], 2, '.', '') :  NULL,
-        'result' => $finalResult,
+        'result_value_absolute'                 => $absVal ?: null,
+        'result_value_absolute_decimal'         => $absDecimalVal ?: null,
+        'result_value_text'                     => $txtVal ?: null,
+        'result'                                => $finalResult ?: null,
+        'result_value_log'                      => $logVal ?: null,
         'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  NULL,
         'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
@@ -153,6 +176,7 @@ try {
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => $db->now(),
         'manual_result_entry' => 'yes',
+        'result_status' => $resultStatus,
         'data_sync' => 0,
         'result_printed_datetime' => NULL
     );
@@ -162,10 +186,9 @@ try {
         $vldata['result_status'] = 4;
     }
     /* Updating the high and low viral load data */
-    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-        $vlDb = new \Vlsm\Models\Vl();
-        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    }
+    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+    $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    //}
 
     //echo "<pre>";var_dump($vldata);
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
@@ -178,14 +201,14 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $_POST['vlSampleId'],
             'test_type' => 'vl',
-            'updated_on' => $general->getCurrentDateTime()
+            'updated_on' => $db->now()
         );
         $db->insert($tableName2, $data);
-
-        header("location:vlTestResult.php");
     } else {
         $_SESSION['alertMsg'] = _("Please try again later");
     }
+
+    header("location:vlTestResult.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

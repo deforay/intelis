@@ -184,6 +184,11 @@ class Vl
     {
 
         $vlResultCategory = null;
+        $orignalResultValue = $finalResult;
+        $finalResult = strtolower(trim($finalResult));
+        $finalResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $finalResult);
+        $finalResult = str_replace('-', '', $finalResult);
+        $finalResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $finalResult));
 
         if (!isset($finalResult) || empty($finalResult)) {
             $vlResultCategory = null;
@@ -195,7 +200,7 @@ class Vl
             $vlResultCategory = 'invalid';
         } else {
 
-            if (is_numeric($finalResult) && (float)$finalResult >= 0) {
+            if (is_numeric($finalResult)) {
                 $finalResult = (float)$finalResult;
                 if ($finalResult < $this->suppressionLimit) {
                     $vlResultCategory = 'suppressed';
@@ -206,7 +211,7 @@ class Vl
 
                 $textResult = NULL;
 
-                if (in_array(strtolower($finalResult), $this->suppressedArray)) {
+                if (in_array(strtolower($orignalResultValue), $this->suppressedArray)) {
                     $textResult = 10;
                 } else {
                     $textResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
@@ -223,27 +228,49 @@ class Vl
         return $vlResultCategory;
     }
 
-    public function interpretViralLoadTextResult($result, $unit = false, $lowVlResultText = null)
+    public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null)
+    {
+        $finalResult = $vlResult = trim($result);
+        $vlResult = strtolower($vlResult);
+        $vlResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
+        $vlResult = str_replace('-', '', $vlResult);
+        $vlResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
+
+        if ($vlResult == "-1.00") {
+            $vlResult = "Not Detected";
+        }
+        if (is_numeric($vlResult)) {
+            //passing only number 
+            return $this->interpretViralLoadNumericResult($vlResult, $unit);
+        } else {
+            //Passing orginal result value for text results
+            return $this->interpretViralLoadTextResult($finalResult, $unit, $defaultLowVlResultText);
+        }
+    }
+
+    public function interpretViralLoadTextResult($result, $unit = null, $defaultLowVlResultText = null)
     {
 
         // If result is blank, then return null
         if (empty(trim($result))) return null;
 
         // If result is numeric, then return it as is
-        if (is_numeric($result)) return $result;
-
-        $defaultVLTextResult = "Target Not Detected";
-        if (!empty($lowVlResultText)) {
-            $defaultVLTextResult = $lowVlResultText;
+        if (is_numeric($result)) {
+            $this->interpretViralLoadNumericResult($result, $unit);
         }
 
+        // Some machines and some countries prefer a default text result
+        $vlTextResult = "Target Not Detected" ?: $defaultLowVlResultText;
+
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
+
+        $originalResultValue = $result;
 
         $result = strtolower($result);
         if ($result == 'bdl' || $result == '< 839') {
             $vlResult = $txtVal = 'Below Detection Limit';
         } else if ($result == 'target not detected' || $result == 'not detected' || $result == 'tnd') {
-            $vlResult = $txtVal = $defaultVLTextResult;
+            $vlResult = $txtVal = $vlTextResult;
         } else if ($result == '< 2.00E+1') {
             $absDecimalVal = 20;
             $txtVal = $vlResult = $absVal = "< 20";
@@ -287,7 +314,7 @@ class Vl
 
         return array(
             'logVal' => $logVal,
-            'result' => $vlResult,
+            'result' => $originalResultValue,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
             'txtVal' => $txtVal
@@ -296,8 +323,6 @@ class Vl
 
     public function interpretViralLoadNumericResult($result, $unit = null)
     {
-
-
         // If result is blank, then return null
         if (empty(trim($result))) return null;
 
@@ -305,7 +330,7 @@ class Vl
         if (!is_numeric($result)) return $result;
 
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
-
+        $originalResultValue = $result;
         if (strpos($unit, '10') !== false) {
             $unitArray = explode(".", $unit);
             $exponentArray = explode("*", $unitArray[0]);
@@ -334,7 +359,7 @@ class Vl
 
         return array(
             'logVal' => $logVal,
-            'result' => $vlResult,
+            'result' => $originalResultValue,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
             'txtVal' => $txtVal

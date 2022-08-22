@@ -30,6 +30,12 @@ try {
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
 
+    $vlResult = null;
+    $logVal = null;
+    $absDecimalVal = null;
+    $absVal = null;
+    $txtVal = null;
+
     $input = json_decode(file_get_contents("php://input"), true);
 
     /* For API Tracking params */
@@ -159,7 +165,7 @@ try {
             $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $vlData['remote_sample'] = 'yes';
             $vlData['result_status'] = 9;
-            
+
             if ($user['access_type'] === 'testing-lab') {
                 $vlData['sample_code'] = $sampleData['sampleCode'];
                 $vlData['result_status'] = 6;
@@ -324,12 +330,34 @@ try {
             $data['vlLog'] = '';
         }
 
-        $data['result'] = '';
+        $data['result'] = null;
         if (isset($data['vlResult']) && trim($data['vlResult']) != '') {
-            $data['result'] = $data['vlResult'];
-        } else if ($data['vlLog'] != '') {
-            $data['result'] = $data['vlLog'];
+            $data['result'] = $vlResult = trim($data['vlResult']);
+            $vlResult = strtolower($vlResult);
+            $vlResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
+            $vlResult = str_replace('-', '', $vlResult);
+            $vlResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
+
+            if ($vlResult == "-1.00") {
+                $data['result'] = $vlResult = "Not Detected";
+            }
+
+            if (is_numeric($vlResult)) {
+                //passing only number 
+                $interpretedResults = $vlModel->interpretViralLoadNumericResult($vlResult);
+            } else {
+                //Passing orginal result value for text results
+                $interpretedResults = $vlModel->interpretViralLoadTextResult($data['result']);
+            }            
+
+            //$vlResult = $data['vlResult'];
+            $logVal = $interpretedResults['logVal'];
+            $absDecimalVal = $interpretedResults['absDecimalVal'];
+            $absVal = $interpretedResults['absVal'];
+            $txtVal = $interpretedResults['txtVal'];
         }
+
+
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
             $revisedOn = explode(" ", $data['revisedOn']);
@@ -388,10 +416,11 @@ try {
             'is_sample_rejected'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] != '') ? $data['isSampleRejected'] : NULL,
             'reason_for_sample_rejection'           => (isset($data['rejectionReason']) && $data['rejectionReason'] != '') ? $data['rejectionReason'] :  NULL,
             'rejection_on'                          => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
-            'result_value_absolute'                 => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? $data['vlResult'] :  NULL,
-            'result_value_absolute_decimal'         => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? number_format((float)$data['vlResult'], 2, '.', '') :  NULL,
-            'result'                                => (isset($data['result']) && $data['result'] != '') ? $data['result'] :  NULL,
-            'result_value_log'                      => (isset($data['vlLog']) && $data['vlLog'] != '') ? $data['vlLog'] :  NULL,
+            'result_value_absolute'                 => $absVal ?: null,
+            'result_value_absolute_decimal'         => $absDecimalVal ?: null,
+            'result_value_text'                     => $txtVal ?: null,
+            'result'                                => $data['result'] ?: null,
+            'result_value_log'                      => $logVal ?: null,
             'tested_by'                             => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  NULL,
             'result_approved_by'                    => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
             'result_approved_datetime'              => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedOnDateTime'] :  NULL,
@@ -405,7 +434,6 @@ try {
             'request_created_datetime'              => $general->getCurrentDateTime(),
             'last_modified_datetime'                => $general->getCurrentDateTime(),
             'manual_result_entry'                   => 'yes',
-            'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
             'external_sample_code'                  => isset($data['serialNo']) ? $data['serialNo'] : null,
             'is_patient_new'                        => (isset($data['isPatientNew']) && $data['isPatientNew'] != '') ? $data['isPatientNew'] :  NULL,
             'has_patient_changed_regimen'           => (isset($data['hasChangedRegimen']) && $data['hasChangedRegimen'] != '') ? $data['hasChangedRegimen'] :  NULL,

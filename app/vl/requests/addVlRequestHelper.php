@@ -5,6 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $general = new \Vlsm\Models\General();
+$vlModel = new \Vlsm\Models\Vl();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -184,23 +185,25 @@ try {
 
     if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejection == false) {
         $_POST['vlResult'] = 'Below Detection Level';
-        $_POST['vlLog'] = '';
+        $_POST['vlLog'] = null;
     }
     if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
         $_POST['vlResult'] = 'Failed';
-        $_POST['vlLog'] = '';
-    }
-    // else if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
-    //     $_POST['vlResult'] = 'Target Not Detected';
-    //     $_POST['vlLog'] = '';
-    // }
+        $_POST['vlLog'] = null;
+        $status = 5; // Invalid/Failed
+    } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+        $status = 8; // Awaiting Approval
+        $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
 
-    $_POST['result'] = '';
-    if (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') {
-        $_POST['result'] = $_POST['vlResult'];
-    } else if ($_POST['vlLog'] != '') {
-        $_POST['result'] = $_POST['vlLog'];
+        //Result is saved as entered
+        $finalResult  = $_POST['vlResult'];
+
+        $logVal = $interpretedResults['logVal'];
+        $absDecimalVal = $interpretedResults['absDecimalVal'];
+        $absVal = $interpretedResults['absVal'];
+        $txtVal = $interpretedResults['txtVal'];
     }
+
     if ($_SESSION['instanceType'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';
@@ -279,10 +282,11 @@ try {
         'is_sample_rejected'                    => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  NULL,
         'reason_for_sample_rejection'           => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  NULL,
         'rejection_on'                          => (!empty($_POST['rejectionDate'])) ? $general->isoDateFormat($_POST['rejectionDate']) : null,
-        'result_value_absolute'                 => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Below Detection Level')) ? $_POST['vlResult'] :  NULL,
-        'result_value_absolute_decimal'         => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Below Detection Level')) ? number_format((float)$_POST['vlResult'], 2, '.', '') :  NULL,
-        'result'                                => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] :  NULL,
-        'result_value_log'                      => (isset($_POST['vlLog']) && $_POST['vlLog'] != '') ? $_POST['vlLog'] :  NULL,
+        'result_value_absolute'                 => $absVal ?: null,
+        'result_value_absolute_decimal'         => $absDecimalVal ?: null,
+        'result_value_text'                     => $txtVal ?: null,
+        'result'                                => $finalResult ?: null,
+        'result_value_log'                      => $logVal ?: null,
         'result_reviewed_by'                    => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'tested_by'                             => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
@@ -313,10 +317,9 @@ try {
         $vldata['last_modified_by'] =  $_SESSION['userId'];
     }
     /* Updating the high and low viral load data */
-    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-        $vlDb = new \Vlsm\Models\Vl();
-        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    }
+    //    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+    $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    //  }
     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
     $id = 0;
     // echo "<pre>";print_r($vldata);die;

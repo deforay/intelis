@@ -628,8 +628,8 @@ $sFormat = '';
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" style="width:100%;" onchange="calculateLogValue(this)" disabled />
                                                                            <!-- <span style="display: none;"><input type="hidden" class="" id="tnd" name="tnd" value="yes" title="Please check tnd"> Target Not Detected<br></span> -->
-                                                                           <input type="checkbox" class="" id="bdl" name="bdl" value="yes" title="Please check bdl" disabled> Below Detection Level<br>
-                                                                           <input type="checkbox" class="specialResults" id="failed" name="failed" value="yes" title="Please check failed" disabled> Failed<br>
+                                                                           <input type="checkbox" class="labSection specialResults" id="bdl" name="bdl" value="yes" title="Please check bdl" disabled> Below Detection Level<br>
+                                                                           <input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed" disabled> Failed<br>
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -640,7 +640,7 @@ $sFormat = '';
                                                                            <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" style="width:100%;" onchange="calculateLogValue(this);" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 hivDetection" style="display: none;">
+                                                                 <!-- <div class="col-md-4 hivDetection" style="display: none;">
                                                                       <label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
@@ -649,7 +649,7 @@ $sFormat = '';
                                                                                 <option value="HIV-1 Not Detected">HIV-1 Not Detected</option>
                                                                            </select>
                                                                       </div>
-                                                                 </div>
+                                                                 </div> -->
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
                                                                       <div class="col-md-4 reasonForFailure" style="display: none;">
                                                                            <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
@@ -776,8 +776,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <!-- BARCODESTUFF END -->
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>
-     provinceName = true;
-     facilityName = true;
+     let provinceName = true;
+     let facilityName = true;   
      $(document).ready(function() {
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -976,16 +976,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
      });
 
-     $(document).on('select2:open', (e) => {
-          const selectId = e.target.id
+     // $(document).on('select2:open', (e) => {
+     //      const selectId = e.target.id
 
-          $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
-               key,
-               value,
-          ) {
-               value.focus();
-          })
-     });
+     //      $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
+     //           key,
+     //           value,
+     //      ) {
+     //           value.focus();
+     //      })
+     // });
 
      function showTesting(chosenClass) {
           $(".viralTestData").val('');
@@ -1101,7 +1101,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      });
      $("#sampleTestingDateAtLab").change(function() {
           if ($(this).val() != "") {
-               $(".result-fields, #bdl").attr("disabled", false);
+               $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
                $(".result-span").show();
                $('.vlResult').css('display', 'block');
@@ -1119,10 +1119,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.vlResult').css('display', 'none');
                $('.vlLog').css('display', 'none');
                $("#sampleTestingDateAtLab, #vlResult").val("");
-               $('#bdl, #failed').prop('checked', false);
+               $('.specialResults').prop('checked', false);
                $(".result-fields").val("");
-               $(".result-fields, #bdl, #failed").attr("disabled", true);
-               $(".result-fields, #bdl, #failed").removeClass("isRequired");
+               $(".result-fields, .specialResults").attr("disabled", true);
+               $(".result-fields, .specialResults").removeClass("isRequired");
                $(".result-span").hide();
                $(".review-approve-span").show();
                $('#rejectionReason').addClass('isRequired');
@@ -1133,12 +1133,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#approvedOnDateTime').addClass('isRequired');
                $(".result-optional").removeClass("isRequired");
           } else if ($(this).val() == 'no') {
-               $(".result-fields, #bdl, #failed").attr("disabled", false);
+               $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
                $(".result-span").show();
                $(".review-approve-span").show();
-               $('.vlResult').css('display', 'block');
-               $('.vlLog').css('display', 'block');
+               $('.vlResult,.vlLog').css('display', 'block');
                $('.rejectionReason').hide();
                $('#rejectionReason').removeClass('isRequired');
                $('#rejectionDate').removeClass('isRequired');
@@ -1148,7 +1147,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#approvedBy').addClass('isRequired');
                $('#approvedOnDateTime').addClass('isRequired');
           } else {
-               $(".result-fields, #bdl, #failed").attr("disabled", false);
+               $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").removeClass("isRequired");
                $(".result-optional").removeClass("isRequired");
                $(".result-span").show();
@@ -1168,42 +1167,34 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
      $('#testingPlatform').change(function() {
-          var text = this.value;
-          var str1 = text.split("##");
-          if (str1[0] == 'GeneXpert') {
-               $('.hivDetection').show();
-          } else {
-               $('.hivDetection').hide();
-          }
+          // var text = this.value;
+          // var str1 = text.split("##");
+          // if (str1[0] == 'GeneXpert') {
+          //      $('.hivDetection').show();
+          // } else {
+          //      $('.hivDetection').hide();
+          // }
      });
-     $('#bdl, #failed').change(function() {
-          if ($('#bdl, #failed').is(':checked')) {
-               if ($('#failed').is(':checked')) {
-                    $('#bdl').attr('disabled', true);
-               } else {
-                    $('#failed').attr('disabled', true);
-               }
+     $('.specialResults').change(function() {
+          if ($('.specialResults').is(':checked')) {
+               $('.specialResults').not(this).prop('checked', false).attr('disabled', true);
                $('#vlResult,#vlLog').attr('readonly', true);
-               $('#vlResult,#vlLog').removeClass('isRequired');
-               $('#tnd').prop('checked', false).attr('disabled', true);
+               $('#vlResult,#vlLog').val('');
+               $('#vlResult').removeClass('isRequired');
           } else {
                $('#vlResult,#vlLog').attr('readonly', false);
-               $('#tnd').attr('disabled', false);
+               $('.specialResults').attr('disabled', false);
                if ($('#noResult').val() == 'no') {
                     $('#vlResult').addClass('isRequired');
                }
           }
      });
+
      $('#vlResult,#vlLog').on('input', function(e) {
-          if (this.value == 0) {
-               $('#bdl').attr('checked', true);
-          } else if (this.value > 0) {
-               $('#bdl').attr('checked', false);
-          }
-          if (this.value != '' && this.value != 0) {
-               $('#tnd,#bdl').attr('disabled', true);
+          if (this.value == null || this.value != '') {
+               $('.specialResults').prop('checked', false).attr('disabled', true);
           } else {
-               $('#tnd,#bdl').attr('disabled', false);
+               $('.specialResults').attr('disabled', false);
           }
      });
      $('#failed').change(function() {
@@ -1365,7 +1356,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                absValue = $("#vlResult").val();
                absValue = Number.parseFloat(absValue).toFixed();
                if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
-                    $("#vlResult").val(absValue);
+                    //$("#vlResult").val(absValue);
                     $("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
                } else {
                     $("#vlLog").val('');
