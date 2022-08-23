@@ -6,10 +6,22 @@ ob_start();
 
 
 
+
 $general = new \Vlsm\Models\General();
+$vlModel = new \Vlsm\Models\Vl();
+
 $tableName = "form_vl";
 $tableName1 = "activity_log";
+$tableName2 = "log_result_updates";
 $vl_result_category = NULL;
+$isRejected = false;
+$logVal = null;
+$absDecimalVal = null;
+$absVal = null;
+$txtVal = null;
+$finalResult = null;
+$resultStatus = null;
+
 try {
     $configQuery = "SELECT * from global_config";
     $configResult = $db->query($configQuery);
@@ -26,11 +38,23 @@ try {
     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
     }
-    if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == 9) {
-        $_POST['status'] = 9;
-    } else if ($_POST['oldStatus'] == 9 && $sarr['sc_user_type'] == 'vluser' && $_POST['status'] == '') {
-        $_POST['status'] = 6;
+
+
+
+    $reasonForChanges = '';
+    $allChange = '';
+    if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
+        $allChange = $_POST['reasonForResultChangesHistory'];
     }
+    if (isset($_POST['reasonForResultChanges']) && trim($_POST['reasonForResultChanges']) != '') {
+        $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . $general->getCurrentDateTime();
+    }
+    if (trim($allChange) != '' && trim($reasonForChanges) != '') {
+        $allChange = $reasonForChanges . 'vlsm' . $allChange;
+    } else if (trim($reasonForChanges) != '') {
+        $allChange =  $reasonForChanges;
+    }
+
     //Set Date of demand
     if (isset($_POST['dateOfDemand']) && trim($_POST['dateOfDemand']) != "") {
         $_POST['dateOfDemand'] = $general->isoDateFormat($_POST['dateOfDemand']);
@@ -152,21 +176,21 @@ try {
         $_POST['sampleReceivedDate'] = NULL;
     }
     //Set sample rejection reason
-    if (isset($_POST['status']) && trim($_POST['status']) != '') {
-        if ($_POST['status'] == 4) {
-            if (trim($_POST['rejectionReason']) == "other" && trim($_POST['newRejectionReason'] != '')) {
-                $data = array(
-                    'rejection_reason_name' => $_POST['newRejectionReason'],
-                    'rejection_reason_status' => 'active',
-                    'updated_datetime' => $general->getCurrentDateTime(),
-                );
-                $id = $db->insert('r_vl_sample_rejection_reasons', $data);
-                $_POST['rejectionReason'] = $id;
-            }
-        } else {
-            $_POST['rejectionReason'] = NULL;
-        }
-    }
+    // if (isset($_POST['status']) && trim($_POST['status']) != '') {
+    //     if ($_POST['status'] == 4) {
+    //         if (trim($_POST['rejectionReason']) == "other" && trim($_POST['newRejectionReason'] != '')) {
+    //             $data = array(
+    //                 'rejection_reason_name' => $_POST['newRejectionReason'],
+    //                 'rejection_reason_status' => 'active',
+    //                 'updated_datetime' => $general->getCurrentDateTime(),
+    //             );
+    //             $id = $db->insert('r_vl_sample_rejection_reasons', $data);
+    //             $_POST['rejectionReason'] = $id;
+    //         }
+    //     } else {
+    //         $_POST['rejectionReason'] = NULL;
+    //     }
+    // }
     //Set result prinetd date time
     if (isset($_POST['sampleTestingDateAtLab']) && trim($_POST['sampleTestingDateAtLab']) != "") {
         $sampleTestedDate = explode(" ", $_POST['sampleTestingDateAtLab']);
@@ -197,23 +221,57 @@ try {
         $testingPlatform = $platForm[0];
     }
 
+    if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
+        $isRejected = true;
+        $finalResult = $_POST['vlResult'] = null;
+        $_POST['vlLog'] = null;
+        $resultStatus = 4;
 
-    $textResult =  null;
-    if (isset($_POST['vlTND']) && $_POST['vlTND'] == 'yes' && $_POST['rejectionReason'] == NULL) {
-        $textResult = $_POST['vlResult'] = 'Target not Detected';
+        if (trim($_POST['rejectionReason']) == "other" && trim($_POST['newRejectionReason'] != '')) {
+            $data = array(
+                'rejection_reason_name' => $_POST['newRejectionReason'],
+                'rejection_reason_status' => 'active'
+            );
+            $id = $db->insert('r_vl_sample_rejection_reasons', $data);
+            $_POST['rejectionReason'] = $id;
+        }
+    }
+
+    if (isset($_POST['vlTND']) && $_POST['vlTND'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = 'Target not Detected';
+        $_POST['vlLog'] = '';
+    } else if (isset($_POST['vlLt20']) && $_POST['vlLt20'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = '< 20';
+        $_POST['vlLog'] = '';
+    } else if (isset($_POST['vlLt40']) && $_POST['vlLt40'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = '< 40';
+        $_POST['vlLog'] = '';
+    } else if (isset($_POST['vlLt400']) && $_POST['vlLt400'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = '< 400';
         $_POST['vlLog'] = '';
     }
-    if (isset($_POST['vlLt20']) && $_POST['vlLt20'] == 'yes' && $_POST['rejectionReason'] == NULL) {
-        $textResult = $_POST['vlResult'] = '< 20';
+
+    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = 'Failed';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['vlLt40']) && $_POST['vlLt40'] == 'yes' && $_POST['rejectionReason'] == NULL) {
-        $textResult = $_POST['vlResult'] = '< 40';
+        $resultStatus = 5; // Invalid/Failed
+    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected == false) {
+        $finalResult = $_POST['vlResult'] = 'Invalid';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['vlLt400']) && $_POST['vlLt400'] == 'yes' && $_POST['rejectionReason'] == NULL) {
-        $textResult = $_POST['vlResult'] = '< 400';
-        $_POST['vlLog'] = '';
+        $resultStatus = 5; // Invalid/Failed
+    } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+
+        $resultStatus = 8; // Awaiting Approval
+
+        $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
+
+        //Result is saved as entered
+        $finalResult  = $_POST['vlResult'];
+
+        $logVal = $interpretedResults['logVal'];
+        $absDecimalVal = $interpretedResults['absDecimalVal'];
+        $absVal = $interpretedResults['absVal'];
+        $txtVal = $interpretedResults['txtVal'];
     }
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
@@ -230,6 +288,7 @@ try {
         $_POST['approvedOn'] = NULL;
     }
     $vldata = array(
+        'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] :  NULL,
         'facility_id' => $_POST['clinicName'],
         'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
         'request_clinician_name' => $_POST['clinicianName'],
@@ -257,9 +316,11 @@ try {
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] :  NULL),
         'sample_tested_datetime' => $_POST['dateOfCompletionOfViralLoad'],
         'vl_test_platform' => $testingPlatform,
-        'result_value_log' => (isset($_POST['vlLog'])) ? $_POST['vlLog'] : NULL,
-        'result' => (isset($_POST['vlResult'])) ? $_POST['vlResult'] : NULL,
-        'result_value_text' => $textResult,
+        'result_value_absolute'                 => $absVal ?: null,
+        'result_value_absolute_decimal'         => $absDecimalVal ?: null,
+        'result_value_text'                     => $txtVal ?: null,
+        'result'                                => $finalResult ?: null,
+        'result_value_log'                      => $logVal ?: null,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'result_approved_by'        => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
@@ -276,14 +337,19 @@ try {
         'last_modified_by' => $_SESSION['userId'],
         'data_sync' => 0,
         'last_modified_datetime' => $db->now(),
-        'vl_result_category' => $vl_result_category
+        'reason_for_vl_result_changes' => $allChange,
+        'manual_result_entry' => 'yes'
     );
 
-    /* Updating the high and low viral load data */
-    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-        $vlDb = new \Vlsm\Models\Vl();
-        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    // only if result status has changed, let us update
+    if(!empty($resultStatus)){
+        $vldata['result_status'] = $resultStatus;
     }
+
+    /* Updating the high and low viral load data */
+    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+    $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    //}
     if ($_SESSION['instanceType'] == 'remoteuser') {
         $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
     } else {
@@ -345,7 +411,7 @@ try {
             $vldata['reason_for_sample_rejection'] = $_POST['rejectionReason'];
         }
     }
-    
+
     //var_dump($vldata);die;
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);

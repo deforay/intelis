@@ -225,6 +225,7 @@ class Users
 
     public function getAllUsers($facilityMap = null, $status = null, $type = null)
     {
+
         if (!empty($facilityMap)) {
             $facilityMap = explode(",", $facilityMap);
             $this->db->join("user_facility_map map", "map.user_id=u.user_id", "INNER");
@@ -233,6 +234,9 @@ class Users
         if ($status == 'active') {
             $this->db->where("status='active'");
         }
+
+        $this->db->orderBy("user_name", "asc");
+
         if (isset($type) && $type == 'drop-down') {
             $result =  $this->db->get('user_details u');
             $userDetails = array();

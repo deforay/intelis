@@ -18,6 +18,7 @@ $absDecimalVal = null;
 $absVal = null;
 $txtVal = null;
 $finalResult = null;
+$resultStatus = null;
 
 try {
      if (isset($_POST['api']) && $_POST['api'] = "yes") {
@@ -38,14 +39,14 @@ try {
      for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
           $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
      }
-     if (($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') && $_POST['oldStatus'] == 9) {
-          $_POST['status'] = 9;
-     } else if ($_POST['oldStatus'] == 9) {
-          $_POST['status'] = 6;
-     }
-     if ($_POST['status'] == '') {
-          $_POST['status']  = $_POST['oldStatus'];
-     }
+     // if (($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') && $_POST['oldStatus'] == 9) {
+     //      $_POST['status'] = 9;
+     // } else if ($_POST['oldStatus'] == 9) {
+     //      $_POST['status'] = 6;
+     // }
+     // if ($_POST['status'] == '') {
+     //      $_POST['status']  = $_POST['oldStatus'];
+     // }
      //add province
      $splitProvince = explode("##", $_POST['province']);
      if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
@@ -195,8 +196,11 @@ try {
      if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
           $finalResult  = $_POST['vlResult'] = 'Failed';
           $_POST['vlLog'] = '';
-          $_POST['status'] = 5; //Invalid/Failed
+          $resultStatus = 5; //Invalid/Failed
      } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+          
+          $resultStatus = 8; // Awaiting Approval
+          
           $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
 
           //Result is saved as entered
@@ -312,7 +316,7 @@ try {
           'result_approved_datetime'              => (isset($_POST['approvedOnDateTime']) && $_POST['approvedOnDateTime'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
           'result_approved_by'                    => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
           'lab_tech_comments'                     => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
-          'result_status'                         => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] :  NULL,
+          //'result_status'                         => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] :  NULL,
           'funding_source'                        => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : NULL,
           'implementing_partner'                  => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : NULL,
           'reason_for_vl_result_changes'          => $reasonForChanges,
@@ -322,6 +326,11 @@ try {
           'data_sync'                             => 0,
           'vl_result_category'                    => $vl_result_category
      );
+
+     // only if result status has changed, let us update
+     if (!empty($resultStatus)) {
+          $vldata['result_status'] = $resultStatus;
+     }
 
 
 
@@ -344,7 +353,7 @@ try {
      $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
      $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
-     
+
      if (isset($_POST['api']) && $_POST['api'] = "yes") {
           $payload = array(
                'status' => 'success',

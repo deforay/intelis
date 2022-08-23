@@ -452,11 +452,10 @@ $disable = "disabled = 'disabled'";
 										<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled") { ?>
 											<td><label for="">Décision prise </label></td>
 											<td>
-												<select class="form-control" id="status" name="status" title="Please select décision prise" onchange="checkTestStatus();" style="width:100%;">
+												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" onchange="checkTestStatus();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
-													<!-- <option value="6" <?php echo ($vlQueryInfo['result_status'] == 6) ? 'selected="selected"' : ''; ?>> En attente d'approbation Clinique </option> -->
-													<option value="7" <?php echo ($vlQueryInfo['result_status'] == 7) ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
-													<option value="4" <?php echo ($vlQueryInfo['result_status'] == 4) ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
+													<option value="no" <?php echo ($vlQueryInfo['result_status'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
+													<option value="yes" <?php echo ($vlQueryInfo['result_status'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
 												</select>
 											</td>
 										<?php } ?>
@@ -570,6 +569,7 @@ $disable = "disabled = 'disabled'";
 						<input type="hidden" name="revised" id="revised" value="no" />
 						<input type="hidden" id="rSrc" name="rSrc" value="er" />
 						<input type="hidden" id="dubPatientArtNo" name="dubPatientArtNo" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" />
+						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />						
 						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
@@ -665,8 +665,8 @@ $disable = "disabled = 'disabled'";
 	});
 
 	function checkTestStatus() {
-		var status = $("#status").val();
-		if (status == 4) {
+		var status = $("#isSampleRejected").val();
+		if (status == 'yes') {
 			$('.specialResults').prop('checked', false).removeAttr('checked');
 			$('#vlResult').attr('disabled', false);
 			$('#vlLog').attr('disabled', false);

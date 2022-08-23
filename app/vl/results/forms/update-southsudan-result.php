@@ -984,8 +984,8 @@ $disable = "disabled = 'disabled'";
 		// }
 	});
 	$(".labSection").on("change", function() {
-		
-		if ($.trim(resultValue) != '' || specialResultsValue != '' || specialResultsValue != undefined ) {
+
+		if ($.trim(resultValue) != '' || specialResultsValue != '' || specialResultsValue != undefined) {
 			if ($(".labSection").serialize() === $(__clone).serialize()) {
 				$(".reasonForResultChanges").css("display", "none");
 				$("#reasonForResultChanges").removeClass("isRequired");

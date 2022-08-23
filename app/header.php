@@ -15,12 +15,10 @@ $facilitiesModel = new \Vlsm\Models\Facilities();
 
 $_SESSION['module'] = $_SESSION['module'] ?: array();
 
-
 $syncLatestTime = $general->getLastSyncDateTime();
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
-
 
 $skin = "skin-blue";
 

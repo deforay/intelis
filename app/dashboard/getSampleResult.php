@@ -3,8 +3,7 @@
 $general = new \Vlsm\Models\General();
 $facilityDb = new \Vlsm\Models\Facilities();
 
-$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form' limit 1";
-$configFormResult = $db->rawQueryOne($configFormQuery);
+
 $cDate = date('Y-m-d');
 $lastSevenDay = date('Y-m-d', strtotime('-7 days'));
 //$facilityInfo = $facilityDb->getAllFacilities();
@@ -71,7 +70,6 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesOverviewChart   = "tbSamplesOverviewChart";
 }
 
-
 $u = $general->getSystemConfig('sc_user_type');
 
 if ($u != 'remoteuser') {
@@ -121,7 +119,7 @@ if ($table == "form_eid") {
     } else {
         $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
     }
-    $waitingQuery = "SELECT COUNT(vl_sample_id) as total FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE $vlWhereCondition vl.vlsm_country_id = '" . $configFormResult['value'] . "' " . " AND (sample_collection_date < DATE_SUB(NOW(), INTERVAL 6 MONTH)) AND (vl.result is null or vl.result = '') AND (vl.is_sample_rejected like 'no' or vl.is_sample_rejected is null or vl.is_sample_rejected = '')";
+    $waitingQuery = "SELECT COUNT(vl_sample_id) as total FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE $vlWhereCondition (sample_collection_date < DATE_SUB(NOW(), INTERVAL 6 MONTH)) AND (vl.result is null or vl.result = '') AND (vl.is_sample_rejected like 'no' or vl.is_sample_rejected is null or vl.is_sample_rejected = '')";
 }
 
 $waitingResult[$i] = $db->rawQuery($waitingQuery); //waiting result
@@ -141,10 +139,10 @@ if ($table == "form_eid") {
     $accessionQuery = 'SELECT DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 INNER JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE ' . $whereCondition . ' DATE(covid19.sample_collection_date) <= "' . $cDate . '" AND DATE(covid19.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "covid19_id";
 } else if ($table == "form_hepatitis") {
-    $accessionQuery = 'SELECT DATE(req.sample_collection_date) as `collection_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req INNER JOIN facility_details as f ON f.facility_id=req.facility_id WHERE ' . $whereCondition . ' DATE(req.sample_collection_date) <= "' . $cDate . '" AND DATE(req.sample_collection_date) >= "' . $lastSevenDay . '" AND req.vlsm_country_id = "' . $configFormResult['value'] . '" group by `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(req.sample_collection_date) as `collection_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req INNER JOIN facility_details as f ON f.facility_id=req.facility_id WHERE ' . $whereCondition . ' DATE(req.sample_collection_date) <= "' . $cDate . '" AND DATE(req.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "hepatitis_id";
 } else if ($table == "form_tb") {
-    $accessionQuery = 'SELECT DATE(tb.sample_collection_date) as `collection_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb INNER JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE ' . $whereCondition . ' DATE(tb.sample_collection_date) <= "' . $cDate . '" AND DATE(tb.sample_collection_date) >= "' . $lastSevenDay . '" AND tb.vlsm_country_id = "' . $configFormResult['value'] . '" group by `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(tb.sample_collection_date) as `collection_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb INNER JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE ' . $whereCondition . ' DATE(tb.sample_collection_date) <= "' . $cDate . '" AND DATE(tb.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "tb_id";
 } else {
     if ($whereCondition == "") {
@@ -152,7 +150,7 @@ if ($table == "form_eid") {
     } else {
         $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
     }
-    $accessionQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(vl_sample_id) as `count` FROM ' . $table . ' as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE ' . $vlWhereCondition . ' DATE(vl.sample_collection_date) <= "' . $cDate . '" AND DATE(vl.sample_collection_date) >= "' . $lastSevenDay . '" AND vl.vlsm_country_id = "' . $configFormResult['value'] . '" group by `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(vl_sample_id) as `count` FROM ' . $table . ' as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE ' . $vlWhereCondition . ' DATE(vl.sample_collection_date) <= "' . $cDate . '" AND DATE(vl.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "vl_sample_id";
 }
 
@@ -167,8 +165,7 @@ $aggregateQuery = "SELECT COUNT($primaryKey) as totalCollected,
     SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
 FROM $table as vl 
 INNER JOIN facility_details as f ON f.facility_id=vl.facility_id 
-WHERE vlsm_country_id = '" . $configFormResult['value'] . "' 
-AND DATE(vl.sample_collection_date) <= '" . $cDate . "' 
+WHERE DATE(vl.sample_collection_date) <= '" . $cDate . "' 
 AND DATE(vl.sample_collection_date) >= '" . $lastSevenDay . "'";
 // die($aggregateQuery);
 $aggregateResult = $db->rawQueryOne($aggregateQuery);

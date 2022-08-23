@@ -96,6 +96,9 @@ try {
         $_POST['vlLog'] = null;
         $resultStatus = 5; // Invalid/Failed
     } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+
+        $resultStatus = 8; // Awaiting Approval
+
         $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
 
         //Result is saved as entered

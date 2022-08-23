@@ -105,7 +105,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -133,26 +133,27 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+    $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+}
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+    if (trim($start_date) == trim($end_date)) {
+        $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
+    } else {
+        $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
     }
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        if (trim($start_date) == trim($end_date)) {
-            $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-        } else {
-            $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
+}
+if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
+    $sWhere[] =  '  f.facility_id IN (' . $_POST['facilityName'] . ')';
+}
+if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
+    if ($_POST['statusFilter'] == 'approvedOrRejected') {
+        $sWhere[] =  ' vl.result_status IN (4,7)';
+    } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
+        //$sWhere[] = ' vl.result_status NOT IN (4,7)';
+        $sWhere[] = ' vl.result_status IN (6,8)';
     }
-    if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] =  '  f.facility_id IN (' . $_POST['facilityName'] . ')';
-    }
-    if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
-        if ($_POST['statusFilter'] == 'approvedOrRejected') {
-            $sWhere[] =  ' vl.result_status IN (4,7)';
-        } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-            $sWhere[] = ' vl.result_status NOT IN (4,7)';
-        }
-    }
+}
 
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -163,21 +164,17 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $sWhere[] = "  vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
     }
 }
-$sWhere[] =  ' vl.result!=""';
+$sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     if (trim($start_date) == trim($end_date)) {
-            $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-    }
-    else {
+        $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
+    } else {
         $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
     }
 }
-if(isset($sWhere) && count($sWhere)>0)
-{
-    $sWhere = ' where '. implode(' AND ',$sWhere);
-}
-else
-{
+if (isset($sWhere) && count($sWhere) > 0) {
+    $sWhere = ' where ' . implode(' AND ', $sWhere);
+} else {
     $sWhere = "";
 }
 $sQuery = $sQuery . ' ' . $sWhere;

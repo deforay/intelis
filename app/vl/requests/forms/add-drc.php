@@ -440,11 +440,10 @@ $sFormat = '';
 											<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled" && $_SESSION['userType'] == '') { ?>
 												<td><label for="">Décision prise </label></td>
 												<td>
-													<select class="form-control" id="status" name="status" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+													<select class="form-control" id="isSampleRejected" name="status" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 														<option value=""> -- Sélectionner -- </option>
-														<!-- <option value="6"> En attente d'approbation Clinique </option> -->
-														<option value="7">Echantillon accepté</option>
-														<option value="4">Echantillon rejeté</option>
+														<option value="no">Echantillon accepté</option>
+														<option value="yes">Echantillon rejeté</option>
 													</select>
 												</td>
 											<?php } else { ?>
@@ -734,8 +733,8 @@ $sFormat = '';
 	}
 
 	function checkTestStatus() {
-		var status = $("#status").val();
-		if (status == 4) {
+		var status = $("#isSampleRejected").val();
+		if (status == 'yes') {
 			$(".rejectionReason").show();
 			$(".resultSection").hide();
 			$("#rejectionReason").addClass('isRequired');

@@ -159,19 +159,15 @@ try {
     if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Target Not Detected';
         $_POST['vlLog'] = '';
-        $resultStatus = 8; // Awaiting Approval    
     } else if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = '< 20';
-        $_POST['vlLog'] = '';
-        $resultStatus = 8; // Awaiting Approval    
+        $_POST['vlLog'] = '';   
     } else if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = '< 40';
         $_POST['vlLog'] = '';
-        $resultStatus = 8; // Awaiting Approval    
     } else if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = '';
-        $resultStatus = 8; // Awaiting Approval    
     }
 
     if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
@@ -297,7 +293,7 @@ try {
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
-        'is_sample_rejected' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
+        'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
         'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  NULL,
         'result_value_absolute'                 => $absVal ?: null,

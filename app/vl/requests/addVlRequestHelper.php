@@ -30,13 +30,13 @@ try {
     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
     }
-    $status = 6;
+    $resultStatus = 6;
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $vl_result_category = 'rejected';
-        $status = 4;
+        $resultStatus = 4;
     }
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-        $status = 9;
+        $resultStatus = 9;
     }
     //add province
     $splitProvince = explode("##", $_POST['province']);
@@ -190,9 +190,9 @@ try {
     if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Failed';
         $_POST['vlLog'] = null;
-        $status = 5; // Invalid/Failed
+        $resultStatus = 5; // Invalid/Failed
     } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
-        $status = 8; // Awaiting Approval
+        $resultStatus = 8; // Awaiting Approval
         $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
 
         //Result is saved as entered
@@ -293,7 +293,7 @@ try {
         'result_approved_by'                    => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
         'result_approved_datetime'              => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
         'lab_tech_comments'                     => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
-        'result_status'                         => $status,
+        'result_status'                         => $resultStatus,
         'funding_source'                        => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : NULL,
         'implementing_partner'                  => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : NULL,
         // 'request_created_by'                 => $_SESSION['userId'],

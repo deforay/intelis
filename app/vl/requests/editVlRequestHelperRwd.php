@@ -18,6 +18,7 @@ $absDecimalVal = null;
 $absVal = null;
 $txtVal = null;
 $finalResult = null;
+$resultStatus = null;
 
 try {
     $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
@@ -42,14 +43,14 @@ try {
     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
     }
-    if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == 9) {
-        $_POST['status'] = 9;
-    } else if ($_POST['oldStatus'] == 9) {
-        $_POST['status'] = 6;
-    }
-    if ($_POST['status'] == '') {
-        $_POST['status']  = $_POST['oldStatus'];
-    }
+    // if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == 9) {
+    //     $_POST['status'] = 9;
+    // } else if ($_POST['oldStatus'] == 9) {
+    //     $_POST['status'] = 6;
+    // }
+    // if ($_POST['status'] == '') {
+    //     $_POST['status']  = $_POST['oldStatus'];
+    // }
     //add province
     $splitProvince = explode("##", $_POST['province']);
     if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
@@ -162,7 +163,7 @@ try {
     }
 
     $isRejected = false;
-    //$resultStatus = 8; // Awaiting Approval    
+    
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $isRejected = true;
         $finalResult = $_POST['vlResult'] = null;
@@ -173,19 +174,15 @@ try {
     if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Target Not Detected';
         $_POST['vlLog'] = '';
-        $resultStatus = 8; // Awaiting Approval    
     } else if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = '< 20';
-        $_POST['vlLog'] = '';
-        $resultStatus = 8; // Awaiting Approval    
+        $_POST['vlLog'] = '';  
     } else if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = '< 40';
-        $_POST['vlLog'] = '';
-        $resultStatus = 8; // Awaiting Approval    
+        $_POST['vlLog'] = '';  
     } else if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = '';
-        $resultStatus = 8; // Awaiting Approval    
     }
 
     if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
@@ -197,7 +194,7 @@ try {
         $_POST['vlLog'] = '';
         $resultStatus = 5; // Invalid/Failed
     } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
-        
+
         $resultStatus = 8; // Awaiting Approval    
 
         $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
@@ -321,13 +318,12 @@ try {
         'result_value_text'                     => $txtVal ?: null,
         'result'                                => $finalResult ?: null,
         'result_value_log'                      => $logVal ?: null,
-        'result_status'                         => $resultStatus,
+        //'result_status'                         => $resultStatus,
         //'result_status' => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] : NULL,        
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : NULL,
         'lab_tech_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) : NULL,
-        'result_status' => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] : NULL,
         'reason_for_vl_result_changes' => $allChange,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
         'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
@@ -336,6 +332,14 @@ try {
         'manual_result_entry' => 'yes',
         'data_sync' => 0
     );
+
+
+    // only if result status has changed, let us update
+    if (!empty($resultStatus)) {
+        $vldata['result_status'] = $resultStatus;
+    }
+
+
     /* Updating the high and low viral load data */
     //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
     $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
@@ -400,8 +404,6 @@ try {
         $resource = 'vl-request-rwd';
 
         $general->activityLog($eventType, $action, $resource);
-
-
     } else {
         $_SESSION['alertMsg'] = "Please try again later";
     }
