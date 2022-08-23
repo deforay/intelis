@@ -191,9 +191,9 @@ try {
     //     $_POST['rejectionReason'] = NULL;
     // }
 
-    if ($_SESSION['instanceType'] == 'remoteuser') {
+    /* if ($_SESSION['instanceType'] == 'remoteuser') {
         $_POST['status'] = 9;
-    }
+    } */
     //Set result prinetd date time
     if (isset($_POST['sampleTestingDateAtLab']) && trim($_POST['sampleTestingDateAtLab']) != "") {
         $sampleTestedDate = explode(" ", $_POST['sampleTestingDateAtLab']);
@@ -230,8 +230,6 @@ try {
         $sampleCode = 'sample_code';
         $sampleCodeKey = 'sample_code_key';
     }
-
-
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $isRejected = true;
@@ -333,7 +331,7 @@ try {
         'plasma_conservation_temperature' => $_POST['conservationTemperature'],
         'plasma_conservation_duration' => $_POST['durationOfConservation'],
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
-        'result_status' => $_POST['status'],
+        'result_status' => $resultStatus,
         'reason_for_sample_rejection' => $_POST['rejectionReason'],
         //'sample_code'=>$_POST['sampleCode'],
         //'lab_code'=>$_POST['labNo'],
@@ -376,10 +374,11 @@ try {
     //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
     $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
     //}
-    // echo "<pre>";print_r($vldata);die;
+    $id = 0;
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $vldata);
+        // echo $db->getLastError();
     } else {
         //check existing sample code
         $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_vl where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
@@ -410,7 +409,6 @@ try {
         $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '' ? $_POST['sampleCodeFormat'] :  NULL);
         $id = $db->insert($tableName, $vldata);
     }
-
     if ($id > 0) {
         $_SESSION['alertMsg'] = "VL request added successfully";
         //Add event log

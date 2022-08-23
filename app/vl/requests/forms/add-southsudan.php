@@ -585,6 +585,16 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                                 <div class="col-md-4 hivDetection" style="display: none;">
+                                                                      <label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
+                                                                                <option value="">-- Select --</option>
+                                                                                <option value="HIV-1 Detected">HIV-1 Detected</option>
+                                                                                <option value="HIV-1 Not Detected">HIV-1 Not Detected</option>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="noResult">Sample Rejected? </label>
                                                                       <div class="col-lg-7">
@@ -632,24 +642,12 @@ $sFormat = '';
                                                                            <input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed" disabled> Failed<br>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="vlLog col-md-4">
                                                                       <label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" style="width:100%;" onchange="calculateLogValue(this);" />
                                                                       </div>
                                                                  </div>
-                                                                 <!-- <div class="col-md-4 hivDetection" style="display: none;">
-                                                                      <label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
-                                                                                <option value="">-- Select --</option>
-                                                                                <option value="HIV-1 Detected">HIV-1 Detected</option>
-                                                                                <option value="HIV-1 Not Detected">HIV-1 Not Detected</option>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div> -->
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
                                                                       <div class="col-md-4 reasonForFailure" style="display: none;">
                                                                            <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
@@ -666,7 +664,7 @@ $sFormat = '';
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
                                                                  </div>
-                                                            </div><br />
+                                                            </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
@@ -777,7 +775,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>
      let provinceName = true;
-     let facilityName = true;   
+     let facilityName = true;
      $(document).ready(function() {
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1167,13 +1165,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
      $('#testingPlatform').change(function() {
-          // var text = this.value;
-          // var str1 = text.split("##");
-          // if (str1[0] == 'GeneXpert') {
-          //      $('.hivDetection').show();
-          // } else {
-          //      $('.hivDetection').hide();
-          // }
+          var text = this.value;
+          var str1 = text.split("##");
+          var str = str1[0];
+          if (str1[0] == 'GeneXpert' || str.toLowerCase() == 'genexpert') {
+               $('.hivDetection').show();
+          } else {
+               $('.hivDetection').hide();
+          }
      });
      $('.specialResults').change(function() {
           if ($('.specialResults').is(':checked')) {
