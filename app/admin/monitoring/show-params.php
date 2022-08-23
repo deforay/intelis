@@ -2,8 +2,8 @@
 $id = base64_decode($_GET['id']);
 $db = $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
-$result['request_data'] = (isset($result['request_data']) && !empty($result['request_data'])) ? $result['request_data'] : 'Without Request params';
-$result['response_data'] = (isset($result['response_data']) && !empty($result['response_data'])) ? json_decode($result['response_data']) : 'No Response';
+$result['request_data'] = (isset($result['request_data']) && !empty($result['request_data'])) ? $result['request_data'] : '';
+$result['response_data'] = (isset($result['response_data']) && !empty($result['response_data'])) ? json_decode($result['response_data']) : '';
 ?>
 <script src="/assets/js/bootstrap.min.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />

@@ -820,10 +820,17 @@ class General
         error_log(ob_get_clean());
     }
 
+    public function isJSON($string)
+    {
+        return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
+    }
+
     public function addApiTracking($user, $records, $type, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
     {
 
         try {
+            $requestData = (!empty($requestData) && !$this->isJSON($requestData)) ? json_encode($requestData) : $requestData;
+            $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData) : $responseData;
             $data = array(
                 'requested_by'      => $user ?: 'vlsm-system',
                 'requested_on'      => $this->getCurrentDateTime(),
@@ -831,8 +838,8 @@ class General
                 'request_type'      => $type ?: null,
                 'test_type'         => $testType ?: null,
                 'api_url'           => $url ?: null,
-                'request_data'      => $requestData ?: null,
-                'response_data'     => $responseData ?: null,
+                'request_data'      => $requestData,
+                'response_data'     => $responseData,
                 'facility_id'       => $facilityId ?: null,
                 'data_format'       => $format ?: null
             );
