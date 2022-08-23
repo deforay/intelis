@@ -440,7 +440,7 @@ $sFormat = '';
 											<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled" && $_SESSION['userType'] == '') { ?>
 												<td><label for="">Décision prise </label></td>
 												<td>
-													<select class="form-control" id="isSampleRejected" name="status" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+													<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 														<option value=""> -- Sélectionner -- </option>
 														<option value="no">Echantillon accepté</option>
 														<option value="yes">Echantillon rejeté</option>

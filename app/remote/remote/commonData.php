@@ -15,8 +15,8 @@ $payload = array();
 
 
 
-$jsonData = file_get_contents('php://input');
-$origData = $data = json_decode($jsonData, true);
+$origData = $jsonData = file_get_contents('php://input');
+$data = json_decode($jsonData, true);
 
 //error_log($jsonData);
 $counter = 0;

@@ -822,18 +822,25 @@ class General
 
     public function addApiTracking($user, $records, $type, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
     {
-        $data = array(
-            'requested_by'      => $user ?: 'vlsm-system',
-            'requested_on'      => $this->getCurrentDateTime(),
-            'number_of_records' => $records ?: 0,
-            'request_type'      => $type ?: null,
-            'test_type'         => $testType ?: null,
-            'api_url'           => $url ?: null,
-            'request_data'      => $requestData ?: null,
-            'response_data'     => $responseData ?: null,
-            'facility_id'       => $facilityId ?: null,
-            'data_format'       => $format ?: null
-        );
-        return $this->db->insert("track_api_requests", $data);
+
+        try {
+            $data = array(
+                'requested_by'      => $user ?: 'vlsm-system',
+                'requested_on'      => $this->getCurrentDateTime(),
+                'number_of_records' => $records ?: 0,
+                'request_type'      => $type ?: null,
+                'test_type'         => $testType ?: null,
+                'api_url'           => $url ?: null,
+                'request_data'      => $requestData ?: null,
+                'response_data'     => $responseData ?: null,
+                'facility_id'       => $facilityId ?: null,
+                'data_format'       => $format ?: null
+            );
+            return $this->db->insert("track_api_requests", $data);
+        } catch (\Exception $exc) {
+            error_log($exc->getMessage());
+            error_log($this->db->getLastError());
+            error_log($exc->getTraceAsString());
+        }
     }
 }

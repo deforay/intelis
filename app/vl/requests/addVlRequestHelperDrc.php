@@ -247,29 +247,29 @@ try {
         }
     }
 
-    if (isset($_POST['vlTND']) && $_POST['vlTND'] == 'yes' && $isRejected == false) {
+    if (isset($_POST['vlTND']) && $_POST['vlTND'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = 'Target not Detected';
         $_POST['vlLog'] = '';
         $resultStatus = 8; // Awaiting Approval
-    } else if (isset($_POST['vlLt20']) && $_POST['vlLt20'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['vlLt20']) && $_POST['vlLt20'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = '< 20';
         $_POST['vlLog'] = '';
         $resultStatus = 8; // Awaiting Approval
-    } else if (isset($_POST['vlLt40']) && $_POST['vlLt40'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['vlLt40']) && $_POST['vlLt40'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = '< 40';
         $_POST['vlLog'] = '';
         $resultStatus = 8; // Awaiting Approval
-    } else if (isset($_POST['vlLt400']) && $_POST['vlLt400'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['vlLt400']) && $_POST['vlLt400'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = '< 400';
         $_POST['vlLog'] = '';
         $resultStatus = 8; // Awaiting Approval
     }
 
-    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
+    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = 'Failed';
         $_POST['vlLog'] = '';
         $resultStatus = 5; // Invalid/Failed
-    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = 'Invalid';
         $_POST['vlLog'] = '';
         $resultStatus = 5; // Invalid/Failed
@@ -302,8 +302,7 @@ try {
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => 3,
-        //'sample_code_title'=>(isset($_POST['sampleCodeTitle']) && $_POST['sampleCodeTitle']!='' ? $_POST['sampleCodeTitle'] :  'auto'),
-        'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] :  NULL,
+        'is_sample_rejected' => ($isRejected === true) ? 'yes' : 'no',
         'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
         'facility_id' => $_POST['clinicName'],
         'province_id' => (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  NULL,
@@ -379,36 +378,37 @@ try {
         $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $vldata);
         // echo $db->getLastError();
-    } else {
-        //check existing sample code
-        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_vl where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
-        $existResult = $db->rawQuery($existSampleQuery);
-        if (isset($existResult[0][$sampleCodeKey]) && $existResult[0][$sampleCodeKey] != '') {
-            if ($existResult[0][$sampleCodeKey] != '') {
-                $sCode = $existResult[0][$sampleCodeKey] + 1;
-                $strparam = strlen($sCode);
-                $zeros = substr("000", $strparam);
-                $maxId = $zeros . $sCode;
-                $_POST['sampleCode'] = $_POST['sampleCodeFormat'] . $maxId;
-                $_POST['sampleCodeKey'] = $maxId;
-            } else {
-                $_SESSION['alertMsg'] = "Please check your sample ID";
-                header("location:addVlRequest.php");
-            }
-        }
+    } 
+    // else {
+    //     //check existing sample code
+    //     $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_vl where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
+    //     $existResult = $db->rawQuery($existSampleQuery);
+    //     if (isset($existResult[0][$sampleCodeKey]) && $existResult[0][$sampleCodeKey] != '') {
+    //         if ($existResult[0][$sampleCodeKey] != '') {
+    //             $sCode = $existResult[0][$sampleCodeKey] + 1;
+    //             $strparam = strlen($sCode);
+    //             $zeros = substr("000", $strparam);
+    //             $maxId = $zeros . $sCode;
+    //             $_POST['sampleCode'] = $_POST['sampleCodeFormat'] . $maxId;
+    //             $_POST['sampleCodeKey'] = $maxId;
+    //         } else {
+    //             $_SESSION['alertMsg'] = "Please check your sample ID";
+    //             header("location:addVlRequest.php");
+    //         }
+    //     }
 
-        if ($_SESSION['instanceType'] == 'remoteuser') {
-            $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
-            $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
-            $vldata['remote_sample'] = 'yes';
-        } else {
-            $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
-            $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
-            $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
-        }
-        $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '' ? $_POST['sampleCodeFormat'] :  NULL);
-        $id = $db->insert($tableName, $vldata);
-    }
+    //     if ($_SESSION['instanceType'] == 'remoteuser') {
+    //         $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
+    //         $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
+    //         $vldata['remote_sample'] = 'yes';
+    //     } else {
+    //         $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
+    //         $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
+    //         $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
+    //     }
+    //     $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '' ? $_POST['sampleCodeFormat'] :  NULL);
+    //     $id = $db->insert($tableName, $vldata);
+    // }
     if ($id > 0) {
         $_SESSION['alertMsg'] = "VL request added successfully";
         //Add event log

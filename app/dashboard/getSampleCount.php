@@ -192,7 +192,7 @@ $tableResult = $db->rawQuery($sQuery);
         <div class="display">
             <div class="number">
                 <h3 class="font-purple-soft">
-                    <!-- <span data-counter="counterup" class="facilityCounterup" data-value="<?php echo $collectionTotal; ?>"><?php echo $collectionTotal; ?></span> -->
+                    
                 </h3>
                 <small class="font-purple-soft"><?php echo _("SAMPLES REGISTERED BY COLLECTION POINT"); ?></small><br>
                 <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->

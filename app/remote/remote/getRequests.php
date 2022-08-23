@@ -3,8 +3,8 @@ require_once(dirname(__FILE__) . "/../../../startup.php");
 
 header('Content-Type: application/json');
 
-//this file is get the data from remote db
-$origData = $data = json_decode(file_get_contents('php://input'), true);
+$origData = $jsonData = file_get_contents('php://input');
+$data = json_decode($jsonData, true);
 
 $encoding = $general->getHeader('Accept-Encoding');
 $payload = array();
