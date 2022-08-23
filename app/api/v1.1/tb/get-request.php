@@ -152,7 +152,7 @@ try {
         $facilityId = implode("','", $input['facility']);
         $where[] = " vl.facility_id IN ('$facilityId') ";
     }
-    $where[] = " vl.app_sample_code not null";
+    $where[] = " vl.app_sample_code is not null";
     $where = " WHERE " . implode(" AND ", $where);
     $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100 ";
     // die($sQuery);

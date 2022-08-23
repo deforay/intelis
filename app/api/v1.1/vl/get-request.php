@@ -222,7 +222,7 @@ try {
         $sampleStatus = implode("','", $sampleStatus);
         $where[] = " result_status IN ('$sampleStatus') ";
     }
-    $where[] = " vl.app_sample_code not null";
+    $where[] = " vl.app_sample_code is not null";
     $where = " WHERE " . implode(" AND ", $where);
     $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100;";
     // die($sQuery);
