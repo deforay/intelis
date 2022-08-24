@@ -110,7 +110,7 @@ if (isset($_POST['typeOfAction']) && trim($_POST['typeOfAction']) != '') {
      $sWhere[] = ' event_type like "' . $_POST['typeOfAction'] . '"';
 }
 /* Implode all the where fields for filtering the data */
-if (sizeof($sWhere) > 0) {
+if (!empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 

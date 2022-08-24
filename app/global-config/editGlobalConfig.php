@@ -823,7 +823,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								</div>
 							</div>
 						<?php }
-						if (SYSTEM_CONFIG['modules']['hepatitis'] == true) { ?>
+						if (SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<h3 class="panel-title"><?php echo _("Hepatitis Settings"); ?></h3>

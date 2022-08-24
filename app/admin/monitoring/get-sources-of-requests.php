@@ -153,7 +153,7 @@ if (isset($_POST['srcRequest']) && trim($_POST['srcRequest']) != '') {
 }
 
 /* Implode all the where fields for filtering the data */
-if (sizeof($sWhere) > 0) {
+if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 

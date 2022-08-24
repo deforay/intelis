@@ -81,18 +81,18 @@ try {
     $isRejected = false;
     $finalResult = null;
     $resultStatus = 8; // Awaiting Approval
-    if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
+    if (isset($_POST['noResult']) && $_POST['noResult'] === 'yes') {
         $isRejected = true;
         $finalResult = $_POST['vlResult'] = $_POST['vlLog'] = null;
         $resultStatus = 4;
     }
 
-    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
+    if (isset($_POST['bdl']) && $_POST['bdl'] === 'yes' && $isRejected === false) {
         $_POST['vlResult'] = 'Below Detection Level';
     }
 
     if (
-        (isset($_POST['failed']) && $_POST['failed'] == 'yes')
+        (isset($_POST['failed']) && $_POST['failed'] === 'yes')
         || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
     ) {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';

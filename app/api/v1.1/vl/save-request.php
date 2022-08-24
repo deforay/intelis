@@ -501,7 +501,7 @@ try {
     } else {
         $msg = 'Successfully added';
     }
-    if (isset($responseData) && count($responseData) > 0) {
+    if (isset($responseData) && !empty($responseData)) {
         $payload = array(
             'status' => 'success',
             'timestamp' => time(),
@@ -515,7 +515,8 @@ try {
             'message' => $msg
         );
     }
-    if (isset($user['token_updated']) && $user['token_updated'] == true) {
+    
+    if (isset($user['token_updated']) && $user['token_updated'] === true) {
         $payload['token'] = $user['new_token'];
     } else {
         $payload['token'] = null;

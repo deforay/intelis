@@ -183,7 +183,7 @@ try {
     }
 
 
-    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
+    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected === false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = null;
     }

@@ -84,16 +84,16 @@ try {
         }
     }
 
-    if (isset($_POST['vlTND']) && $_POST['vlTND'] == 'yes' && $isRejected == false) {
+    if (isset($_POST['vlTND']) && $_POST['vlTND'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = 'Target not Detected';
         $_POST['vlLog'] = '';
-    } else if (isset($_POST['vlLt20']) && $_POST['vlLt20'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['vlLt20']) && $_POST['vlLt20'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = '< 20';
         $_POST['vlLog'] = '';
-    } else if (isset($_POST['vlLt40']) && $_POST['vlLt40'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['vlLt40']) && $_POST['vlLt40'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = '< 40';
         $_POST['vlLog'] = '';
-    } else if (isset($_POST['vlLt400']) && $_POST['vlLt400'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['vlLt400']) && $_POST['vlLt400'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = '< 400';
         $_POST['vlLog'] = '';
     }
@@ -105,7 +105,7 @@ try {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
         $_POST['vlLog'] = '';
         $resultStatus = 5; // Invalid/Failed
-    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = 'Invalid';
         $_POST['vlLog'] = '';
         $resultStatus = 5; // Invalid/Failed

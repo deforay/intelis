@@ -110,7 +110,7 @@ if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
 }
 
 /* Implode all the where fields for filtering the data */
-if (sizeof($sWhere) > 0) {
+if (!empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 

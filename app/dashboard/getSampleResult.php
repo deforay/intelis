@@ -280,8 +280,8 @@ if ($table == "form_covid19") {
                 <small class="font-green-sharp"><?php echo _("SAMPLES REGISTERED"); ?></small><br>
                 <small class="font-green-sharp" style="font-size:0.75em;"><?php echo _("in selected range"); ?></small>
             </div>
-            <div class="icon">
-                <i class="icon-pie-chart"></i>
+            <div class="icon font-green-sharp">
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesReceivedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
@@ -289,7 +289,7 @@ if ($table == "form_covid19") {
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2" style="cursor:pointer;">
-        <div class="display">
+        <div class="display font-blue-sharp">
             <div class="number">
                 <h3 class="font-blue-sharp">
                     <span data-counter="counterup" data-value="<?php echo $acceptedTotal; ?>"><?php echo $acceptedTotal; ?></span>
@@ -298,7 +298,7 @@ if ($table == "form_covid19") {
                 <small class="font-blue-sharp" style="font-size:0.75em;"><?php echo _("In Selected Range"); ?></small>
             </div>
             <div class="icon">
-                <i class="icon-pie-chart"></i>
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesTestedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
@@ -307,17 +307,16 @@ if ($table == "form_covid19") {
 
 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 " style="cursor:pointer;">
-        <div class="display">
+        <div class="display font-red-haze">
             <div class="number">
                 <h3 class="font-red-haze">
                     <span data-counter="counterup" data-value="<?php echo $rejectedTotal; ?>"><?php echo $rejectedTotal; ?></span>
                 </h3>
                 <small class="font-red-haze"><?php echo _("SAMPLES REJECTED"); ?></small><br>
                 <small class="font-red-haze" style="font-size:0.75em;"><?php echo _("In Selected Range"); ?></small>
-                <!--<small class="font-red-haze"><?php echo $rejectedDate; ?></small>-->
             </div>
             <div class="icon">
-                <i class="icon-pie-chart"></i>
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesRejectedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
@@ -326,17 +325,17 @@ if ($table == "form_covid19") {
 
 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 " style="cursor:pointer;">
-        <div class="display">
+        <div class="display font-purple-soft">
             <div class="number">
                 <h3 class="font-purple-soft">
                     <span data-counter="counterup" data-value="<?php echo $waitingTotal; ?>"><?php echo $waitingTotal; ?></span>
                 </h3>
                 <small class="font-purple-soft"><?php echo _("SAMPLES WITH NO RESULTS"); ?></small><br>
                 <small class="font-purple-soft" style="font-size:0.75em;"><?php echo _("(LAST 6 MONTHS)"); ?></small>
-                <!--<small class="font-purple-soft"><?php echo $waitingDate; ?></small>-->
+
             </div>
             <div class="icon">
-                <i class="icon-pie-chart"></i>
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="150" style="min-height:150px;"></div>
@@ -344,13 +343,13 @@ if ($table == "form_covid19") {
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
-        <div class="display">
+        <div class="display font-purple-soft">
             <div class="number">
                 <h4 class="font-purple-soft" style="font-weight:600;"><?= _("OVERALL SAMPLE STATUS"); ?></h4>
                 <small class="font-purple-soft" style="font-size:0.75em;"><?= _("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?></small>
             </div>
             <div class="icon">
-                <i class="icon-pie-chart"></i>
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesOverviewChart; ?>" width="210" height="150" style="min-height:240px;"></div>

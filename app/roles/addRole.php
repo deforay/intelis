@@ -5,19 +5,19 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $activeModules = array('admin', 'common');
 
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
 	$activeModules[] = 'vl';
 }
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
 	$activeModules[] = 'eid';
 }
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
 	$activeModules[] = 'covid19';
 }
 if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['hepatitis']['tb'] == true) {
 	$activeModules[] = 'hepatitis';
 }
-if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
 	$activeModules[] = 'tb';
 }
 

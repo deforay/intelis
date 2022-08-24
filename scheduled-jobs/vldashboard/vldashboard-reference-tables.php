@@ -20,7 +20,7 @@ $referenceTables = array(
     'geographical_divisions'
 );
 
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
     $vlTables = array(
         'r_vl_sample_type',
         'r_vl_test_reasons',
@@ -32,7 +32,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == t
 }
 
 
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
     $eidTables = array(
         //'r_eid_results',
         'r_eid_sample_rejection_reasons',
@@ -43,7 +43,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 }
 
 
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
     $covid19Tables = array(
         //'r_covid19_results',
         'r_covid19_comorbidities',
@@ -55,7 +55,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     $referenceTables = array_merge($referenceTables, $covid19Tables);
 }
 
-if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
     $hepatitisTables = array(
         //'r_covid19_results',
         'r_hepatitis_sample_rejection_reasons',
@@ -67,7 +67,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
     $referenceTables = array_merge($referenceTables, $hepatitisTables);
 }
 
-if (isset(SYSTEM_CONFIG['modules']['common']) && SYSTEM_CONFIG['modules']['common'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['common']) && SYSTEM_CONFIG['modules']['common'] === true) {
     $commonTables = array(
         'import_config_machines',
     );
@@ -83,7 +83,7 @@ try {
             $data[$table]['tableStructure'] = "SET FOREIGN_KEY_CHECKS=0;" . PHP_EOL;
             $data[$table]['tableStructure'] .= "ALTER TABLE `$table` DISABLE KEYS ;" . PHP_EOL;
             $data[$table]['tableStructure'] .= "DROP TABLE IF EXISTS `$table`;" . PHP_EOL;
-            $data[$table]['tableStructure'] .= $createResult['Create Table'] . ";" . PHP_EOL;;
+            $data[$table]['tableStructure'] .= $createResult['Create Table'] . ";" . PHP_EOL;
             $data[$table]['tableStructure'] .= "ALTER TABLE `$table` ENABLE KEYS ;" . PHP_EOL;
             $data[$table]['tableStructure'] .= "SET FOREIGN_KEY_CHECKS=1;" . PHP_EOL;
         }

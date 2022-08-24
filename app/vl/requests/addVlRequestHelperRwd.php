@@ -156,16 +156,16 @@ try {
         $_POST['vlResult'] = '';
         $_POST['vlLog'] = '';
     }
-    if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected == false) {
+    if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected === false) {
         $_POST['vlResult'] = 'Target Not Detected';
         $_POST['vlLog'] = '';
-    } else if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejected === false) {
         $_POST['vlResult'] = '< 20';
         $_POST['vlLog'] = '';   
-    } else if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejected === false) {
         $_POST['vlResult'] = '< 40';
         $_POST['vlLog'] = '';
-    } else if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected === false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = '';
     }
@@ -177,7 +177,7 @@ try {
         $finalResult = $_POST['vlResult'] ?: 'Failed';
         $_POST['vlLog'] = '';
         $resultStatus = 5; // Invalid/Failed
-    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected == false) {
+    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected === false) {
         $finalResult = $_POST['vlResult'] = 'Invalid';
         $_POST['vlLog'] = '';
         $resultStatus = 5; // Invalid/Failed

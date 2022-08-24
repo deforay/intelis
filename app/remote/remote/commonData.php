@@ -27,7 +27,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
     $response = array();
 
-    if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
 
 
         $condition = null;
@@ -59,7 +59,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
     }
 
 
-    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
 
         $condition = null;
         if (isset($data['eidRejectionReasonsLastModified']) && !empty($data['eidRejectionReasonsLastModified'])) {
@@ -89,7 +89,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
         $counter += (count($response['eidRejectionReasons']) + count($response['eidSampleTypes']) + count($response['eidResults']) + count($response['eidReasonForTesting']));
     }
 
-    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
 
         $condition = null;
         if (isset($data['covid19RejectionReasonsLastModified']) && !empty($data['covid19RejectionReasonsLastModified'])) {
@@ -137,7 +137,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
         $counter += (count($response['covid19RejectionReasons']) + count($response['covid19SampleTypes']) + count($response['covid19Comorbidities']) + count($response['covid19Results']) + count($response['covid19Symptoms']) + count($response['covid19ReasonForTesting']) + count($response['covid19QCTestKits']));
     }
 
-    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
 
         $condition = null;
         if (isset($data['hepatitisRejectionReasonsLastModified']) && !empty($data['hepatitisRejectionReasonsLastModified'])) {
