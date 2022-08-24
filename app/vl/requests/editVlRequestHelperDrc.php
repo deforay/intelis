@@ -251,8 +251,11 @@ try {
         $_POST['vlLog'] = '';
     }
 
-    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
-        $finalResult = $_POST['vlResult'] = 'Failed';
+    if (
+        (isset($_POST['failed']) && $_POST['failed'] == 'yes')
+        || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
+    ) {
+        $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
         $_POST['vlLog'] = '';
         $resultStatus = 5; // Invalid/Failed
     } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected == false) {
@@ -342,7 +345,7 @@ try {
     );
 
     // only if result status has changed, let us update
-    if(!empty($resultStatus)){
+    if (!empty($resultStatus)) {
         $vldata['result_status'] = $resultStatus;
     }
 

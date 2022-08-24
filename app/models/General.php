@@ -825,6 +825,15 @@ class General
         return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
     }
 
+    public function prettyJson($json)
+    {
+        if (is_array($json)) {
+            return stripslashes(json_encode($json, JSON_PRETTY_PRINT));
+        } else {
+            return stripslashes(json_encode(json_decode($json), JSON_PRETTY_PRINT));
+        }
+    }
+
     public function addApiTracking($user, $records, $type, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
     {
 

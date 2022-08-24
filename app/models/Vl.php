@@ -192,6 +192,8 @@ class Vl
 
         if (!isset($finalResult) || empty($finalResult)) {
             $vlResultCategory = null;
+        } else if (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
+            $vlResultCategory = 'failed';
         } else if (in_array($resultStatus, array(1, 2, 3, 10))) {
             $vlResultCategory = null;
         } else if ($resultStatus == 4) {
@@ -259,6 +261,7 @@ class Vl
             $this->interpretViralLoadNumericResult($result, $unit);
         }
 
+        $resultStatus = null;
         // Some machines and some countries prefer a default text result
         $vlTextResult = "Target Not Detected" ?: $defaultLowVlResultText;
 
@@ -317,7 +320,8 @@ class Vl
             'result' => $originalResultValue,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
-            'txtVal' => $txtVal
+            'txtVal' => $txtVal,
+            'resultStatus' => $resultStatus,
         );
     }
 
@@ -329,7 +333,7 @@ class Vl
         // If result is NOT numeric, then return it as is
         if (!is_numeric($result)) return $result;
 
-        $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
+        $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
         $originalResultValue = $result;
         if (strpos($unit, '10') !== false) {
             $unitArray = explode(".", $unit);
@@ -362,7 +366,8 @@ class Vl
             'result' => $originalResultValue,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
-            'txtVal' => $txtVal
+            'txtVal' => $txtVal,
+            'resultStatus' => $resultStatus
         );
     }
 

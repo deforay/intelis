@@ -319,7 +319,7 @@ try {
             $finalResult = null;
             $status = 4;
         } else if (isset($data['vlResult']) && trim($data['vlResult']) != '') {
-            if ($data['vlResult'] === 'Failed' || $data['vlResult'] === 'Fail') {
+            if (in_array(strtolower($data['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])) {
                 //Result is saved as entered
                 $finalResult  = $data['vlResult'];
                 $status = 5; // Invalid/Failed

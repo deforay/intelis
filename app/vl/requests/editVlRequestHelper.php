@@ -193,14 +193,17 @@ try {
           $_POST['vlLog'] = '';
      }
 
-     if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected == false) {
-          $finalResult  = $_POST['vlResult'] = 'Failed';
+     if (
+          (isset($_POST['failed']) && $_POST['failed'] == 'yes')
+          || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
+     ) {
+          $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
           $_POST['vlLog'] = '';
           $resultStatus = 5; //Invalid/Failed
      } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
-          
+
           $resultStatus = 8; // Awaiting Approval
-          
+
           $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
 
           //Result is saved as entered

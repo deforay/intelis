@@ -206,10 +206,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 }
 /* Viral load filter */
 if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
-     if ($_POST['vLoad'] == 'suppressed') {
-          $sWhere[] =   " vl.vl_result_category like 'suppressed' AND vl.vl_result_category is NOT NULL AND vl.result_status = 7 ";
+     if ($_POST['vLoad'] === 'suppressed') {
+          $sWhere[] =   " vl.vl_result_category like 'suppressed' AND vl.vl_result_category is NOT NULL ";
      } else {
-          $sWhere[] =   "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL AND vl.result_status = 7 ";
+          $sWhere[] =   "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
      }
 }
 $sPrintDate = '';

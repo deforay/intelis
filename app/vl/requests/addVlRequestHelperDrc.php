@@ -265,8 +265,11 @@ try {
         $resultStatus = 8; // Awaiting Approval
     }
 
-    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejected === false) {
-        $finalResult = $_POST['vlResult'] = 'Failed';
+    if (
+        (isset($_POST['failed']) && $_POST['failed'] == 'yes')
+        || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
+    ) {
+        $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
         $_POST['vlLog'] = '';
         $resultStatus = 5; // Invalid/Failed
     } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected === false) {
@@ -378,7 +381,7 @@ try {
         $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $vldata);
         // echo $db->getLastError();
-    } 
+    }
     // else {
     //     //check existing sample code
     //     $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_vl where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
