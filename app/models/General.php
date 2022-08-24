@@ -520,22 +520,22 @@ class General
         return $rejReaons;
     }
 
-    public function getValueByName($name = "", $condtionField, $tableName, $id, $occurate = false)
+    public function getValueByName($name = null, $condtionField = null, $tableName = null, $id = null, $exact = false)
     {
-        $where = "";
-        if (!empty($name)) {
-            if ($occurate) {
-                $where = $condtionField . " LIKE '%$name%'";
-            } else {
-                $where = $condtionField . " LIKE '$name%'";
-            }
-
-            $query = "SELECT " . $id . " FROM " . $tableName . " where " . $where;
-            $result =  $this->db->rawQuery($query);
-            return $result[0][$id];
-        } else {
+        if (empty($name)) {
             return null;
         }
+
+        $where = "";
+        if ($exact) {
+            $where = $condtionField . " LIKE '%$name%'";
+        } else {
+            $where = $condtionField . " LIKE '$name%'";
+        }
+
+        $query = "SELECT " . $id . " FROM " . $tableName . " where " . $where;
+        $result =  $this->db->rawQuery($query);
+        return $result[0][$id];
     }
 
     public function getLocaleLists()

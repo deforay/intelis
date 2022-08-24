@@ -83,7 +83,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
 				<?php } ?>
 				<?php
-				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
+				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) {  ?>
 					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')"><?php echo _("Confirmation Tests for Recency"); ?></a></li>
 				<?php }  ?>
 			</ul>
@@ -131,7 +131,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 				<?php } ?>
 
-				<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) {  ?>
 					<div class="tab-pane fade in" id="recencyDashboard">
 						<!-- VL content -->
 						<section class="content">

@@ -73,7 +73,7 @@ try {
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && count($province) > 0) {
+            if (isset($province) && !empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'province_name', 'province_details', 'province_id', true);
@@ -515,7 +515,7 @@ try {
             'message' => $msg
         );
     }
-    
+
     if (isset($user['token_updated']) && $user['token_updated'] === true) {
         $payload['token'] = $user['new_token'];
     } else {
