@@ -753,7 +753,7 @@ class General
         return $this->db->getOne("batch_details");
     }
 
-    public function createBatchCode($start, $end)
+    public function createBatchCode()
     {
         $batchQuery = 'SELECT MAX(batch_code_key) FROM batch_details as bd WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
         $batchResult = $this->db->query($batchQuery);
@@ -769,20 +769,6 @@ class General
         } else {
             $code = '001';
         }
-        // $this->db->where("DATE(request_created_datetime) = CURRENT_DATE AND batch_code_key = $code");
-        // $exist = $this->db->getOne("batch_details");
-
-        // if ($exist) {
-        //     $code = $code + 1;
-        //     $length = strlen($code);
-        //     if ($length == 1) {
-        //         $code = "00" . $code;
-        //     } else if ($length == 2) {
-        //         $code = "0" . $code;
-        //     } else if ($length == 3) {
-        //         $code = $code;
-        //     }
-        // }
         return $code;
     }
 

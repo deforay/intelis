@@ -82,14 +82,14 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
         $where[] = " (vl.result ='' OR vl.result IS NULL OR vl.result LIKE '')";
         $where[] = " (vl.is_sample_rejected ='no' OR vl.is_sample_rejected IS NULL OR vl.is_sample_rejected LIKE 'no' OR vl.is_sample_rejected like '')";
     }
-    if (sizeof($where) > 0) {
+    if (!empty($where)) {
         $sQuery .= " where  " . implode(" AND ", $where) . "  limit 1";
     } else {
         $sQuery .= " limit 1";
     }
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
-    if ($rowData && count($rowData) > 0) {
+    if (!empty($rowData)) {
         $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], count($rowData), $type[1], 'eid', $requestUrl, $hl7, 'hl7');
         foreach ($rowData as $row) {
@@ -314,7 +314,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $where[] =  " child_gender like '" . $_POST['childGender'] . "'";
     }
 
-    if (sizeof($where) > 0) {
+    if (!empty($where)) {
         $sQuery .= " where  " . implode(" AND ", $where) . "  limit 1";
     } else {
         $sQuery .= " limit 1";

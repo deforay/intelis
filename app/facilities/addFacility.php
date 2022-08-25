@@ -303,7 +303,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 											<label for="reportFormat" class="col-lg-4 control-label"><?php echo _("Report Format For VL"); ?></label>
 											<div class="col-lg-7">
 												<select class="form-control" name='reportFormat[vl]' id='reportFormat' title="<?php echo _('Please select the status'); ?>" onchange="checkIfExist(this);">
-													<?php if (($count > 1)) { ?>
+													<?php if ($count > 1) { ?>
 														<option value=""><?php echo _("-- Select --"); ?></option>
 													<?php } ?>
 													<?php foreach ($reportFormats['vl'] as $key => $value) { ?>

@@ -598,13 +598,13 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												if (isset($row['signature']) && $row['signature'] != "") {
 													$show = "style='display:none'";
 												?>
-													<span id="spanClass<?php echo ($key + 1); ?>"><a href="javascript:void(0);" onclick="showFile(<?php echo ($key + 1); ?>);"><span class="alert-danger" style="padding: 5px;border-radius: 50%;margin-top: 0px;float: right;">X</span></a><img src="<?php echo $lmSign; ?>" style="width: 100px;" /></span>
+													<span id="spanClass<?php echo ($key + 1); ?>"><a href="javascript:void(0);" onclick="showFile(<?= $key + 1; ?>);"><span class="alert-danger" style="padding: 5px;border-radius: 50%;margin-top: 0px;float: right;">X</span></a><img src="<?php echo $lmSign; ?>" style="width: 100px;" /></span>
 												<?php }
 												?>
-												<input <?php echo $show; ?> class="showFile<?php echo ($key + 1); ?>" type="file" name="signature[]" id="signature<?php echo ($key + 1); ?>" placeholder="<?php echo _('Signature'); ?>" title="<?php echo _('Please enter the Signature'); ?>">
+												<input <?php echo $show; ?> class="showFile<?php echo ($key + 1); ?>" type="file" name="signature[]" id="signature<?= $key + 1; ?>" placeholder="<?php echo _('Signature'); ?>" title="<?php echo _('Please enter the Signature'); ?>">
 											</td>
 											<td style="width:14%;">
-												<select type="text" class="select2" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?php echo ($key + 1); ?>][]" title="<?php echo _('Choose one test type'); ?>" multiple>
+												<select type="text" class="select2" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?= $key + 1; ?>][]" title="<?php echo _('Choose one test type'); ?>" multiple>
 													<option value="vl" <?php echo (isset($row['test_types']) && in_array("vl", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _("Viral Load"); ?></option>
 													<option value="eid" <?php echo (isset($row['test_types']) && in_array("eid", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _("Early Infant Diagnosis"); ?></option>
 													<option value="covid19" <?php echo (isset($row['test_types']) && in_array("covid19", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _("Covid-19"); ?></option>
@@ -612,9 +612,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 													<option value='tb' <?php echo (isset($row['test_types']) && in_array("tb", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _("TB"); ?></option>
 												</select>
 											</td>
-											<td style="width:14%;"><input value="<?php echo $row['display_order'] ?>" type="number" class="form-control" name="sortOrder[]" id="sortOrder<?php echo ($key + 1); ?>" placeholder="<?php echo _('Display Order'); ?>" title="<?php echo _('Please enter the Display Order'); ?>"></td>
+											<td style="width:14%;"><input value="<?php echo $row['display_order'] ?>" type="number" class="form-control" name="sortOrder[]" id="sortOrder<?= $key + 1; ?>" placeholder="<?php echo _('Display Order'); ?>" title="<?php echo _('Please enter the Display Order'); ?>"></td>
 											<td style="width:14%;">
-												<select class="form-control" id="signStatus<?php echo ($key + 1); ?>" name="signStatus[]" title="<?php echo _('Please select the status'); ?>">
+												<select class="form-control" id="signStatus<?= $key + 1; ?>" name="signStatus[]" title="<?php echo _('Please select the status'); ?>">
 													<option value="active" <?php echo (isset($row['test_types']) && $row['test_types'] == 'active') ? 'selected="selected"' : ''; ?>><?php echo _("Active"); ?></option>
 													<option value="inactive" <?php echo (isset($row['test_types']) && $row['test_types'] == 'inactive') ? 'selected="selected"' : ''; ?>><?php echo _("Inactive"); ?></option>
 												</select>

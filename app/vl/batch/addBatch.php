@@ -27,7 +27,7 @@ $sResult = $db->rawQuery($sQuery);
 
 $start_date = date('Y-m-d');
 $end_date = date('Y-m-d');
-$maxId = $general->createBatchCode($start_date, $end_date);
+$maxId = $general->createBatchCode();
 //Set last machine label order
 $machinesLabelOrder = array();
 foreach ($testPlatformResult as $machine) {
