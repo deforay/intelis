@@ -637,9 +637,17 @@ $disable = "disabled = 'disabled'";
 																<option value="">-- Select --</option>
 																<?php foreach ($importResult as $mName) { ?>
 																	<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
-																<?php
-																}
-																?>
+																<?php } ?>
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
+														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
+														<div class="col-lg-7">
+															<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
+																<option value="">-- Select --</option>
+																<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
+																<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
 															</select>
 														</div>
 													</div>
@@ -660,15 +668,11 @@ $disable = "disabled = 'disabled'";
 																<option value="">-- Select --</option>
 																<?php foreach ($rejectionTypeResult as $type) { ?>
 																	<optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
-																		<?php
-																		foreach ($rejectionResult as $reject) {
-																			if ($type['rejection_type'] == $reject['rejection_type']) {
-																		?>
+																		<?php foreach ($rejectionResult as $reject) {
+																			if ($type['rejection_type'] == $reject['rejection_type']) { ?>
 																				<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($reject['rejection_reason_name']); ?></option>
-																		<?php
-																			}
-																		}
-																		?>
+																		<?php }
+																		} ?>
 																	</optgroup>
 																<?php } ?>
 																<option value="other">Other (Please Specify) </option>
@@ -682,51 +686,43 @@ $disable = "disabled = 'disabled'";
 															<input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 														</div>
 													</div>
-													<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-														<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory">*</span></label>
-														<div class="col-lg-7">
-															<input type="text" class="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'no' && $vlQueryInfo['result'] != 'Target Not Detected' && $vlQueryInfo['result'] == 'Below Detection Level') ? 'isRequired' : ''; ?> form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
-
-															<input type="checkbox" class="labSection specialResults" id="bdl" name="bdl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'checked="checked"' : '';
-																																						echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'disabled="disabled"' : '' ?> title="Please check bdl"> Below Detection Level<br>
-															<input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed" <?php echo ($vlQueryInfo['result'] == 'Failed') ? 'checked="checked"' : '';
-																																														echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'disabled="disabled"' : '' ?>> Failed<br>
-														</div>
-													</div>
+													<?php if (!isset($vlQueryInfo['is_sample_rejected']) || empty($vlQueryInfo['is_sample_rejected']) || $vlQueryInfo['is_sample_rejected'] != 'yes') { ?>
 												</div>
 												<div class="row">
-													<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-														<label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
-														<div class="col-lg-7">
-															<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
-														</div>
+												<?php } ?>
+												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
+													<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory">*</span></label>
+													<div class="col-lg-7">
+														<input type="text" class="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'no' && $vlQueryInfo['result'] != 'Target Not Detected' && $vlQueryInfo['result'] == 'Below Detection Level') ? 'isRequired' : ''; ?> form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+
+														<input type="checkbox" class="labSection specialResults" id="bdl" name="bdl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'checked="checked"' : '';
+																																					echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'disabled="disabled"' : '' ?> title="Please check bdl"> Below Detection Level<br>
+														<input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed" <?php echo ($vlQueryInfo['result'] == 'Failed') ? 'checked="checked"' : '';
+																																													echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'disabled="disabled"' : '' ?>> Failed<br>
 													</div>
-													<!-- <div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
-														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
+												</div>
+												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
+													<label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
+													<div class="col-lg-7">
+														<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+													</div>
+												</div>
+												<?php if (count($reasonForFailure) > 0) { ?>
+													<div class="col-md-4 reasonForFailure" style="<?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'failed') ? '' : 'display: none;'; ?>">
+														<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
 														<div class="col-lg-7">
-															<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
-																<option value="">-- Select --</option>
-																<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected'); ?>>HIV-1 Detected</option>
-																<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected'); ?>>HIV-1 Not Detected</option>
+															<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
+																<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
 															</select>
 														</div>
-													</div> -->
-													<?php if (count($reasonForFailure) > 0) { ?>
-														<div class="col-md-4 reasonForFailure" style="<?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'failed') ? '' : 'display: none;'; ?>">
-															<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
-															<div class="col-lg-7">
-																<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
-																	<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
-																</select>
-															</div>
-														</div>
-													<?php } ?>
-													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
-														<div class="col-lg-7">
-															<input type="text" class="form-control labSection" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
-														</div>
 													</div>
+												<?php } ?>
+												<div class="col-md-4">
+													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+													<div class="col-lg-7">
+														<input type="text" class="form-control labSection" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
+													</div>
+												</div>
 												</div>
 												<div class="row">
 													<div class="col-md-4">
@@ -751,6 +747,8 @@ $disable = "disabled = 'disabled'";
 															</select>
 														</div>
 													</div>
+												</div>
+												<div class="row">
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
@@ -759,8 +757,6 @@ $disable = "disabled = 'disabled'";
 															</select>
 														</div>
 													</div>
-												</div>
-												<div class="row">
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
@@ -768,7 +764,6 @@ $disable = "disabled = 'disabled'";
 														</div>
 													</div>
 												</div>
-												<br>
 												<div class="row">
 													<div class="col-md-6">
 														<label class="col-lg-6 control-label" for="labComments">Lab Tech. Comments </label>
@@ -776,10 +771,7 @@ $disable = "disabled = 'disabled'";
 															<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
 														</div>
 													</div>
-												</div>
-												<div class="row reasonForResultChanges" style="display:none;">
-													<br>
-													<div class="col-md-6 ">
+													<div class="col-md-6 reasonForResultChanges" style="display:none;">
 														<label class="col-lg-6 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span> </label>
 														<div class="col-lg-6">
 															<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
@@ -975,13 +967,13 @@ $disable = "disabled = 'disabled'";
 		}
 	});
 	$('#testingPlatform').change(function() {
-		// var text = this.value;
-		// var str1 = text.split("##");
-		// if (str1[0] == 'GeneXpert') {
-		// 	$('.hivDetection').show();
-		// } else {
-		// 	$('.hivDetection').hide();
-		// }
+		var text = this.value;
+		var str1 = text.split("##");
+		if (str1[0] == 'GeneXpert') {
+			$('.hivDetection').show();
+		} else {
+			$('.hivDetection').hide();
+		}
 	});
 	$(".labSection").on("change", function() {
 
@@ -1009,6 +1001,9 @@ $disable = "disabled = 'disabled'";
 	}
 
 	function validateNow() {
+		if ($('#failed').prop('checked')) {
+			$('#vlResult').removeClass('isRequired');
+		}
 		flag = deforayValidator.init({
 			formId: 'vlRequestFormSudan'
 		});

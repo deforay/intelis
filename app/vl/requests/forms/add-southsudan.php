@@ -633,6 +633,8 @@ $sFormat = '';
                                                                            <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" />
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
                                                                  <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -707,7 +709,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
                                                                       <div class="col-lg-10">
-                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"></textarea>
+                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" style="width: 90% !important;margin-left: 24px;"></textarea>
                                                                       </div>
                                                                  </div>
                                                             </div>
