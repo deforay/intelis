@@ -9,8 +9,9 @@ if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";
     header("location:province-details.php");
 }
-$query = "SELECT * from r_implementation_partners where i_partner_id = $id";
-$partnerInfo = $db->query($query);
+$query = "SELECT * from r_implementation_partners where i_partner_id = ?";
+$partnerInfo = $db->rawQuery($query, array($id));
+
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -96,18 +97,18 @@ $partnerInfo = $db->query($query);
         removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-            tableName: tableName,
-            fieldName: fieldName,
-            value: removeDots.trim(),
-            fnct: fnct,
-            format: "html"
-        },
-        function(data) {
-            if (data === '1') {
-                alert(alrt);
-                document.getElementById(obj.id).value = "";
-            }
-        });
+                tableName: tableName,
+                fieldName: fieldName,
+                value: removeDots.trim(),
+                fnct: fnct,
+                format: "html"
+            },
+            function(data) {
+                if (data === '1') {
+                    alert(alrt);
+                    document.getElementById(obj.id).value = "";
+                }
+            });
     }
 </script>
 

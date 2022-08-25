@@ -731,7 +731,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               echo "printBarcodeLabel('" . $_GET['s'] . "','" . $_GET['f'] . "');";
+               echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
           }
           ?>
           // BARCODESTUFF END

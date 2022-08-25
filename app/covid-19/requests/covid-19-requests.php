@@ -324,7 +324,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	$(document).ready(function() {
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-			echo "printBarcodeLabel('" . $_GET['s'] . "','" . $_GET['f'] . "');";
+			echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
 		}
 		?>
 		$("#facilityName").select2({

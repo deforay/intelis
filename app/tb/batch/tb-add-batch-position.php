@@ -157,7 +157,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<input type="hidden" name="sortOrders" id="sortOrders" value="<?php echo implode(",", $displayOrder); ?>" />
-						<input type="hidden" name="batchId" id="batchId" value="<?php echo $id; ?>" />
+						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="tb-batches.php" class="btn btn-default"> Cancel</a>
 					</div>
