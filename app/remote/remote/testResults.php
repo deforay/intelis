@@ -95,9 +95,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         try {
             $lab['source_of_request'] = 'vlsts';
-
             $sResult = $db->rawQuery($sQuery);
-            //$lab['result_printed_datetime'] = null;            
             if ($sResult) {
                 $db = $db->where('vl_sample_id', $sResult[0]['vl_sample_id']);
                 $id = $db->update('form_vl', $lab);
@@ -112,9 +110,12 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             $sampleCode[] = $lab['sample_code'];
         }
     }
-    if ($counter > 0) {
-        $app->addApiTracking(null, $counter, 'results', 'vl', null, $jsonResponse, 'sync-api');
-    }
 }
 
-echo json_encode($sampleCode);
+$payload = json_encode($sampleCode);
+
+if ($counter > 0) {
+    $general->addApiTracking('vlsm-system', $counter, 'results', 'vl', null, $jsonResponse, $payload, 'json', $labId);
+}
+
+echo $payload;

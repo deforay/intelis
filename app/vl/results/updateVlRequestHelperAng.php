@@ -10,6 +10,9 @@ $general = new \Vlsm\Models\General();
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
 $vl_result_category = NULL;
+$vlModel = new \Vlsm\Models\Vl();
+
+
 try {
     $testingPlatform = '';
     if (isset($_POST['testingPlatform']) && trim($_POST['testingPlatform']) != '') {
@@ -124,14 +127,12 @@ try {
         'last_modified_datetime' => $db->now(),
         'data_sync' => 0,
         'result_printed_datetime' => NULL,
-        'result_dispatched_datetime' => NULL,
         'vl_result_category' => $vl_result_category
     );
     /* Updating the high and low viral load data */
-    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-        $vlDb = new \Vlsm\Models\Vl();
-        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    }
+    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+        $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    //}
 
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);

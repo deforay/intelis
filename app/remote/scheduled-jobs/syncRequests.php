@@ -6,7 +6,6 @@ if (php_sapi_name() == 'cli') {
 }
 
 $general = new \Vlsm\Models\General();
-$app = new \Vlsm\Models\App();
 
 $systemConfig = SYSTEM_CONFIG;
 
@@ -24,10 +23,11 @@ if (strpos($headers[0], '200') === false) {
     return false;
 }
 $arr = $general->getGlobalConfig();
-$sarr = $general->getSystemConfig();
 
+
+$labId = $general->getSystemConfig('sc_testing_lab_id');
 //get remote data
-if (empty($sarr['sc_testing_lab_id'])) {
+if (empty($labId)) {
     echo "No Lab ID set in System Config";
     exit(0);
 }
@@ -52,7 +52,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
     $url = $remoteUrl . '/remote/remote/getRequests.php';
     $payload = array(
-        'labId' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'vl',
         "Key" => "vlsm-lab-data--",
     );
@@ -161,7 +161,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
             //}
         }
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'vl', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'vl', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -178,7 +178,7 @@ $request = array();
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
     $url = $remoteUrl . '/remote/remote/eid-test-requests.php';
     $data = array(
-        'labId' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'eid',
         "Key" => "vlsm-lab-data--",
     );
@@ -281,7 +281,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             //}
         }
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'eid', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'eid', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -297,7 +297,7 @@ $request = array();
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
     $url = $remoteUrl . '/remote/remote/covid-19-test-requests.php';
     $data = array(
-        'labId' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'covid19',
         "Key" => "vlsm-lab-data--",
     );
@@ -455,7 +455,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'covid19', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'covid19', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -471,7 +471,7 @@ $request = array();
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
     $url = $remoteUrl . '/remote/remote/hepatitis-test-requests.php';
     $data = array(
-        'labId' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'hepatitis',
         "Key" => "vlsm-lab-data--",
     );
@@ -623,7 +623,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         }
 
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'hepatitis', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -638,7 +638,7 @@ $request = array();
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
     $url = $remoteUrl . '/remote/remote/tb-test-requests.php';
     $data = array(
-        'labId' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'tb',
         "Key" => "vlsm-lab-data--",
     );
@@ -734,7 +734,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
         }
 
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'tb', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'tb', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }

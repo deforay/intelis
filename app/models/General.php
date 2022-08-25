@@ -487,15 +487,6 @@ class General
         return $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
     }
 
-    public function ageInMonth($date)
-    {
-        $birthday = new \DateTimeImmutable($date);
-        $diff = $birthday->diff(new \DateTimeImmutable());
-        return $diff->format('%m') + 12 * $diff->format('%y');
-    }
-
-
-
     public function getRejectionReasons($testType)
     {
         $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');

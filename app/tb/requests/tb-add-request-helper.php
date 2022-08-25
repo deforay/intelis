@@ -179,8 +179,6 @@ try {
         'sample_registered_at_lab'            => $db->now(),
         'last_modified_by'                    => $_SESSION['userId'],
         'last_modified_datetime'              => $db->now(),
-        'request_created_by'                  => $_SESSION['userId'],
-        'last_modified_by'                    => $_SESSION['userId'],
         'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
     );
 

@@ -72,7 +72,6 @@ try {
     'rejection_on'                      => isset($_POST['rejectionDate']) ? $general->isoDateFormat($_POST['rejectionDate']) : null,
     'last_modified_by'                  => $_SESSION['userId'],
     'result_printed_datetime'           => NULL,
-    'result_dispatched_datetime'        => NULL,
     'last_modified_datetime'            => $general->getCurrentDateTime()
   );
 

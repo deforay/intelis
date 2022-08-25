@@ -211,8 +211,6 @@ try {
         $txtVal = $interpretedResults['txtVal'];
     }
 
-
-
     $reasonForChanges = '';
     $allChange = '';
     if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
@@ -313,7 +311,7 @@ try {
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
-        'is_sample_rejected' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
+        'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
         'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] : NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : NULL,
         'result_value_absolute'                 => $absVal ?: null,
@@ -342,56 +340,8 @@ try {
         $vldata['result_status'] = $resultStatus;
     }
 
-
-    /* Updating the high and low viral load data */
-    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
     $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    //}
-
-    // if ($_SESSION['instanceType'] == 'remoteuser') {
-    //     $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;
-    // } else {
-    //     if ($_POST['sampleCodeCol'] != '') {
-    //         $vldata['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : NULL;
-    //     } else {
-    //         //Since Sample Code does not exist, today is the date
-    //         //sample is being registered at the lab.
-    //         $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
-
-    //         //update sample code generation
-    //         $sExpDT = explode(" ", $_POST['sampleCollectionDate']);
-    //         $sExpDate = explode("-", $sExpDT[0]);
-    //         $start_date = date($sExpDate[0] . '-01-01') . " " . '00:00:00';
-    //         $end_date = date($sExpDate[0] . '-12-31') . " " . '23:59:59';
-    //         $mnthYr = substr($sExpDate[0], -2);
-    //         if ($arr['sample_code'] == 'MMYY') {
-    //             $mnthYr = $sExpDate[1] . substr($sExpDate[0], -2);
-    //         } else if ($arr['sample_code'] == 'YY') {
-    //             $mnthYr = substr($sExpDate[0], -2);
-    //         }
-    //         $auto = substr($sExpDate[0], -2) . $sExpDate[1] . $sExpDate[2];
-
-    //         $svlQuery = 'SELECT sample_code_key FROM form_vl as vl WHERE DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND sample_code!="" ORDER BY sample_code_key DESC LIMIT 1';
-    //         $svlResult = $db->query($svlQuery);
-    //         $prefix = $arr['sample_code_prefix'];
-    //         if (isset($svlResult[0]['sample_code_key']) && $svlResult[0]['sample_code_key'] != '' && $svlResult[0]['sample_code_key'] != NULL) {
-    //             $maxId = $svlResult[0]['sample_code_key'] + 1;
-    //             $strparam = strlen($maxId);
-    //             $zeros = substr("000", $strparam);
-    //             $maxId = $zeros . $maxId;
-    //         } else {
-    //             $maxId = '001';
-    //         }
-    //         if ($arr['sample_code'] == 'auto') {
-    //             $vldata['sample_code'] = $auto . $maxId;
-    //             $vldata['sample_code_key'] = $maxId;
-    //         } else if ($arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') {
-    //             $vldata['sample_code'] = $prefix . $mnthYr . $maxId;
-    //             $vldata['sample_code_format'] = $prefix . $mnthYr;
-    //             $vldata['sample_code_key'] =  $maxId;
-    //         }
-    //     }
-    // }
+    
     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
 
     //var_dump($vldata);die;

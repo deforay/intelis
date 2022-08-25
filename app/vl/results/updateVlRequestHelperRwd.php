@@ -169,7 +169,6 @@ try {
         'manual_result_entry' => 'yes',
         'data_sync' => 0,
         'result_printed_datetime' => NULL,
-        'result_dispatched_datetime' => NULL
     );
 
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
