@@ -47,7 +47,7 @@ if (!empty($forceSyncModule)) {
  ****************************************************************
  */
 $request = array();
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
     //$remoteSampleCodeList = array();
 
     $url = $remoteUrl . '/remote/remote/getRequests.php';
@@ -161,7 +161,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
             //}
         }
         if ($counter > 0) {
-            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'vl', $url, $json_data, $jsonResponse, 'json', $labId);
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -175,7 +175,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
     $url = $remoteUrl . '/remote/remote/eid-test-requests.php';
     $data = array(
         'labId' => $labId,
@@ -294,7 +294,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
   */
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
     $url = $remoteUrl . '/remote/remote/covid-19-test-requests.php';
     $data = array(
         'labId' => $labId,
@@ -468,7 +468,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 */
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
     $url = $remoteUrl . '/remote/remote/hepatitis-test-requests.php';
     $data = array(
         'labId' => $labId,
@@ -635,7 +635,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 */
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
     $url = $remoteUrl . '/remote/remote/tb-test-requests.php';
     $data = array(
         'labId' => $labId,

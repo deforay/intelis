@@ -1,14 +1,24 @@
 <?php
-//this file is get the data from remote db
-$data = json_decode(file_get_contents('php://input'), true);
+
 require_once(dirname(__FILE__) . "/../../../startup.php");
+
+$general = new \Vlsm\Models\General();
 header('Content-Type: application/json');
 
+$origData = $jsonData = file_get_contents('php://input');
+$data = json_decode($jsonData, true);
+
+$encoding = $general->getHeader('Accept-Encoding');
+$payload = array();
 
 $labId = $data['labName'] ?: $data['labId'] ?: null;
 
+if (empty($labId)) {
+  exit(0);
+}
 
-$general = new \Vlsm\Models\General();
+
+
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 $app = new \Vlsm\Models\App();
@@ -33,10 +43,22 @@ if (!empty($data['manifestCode'])) {
 
 
 $eidRemoteResult = $db->rawQuery($eidQuery);
-if (count($eidRemoteResult) > 0) {
+$counter = 0;
+if ($db->count > 0) {
+  $counter = $db->count;
   $sampleIds = array_column($eidRemoteResult, 'eid_id');
   $db->where('eid_id', $sampleIds, 'IN')
-      ->update('form_eid', array('data_sync' => 1));
-  $trackId = $app->addApiTracking(null, count($eidRemoteResult), 'requests', 'eid', null, $labId, 'sync-api');
+    ->update('form_eid', array('data_sync' => 1));
 }
-echo json_encode($eidRemoteResult);
+
+
+$payload = json_encode($eidRemoteResult);
+
+$general->addApiTracking('vlsm-system', $counter, 'requests', 'eid', null, $origData, $payload, 'json', $labId);
+
+if (!empty($encoding) && $encoding === 'gzip') {
+  header("Content-Encoding: gzip");
+  $payload = gzencode($payload);
+}
+
+echo $payload;

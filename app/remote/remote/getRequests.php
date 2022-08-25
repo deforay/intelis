@@ -3,6 +3,8 @@ require_once(dirname(__FILE__) . "/../../../startup.php");
 
 header('Content-Type: application/json');
 
+$general = new \Vlsm\Models\General();
+
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
@@ -15,7 +17,7 @@ if (empty($labId)) {
   exit(0);
 }
 
-$general = new \Vlsm\Models\General();
+
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
 $app = new \Vlsm\Models\App();

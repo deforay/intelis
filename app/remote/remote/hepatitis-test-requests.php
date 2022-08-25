@@ -1,15 +1,23 @@
 <?php
-//this file is get the data from remote db
-$data = json_decode(file_get_contents('php://input'), true);
+
 require_once(dirname(__FILE__) . "/../../../startup.php");
 header('Content-Type: application/json');
 
-$labId = $data['labName'];
+$origData = $jsonData = file_get_contents('php://input');
+$data = json_decode($jsonData, true);
 
-$general = new \Vlsm\Models\General();
+$encoding = $general->getHeader('Accept-Encoding');
+$payload = array();
+
+$labId = $data['labName'] ?: $data['labId'] ?: null;
+
+if (empty($labId)) {
+    exit(0);
+}
+
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-$app = new \Vlsm\Models\App();
+
 
 $facilityDb = new \Vlsm\Models\Facilities();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
@@ -32,13 +40,10 @@ if (!empty($data['manifestCode'])) {
 
 $hepatitisRemoteResult = $db->rawQuery($hepatitisQuery);
 $data = array();
+$counter = 0;
 
-if (!empty($hepatitisRemoteResult) && count($hepatitisRemoteResult) > 0) {
-    $trackId = $app->addApiTracking(null, count($hepatitisRemoteResult), 'requests', 'hepatitis', null, $labId, 'sync-api');
-    // $forms = array();
-    // foreach ($hepatitisRemoteResult as $row) {
-    //     $forms[] = $row['hepatitis_id'];
-    // }
+if ($db->count > 0) {
+    $counter = $db->count;
 
     $sampleIds = array_column($hepatitisRemoteResult, 'hepatitis_id');
 
@@ -52,13 +57,17 @@ if (!empty($hepatitisRemoteResult) && count($hepatitisRemoteResult) > 0) {
     $data['comorbidities'] = $comorbidities;
 
 
-    $updata = array(
-        'data_sync' => 1
-    );
-    $db->where('hepatitis_id', $sampleIds, 'IN');
-
-    if (!$db->update('form_hepatitis', $updata))
-        error_log('update failed: ' . $db->getLastError());
+    $db->where('hepatitis_id', $sampleIds, 'IN')
+        ->update('form_hepatitis', array('data_sync' => 1));
 }
 
-echo json_encode($data);
+$payload = json_encode($data);
+
+$general->addApiTracking('vlsm-system', $counter, 'requests', 'hepatitis', null, $origData, $payload, 'json', $labId);
+
+if (!empty($encoding) && $encoding === 'gzip') {
+    header("Content-Encoding: gzip");
+    $payload = gzencode($payload);
+}
+
+echo $payload;
