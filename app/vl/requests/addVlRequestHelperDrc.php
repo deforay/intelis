@@ -264,7 +264,6 @@ try {
         $_POST['vlLog'] = '';
         $resultStatus = 8; // Awaiting Approval
     }
-
     if (
         (isset($_POST['failed']) && $_POST['failed'] == 'yes')
         || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
@@ -356,6 +355,8 @@ try {
         'sample_collection_date' => $_POST['sampleCollectionDate'],
         'date_dispatched_from_clinic_to_lab' => $_POST['dateDispatchedFromClinicToLab'],
         //'result_printed_datetime'=>$_POST['sampleTestingDateAtLab'],
+        'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  NULL,
+        'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
         'request_created_by' => $_SESSION['userId'],
         'request_created_datetime' => $db->now(),
         'last_modified_by' => $_SESSION['userId'],

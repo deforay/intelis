@@ -755,7 +755,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4 reasonForFailure" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
 													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
-														<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
+														<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
 															<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
 														</select>
 													</div>
@@ -1244,6 +1244,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
+			$("#reasonForFailure").removeClass('isRequired');
 		} else if ($(this).val() == 'no') {
 			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
@@ -1296,7 +1297,23 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			}
 		}
 	});
-
+	$('#hivDetection').change(function() {
+		if (this.value == 'HIV-1 Not Detected') {
+			$('.specialResults').prop('checked', false).removeAttr('checked');
+			$('#vlResult').attr('disabled', false);
+			$('#vlLog').attr('disabled', false);
+			$("#vlResult").val('').css('pointer-events', 'none');
+			$("#vlLog").val('').css('pointer-events', 'none');
+			$(".vlResult, .vlLog").hide();
+			$("#reasonForFailure").removeClass('isRequired');
+		} else {
+			$("#vlResult").css('pointer-events', 'auto');
+			$("#vlLog").css('pointer-events', 'auto');
+			$("#vlResult").val('').css('pointer-events', 'auto');
+			$("#vlLog").val('').css('pointer-events', 'auto');
+			$(".vlResult, .vlLog").show();
+		}
+	});
 	$('#testingPlatform').change(function() {
 		var text = this.value;
 		var str1 = text.split("##");

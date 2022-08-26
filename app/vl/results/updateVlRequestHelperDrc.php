@@ -135,6 +135,8 @@ try {
         'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['noResult'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['dateOfCompletionOfViralLoad'],
+        'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  NULL,
+        'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
         'vl_test_platform' => $testingPlatform,
         'result_value_absolute'                 => $absVal ?: null,
         'result_value_absolute_decimal'         => $absDecimalVal ?: null,

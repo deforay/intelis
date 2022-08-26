@@ -966,6 +966,23 @@ $disable = "disabled = 'disabled'";
 			$('#reasonForFailure').removeClass('isRequired');
 		}
 	});
+	$('#hivDetection').change(function() {
+		if (this.value == 'HIV-1 Not Detected') {
+			$('.specialResults').prop('checked', false).removeAttr('checked');
+			$('#vlResult').attr('disabled', false);
+			$('#vlLog').attr('disabled', false);
+			$("#vlResult").val('').css('pointer-events', 'none');
+			$("#vlLog").val('').css('pointer-events', 'none');
+			$(".vlResult, .vlLog").hide();
+			$("#reasonForFailure").removeClass('isRequired');
+		} else {
+			$("#vlResult").css('pointer-events', 'auto');
+			$("#vlLog").css('pointer-events', 'auto');
+			$("#vlResult").val('').css('pointer-events', 'auto');
+			$("#vlLog").val('').css('pointer-events', 'auto');
+			$(".vlResult, .vlLog").show();
+		}
+	});
 	$('#testingPlatform').change(function() {
 		var text = this.value;
 		var str1 = text.split("##");

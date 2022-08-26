@@ -444,118 +444,126 @@ $disable = "disabled = 'disabled'";
 									<h3 class="box-title">2. Réservé au Laboratoire de biologie moléculaire </h3>
 								</div>
 								<table class="table" style="width:100%">
-									<tr>
-										<td><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
+									<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
+										<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" onchange="checkSampleReceviedDate();" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
 										</td>
-										<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled") { ?>
-											<td><label for="">Décision prise </label></td>
-											<td>
-												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" onchange="checkTestStatus();" style="width:100%;">
-													<option value=""> -- Sélectionner -- </option>
-													<option value="no" <?php echo ($vlQueryInfo['result_status'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
-													<option value="yes" <?php echo ($vlQueryInfo['result_status'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
-												</select>
-											</td>
-										<?php } ?>
+										<td><label for="labId">Nom du laboratoire </label> </td>
+										<td>
+											<select name="labId" id="labId" class="form-control" title="Please choose laboratoire" style="width:100%;">
+												<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Sélectionner --'); ?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td><label for="">Date de réalisation de la charge virale </label></td>
+										<td>
+											<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
+										</td>
+										<td><label for="testingPlatform">Technique utilisée </label></td>
+										<td>
+											<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
+												<option value="">-- Sélectionner --</option>
+												<?php foreach ($importResult as $mName) { ?>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
+												<?php } ?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class="hivDetection resultSection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>"><?php echo _("HIV Detection"); ?></td>
+										<td class="hivDetection resultSection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
+											<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
+												<option value="">-- <?php echo _("Select"); ?> --</option>
+												<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>><?php echo _("HIV-1 Detected"); ?></option>
+												<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>><?php echo _("HIV-1 Not Detected"); ?></option>
+											</select>
+										</td>
+										<td><label for="">Décision prise </label></td>
+										<td>
+											<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+												<option value=""> -- Sélectionner -- </option>
+												<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
+												<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
+											</select>
+										</td>
 									</tr>
 									<tr class="rejectionReason" style="display:<?php echo ($vlQueryInfo['result_status'] == 4) ? '' : 'none'; ?>;">
-										<td><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span> </label></td>
+										<td><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" onchange="checkRejectionReason();" style="width:100%;">
+											<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
-												<?php
-												foreach ($rejectionResult as $rjctReason) {
-												?>
+												<?php foreach ($rejectionResult as $rjctReason) { ?>
 													<option value="<?php echo $rjctReason['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $rjctReason['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($rjctReason['rejection_reason_name']); ?></option>
 												<?php } ?>
 												<option value="other">Autre</option>
 											</select>
+											<input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" />
 										</td>
-										<td style="text-align:center;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
-										<td><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" style="width:100%;display:none;" /></td>
+										<td class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></td>
+										<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 									</tr>
-									<!-- <tr>
-                                <td><label for="sampleCode">Code Labo </label> <span class="mandatory">*</span></td>
-                                <td>
-                                    <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Code Labo" title="Please enter code labo" value="< ?php echo $vlQueryInfo['sample_code']; ?>" style="width:100%;"/>
-                                </td>
-                                <td></td><td></td>
-                            </tr> -->
-									<tr>
-										<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span> </label> </td>
-										<td>
-											<select name="labId" id="labId" class="form-control isRequired" title="Please choose laboratoire" style="width:100%;">
-												<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Sélectionner --'); ?>
-											</select>
-										</td>
-										<td><label for="">Date de réalisation de la charge virale <span class="mandatory">*</span></label></td>
-										<td>
-											<input type="text" class="form-control dateTime isRequired" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" style="height:30px;border:none;"></td>
-									</tr>
-									<tr>
-										<td><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span></label></td>
-										<td>
-											<select class="isRequired form-control" id="testingPlatform" name="testingPlatform" title="Please select technique utilisée" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
-												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
-												<?php } ?>
-											</select>
-										</td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr>
-										<td class="vlResult"><label for="vlResult">Résultat <span class="mandatory">*</span></label></td>
+									<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
+										<td class="vlResult"><label for="vlResult">Résultat</label></td>
 										<td class="vlResult">
-											<input type="text" class="vlResult form-control isRequired forceNumeric" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)" style="width:100%;" />
-											<input type="checkbox" class="specialResults" id="vlLt20" name="vlLt20" value="yes" title="Please check VL value" <?php echo ($vlQueryInfo['result'] == '< 20' || $vlQueryInfo['result'] == '<20') ? 'checked="checked"' : ''; ?>>
-											< 20<br>
-												<input type="checkbox" class="specialResults" id="vlLt40" name="vlLt40" value="yes" title="Please check VL value" <?php echo ($vlQueryInfo['result'] == '< 40' || $vlQueryInfo['result'] == '<40') ? 'checked="checked"' : ''; ?>>
-												< 40<br>
-													<input type="checkbox" class="specialResults" id="vlLt400" name="vlLt400" value="yes" title="Please check VL value" <?php echo ($vlQueryInfo['result'] == '< 400' || $vlQueryInfo['result'] == '<400') ? 'checked="checked"' : ''; ?>>
-													< 400<br>
-														<input type="checkbox" class="specialResults" id="vlTND" name="vlTND" value="yes" title="Please check VL value" <?php echo in_array(strtolower($vlQueryInfo['result']), array('target not detected', 'non détecté', 'non détecté', 'non detecte', 'non detectee', 'tnd', 'bdl', 'below detection level')) ? 'checked="checked"' : ''; ?>> Target Not Detected / Non Détecté
+
+											<input type="text" class="vlResult form-control forceNumeric other-failed-results" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)" style="width:100%;" />
+											<input type="checkbox" class="specialResults other-failed-results" id="vlLt20" name="vlLt20" value="yes" title="Please check VL value" <?php echo ($vlQueryInfo['result'] == '< 20' || $vlQueryInfo['result'] == '<20') ? 'checked="checked"' : ''; ?>>
+											&lt; 20<br>
+											<input type="checkbox" class="specialResults other-failed-results" id="vlLt40" name="vlLt40" value="yes" title="Please check VL value" <?php echo ($vlQueryInfo['result'] == '< 40' || $vlQueryInfo['result'] == '<40') ? 'checked="checked"' : ''; ?>>
+											&lt; 40<br>
+											<input type="checkbox" class="specialResults other-failed-results" id="vlLt400" name="vlLt400" value="yes" title="Please check VL value" <?php echo ($vlQueryInfo['result'] == '< 400' || $vlQueryInfo['result'] == '<400') ? 'checked="checked"' : ''; ?>>
+											&lt; 400<br>
+											<input type="checkbox" class="specialResults other-failed-results" id="vlTND" name="vlTND" value="yes" title="Please check VL value" <?php echo in_array(strtolower($vlQueryInfo['result']), array('target not detected', 'non détecté', 'non détecté', 'non detecte', 'non detectee', 'tnd', 'bdl', 'below detection level')) ? 'checked="checked"' : ''; ?>> Target Not Detected / Non Détecté<br>
+											<input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed" <?php echo ($vlQueryInfo['result'] == 'Failed') ? 'checked="checked"' : ''; ?>> Failed<br>
 										</td>
 										<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label></td>
 										<td class="vlLog">
-											<input type="text" class="vlLog form-control forceNumeric" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" onchange="calculateLogValue(this)" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
 										</td>
 									</tr>
+									<?php if (count($reasonForFailure) > 0) { ?>
+										<tr class="reasonForFailure vlResult" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
+											<td class="reasonForFailure"><?php echo _("Reason for Failure"); ?></td>
+											<td class="reasonForFailure">
+												<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
+													<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
+									<?php } ?>
 									<tr>
-										<td colspan="4"><label class="radio-inline" style="margin:0;padding:0;">A remplir par le service effectuant la charge virale </label></td>
-									</tr>
-									<!--<tr><td colspan="4" style="height:30px;border:none;"></td></tr>
-                            <tr>
-                                <td><label for="">Date de remise du résultat </label></td>
-                                <td>
-                                  <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de remise du résultat" value="< ?php echo $vlQueryInfo['result_printed_datetime']; ?>" onchange="checkSampleTestingDate();" style="width:100%;"/>
-                                </td>
-                                <td></td><td></td>
-                            </tr>-->
-									<tr>
+										<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
+										<td style="width:14%;">
+											<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Revu le" title="Please enter the Revu le" />
+										</td>
 										<td style="width:14%;"><label for="reviewedBy"> Revu par </label></td>
 										<td style="width:14%;">
 											<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revu par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 											</select>
 										</td>
-										<td style="width:14%;"><label for="reviewedOn"> Révisé le </label></td>
-										<td style="width:14%;">
-											<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Révisé le" title="Please enter the révisé le" />
+									</tr>
+									<tr>
+										<td>Approuvé le</td>
+										<td>
+											<input type="text" name="approvedOn" id="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+										</td>
+										<td>Approuvé par</td>
+										<td>
+											<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
+											</select>
 										</td>
 									</tr>
-									<tr class="change-reason">
-										<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></td>
-										<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForResultChanges" id="reasonForResultChanges" class="form-control date" placeholder="Entrez la raison du changement" title="Veuillez saisir la raison du changement"></textarea></td>
-										<th></th>
-										<td></td>
+									<tr>
+										<td class=" reasonForResultChanges" style="visibility:hidden;">
+											<label for="reasonForResultChanges">Razão para as mudanças nos resultados <span class="mandatory">*</span></label>
+										</td>
+										<td colspan="7" class="reasonForResultChanges" style="visibility:hidden;">
+											<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Razão para as mudanças nos resultados" style="width:100%;"></textarea>
+										</td>
 									</tr>
 								</table>
 							</div>
@@ -569,7 +577,7 @@ $disable = "disabled = 'disabled'";
 						<input type="hidden" name="revised" id="revised" value="no" />
 						<input type="hidden" id="rSrc" name="rSrc" value="er" />
 						<input type="hidden" id="dubPatientArtNo" name="dubPatientArtNo" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" />
-						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />						
+						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
 						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
@@ -677,6 +685,7 @@ $disable = "disabled = 'disabled'";
 			$("#rejectionReason").val('').css('pointer-events', 'auto');
 			$(".vlResult, .vlLog").hide();
 			$("#vlResult").removeClass('isRequired');
+			$("#reasonForFailure").removeClass('isRequired');
 		} else {
 			$(".rejectionReason").hide();
 			$("#rejectionReason").removeClass('isRequired');
@@ -688,6 +697,49 @@ $disable = "disabled = 'disabled'";
 			$("#vlResult").addClass('isRequired');
 		}
 	}
+
+	$('#hivDetection').change(function() {
+		if (this.value == 'HIV-1 Not Detected') {
+			$('.specialResults').prop('checked', false).removeAttr('checked');
+			$('#vlResult').attr('disabled', false);
+			$('#vlLog').attr('disabled', false);
+			$("#vlResult").val('').css('pointer-events', 'none');
+			$("#vlLog").val('').css('pointer-events', 'none');
+			$(".vlResult, .vlLog").hide();
+			$("#reasonForFailure").removeClass('isRequired');
+		} else {
+			$("#vlResult").css('pointer-events', 'auto');
+			$("#vlLog").css('pointer-events', 'auto');
+			$("#vlResult").val('').css('pointer-events', 'auto');
+			$("#vlLog").val('').css('pointer-events', 'auto');
+			$(".vlResult, .vlLog").show();
+		}
+	});
+
+	$('#testingPlatform').change(function() {
+		var text = this.value;
+		var str1 = text.split("##");
+		var str = str1[0];
+		if (str1[0] == 'GeneXpert' || str.toLowerCase() == 'genexpert') {
+			$('.hivDetection').show();
+		} else {
+			$('.hivDetection').hide();
+		}
+	});
+	$('#failed').change(function() {
+		if ($('#failed').prop('checked')) {
+			$('.reasonForFailure').show();
+			$('#reasonForFailure').addClass('isRequired');
+			$('.other-failed-results').removeClass('isRequired');
+			$('.other-failed-results').prop('checked', false);
+			$('.other-failed-results').val('');
+			$('.other-failed-results').prop('disabled', true);
+		} else {
+			$('.reasonForFailure').hide();
+			$('#reasonForFailure').removeClass('isRequired');
+			$('.other-failed-results').prop('disabled', false);
+		}
+	});
 
 	function checkRejectionReason() {
 		var rejectionReason = $("#rejectionReason").val();

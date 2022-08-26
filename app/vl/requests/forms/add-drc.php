@@ -492,8 +492,8 @@ $sFormat = '';
 											</td>
 											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
-											<td class="col-md-4 rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></td>
-											<td class="col-md-4 rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+											<td class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></td>
+											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
 										<tr>
 											<td colspan="4" style="height:30px;border:none;"></td>
@@ -517,7 +517,7 @@ $sFormat = '';
 											</td>
 										</tr>
 										<?php if (count($reasonForFailure) > 0) { ?>
-											<tr class="reasonForFailure" style="display: none;">
+											<tr class="reasonForFailure vlResult" style="display: none;">
 												<td class="reasonForFailure" style="display: none;"><?php echo _("Reason for Failure"); ?></td>
 												<td class="reasonForFailure" style="display: none;">
 													<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
@@ -743,7 +743,6 @@ $sFormat = '';
 			$("#vlResult").val('').css('pointer-events', 'none');
 			$("#vlLog").val('').css('pointer-events', 'none');
 			$('.specialResults').prop('checked', false).removeAttr('checked');
-
 		} else {
 			$(".resultSection").show();
 			$("#rejectionReason").val('');
@@ -754,6 +753,25 @@ $sFormat = '';
 
 		}
 	}
+
+	$('#hivDetection').change(function() {
+		if (this.value == 'HIV-1 Not Detected') {
+			$('.specialResults').prop('checked', false).removeAttr('checked');
+			$('#vlResult').attr('disabled', false);
+			$('#vlLog').attr('disabled', false);
+			$("#vlResult").val('').css('pointer-events', 'none');
+			$("#vlLog").val('').css('pointer-events', 'none');
+			$(".vlResult, .vlLog").hide();
+			$("#reasonForFailure").removeClass('isRequired');
+		} else {
+			$("#vlResult").css('pointer-events', 'auto');
+			$("#vlLog").css('pointer-events', 'auto');
+			$("#vlResult").val('').css('pointer-events', 'auto');
+			$("#vlLog").val('').css('pointer-events', 'auto');
+			$(".vlResult, .vlLog").show();
+		}
+	});
+
 	$('#testingPlatform').change(function() {
 		var text = this.value;
 		var str1 = text.split("##");
@@ -768,12 +786,14 @@ $sFormat = '';
 		if ($('#failed').prop('checked')) {
 			$('.reasonForFailure').show();
 			$('#reasonForFailure').addClass('isRequired');
-			$('#other-failed-results').removeClass('isRequired');
-			$('#other-failed-results').prop('disabled', true);
+			$('.other-failed-results').removeClass('isRequired');
+			$('.other-failed-results').prop('checked', false);
+			$('.other-failed-results').val('');
+			$('.other-failed-results').prop('disabled', true);
 		} else {
 			$('.reasonForFailure').hide();
 			$('#reasonForFailure').removeClass('isRequired');
-			$('#other-failed-results').prop('disabled', false);
+			$('.other-failed-results').prop('disabled', false);
 		}
 	});
 
