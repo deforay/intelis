@@ -66,10 +66,6 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         $url,
         [
             GuzzleHttp\RequestOptions::JSON => $payload
-        ],
-        [
-            'headers'        => ['Accept-Encoding' => 'gzip'],
-            'decode_content' => 'gzip'
         ]
     );
 

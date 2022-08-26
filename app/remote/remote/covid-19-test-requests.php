@@ -8,7 +8,7 @@ $general = new \Vlsm\Models\General();
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
-$encoding = $general->getHeader('Accept-Encoding');
+
 $payload = array();
 
 $labId = $data['labName'] ?: $data['labId'] ?: null;
@@ -68,9 +68,6 @@ $payload = json_encode($data);
 
 $general->addApiTracking('vlsm-system', $counter, 'requests', 'covid19', null, $origData, $payload, 'json', $labId);
 
-if (!empty($encoding) && $encoding === 'gzip') {
-  header("Content-Encoding: gzip");
-  $payload = gzencode($payload);
-}
+
 
 echo $payload;

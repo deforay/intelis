@@ -8,7 +8,7 @@ header('Content-Type: application/json');
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
-$encoding = $general->getHeader('Accept-Encoding');
+
 $payload = array();
 
 $labId = $data['labName'] ?: $data['labId'] ?: null;
@@ -56,9 +56,6 @@ $payload = json_encode($eidRemoteResult);
 
 $general->addApiTracking('vlsm-system', $counter, 'requests', 'eid', null, $origData, $payload, 'json', $labId);
 
-if (!empty($encoding) && $encoding === 'gzip') {
-  header("Content-Encoding: gzip");
-  $payload = gzencode($payload);
-}
+
 
 echo $payload;

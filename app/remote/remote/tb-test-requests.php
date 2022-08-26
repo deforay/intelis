@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
-$encoding = $general->getHeader('Accept-Encoding');
+
 $payload = array();
 
 $labId = $data['labName'] ?: $data['labId'] ?: null;
@@ -54,11 +54,6 @@ if ($db->count > 0) {
 $payload = json_encode($data);
 
 $general->addApiTracking('vlsm-system', $counter, 'requests', 'tb', null, $origData, $payload, 'json', $labId);
-
-if (!empty($encoding) && $encoding === 'gzip') {
-    header("Content-Encoding: gzip");
-    $payload = gzencode($payload);
-}
 
 echo $payload;
 

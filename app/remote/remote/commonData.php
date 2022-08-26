@@ -10,7 +10,7 @@ $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 
 
-$encoding = $general->getHeader('Accept-Encoding');
+
 $payload = array();
 
 
@@ -240,10 +240,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
     $general->addApiTracking('vlsm-system', $counter, 'common-data-sync', 'common', null, $origData, $payload, 'json', $labId);
 
 
-    if (!empty($encoding) && $encoding === 'gzip') {
-        header("Content-Encoding: gzip");
-        $payload = gzencode($payload);
-    }
+
 
     echo $payload;
 } else {
