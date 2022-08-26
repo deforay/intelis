@@ -433,27 +433,53 @@ $sFormat = '';
 									</div>
 									<table class="table" style="width:100%">
 										<tr>
-											<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
-											<td>
+											<td style="width: 25%;"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
+											<td style="width: 25%;">
 												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" style="width:100%;" />
 											</td>
-											<?php if (isset($arr['testing_status']) && trim($arr['testing_status']) == "enabled" && $_SESSION['userType'] == '') { ?>
-												<td><label for="">Décision prise </label></td>
-												<td>
-													<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
-														<option value=""> -- Sélectionner -- </option>
-														<option value="no">Echantillon accepté</option>
-														<option value="yes">Echantillon rejeté</option>
-													</select>
-												</td>
-											<?php } else { ?>
-												<td></td>
-												<td></td>
-											<?php } ?>
+											<td style="width: 25%;"><label for="labId">Nom du laboratoire </label> </td>
+											<td style="width: 25%;">
+												<select name="labId" id="labId" class="form-control" title="Please choose laboratoire" style="width:100%;">
+													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 25%;"><label for="dateOfCompletionOfViralLoad">Date de réalisation de la charge virale </label></td>
+											<td style="width: 25%;">
+												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+											</td>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label></td>
+											<td style="width: 25%;">
+												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
+													<option value="">-- Sélectionner --</option>
+													<?php foreach ($importResult as $mName) { ?>
+														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
+													<?php } ?>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<td class="hivDetection resultSection" style="display: none;"><?php echo _("HIV Detection"); ?></td>
+											<td class="hivDetection resultSection" style="display: none;">
+												<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
+													<option value="">-- <?php echo _("Select"); ?> --</option>
+													<option value="HIV-1 Detected"><?php echo _("HIV-1 Detected"); ?></option>
+													<option value="HIV-1 Not Detected"><?php echo _("HIV-1 Not Detected"); ?></option>
+												</select>
+											</td>
+											<td style="width: 25%;"><label for="">Décision prise </label></td>
+											<td style="width: 25%;">
+												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+													<option value=""> -- Sélectionner -- </option>
+													<option value="no">Echantillon accepté</option>
+													<option value="yes">Echantillon rejeté</option>
+												</select>
+											</td>
 										</tr>
 										<tr class="rejectionReason" style="display:none;">
-											<td><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
-											<td>
+											<td class="rejectionReason" style="display:none;"><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
+											<td class="rejectionReason" style="display:none;">
 												<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<?php foreach ($rejectionResult as $rjctReason) { ?>
@@ -464,65 +490,42 @@ $sFormat = '';
 													<?php } ?>
 												</select>
 											</td>
-											<td style="text-align:center;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
-											<td><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
-										</tr>
-										<tr>
-											<td><label for="labId">Nom du laboratoire </label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control" title="Please choose laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
-												</select>
-											</td>
-											<td><label for="dateOfCompletionOfViralLoad">Date de réalisation de la charge virale </label></td>
-											<td>
-												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
-											</td>
+											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
+											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
+											<td class="col-md-4 rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></td>
+											<td class="col-md-4 rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
 										<tr>
 											<td colspan="4" style="height:30px;border:none;"></td>
 										</tr>
-										<tr>
-											<td><label for="testingPlatform">Technique utilisée </label></td>
-											<td>
-												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
-													<option value="">-- Sélectionner --</option>
-													<?php foreach ($importResult as $mName) { ?>
-														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
-													<?php } ?>
-												</select>
-											</td>
-											<td></td>
-											<td></td>
-										</tr>
 										<tr class="resultSection">
-											<td class="vlResult"><label for="vlResult">Résultat </label></td>
+											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat </label></td>
 											<td>
-												<input type="text" class="vlResult form-control forceNumeric" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
-												<input type="checkbox" class="specialResults" id="vlLt20" name="vlLt20" value="yes" title="Please check VL value">
+												<input type="text" class="vlResult form-control forceNumeric other-failed-results" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
+												<input type="checkbox" class="specialResults other-failed-results" id="vlLt20" name="vlLt20" value="yes" title="Please check VL value">
 												< 20<br>
-													<input type="checkbox" class="specialResults" id="vlLt40" name="vlLt40" value="yes" title="Please check VL value">
+													<input type="checkbox" class="specialResults other-failed-results" id="vlLt40" name="vlLt40" value="yes" title="Please check VL value">
 													< 40<br>
-														<input type="checkbox" class="specialResults" id="vlLt400" name="vlLt400" value="yes" title="Please check VL value">
+														<input type="checkbox" class="specialResults other-failed-results" id="vlLt400" name="vlLt400" value="yes" title="Please check VL value">
 														< 400<br>
-															<input type="checkbox" class="specialResults" id="vlTND" name="vlTND" value="yes" title="Please check VL value"> Target Not Detected / Non Détecté
+															<input type="checkbox" class="specialResults other-failed-results" id="vlTND" name="vlTND" value="yes" title="Please check VL value"> Target Not Detected / Non Détecté<br>
+															<input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed"> Failed<br>
 											</td>
 											<td style="text-align:center;"><label for="vlLog">Log </label></td>
 											<td>
-												<input type="text" class="vlLog form-control forceNumeric" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
+												<input type="text" class="vlLog form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
 											</td>
 										</tr>
-										<tr>
-											<td colspan="4"><label class="radio-inline" style="margin:0;padding:0;">A remplir par le service effectuant la charge virale </label></td>
-										</tr>
-										<!--<tr><td colspan="4" style="height:30px;border:none;"></td></tr>
-                              <tr>
-                                  <td><label for="">Date de remise du résultat </label></td>
-                                  <td>
-                                      <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de remise du résultat" < ?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" style="width:100%;"/>
-                                  </td>
-                                  <td></td><td></td>
-                              </tr>-->
+										<?php if (count($reasonForFailure) > 0) { ?>
+											<tr class="reasonForFailure" style="display: none;">
+												<td class="reasonForFailure" style="display: none;"><?php echo _("Reason for Failure"); ?></td>
+												<td class="reasonForFailure" style="display: none;">
+													<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
+														<?= $general->generateSelectOptions($reasonForFailure, null, '-- Select --'); ?>
+													</select>
+												</td>
+											</tr>
+										<?php } ?>
 										<tr>
 											<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
 											<td style="width:14%;">
@@ -536,18 +539,17 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-											<th>Approuvé le</th>
+											<td>Approuvé le</td>
 											<td>
 												<input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
-											<th>Approuvé par</th>
+											<td>Approuvé par</td>
 											<td>
 												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
 										</tr>
-										<tr>
 									</table>
 								</div>
 							</div>
@@ -752,6 +754,28 @@ $sFormat = '';
 
 		}
 	}
+	$('#testingPlatform').change(function() {
+		var text = this.value;
+		var str1 = text.split("##");
+		var str = str1[0];
+		if (str1[0] == 'GeneXpert' || str.toLowerCase() == 'genexpert') {
+			$('.hivDetection').show();
+		} else {
+			$('.hivDetection').hide();
+		}
+	});
+	$('#failed').change(function() {
+		if ($('#failed').prop('checked')) {
+			$('.reasonForFailure').show();
+			$('#reasonForFailure').addClass('isRequired');
+			$('#other-failed-results').removeClass('isRequired');
+			$('#other-failed-results').prop('disabled', true);
+		} else {
+			$('.reasonForFailure').hide();
+			$('#reasonForFailure').removeClass('isRequired');
+			$('#other-failed-results').prop('disabled', false);
+		}
+	});
 
 	function checkRejectionReason() {
 		var rejectionReason = $("#rejectionReason").val();
