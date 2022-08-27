@@ -24,7 +24,7 @@ Type the following commands in the terminal:
 
 ```sudo apt install apache2 -y```
 
- ```sudo a2enmod rewrite headers```
+ ```sudo a2enmod rewrite headers deflate```
 
  ```sudo service apache2 restart```
 

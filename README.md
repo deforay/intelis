@@ -54,7 +54,7 @@ $systemConfig['modules']['tb'] = false;
 
    <Directory "/var/www/vlsm/public">
        AddDefaultCharset UTF-8
-       Options Indexes MultiViews FollowSymLinks
+       Options -Indexes -MultiViews +FollowSymLinks
        AllowOverride All
        Order allow,deny
        Allow from all

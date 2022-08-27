@@ -43,6 +43,15 @@ $systemConfig['adminEmailPassword'] = '';
 $systemConfig['mysqlDump'] = '/usr/bin/mysqldump';
 
 
+// SFTP Settings for automated backups (optional, but recommended)
+$systemConfig['sftp']['host'] = ''; // eg. 'sftp.example.com'
+$systemConfig['sftp']['port'] = '22'; // usually 22
+$systemConfig['sftp']['username'] = ''; // eg. 'username'
+$systemConfig['sftp']['privateKey'] = ''; // path to the private key file (recommended method to connect to SFTP)
+$systemConfig['sftp']['privateKeyPassphrase'] = ''; // if passphrase was set for the private key
+$systemConfig['sftp']['password'] = ''; // Password for SFTP, if privateKey is not provided (not recommended)
+$systemConfig['sftp']['path'] = ''; // eg. '/home/username/backups'
+
 
 $systemConfig['interfacing'] = array();
 

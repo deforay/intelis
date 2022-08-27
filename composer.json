@@ -30,7 +30,8 @@
         "ext-sodium": "*",
         "ext-zlib": "*",
         "ext-intl": "*",
-        "ext-bcmath": "*"
+        "ext-bcmath": "*",
+        "phpseclib/phpseclib": "~3.0"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",
