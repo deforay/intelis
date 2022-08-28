@@ -460,14 +460,14 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-											<td class="hivDetection resultSection" style="display: none;"><?php echo _("HIV Detection"); ?></td>
+											<!-- <td class="hivDetection resultSection" style="display: none;"><?php echo _("HIV Detection"); ?></td>
 											<td class="hivDetection resultSection" style="display: none;">
 												<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
 													<option value="">-- <?php echo _("Select"); ?> --</option>
 													<option value="HIV-1 Detected"><?php echo _("HIV-1 Detected"); ?></option>
 													<option value="HIV-1 Not Detected"><?php echo _("HIV-1 Not Detected"); ?></option>
 												</select>
-											</td>
+											</td> -->
 											<td style="width: 25%;"><label for="">Décision prise </label></td>
 											<td style="width: 25%;">
 												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">

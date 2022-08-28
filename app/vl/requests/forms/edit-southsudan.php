@@ -683,7 +683,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 														</select>
 													</div>
 												</div>
-												<div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
+												<!-- <div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
 													<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
 													<div class="col-lg-7">
 														<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
@@ -692,7 +692,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 															<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
 														</select>
 													</div>
-												</div>
+												</div> -->
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="noResult">Sample Rejection </label>
 													<div class="col-lg-7">

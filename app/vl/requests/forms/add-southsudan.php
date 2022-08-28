@@ -585,7 +585,7 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 hivDetection" style="display: none;">
+                                                                 <!-- <div class="col-md-4 hivDetection" style="display: none;">
                                                                       <label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
@@ -594,7 +594,7 @@ $sFormat = '';
                                                                                 <option value="HIV-1 Not Detected">HIV-1 Not Detected</option>
                                                                            </select>
                                                                       </div>
-                                                                 </div>
+                                                                 </div> -->
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="noResult">Sample Rejected? </label>
                                                                       <div class="col-lg-7">

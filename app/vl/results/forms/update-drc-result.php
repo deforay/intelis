@@ -472,14 +472,14 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr>
-										<td class="hivDetection resultSection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>"><?php echo _("HIV Detection"); ?></td>
+										<!-- <td class="hivDetection resultSection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>"><?php echo _("HIV Detection"); ?></td>
 										<td class="hivDetection resultSection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
 											<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
 												<option value="">-- <?php echo _("Select"); ?> --</option>
 												<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>><?php echo _("HIV-1 Detected"); ?></option>
 												<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>><?php echo _("HIV-1 Not Detected"); ?></option>
 											</select>
-										</td>
+										</td> -->
 										<td><label for="">Décision prise </label></td>
 										<td>
 											<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">

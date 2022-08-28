@@ -19,6 +19,7 @@ if (!empty(SYSTEM_CONFIG['sftp']['host'])) {
         $sftp = new SFTP(SYSTEM_CONFIG['sftp']['host'], SYSTEM_CONFIG['sftp']['port']);
 
         if (!$sftp->login(SYSTEM_CONFIG['sftp']['username'], $password)) {
+            error_log('Please provide proper SFTP settings.');
             $sftp = null;
         }
     }
