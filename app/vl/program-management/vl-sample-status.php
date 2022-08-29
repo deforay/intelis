@@ -17,7 +17,7 @@ $sResult = $db->rawQuery($sQuery);
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $sarr = $general->getSystemConfig();
 
-if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser') {
+if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser' && !empty($sarr['sc_testing_lab_id'])) {
 	$testingLabs = $facilitiesDb->getTestingLabs('vl', true, false, "facility_id = " . $sarr['sc_testing_lab_id']);
 } else {
 	$testingLabs = $facilitiesDb->getTestingLabs('vl');
