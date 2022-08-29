@@ -577,7 +577,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control result-optional" title="Please choose VL Testing Platform">
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -626,7 +626,7 @@ $sFormat = '';
                                                                  <div class="col-md-4 hivDetection" style="display: none;">
                                                                       <label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
+                                                                           <select name="hivDetection" id="hivDetection" class="form-control hivDetection" title="Please choose HIV detection">
                                                                                 <option value="">-- Select --</option>
                                                                                 <option value="HIV-1 Detected">HIV-1 Detected</option>
                                                                                 <option value="HIV-1 Not Detected">HIV-1 Not Detected</option>
@@ -1116,12 +1116,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      $("#noResult").change(function() {
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
-               $('.vlResult').css('display', 'none');
+               $('.vlResult, .hivDetection').css('display', 'none');
                $('.vlLog').css('display', 'none');
-               $("#sampleTestingDateAtLab, #vlResult").val("");
+               $("#sampleTestingDateAtLab, #vlResult, .hivDetection").val("");
                $('.specialResults').prop('checked', false);
                $(".result-fields").val("");
-               $(".result-fields, .specialResults").attr("disabled", true);
+               $(".result-fields, .specialResults, .hivDetection").attr("disabled", true);
                $(".result-fields, .specialResults").removeClass("isRequired");
                $(".result-span").hide();
                $(".review-approve-span").show();
@@ -1146,6 +1146,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').addClass('isRequired');
                $('#approvedBy').addClass('isRequired');
                $('#approvedOnDateTime').addClass('isRequired');
+               hivDetectionChange();
           } else {
                $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").removeClass("isRequired");
@@ -1164,6 +1165,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').removeClass('isRequired');
                $('#approvedBy').removeClass('isRequired');
                $('#approvedOnDateTime').removeClass('isRequired');
+               hivDetectionChange();
           }
      });
      $('#hivDetection').change(function() {
@@ -1184,24 +1186,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-     $('#testingPlatform').change(function() {
-          var text = this.value;
-          var str1 = text.split("##");
-          var str = str1[0];
-          if (str1[0] == 'GeneXpert' || str.toLowerCase() == 'genexpert') {
-               $('.hivDetection').show();
-          } else {
-               $('.hivDetection').hide();
-          }
-     });
+
      $('.specialResults').change(function() {
           if ($('.specialResults').is(':checked')) {
-               $('.specialResults').not(this).prop('checked', false).attr('disabled', true);
-               $('#vlResult,#vlLog').attr('readonly', true);
+               $('.specialResults, .hivDetection').not(this).prop('checked', false).attr('disabled', true);
+               $('#vlResult,#vlLog, .hivDetection').attr('readonly', true);
                $('#vlResult,#vlLog').val('');
                $('#vlResult').removeClass('isRequired');
           } else {
-               $('#vlResult,#vlLog').attr('readonly', false);
+               $('#vlResult,#vlLog, .hivDetection').attr('readonly', false);
                $('.specialResults').attr('disabled', false);
                if ($('#noResult').val() == 'no') {
                     $('#vlResult').addClass('isRequired');
@@ -1236,6 +1229,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#newRejectionReason").hide();
                $("#newRejectionReason").removeClass("isRequired");
                $('#newRejectionReason').val("");
+          }
+     }
+
+     function hivDetectionChange() {
+          var text = $('#testingPlatform').val();
+          var str1 = text.split("##");
+          var str = str1[0];
+          if (text == 'GeneXpert' || str.toLowerCase() == 'genexpert') {
+               $('.hivDetection').prop('disabled', false);
+               $('.hivDetection').show();
+          } else {
+               $('.hivDetection').hide();
           }
      }
 
