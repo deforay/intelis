@@ -91,11 +91,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-          if ($sWhere == "") {
                $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          } else {
-               $sWhere[] =  $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-          }
      }
 }
 
@@ -130,18 +126,16 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
                     LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing";
 
-//echo $sQuery;die;
 $start_date = '';
 $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode(" to ", $_POST['sampleCollectionDate']);
-     //print_r($s_c_date);die;
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = trim($s_c_date[0]) . "-01";
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = date("Y-m-t", strtotime(trim($s_c_date[1])));
-     }
+	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
+	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+		$start_date = $general->isoDateFormat(trim($s_c_date[0]));
+	}
+	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+		$end_date = $general->isoDateFormat(trim($s_c_date[1]));
+	}
 }
 $sTestDate = '';
 $eTestDate = '';
@@ -183,9 +177,9 @@ if (isset($_POST['state']) && trim($_POST['state']) != '') {
 }
 
 if (count($sWhere) > 0) {
-     $sWhere[] =  ' vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+     $sWhere[] =  ' vl.result!="" AND vl.result_status!=9';
 } else {
-     $sWhere[] = ' WHERE vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+     $sWhere[] = ' WHERE vl.result!="" AND vl.result_status!=9';
 }
 
 if (!empty($facilityMap)) {
@@ -197,7 +191,7 @@ if(isset($sWhere) && count($sWhere)>0)
      $sWhere = implode(' AND ',$sWhere);
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-//echo $sQuery;die;
+
 $_SESSION['vlMonitoringResultQuery'] = $sQuery;
 
 if (isset($sOrder) && $sOrder != "") {

@@ -175,8 +175,8 @@ $state = $geoLocationDb->getProvinces("yes");
 						<tr>
 							<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
 							<td>
-								<!--<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;"/>-->
-								<div id="sla-data-range" class="mrp-container form-control">
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;"/>
+								<!--<div id="sla-data-range" class="mrp-container form-control">
 									<span class="mrp-icon"><i class="fa-solid fa-calendar-days"></i> &nbsp;</span>
 									<div class="mrp-monthdisplay ">
 										<span class="mrp-lowerMonth"><?php echo date('M', strtotime('-2 month')); ?> <?php echo $startYear; ?></span> <span class="mrp-to"> to </span>
@@ -184,7 +184,7 @@ $state = $geoLocationDb->getProvinces("yes");
 									</div>
 									<input type="hidden" value="<?php echo $startDate; ?>" id="mrp-lowerDate" onchange="" />
 									<input type="hidden" value="<?php echo $endDate; ?>" id="mrp-upperDate" />
-								</div>
+								</div>-->
 							</td>
 							<td><b><?php echo _("Lab Name");?> :</b></td>
 							<td>
@@ -262,28 +262,31 @@ $state = $geoLocationDb->getProvinces("yes");
 	var endDate = "";
 	var oTable = null;
 	$(document).ready(function() {
-		$('#sampleTestDate').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-				}
-			},
-			function(start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
+		$('#sampleCollectionDate').daterangepicker({
+			locale: {
+          cancelLabel: 'Clear'
+        },
+        format: 'DD-MMM-YYYY',
+        separator: ' to ',
+        startDate: moment().subtract(6, 'days'),
+        endDate: moment(),
+        maxDate: moment(),
+        ranges: {
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+          'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+          'Last 18 Months': [moment().subtract('month', 18).startOf('month'), moment().endOf('month')],
+          'Last 24 Months': [moment().subtract('month', 24).startOf('month'), moment().endOf('month')]
+        }
+      },
+      function(start, end) {
+        startDate = start.format('YYYY-MM-DD');
+        endDate = end.format('YYYY-MM-DD');
+      });
 		$("#state").change(function() {
 			$.blockUI();
 			var pName = $(this).val();
@@ -300,8 +303,9 @@ $state = $geoLocationDb->getProvinces("yes");
 			}
 			$.unblockUI();
 		});
-		$('#sampleTestDate').val("");
 		loadVlRequestData();
+		$('#sampleTestDate').val("");
+		$('#sampleCollectionDate').val("");
 	});
 
 	function loadVlRequestData() {
@@ -360,9 +364,13 @@ $state = $geoLocationDb->getProvinces("yes");
 					"value": $("#facilityName").val()
 				});
 				aoData.push({
+				"name": "sampleCollectionDate",
+				"value": $("#sampleCollectionDate").val()
+				});
+				/*aoData.push({
 					"name": "sampleCollectionDate",
 					"value": $("#mrp-lowerDate").val() + ' to ' + $("#mrp-upperDate").val()
-				});
+				});*/
 				aoData.push({
 					"name": "district",
 					"value": $("#district").val()
@@ -397,7 +405,8 @@ $state = $geoLocationDb->getProvinces("yes");
 		$.blockUI();
 		oTable.fnDraw();
 		$.post("/vl/program-management/vlMonitoringExportInExcel.php", {
-				sampleCollectionDate: $("#mrp-lowerDate").val() + ' to ' + $("#mrp-upperDate").val(),
+				//sampleCollectionDate: $("#mrp-lowerDate").val() + ' to ' + $("#mrp-upperDate").val(),
+				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				fyName: $("#facilityName  option:selected").text(),
 				facilityName: $("#facilityName").val(),
 				state: $("#state").val(),

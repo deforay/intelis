@@ -51,18 +51,17 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     $start_date = '';
     $end_date = '';
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        $s_c_date = explode(" to ", $_POST['sampleCollectionDate']);
-        //print_r($s_c_date);die;
+        $s_c_date = explode("to", $_POST['sampleCollectionDate']);
         if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-            $start_date = trim($s_c_date[0]) . "-01";
+            $start_date = $general->isoDateFormat(trim($s_c_date[0]));
         }
         if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-            $end_date = date("Y-m-t", strtotime(trim($s_c_date[1])));
+            $end_date = $general->isoDateFormat(trim($s_c_date[1]));
         }
     }
     $sTestDate = '';
     $eTestDate = '';
-    if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+   /* if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
         $s_t_date = explode("to", $_POST['sampleTestDate']);
         if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
             $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
@@ -70,23 +69,23 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
             $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
         }
-    }
+    }*/
 
     $sWhere = '';
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
-            $sWhere = 'DATE(vl.sample_collection_date) = "' . $start_date . '"';
+            $sWhere = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
             $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
-    if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+   /* if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
         if (trim($sTestDate) == trim($eTestDate)) {
             $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
         } else {
             $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
         }
-    }
+    }*/
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
         $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
@@ -97,6 +96,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
     }
     $sQuery = $sQuery . ' ' . $sWhere . ' AND vl.result!=""';
+  
     $sResult = $db->rawQuery($sQuery);
 
     //question two query
@@ -171,10 +171,10 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     }
 
     //question three
-
+   
     $s_c_date = explode(" to ", $_POST['sampleCollectionDate']);
-    $start_date = trim($s_c_date[0]);
-    $end_date = trim($s_c_date[1]);
+    $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+    $end_date = $general->isoDateFormat(trim($s_c_date[1]));
     $startMonth = date("Y-m", strtotime($start_date));
     $endMonth = date("Y-m", strtotime($end_date));
     $start = $month = strtotime($startMonth);
