@@ -254,7 +254,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = ucwords($aRow['facility_name']);
         $row[] = $aRow['patient_id'];
         $row[] = $patientFname . " " . $patientLname;
-        $row[] = $general->humanDateFormat($aRow['patient_dob']);
+        $row[] = $general->humanReadableDateFormat($aRow['patient_dob']);
         $row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = ucwords($aRow['patient_gender']);
         $row[] = ucwords($aRow['is_patient_pregnant']);
@@ -286,21 +286,21 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = $aRow['flight_transit'];
         $row[] = $aRow['reason_of_visit'];
         $row[] = $aRow['number_of_days_sick'];
-        $row[] = $general->humanDateFormat($aRow['date_of_symptom_onset']);
-        $row[] = $general->humanDateFormat($aRow['date_of_initial_consultation']);
-        $row[] = $general->humanDateFormat($aRow['sample_collection_date']);
+        $row[] = $general->humanReadableDateFormat($aRow['date_of_symptom_onset']);
+        $row[] = $general->humanReadableDateFormat($aRow['date_of_initial_consultation']);
+        $row[] = $general->humanReadableDateFormat($aRow['sample_collection_date']);
         $row[] = ucwords($aRow['test_reason_name']);
         $row[] = $subReasonsList;
-        $row[] = $general->humanDateFormat($aRow['sample_received_at_vl_lab_datetime']);
-        $row[] = $general->humanDateFormat($aRow['request_created_datetime']);
+        $row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+        $row[] = $general->humanReadableDateFormat($aRow['request_created_datetime']);
         $row[] = ucwords($aRow['sample_condition']);
         $row[] = ucwords($aRow['status_name']);
         $row[] = ucwords($aRow['sample_name']);
-        $row[] = $general->humanDateFormat($aRow['sample_tested_datetime']);
+        $row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
         $row[] = $aRow['covid19_test_platform'];
         $row[] = ucwords($testMethod);
         $row[] = $covid19Results[$aRow['result']];
-        $row[] = $general->humanDateFormat($aRow['result_printed_datetime']);
+        $row[] = $general->humanReadableDateFormat($aRow['result_printed_datetime']);
 
         $output[] = $row;
         $no++;

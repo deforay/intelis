@@ -3,45 +3,29 @@ require_once(dirname(__FILE__) . "/../../../startup.php");
 
 header('Content-Type: application/json');
 
-//this file is get the data from remote db
-$data = json_decode(file_get_contents('php://input'), true);
+$general = new \Vlsm\Models\General();
 
-$encoding = $general->getHeader('Accept-Encoding');
+$origData = $jsonData = file_get_contents('php://input');
+$data = json_decode($jsonData, true);
+
+
 $payload = array();
 
-$labId = $data['labName'];
+$labId = $data['labName'] ?: $data['labId'] ?: null;
 
 if (empty($labId)) {
   exit(0);
 }
 
-$general = new \Vlsm\Models\General();
+
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
 $app = new \Vlsm\Models\App();
 
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-  $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-//get remote data
-if (trim($sarr['sc_testing_lab_id']) == '') {
-  $sarr['sc_testing_lab_id'] = "''";
-}
+$counter = 0;
 
-//get facility map id
-$facilityMapQuery = "SELECT facility_id FROM testing_lab_health_facilities_map where vl_lab_id= ?";
-$fMapResult = $db->rawQuery($facilityMapQuery, $labId);
-if ($db->count > 0) {
-  $fMapResult = array_map('current', $fMapResult);
-  $fMapResult = implode(",", $fMapResult);
-} else {
-  $fMapResult = null;
-}
+$facilityDb = new \Vlsm\Models\Facilities();
+$fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
   $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
@@ -61,8 +45,9 @@ if (!empty($data['manifestCode'])) {
 $vlRemoteResult = $db->rawQuery($vlQuery);
 
 if ($db->count > 0) {
-  $trackId = $app->addApiTracking(null, $db->count, 'requests', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
   
+  $counter = $db->count;
+
   $sampleIds = array_column($vlRemoteResult, 'vl_sample_id');
   $db->where('vl_sample_id', $sampleIds, 'IN')
     ->update('form_vl', array('data_sync' => 1));
@@ -72,9 +57,9 @@ if ($db->count > 0) {
   $payload = json_encode([]);
 }
 
-if (!empty($encoding) && $encoding === 'gzip') {
-  header("Content-Encoding: gzip");
-  $payload = gzencode($payload);
-}
+
+$general->addApiTracking('vlsm-system', $counter, 'requests', 'vl', null, $origData, $payload, 'json', $labId);
+
+
 
 echo $payload;

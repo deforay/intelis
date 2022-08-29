@@ -85,12 +85,12 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
         $where[] = " (vl.result ='' OR vl.result IS NULL OR vl.result LIKE '')";
         $where[] = " (vl.is_sample_rejected ='no' OR vl.is_sample_rejected IS NULL OR vl.is_sample_rejected LIKE 'no' OR vl.is_sample_rejected like '')";
     }
-    if (sizeof($where) > 0) {
+    if (!empty($where)) {
         $sQuery .= ' WHERE ' . implode(" AND ", $where);
     }
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
-    if ($rowData && count($rowData) > 0) {
+    if (!empty($rowData)) {
         $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], count($rowData), $type[1], 'vl', $requestUrl, $hl7, 'hl7');
         foreach ($rowData as $row) {
@@ -301,7 +301,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $where[] =  " patient_gender like '" . $_POST['gender'] . "'";
     }
 
-    if (sizeof($where) > 0) {
+    if (!empty($where)) {
         $sQuery .= " where  " . implode(" AND ", $where) . "  limit 1";
     } else {
         $sQuery .= " limit 1";
@@ -405,7 +405,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $sampleCodeKey = 'sample_code_key';
         }
         $vldata = array(
-            'unique_id' => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateRandomString(32),
+            'unique_id' => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateUUID(),
             'vlsm_instance_id' => $instanceId,
             'vlsm_country_id' => 1,
             'sample_code_format' => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  NULL,
@@ -424,11 +424,11 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'consent_to_receive_sms' => (isset($_POST['receiveSms']) && $_POST['receiveSms'] != '') ? $_POST['receiveSms'] :  NULL,
             'sample_type' => (isset($_POST['specimenType']) && $_POST['specimenType'] != '') ? $_POST['specimenType'] :  NULL,
             'arv_adherance_percentage' => (isset($_POST['arvAdherence']) && $_POST['arvAdherence'] != '') ? $_POST['arvAdherence'] :  NULL,
-            'last_vl_date_routine' => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? $general->dateFormat($_POST['rmTestingLastVLDate']) :  NULL,
+            'last_vl_date_routine' => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? $general->isoDateFormat($_POST['rmTestingLastVLDate']) :  NULL,
             'last_vl_result_routine' => (isset($_POST['rmTestingVlValue']) && $_POST['rmTestingVlValue'] != '') ? $_POST['rmTestingVlValue'] :  NULL,
-            'last_vl_date_failure_ac' => (isset($_POST['repeatTestingLastVLDate']) && $_POST['repeatTestingLastVLDate'] != '') ? $general->dateFormat($_POST['repeatTestingLastVLDate']) :  NULL,
+            'last_vl_date_failure_ac' => (isset($_POST['repeatTestingLastVLDate']) && $_POST['repeatTestingLastVLDate'] != '') ? $general->isoDateFormat($_POST['repeatTestingLastVLDate']) :  NULL,
             'last_vl_result_failure_ac' => (isset($_POST['repeatTestingVlValue']) && $_POST['repeatTestingVlValue'] != '') ? $_POST['repeatTestingVlValue'] :  NULL,
-            'last_vl_date_failure' => (isset($_POST['suspendTreatmentLastVLDate']) && $_POST['suspendTreatmentLastVLDate'] != '') ? $general->dateFormat($_POST['suspendTreatmentLastVLDate']) :  NULL,
+            'last_vl_date_failure' => (isset($_POST['suspendTreatmentLastVLDate']) && $_POST['suspendTreatmentLastVLDate'] != '') ? $general->isoDateFormat($_POST['suspendTreatmentLastVLDate']) :  NULL,
             'last_vl_result_failure' => (isset($_POST['suspendTreatmentVlValue']) && $_POST['suspendTreatmentVlValue'] != '') ? $_POST['suspendTreatmentVlValue'] :  NULL,
             'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] :  NULL,
             'vl_test_platform' => $testingPlatform,

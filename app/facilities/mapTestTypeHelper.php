@@ -22,7 +22,7 @@ try {
         //$db->where('facility_id', $_POST['mappedFacilities'], 'NOT IN');
         $db->delete($tableName);
 
-        $currentDateTime = $general->getDateTime();
+        $currentDateTime = $general->getCurrentDateTime();
         $data = array();
         foreach ($_POST['mappedFacilities'] as $facility) {
             $data[] = array(
@@ -33,7 +33,7 @@ try {
         }
         $db->insertMulti($tableName, $data);
 
-        // Issue : When one test type was updated, the other test types for those same facilities don't get updated
+        // Issue : When one test type was updated, the other test types for those same facilities don't get synced
         // To overcome this, we update the datetime of all test types for those facilities
         $data = array(
             'updated_datetime'  => $currentDateTime

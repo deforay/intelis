@@ -639,7 +639,7 @@ $sFormat = '';
                                                             <div class="col-md-8">
                                                                  <label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
                                                                  <div class="col-lg-10">
-                                                                      <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?> style="width:100%"></textarea>
+                                                                      <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?> style="width: 94% !important;margin-left: 23px;"></textarea>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -708,13 +708,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
           $("#vlResult, #vlLog").on('keyup keypress blur change paste', function() {
-			if ($(this).val() != '') {
-				if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
-					$(this).val('');
-					alert('Please enter only numeric values for Viral Load Result')
-				}
-			}
-		});
+               if ($(this).val() != '') {
+                    if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
+                         $(this).val('');
+                         alert('Please enter only numeric values for Viral Load Result')
+                    }
+               }
+          });
 
           $('#fName').select2({
                placeholder: "Select Clinic/Health Center"
@@ -731,7 +731,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               echo "printBarcodeLabel('" . $_GET['s'] . "','" . $_GET['f'] . "');";
+               echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
           }
           ?>
           // BARCODESTUFF END

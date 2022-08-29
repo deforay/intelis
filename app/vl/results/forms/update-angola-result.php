@@ -30,12 +30,12 @@ $aResult = $db->query($aQuery);
 //Set Dispatched From Clinic To Lab Date
 if (isset($vlQueryInfo['date_dispatched_from_clinic_to_lab']) && trim($vlQueryInfo['date_dispatched_from_clinic_to_lab']) != '' && $vlQueryInfo['date_dispatched_from_clinic_to_lab'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['date_dispatched_from_clinic_to_lab']);
-	$vlQueryInfo['date_dispatched_from_clinic_to_lab'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['date_dispatched_from_clinic_to_lab'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['date_dispatched_from_clinic_to_lab'] = '';
 }
 if (isset($vlQueryInfo['requesting_date']) && trim($vlQueryInfo['requesting_date']) != '' && $vlQueryInfo['requesting_date'] != '0000-00-00') {
-	$vlQueryInfo['requesting_date'] = $general->humanDateFormat($vlQueryInfo['requesting_date']);
+	$vlQueryInfo['requesting_date'] = $general->humanReadableDateFormat($vlQueryInfo['requesting_date']);
 } else {
 	$vlQueryInfo['requesting_date'] = '';
 }
@@ -50,7 +50,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	for ($c = 0; $c < count($splitChanges); $c++) {
 		$getData = explode("##", $splitChanges[$c]);
 		$expStr = explode(" ", $getData[2]);
-		$changedDate = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+		$changedDate = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 		$rch .= '<tr><td>' . ucwords($getData[0]) . '</td><td>' . ucfirst($getData[1]) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
 	}
 	$rch .= '</tbody>';
@@ -66,32 +66,32 @@ $lastVlResult = '';
 if ($vlQueryInfo['reason_for_vl_testing'] != '') {
 	if ($vlQueryInfo['reason_for_vl_testing'] == 'routine') {
 		if (isset($vlQueryInfo['last_vl_date_routine']) && trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') {
-			$lastVlDate = $general->humanDateFormat($vlQueryInfo['last_vl_date_routine']);
+			$lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']);
 		}
 		$lastVlResult = $vlQueryInfo['last_vl_result_routine'];
 	} else if ($vlQueryInfo['reason_for_vl_testing'] == 'expose') {
 		if (isset($vlQueryInfo['last_vl_date_ecd']) && trim($vlQueryInfo['last_vl_date_ecd']) != '' && $vlQueryInfo['last_vl_date_ecd'] != '0000-00-00') {
-			$lastVlDate = $general->humanDateFormat($vlQueryInfo['last_vl_date_ecd']);
+			$lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_ecd']);
 		}
 		$lastVlResult = $vlQueryInfo['last_vl_result_ecd'];
 	} else if ($vlQueryInfo['reason_for_vl_testing'] == 'suspect') {
 		if (isset($vlQueryInfo['last_vl_date_failure']) && trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') {
-			$lastVlDate = $general->humanDateFormat($vlQueryInfo['last_vl_date_failure']);
+			$lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']);
 		}
 		$lastVlResult = $vlQueryInfo['last_vl_result_failure'];
 	} else if ($vlQueryInfo['reason_for_vl_testing'] == 'repetition') {
 		if (isset($vlQueryInfo['last_vl_date_failure_ac']) && trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') {
-			$lastVlDate = $general->humanDateFormat($vlQueryInfo['last_vl_date_failure_ac']);
+			$lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']);
 		}
 		$lastVlResult = $vlQueryInfo['last_vl_date_failure_ac'];
 	} else if ($vlQueryInfo['reason_for_vl_testing'] == 'clinical') {
 		if (isset($vlQueryInfo['last_vl_date_cf']) && trim($vlQueryInfo['last_vl_date_cf']) != '' && $vlQueryInfo['last_vl_date_cf'] != '0000-00-00') {
-			$lastVlDate = $general->humanDateFormat($vlQueryInfo['last_vl_date_cf']);
+			$lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_cf']);
 		}
 		$lastVlResult = $vlQueryInfo['last_vl_result_cf'];
 	} else if ($vlQueryInfo['reason_for_vl_testing'] == 'immunological') {
 		if (isset($vlQueryInfo['last_vl_date_if']) && trim($vlQueryInfo['last_vl_date_if']) != '' && $vlQueryInfo['last_vl_date_if'] != '0000-00-00') {
-			$lastVlDate = $general->humanDateFormat($vlQueryInfo['last_vl_date_if']);
+			$lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_if']);
 		}
 		$lastVlResult = $vlQueryInfo['last_vl_result_if'];
 	}
@@ -571,7 +571,7 @@ $disable = "disabled = 'disabled'";
 										</tr>
 										<tr class="show-rejection" style="display:none;">
 											<th>Data de Rejeição<span class="mandatory">*</span></th>
-											<td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date Data de Rejeição" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Data de Rejeição" /></td>
+											<td><input value="<?php echo $general->humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date Data de Rejeição" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Data de Rejeição" /></td>
 											<td></td>
 											<td></td>
 										</tr>
@@ -580,7 +580,7 @@ $disable = "disabled = 'disabled'";
 												<label for="vlResult">Resultado da carga viral<span class="mandatory">*</span> (cópias / ml) </label>
 											</td>
 											<td class="vlResult" style="visibility:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'hidden' : 'visible'; ?>;">
-												<input type="text" class="form-control labSection <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? '' : 'isRequired'; ?>" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter resultado da carga viral" value="<?php echo $vlQueryInfo['result_value_absolute']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+												<input type="text" class="form-control labSection <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? '' : 'isRequired'; ?>" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter resultado da carga viral" value="<?php echo $vlQueryInfo['result']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 												<input type="checkbox" class="labSection" id="tnd" name="tnd" value="yes" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'checked="checked"' : '';
 																															echo ($vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? 'disabled="disabled"' : '' ?> title="Please check tnd"> Target não detectado<br>
 												<input type="checkbox" class="labSection" id="ldl" name="ldl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level') ? 'checked="checked"' : '';

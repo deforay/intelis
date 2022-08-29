@@ -32,14 +32,15 @@ $errors = [];
 
 $data = [];
 
-$data[] = "modified=ge2022-08-05";
-$data[] = "requester=Organization/101282";
+//$data[] = "modified=ge2020-08-05";
+//$data[] = "requester=Organization/101282";
+$data[] = "modified=ge" . date("Y-m-d", strtotime("-1 day"));
 $data[] = "_include=Task:based-on:ServiceRequest";
 $data[] = "status=requested";
 $data[] = "_count=200";
 
 $json = $fhir->get('/Task', $data);
-// echo prettyJson($json);
+//echo prettyJson($json);
 
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/ServiceRequest/107150');
@@ -55,7 +56,7 @@ $json = $fhir->get('/Task', $data);
 // echo prettyJson($json);
 
 
-// die;
+//die;
 
 
 
@@ -239,7 +240,9 @@ foreach ($entries as $entry) {
 
             $formData[$basedOnServiceRequest]['sample_collection_date'] = (string) $specimenParsed->getCollection()->getCollectedDateTime();
 
-            $specimenCode = (string) $specimenParsed->getType()->getCoding()[0]->getCode();
+            if (!empty($specimenParsed->getType())) {
+                $specimenCode = (string) $specimenParsed->getType()->getCoding()[0]->getCode();
+            }
 
             if (!empty($specimenCode)) {
                 $db->where("sample_name", $specimenCode);
@@ -251,10 +254,10 @@ foreach ($entries as $entry) {
 
             $formData[$basedOnServiceRequest]['form_attributes']['fhir'] = (array_merge($taskAttributes[$basedOnServiceRequest], $serviceAttributes[$basedOnServiceRequest]));
             $formData[$basedOnServiceRequest]['form_attributes'] = json_encode($formData[$basedOnServiceRequest]['form_attributes']);
-            $formData[$basedOnServiceRequest]['request_created_datetime'] = $general->getDateTime();
+            $formData[$basedOnServiceRequest]['request_created_datetime'] = $general->getCurrentDateTime();
             $formData[$basedOnServiceRequest]['vlsm_instance_id'] = $instanceId;
             $formData[$basedOnServiceRequest]['vlsm_country_id'] = 7; // RWANDA
-            $formData[$basedOnServiceRequest]['last_modified_datetime'] = $general->getDateTime();
+            $formData[$basedOnServiceRequest]['last_modified_datetime'] = $general->getCurrentDateTime();
             $formData[$basedOnServiceRequest]['source_of_request'] = 'fhir';
             //$formData[$basedOnServiceRequest]['source_data_dump'] = $json;
             $formData[$basedOnServiceRequest]['result_status'] = 6;
@@ -287,7 +290,7 @@ foreach ($formData as $serviceRequest => $data) {
         continue;
     }
 
-    $sampleJson = $vlModel->generateVLSampleID(null, $general->humanDateFormat($data['sample_collection_date']));
+    $sampleJson = $vlModel->generateVLSampleID(null, ($data['sample_collection_date']));
 
     $sampleData = json_decode($sampleJson, true);
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {

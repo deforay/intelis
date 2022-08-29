@@ -18,7 +18,7 @@ try {
 		$data = array(
 			'province_name' 	=> $_POST['provinceName'],
 			'province_code' 	=> $_POST['provinceCode'],
-			'updated_datetime'	=> $general->getDateTime()
+			'updated_datetime'	=> $general->getCurrentDateTime()
 		);
 		if(isset($_POST['provinceId']) && $_POST['provinceId'] != ""){
 			/* Update facility state */
@@ -28,7 +28,7 @@ try {
 				$db = $db->where('facility_id', $facilityInfo[0]['facility_id']);
 				$lastId = $db->update($facilityTable, array(
 					'facility_state'	=> $_POST['provinceName'],
-					'updated_datetime'	=> $general->getDateTime()
+					'updated_datetime'	=> $general->getCurrentDateTime()
 				));
 			}
 			/* Update province details */

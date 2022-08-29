@@ -36,7 +36,7 @@ try {
 			} else {
 				$data = array(
 					'province_name' => $_POST['provinceNew'],
-					'updated_datetime' => $general->getDateTime(),
+					'updated_datetime' => $general->getCurrentDateTime(),
 				);
 				$db->insert($provinceTable, $data);
 				$_POST['state'] = $_POST['provinceNew'];
@@ -94,7 +94,7 @@ try {
 			'testing_points' => $_POST['testingPoints'],
 			'header_text' => $_POST['headerText'],
 			'report_format' => (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) ? json_encode($_POST['reportFormat'], true) : null,
-			'updated_datetime' => $general->getDateTime(),
+			'updated_datetime' => $general->getCurrentDateTime(),
 			'status' => $_POST['status']
 		);
 
@@ -144,7 +144,7 @@ try {
 					'facility_id' => $lastId,
 					'monthly_target' => $_POST['monTar'][$tf],
 					'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
-					"updated_datetime" => $general->getDateTime()
+					"updated_datetime" => $general->getCurrentDateTime()
 				);
 				$db->insert($testingLabsTable, $dataTest);
 			}
@@ -166,14 +166,14 @@ try {
 						$hid = $db->insert($healthFacilityTable, array(
 							'test_type' => $testType,
 							'facility_id' => $facilityId,
-							'updated_datetime' => $general->getDateTime()
+							'updated_datetime' => $general->getCurrentDateTime()
 						));
 						// Mapping facility as a Testing Lab
 					} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
 						$data = array(
 							'test_type' => $testType,
 							'facility_id' => $facilityId,
-							'updated_datetime' => $general->getDateTime()
+							'updated_datetime' => $general->getCurrentDateTime()
 						);
 						if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
 							$attributes['platforms'] = $_POST['availablePlatforms'];
@@ -244,7 +244,7 @@ try {
 						$lastSignId = $_POST['signId'][$key];
 					} else {
 						$signData['added_by'] = $_SESSION['userId'];
-						$signData['added_on'] = $general->getDateTime();
+						$signData['added_on'] = $general->getCurrentDateTime();
 						$db->insert($signTableName, $signData);
 						$lastSignId = $db->getInsertId();
 					}

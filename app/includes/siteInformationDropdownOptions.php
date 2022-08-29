@@ -17,7 +17,7 @@ $sarr = $general->getSystemConfig();
 if ($arr['vl_form'] == '3') {
 	$option = '<option value=""> -- Sélectionner -- </option>';
 } else {
-	$option = '<option value=""> '. _("-- Select --").' </option>';
+	$option = '<option value=""> ' . _("-- Select --") . ' </option>';
 }
 
 if (isset($_POST['testType']) && !empty($_POST['testType'])) {
@@ -41,9 +41,8 @@ $facilityTypeTable = !empty($facilityTypeRequested) ? $facilityTypeTableList[$fa
 
 $facilityMap = null;
 if (empty($_POST['comingFromUser']) || $_POST['comingFromUser'] != 'yes') {
-	$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId'], null);
+	$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId'], null);
 }
-
 if (!empty($facilityIdRequested)) {
 	$db->where("f.facility_id", $facilityIdRequested);
 	$facilityInfo = $db->getOne('facility_details f');
@@ -71,6 +70,9 @@ if (!empty($facilityIdRequested)) {
 	$testingLabsList = $facilitiesDb->getTestingLabs($testType);
 	$testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
 
+	echo $facilityOptions . "###" . $testingLabsOptions . "###";
+} else if (!empty($facilityTypeRequested)) {
+	$facilityOptions = getFacilitiesDropdown(null, $districtRequested);
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 }
 

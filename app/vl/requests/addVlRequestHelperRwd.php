@@ -5,11 +5,20 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $general = new \Vlsm\Models\General();
+$vlModel = new \Vlsm\Models\Vl();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = NULL;
+
+
+$logVal = null;
+$absDecimalVal = null;
+$absVal = null;
+$txtVal = null;
+$finalResult = null;
+
 try {
     $validateFields = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
     $chkValidation = $general->checkMandatoryFields($validateFields);
@@ -26,12 +35,15 @@ try {
     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
     }
-    $status = 6;
+    $resultStatus = 6; // Registered at lab
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
-        $status = 4;
+        $resultStatus = 4; // Rejected
+        $isRejected = true;
+        $finalResult = $_POST['vlResult'] = null;
+        $_POST['vlLog'] = null;
     }
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-        $status = 9;
+        $resultStatus = 9; // Registered at Collection Site
     }
     //add province
     $splitProvince = explode("##", $_POST['province']);
@@ -44,22 +56,22 @@ try {
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
         $sampleDate = explode(" ", $_POST['sampleCollectionDate']);
-        $_POST['sampleCollectionDate'] = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+        $_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
     } else {
         $_POST['sampleCollectionDate'] = NULL;
     }
     if (isset($_POST['dob']) && trim($_POST['dob']) != "") {
-        $_POST['dob'] = $general->dateFormat($_POST['dob']);
+        $_POST['dob'] = $general->isoDateFormat($_POST['dob']);
     } else {
         $_POST['dob'] = NULL;
     }
     if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-        $_POST['dateOfArtInitiation'] = $general->dateFormat($_POST['dateOfArtInitiation']);
+        $_POST['dateOfArtInitiation'] = $general->isoDateFormat($_POST['dateOfArtInitiation']);
     } else {
         $_POST['dateOfArtInitiation'] = NULL;
     }
     if (isset($_POST['regimenInitiatedOn']) && trim($_POST['regimenInitiatedOn']) != "") {
-        $_POST['regimenInitiatedOn'] = $general->dateFormat($_POST['regimenInitiatedOn']);
+        $_POST['regimenInitiatedOn'] = $general->isoDateFormat($_POST['regimenInitiatedOn']);
     } else {
         $_POST['regimenInitiatedOn'] = NULL;
     }
@@ -70,7 +82,7 @@ try {
             $data = array(
                 'art_code' => $_POST['newArtRegimen'],
                 'parent_art' => '7',
-                'updated_datetime' => $general->getDateTime(),
+                'updated_datetime' => $general->getCurrentDateTime(),
             );
             $result = $db->insert('r_vl_art_regimen', $data);
             $_POST['artRegimen'] = $_POST['newArtRegimen'];
@@ -105,19 +117,19 @@ try {
     }
     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDateLab = explode(" ", $_POST['sampleReceivedDate']);
-        $_POST['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDateLab[0]) . " " . $sampleReceivedDateLab[1];
+        $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDateLab[0]) . " " . $sampleReceivedDateLab[1];
     } else {
         $_POST['sampleReceivedDate'] = NULL;
     }
     if (isset($_POST['sampleTestingDateAtLab']) && trim($_POST['sampleTestingDateAtLab']) != "") {
         $sampleTestingDateAtLab = explode(" ", $_POST['sampleTestingDateAtLab']);
-        $_POST['sampleTestingDateAtLab'] = $general->dateFormat($sampleTestingDateAtLab[0]) . " " . $sampleTestingDateAtLab[1];
+        $_POST['sampleTestingDateAtLab'] = $general->isoDateFormat($sampleTestingDateAtLab[0]) . " " . $sampleTestingDateAtLab[1];
     } else {
         $_POST['sampleTestingDateAtLab'] = NULL;
     }
     if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != "") {
         $resultDispatchedOn = explode(" ", $_POST['resultDispatchedOn']);
-        $_POST['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+        $_POST['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
     } else {
         $_POST['resultDispatchedOn'] = NULL;
     }
@@ -129,7 +141,7 @@ try {
                 'rejection_reason_name' => $_POST['newRejectionReason'],
                 'rejection_type' => 'general',
                 'rejection_reason_status' => 'active',
-                'updated_datetime' => $general->getDateTime(),
+                'updated_datetime' => $general->getCurrentDateTime(),
             );
             $id = $db->insert('r_vl_sample_rejection_reasons', $data);
             $_POST['rejectionReason'] = $id;
@@ -137,42 +149,53 @@ try {
             $_POST['rejectionReason'] = $rejectionResult[0]['rejection_reason_id'];
         }
     }
-    $isRejection = false;
+    $isRejected = false;
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $vl_result_category = 'rejected';
-        $isRejection = true;
+        $isRejected = true;
         $_POST['vlResult'] = '';
         $_POST['vlLog'] = '';
     }
-    if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = '<20';
+    if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejected === false) {
+        $_POST['vlResult'] = 'Target Not Detected';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = '<40';
+    } else if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejected === false) {
+        $_POST['vlResult'] = '< 20';
+        $_POST['vlLog'] = '';   
+    } else if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejected === false) {
+        $_POST['vlResult'] = '< 40';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = $textValue = 'Target Not Detected';
-        $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejection == false) {
+    } else if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected === false) {
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = '';
     }
-    if (isset($_POST['failed']) && $_POST['failed'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = 'Failed';
+
+    if (
+        (isset($_POST['failed']) && $_POST['failed'] == 'yes')
+        || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
+    ) {
+        $finalResult = $_POST['vlResult'] ?: 'Failed';
         $_POST['vlLog'] = '';
-    }
-    if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejection == false) {
-        $_POST['vlResult'] = 'Invalid';
+        $resultStatus = 5; // Invalid/Failed
+    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected === false) {
+        $finalResult = $_POST['vlResult'] = 'Invalid';
         $_POST['vlLog'] = '';
+        $resultStatus = 5; // Invalid/Failed
+    } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+
+        $resultStatus = 8; // Awaiting Approval    
+
+        $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
+
+        //Result is saved as entered
+        $finalResult  = $_POST['vlResult'];
+
+        $logVal = $interpretedResults['logVal'];
+        $absDecimalVal = $interpretedResults['absDecimalVal'];
+        $absVal = $interpretedResults['absVal'];
+        $txtVal = $interpretedResults['txtVal'];
     }
-    if (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') {
-        $_POST['result'] = $_POST['vlResult'];
-    } else if (isset($_POST['vlLog']) && trim($_POST['vlLog']) != '') {
-        $_POST['result'] = $_POST['vlLog'];
-    }
+
     if ($_SESSION['instanceType'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';
@@ -225,13 +248,13 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = NULL;
     }
     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
         $approvedOn = explode(" ", $_POST['approvedOn']);
-        $_POST['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+        $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
         $_POST['approvedOn'] = NULL;
     }
@@ -257,15 +280,15 @@ try {
         'sample_type' => (isset($_POST['specimenType']) && $_POST['specimenType'] != '') ? $_POST['specimenType'] :  NULL,
         'arv_adherance_percentage' => (isset($_POST['arvAdherence']) && $_POST['arvAdherence'] != '') ? $_POST['arvAdherence'] :  NULL,
         'reason_for_vl_testing' => (isset($_POST['stViralTesting'])) ? $_POST['stViralTesting'] : NULL,
-        'last_vl_date_routine' => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? $general->dateFormat($_POST['rmTestingLastVLDate']) :  NULL,
+        'last_vl_date_routine' => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? $general->isoDateFormat($_POST['rmTestingLastVLDate']) :  NULL,
         'last_vl_result_routine' => $rmVLValue,
-        'last_vl_date_failure_ac' => (isset($_POST['repeatTestingLastVLDate']) && $_POST['repeatTestingLastVLDate'] != '') ? $general->dateFormat($_POST['repeatTestingLastVLDate']) :  NULL,
+        'last_vl_date_failure_ac' => (isset($_POST['repeatTestingLastVLDate']) && $_POST['repeatTestingLastVLDate'] != '') ? $general->isoDateFormat($_POST['repeatTestingLastVLDate']) :  NULL,
         'last_vl_result_failure_ac' => $repeatTestingVLValue,
-        'last_vl_date_failure' => (isset($_POST['suspendTreatmentLastVLDate']) && $_POST['suspendTreatmentLastVLDate'] != '') ? $general->dateFormat($_POST['suspendTreatmentLastVLDate']) :  NULL,
+        'last_vl_date_failure' => (isset($_POST['suspendTreatmentLastVLDate']) && $_POST['suspendTreatmentLastVLDate'] != '') ? $general->isoDateFormat($_POST['suspendTreatmentLastVLDate']) :  NULL,
         'last_vl_result_failure' => $suspendedTreatmentVLValue,
         'request_clinician_name' => (isset($_POST['reqClinician']) && $_POST['reqClinician'] != '') ? $_POST['reqClinician'] :  NULL,
         'request_clinician_phone_number' => (isset($_POST['reqClinicianPhoneNumber']) && $_POST['reqClinicianPhoneNumber'] != '') ? $_POST['reqClinicianPhoneNumber'] :  NULL,
-        'test_requested_on' => (isset($_POST['requestDate']) && $_POST['requestDate'] != '') ? $general->dateFormat($_POST['requestDate']) :  NULL,
+        'test_requested_on' => (isset($_POST['requestDate']) && $_POST['requestDate'] != '') ? $general->isoDateFormat($_POST['requestDate']) :  NULL,
         'vl_focal_person' => (isset($_POST['vlFocalPerson']) && $_POST['vlFocalPerson'] != '') ? $_POST['vlFocalPerson'] :  NULL,
         'vl_focal_person_phone_number' => (isset($_POST['vlFocalPersonPhoneNumber']) && $_POST['vlFocalPersonPhoneNumber'] != '') ? $_POST['vlFocalPersonPhoneNumber'] :  NULL,
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] :  NULL,
@@ -273,18 +296,20 @@ try {
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
+        'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
         'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  NULL,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  NULL,
-        'result_value_absolute' => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Below Detection Level')) ? $_POST['vlResult'] :  NULL,
-        'result_value_absolute_decimal' => (isset($_POST['vlResult']) && $_POST['vlResult'] != '' && ($_POST['vlResult'] != 'Target Not Detected' && $_POST['vlResult'] != 'Below Detection Level')) ? number_format((float)$_POST['vlResult'], 2, '.', '') :  NULL,
-        'result' => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] :  NULL,
-        'result_value_log' => (isset($_POST['vlLog']) && $_POST['vlLog'] != '') ? $_POST['vlLog'] :  NULL,
+        'result_value_absolute'                 => $absVal ?: null,
+        'result_value_absolute_decimal'         => $absDecimalVal ?: null,
+        'result_value_text'                     => $txtVal ?: null,
+        'result'                                => $finalResult ?: null,
+        'result_value_log'                      => $logVal ?: null,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'result_approved_by'     => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
         'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  NULL,
         'lab_tech_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  NULL,
-        'result_status' => $status,
+        'result_status' => $resultStatus,
         'request_created_by' => $_SESSION['userId'],
         'request_created_datetime' => $db->now(),
         'last_modified_by' => $_SESSION['userId'],
@@ -303,10 +328,9 @@ try {
     }
 
     /* Updating the high and low viral load data */
-    if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-        $vlDb = new \Vlsm\Models\Vl();
-        $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    }
+    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+    $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    //}
     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
@@ -331,7 +355,7 @@ try {
         } else {
             $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
             $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
-            $vldata['sample_registered_at_lab'] = $general->getDateTime();
+            $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
         }
         $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  NULL;
 
@@ -350,7 +374,7 @@ try {
         //  'event_type'=>$eventType,
         //  'action'=>$action,
         //  'resource'=>$resource,
-        //  'date_time'=>$general->getDateTime()
+        //  'date_time'=>$general->getCurrentDateTime()
         //  );
         //  $db->insert($tableName1,$data);
 

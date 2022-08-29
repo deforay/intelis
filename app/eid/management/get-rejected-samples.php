@@ -6,7 +6,7 @@ ob_start();
 $general = new \Vlsm\Models\General();
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -18,10 +18,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->dateFormat(trim($s_c_date[0]));
+        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->dateFormat(trim($s_c_date[1]));
+        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
     }
     //get value by rejection reason id
     $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`

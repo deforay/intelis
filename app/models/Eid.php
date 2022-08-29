@@ -66,7 +66,8 @@ class Eid
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $provinceId = $general->getProvinceIDFromCode($provinceCode);
+                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);                    
                 }
 
                 if (!empty($provinceId)) {
@@ -74,25 +75,18 @@ class Eid
                 }
             }
 
-            $this->db->where('YEAR(sample_collection_date)', array($dateObj->format('Y')));
-            $this->db->where($sampleCodeCol, NULL, 'IS NOT');
-            $this->db->orderBy($sampleCodeKeyCol, "DESC");
-            $svlResult = $this->db->getOne($this->table, array($sampleCodeKeyCol));
-            if ($svlResult) {
-                $maxCodeKeyVal = $svlResult[$sampleCodeKeyCol];
-            } else {
-                $maxCodeKeyVal = null;
-            }
+            $this->db->where('YEAR(sample_collection_date) = ?', array($dateObj->format('Y')));
+            $maxCodeKeyVal = $this->db->getValue($this->table, "MAX($sampleCodeKeyCol)");
         }
+
 
         if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
-            $strparam = strlen($maxId);
-            $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
-            $maxId = $zeros . $maxId;
         } else {
-            $maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
+            $maxId = 1;
         }
+
+        $maxId = sprintf("%04d", (int) $maxId);
 
         $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
 
@@ -121,9 +115,12 @@ class Eid
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         }
 
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
+            error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
+            error_log("DUP::: Sample Key Code ====== " . $checkResult[$sampleCodeKeyCol]);
+            error_log('DUP::: ' . $this->db->getLastQuery());
             return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
         return json_encode($sCodeKey);
@@ -377,11 +374,11 @@ class Eid
 
             $rowData = false;
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
             $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sampleCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
@@ -414,16 +411,15 @@ class Eid
             }
 
             $oldSampleCodeKey = null;
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+
+            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $eidData['remote_sample_code'] = $sampleData['sampleCode'];
                 $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $eidData['remote_sample'] = 'yes';
                 $eidData['result_status'] = 9;
-                if ($_SESSION['accessType'] == 'testing-lab') {
+                if ($_SESSION['accessType'] === 'testing-lab') {
                     $eidData['sample_code'] = $sampleData['sampleCode'];
-                    $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                    $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $eidData['result_status'] = 6;
                 }
             } else {
@@ -433,6 +429,7 @@ class Eid
                 $eidData['remote_sample'] = 'no';
                 $eidData['result_status'] = 6;
             }
+
             $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
@@ -456,7 +453,7 @@ class Eid
                     $params['eidSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                        $eidData['unique_id'] = $general->generateRandomString(32);
+                        $eidData['unique_id'] = $general->generateUUID();
                         $id = $this->db->insert("form_eid", $eidData);
                     }
                 }

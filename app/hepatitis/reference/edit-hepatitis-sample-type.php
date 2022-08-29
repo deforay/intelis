@@ -35,7 +35,7 @@ $sampleInfo = $db->query($sampleQuery);
                   <label for="sampleName" class="col-lg-4 control-label">Sample Name <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
                     <input type="text" class="form-control isRequired" id="sampleName" name="sampleName" placeholder="sample Name" title="Please enter Sample name" value="<?php echo $sampleInfo[0]['sample_name']; ?>" onblur="checkNameValidation('r_hepatitis_sample_type','sample_name',this,'<?php echo "sample_id##" . $sampleInfo[0]['sample_id']; ?>','The sample name that you entered already exists.Enter another name',null)" />
-                    <input type="hidden" class="form-control isRequired" id="sampleId" name="sampleId" value="<?php echo $_GET['id']; ?>" />
+                    <input type="hidden" class="form-control isRequired" id="sampleId" name="sampleId" value="<?php echo htmlspecialchars($_GET['id']); ?>" />
                   </div>
                 </div>
               </div>

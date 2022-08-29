@@ -49,14 +49,12 @@ $systemConfig['modules']['tb'] = false;
 ```apache
 <VirtualHost *:80>
    DocumentRoot "/var/www/vlsm/public"
+   
    ServerName vlsm.example.org
 
    <Directory "/var/www/vlsm/public">
-       
-       SetEnv WEB_ROOT "/var/www/vlsm/public"
-       
        AddDefaultCharset UTF-8
-       Options Indexes MultiViews FollowSymLinks
+       Options -Indexes -MultiViews +FollowSymLinks
        AllowOverride All
        Order allow,deny
        Allow from all

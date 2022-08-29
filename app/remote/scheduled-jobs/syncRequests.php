@@ -6,7 +6,6 @@ if (php_sapi_name() == 'cli') {
 }
 
 $general = new \Vlsm\Models\General();
-$app = new \Vlsm\Models\App();
 
 $systemConfig = SYSTEM_CONFIG;
 
@@ -24,10 +23,11 @@ if (strpos($headers[0], '200') === false) {
     return false;
 }
 $arr = $general->getGlobalConfig();
-$sarr = $general->getSystemConfig();
 
+
+$labId = $general->getSystemConfig('sc_testing_lab_id');
 //get remote data
-if (empty($sarr['sc_testing_lab_id'])) {
+if (empty($labId)) {
     echo "No Lab ID set in System Config";
     exit(0);
 }
@@ -47,12 +47,12 @@ if (!empty($forceSyncModule)) {
  ****************************************************************
  */
 $request = array();
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
     //$remoteSampleCodeList = array();
 
     $url = $remoteUrl . '/remote/remote/getRequests.php';
     $payload = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'vl',
         "Key" => "vlsm-lab-data--",
     );
@@ -66,10 +66,6 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
         $url,
         [
             GuzzleHttp\RequestOptions::JSON => $payload
-        ],
-        [
-            'headers'        => ['Accept-Encoding' => 'gzip'],
-            'decode_content' => 'gzip'
         ]
     );
 
@@ -121,7 +117,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
             }
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check wheather sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
@@ -148,7 +144,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     $request['source_of_request'] = "vlsts";
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
@@ -161,7 +157,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
             //}
         }
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'vl', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -175,10 +171,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
 
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
     $url = $remoteUrl . '/remote/remote/eid-test-requests.php';
     $data = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'eid',
         "Key" => "vlsm-lab-data--",
     );
@@ -247,7 +243,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check whether sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
@@ -271,7 +267,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
@@ -281,7 +277,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             //}
         }
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'eid', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'eid', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -294,10 +290,10 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
   */
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
     $url = $remoteUrl . '/remote/remote/covid-19-test-requests.php';
     $data = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'covid19',
         "Key" => "vlsm-lab-data--",
     );
@@ -367,7 +363,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check whether sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
@@ -393,7 +389,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                 if (!empty($request['sample_collection_date'])) {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
@@ -455,7 +451,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'covid19', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'covid19', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -468,10 +464,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 */
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
     $url = $remoteUrl . '/remote/remote/hepatitis-test-requests.php';
     $data = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'hepatitis',
         "Key" => "vlsm-lab-data--",
     );
@@ -545,7 +541,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check exist remote
             $exsvlQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
@@ -564,7 +560,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                 if (!empty($request['sample_collection_date'])) {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
@@ -623,7 +619,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         }
 
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'hepatitis', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -635,10 +631,10 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 */
 $request = array();
 //$remoteSampleCodeList = array();
-if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == true) {
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
     $url = $remoteUrl . '/remote/remote/tb-test-requests.php';
     $data = array(
-        'labName' => $sarr['sc_testing_lab_id'],
+        'labId' => $labId,
         'module' => 'tb',
         "Key" => "vlsm-lab-data--",
     );
@@ -704,7 +700,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
             }
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = $general->getDateTime();
+            $request['last_modified_datetime'] = $general->getCurrentDateTime();
 
             //check exist remote
             $exsvlQuery = "SELECT tb_id,sample_code FROM form_tb AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
@@ -723,7 +719,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
                 if (!empty($request['sample_collection_date'])) {
                     $request['request_created_by'] = 0;
                     $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getDateTime();
+                    $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
@@ -734,7 +730,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] == t
         }
 
         if ($counter > 0) {
-            $trackId = $app->addApiTracking(null, $counter, 'requests', 'tb', $url, $sarr['sc_testing_lab_id'], 'sync-api');
+            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'tb', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -744,7 +740,7 @@ $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_n
 
 /* Update last_remote_results_sync in s_vlsm_instance */
 $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-$id = $db->update('s_vlsm_instance', array('last_remote_requests_sync' => $general->getDateTime()));
+$id = $db->update('s_vlsm_instance', array('last_remote_requests_sync' => $general->getCurrentDateTime()));
 
 if (isset($forceSyncModule) && trim($forceSyncModule) != "" && isset($manifestCode) && trim($manifestCode) != "") {
     return 1;

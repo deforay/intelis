@@ -8,6 +8,9 @@
 
 namespace Vlsm\Models;
 
+use Ramsey\Uuid\Uuid;
+use Vlsm\Utilities\DateUtils;
+
 class General
 {
 
@@ -47,18 +50,22 @@ class General
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true)
     {
-        $uuid = sprintf(
-            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            random_int(0, 0xffff),
-            random_int(0, 0xffff),
-            random_int(0, 0xffff),
-            random_int(0, 0x0C2f) | 0x4000,
-            random_int(0, 0x3fff) | 0x8000,
-            random_int(0, 0x2Aff),
-            random_int(0, 0xffD3),
-            random_int(0, 0xff4B)
-        );
-        if ($attachExtraString) {
+        // $uuid = sprintf(
+        //     '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        //     random_int(0, 0xffff),
+        //     random_int(0, 0xffff),
+        //     random_int(0, 0xffff),
+        //     random_int(0, 0x0C2f) | 0x4000,
+        //     random_int(0, 0x3fff) | 0x8000,
+        //     random_int(0, 0x2Aff),
+        //     random_int(0, 0xffD3),
+        //     random_int(0, 0xff4B)
+        // );
+
+        $uuid = Uuid::uuid4();
+        $uuid = $uuid->toString();
+
+        if ($attachExtraString === true) {
             $uuid .= "-" . $this->generateRandomString(4);
         }
         return $uuid;
@@ -74,58 +81,22 @@ class General
      * Used to format date from dd-mmm-yyyy to yyyy-mm-dd for storing in database
      *
      */
-    public function dateFormat($date)
+    public function isoDateFormat($date, $includeTime = false)
     {
-        $date = trim($date);
-        if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
-            return null;
-        } else {
-            $dateArray = explode('-', $date);
-            if (sizeof($dateArray) == 0) {
-                return;
-            }
-            $newDate = $dateArray[2] . "-";
-
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = 1;
-            $mon += array_search(ucfirst($dateArray[1]), $monthsArray);
-
-            if (strlen($mon) == 1) {
-                $mon = "0" . $mon;
-            }
-            return $newDate .= $mon . "-" . $dateArray[0];
-        }
+        $utils = new DateUtils();
+        return $utils->isoDateFormat($date, $includeTime);
     }
 
-    public function humanDateFormat($date, $returnTimePart = true)
+    public function humanReadableDateFormat($date, $includeTime = false)
     {
-        $date = trim($date);
-        if ($date == null || $date == "" || $date == "0000-00-00" || substr($date, 0, strlen("0000-00-00")) === "0000-00-00") {
-            return null;
-        } else {
-
-            $dateTimeArray = explode(' ', $date);
-
-            $dateArray = explode('-', $dateTimeArray[0]);
-            $newDate = $dateArray[2] . "-";
-
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = $monthsArray[$dateArray[1] - 1];
-
-            $newDate .= $mon . "-" . $dateArray[0];
-
-            if ($returnTimePart && isset($dateTimeArray[1]) && $dateTimeArray[1] != '') {
-                $newDate .= " " . $dateTimeArray[1];
-            }
-
-            return $newDate;
-        }
+        $utils = new DateUtils();
+        return $utils->humanReadableDateFormat($date, $includeTime);
     }
 
-    public static function getDateTime($returnFormat = 'Y-m-d H:i:s')
+    public static function getCurrentDateTime($returnFormat = 'Y-m-d H:i:s')
     {
-        $date = new \DateTime(date('Y-m-d H:i:s'));
-        return $date->format($returnFormat);
+        $utils = new DateUtils();
+        return $utils->getCurrentDateTime($returnFormat);
     }
 
     public function removeDirectory($dirname)
@@ -142,7 +113,7 @@ class General
 
         // Loop through the folder
         $dir = dir($dirname);
-        while (false !== $entry = $dir->read()) {
+        while (false !== ($entry = $dir->read())) {
             // Skip pointers
             if ($entry == '.' || $entry == '..') {
                 continue;
@@ -176,7 +147,7 @@ class General
             $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
         }
 
-        if ($name == null) {
+        if (empty($name)) {
             return $sarr;
         } else {
             if (isset($sarr[$name])) {
@@ -184,23 +155,6 @@ class General
             } else {
                 return null;
             }
-        }
-    }
-
-    // get province id from the province table
-    public function getProvinceIDFromCode($code)
-    {
-        if ($this->db == null) {
-            return false;
-        }
-
-        $pQuery = "SELECT * FROM geographical_divisions WHERE (geo_parent = 0) AND (geo_code like ?)";
-        $pResult = $this->db->rawQueryOne($pQuery, array($code));
-
-        if ($pResult) {
-            return $pResult['geo_id'];
-        } else {
-            return null;
         }
     }
 
@@ -363,7 +317,7 @@ class General
             'action' => $action,
             'resource' => $resource,
             'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
-            'date_time' => $this->getDateTime(),
+            'date_time' => $this->getCurrentDateTime(),
             'ip_address' => $ipaddress,
         );
 
@@ -375,7 +329,7 @@ class General
 
         $data = array(
             'no_of_results_imported' => $numberOfResults,
-            'imported_on' => $this->getDateTime(),
+            'imported_on' => $this->getCurrentDateTime(),
             'import_mode' => $importMode,
             'imported_by' => $importedBy,
         );
@@ -383,20 +337,6 @@ class General
         $this->db->insert('result_import_stats', $data);
     }
 
-    public function getLowVLResultTextFromImportConfigs($machineFile = null)
-    {
-        if ($this->db == null) {
-            return false;
-        }
-
-        if (!empty($machineFile)) {
-            $this->db->where('import_machine_file_name', $machineFile);
-        }
-
-        $this->db->where("low_vl_result_text", NULL, 'IS NOT');
-        $this->db->where("status", 'active', 'like');
-        return $this->db->getValue('import_config', 'low_vl_result_text', null);
-    }
 
     public function getFacilitiesByUser($userId = null)
     {
@@ -547,22 +487,6 @@ class General
         return $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
     }
 
-    public function ageInMonth($date)
-    {
-        $birthday = new \DateTime($date);
-        $diff = $birthday->diff(new \DateTime());
-        return $diff->format('%m') + 12 * $diff->format('%y');
-    }
-
-    public function ageInYearMonthDays($date)
-    {
-        $bday = new \DateTime($date); // Your date of birth
-        $today = new \Datetime(date('m.d.y'));
-        $diff = $today->diff($bday);
-        // printf(' Your age : %d years, %d month, %d days', $diff->y, $diff->m, $diff->d);
-        return array("year" => $diff->y, "months" => $diff->m, "days" => $diff->d);
-    }
-
     public function getRejectionReasons($testType)
     {
         $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
@@ -587,22 +511,22 @@ class General
         return $rejReaons;
     }
 
-    public function getValueByName($name = "", $condtionField, $tableName, $id, $occurate = false)
+    public function getValueByName($name = null, $condtionField = null, $tableName = null, $id = null, $exact = false)
     {
-        $where = "";
-        if (!empty($name)) {
-            if ($occurate) {
-                $where = $condtionField . " LIKE '%$name%'";
-            } else {
-                $where = $condtionField . " LIKE '$name%'";
-            }
-
-            $query = "SELECT " . $id . " FROM " . $tableName . " where " . $where;
-            $result =  $this->db->rawQuery($query);
-            return $result[0][$id];
-        } else {
+        if (empty($name)) {
             return null;
         }
+
+        $where = "";
+        if ($exact) {
+            $where = $condtionField . " LIKE '%$name%'";
+        } else {
+            $where = $condtionField . " LIKE '$name%'";
+        }
+
+        $query = "SELECT " . $id . " FROM " . $tableName . " where " . $where;
+        $result =  $this->db->rawQuery($query);
+        return $result[0][$id];
     }
 
     public function getLocaleLists()
@@ -715,7 +639,7 @@ class General
             'sample_code' => $sampleCode,
             'browser' => $this->getBrowser($userAgent),
             'operating_system' => $this->getOperatingSystem($userAgent),
-            'date_time' => $this->getDateTime(),
+            'date_time' => $this->getCurrentDateTime(),
             'ip_address' => $this->getIPAddress(),
         );
 
@@ -804,10 +728,10 @@ class General
 
         return $browser;
     }
-    public function getLatestSynDateTime()
+    public function getLastSyncDateTime()
     {
         if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
-            $dateTime = $this->db->rawQueryOne("SELECT requested_on AS dateTime FROM track_api_requests ORDER BY requested_on desc");
+            $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime` FROM `track_api_requests`");
         } else {
             $dateTime = $this->db->rawQueryOne("SELECT GREATEST(COALESCE(last_remote_requests_sync, 0), COALESCE(last_remote_results_sync, 0), COALESCE(last_remote_reference_data_sync, 0)) AS dateTime FROM s_vlsm_instance");
         }
@@ -820,7 +744,7 @@ class General
         return $this->db->getOne("batch_details");
     }
 
-    public function createBatchCode($start, $end)
+    public function createBatchCode()
     {
         $batchQuery = 'SELECT MAX(batch_code_key) FROM batch_details as bd WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
         $batchResult = $this->db->query($batchQuery);
@@ -836,20 +760,6 @@ class General
         } else {
             $code = '001';
         }
-        // $this->db->where("DATE(request_created_datetime) = CURRENT_DATE AND batch_code_key = $code");
-        // $exist = $this->db->getOne("batch_details");
-
-        // if ($exist) {
-        //     $code = $code + 1;
-        //     $length = strlen($code);
-        //     if ($length == 1) {
-        //         $code = "00" . $code;
-        //     } else if ($length == 2) {
-        //         $code = "0" . $code;
-        //     } else if ($length == 3) {
-        //         $code = $code;
-        //     }
-        // }
         return $code;
     }
 
@@ -880,10 +790,50 @@ class General
     }
 
     //dump the contents of a variable to the error log in a readable format
-    public function var_error_log($object = null) :void
+    public function var_error_log($object = null): void
     {
         ob_start();
         var_dump($object);
         error_log(ob_get_clean());
+    }
+
+    public function isJSON($string)
+    {
+        return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
+    }
+
+    public function prettyJson($json)
+    {
+        if (is_array($json)) {
+            return stripslashes(json_encode($json, JSON_PRETTY_PRINT));
+        } else {
+            return stripslashes(json_encode(json_decode($json), JSON_PRETTY_PRINT));
+        }
+    }
+
+    public function addApiTracking($user, $records, $type, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
+    {
+
+        try {
+            $requestData = (!empty($requestData) && !$this->isJSON($requestData)) ? json_encode($requestData) : $requestData;
+            $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData) : $responseData;
+            $data = array(
+                'requested_by'      => $user ?: 'vlsm-system',
+                'requested_on'      => $this->getCurrentDateTime(),
+                'number_of_records' => $records ?: 0,
+                'request_type'      => $type ?: null,
+                'test_type'         => $testType ?: null,
+                'api_url'           => $url ?: null,
+                'request_data'      => $requestData,
+                'response_data'     => $responseData,
+                'facility_id'       => $facilityId ?: null,
+                'data_format'       => $format ?: null
+            );
+            return $this->db->insert("track_api_requests", $data);
+        } catch (\Exception $exc) {
+            error_log($exc->getMessage());
+            error_log($this->db->getLastError());
+            error_log($exc->getTraceAsString());
+        }
     }
 }

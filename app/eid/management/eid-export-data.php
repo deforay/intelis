@@ -66,7 +66,12 @@ $eidResults = $general->getEidResults();
 							<td>
 								<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _('Select Received Date'); ?>" style="width:220px;background:#fff;" />
 							</td>
-
+							<td><b><?php echo _("Results Dispatched Date"); ?>&nbsp;:</b></td>
+							<td>
+								<input type="text" id="resultDispatchedOn" name="resultDispatchedOn" class="form-control daterangefield" placeholder="<?php echo _('Results Dispatched Date'); ?>" style="width:220px;background:#fff;" />
+							</td>
+						</tr>
+						<tr>
 							<td><b><?php echo _("Sample Type"); ?>&nbsp;:</b></td>
 							<td>
 								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
@@ -76,8 +81,6 @@ $eidResults = $general->getEidResults();
 									<?php } ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Facility Name"); ?></th>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
@@ -90,13 +93,12 @@ $eidResults = $general->getEidResults();
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
+						</tr>
+						<tr>
 							<th><?php echo _("Sample Test Date"); ?></th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-
-						</tr>
-						<tr>
 							<th><?php echo _("Result"); ?> </th>
 							<td>
 								<select class="form-control" id="result" name="result" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
@@ -111,6 +113,8 @@ $eidResults = $general->getEidResults();
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
+						</tr>
+						<tr>
 							<th><?php echo _("Status"); ?></th>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
@@ -122,8 +126,6 @@ $eidResults = $general->getEidResults();
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<td><b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
@@ -148,6 +150,8 @@ $eidResults = $general->getEidResults();
 									<?php } ?>
 								</select>
 							</td>
+						</tr>
+						<tr>
 							<th><?php echo _("Implementing Partners"); ?></th>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
@@ -273,6 +277,9 @@ $eidResults = $general->getEidResults();
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
+		$("#testingLab").select2({
+			placeholder: "<?php echo _("Select Testing Lab"); ?>"
+		});
 		$('#sampleCollectionDate,#sampleTestDate,#printDate').daterangepicker({
 				locale: {
 					cancelLabel: 'Clear'
@@ -332,9 +339,7 @@ $eidResults = $general->getEidResults();
 		});
 
 		$('#printDate').val("");
-		$('#sampleCollectionDate').val("");
-		//$('#sampleTestDate').val("");
-		$('#sampleReceivedDate').val("");
+		$('#sampleReceivedDate, #resultDispatchedOn, #sampleCollectionDate').val("");
 		loadVlRequestData();
 
 		$(".showhideCheckBox").change(function() {
@@ -435,6 +440,10 @@ $eidResults = $general->getEidResults();
 				aoData.push({
 					"name": "sampleReceivedDate",
 					"value": $("#sampleReceivedDate").val()
+				});
+				aoData.push({
+					"name": "resultDispatchedOn",
+					"value": $("#resultDispatchedOn").val()
 				});
 				aoData.push({
 					"name": "sampleType",

@@ -49,7 +49,7 @@ $formResults = $db->rawQuery($query);
 //var_dump($formResults);die;
 
 $counter = 0;
-
+$json = "";
 foreach ($formResults as $row) {
 
 
@@ -58,17 +58,17 @@ foreach ($formResults as $row) {
     $sampleTestedDate = ((new DateTime($row['sample_tested_datetime']))->format("Y-m-d"));
     $lastModifiedDateTime = ((new DateTime($row['last_modified_datetime']))->format("Y-m-d"));
 
-    $rejectionReasonCode = $row['reason_for_sample_rejection'] ?? null;
-    $rejectionReason = $row['rejection_reason_name'] ?? null;
+    $rejectionReasonCode = $row['reason_for_sample_rejection'] ?: null;
+    $rejectionReason = $row['rejection_reason_name'] ?: null;
 
-    $testerFirstName = $row['tester_name'] ?? "VLSM";
-    $testerLastName = $row['tester_name'] ?? "User";
+    $testerFirstName = $row['tester_name'] ?: "VLSM";
+    $testerLastName = $row['tester_name'] ?: "User";
 
-    $row['vl_result_category'] = $row['vl_result_category'] ?? "Unknown";
+    $row['vl_result_category'] = $row['vl_result_category'] ?: "Unknown";
 
     $specimenCode = 'venous-blood';
 
-    $testerPhoneNumber = $row['tester_phone_number'] ?? "Unknown";
+    $testerPhoneNumber = $row['tester_phone_number'] ?: "Unknown";
 
     $formAttributes = json_decode($row['form_attributes'], true);
 
@@ -95,9 +95,9 @@ foreach ($formResults as $row) {
     // echo prettyJson($json);
     // continue;
 
-    $resp = $fhir->post(null, $json);
+    $resp = $fhir->post("/", $json);
 
-    echo prettyJson($resp);
+    //echo prettyJson($resp);
 
 
     $updateData = array('result_sent_to_source' => 'sent');
@@ -110,4 +110,4 @@ foreach ($formResults as $row) {
 $response = json_encode(array('timestamp' => time(), 'processed' => $counter, 'response' => $resp));
 $app = new \Vlsm\Models\App();
 $trackId = $app->addApiTracking('vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json);
-echo "\n\n\n\n" . prettyJson($response);
+echo prettyJson($response);

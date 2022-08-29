@@ -82,14 +82,14 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
         $where[] = " (vl.result ='' OR vl.result IS NULL OR vl.result LIKE '')";
         $where[] = " (vl.is_sample_rejected ='no' OR vl.is_sample_rejected IS NULL OR vl.is_sample_rejected LIKE 'no' OR vl.is_sample_rejected like '')";
     }
-    if (sizeof($where) > 0) {
+    if (!empty($where)) {
         $sQuery .= " where  " . implode(" AND ", $where) . "  limit 1";
     } else {
         $sQuery .= " limit 1";
     }
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
-    if ($rowData && count($rowData) > 0) {
+    if (!empty($rowData)) {
         $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], count($rowData), $type[1], 'eid', $requestUrl, $hl7, 'hl7');
         foreach ($rowData as $row) {
@@ -314,7 +314,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $where[] =  " child_gender like '" . $_POST['childGender'] . "'";
     }
 
-    if (sizeof($where) > 0) {
+    if (!empty($where)) {
         $sQuery .= " where  " . implode(" AND ", $where) . "  limit 1";
     } else {
         $sQuery .= " limit 1";
@@ -399,7 +399,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $status = 4;
         }
         $eidData = array(
-            'unique_id'                                     => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateRandomString(32),
+            'unique_id'                                     => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateUUID(),
             'vlsm_instance_id'                                     => $instanceId,
             'vlsm_country_id'                                     => $_POST['formId'],
             'sample_code_key'                                     => isset($_POST['sampleCodeKey']) ? $_POST['sampleCodeKey'] : null,
@@ -440,9 +440,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                         => isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,
-            'request_created_datetime'                             => $general->getDateTime(),
-            'sample_registered_at_lab'                             => $general->getDateTime(),
-            'last_modified_datetime'                             => $general->getDateTime()
+            'request_created_datetime'                             => $general->getCurrentDateTime(),
+            'sample_registered_at_lab'                             => $general->getCurrentDateTime(),
+            'last_modified_datetime'                             => $general->getCurrentDateTime()
         );
 
         $eidData['source_of_request'] = 'hl7';

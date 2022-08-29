@@ -88,7 +88,7 @@ class App
                     INNER JOIN province_details as pd ON pd.province_name=f.facility_state";
         $where = "";
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getFacilityMap($user);
+            $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 if (isset($where) && trim($where) != "") {
                     $where .= " AND ";
@@ -176,7 +176,7 @@ class App
                     LEFT JOIN province_details as pd ON pd.province_name=f.facility_state";
         $where = "";
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getFacilityMap($user);
+            $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 if (isset($where) && trim($where) != "") {
                     $where .= " AND ";
@@ -246,7 +246,7 @@ class App
                     LEFT JOIN facility_details as f ON pd.province_name=f.facility_state";
         $where = "";
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getFacilityMap($user);
+            $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 if (isset($where) && trim($where) != "") {
                     $where .= " AND ";
@@ -288,7 +288,7 @@ class App
                     LEFT JOIN facility_details as f ON pd.province_name=f.facility_state";
         $where = "";
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getFacilityMap($user);
+            $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 if (isset($where) && trim($where) != "") {
                     $where .= " AND ";
@@ -370,17 +370,17 @@ class App
     {
         $general = new \Vlsm\Models\General($this->db);
         $data = array(
-            'requested_by'          => $user ?? 'vlsm-system',
-            'requested_on'          => $general->getDateTime(),
-            'number_of_records'     => $records ?? 0,
-            'request_type'          => $type ?? null,
-            'test_type'             => $testType ?? null,
-            'api_url'               => $url ?? null,
-            'api_params'            => $params ?? null,
-            'data_format'           => $format ?? null
+            'requested_by'          => $user ?: 'vlsm-system',
+            'requested_on'          => $general->getCurrentDateTime(),
+            'number_of_records'     => $records ?: 0,
+            'request_type'          => $type ?: null,
+            'test_type'             => $testType ?: null,
+            'api_url'               => $url ?: null,
+            'api_params'            => $params ?: null,
+            'data_format'           => $format ?: null
         );
         if ($format == 'sync-api') {
-            $data['facility_id'] = (isset($params['date'][0]['facilityId']) && count($params['date'][0]['facilityId']) > 0) ? $params['date'][0]['facilityId'] : null;
+            $data['facility_id'] = (isset($params['data'][0]['facilityId']) && count($params['data'][0]['facilityId']) > 0) ? $params['data'][0]['facilityId'] : null;
         }
         return $this->db->insert("track_api_requests", $data);
     }
@@ -402,7 +402,7 @@ class App
     {
         $general = new \Vlsm\Models\General($this->db);
         do {
-            $uniqueId = $general->generateRandomString(32);
+            $uniqueId = $general->generateUUID();
             $dublicate = $this->db->rawQueryOne("SELECT $fieldName FROM $tableName where $fieldName = '$uniqueId'");
         } while ($dublicate);
 

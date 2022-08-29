@@ -43,7 +43,7 @@ $tstInfo = $db->query($tstQuery);
 									<label for="testReasonName" class="col-lg-4 control-label">Test Reason Name <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="testReasonName" name="testReasonName" placeholder="Test Reason Name" title="Please enter Test Reason name" value="<?php echo $tstInfo[0]['test_reason_name']; ?>" onblur="checkNameValidation('r_vl_test_reasons','test_reason_name',this,'<?php echo "test_reason_id##" . $id; ?>','The Test Reason name that you entered already exists.Enter another name',null)" />
-										<input type="hidden" class="form-control" id="testReasonId" name="testReasonId" value="<?php echo $_GET['id']; ?>" />
+										<input type="hidden" class="form-control" id="testReasonId" name="testReasonId" value="<?php echo htmlspecialchars($_GET['id']); ?>" />
 									</div>
 								</div>
 							</div>

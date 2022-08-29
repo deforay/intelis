@@ -1,39 +1,30 @@
 <?php
-//this file is get the data from remote db
-$data = json_decode(file_get_contents('php://input'), true);
 require_once(dirname(__FILE__) . "/../../../startup.php");
 
-$labId = $data['labName'];
+header('Content-Type: application/json');
 
 $general = new \Vlsm\Models\General();
+
+$origData = $jsonData = file_get_contents('php://input');
+$data = json_decode($jsonData, true);
+
+
+$payload = array();
+
+$labId = $data['labName'] ?: $data['labId'] ?: null;
+
+if (empty($labId)) {
+  exit(0);
+}
+
+
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-$app = new \Vlsm\Models\App();
 
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-  $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-//get remote data
-if (trim($sarr['sc_testing_lab_id']) == '') {
-  $sarr['sc_testing_lab_id'] = "''";
-}
+$facilityDb = new \Vlsm\Models\Facilities();
+$fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
-//get facility map id
-$facilityMapQuery = "SELECT facility_id FROM testing_lab_health_facilities_map where vl_lab_id=" . $labId;
-$fMapResult = $db->query($facilityMapQuery);
-if (count($fMapResult) > 0) {
-  $fMapResult = array_map('current', $fMapResult);
-  $fMapResult = implode(",", $fMapResult);
-} else {
-  $fMapResult = "";
-}
-
-if (isset($fMapResult) && $fMapResult != '' && $fMapResult != null) {
+if (!empty($fMapResult)) {
   $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
 } else {
   $condition = "lab_id =" . $labId;
@@ -52,11 +43,9 @@ if (!empty($data['manifestCode'])) {
 $covid19RemoteResult = $db->rawQuery($covid19Query);
 
 $data = array();
-
-if (!empty($covid19RemoteResult) && count($covid19RemoteResult) > 0) {
-
-  $trackId = $app->addApiTracking(null, count($covid19RemoteResult), 'requests', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
-  
+$counter = 0;
+if ($db->count > 0) {
+  $counter = $db->count;
   $sampleIds = array_column($covid19RemoteResult, 'covid19_id');
 
   $covid19Obj = new \Vlsm\Models\Covid19();
@@ -70,12 +59,15 @@ if (!empty($covid19RemoteResult) && count($covid19RemoteResult) > 0) {
   $data['comorbidities'] = $comorbidities;
   $data['testResults'] = $testResults;
 
-  $updata = array(
-    'data_sync' => 1
-  );
-  $db->where('covid19_id', $sampleIds, 'IN');
 
-  if (!$db->update('form_covid19', $updata))
-    error_log('update failed: ' . $db->getLastError());
+  $db->where('vl_sample_id', $sampleIds, 'IN')
+    ->update('form_covid19', array('data_sync' => 1));
 }
-echo json_encode($data);
+
+$payload = json_encode($data);
+
+$general->addApiTracking('vlsm-system', $counter, 'requests', 'covid19', null, $origData, $payload, 'json', $labId);
+
+
+
+echo $payload;

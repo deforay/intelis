@@ -7,11 +7,10 @@ if (php_sapi_name() == 'cli') {
 }
 
 $general = new \Vlsm\Models\General();
-$app = new \Vlsm\Models\App();
 
+// $arr = $general->getGlobalConfig();
 
-$arr = $general->getGlobalConfig();
-$sarr = $general->getSystemConfig();
+$labId = $general->getSystemConfig('sc_testing_lab_id');
 
 // putting this into a variable to make this editable
 $systemConfig = SYSTEM_CONFIG;
@@ -39,7 +38,7 @@ if (!empty($forceSyncModule)) {
 }
 
 // VIRAL LOAD TEST RESULTS
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
     $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
             FROM `form_vl` AS vl 
             LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
@@ -59,7 +58,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     $url = $remoteUrl . '/remote/remote/testResults.php';
 
     $data = array(
-        "labId" => $sarr['sc_testing_lab_id'],
+        "labId" => $labId,
         "result" => $vlLabResult,
         "Key" => "vlsm-lab-data--",
     );
@@ -88,14 +87,13 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
         $id = $db->update('form_vl', array('data_sync' => 1));
     }
     if (count($vlLabResult) > 0) {
-        $trackId = $app->addApiTracking('vlsm-system', count($vlLabResult), 'results', 'vl', $url, $json_data, 'sync-api');
+        $general->addApiTracking('vlsm-system', count($vlLabResult), 'send-results', 'vl', $url, $json_data, $result, 'json', $labId);
     }
 }
 
 
 // EID TEST RESULTS
-
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
     $eidQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
                     FROM `form_eid` AS vl 
                     LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
@@ -111,7 +109,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
     $url = $remoteUrl . '/remote/remote/eid-test-results.php';
     $data = array(
-        "labId" => $sarr['sc_testing_lab_id'],
+        "labId" => $labId,
         "result" => $eidLabResult,
         "Key" => "vlsm-lab-data--",
     );
@@ -140,15 +138,14 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $id = $db->update('form_eid', array('data_sync' => 1));
     }
     if (count($eidLabResult) > 0) {
-        $trackId = $app->addApiTracking('vlsm-system', count($eidLabResult), 'results', 'eid', $url, $json_data, 'sync-api');
+        $general->addApiTracking('vlsm-system', count($eidLabResult), 'send-results', 'eid', $url, $json_data, $result, 'json', $labId);
     }
 }
 
 
 
 // COVID-19 TEST RESULTS
-
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
 
     $covid19Query = "SELECT c19.*, a.user_name as 'approved_by_name' 
                     FROM `form_covid19` AS c19 
@@ -163,10 +160,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     }
     $c19LabResult = $db->rawQuery($covid19Query);
 
-    $forms = array();
-    foreach ($c19LabResult as $row) {
-        $forms[] = $row['covid19_id'];
-    }
+    $forms = array_column($c19LabResult, 'covid19_id');
 
     $covid19Obj = new \Vlsm\Models\Covid19();
     $symptoms = $covid19Obj->getCovid19SymptomsByFormId($forms);
@@ -175,7 +169,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
     $url = $remoteUrl . '/remote/remote/covid-19-test-results.php';
     $data = array(
-        "labId" => $sarr['sc_testing_lab_id'],
+        "labId" => $labId,
         "result" => $c19LabResult,
         "testResults" => $testResults,
         "symptoms" => $symptoms,
@@ -203,19 +197,17 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $result = json_decode($curl_response, true);
 
     if (!empty($result) && count($result) > 0) {
-        //foreach ($result as $code) {
         $db = $db->where('sample_code', $result, 'IN');
         $id = $db->update('form_covid19', array('data_sync' => 1));
-        //}
     }
     if (count($c19LabResult) > 0) {
-        $trackId = $app->addApiTracking('vlsm-system', count($c19LabResult), 'results', 'covid19', $url, $json_data, 'sync-api');
+        $general->addApiTracking('vlsm-system', count($c19LabResult), 'send-results', 'covid19', $url, $json_data, $result, 'json', $labId);
     }
 }
 
 // Hepatitis TEST RESULTS
 
-if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
 
     $hepQuery = "SELECT hep.*, a.user_name as 'approved_by_name' 
                     FROM `form_hepatitis` AS hep 
@@ -229,10 +221,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     }
     $hepLabResult = $db->rawQuery($hepQuery);
 
-    // $forms = array();
-    // foreach ($hepLabResult as $row) {
-    //     $forms[] = $row['hepatitis_id'];
-    // }
+    // $forms = array_column($hepLabResult, 'hepatitis_id');
 
     // $hepatitisObj = new \Vlsm\Models\Hepatitis();
     // $risks = $hepatitisObj->getRiskFactorsByHepatitisId($forms);
@@ -240,7 +229,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
     $url = $remoteUrl . '/remote/remote/hepatitis-test-results.php';
     $data = array(
-        "labId" => $sarr['sc_testing_lab_id'],
+        "labId" => $labId,
         "result" => $hepLabResult,
         "Key" => "vlsm-lab-data--",
     );
@@ -266,13 +255,11 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     $result = json_decode($curl_response, true);
 
     if (!empty($result) && count($result) > 0) {
-        //foreach ($result as $code) {
         $db = $db->where('sample_code', $result, 'IN');
         $id = $db->update('form_hepatitis', array('data_sync' => 1));
-        //}
     }
     if (count($hepLabResult) > 0) {
-        $trackId = $app->addApiTracking('vlsm-system', count($hepLabResult), 'common-data', 'hepatitis', $url, $json_data, 'sync-api');
+        $general->addApiTracking('vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $json_data, $result, 'json', $labId);
     }
 }
 /* Get instance id for update last_remote_results_sync */
@@ -280,4 +267,4 @@ $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_n
 
 /* Update last_remote_results_sync in s_vlsm_instance */
 $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-$id = $db->update('s_vlsm_instance', array('last_remote_results_sync' => $general->getDateTime()));
+$id = $db->update('s_vlsm_instance', array('last_remote_results_sync' => $general->getCurrentDateTime()));

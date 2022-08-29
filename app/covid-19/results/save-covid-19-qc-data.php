@@ -16,11 +16,11 @@ try {
     if (isset($_POST['qcCode']) && trim($_POST['qcCode']) != "") {
 
         $data = array(
-            'unique_id'             => $general->generateRandomString(32),
+            'unique_id'             => $general->generateUUID(),
             'qc_code'               => $_POST['qcCode'],
             'testkit'               => base64_decode($_POST['testKit']),
             'lot_no'                => $_POST['lotNo'],
-            'expiry_date'           => $general->dateFormat($_POST['expiryDate']),
+            'expiry_date'           => $general->isoDateFormat($_POST['expiryDate']),
             'lab_id'                => $_POST['labName'],
             'testing_point'                => $_POST['testingPoint'],
             'tested_by'             => $_POST['testerName'],

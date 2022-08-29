@@ -47,6 +47,11 @@ class Vl
     public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
+        if (!empty($maxCodeKeyVal)) {
+            error_log(" ===== MAXX Code ====== " . $maxCodeKeyVal);
+        }
+
+
         $general = new \Vlsm\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -87,12 +92,13 @@ class Vl
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal == null) {
+        if ($maxCodeKeyVal === null) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $provinceId = $general->getProvinceIDFromCode($provinceCode);
+                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -100,32 +106,20 @@ class Vl
                 }
             }
 
-            $this->db->where('YEAR(sample_collection_date)', array($dateObj->format('Y')));
-            $this->db->where($sampleCodeCol, NULL, 'IS NOT');
-            $this->db->orderBy($sampleCodeKeyCol, "DESC");
-            $svlResult = $this->db->getOne($this->table, array($sampleCodeKeyCol));
-
-            if ($svlResult) {
-                $maxCodeKeyVal = $svlResult[$sampleCodeKeyCol];
-            } else {
-                $maxCodeKeyVal = null;
-            }
+            $this->db->where('YEAR(sample_collection_date) = ?', array($dateObj->format('Y')));
+            $maxCodeKeyVal = $this->db->getValue($this->table, "MAX($sampleCodeKeyCol)");
         }
 
 
-        if (!empty($maxCodeKeyVal)) {
+        if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
-            $strparam = strlen($maxId);
-            $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
-            $maxId = $zeros . $maxId;
         } else {
-            $maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
+            $maxId = 1;
         }
 
-        //error_log($maxCodeKeyVal);
+        $maxId = sprintf("%04d", (int) $maxId);
 
         $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
-
 
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
@@ -158,6 +152,9 @@ class Vl
         //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
         // }
         if ($checkResult !== null) {
+            error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
+            error_log("DUP::: Sample Key Code ====== " . $checkResult[$sampleCodeKeyCol]);
+            error_log('DUP::: ' . $this->db->getLastQuery());
             return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
         }
         return json_encode($sCodeKey);
@@ -187,9 +184,16 @@ class Vl
     {
 
         $vlResultCategory = null;
+        $orignalResultValue = $finalResult;
+        $finalResult = strtolower(trim($finalResult));
+        $finalResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $finalResult);
+        $finalResult = str_replace('-', '', $finalResult);
+        $finalResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $finalResult));
 
         if (!isset($finalResult) || empty($finalResult)) {
             $vlResultCategory = null;
+        } else if (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
+            $vlResultCategory = 'failed';
         } else if (in_array($resultStatus, array(1, 2, 3, 10))) {
             $vlResultCategory = null;
         } else if ($resultStatus == 4) {
@@ -198,7 +202,7 @@ class Vl
             $vlResultCategory = 'invalid';
         } else {
 
-            if (is_numeric($finalResult) && (float)$finalResult >= 0) {
+            if (is_numeric($finalResult)) {
                 $finalResult = (float)$finalResult;
                 if ($finalResult < $this->suppressionLimit) {
                     $vlResultCategory = 'suppressed';
@@ -209,7 +213,7 @@ class Vl
 
                 $textResult = NULL;
 
-                if (in_array(strtolower($finalResult), $this->suppressedArray)) {
+                if (in_array(strtolower($orignalResultValue), $this->suppressedArray)) {
                     $textResult = 10;
                 } else {
                     $textResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
@@ -226,27 +230,50 @@ class Vl
         return $vlResultCategory;
     }
 
-    public function interpretViralLoadTextResult($result, $unit = false, $lowVlResultText = null)
+    public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null)
+    {
+        $finalResult = $vlResult = trim($result);
+        $vlResult = strtolower($vlResult);
+        $vlResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
+        $vlResult = str_replace('-', '', $vlResult);
+        $vlResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
+
+        if ($vlResult == "-1.00") {
+            $vlResult = "Not Detected";
+        }
+        if (is_numeric($vlResult)) {
+            //passing only number 
+            return $this->interpretViralLoadNumericResult($vlResult, $unit);
+        } else {
+            //Passing orginal result value for text results
+            return $this->interpretViralLoadTextResult($finalResult, $unit, $defaultLowVlResultText);
+        }
+    }
+
+    public function interpretViralLoadTextResult($result, $unit = null, $defaultLowVlResultText = null)
     {
 
         // If result is blank, then return null
         if (empty(trim($result))) return null;
 
         // If result is numeric, then return it as is
-        if (is_numeric($result)) return $result;
-
-        $defaultVLTextResult = "Target Not Detected";
-        if (!empty($lowVlResultText)) {
-            $defaultVLTextResult = $lowVlResultText;
+        if (is_numeric($result)) {
+            $this->interpretViralLoadNumericResult($result, $unit);
         }
 
+        $resultStatus = null;
+        // Some machines and some countries prefer a default text result
+        $vlTextResult = "Target Not Detected" ?: $defaultLowVlResultText;
+
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
+
+        $originalResultValue = $result;
 
         $result = strtolower($result);
         if ($result == 'bdl' || $result == '< 839') {
             $vlResult = $txtVal = 'Below Detection Limit';
         } else if ($result == 'target not detected' || $result == 'not detected' || $result == 'tnd') {
-            $vlResult = $txtVal = $defaultVLTextResult;
+            $vlResult = $txtVal = $vlTextResult;
         } else if ($result == '< 2.00E+1') {
             $absDecimalVal = 20;
             $txtVal = $vlResult = $absVal = "< 20";
@@ -290,25 +317,24 @@ class Vl
 
         return array(
             'logVal' => $logVal,
-            'result' => $vlResult,
+            'result' => $originalResultValue,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
-            'txtVal' => $txtVal
+            'txtVal' => $txtVal,
+            'resultStatus' => $resultStatus,
         );
     }
 
     public function interpretViralLoadNumericResult($result, $unit = null)
     {
-
-
         // If result is blank, then return null
         if (empty(trim($result))) return null;
 
         // If result is NOT numeric, then return it as is
         if (!is_numeric($result)) return $result;
 
-        $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
-
+        $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
+        $originalResultValue = $result;
         if (strpos($unit, '10') !== false) {
             $unitArray = explode(".", $unit);
             $exponentArray = explode("*", $unitArray[0]);
@@ -337,11 +363,28 @@ class Vl
 
         return array(
             'logVal' => $logVal,
-            'result' => $vlResult,
+            'result' => $originalResultValue,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
-            'txtVal' => $txtVal
+            'txtVal' => $txtVal,
+            'resultStatus' => $resultStatus
         );
+    }
+
+
+    public function getLowVLResultTextFromImportConfigs($machineFile = null)
+    {
+        if ($this->db == null) {
+            return false;
+        }
+
+        if (!empty($machineFile)) {
+            $this->db->where('import_machine_file_name', $machineFile);
+        }
+
+        $this->db->where("low_vl_result_text", NULL, 'IS NOT');
+        $this->db->where("status", 'active', 'like');
+        return $this->db->getValue('import_config', 'low_vl_result_text', null);
     }
 
     public function insertSampleCode($params)
@@ -371,12 +414,12 @@ class Vl
                 }
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
 
             $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sameplCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sameplCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
@@ -395,17 +438,15 @@ class Vl
             );
 
             $oldSampleCodeKey = null;
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+
+            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $vlData['remote_sample_code'] = $sampleData['sampleCode'];
                 $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $vlData['remote_sample'] = 'yes';
                 $vlData['result_status'] = 9;
-
-                if ($_SESSION['accessType'] == 'testing-lab') {
+                if ($_SESSION['accessType'] === 'testing-lab') {
                     $vlData['sample_code'] = $sampleData['sampleCode'];
-                    $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                    $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $vlData['result_status'] = 6;
                 }
             } else {
@@ -429,6 +470,8 @@ class Vl
                 // $id = $this->db->update("form_vl", $vlData);
                 // $params['vlSampleId'] = $rowData['vl_sample_id'];
 
+
+                error_log('Insert VL Sample : ' . $this->db->getLastQuery());
                 // If this sample code exists, let us regenerate
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
@@ -438,7 +481,7 @@ class Vl
                     $params['vlSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                        $vlData['unique_id'] = $general->generateRandomString(32);
+                        $vlData['unique_id'] = $general->generateUUID();
                         $id = $this->db->insert("form_vl", $vlData);
                     }
                 }
@@ -454,6 +497,21 @@ class Vl
             error_log('Insert VL Sample : ' . $this->db->getLastError());
             error_log('Insert VL Sample : ' . $this->db->getLastQuery());
             error_log('Insert VL Sample : ' . $e->getMessage());
+        }
+    }
+
+    public function getReasonForFailure($option = true)
+    {
+        $result = array();
+        $this->db->where('status', 'active');
+        $results = $this->db->get('r_vl_test_failure_reasons');
+        if ($option) {
+            foreach ($results as $row) {
+                $result[$row['failure_id']] = $row['failure_reason'];
+            }
+            return $result;
+        } else {
+            return $results;
         }
     }
 }

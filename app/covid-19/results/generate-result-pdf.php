@@ -320,10 +320,10 @@ if (sizeof($requestResult) > 0) {
 		if (isset($result['result_printed_datetime']) && $result['result_printed_datetime'] != "") {
 			$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
 		} else {
-			$printedTime = $general->getDateTime();
+			$printedTime = $general->getCurrentDateTime();
 		}
 		$expStr = explode(" ", $printedTime);
-		$printDate = $general->humanDateFormat($expStr[0]);
+		$printDate = $general->humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
 		$covid19Results = $general->getCovid19Results();
 		$countryFormId = $general->getGlobalConfig('vl_form');
@@ -343,7 +343,7 @@ if (sizeof($requestResult) > 0) {
 
 		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
 		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-		$currentDateTime = $general->getDateTime();
+		$currentDateTime = $general->getCurrentDateTime();
 		$_SESSION['aliasPage'] = $page;
 		if (!isset($result['labName'])) {
 			$result['labName'] = '';

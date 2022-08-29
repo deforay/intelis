@@ -51,7 +51,7 @@ try {
     if (isset($_SESSION['instanceId'])) {
       $instanceId = $_SESSION['instanceId'];
     } else {
-      $instanceId = $general->generateRandomString(32);
+      $instanceId = $general->generateUUID();
       // deleting just in case there is a row already inserted
       $db->delete('s_vlsm_instance');
       $db->insert('s_vlsm_instance', array('vlsm_instance_id' => $instanceId));

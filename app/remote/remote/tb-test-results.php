@@ -8,28 +8,13 @@ $jsonResponse = file_get_contents('php://input');
 
 $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
-$app = new \Vlsm\Models\App();
 
-
-$arr  = $general->getGlobalConfig();
-$sarr  = $general->getSystemConfig();
-
-//get remote data
-if (trim($sarr['sc_testing_lab_id']) == '') {
-    $sarr['sc_testing_lab_id'] = "''";
-}
-
-
+$sampleCode = array();
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_tb'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
-    $sampleCode = array();
-    $counter = 0;
-
-    if ($counter > 0) {
-        $trackId = $app->addApiTracking(null, $counter, 'results', 'tb', null, $sarr['sc_testing_lab_id'], 'sync-api');
-    }
+    
 
     $lab = array();
     $options = [
@@ -37,11 +22,11 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
     ];    
     $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
-    foreach ($parsedData as $key => $remoteData) {
+    foreach ($parsedData as $key => $resultRow) {
         $couner++;
         foreach ($oneDimensionalArray as $result) {
-            if (isset($remoteData[$result])) {
-                $lab[$result] = $remoteData[$result];
+            if (isset($resultRow[$result])) {
+                $lab[$result] = $resultRow[$result];
             } else {
                 $lab[$result] = null;
             }
@@ -59,16 +44,16 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             unset($lab[$keys]);
         }
 
-        if (isset($remoteData['approved_by_name']) && $remoteData['approved_by_name'] != '') {
+        if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
-            $lab['result_approved_by'] = $usersModel->addUserIfNotExists($remoteData['approved_by_name']);
-            $lab['result_approved_datetime'] =  $general->getDateTime();
+            $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
+            $lab['result_approved_datetime'] =  $general->getCurrentDateTime();
             // we dont need this now
-            //unset($remoteData['approved_by_name']);
+            //unset($resultRow['approved_by_name']);
         }
 
         $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
-        $lab['last_modified_datetime'] = $general->getDateTime();
+        $lab['last_modified_datetime'] = $general->getCurrentDateTime();
 
         unset($lab['request_created_by']);
         unset($lab['last_modified_by']);
@@ -107,4 +92,12 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     }
 }
 
-echo json_encode($sampleCode);
+
+$payload = json_encode($sampleCode);
+
+if ($counter > 0) {
+    $general->addApiTracking('vlsm-system', $counter, 'results', 'eid', null, $jsonResponse, $payload, 'json', $labId);
+}
+
+echo $payload;
+

@@ -145,10 +145,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->dateFormat(trim($s_c_date[0]));
+          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->dateFormat(trim($s_c_date[1]));
+          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -159,7 +159,7 @@ if (isset($sWhere) && count($sWhere) > 0) {
      }
      if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
           if (trim($start_date) == trim($end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
           } else {
                $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
@@ -301,7 +301,7 @@ foreach ($rResult as $aRow) {
 
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-          $aRow['last_modified_datetime'] = $general->humanDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+          $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
      } else {
           $aRow['last_modified_datetime'] = '';
      }

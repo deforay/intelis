@@ -10,32 +10,24 @@ $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 
 
-$encoding = $general->getHeader('Accept-Encoding');
+
 $payload = array();
 
-//system config
-$systemConfigQuery = "SELECT * FROM system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-//get remote data
-if (trim($sarr['sc_testing_lab_id']) == '') {
-    $sarr['sc_testing_lab_id'] = "''";
-}
 
-$jsonData = file_get_contents('php://input');
+
+$origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
 //error_log($jsonData);
+$counter = 0;
 
 if ($data['Key'] == 'vlsm-get-remote') {
 
+    $labId = $data['labId'] ?: null;
+
     $response = array();
 
-    if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
 
 
         $condition = null;
@@ -57,14 +49,17 @@ if ($data['Key'] == 'vlsm-get-remote') {
         }
         $response['vlArtCodes'] = $general->fetchDataFromTable('r_vl_art_regimen', $condition);
 
-        $count = (count($response['vlRejectionReasons']) + count($response['vlSampleTypes']) + count($response['vlArtCodes']));
-        if ($count > 0) {
-            $trackId = $app->addApiTracking(null, $count, 'common-data', 'vl', null, $sarr['sc_testing_lab_id'], 'sync-api');
+        $condition = null;
+        if (isset($data['vlFailureReasonsLastModified']) && !empty($data['vlFailureReasonsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['vlFailureReasonsLastModified'] . "'";
         }
+        $response['vlFailureReasons'] = $general->fetchDataFromTable('r_vl_test_failure_reasons', $condition);
+
+        $counter += (count($response['vlRejectionReasons']) + count($response['vlSampleTypes']) + count($response['vlArtCodes']) + count($response['vlFailureReasons']));
     }
 
 
-    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
 
         $condition = null;
         if (isset($data['eidRejectionReasonsLastModified']) && !empty($data['eidRejectionReasonsLastModified'])) {
@@ -91,13 +86,10 @@ if ($data['Key'] == 'vlsm-get-remote') {
         }
         $response['eidReasonForTesting'] = $general->fetchDataFromTable('r_eid_test_reasons', $condition);
 
-        $count = (count($response['eidRejectionReasons']) + count($response['eidSampleTypes']) + count($response['eidResults']) + count($response['eidReasonForTesting']));
-        if ($count > 0) {
-            $trackId = $app->addApiTracking(null, $count, 'common-data', 'eid', null, $sarr['sc_testing_lab_id'], 'sync-api');
-        }
+        $counter += (count($response['eidRejectionReasons']) + count($response['eidSampleTypes']) + count($response['eidResults']) + count($response['eidReasonForTesting']));
     }
 
-    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
 
         $condition = null;
         if (isset($data['covid19RejectionReasonsLastModified']) && !empty($data['covid19RejectionReasonsLastModified'])) {
@@ -142,13 +134,10 @@ if ($data['Key'] == 'vlsm-get-remote') {
         }
         $response['covid19QCTestKits'] = $general->fetchDataFromTable('r_covid19_qc_testkits', $condition);
 
-        $count = (count($response['covid19RejectionReasons']) + count($response['covid19SampleTypes']) + count($response['covid19Comorbidities']) + count($response['covid19Results']) + count($response['covid19Symptoms']) + count($response['covid19ReasonForTesting']) + count($response['covid19QCTestKits']));
-        if ($count > 0) {
-            $trackId = $app->addApiTracking(null, $count, 'common-data', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
-        }
+        $counter += (count($response['covid19RejectionReasons']) + count($response['covid19SampleTypes']) + count($response['covid19Comorbidities']) + count($response['covid19Results']) + count($response['covid19Symptoms']) + count($response['covid19ReasonForTesting']) + count($response['covid19QCTestKits']));
     }
 
-    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
+    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
 
         $condition = null;
         if (isset($data['hepatitisRejectionReasonsLastModified']) && !empty($data['hepatitisRejectionReasonsLastModified'])) {
@@ -181,10 +170,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
         }
         $response['hepatitisReasonForTesting'] = $general->fetchDataFromTable('r_hepatitis_test_reasons', $condition);
 
-        $count = (count($response['hepatitisRejectionReasons']) + count($response['hepatitisSampleTypes']) + count($response['hepatitisComorbidities']) + count($response['hepatitisResults']) + count($response['hepatitisReasonForTesting']));
-        if ($count > 0) {
-            $trackId = $app->addApiTracking(null, $count, 'common-data', 'hepatitis', null, $sarr['sc_testing_lab_id'], 'sync-api');
-        }
+        $counter += (count($response['hepatitisRejectionReasons']) + count($response['hepatitisSampleTypes']) + count($response['hepatitisComorbidities']) + count($response['hepatitisResults']) + count($response['hepatitisReasonForTesting']));
     }
 
 
@@ -247,15 +233,14 @@ if ($data['Key'] == 'vlsm-get-remote') {
     if (!empty($response)) {
         // using array_filter without callback will remove keys with empty values
         $payload = json_encode(array_filter($response));
-    }else{
+    } else {
         $payload = json_encode([]);
     }
 
+    $general->addApiTracking('vlsm-system', $counter, 'common-data-sync', 'common', null, $origData, $payload, 'json', $labId);
 
-    if (!empty($encoding) && $encoding === 'gzip') {
-        header("Content-Encoding: gzip");
-        $payload = gzencode($payload);
-    }
+
+
 
     echo $payload;
 } else {

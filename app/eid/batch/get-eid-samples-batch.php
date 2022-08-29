@@ -1,49 +1,50 @@
 <?php
 
-
-
 $general = new \Vlsm\Models\General();
 $start_date = '';
 $end_date = '';
-//global config
-$configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-$configResult = $db->query($configQuery);
-$country = $configResult[0]['value'];
+
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->dateFormat(trim($s_c_date[0]));
+        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->dateFormat(trim($s_c_date[1]));
+        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
     }
 }
 if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) != '') {
     $s_c_date = explode("to", $_POST['sampleReceivedAtLab']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $sampleReceivedStartDate = $general->dateFormat(trim($s_c_date[0]));
+        $sampleReceivedStartDate = $general->isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $sampleReceivedEndDate = $general->dateFormat(trim($s_c_date[1]));
+        $sampleReceivedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
     }
 }
 
-$query = "SELECT vl.sample_code,vl.eid_id,vl.facility_id,vl.result_status,f.facility_name,f.facility_code FROM form_eid as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vlsm_country_id = $country  AND vl.sample_code!=''";
+$query = "SELECT vl.sample_code,vl.eid_id,vl.facility_id,vl.result_status,f.facility_name,f.facility_code 
+            FROM form_eid as vl 
+            INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
+            WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') 
+            AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) 
+            AND (vl.result is NULL or vl.result = '') 
+            AND vl.sample_code!='' AND vl.sample_code is not null ";
 if (isset($_POST['batchId'])) {
     $query = $query . " AND (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
 } else {
     $query = $query . " AND (sample_batch_id IS NULL OR sample_batch_id='')";
 }
 
-if (is_array($_POST['fName']) && count($_POST['fName']) > 0) {
+if (!empty($_POST['fName']) && is_array($_POST['fName'])) {
     $query = $query . " AND vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
 }
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     if (trim($start_date) == trim($end_date)) {
-        $query = $query . ' AND DATE(sample_collection_date) = "' . $start_date . '"';
+        $query = $query . ' AND DATE(sample_collection_date) like "' . $start_date . '"';
     } else {
         $query = $query . ' AND DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
     }
@@ -51,7 +52,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 
 if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) != '') {
     if (trim($sampleReceivedStartDate) == trim($sampleReceivedEndDate)) {
-        $query = $query . ' AND DATE(sample_received_at_vl_lab_datetime) = "' . $sampleReceivedStartDate . '"';
+        $query = $query . ' AND DATE(sample_received_at_vl_lab_datetime) like "' . $sampleReceivedStartDate . '"';
     } else {
         $query = $query . ' AND DATE(sample_received_at_vl_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_vl_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
     }

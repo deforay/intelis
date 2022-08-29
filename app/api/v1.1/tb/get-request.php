@@ -123,11 +123,11 @@ try {
 
     $where = array();
     if (!empty($user)) {
-        $facilityMap = $facilityDb->getFacilityMap($user['user_id'], 1);
+        $facilityMap = $facilityDb->getUserFacilityMap($user['user_id'], 1);
         if (!empty($facilityMap)) {
             $where[] = " vl.facility_id IN (" . $facilityMap . ")";
         } else {
-            $where[] = " (request_created_by = '" . $user['user_id'] . "' OR vlsm_country_id = '" . $arr['vl_form'] . "')";
+            $where[] = " (request_created_by = '" . $user['user_id'] . "')";
         }
     }
     /* To check the sample code filter */
@@ -152,13 +152,11 @@ try {
         $facilityId = implode("','", $input['facility']);
         $where[] = " vl.facility_id IN ('$facilityId') ";
     }
-
+    $where[] = " vl.app_sample_code is not null";
     $where = " WHERE " . implode(" AND ", $where);
     $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100 ";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
-    $app = new \Vlsm\Models\App();
-    $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'get-request', 'tb', $requestUrl, $params, 'json');
     // No data found
     if (!$rowData) {
         // array_splice($rowData, 1, 2);
@@ -188,12 +186,13 @@ try {
     } else {
         $payload['token'] = null;
     }
+    $general->addApiTracking($user['user_id'], count($rowData), 'get-request', 'tb', $requestUrl, $params, json_encode($payload), 'json');
     http_response_code(200);
     echo json_encode($payload);
     exit(0);
 } catch (Exception $exc) {
 
-    http_response_code(500);
+    // http_response_code(500);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),

@@ -27,8 +27,7 @@ if (strpos($headers[0], '200') === false) {
 $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 
-$globalConfigQuery = "SELECT * FROM system_config";
-$configResult = $db->query($globalConfigQuery);
+$labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $dataToSync = array();
 $commonDataToSync = array();
@@ -93,6 +92,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     $payload['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
     $payload['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
     $payload['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
+    $payload['vlFailureReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_test_failure_reasons');
 
 
 
@@ -110,6 +110,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
         'vlRejectionReasons' => array(
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_vl_sample_rejection_reasons',
+        ),
+        'vlFailureReasons' => array(
+            'primaryKey' => 'failure_id',
+            'tableName' => 'r_vl_test_failure_reasons',
         )
     );
 }
@@ -229,21 +233,19 @@ $dataToSync = array_merge(
 );
 
 
+$payload['labId'] = $labId;
+
+
 $client = new GuzzleHttp\Client();
 
 $response = $client->post(
     $url,
     [
         GuzzleHttp\RequestOptions::JSON => $payload
-    ],
-    [
-        'headers'        => ['Accept-Encoding' => 'gzip'],
-        'decode_content' => 'gzip'
     ]
 );
 
 $jsonResponse = $response->getBody()->getContents();
-
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
     $options = [
@@ -253,7 +255,6 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
     foreach ($parsedData as $dataType => $dataValues) {
 
         if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
-
             if ($dataType == 'healthFacilities' && !empty($dataValues)) {
                 $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
                 $db = $db->where('facility_id', $updatedFacilities, 'IN');
@@ -268,7 +269,6 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
             $columnList = array_map('current', $db->rawQuery($tableColumns));
 
             foreach ($dataValues as $tableDataValues) {
-
                 $tableData = array();
                 $updateColumns = array();
                 foreach ($columnList as $colName) {
@@ -352,4 +352,4 @@ $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_n
 
 /* Update last_remote_results_sync in s_vlsm_instance */
 $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-$id = $db->update('s_vlsm_instance', array('last_remote_reference_data_sync' => $general->getDateTime()));
+$id = $db->update('s_vlsm_instance', array('last_remote_reference_data_sync' => $general->getCurrentDateTime()));

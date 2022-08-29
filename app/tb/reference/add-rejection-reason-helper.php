@@ -21,7 +21,7 @@ try {
             'rejection_type' => $_POST['rejectionType'],
             'rejection_reason_status' => $_POST['rejectionReasonStatus'],
             'rejection_reason_code' => $_POST['rejectionReasonCode'],
-			'updated_datetime' => $general->getDateTime(),
+			'updated_datetime' => $general->getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

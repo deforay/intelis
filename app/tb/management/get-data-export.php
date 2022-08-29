@@ -161,10 +161,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->dateFormat(trim($s_c_date[0]));
+          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->dateFormat(trim($s_c_date[1]));
+          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -174,10 +174,10 @@ $eSampleReceivedDate = '';
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      $s_p_date = explode("to", $_POST['sampleReceivedDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sSampleReceivedDate = $general->dateFormat(trim($s_p_date[0]));
+          $sSampleReceivedDate = $general->isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $eSampleReceivedDate = $general->dateFormat(trim($s_p_date[1]));
+          $eSampleReceivedDate = $general->isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample tested date filter */
@@ -186,10 +186,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = $general->dateFormat(trim($s_t_date[0]));
+          $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = $general->dateFormat(trim($s_t_date[1]));
+          $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Sample print date filter */
@@ -198,10 +198,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = $general->dateFormat(trim($s_p_date[0]));
+          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = $general->dateFormat(trim($s_p_date[1]));
+          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample type filter */
@@ -240,7 +240,7 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 /* Date time filtering */
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
-          $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
@@ -261,7 +261,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 }
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (trim($sPrintDate) == trim($eTestDate)) {
-          $sWhere[] = ' DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+          $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }

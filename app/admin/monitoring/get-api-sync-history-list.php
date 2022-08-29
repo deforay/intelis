@@ -92,19 +92,25 @@ $end_date = '';
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
      $s_c_date = explode("to", $_POST['dateRange']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->dateFormat(trim($s_c_date[0]));
+          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->dateFormat(trim($s_c_date[1]));
+          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
-
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
      $sWhere[] = ' DATE(a.requested_on) >= "' . $start_date . '" AND DATE(a.requested_on) <= "' . $end_date . '"';
 }
 
+if (isset($_POST['syncedType']) && trim($_POST['syncedType']) != '') {
+     $sWhere[] = ' a.request_type like "' . $_POST['syncedType'] . '"';
+}
+if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
+     $sWhere[] = ' a.test_type like "' . $_POST['testType'] . '"';
+}
+
 /* Implode all the where fields for filtering the data */
-if (sizeof($sWhere) > 0) {
+if (!empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
@@ -139,7 +145,7 @@ foreach ($rResult as $key => $aRow) {
      $row[] = strtoupper($aRow['test_type']);
      $row[] = $aRow['api_url'];
      $row[] = date("d-M-Y h:i:s", strtotime($aRow['requested_on']));
-
+     $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'show-params.php?id=' . base64_encode($aRow[$primaryKey]) . '\',1200,720);"> Show Params</a>';
      $output['aaData'][] = $row;
 }
 echo json_encode($output);

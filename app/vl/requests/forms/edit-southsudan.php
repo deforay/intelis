@@ -112,7 +112,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 				$name = ucwords($usrResult[0]['user_name']);
 			}
 			$expStr = explode(" ", $change['dtime']);
-			$changedDate = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+			$changedDate = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 			$rch .= '<tr><td>' . $name . '</td><td>' . ucfirst($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
 		}
 		$rch .= '</tbody>';
@@ -266,17 +266,17 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											</select>
 										</div>
 									</div>
-									
-										<div class="col-md-4 col-md-4">
-											<label for="labId">Testing Lab <span class="mandatory">*</span></label>
-											<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
-												<option value="">-- Select --</option>
-												<?php foreach ($lResult as $labName) { ?>
-													<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($labName['facility_name']); ?></option>
-												<?php } ?>
-											</select>
-										</div>
-									
+
+									<div class="col-md-4 col-md-4">
+										<label for="labId">Testing Lab <span class="mandatory">*</span></label>
+										<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
+											<option value="">-- Select --</option>
+											<?php foreach ($lResult as $labName) { ?>
+												<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($labName['facility_name']); ?></option>
+											<?php } ?>
+										</select>
+									</div>
+
 								</div>
 							</div>
 						</div>
@@ -487,7 +487,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 																	$display = 'none';
 																}
 																?>
-																<input type="radio" class="isRequired" id="rmTesting" name="stViralTesting" value="routine" title="Please check routine monitoring (Reason for testing)" <?php echo $checked; ?> onclick="showTesting('rmTesting');">
+																<input type="radio" class="isRequired" id="rmTesting" name="stViralTesting" value="routine" title="Please select indication/reason for testing" <?php echo $checked; ?> onclick="showTesting('rmTesting');">
 																<strong>Routine Monitoring</strong>
 															</label>
 														</div>
@@ -498,7 +498,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label">Date of last viral load test</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? $general->humanDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" />
+														<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -536,7 +536,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label">Date of last viral load test</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? $general->humanDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
+														<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -574,7 +574,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label">Date of last viral load test</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? $general->humanDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" />
+														<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -672,7 +672,6 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 											</div>
 											<div class="row">
-												<br>
 												<div class="col-md-4">
 													<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
 													<div class="col-lg-7">
@@ -684,6 +683,16 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 														</select>
 													</div>
 												</div>
+												<!-- <div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
+													<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
+													<div class="col-lg-7">
+														<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
+															<option value="">-- Select --</option>
+															<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
+															<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
+														</select>
+													</div>
+												</div> -->
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="noResult">Sample Rejection </label>
 													<div class="col-lg-7">
@@ -694,6 +703,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 														</select>
 													</div>
 												</div>
+												<br>
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason<span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
@@ -719,33 +729,47 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input value="<?php echo $general->humanDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
+														<input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 													</div>
 												</div>
-												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-													<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'block' : 'none'; ?>;">*</span></label>
-													<div class="col-lg-7">
-														<input type="text" class="form-control labSection result-fields" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result_value_absolute']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
-
-														<input type="checkbox" class="labSection" id="bdl" name="bdl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'checked="checked"' : '';
-																																	echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'disabled="disabled"' : '' ?> title="Please check bdl"> Below Detection Level
-													</div>
-												</div>
+												<?php if (!isset($vlQueryInfo['is_sample_rejected']) || empty($vlQueryInfo['is_sample_rejected']) || $vlQueryInfo['is_sample_rejected'] != 'yes') { ?>
 											</div>
 											<div class="row">
-												<br>
-												<div class="col-md-4 vlLog" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-													<label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
+											<?php } ?>
+											<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
+												<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'block' : 'none'; ?>;">*</span></label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control labSection result-fields" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" style="width:100%;" onchange="calculateLogValue(this);" />
+
+													<input type="checkbox" class="labSection specialResults" id="bdl" name="bdl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'checked="checked"' : '' ?> title="Please check bdl"> Below Detection Level<br>
+													<input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Failed/Invalid Results" <?php echo ($vlQueryInfo['result'] == 'Failed') ? 'checked="checked"' : ''; ?>> Failed<br>
+												</div>
+											</div>
+											<div class="col-md-4 vlLog" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
+												<label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+												</div>
+											</div>
+											<?php if (count($reasonForFailure) > 0) { ?>
+												<div class="col-md-4 reasonForFailure" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
+													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+														<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
+															<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
+														</select>
 													</div>
 												</div>
-												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
-													<div class="col-lg-7">
-														<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
-													</div>
+											<?php } ?>
+											<div class="col-md-4">
+												<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
+												<div class="col-lg-7">
+													<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
 												</div>
+											</div>
+											</div>
+
+											<div class="row">
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
@@ -754,9 +778,6 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 														</select>
 													</div>
 												</div>
-											</div>
-											<div class="row">
-												<br>
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
@@ -783,7 +804,6 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 											</div>
 											<div class="row">
-												<br>
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
@@ -795,12 +815,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" style="width:100%;" />
 													</div>
 												</div>
 											</div>
-											<br>
-											<br>
 											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
@@ -838,10 +856,20 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	</section>
 </div>
 <script>
-	provinceName = true;
-	facilityName = true;
+	let provinceName = true;
+	let facilityName = true;
+
+	let __clone = null;
+	let reason = null;
+	let resultValue = null;
+	let specialResultsValue = null;
+
 	$(document).ready(function() {
 
+
+		$("#noResult").trigger('change');
+		//$('.specialResults').trigger('change');
+		$("#labId,#fName,#sampleCollectionDate").trigger('change');
 
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -864,21 +892,20 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			}
 		});
 
-		$("#labId,#fName,#sampleCollectionDate").trigger('change');
-
-		$("#noResult").trigger('change');
 
 
-		$(document).on('select2:open', (e) => {
-			const selectId = e.target.id
 
-			$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
-				key,
-				value,
-			) {
-				value.focus();
-			})
-		});
+
+		// $(document).on('select2:open', (e) => {
+		// 	const selectId = e.target.id
+
+		// 	$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
+		// 		key,
+		// 		value,
+		// 	) {
+		// 		value.focus();
+		// 	})
+		// });
 
 		$("#sampleCollectionDate").datetimepicker({
 			changeMonth: true,
@@ -905,6 +932,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			yearRange: "-100:+100",
 		});
 		autoFillFocalDetails();
+		$('#fName').select2({
+			width: '100%',
+			placeholder: "Select Clinic/Health Center"
+		});
 		$('#labId').select2({
 			width: '100%',
 			placeholder: "Select Testing Lab"
@@ -935,9 +966,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 		getfacilityProvinceDetails($("#fName").val());
 
-		__clone = $("#vlRequestFormRwd .labSection").clone();
+		__clone = $(".labSection").clone();
 		reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
-		result = ($("#vlResult").length) ? $("#vlResult").val() : '';
+		resultValue = $("#vlResult").val();
+		specialResultsValue = $('.specialResults:checkbox:checked').val();
+
 		checkPatientReceivesms('<?php echo $vlQueryInfo['consent_to_receive_sms']; ?>');
 
 		$("#reqClinician").select2({
@@ -1180,7 +1213,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	});
 	$("#sampleTestingDateAtLab").change(function() {
 		if ($(this).val() != "") {
-			$(".result-fields, #bdl").attr("disabled", false);
+			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
 			$(".result-span").show();
 			$('.vlResult').css('display', 'block');
@@ -1198,10 +1231,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			$('.vlResult').css('display', 'none');
 			$('.vlLog').css('display', 'none');
 			$("#sampleTestingDateAtLab, #vlResult").val("");
-			$('#bdl').prop('checked', false);
+			$('.specialResults').prop('checked', false);
 			$(".result-fields").val("");
-			$(".result-fields, #bdl").attr("disabled", true);
-			$(".result-fields, #bdl").removeClass("isRequired");
+			$(".result-fields, .specialResults").attr("disabled", true);
+			$(".result-fields, .specialResults").removeClass("isRequired");
 			$(".result-span").hide();
 			$(".review-approve-span").show();
 			$('#rejectionReason').addClass('isRequired');
@@ -1211,13 +1244,13 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
+			$("#reasonForFailure").removeClass('isRequired');
 		} else if ($(this).val() == 'no') {
-			$(".result-fields, #bdl").attr("disabled", false);
+			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
 			$(".result-span").show();
 			$(".review-approve-span").show();
-			$('.vlResult').css('display', 'block');
-			$('.vlLog').css('display', 'block');
+			$('.vlResult,.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionDate').removeClass('isRequired');
@@ -1227,13 +1260,12 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
 		} else {
-			$(".result-fields, #bdl").attr("disabled", false);
+			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").removeClass("isRequired");
 			$(".result-optional").removeClass("isRequired");
 			$(".result-span").show();
 			$(".result-fields").val("");
-			$('.vlResult').css('display', 'block');
-			$('.vlLog').css('display', 'block');
+			$('.vlResult,.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$(".result-span").hide();
 			$(".review-approve-span").hide();
@@ -1247,34 +1279,73 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 		}
 	});
 
-	$('#bdl').change(function() {
-		if ($('#bdl').is(':checked')) {
-			$('#vlResult,#vlLog').attr('readonly', true);
-			$('#tnd').prop('checked', false).attr('disabled', true);
+	$('.specialResults').change(function() {
+		if ($('.specialResults').is(':checked')) {
+			$('.specialResults').each(function() {
+				if ($(this).is(':checked')) {
+					$('.specialResults').not(this).prop('checked', false).attr('disabled', true);
+					$('#vlResult,#vlLog').attr('readonly', true);
+					$('#vlResult,#vlLog').val('');
+					$('#vlResult').removeClass('isRequired');
+				}
+			});
 		} else {
 			$('#vlResult,#vlLog').attr('readonly', false);
-			$('#tnd').attr('disabled', false);
+			$('.specialResults').attr('disabled', false);
 			if ($('#noResult').val() == 'no') {
 				$('#vlResult').addClass('isRequired');
 			}
 		}
 	});
-	$('#vlResult,#vlLog').on('input', function(e) {
-		if (this.value == 0) {
-			$('#bdl').attr('checked', true);
-		} else if (this.value > 0) {
-			$('#bdl').attr('checked', false);
-		}
-		if (this.value != '' && this.value != 0) {
-			$('#tnd,#bdl').attr('disabled', true);
+	$('#hivDetection').change(function() {
+		if (this.value == 'HIV-1 Not Detected') {
+			$('.specialResults').prop('checked', false).removeAttr('checked');
+			$('#vlResult').attr('disabled', false);
+			$('#vlLog').attr('disabled', false);
+			$("#vlResult").val('').css('pointer-events', 'none');
+			$("#vlLog").val('').css('pointer-events', 'none');
+			$(".vlResult, .vlLog").hide();
+			$("#reasonForFailure").removeClass('isRequired');
 		} else {
-			$('#tnd,#bdl').attr('disabled', false);
+			$("#vlResult").css('pointer-events', 'auto');
+			$("#vlLog").css('pointer-events', 'auto');
+			$("#vlResult").val('').css('pointer-events', 'auto');
+			$("#vlLog").val('').css('pointer-events', 'auto');
+			$(".vlResult, .vlLog").show();
 		}
 	});
-	$("#vlRequestFormRwd .labSection").on("change", function() {
-		if ($.trim($("#result").val()) != '') {
-			if ($("#vlRequestFormRwd .labSection").serialize() == $(__clone).serialize()) {
-				$(".reasonForResultChanges").css("display", "block");
+	$('#testingPlatform').change(function() {
+		var text = this.value;
+		var str1 = text.split("##");
+		if (str1[0] == 'GeneXpert') {
+			$('.hivDetection').show();
+		} else {
+			$('.hivDetection').hide();
+		}
+	});
+
+	$('#vlResult,#vlLog').on('input', function(e) {
+		if (this.value == null || this.value != '') {
+			$('.specialResults').prop('checked', false).attr('disabled', true);
+		} else {
+			$('.specialResults').attr('disabled', false);
+		}
+	});
+
+	$('#failed').change(function() {
+		if ($('#failed').prop('checked')) {
+			$('.reasonForFailure').show();
+			$('#reasonForFailure').addClass('isRequired');
+			$('#vlResult').removeClass('isRequired');
+		} else {
+			$('.reasonForFailure').hide();
+			$('#reasonForFailure').removeClass('isRequired');
+		}
+	});
+	$(".labSection").on("change", function() {
+		if ($.trim(resultValue) != '' || specialResultsValue != '' || specialResultsValue != undefined) {
+			if ($(".labSection").serialize() === $(__clone).serialize()) {
+				$(".reasonForResultChanges").css("display", "none");
 				$("#reasonForResultChanges").removeClass("isRequired");
 			} else {
 				$(".reasonForResultChanges").css("display", "block");
@@ -1296,13 +1367,16 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	}
 
 	function validateNow() {
+		if ($('#failed').prop('checked')) {
+			$('#vlResult').removeClass('isRequired');
+		}
 		flag = deforayValidator.init({
 			formId: 'vlRequestFormRwd'
 		});
 
-		$('.isRequired').each(function() {
+		/* $('.isRequired').each(function() {
 			($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
-		});
+		}); */
 		if (flag) {
 			$.blockUI();
 			document.getElementById('vlRequestFormRwd').submit();
@@ -1330,7 +1404,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			absValue = $("#vlResult").val();
 			absValue = Number.parseFloat(absValue).toFixed();
 			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
-				$("#vlResult").val(absValue);
+				//$("#vlResult").val(absValue);
 				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
 			} else {
 				$("#vlLog").val('');

@@ -93,10 +93,10 @@ $end_date = '';
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
      $s_c_date = explode("to", $_POST['dateRange']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->dateFormat(trim($s_c_date[0]));
+          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->dateFormat(trim($s_c_date[1]));
+          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
@@ -110,7 +110,7 @@ if (isset($_POST['typeOfAction']) && trim($_POST['typeOfAction']) != '') {
      $sWhere[] = ' event_type like "' . $_POST['typeOfAction'] . '"';
 }
 /* Implode all the where fields for filtering the data */
-if (sizeof($sWhere) > 0) {
+if (!empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 

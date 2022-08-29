@@ -133,21 +133,21 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 
 		//set sample rejection
 		$sampleRejection = null;
-		if (trim($aRow['is_sample_rejected']) == 'yes' || $aRow['result_status'] == 4) {
+		if (isset($aRow['is_sample_rejected']) && trim($aRow['is_sample_rejected']) == 'yes' || $aRow['result_status'] == 4) {
 			$sampleRejection = 'Yes';
 		} else if (trim($aRow['is_sample_rejected']) == 'no') {
 			$sampleRejection = 'No';
 		}
 		//result dispatched date
 		$lastViralLoadTest = '';
-		if ($aRow['last_viral_load_date'] != NULL && trim($aRow['last_viral_load_date']) != '' && $aRow['last_viral_load_date'] != '0000-00-00 00:00:00') {
+		if (isset($aRow['last_viral_load_date']) && $aRow['last_viral_load_date'] != NULL && trim($aRow['last_viral_load_date']) != '' && $aRow['last_viral_load_date'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", $aRow['last_viral_load_date']);
 			$lastViralLoadTest =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
 		//result dispatched date
 		$resultDispatchedDate = '';
-		if ($aRow['result_printed_datetime'] != NULL && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+		if (!empty($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", $aRow['result_printed_datetime']);
 			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
@@ -188,7 +188,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow["sample_code"];
 		} else {
 			$row[] = $aRow["sample_code"];
-			$row[] = $aRow["remote_sample_code"] ?? null;
+			$row[] = $aRow["remote_sample_code"] ?: null;
 		}
 		$row[] = $aRow['facility_name'];
 		$row[] = $aRow['lab_name'];
@@ -202,7 +202,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$row[] = ($aRow['patient_age_in_years'] != NULL && trim($aRow['patient_age_in_years']) != '' && $aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 		$row[] = $gender;
 		$row[] = $sampleCollectionDate;
-		$row[] = $aRow['sample_name'] ?? null;
+		$row[] = $aRow['sample_name'] ?: null;
 		$row[] = $treatmentInitiationDate;
 		$row[] = $aRow['current_regimen'];
 		$row[] = $dateOfInitiationOfCurrentRegimen;
@@ -241,7 +241,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		}
 	}
 	$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
-	$filename = 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-	echo $filename;
+	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
+	$writer->save($filename);
+	echo base64_encode($filename);
 }

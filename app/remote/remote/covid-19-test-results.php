@@ -10,34 +10,46 @@ $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
 $app = new \Vlsm\Models\App();
 
-$arr  = $general->getGlobalConfig();
-$sarr  = $general->getSystemConfig();
-
-//get remote data
-if (trim($sarr['sc_testing_lab_id']) == '') {
-    $sarr['sc_testing_lab_id'] = "''";
-}
+$sampleCode = array();
 
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
     $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_covid19'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
-    $sampleCode = array();
 
-    $counter = 0;
+
 
     $lab = array();
+    $resultData = array();
+    $testResultsData = array();
+    $testResultsData = array();
+    $symptomsData = array();
+    $comorbiditiesData = array();
     $options = [
-        'pointer' => '/result',
         'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
-    ];    
+    ];
     $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
-    foreach ($parsedData as $key => $remoteData) {
+    foreach ($parsedData as $name => $data) {
+        if ($name === 'labId') {
+            $labId = $data;
+        } else if ($name === 'result') {
+            $resultData = $data;
+        } else if ($name === 'testResults') {
+            $testResultsData = $data;
+        } else if ($name === 'symptoms') {
+            //$symptomsData = $data;
+        } else if ($name === 'comorbidities') {
+            //$comorbiditiesData = $data;
+        }
+    }
+
+    $counter = 0;
+    foreach ($resultData as $key => $resultRow) {
         $counter++;
         foreach ($oneDimensionalArray as $result) {
-            if (isset($remoteData[$result])) {
-                $lab[$result] = $remoteData[$result];
+            if (isset($resultRow[$result])) {
+                $lab[$result] = $resultRow[$result];
             } else {
                 $lab[$result] = null;
             }
@@ -55,16 +67,16 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             unset($lab[$keys]);
         }
 
-        if (isset($remoteData['approved_by_name']) && $remoteData['approved_by_name'] != '') {
+        if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
-            $lab['result_approved_by'] = $usersModel->addUserIfNotExists($remoteData['approved_by_name']);
-            $lab['result_approved_datetime'] =  $general->getDateTime();
+            $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
+            $lab['result_approved_datetime'] =  $general->getCurrentDateTime();
             // we dont need this now
-            //unset($remoteData['approved_by_name']);
+            //unset($resultRow['approved_by_name']);
         }
 
         $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
-        $lab['last_modified_datetime'] = $general->getDateTime();
+        $lab['last_modified_datetime'] = $general->getCurrentDateTime();
 
         unset($lab['request_created_by']);
         unset($lab['last_modified_by']);
@@ -99,9 +111,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         }
     }
 
-    
-    // $parsedData = \JsonMachine\Items::fromString($jsonResponse, "/symptoms");
-    // foreach ($parsedData as $covid19Id => $symptoms) {
+    // foreach ($symptomsData as $covid19Id => $symptoms) {
     //     $db = $db->where('covid19_id', $covid19Id);
     //     $db->delete("covid19_patient_symptoms");
     //     foreach ($symptoms as $symId => $symValue) {
@@ -113,8 +123,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     //     }
     // }
 
-    // $parsedData = \JsonMachine\Items::fromString($jsonResponse, "/comorbidities");
-    // foreach ($parsedData as $covid19Id => $comorbidities) {
+    // foreach ($comorbiditiesData as $covid19Id => $comorbidities) {
     //     $db = $db->where('covid19_id', $covid19Id);
     //     $db->delete("covid19_patient_comorbidities");
 
@@ -127,26 +136,26 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     //     }
     // }
 
-    // $parsedData = \JsonMachine\Items::fromString($jsonResponse, "/testResults");
-    // foreach ($parsedData as $covid19Id => $testResults) {
-    //     $db = $db->where('covid19_id', $covid19Id);
-    //     $db->delete("covid19_tests");
-    //     foreach ($testResults as $testId => $test) {
-    //         $db->insert("covid19_tests", array(
-    //             "covid19_id"                => $test['covid19_id'],
-    //             "test_name"                 => $test['test_name'],
-    //             "facility_id"               => $test['facility_id'],
-    //             "sample_tested_datetime"    => $test['sample_tested_datetime'],
-    //             "testing_platform"          => $test['testing_platform'],
-    //             "result"                    => $test['result']
-    //         ));
-    //     }
-    // }
-
-
-    if ($counter > 0) {
-        $trackId = $app->addApiTracking(null, $counter, 'results', 'covid19', null, $sarr['sc_testing_lab_id'], 'sync-api');
+    foreach ($testResultsData as $covid19Id => $testResults) {
+        $db = $db->where('covid19_id', $covid19Id);
+        $db->delete("covid19_tests");
+        foreach ($testResults as $testId => $test) {
+            $db->insert("covid19_tests", array(
+                "covid19_id"                => $test['covid19_id'],
+                "test_name"                 => $test['test_name'],
+                "facility_id"               => $test['facility_id'],
+                "sample_tested_datetime"    => $test['sample_tested_datetime'],
+                "testing_platform"          => $test['testing_platform'],
+                "result"                    => $test['result']
+            ));
+        }
     }
 }
 
-echo json_encode($sampleCode);
+$payload = json_encode($sampleCode);
+
+if ($counter > 0) {
+    $general->addApiTracking('vlsm-system', $counter, 'results', 'covid19', null, $jsonResponse, $payload, 'json', $labId);
+}
+
+echo $payload;

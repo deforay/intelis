@@ -32,19 +32,20 @@ try {
 
         $decryptedPassword = General::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
         $_POST['password'] = $decryptedPassword;
-    } else {
-        if (!SYSTEM_CONFIG['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
-            throw new Exception(_("Please check your login credentials"));
-        }
     }
+    //  else {
+    //     if (!SYSTEM_CONFIG['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
+    //         throw new Exception(_("Please check your login credentials"));
+    //     }
+    // }
 
 
-    if (isset($_POST["csrf_token"]) && $_POST["csrf_token"] != $_SESSION["csrf_token"]) {
-        // Reset token
-        unset($_SESSION["csrf_token"]);
-        $_SESSION['alertMsg'] = _("Request expired. Please try to login again.");
-        unset($_SESSION);
-        throw new Exception(_("Please check your login credentials"));
+    if (isset($_POST['csrf_token']) && $_POST['csrf_token'] != $_SESSION['csrf_token']) {
+        // clear/reset token
+        $_SESSION['csrf_token'] = null;
+        unset($_SESSION['csrf_token']);
+        //unset($_SESSION);
+        throw new Exception(_("Request expired. Please try to login again."));
     }
 
     /* Crosss Login Block End */
@@ -120,6 +121,7 @@ try {
             }
 
             if (isset($userRow) && !empty($userRow)) {
+
                 $user->userHistoryLog($userName, 'successful', $userRow['user_id']);
                 //add random key
                 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
@@ -149,7 +151,7 @@ try {
                 $_SESSION['accessType'] = $userRow['access_type'];
                 $_SESSION['email'] = $userRow['email'];
                 $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
-                $_SESSION['facilityMap'] = $facilityDb->getFacilityMap($userRow['user_id']);
+                $_SESSION['facilityMap'] = $facilityDb->getUserFacilityMap($userRow['user_id']);
                 $_SESSION['crossLoginPass'] = null;
                 if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
                     $_SESSION['crossLoginPass'] = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
@@ -189,7 +191,7 @@ try {
                 //check clinic or lab user
                 $_SESSION['userType']   = '';
                 $_SESSION['privileges'] = $priId;
-                $_SESSION['module'] = $module ?? array();
+                $_SESSION['module'] = $module ?: array();
 
                 if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
                     $redirect = "/users/editProfile.php";
@@ -197,6 +199,7 @@ try {
                 }
 
                 header("location:" . $redirect);
+                
             } else {
                 $user->userHistoryLog($userName, 'failed');
 

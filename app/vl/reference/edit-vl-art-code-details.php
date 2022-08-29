@@ -92,7 +92,7 @@ foreach ($categoryInfo as $category) {
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer">
-				<input type="hidden" name="artCodeId" id="artCodeId" value="<?php echo $_GET['id']; ?>">
+				<input type="hidden" name="artCodeId" id="artCodeId" value="<?php echo htmlspecialchars($_GET['id']); ?>">
 				<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 				<a href="vl-art-code-details.php" class="btn btn-default"> Cancel</a>
 			</div>

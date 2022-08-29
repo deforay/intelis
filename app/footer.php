@@ -54,6 +54,15 @@
 </script>
 
 <script type="text/javascript">
+	window.additionalXHRParams = {
+		layout: 0,
+		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateRandomString(64); ?>'
+	};
+
+	$.ajaxSetup({
+		headers: window.additionalXHRParams
+	});
+
 	function setCrossLogin() {
 		if (typeof(Storage) !== "undefined") {
 			sessionStorage.setItem("crosslogin", "true");
@@ -195,7 +204,7 @@
 			$_SESSION['alertMsg'] = '';
 			unset($_SESSION['alertMsg']);
 		}
-		if ($_SESSION['logged']) { ?> setCrossLogin();
+		if (isset($_SESSION['logged']) && $_SESSION['logged']) { ?> setCrossLogin();
 		<?php }
 
 		// if instance facility name is not set, let us show the modal
@@ -205,7 +214,7 @@
 			showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 
-		$('.daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate').on('cancel.daterangepicker', function(ev, picker) {
+		$('.daterange,#daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate').on('cancel.daterangepicker', function(ev, picker) {
 			$(this).val('');
 		});
 	});
@@ -558,6 +567,11 @@
 		$(".vl-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".vl-test-reasons").addClass('active');
+	} else if (splitsUrl == 'vl-test-failure-reasons.php' || splitsUrl == 'add-vl-test-failure-reason.php' || splitsUrl == 'edit-vl-test-failure-reason.php') {
+		$(".manage").addClass('active');
+		$(".vl-reference-manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".vl-test-failure-reasons").addClass('active');
 	} else if (splitsUrl == 'eid-sample-rejection-reasons.php' || splitsUrl == 'add-eid-sample-rejection-reasons.php' || splitsUrl == 'edit-eid-sample-rejection-reasons.php') {
 		$(".manage").addClass('active');
 		$(".eid-reference-manage").addClass('active');

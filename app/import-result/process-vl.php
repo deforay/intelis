@@ -51,9 +51,9 @@ try {
                     'tested_by'                     => $_POST['testBy'],
                     'lab_tech_comments'             => $comments,
                     'result_reviewed_by'            => $rResult[0]['result_reviewed_by'],
-                    'result_reviewed_datetime'      => $general->getDateTime(),
+                    'result_reviewed_datetime'      => $general->getCurrentDateTime(),
                     'result_approved_by'            => $_POST['appBy'],
-                    'result_approved_datetime'      => $general->getDateTime(),
+                    'result_approved_datetime'      => $general->getCurrentDateTime(),
                     'vlsm_country_id'               => $arr['vl_form'],
                     'file_name'                     => $rResult[0]['import_machine_file_name'],
                     'imported_date_time'            => $rResult[0]['result_imported_datetime'],
@@ -108,7 +108,7 @@ try {
                     $data['sample_type'] = $rResult[0]['sample_type'];
                     $data['vl_test_platform'] = $rResult[0]['vl_test_platform'];
                     //$data['last_modified_by']=$rResult[0]['result_reviewed_by'];
-                    //$data['last_modified_datetime']=$general->getDateTime();
+                    //$data['last_modified_datetime']=$general->getCurrentDateTime();
                     $data['status'] = $status[$i];
                     $data['import_batch_tracking'] = $_SESSION['controllertrack'];
                     $result = $db->insert('hold_sample_import', $data);
@@ -117,11 +117,11 @@ try {
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult[0]['sample_tested_datetime'];
                     $data['request_created_by'] = $rResult[0]['result_reviewed_by'];
-                    $data['request_created_datetime'] = $general->getDateTime();
+                    $data['request_created_datetime'] = $general->getCurrentDateTime();
                     $data['last_modified_by'] = $rResult[0]['result_reviewed_by'];
-                    $data['last_modified_datetime'] = $general->getDateTime();
+                    $data['last_modified_datetime'] = $general->getCurrentDateTime();
                     $data['result_approved_by'] = $_POST['appBy'];
-                    $data['result_approved_datetime'] = $general->getDateTime();
+                    $data['result_approved_datetime'] = $general->getCurrentDateTime();
                     $sampleVal = $rResult[0]['sample_code'];
 
                     if ($status[$i] == '4') {
@@ -190,7 +190,7 @@ try {
                     "test_type" => "vl",
                     "result_method" => "import",
                     "file_name" => $rResult[0]['import_machine_file_name'],
-                    "updated_on" => $general->getDateTime()
+                    "updated_on" => $general->getCurrentDateTime()
                 ));
             }
             $db = $db->where('temp_sample_id', $id[$i]);
@@ -227,7 +227,7 @@ try {
                 'request_created_datetime' => $db->now(),
                 'last_modified_datetime' => $db->now(),
                 'result_approved_by' => $_POST['appBy'],
-                'result_approved_datetime' => $general->getDateTime(),
+                'result_approved_datetime' => $general->getCurrentDateTime(),
                 'import_machine_file_name' => $accResult[$i]['import_machine_file_name'],
                 'manual_result_entry' => 'no',
                 'result_printed_datetime' => NULL,

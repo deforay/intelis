@@ -8,6 +8,40 @@ require_once(APPLICATION_PATH . '/header.php');
 		border: 1px solid #3598DC;
 	}
 
+	.searchVlRequestDataDiv .dashboard-stat2 {
+		min-height: 120px;
+	}
+
+	.dashloader {
+		width: 8px;
+		height: 18px;
+		display: block;
+		margin: 60px auto;
+		left: -20px;
+		position: relative;
+		
+		border-radius: 4px;
+		box-sizing: border-box;
+		animation: animloader 1s linear infinite alternate;
+	}
+
+	@keyframes animloader {
+		0% {
+			box-shadow: 20px 0 rgba(0, 0, 0, 0.25), 40px 0 white, 60px 0 white;
+		}
+
+		50% {
+			box-shadow: 20px 0 white, 40px 0 rgba(0, 0, 0, 0.25), 60px 0 white;
+		}
+
+		100% {
+			box-shadow: 20px 0 white, 40px 0 white, 60px 0 rgba(0, 0, 0, 0.25);
+		}
+	}
+
+
+
+
 	.input-mini {
 		width: 100% !important;
 	}
@@ -33,29 +67,29 @@ require_once(APPLICATION_PATH . '/header.php');
 	<section class="content-header">
 		<div class="bs-example bs-example-tabs">
 			<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
-				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
 					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab" onclick="generateDashboard('vl');"><?php echo _("Viral Load Tests"); ?></a></li>
 				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
 					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');"><?php echo _("EID Tests"); ?></a></li>
 				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
 					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab" onclick="generateDashboard('covid19');"><?php echo _("Covid-19 Tests"); ?></a></li>
 				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
 					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');"><?php echo _("Hepatitis Tests"); ?></a></li>
 				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
 					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
 				<?php } ?>
 				<?php
-				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
+				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) {  ?>
 					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')"><?php echo _("Confirmation Tests for Recency"); ?></a></li>
 				<?php }  ?>
 			</ul>
 			<div id="myTabContent" class="tab-content">
 
-				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['module'], array('vl'))) {  ?>
 					<div class="tab-pane fade in active" id="vlDashboard">
 						<!-- VL content -->
 						<section class="content">
@@ -80,7 +114,9 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 							<div class="row vl">
-								<div class="searchVlRequestDataDiv" id="vlSampleResultDetails"></div>
+								<div class="searchVlRequestDataDiv" id="vlSampleResultDetails">
+
+								</div>
 								<div class="box-body sampleCountsDatatableDiv" id="vlNoOfSampleCount"></div>
 								<div class="samplePieChartDiv" id="vlPieChartDiv"></div>
 							</div>
@@ -95,7 +131,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 				<?php } ?>
 
-				<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) {  ?>
 					<div class="tab-pane fade in" id="recencyDashboard">
 						<!-- VL content -->
 						<section class="content">
@@ -132,7 +168,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					</div>
 				<?php } ?>
 				<!-- EID START-->
-				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true  && array_intersect($_SESSION['module'], array('eid'))) {  ?>
 
 					<div class="tab-pane fade in" id="eidDashboard">
 						<!-- EID content -->
@@ -172,7 +208,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<?php } ?>
 				<!-- EID END -->
 				<!-- COVID-19 START-->
-				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
 
 					<div class="tab-pane fade in" id="covid19Dashboard">
 						<!-- COVID-19 content -->
@@ -213,7 +249,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<!-- COVID-19 END -->
 
 				<!-- Hepatitis START-->
-				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
 
 					<div class="tab-pane fade in" id="hepatitisDashboard">
 						<!-- COVID-19 content -->
@@ -238,7 +274,7 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 							<div class="row hepatitis">
-								<div id="hepatitisSampleResultDetails"></div>
+								<div class="searchVlRequestDataDiv" id="hepatitisSampleResultDetails"></div>
 								<div class="box-body sampleCountsDatatableDiv" id="hepatitisNoOfSampleCount"></div>
 								<div class="samplePieChartDiv" id="hepatitisPieChartDiv"></div>
 							</div>
@@ -254,7 +290,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<!-- COVID-19 END -->
 
 				<!-- TB START-->
-				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
 
 					<div class="tab-pane fade in" id="tbDashboard">
 						<!-- TB content -->
@@ -279,7 +315,7 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 							<div class="row tb">
-								<div id="tbSampleResultDetails"></div>
+								<div class="searchVlRequestDataDiv" id="tbSampleResultDetails"></div>
 								<div class="box-body sampleCountsDatatableDiv" id="tbNoOfSampleCount"></div>
 								<div class="samplePieChartDiv" id="tbPieChartDiv"></div>
 							</div>
@@ -320,10 +356,12 @@ require_once(APPLICATION_PATH . '/header.php');
 	let currentRequestType = null;
 	let sampleCountsDatatableCounter = 0;
 	let samplePieChartCounter = 0;
-
+	let currentXHR = null;
 
 	$(function() {
 
+
+		$(".searchVlRequestDataDiv").html('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2" style="cursor:pointer;"><span class="dashloader"></span> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div>');
 		$("#myTab li:first-child").addClass("active");
 		$("#myTabContent div:first-child").addClass("active");
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
@@ -366,11 +404,19 @@ require_once(APPLICATION_PATH . '/header.php');
 				$(window).scroll();
 			});
 
+
+		$(window).on('beforeunload', function() {
+			if (currentXHR !== null && currentXHR !== undefined) {
+				currentXHR.abort();
+			}
+		});
+
 		$(window).on('resize scroll', function() {
+
 			if (sampleCountsDatatableCounter == 0) {
 				if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
 					sampleCountsDatatableCounter++;
-					$.blockUI();
+					// $.blockUI();
 					$.when(
 						getNoOfSampleCount(currentRequestType),
 					).done(function() {
@@ -406,9 +452,9 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function searchVlRequestData(requestType) {
-		$.blockUI();
+		//$.blockUI();
 		if (requestType == 'vl') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					type: 'vl'
 				},
@@ -418,7 +464,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'recency') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					type: 'recency'
 				},
@@ -428,7 +474,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'eid') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					type: 'eid'
 				},
@@ -438,7 +484,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'covid19') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
 					type: 'covid19'
 				},
@@ -448,7 +494,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'hepatitis') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#hepatitisSampleCollectionDate").val(),
 					type: 'hepatitis'
 				},
@@ -458,7 +504,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'tb') {
-			return $.post("/dashboard/getSampleResult.php", {
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
 					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
 					type: 'tb'
 				},
@@ -469,12 +515,13 @@ require_once(APPLICATION_PATH . '/header.php');
 				});
 		}
 
+		return currentXHR;
 
 	}
 
 	function getNoOfSampleCount(requestType) {
 		if (requestType == 'vl') {
-			return $.post("/dashboard/getSampleCount.php", {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					type: 'vl'
 				},
@@ -484,7 +531,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'recency') {
-			return $.post("/dashboard/getSampleCount.php", {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					type: 'recency'
 				},
@@ -494,7 +541,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'eid') {
-			return $.post("/dashboard/getSampleCount.php", {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					type: 'eid'
 				},
@@ -504,12 +551,14 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		}
+
+		return currentXHR;
 	}
 
 	function getSamplesOverview(requestType) {
 
 		if (requestType == 'vl') {
-			return $.post("/vl/program-management/getSampleStatus.php", {
+			currentXHR = $.post("/vl/program-management/getSampleStatus.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -523,7 +572,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'recency') {
-			return $.post("/vl/program-management/getSampleStatus.php", {
+			currentXHR = $.post("/vl/program-management/getSampleStatus.php", {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -537,7 +586,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'eid') {
-			return $.post("/eid/management/getSampleStatus.php", {
+			currentXHR = $.post("/eid/management/getSampleStatus.php", {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -551,7 +600,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'covid19') {
-			return $.post("/covid-19/management/getSampleStatus.php", {
+			currentXHR = $.post("/covid-19/management/getSampleStatus.php", {
 					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -565,7 +614,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		} else if (requestType == 'tb') {
-			return $.post("/tb/management/getSampleStatus.php", {
+			currentXHR = $.post("/tb/management/getSampleStatus.php", {
 					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
@@ -579,6 +628,8 @@ require_once(APPLICATION_PATH . '/header.php');
 					}
 				});
 		}
+
+		return currentXHR;
 	}
 
 	function resetSearchVlRequestData(requestType) {
@@ -608,7 +659,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getEidMonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/eid/management/getEidMonthlyThresholdReport.php", {
 				targetType: '1',
@@ -632,7 +683,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getVlMonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/vl/program-management/getVlMonthlyThresholdReport.php", {
 				targetType: '1',
@@ -656,7 +707,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getVlSuppressionTargetReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/vl/program-management/getSuppressedTargetReport.php", {
 				targetType: '1',
@@ -679,7 +730,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getCovid19MonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/covid-19/management/getCovid19MonthlyThresholdReport.php", {
 				targetType: '1',
@@ -703,7 +754,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getHepatitisMonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/hepatitis/management/get-hepatitis-monthly-threshold-report.php", {
 				targetType: '1',
@@ -724,7 +775,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 
 	function getTbMonthlyTargetsReport() {
-		$.blockUI();
+		// $.blockUI();
 
 		$.post("/tb/management/get-tb-monthly-threshold-report.php", {
 				targetType: '1',

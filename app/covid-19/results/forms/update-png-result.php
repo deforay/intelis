@@ -92,7 +92,7 @@ $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $vlObj = new \Vlsm\Models\Covid19();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = $general->humanDateFormat($sampleCollectionDate[0]);
+    $sampleCollectionDate = $general->humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
     $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
@@ -244,7 +244,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </td>
                                     <th><label for="patientDob">Patient date of birth<span class="mandatory">*</span> </label></th>
                                     <td>
-                                        <input type="text" class="form-control isRequired" value="<?php echo $general->humanDateFormat($covid19Info['patient_dob']); ?>" id="patientDob" name="patientDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+                                        <input type="text" class="form-control isRequired" value="<?php echo $general->humanReadableDateFormat($covid19Info['patient_dob']); ?>" id="patientDob" name="patientDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -311,7 +311,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 </td>
                                 <th><label for="dateOfSymptomOnset">Date of symptom onset</label></th>
                                 <td>
-                                    <input class="form-control date" value="<?php echo $general->humanDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date of symptom onset" title="Please choose Date of symptom onset" />
+                                    <input class="form-control date" value="<?php echo $general->humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date of symptom onset" title="Please choose Date of symptom onset" />
                                 </td>
                                 <tr>
                                     <th colspan="4" style="width:15% !important">Symptoms <span class="mandatory">*</span> </th>
@@ -366,7 +366,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </td>
                                     <th><label for="returnDate">Return Date</label></th>
                                     <td>
-                                        <input class="historyfield form-control date" value="<?php echo $general->humanDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="returnDate" id="returnDate" placeholder="Return Date" title="Please enter the return date" />
+                                        <input class="historyfield form-control date" value="<?php echo $general->humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="returnDate" id="returnDate" placeholder="Return Date" title="Please enter the return date" />
                                     </td>
                                 </tr>
                                 <tr class="historyfield">
@@ -505,7 +505,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </td>
                                     <th style="width:15% !important"><label for="outcomeDate">Outcome Date</label></th>
                                     <td style="width:35% !important;">
-                                        <input class="form-control date" value="<?php echo $general->humanDateFormat($covid19Info['health_outcome_date']); ?>" type="text" name="outcomeDate" id="outcomeDate" placeholder="Outcome Date" title="Please select the outcome date" />
+                                        <input class="form-control date" value="<?php echo $general->humanReadableDateFormat($covid19Info['health_outcome_date']); ?>" type="text" name="outcomeDate" id="outcomeDate" placeholder="Outcome Date" title="Please select the outcome date" />
                                     </td>
                                 </tr>
                             </table>
@@ -522,7 +522,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <tr>
                                             <th><label for="sampleReceivedDate">Date of Sample Received </label></th>
                                             <td>
-                                                <input type="text" class="form-control isRequired" value="<?php echo $general->humanDateFormat($covid19Info['sample_received_at_vl_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> style="width:100%;" />
+                                                <input type="text" class="form-control isRequired" value="<?php echo $general->humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> style="width:100%;" />
                                             </td>
 
                                             <td class="lab-show"><label for="labId">Lab ID number (Filled by lab staff)</label> </td>
@@ -551,7 +551,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 </select>
                                             </td>
                                             <th class="show-rejection" style="display:none;"><label for="rejectionDate">Date of rejected<span class="mandatory">*</span></label></th>
-                                            <td class="show-rejection" style="display:none;"><input class="form-control date rejection-date" type="text" value="<?php echo $general->humanDateFormat($covid19Info['rejection_on']); ?>" name="rejectionDate" id="rejectionDate" placeholder="Date of rejected" title="Please select when sample rejected" /></td>
+                                            <td class="show-rejection" style="display:none;"><input class="form-control date rejection-date" type="text" value="<?php echo $general->humanReadableDateFormat($covid19Info['rejection_on']); ?>" name="rejectionDate" id="rejectionDate" placeholder="Date of rejected" title="Please select when sample rejected" /></td>
                                         </tr>
                                         <tr>
                                             <td colspan="4">
@@ -589,7 +589,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                         } ?>
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?php echo ($indexKey + 1); ?>" class="form-control testNameOther<?php echo ($indexKey + 1); ?> isRequired" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
-                                                                    <td><input type="text" value="<?php echo $general->humanDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?php echo ($indexKey + 1); ?>" /></td>
+                                                                    <td><input type="text" value="<?php echo $general->humanReadableDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?php echo ($indexKey + 1); ?>" /></td>
                                                                     <td>
                                                                         <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input isRequired" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
                                                                             <?= $general->generateSelectOptions($testPlatformList, $covid19TestInfo[$indexKey]['testing_platform'], '-- Select --'); ?>
@@ -683,7 +683,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </tr>
                                         <tr>
                                             <th><label for="isResultAuthorized">Referred On</label></td>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date isRequired" placeholder="Referred On" title="Please enter when referred result" /></td>
+                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $general->humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date isRequired" placeholder="Referred On" title="Please enter when referred result" /></td>
                                             <th></th>
                                             <td></td>
                                         </tr>

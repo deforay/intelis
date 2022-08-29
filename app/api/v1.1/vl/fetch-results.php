@@ -94,6 +94,7 @@ try {
         vl.sample_type                                       as specimenType,
         vl.arv_adherance_percentage                          as arvAdherence,
         vl.reason_for_vl_testing                             as stViralTesting,
+        vl.community_sample                                  as communitySample,
         vl.last_vl_date_routine                              as rmTestingLastVLDate,
         vl.last_vl_result_routine                            as rmTestingVlValue,
         vl.last_vl_date_failure_ac                           as repeatTestingLastVLDate,
@@ -178,11 +179,11 @@ try {
 
     $where = array();
     if (!empty($user)) {
-        $facilityMap = $facilityDb->getFacilityMap($user['user_id'], 1);
+        $facilityMap = $facilityDb->getUserFacilityMap($user['user_id'], 1);
         if (!empty($facilityMap)) {
             $where[] = " vl.facility_id IN (" . $facilityMap . ")";
         } else {
-            $where[] = " (vl.request_created_by = '" . $user['user_id'] . "' OR vl.vlsm_country_id = '" . $arr['vl_form'] . "')";
+            $where[] = " (vl.request_created_by = '" . $user['user_id'] . "')";
         }
     }
 
@@ -244,8 +245,6 @@ try {
 
         );
 
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, 'json');
         http_response_code(200);
         echo json_encode($response);
         exit(0);
@@ -260,14 +259,15 @@ try {
     } else {
         $payload['token'] = null;
     }
+    $general->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, json_encode($payload), 'json');
     http_response_code(200);
     echo json_encode($payload);
     exit(0);
 } catch (Exception $exc) {
 
-    http_response_code(500);
+    // http_response_code(500);
     $payload = array(
-        'status' => 'success',
+        'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
         'data' => array()

@@ -59,7 +59,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
             $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
-            $lab['result_approved_datetime'] =  $general->getDateTime();
+            $lab['result_approved_datetime'] =  $general->getCurrentDateTime();
             // we dont need this now
             //unset($resultRow['approved_by_name']);
         }
@@ -67,7 +67,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
         $lab['data_sync'] = 1;
-        $lab['last_modified_datetime'] = $general->getDateTime();
+        $lab['last_modified_datetime'] = $general->getCurrentDateTime();
 
         // unset($lab['request_created_by']);
         // unset($lab['last_modified_by']);
@@ -95,9 +95,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         try {
             $lab['source_of_request'] = 'vlsts';
-
             $sResult = $db->rawQuery($sQuery);
-            //$lab['result_printed_datetime'] = null;            
             if ($sResult) {
                 $db = $db->where('vl_sample_id', $sResult[0]['vl_sample_id']);
                 $id = $db->update('form_vl', $lab);
@@ -112,9 +110,12 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             $sampleCode[] = $lab['sample_code'];
         }
     }
-    if ($counter > 0) {
-        $app->addApiTracking(null, $counter, 'results', 'vl', null, $jsonResponse, 'sync-api');
-    }
 }
 
-echo json_encode($sampleCode);
+$payload = json_encode($sampleCode);
+
+if ($counter > 0) {
+    $general->addApiTracking('vlsm-system', $counter, 'results', 'vl', null, $jsonResponse, $payload, 'json', $labId);
+}
+
+echo $payload;

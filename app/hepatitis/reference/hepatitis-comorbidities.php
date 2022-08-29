@@ -61,9 +61,7 @@ require_once(APPLICATION_PATH . '/header.php');
 </div>
 <script>
 	var oTable = null;
-	$(function() {
-		//$("#example1").DataTable();
-	});
+
 	$(document).ready(function() {
 		$.blockUI();
 		oTable = $('#comorbiditiesDataTable').dataTable({

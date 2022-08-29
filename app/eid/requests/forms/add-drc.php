@@ -497,7 +497,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										</tr>
 										<tr class="rejected" style="display:none;">
 											<th>Date de rejet<span class="mandatory">*</span></th>
-											<td><input value="<?php echo $general->humanDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
+											<td><input value="<?php echo $general->humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
 											<td></td>
 											<td></td>
 										</tr>

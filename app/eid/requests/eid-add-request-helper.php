@@ -31,17 +31,16 @@ try {
 	if (empty($instanceId) && $_POST['instanceId']) {
 		$instanceId = $_POST['instanceId'];
 	}
-
 	if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
 		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-		$_POST['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+		$_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
 	} else {
 		$_POST['sampleCollectionDate'] = NULL;
 	}
 
 	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
 		$sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
-		$_POST['sampleDispatchedDate'] = $general->dateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+		$_POST['sampleDispatchedDate'] = $general->isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
 	} else {
 		$_POST['sampleDispatchedDate'] = NULL;
 	}
@@ -49,35 +48,35 @@ try {
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = NULL;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = NULL;
 	}
 
 	if (isset($_POST['rapidtestDate']) && trim($_POST['rapidtestDate']) != "") {
 		$rapidtestDate = explode(" ", $_POST['rapidtestDate']);
-		$_POST['rapidtestDate'] = $general->dateFormat($rapidtestDate[0]) . " " . $rapidtestDate[1];
+		$_POST['rapidtestDate'] = $general->isoDateFormat($rapidtestDate[0]) . " " . $rapidtestDate[1];
 	} else {
 		$_POST['rapidtestDate'] = NULL;
 	}
 
 	if (isset($_POST['childDob']) && trim($_POST['childDob']) != "") {
 		$childDob = explode(" ", $_POST['childDob']);
-		$_POST['childDob'] = $general->dateFormat($childDob[0]) . " " . $childDob[1];
+		$_POST['childDob'] = $general->isoDateFormat($childDob[0]) . " " . $childDob[1];
 	} else {
 		$_POST['childDob'] = NULL;
 	}
 
 	if (isset($_POST['mothersDob']) && trim($_POST['mothersDob']) != "") {
 		$mothersDob = explode(" ", $_POST['mothersDob']);
-		$_POST['mothersDob'] = $general->dateFormat($mothersDob[0]) . " " . $mothersDob[1];
+		$_POST['mothersDob'] = $general->isoDateFormat($mothersDob[0]) . " " . $mothersDob[1];
 	} else {
 		$_POST['mothersDob'] = NULL;
 	}
@@ -85,14 +84,14 @@ try {
 
 	if (isset($_POST['motherTreatmentInitiationDate']) && trim($_POST['motherTreatmentInitiationDate']) != "") {
 		$motherTreatmentInitiationDate = explode(" ", $_POST['motherTreatmentInitiationDate']);
-		$_POST['motherTreatmentInitiationDate'] = $general->dateFormat($motherTreatmentInitiationDate[0]) . " " . $motherTreatmentInitiationDate[1];
+		$_POST['motherTreatmentInitiationDate'] = $general->isoDateFormat($motherTreatmentInitiationDate[0]) . " " . $motherTreatmentInitiationDate[1];
 	} else {
 		$_POST['motherTreatmentInitiationDate'] = NULL;
 	}
 
 	if (isset($_POST['previousPCRTestDate']) && trim($_POST['previousPCRTestDate']) != "") {
 		$previousPCRTestDate = explode(" ", $_POST['previousPCRTestDate']);
-		$_POST['previousPCRTestDate'] = $general->dateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
+		$_POST['previousPCRTestDate'] = $general->isoDateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
 	} else {
 		$_POST['previousPCRTestDate'] = NULL;
 	}
@@ -130,14 +129,20 @@ try {
 
 	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+		$_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = NULL;
+	}
+	if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != "") {
+		$resultDispatchedOn = explode(" ", $_POST['resultDispatchedOn']);
+		$_POST['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+	} else {
+		$_POST['resultDispatchedOn'] = NULL;
 	}
 
 	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
 		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
-		$_POST['approvedOnDateTime'] = $general->dateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+		$_POST['approvedOnDateTime'] = $general->isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
 	} else {
 		$_POST['approvedOnDateTime'] = NULL;
 	}
@@ -197,6 +202,7 @@ try {
 		'result' 											=> isset($_POST['result']) ? $_POST['result'] : null,
 		'result_reviewed_by'                				=> (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
 		'result_reviewed_datetime'          				=> (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+		'result_dispatched_datetime'          				=> (isset($_POST['resultDispatchedOn']) && $_POST['resultDispatchedOn'] != "") ? $_POST['resultDispatchedOn'] : null,
 		'tested_by' 										=> (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
 		'lab_tech_comments' 									=> (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  NULL,
 		'result_approved_by' 								=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
@@ -204,12 +210,12 @@ try {
 		'result_status' 									=> $status,
 		'data_sync' 										=> 0,
 		'reason_for_sample_rejection' 						=> isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,
-		'rejection_on' 						                => isset($_POST['rejectionDate']) ? $general->dateFormat($_POST['rejectionDate']) : null,
+		'rejection_on' 						                => isset($_POST['rejectionDate']) ? $general->isoDateFormat($_POST['rejectionDate']) : null,
 		// 'request_created_by' 								=> $_SESSION['userId'],
-		'request_created_datetime' 							=> $general->getDateTime(),
-		'sample_registered_at_lab' 							=> $general->getDateTime(),
+		'request_created_datetime' 							=> $general->getCurrentDateTime(),
+		'sample_registered_at_lab' 							=> $general->getCurrentDateTime(),
 		// 'last_modified_by' 									=> $_SESSION['userId'],
-		'last_modified_datetime' 							=> $general->getDateTime()
+		'last_modified_datetime' 							=> $general->getCurrentDateTime()
 	);
 
 	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
@@ -256,7 +262,7 @@ try {
 			// 'event_type'=>$eventType,
 			// 'action'=>$action,
 			// 'resource'=>$resource,
-			// 'date_time'=>$general->getDateTime()
+			// 'date_time'=>$general->getCurrentDateTime()
 			// );
 			// $db->insert($tableName1,$data);
 

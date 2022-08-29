@@ -82,16 +82,16 @@ foreach ($fResult as $fDetails) {
 					<td>
 						<select style="width: 100%;" class="form-control" id="testType" name="testType" title="Choose one test type">
 							<option value="">-- select --</option>
-							<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) { ?>
+							<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 								<option value="vl">Viral Load</option>
 							<?php } ?>
-							<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) { ?>
+							<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
 								<option value="eid">Early Infant Diagnosis</option>
 							<?php } ?>
-							<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) { ?>
+							<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
 								<option value="covid19">Covid-19</option>
 							<?php } ?>
-							<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) { ?>
+							<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
 								<option value='hepatitis'>Hepatitis</option>
 							<?php } ?>
 						</select>

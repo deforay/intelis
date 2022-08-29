@@ -60,7 +60,7 @@ class Users
             'edit-funding-sources.php'          => 'province-details.php'
         );
 
-        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
             $sharedVLPrivileges = array(
                 'updateVlTestResult.php'                => 'vlTestResult.php',
                 'vl-failed-results.php'                 => 'vlTestResult.php',
@@ -75,6 +75,9 @@ class Users
                 'vl-test-reasons.php'                   => 'vl-art-code-details.php',
                 'add-vl-test-reasons.php'               => 'vl-art-code-details.php',
                 'edit-vl-test-reasons.php'              => 'vl-art-code-details.php',
+                'vl-test-failure-reasons.php'           => 'vl-art-code-details.php',
+                'add-vl-test-failure-reason.php'        => 'vl-art-code-details.php',
+                'edit-vl-test-failure-reason.php'       => 'vl-art-code-details.php',
                 'vlTestingTargetReport.php'             => 'vlMonthlyThresholdReport.php',
                 'vlSuppressedTargetReport.php'          => 'vlMonthlyThresholdReport.php'
             );
@@ -82,7 +85,7 @@ class Users
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedVLPrivileges);
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
             $sharedEIDPrivileges = array(
                 'eid-add-batch-position.php'            => 'eid-add-batch.php',
                 'eid-edit-batch-position.php'           => 'eid-edit-batch.php',
@@ -106,7 +109,7 @@ class Users
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedEIDPrivileges);
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
             $sharedCovid19Privileges = array(
                 'covid-19-add-batch-position.php'           => 'covid-19-add-batch.php',
                 'mail-covid-19-results.php'                 => 'covid-19-print-results.php',
@@ -146,7 +149,7 @@ class Users
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedCovid19Privileges);
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
             $sharedHepPrivileges = array(
                 'hepatitis-update-result.php'                   => 'hepatitis-manual-results.php',
                 'hepatitis-failed-results.php'                  => 'hepatitis-manual-results.php',
@@ -176,7 +179,7 @@ class Users
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] == true) {
+        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
             $sharedHepPrivileges = array(
                 'tb-update-result.php' => 'tb-manual-results.php',
                 'tb-failed-results.php' => 'tb-manual-results.php',
@@ -222,6 +225,7 @@ class Users
 
     public function getAllUsers($facilityMap = null, $status = null, $type = null)
     {
+
         if (!empty($facilityMap)) {
             $facilityMap = explode(",", $facilityMap);
             $this->db->join("user_facility_map map", "map.user_id=u.user_id", "INNER");
@@ -230,6 +234,9 @@ class Users
         if ($status == 'active') {
             $this->db->where("status='active'");
         }
+
+        $this->db->orderBy("user_name", "asc");
+
         if (isset($type) && $type == 'drop-down') {
             $result =  $this->db->get('user_details u');
             $userDetails = array();
@@ -272,43 +279,60 @@ class Users
 
 
 
-    public function getAuthToken($token)
+    public function getAuthToken($token = null, $userId = null)
     {
 
-        if (empty($token)) {
+        if (empty($token) && empty($userId)) {
             return null;
         }
 
         $result = array();
 
-        $query = "SELECT * FROM $this->table as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE api_token = ? and ud.`status` = 'active'";
-        $result = $this->db->rawQueryOne($query, array($token));
+        if (!empty($userId)) {
+            $this->db->where('user_id', $userId);
+        }
+        if (!empty($token)) {
+            $this->db->where('api_token', $token);
+        }
+
+        $this->db->where('ud.status', 'active');
+        $this->db->join("roles r", "ud.role_id=r.role_id", "INNER");
+        $result = $this->db->getOne("$this->table as ud");
+
+        //error_log($this->db->getLastQuery());
+        // $query = "SELECT * FROM $this->table as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE api_token = ? and ud.`status` = 'active'";
+        // $result = $this->db->rawQueryOne($query, array($token));
         $tokenExpiration = !empty($result['api_token_exipiration_days']) ? $result['api_token_exipiration_days'] : 0;
 
 
+        $id = false;
+        $data = array();
         // Tokens with expiration = 0 are tokens that never expire
-        if ($tokenExpiration != 0) {
+        if ($tokenExpiration != 0 || empty($result['api_token'])) {
             $today = new \DateTime();
             $lastTokenDate = null;
             if (!empty($result['api_token_generated_datetime'])) {
                 $lastTokenDate = new \DateTime($result['api_token_generated_datetime']);
             }
-            if ((empty($lastTokenDate) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
+            if ((empty($result['api_token_generated_datetime']) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
                 $general = new \Vlsm\Models\General($this->db);
                 $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
-                $data['api_token_generated_datetime'] = $general->getDateTime();
+                $data['api_token_generated_datetime'] = $general->getCurrentDateTime();
 
                 $this->db = $this->db->where('user_id', $result['user_id']);
                 $id = $this->db->update($this->table, $data);
-
-                if ($id > 0) {
-                    $result['token_updated'] = true;
-                    $result['new_token'] = $data['api_token'];
-                } else {
-                    $result['token_updated'] = false;
-                }
             }
         }
+
+        if ($id === true) {
+            $result['token_updated'] = true;
+            $result['new_token'] = $data['api_token'];
+            $result['token'] = $data['api_token'];
+        } else {
+            $result['token_updated'] = false;
+            $result['token'] = $result['api_token'];
+        }
+
 
         return $result;
     }
@@ -372,7 +396,7 @@ class Users
         $data = array(
             'login_id' => $loginId,
             'user_id' => $userId,
-            'login_attempted_datetime' => $general->getDateTime(),
+            'login_attempted_datetime' => $general->getCurrentDateTime(),
             'login_status' => $loginStatus,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,

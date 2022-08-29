@@ -42,7 +42,7 @@ try {
             $mainData = array(
                 "lab_id"                    => $_POST['labNameTo'],
                 "data_sync"                 => 0,
-                "last_modified_datetime"    => $general->getDateTime()
+                "last_modified_datetime"    => $general->getCurrentDateTime()
             );
             $db->where($primaryKey . " IN (" . implode(",", $_POST['sampleCode']) . ")");
             $db->where("lab_id", $_POST['labId']);

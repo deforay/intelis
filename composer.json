@@ -20,17 +20,22 @@
         "halaxa/json-machine": "^1.1",
         "crunzphp/crunz": "^3.3",
         "league/csv": "^9.0",
+        "ramsey/uuid": "^4.2",
         "ext-gd": "*",
         "ext-json": "*",
         "ext-curl": "*",
         "ext-gettext": "*",
         "ext-openssl": "*",
         "ext-fileinfo": "*",
-        "laminas/laminas-diactoros": "^2.13"
+        "ext-sodium": "*",
+        "ext-zlib": "*",
+        "ext-intl": "*",
+        "ext-bcmath": "*",
+        "phpseclib/phpseclib": "~3.0"
     },
     "suggest": {
-        "aranyasen/hl7": "^2.0",
-        "dcarbone/php-fhir-generated": "^2.0"
+        "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",
+        "aranyasen/hl7": "Needed for HL7 Parsing"
     },
     "autoload": {
         "psr-4": {

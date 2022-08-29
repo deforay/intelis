@@ -6,7 +6,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersDb = new \Vlsm\Models\Users();
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $usersList = array();
 $users = $usersDb->getActiveUsers();

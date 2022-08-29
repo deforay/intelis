@@ -11,7 +11,7 @@ $primaryKey = "vl_sample_id";
 $country = $general->getGlobalConfig('vl_form');
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $sarr = $general->getSystemConfig();
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -160,10 +160,10 @@ $end_date = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   $s_t_date = explode("to", $_POST['sampleTestDate']);
   if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-    $start_date = $general->dateFormat(trim($s_t_date[0]));
+    $start_date = $general->isoDateFormat(trim($s_t_date[0]));
   }
   if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-    $end_date = $general->dateFormat(trim($s_t_date[1]));
+    $end_date = $general->isoDateFormat(trim($s_t_date[1]));
   }
 }
 

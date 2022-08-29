@@ -80,12 +80,13 @@ class Hepatitis
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal == null) {
+        if ($maxCodeKeyVal === null) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $provinceId = $general->getProvinceIDFromCode($provinceCode);
+                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);                    
                 }
 
                 if (!empty($provinceId)) {
@@ -93,26 +94,18 @@ class Hepatitis
                 }
             }
 
-            $this->db->where('YEAR(sample_collection_date)', array($dateObj->format('Y')));
-            $this->db->where($sampleCodeCol, NULL, 'IS NOT');
-            $this->db->orderBy($sampleCodeKeyCol, "DESC");
-            $svlResult = $this->db->getOne($this->table, array($sampleCodeKeyCol));
-            if ($svlResult) {
-                $maxCodeKeyVal = $svlResult[$sampleCodeKeyCol];
-            } else {
-                $maxCodeKeyVal = null;
-            }
+            $this->db->where('YEAR(sample_collection_date) = ?', array($dateObj->format('Y')));
+            $maxCodeKeyVal = $this->db->getValue($this->table, "MAX($sampleCodeKeyCol)");
         }
 
 
-        if (!empty($maxCodeKeyVal)) {
+        if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
             $maxId = $maxCodeKeyVal + 1;
-            $strparam = strlen($maxId);
-            $zeros = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? substr("0000", $strparam) : substr("000", $strparam);
-            $maxId = $zeros . $maxId;
         } else {
-            $maxId = (isset($sampleCodeFormat) && trim($sampleCodeFormat) == 'auto2') ? '0001' : '001';
+            $maxId = 1;
         }
+
+        $maxId = sprintf("%04d", (int) $maxId);
 
         //error_log($maxCodeKeyVal);
 
@@ -265,12 +258,12 @@ class Hepatitis
                 }
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
             $sampleJson = $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
 
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sampleCollectionDate = $general->dateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
@@ -285,24 +278,28 @@ class Hepatitis
                 'hepatitis_test_type' => $prefix,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $general->getDateTime(),
+                'request_created_datetime' => $general->getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $general->getDateTime()
+                'last_modified_datetime' => $general->getCurrentDateTime()
             );
-
-            if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
+            $oldSampleCodeKey = null;
+            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $hepatitisData['remote_sample_code'] = $sampleData['sampleCode'];
                 $hepatitisData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $hepatitisData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $hepatitisData['remote_sample'] = 'yes';
                 $hepatitisData['result_status'] = 9;
+                if ($_SESSION['accessType'] == 'testing-lab') {
+                    $hepatitisData['sample_code'] = $sampleData['sampleCode'];
+                    $hepatitisData['result_status'] = 6;
+                }
             } else {
                 $hepatitisData['sample_code'] = $sampleData['sampleCode'];
                 $hepatitisData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $hepatitisData['sample_code_key'] = $sampleData['sampleCodeKey'];
                 $hepatitisData['remote_sample'] = 'no';
                 $hepatitisData['result_status'] = 6;
-            }
+            }            
             $sQuery = "SELECT hepatitis_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_hepatitis ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
@@ -320,7 +317,7 @@ class Hepatitis
                 return $this->insertSampleCode($params);
             } else {
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                    $hepatitisData['unique_id'] = $general->generateRandomString(32);
+                    $hepatitisData['unique_id'] = $general->generateUUID();
                     $id = $this->db->insert("form_hepatitis", $hepatitisData);
                 }
             }

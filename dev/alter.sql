@@ -3191,3 +3191,36 @@ ALTER TABLE `audit_form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER 
 
 -- Amit 11-Aug-2022 version 5.0.5
 UPDATE `system_config` SET `value` = '5.0.5' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Amit 16-Aug-2022
+ALTER TABLE `track_api_requests` ADD INDEX(`requested_on`);
+
+-- Amit 17-Aug-2022
+ALTER TABLE `form_covid19` CHANGE `patient_gender` `patient_gender` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_covid19` CHANGE `patient_gender` `patient_gender` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+-- Thana 17-Aug-2022
+ALTER TABLE `track_api_requests` ADD `request_data` TEXT NULL DEFAULT NULL AFTER `api_params`, ADD `response_data` TEXT NULL DEFAULT NULL AFTER `request_data`;
+
+-- Thana 18-Aug-2022
+CREATE TABLE `r_vl_test_failure_reasons` (
+ `failure_id` int NOT NULL AUTO_INCREMENT,
+ `failure_reason` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (`failure_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ALTER TABLE `form_vl` ADD `reason_for_failure` INT(11) NULL DEFAULT NULL AFTER `failed_vl_result`, ADD `result_value_hiv_detection` VARCHAR(256) NULL DEFAULT NULL AFTER `vl_test_platform`;
+ALTER TABLE `audit_form_vl` ADD `reason_for_failure` INT(11) NULL DEFAULT NULL AFTER `failed_vl_result`, ADD `result_value_hiv_detection` VARCHAR(256) NULL DEFAULT NULL AFTER `vl_test_platform`;
+
+-- Thana 19-Aug-2022
+ALTER TABLE `r_vl_test_failure_reasons` ADD `data_sync` INT NULL DEFAULT NULL AFTER `updated_datetime`;
+
+
+-- Amit 20-Aug-2022 version 5.0.6
+UPDATE `system_config` SET `value` = '5.0.6' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Amit 22-Aug-2022
+UPDATE `r_sample_status` SET `status_name` = 'Failed/Invalid' WHERE `r_sample_status`.`status_id` = 5;

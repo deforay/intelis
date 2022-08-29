@@ -51,10 +51,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
 	//print_r($s_c_date);die;
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = $general->dateFormat(trim($s_c_date[0]));
+		$start_date = $general->isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = $general->dateFormat(trim($s_c_date[1]));
+		$end_date = $general->isoDateFormat(trim($s_c_date[1]));
 	}
 }
 
@@ -63,10 +63,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
 	$s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$labStartDate = $general->dateFormat(trim($s_c_date[0]));
+		$labStartDate = $general->isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$labEndDate = $general->dateFormat(trim($s_c_date[1]));
+		$labEndDate = $general->isoDateFormat(trim($s_c_date[1]));
 	}
 }
 
@@ -75,10 +75,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleTestedDate']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$testedStartDate = $general->dateFormat(trim($s_c_date[0]));
+		$testedStartDate = $general->isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$testedEndDate = $general->dateFormat(trim($s_c_date[1]));
+		$testedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
 	}
 }
 $sWhere = array();

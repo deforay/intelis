@@ -1,13 +1,12 @@
 <?php
 
-$general = new \Vlsm\Models\General(); 
-$facilityDb = new \Vlsm\Models\Facilities(); 
+$general = new \Vlsm\Models\General();
+$facilityDb = new \Vlsm\Models\Facilities();
 
-$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form' limit 1";
-$configFormResult = $db->rawQueryOne($configFormQuery);
+
 $cDate = date('Y-m-d');
 $lastSevenDay = date('Y-m-d', strtotime('-7 days'));
-$facilityInfo = $facilityDb->getAllFacilities();
+//$facilityInfo = $facilityDb->getAllFacilities();
 
 
 $waitingTotal = 0;
@@ -24,9 +23,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesTestedChart     = "eidSamplesTestedChart";
     $samplesRejectedChart   = "eidSamplesRejectedChart";
     $samplesWaitingChart    = "eidSamplesWaitingChart";
-    $samplesCollectionChart = "eidSamplesCollectionChart";
     $samplesOverviewChart   = "eidSamplesOverviewChart";
-    $unique = "Test2";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
     $table = "form_covid19";
     $primaryKey = "covid19_id";
@@ -35,9 +32,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesNotTestedChart  = "covid19SamplesNotTestedChart";
     $samplesRejectedChart   = "covid19SamplesRejectedChart";
     $samplesWaitingChart    = "covid19SamplesWaitingChart";
-    $samplesCollectionChart = "covid19SamplesCollectionChart";
     $samplesOverviewChart   = "covid19SamplesOverviewChart";
-    $unique = "Test3";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
     $table = "form_hepatitis";
     $primaryKey = "hepatitis_id";
@@ -45,9 +40,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesTestedChart     = "hepatitisSamplesTestedChart";
     $samplesRejectedChart   = "hepatitisSamplesRejectedChart";
     $samplesWaitingChart    = "hepatitisSamplesWaitingChart";
-    $samplesCollectionChart = "hepatitisSamplesCollectionChart";
     $samplesOverviewChart   = "hepatitisSamplesOverviewChart";
-    $unique = "Test4";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
 
     $recencyWhere = " reason_for_vl_testing != 9999 ";
@@ -57,9 +50,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesTestedChart     = "vlSamplesTestedChart";
     $samplesRejectedChart   = "vlSamplesRejectedChart";
     $samplesWaitingChart    = "vlSamplesWaitingChart";
-    $samplesCollectionChart = "vlSamplesCollectionChart";
     $samplesOverviewChart   = "vlSamplesOverviewChart";
-    $unique = "Test1";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
     $table = "form_vl";
@@ -68,9 +59,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesTestedChart     = "recencySamplesTestedChart";
     $samplesRejectedChart   = "recencySamplesRejectedChart";
     $samplesWaitingChart    = "recencySamplesWaitingChart";
-    $samplesCollectionChart = "recencySamplesCollectionChart";
     $samplesOverviewChart   = "recencySamplesOverviewChart";
-    $unique = "Test5";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
     $table = "form_tb";
     $primaryKey = "tb_id";
@@ -78,11 +67,8 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesTestedChart     = "tbSamplesTestedChart";
     $samplesRejectedChart   = "tbSamplesRejectedChart";
     $samplesWaitingChart    = "tbSamplesWaitingChart";
-    $samplesCollectionChart = "tbSamplesCollectionChart";
     $samplesOverviewChart   = "tbSamplesOverviewChart";
-    $unique = "Test6";
 }
-
 
 $u = $general->getSystemConfig('sc_user_type');
 
@@ -90,19 +76,15 @@ if ($u != 'remoteuser') {
     $whereCondition = " result_status!=9  AND ";
 } else {
     $whereCondition = "";
-    //get user facility map ids
-    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-    if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
+    if (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
         if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
-            $whereCondition = " eid.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") AND ";
+            $whereCondition = " eid.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else if (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
-            $whereCondition = " covid19.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") AND ";
+            $whereCondition = " covid19.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else if (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
-            $whereCondition = " tb.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") AND ";
+            $whereCondition = " tb.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else {
-            $whereCondition = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  AND ";
+            $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  AND ";
         }
     }
 }
@@ -113,10 +95,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $lastSevenDay = $general->dateFormat(trim($s_c_date[0]));
+        $lastSevenDay = $general->isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $cDate = $general->dateFormat(trim($s_c_date[1]));
+        $cDate = $general->isoDateFormat(trim($s_c_date[1]));
     }
 }
 $sWhere = '';
@@ -137,7 +119,7 @@ if ($table == "form_eid") {
     } else {
         $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
     }
-    $waitingQuery = "SELECT COUNT(vl_sample_id) as total FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE $vlWhereCondition vl.vlsm_country_id = '" . $configFormResult['value'] . "' " . " AND (sample_collection_date < DATE_SUB(NOW(), INTERVAL 6 MONTH)) AND (vl.result is null or vl.result = '') AND (vl.is_sample_rejected like 'no' or vl.is_sample_rejected is null or vl.is_sample_rejected = '')";
+    $waitingQuery = "SELECT COUNT(vl_sample_id) as total FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE $vlWhereCondition (sample_collection_date < DATE_SUB(NOW(), INTERVAL 6 MONTH)) AND (vl.result is null or vl.result = '') AND (vl.is_sample_rejected like 'no' or vl.is_sample_rejected is null or vl.is_sample_rejected = '')";
 }
 
 $waitingResult[$i] = $db->rawQuery($waitingQuery); //waiting result
@@ -157,10 +139,10 @@ if ($table == "form_eid") {
     $accessionQuery = 'SELECT DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 INNER JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE ' . $whereCondition . ' DATE(covid19.sample_collection_date) <= "' . $cDate . '" AND DATE(covid19.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "covid19_id";
 } else if ($table == "form_hepatitis") {
-    $accessionQuery = 'SELECT DATE(req.sample_collection_date) as `collection_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req INNER JOIN facility_details as f ON f.facility_id=req.facility_id WHERE ' . $whereCondition . ' DATE(req.sample_collection_date) <= "' . $cDate . '" AND DATE(req.sample_collection_date) >= "' . $lastSevenDay . '" AND req.vlsm_country_id = "' . $configFormResult['value'] . '" group by `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(req.sample_collection_date) as `collection_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req INNER JOIN facility_details as f ON f.facility_id=req.facility_id WHERE ' . $whereCondition . ' DATE(req.sample_collection_date) <= "' . $cDate . '" AND DATE(req.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "hepatitis_id";
 } else if ($table == "form_tb") {
-    $accessionQuery = 'SELECT DATE(tb.sample_collection_date) as `collection_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb INNER JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE ' . $whereCondition . ' DATE(tb.sample_collection_date) <= "' . $cDate . '" AND DATE(tb.sample_collection_date) >= "' . $lastSevenDay . '" AND tb.vlsm_country_id = "' . $configFormResult['value'] . '" group by `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(tb.sample_collection_date) as `collection_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb INNER JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE ' . $whereCondition . ' DATE(tb.sample_collection_date) <= "' . $cDate . '" AND DATE(tb.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "tb_id";
 } else {
     if ($whereCondition == "") {
@@ -168,7 +150,7 @@ if ($table == "form_eid") {
     } else {
         $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
     }
-    $accessionQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(vl_sample_id) as `count` FROM ' . $table . ' as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE ' . $vlWhereCondition . ' DATE(vl.sample_collection_date) <= "' . $cDate . '" AND DATE(vl.sample_collection_date) >= "' . $lastSevenDay . '" AND vl.vlsm_country_id = "' . $configFormResult['value'] . '" group by `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(vl_sample_id) as `count` FROM ' . $table . ' as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE ' . $vlWhereCondition . ' DATE(vl.sample_collection_date) <= "' . $cDate . '" AND DATE(vl.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "vl_sample_id";
 }
 
@@ -183,8 +165,7 @@ $aggregateQuery = "SELECT COUNT($primaryKey) as totalCollected,
     SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
 FROM $table as vl 
 INNER JOIN facility_details as f ON f.facility_id=vl.facility_id 
-WHERE vlsm_country_id = '" . $configFormResult['value'] . "' 
-AND DATE(vl.sample_collection_date) <= '" . $cDate . "' 
+WHERE DATE(vl.sample_collection_date) <= '" . $cDate . "' 
 AND DATE(vl.sample_collection_date) >= '" . $lastSevenDay . "'";
 // die($aggregateQuery);
 $aggregateResult = $db->rawQueryOne($aggregateQuery);
@@ -299,8 +280,8 @@ if ($table == "form_covid19") {
                 <small class="font-green-sharp"><?php echo _("SAMPLES REGISTERED"); ?></small><br>
                 <small class="font-green-sharp" style="font-size:0.75em;"><?php echo _("in selected range"); ?></small>
             </div>
-            <div class="icon">
-                <i class="icon-pie-chart"></i>
+            <div class="icon font-green-sharp">
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesReceivedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
@@ -308,7 +289,7 @@ if ($table == "form_covid19") {
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2" style="cursor:pointer;">
-        <div class="display">
+        <div class="display font-blue-sharp">
             <div class="number">
                 <h3 class="font-blue-sharp">
                     <span data-counter="counterup" data-value="<?php echo $acceptedTotal; ?>"><?php echo $acceptedTotal; ?></span>
@@ -317,7 +298,7 @@ if ($table == "form_covid19") {
                 <small class="font-blue-sharp" style="font-size:0.75em;"><?php echo _("In Selected Range"); ?></small>
             </div>
             <div class="icon">
-                <i class="icon-pie-chart"></i>
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesTestedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
@@ -326,17 +307,16 @@ if ($table == "form_covid19") {
 
 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 " style="cursor:pointer;">
-        <div class="display">
+        <div class="display font-red-haze">
             <div class="number">
                 <h3 class="font-red-haze">
                     <span data-counter="counterup" data-value="<?php echo $rejectedTotal; ?>"><?php echo $rejectedTotal; ?></span>
                 </h3>
                 <small class="font-red-haze"><?php echo _("SAMPLES REJECTED"); ?></small><br>
                 <small class="font-red-haze" style="font-size:0.75em;"><?php echo _("In Selected Range"); ?></small>
-                <!--<small class="font-red-haze"><?php echo $rejectedDate; ?></small>-->
             </div>
             <div class="icon">
-                <i class="icon-pie-chart"></i>
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesRejectedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
@@ -345,17 +325,17 @@ if ($table == "form_covid19") {
 
 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 " style="cursor:pointer;">
-        <div class="display">
+        <div class="display font-purple-soft">
             <div class="number">
                 <h3 class="font-purple-soft">
                     <span data-counter="counterup" data-value="<?php echo $waitingTotal; ?>"><?php echo $waitingTotal; ?></span>
                 </h3>
                 <small class="font-purple-soft"><?php echo _("SAMPLES WITH NO RESULTS"); ?></small><br>
                 <small class="font-purple-soft" style="font-size:0.75em;"><?php echo _("(LAST 6 MONTHS)"); ?></small>
-                <!--<small class="font-purple-soft"><?php echo $waitingDate; ?></small>-->
+
             </div>
             <div class="icon">
-                <i class="icon-pie-chart"></i>
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="150" style="min-height:150px;"></div>
@@ -363,72 +343,19 @@ if ($table == "form_covid19") {
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
-        <div class="display">
+        <div class="display font-purple-soft">
             <div class="number">
                 <h4 class="font-purple-soft" style="font-weight:600;"><?= _("OVERALL SAMPLE STATUS"); ?></h4>
                 <small class="font-purple-soft" style="font-size:0.75em;"><?= _("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?></small>
             </div>
             <div class="icon">
-                <i class="icon-pie-chart"></i>
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="<?php echo $samplesOverviewChart; ?>" width="210" height="150" style="min-height:240px;"></div>
     </div>
 </div>
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-    <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
-        <tr>
-            <td style="vertical-align:middle;padding-left: 0px;"><b><?php echo _("Collection Point"); ?>&nbsp;:</b>
-                <select id="facilityId<?php echo $unique; ?>" name="facilityId" class="form-control" multiple title="<?php echo _('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
-                    <?php foreach ($facilityInfo as $facility) { ?>
-                        <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?></option>
-                    <?php } ?>
-                </select>
-            </td>
-            <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();" value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-            </td>
-        </tr>
-    </table>
-    <div class="dashboard-stat2 " style="cursor:pointer;">
-        <div class="display">
-            <div class="number">
-                <h3 class="font-purple-soft">
-                    <span data-counter="counterup" class="facilityCounterup" data-value="<?php echo $collectionTotal; ?>"><?php echo $collectionTotal; ?></span>
-                </h3>
-                <small class="font-purple-soft"><?php echo _("SAMPLES REGISTERED BY COLLECTION POINT"); ?></small><br>
-                <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->
-            </div>
-            <div class="icon">
-                <i class="icon-pie-chart"></i>
-            </div>
-        </div>
-        <div id="collectionSite<?php echo $unique; ?>">
-            <div id="<?php echo $samplesCollectionChart; ?>" width="210" height="150" style="min-height:150px;"></div>
-        </div>
-    </div>
-</div>
 <script>
-    $(document).ready(function() {
-        $('#facilityId<?php echo $unique; ?>').select2({
-            width: '100%',
-            placeholder: "<?= _("Select Collection Point(s)"); ?>"
-        });
-    });
-
-    function fetchByFacility() {
-        $.blockUI();
-        $.post("/dashboard/get-collection-samples.php", {
-                table: '<?php echo $table; ?>',
-                primaryKey: '<?php echo $primaryKey; ?>',
-                facilityId: $('#facilityId<?php echo $unique; ?>').val(),
-                cDate: <?php echo $cDate; ?>,
-                sampleCollectionDate: '<?php echo $_POST['sampleCollectionDate']; ?>',
-            },
-            function(data) {
-                $("#collectionSite<?php echo $unique; ?>").html(data);
-            });
-        $.unblockUI();
-    }
     <?php
     //if(isset($tResult) && count($tResult)>0){
     if ($receivedTotal > 0) { ?>
@@ -561,67 +488,6 @@ if ($table == "form_covid19") {
             colors: ['#8877a9']
         });
     <?php }
-    if ($collectionTotal > 0) { ?>
-        $('#<?php echo $samplesCollectionChart; ?>').highcharts({
-            chart: {
-                type: 'column',
-                height: 150
-            },
-            title: {
-                text: ''
-            },
-            subtitle: {
-                text: ''
-            },
-            credits: {
-                enabled: false
-            },
-            xAxis: {
-                categories: [<?php
-                                foreach ($collectionResult as $tRow) {
-                                    echo "'" . addslashes($tRow['facility_name']) . "',";
-                                }
-                                ?>],
-                crosshair: true,
-                scrollbar: {
-                    enabled: true
-                },
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: null
-                }
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0,
-                    cursor: 'pointer',
-                }
-            },
-            series: [{
-                showInLegend: false,
-                name: 'Samples',
-                data: [<?php
-                        foreach ($collectionResult as $tRow) {
-                            echo ucwords($tRow['total']) . ",";
-                        }
-                        ?>]
-
-            }],
-            colors: ['#f36a5a']
-        });
-    <?php }
-
     if ($acceptedTotal > 0) {
     ?>
 

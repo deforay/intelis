@@ -216,11 +216,11 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
                   if ($field == 'sample_collection_date' || $field == 'sample_received_at_vl_lab_datetime' || $field == 'sample_tested_datetime') {
                      if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00 00:00:00') {
                         $xplodDate = explode(" ", $fValueResult[0][$field]);
-                        $fieldValue = $general->humanDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+                        $fieldValue = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
                      }
                   } elseif ($field == 'patient_dob' || $field == 'date_of_initiation_of_current_regimen' || $field == 'last_viral_load_date') {
                      if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00') {
-                        $fieldValue = $general->humanDateFormat($fValueResult[0][$field]);
+                        $fieldValue = $general->humanReadableDateFormat($fValueResult[0][$field]);
                      }
                   } elseif ($field ==  'vl_test_platform' || $field ==  'patient_gender' || $field == 'is_sample_rejected') {
                      $fieldValue = ucwords(str_replace("_", " ", $fValueResult[0][$field]));
@@ -298,12 +298,12 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
                </div>
             </div>
             <div class="row">
-               <input type="hidden" id="subject" name="subject" value="<?php echo $_POST['subject']; ?>" />
-               <input type="hidden" id="toEmail" name="toEmail" value="<?php echo $_POST['toEmail']; ?>" />
-               <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo $_POST['reportEmail']; ?>" />
-               <input type="hidden" id="message" name="message" value="<?php echo $_POST['message']; ?>" />
+               <input type="hidden" id="subject" name="subject" value="<?php echo htmlspecialchars($_POST['subject']); ?>" />
+               <input type="hidden" id="toEmail" name="toEmail" value="<?php echo htmlspecialchars($_POST['toEmail']); ?>" />
+               <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo htmlspecialchars($_POST['reportEmail']); ?>" />
+               <input type="hidden" id="message" name="message" value="<?php echo htmlspecialchars($_POST['message']); ?>" />
                <input type="hidden" id="sample" name="sample" value="<?php echo implode(',', $resultOlySamples); ?>" />
-               <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo $_POST['pdfFile']; ?>" />
+               <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo htmlspecialchars($_POST['pdfFile']); ?>" />
                <input type="hidden" id="pdfFile2" name="pdfFile2" value="<?php echo $filename; ?>" />
                <input type="hidden" id="storeFile" name="storeFile" value="no" />
                <div class="col-lg-12" style="text-align:center;padding-left:0;">

@@ -38,7 +38,7 @@ $userDb = new \Vlsm\Models\Users();
 
 // $arr = $general->getGlobalConfig();
 // $sarr = $general->getSystemConfig();
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $labTechnicians = $userDb->getActiveUsers($facilityMap);
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
@@ -222,8 +222,9 @@ require($fileArray[$arr['vl_form']]);
                 function(data) {
                     if (data != 0) {
                         <?php if ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone') { ?>
-                            alert(alrt);
-                            $("#" + id).val('');
+                            // alert(alrt);
+                            // $("#" + id).val('');
+                            sampleCodeGeneration();
                             <?php if ($arr['vl_form'] == '3') { ?>
                                 $("#sampleCodeValue").html('').hide();
                             <?php }

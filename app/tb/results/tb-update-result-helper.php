@@ -32,7 +32,7 @@ try {
     }
     if (!empty($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
         $sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-        $_POST['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+        $_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
         $_POST['sampleCollectionDate'] = NULL;
     }
@@ -40,33 +40,33 @@ try {
     //Set sample received date
     if (!empty($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-        $_POST['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+        $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = NULL;
     }
     if (!empty($_POST['resultDispatchedDatetime']) && trim($_POST['resultDispatchedDatetime']) != "") {
         $resultDispatchedDatetime = explode(" ", $_POST['resultDispatchedDatetime']);
-        $_POST['resultDispatchedDatetime'] = $general->dateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
+        $_POST['resultDispatchedDatetime'] = $general->isoDateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
     } else {
         $_POST['resultDispatchedDatetime'] = NULL;
     }
     if (!empty($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
         $sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-        $_POST['sampleTestedDateTime'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+        $_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
         $_POST['sampleTestedDateTime'] = NULL;
     }
 
     if (!empty($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
         $arrivalDate = explode(" ", $_POST['arrivalDateTime']);
-        $_POST['arrivalDateTime'] = $general->dateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+        $_POST['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['arrivalDateTime'] = NULL;
     }
 
     if (!empty($_POST['requestedDate']) && trim($_POST['requestedDate']) != "") {
         $arrivalDate = explode(" ", $_POST['requestedDate']);
-        $_POST['requestedDate'] = $general->dateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+        $_POST['requestedDate'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['requestedDate'] = NULL;
     }
@@ -96,7 +96,7 @@ try {
         $resultSentToSource = 'pending';
     }
     if (!empty($_POST['patientDob'])) {
-        $_POST['patientDob'] = $general->dateFormat($_POST['patientDob']);
+        $_POST['patientDob'] = $general->isoDateFormat($_POST['patientDob']);
     }
 
     if (!empty($_POST['result'])) {
@@ -105,14 +105,14 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = NULL;
     }
 
     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
         $approvedOn = explode(" ", $_POST['approvedOn']);
-        $_POST['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+        $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
         $_POST['approvedOn'] = NULL;
     }
@@ -154,7 +154,7 @@ try {
         'result_approved_datetime'            => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != "") ? $_POST['approvedOn'] : null,
         'sample_tested_datetime'              => (isset($_POST['sampleTestedDateTime']) && $_POST['sampleTestedDateTime'] != "") ? $_POST['sampleTestedDateTime'] : null,
         'tested_by'                           => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
-        'rejection_on'                        => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->dateFormat($_POST['rejectionDate']) : null,
+        'rejection_on'                        => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
         'result_status'                       => $status,
         'data_sync'                           => 0,
         'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
@@ -180,7 +180,7 @@ try {
                         'tb_id'             => $_POST['tbSampleId'],
                         'actual_no'         => isset($_POST['actualNo'][$testKey]) ? $_POST['actualNo'][$testKey] : null,
                         'test_result'       => $testResult,
-                        'updated_datetime'  => $general->getDateTime()
+                        'updated_datetime'  => $general->getCurrentDateTime()
                     ));
                 }
             }

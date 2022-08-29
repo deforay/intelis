@@ -28,14 +28,14 @@ $primaryKey = "eid_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name','l_f.facility_name', 'vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name','vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name', 'vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name', 'vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 $sampleCode = 'sample_code';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name','vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name','vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name', 'vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name', 'vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -140,10 +140,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->dateFormat(trim($s_c_date[0]));
+          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->dateFormat(trim($s_c_date[1]));
+          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
 $sReceivedDate = '';
@@ -151,10 +151,21 @@ $eReceivedDate = '';
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleReceivedDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sReceivedDate = $general->dateFormat(trim($s_t_date[0]));
+          $sReceivedDate = $general->isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eReceivedDate = $general->dateFormat(trim($s_t_date[1]));
+          $eReceivedDate = $general->isoDateFormat(trim($s_t_date[1]));
+     }
+}
+$sResultDispatchedDate = '';
+$eResultDispatchedDate = '';
+if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != '') {
+     $s_t_date = explode("to", $_POST['resultDispatchedOn']);
+     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
+          $sResultDispatchedDate = $general->isoDateFormat(trim($s_t_date[0]));
+     }
+     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
+          $eResultDispatchedDate = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Sample test date filter */
@@ -163,10 +174,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = $general->dateFormat(trim($s_t_date[0]));
+          $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = $general->dateFormat(trim($s_t_date[1]));
+          $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Print date filter */
@@ -175,10 +186,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = $general->dateFormat(trim($s_p_date[0]));
+          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = $general->dateFormat(trim($s_p_date[1]));
+          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Facility id filter */
@@ -212,32 +223,46 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 /* Date time filters */
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
-          $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $start_date . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      if (trim($sReceivedDate) == trim($eReceivedDate)) {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $sReceivedDate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) like "' . $sReceivedDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eReceivedDate . '"';
      }
 }
+if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != '') {
+     if (trim($sResultDispatchedDate) == trim($eResultDispatchedDate)) {
+          $sWhere[] = ' DATE(vl.result_dispatched_datetime) like "' . $sResultDispatchedDate . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.result_dispatched_datetime) >= "' . $sResultDispatchedDate . '" AND DATE(vl.result_dispatched_datetime) <= "' . $eResultDispatchedDate . '"';
+     }
+}
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     if (trim($sTestDate) == trim($eTestDate)) {
-          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+     if (!empty($sTestDate) && trim($sTestDate) == trim($eTestDate)) {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) like "' . $sTestDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (trim($sPrintDate) == trim($eTestDate)) {
-          $sWhere[] = ' DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+          $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
+// if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
+//      if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
+//           $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) like "' . $sSampleReceivedDate . '"';
+//      } else {
+//           $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
+//      }
+// }
 //$cWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -246,12 +271,14 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
      if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
           $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-         // $cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
+          // $cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
 }
-$sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
-//echo $sQuery;die;
-
+if (isset($sWhere) && sizeof($sWhere) > 0) {
+     $sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
+} else {
+     $sQuery = $sQuery . ' WHERE result_status is NOT NULL ';
+}
 
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
@@ -263,7 +290,7 @@ $_SESSION['eidExportResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
+//$general->var_error_log($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 

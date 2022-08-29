@@ -112,9 +112,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															<?php
 															if (isset($instanceResult[0]['instance_facility_logo']) && trim($instanceResult[0]['instance_facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $instanceResult[0]['instance_facility_logo'])) {
 															?>
-																<img src=".././uploads/instance-logo/<?php echo $instanceResult[0]['instance_facility_logo']; ?>" alt="Logo image">
+																<img src="/uploads/instance-logo/<?php echo $instanceResult[0]['instance_facility_logo']; ?>" alt="Logo image">
 															<?php } else { ?>
-																<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+																
 															<?php } ?>
 														</div>
 														<div>
@@ -180,7 +180,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											<div class="col-lg-8">
 												<select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _('Please select the VLSM Locale'); ?>">
 													<?php foreach ($localeLists as $locale) { ?>
-														<option value="<?php echo $locale; ?>" <?php echo ($arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
+														<option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -208,9 +208,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														<?php
 														if (isset($arr['logo']) && trim($arr['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) {
 														?>
-															<img src=".././uploads/logo/<?php echo $arr['logo']; ?>" alt="Logo image">
+															<img src="/uploads/logo/<?php echo $arr['logo']; ?>" alt="Logo image">
 														<?php } else { ?>
-															<img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+															
 														<?php } ?>
 													</div>
 													<div>
@@ -823,7 +823,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								</div>
 							</div>
 						<?php }
-						if (SYSTEM_CONFIG['modules']['hepatitis'] == true) { ?>
+						if (SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<h3 class="panel-title"><?php echo _("Hepatitis Settings"); ?></h3>

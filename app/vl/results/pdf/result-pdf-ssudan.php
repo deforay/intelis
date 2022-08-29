@@ -15,7 +15,7 @@ if (sizeof($requestResult) > 0) {
      $pages = array();
      $page = 1;
      foreach ($requestResult as $result) {
-          $currentTime = $general->getDateTime();
+          $currentTime = $general->getCurrentDateTime();
 
           $testedBy = '';
           if (isset($result['tested_by']) && !empty($result['tested_by'])) {

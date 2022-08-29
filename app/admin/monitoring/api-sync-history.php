@@ -3,6 +3,10 @@ $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
+$syncedTypeResults = $db->rawQuery("SELECT DISTINCT request_type FROM track_api_requests ORDER BY request_type ASC");
+foreach ($syncedTypeResults as $synced) {
+	$syncedType[$synced['request_type']] = ucwords(str_replace("-", " ", $synced['request_type']));
+}
 ?>
 <style>
 	.select2-selection__choice {
@@ -29,6 +33,44 @@ $general = new \Vlsm\Models\General();
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
+					<table class="table" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+						<tr>
+							<td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
+							<td>
+								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
+							</td>
+							<td><b><?php echo _("Test Type"); ?>&nbsp;:</b></td>
+							<td>
+								<select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+									<option value=""><?php echo _("-- Select --"); ?></option>
+									<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+										<option value="vl"><?php echo _("Viral Load"); ?></option>
+									<?php }
+									if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+										<option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+									<?php }
+									if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+										<option value="covid19"><?php echo _("Covid-19"); ?></option>
+									<?php }
+									if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+										<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
+									<?php }
+									if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+										<option value='tb'><?php echo _("TB"); ?></option>
+									<?php } ?>
+								</select>
+							</td>
+							<td><b><?php echo _("Synced Type"); ?>&nbsp;:</b></td>
+							<td>
+								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _('Please select the synced type'); ?>">
+									<?php echo $general->generateSelectOptions($syncedType, null, '--Select--'); ?>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td><button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button></td>
+						</tr>
+					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
 						<table id="vlRequestDataTable" class="table table-bordered table-striped">
@@ -39,6 +81,7 @@ $general = new \Vlsm\Models\General();
 									<th><?php echo _("Test Type"); ?></th>
 									<th><?php echo _("URL"); ?></th>
 									<th><?php echo _("Synced On"); ?></th>
+									<th><?php echo _("Action"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -64,31 +107,27 @@ $general = new \Vlsm\Models\General();
 	$(document).ready(function() {
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-				}
+			locale: {
+				cancelLabel: 'Clear'
 			},
-			function(start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
+			format: 'DD-MMM-YYYY',
+			separator: ' to ',
+			startDate: moment().subtract(7, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+			}
+		});
 	});
 
 	function loadVlRequestData() {
@@ -113,6 +152,9 @@ $general = new \Vlsm\Models\General();
 				"sClass": "center"
 			}, {
 				"sClass": "center"
+			}, {
+				"sClass": "center",
+				"bSortable": false
 			}],
 			"aaSorting": [4, "desc"],
 			"bProcessing": true,
@@ -122,6 +164,14 @@ $general = new \Vlsm\Models\General();
 				aoData.push({
 					"name": "dateRange",
 					"value": $("#dateRange").val()
+				});
+				aoData.push({
+					"name": "testType",
+					"value": $("#testType").val()
+				});
+				aoData.push({
+					"name": "syncedType",
+					"value": $("#syncedType").val()
 				});
 				$.ajax({
 					"dataType": 'json',

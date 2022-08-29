@@ -13,7 +13,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 $start_date = date('Y-m-d');
 $end_date = date('Y-m-d');
-$maxId = $general->createBatchCode($start_date, $end_date);
+$maxId = $general->createBatchCode();
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>

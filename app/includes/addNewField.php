@@ -16,7 +16,7 @@ if ($value != '') {
     if(count($rejInfo)==0){
         $data = array(
 			'rejection_type' => $value,
-			'updated_datetime' => $general->getDateTime(),
+			'updated_datetime' => $general->getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

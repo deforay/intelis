@@ -127,10 +127,10 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = $general->dateFormat(trim($s_c_date[0]));
+		$start_date = $general->isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = $general->dateFormat(trim($s_c_date[1]));
+		$end_date = $general->isoDateFormat(trim($s_c_date[1]));
 	}
 }
 
@@ -139,10 +139,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
 	$s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$labStartDate = $general->dateFormat(trim($s_c_date[0]));
+		$labStartDate = $general->isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$labEndDate = $general->dateFormat(trim($s_c_date[1]));
+		$labEndDate = $general->isoDateFormat(trim($s_c_date[1]));
 	}
 }
 
@@ -151,10 +151,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleTestedDate']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$testedStartDate = $general->dateFormat(trim($s_c_date[0]));
+		$testedStartDate = $general->isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$testedEndDate = $general->dateFormat(trim($s_c_date[1]));
+		$testedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
 	}
 }
 
@@ -163,7 +163,7 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	if (trim($start_date) == trim($end_date)) {
-		$sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+		$sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
 	} else {
 		$sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 	}
@@ -241,31 +241,31 @@ $output = array(
 foreach ($rResult as $aRow) {
 	if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['sample_collection_date']);
-		$aRow['sample_collection_date'] = $general->humanDateFormat($xplodDate[0]);
+		$aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$aRow['sample_collection_date'] = '';
 	}
 	if (isset($aRow['sample_received_at_lab_datetime']) && trim($aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['sample_received_at_lab_datetime']);
-		$aRow['sample_received_at_lab_datetime'] = $general->humanDateFormat($xplodDate[0]);
+		$aRow['sample_received_at_lab_datetime'] = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$aRow['sample_received_at_lab_datetime'] = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['sample_tested_datetime']);
-		$aRow['sample_tested_datetime'] = $general->humanDateFormat($xplodDate[0]);
+		$aRow['sample_tested_datetime'] = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$aRow['sample_tested_datetime'] = '';
 	}
 	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['result_printed_datetime']);
-		$aRow['result_printed_datetime'] = $general->humanDateFormat($xplodDate[0]);
+		$aRow['result_printed_datetime'] = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$aRow['result_printed_datetime'] = '';
 	}
 	if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['result_mail_datetime']);
-		$aRow['result_mail_datetime'] = $general->humanDateFormat($xplodDate[0]);
+		$aRow['result_mail_datetime'] = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$aRow['result_mail_datetime'] = '';
 	}

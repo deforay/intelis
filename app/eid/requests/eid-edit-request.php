@@ -33,7 +33,7 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $usersModel = new \Vlsm\Models\Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $userInfo = array();
 foreach ($userResult as $user) {
@@ -102,7 +102,7 @@ foreach ($testPlatformResult as $row) {
 if (isset($eidInfo['sample_collection_date']) && trim($eidInfo['sample_collection_date']) != '' && $eidInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_collection_date'];
     $expStr = explode(" ", $eidInfo['sample_collection_date']);
-    $eidInfo['sample_collection_date'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['sample_collection_date'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
     $eidInfo['sample_collection_date'] = '';
@@ -110,16 +110,23 @@ if (isset($eidInfo['sample_collection_date']) && trim($eidInfo['sample_collectio
 
 if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $eidInfo['result_approved_datetime']);
-    $eidInfo['result_approved_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['result_approved_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_approved_datetime'] = '';
 }
 
 if (isset($eidInfo['result_reviewed_datetime']) && trim($eidInfo['result_reviewed_datetime']) != '' && $eidInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $eidInfo['result_reviewed_datetime']);
-    $eidInfo['result_reviewed_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['result_reviewed_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_reviewed_datetime'] = '';
+}
+
+if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+    $expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
+    $eidInfo['result_dispatched_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+} else {
+    $eidInfo['result_dispatched_datetime'] = '';
 }
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
@@ -151,7 +158,6 @@ require($fileArray[$arr['vl_form']]);
                     if (data != 0) {
                         <?php if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
                             alert(alrt);
-                            $("#" + id).val('');
                         <?php } else { ?>
                             data = data.split("##");
                             document.location.href = " /eid/requests/eid-edit-request.php?id=" + data[0] + "&c=" + data[1];

@@ -1,5 +1,6 @@
 <?php
 
+
 class SouthSudan_PDF extends MYPDF
 {
     //Page header
@@ -55,6 +56,9 @@ for ($m = 0; $m < count($mFieldArray); $m++) {
         break;
     }
 }
+
+$dateUtils = new \Vlsm\Utilities\DateUtils();
+
 // create new PDF document
 $pdf = new SouthSudan_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
@@ -120,14 +124,14 @@ if (!isset($result['labName']) || trim($result['labName']) == '') {
 //Set Age
 $age = 'Unknown';
 if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
-    $ageCalc = $general->ageInYearMonthDays($result['patient_dob']);
+    $ageCalc = $dateUtils->ageInYearMonthDays($result['patient_dob']);
 } elseif (isset($result['patient_age']) && trim($result['patient_age']) != '' && trim($result['patient_age']) > 0) {
     $age = $result['patient_age'];
 }
 
 if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_collection_date']);
-    $result['sample_collection_date'] = $general->humanDateFormat($expStr[0]);
+    $result['sample_collection_date'] = $general->humanReadableDateFormat($expStr[0]);
     $sampleCollectionTime = $expStr[1];
 } else {
     $result['sample_collection_date'] = '';
@@ -137,18 +141,18 @@ $sampleReceivedDate = '';
 $sampleReceivedTime = '';
 if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-    $sampleReceivedDate = $general->humanDateFormat($expStr[0]);
+    $sampleReceivedDate = $general->humanReadableDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
 }
 $sampleDispatchDate = '';
 $sampleDispatchTime = '';
 if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['result_printed_datetime']);
-    $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
+    $sampleDispatchDate = $general->humanReadableDateFormat($expStr[0]);
     $sampleDispatchTime = $expStr[1];
 } else {
     $expStr = explode(" ", $currentDateTime);
-    $sampleDispatchDate = $general->humanDateFormat($expStr[0]);
+    $sampleDispatchDate = $general->humanReadableDateFormat($expStr[0]);
     $sampleDispatchTime = $expStr[1];
 }
 
@@ -167,7 +171,7 @@ if (!empty($testedByRes['user_signature'])) {
 
 if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_tested_datetime']);
-    $result['sample_tested_datetime'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+    $result['sample_tested_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $result['sample_tested_datetime'] = '';
 }

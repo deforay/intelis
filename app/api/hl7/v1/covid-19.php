@@ -84,14 +84,14 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
         $where[] = " (vl.result ='' OR vl.result IS NULL OR vl.result LIKE '')";
         $where[] = " (vl.is_sample_rejected ='no' OR vl.is_sample_rejected IS NULL OR vl.is_sample_rejected LIKE 'no' OR vl.is_sample_rejected like '')";
     }
-    if (sizeof($where) > 0) {
+    if (!empty($where)) {
         $sQuery .= " where  " . implode(" AND ", $where) . "  limit 1";
     } else {
         $sQuery .= " limit 1";
     }
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
-    if ($rowData && count($rowData) > 0) {
+    if (!empty($rowData)) {
         $app = new \Vlsm\Models\App();
         $trackId = $app->addApiTracking($user['user_id'], count($rowData), $type[1], 'covid19', $requestUrl, $hl7, 'hl7');
         foreach ($rowData as $row) {
@@ -372,7 +372,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $where[] =  " patient_district like '" . $_POST['patientDistrict'] . "'";
     }
 
-    if (sizeof($where) > 0) {
+    if (!empty($where)) {
         $sQuery .= " where  " . implode(" AND ", $where) . "  limit 1";
     } else {
         $sQuery .= " limit 1";
@@ -387,10 +387,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $sampleJson = $covid19Model->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
         $sampleData = json_decode($sampleJson, true);
     }
-    if (!isset($_POST['countryId']) || $_POST['countryId'] == '')
-        $_POST['countryId'] = '';
+
     $covid19Data = array(
-        'vlsm_country_id' => $_POST['countryId'],
+        'vlsm_country_id' => $_POST['countryId'] ?: null,
         'sample_collection_date' => $_POST['sampleCollectionDate'],
         'vlsm_instance_id' => $_POST['instanceId'],
         'province_id' => $provinceId,
@@ -456,7 +455,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $status = 4;
         }
         $covid19Data = array(
-            'unique_id'                           => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateRandomString(32),
+            'unique_id'                           => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateUUID(),
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $_POST['formId'],
             'external_sample_code'                => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
@@ -497,8 +496,8 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'is_sample_post_mortem'               => !empty($_POST['isSamplePostMortem']) ? $_POST['isSamplePostMortem'] : null,
             'priority_status'                     => !empty($_POST['priorityStatus']) ? $_POST['priorityStatus'] : null,
             'number_of_days_sick'                 => !empty($_POST['numberOfDaysSick']) ? $_POST['numberOfDaysSick'] : null,
-            'date_of_symptom_onset'               => !empty($_POST['dateOfSymptomOnset']) ? $general->dateFormat($_POST['dateOfSymptomOnset']) : null,
-            'date_of_initial_consultation'        => !empty($_POST['dateOfInitialConsultation']) ? $general->dateFormat($_POST['dateOfInitialConsultation']) : null,
+            'date_of_symptom_onset'               => !empty($_POST['dateOfSymptomOnset']) ? $general->isoDateFormat($_POST['dateOfSymptomOnset']) : null,
+            'date_of_initial_consultation'        => !empty($_POST['dateOfInitialConsultation']) ? $general->isoDateFormat($_POST['dateOfInitialConsultation']) : null,
             'fever_temp'                          => !empty($_POST['feverTemp']) ? $_POST['feverTemp'] : null,
             'medical_history'                     => !empty($_POST['medicalHistory']) ? $_POST['medicalHistory'] : null,
             'recent_hospitalization'              => !empty($_POST['recentHospitalization']) ? $_POST['recentHospitalization'] : null,
@@ -511,7 +510,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'contact_with_confirmed_case'         => !empty($_POST['contactWithConfirmedCase']) ? $_POST['contactWithConfirmedCase'] : null,
             'has_recent_travel_history'           => !empty($_POST['hasRecentTravelHistory']) ? $_POST['hasRecentTravelHistory'] : null,
             'travel_country_names'                => !empty($_POST['countryName']) ? $_POST['countryName'] : null,
-            'travel_return_date'                  => !empty($_POST['returnDate']) ? $general->dateFormat($_POST['returnDate']) : null,
+            'travel_return_date'                  => !empty($_POST['returnDate']) ? $general->isoDateFormat($_POST['returnDate']) : null,
             'sample_received_at_vl_lab_datetime'  => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
             'sample_condition'                    => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : (isset($_POST['specimenQuality']) ? $_POST['specimenQuality'] : null),
             'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
@@ -520,7 +519,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-            'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : $general->getDateTime(),
+            'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : $general->getCurrentDateTime(),
             'sample_registered_at_lab'            => $db->now(),
             'last_modified_datetime'              => $db->now()
         );

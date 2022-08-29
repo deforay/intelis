@@ -105,7 +105,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -122,34 +122,35 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->dateFormat(trim($s_c_date[0]));
+        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->dateFormat(trim($s_c_date[1]));
+        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
     }
 }
 
 
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+    $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+}
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+    if (trim($start_date) == trim($end_date)) {
+        $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+    } else {
+        $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
     }
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        if (trim($start_date) == trim($end_date)) {
-            $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-        } else {
-            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
+}
+if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
+    $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+}
+if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
+    if ($_POST['statusFilter'] == 'approvedOrRejected') {
+        $sWhere[] = ' vl.result_status IN (4,7)';
+    } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
+        //$sWhere[] =  ' vl.result_status NOT IN (4,7)';
+        $sWhere[] = ' vl.result_status IN (6,8)';
     }
-    if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-    }
-    if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
-        if ($_POST['statusFilter'] == 'approvedOrRejected') {
-            $sWhere[] = ' vl.result_status IN (4,7)';
-        } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-            $sWhere[] =  ' vl.result_status NOT IN (4,7)';
-        }
-    }
+}
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
@@ -158,13 +159,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $sWhere[] =  " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
     }
 }
-$sWhere[] = ' vl.result!=""';
-if(isset($sWhere) && count($sWhere) > 0)
-{
-    $sWhere = ' where '. implode(' AND ',$sWhere);
-}
-else{
-    $sWhere ="";
+$sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
+if (isset($sWhere) && count($sWhere) > 0) {
+    $sWhere = ' where ' . implode(' AND ', $sWhere);
+} else {
+    $sWhere = "";
 }
 $sQuery = $sQuery . $sWhere;
 
@@ -211,7 +210,7 @@ if (isset($_SESSION['privileges']) && (in_array("viewVlRequest.php", $_SESSION['
 foreach ($rResult as $aRow) {
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['sample_collection_date']);
-        $aRow['sample_collection_date'] = $general->humanDateFormat($xplodDate[0]);
+        $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
     } else {
         $aRow['sample_collection_date'] = '';
     }
@@ -241,7 +240,7 @@ foreach ($rResult as $aRow) {
     $row[] = $tbResults[$aRow['result']];
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-        $aRow['last_modified_datetime'] = $general->humanDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+        $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
     } else {
         $aRow['last_modified_datetime'] = '';
     }

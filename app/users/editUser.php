@@ -158,13 +158,13 @@ $ftResult = $db->rawQuery($fQuery);
                                              <label for="" class="col-lg-4 control-label"><?php echo _("Signature"); ?> <br><?php echo _("(Used to embed in Result PDF)"); ?></label>
                                              <div class="col-lg-8">
                                                   <div class="fileinput fileinput-new userSignature" data-provides="fileinput">
-                                                       <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
+                                                       <div class="fileinput-preview thumbnail image-placeholder" data-trigger="fileinput" style="width:200px; height:150px;">
                                                             <?php
                                                             if (isset($userInfo['user_signature']) && trim($userInfo['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
                                                             ?>
                                                                  <img src="/uploads/users-signature/<?php echo $userInfo['user_signature']; ?>" alt="Signature image">
                                                             <?php } else { ?>
-                                                                 <img src="https://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+                                                                 
                                                             <?php } ?>
                                                        </div>
                                                        <div>

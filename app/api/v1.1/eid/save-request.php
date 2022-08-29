@@ -67,41 +67,39 @@ try {
 
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
             exit();
         }
         $update = "no";
         $rowData = false;
+        $uniqueId = null;
+        if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
 
-        if ((isset($data['sampleCode']) && !empty($data['sampleCode'])) || (isset($data['remoteSampleCode']) && !empty($data['uniqueId'])) || (isset($data['uniqueId']) && !empty($data['uniqueId']))) {
-            $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
-            $sWhere = array();
+            $sQuery = "SELECT eid_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
+
+            $sQueryWhere = array();
+
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
-                $sWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            } else if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
-                $sWhere[] = " sample_code like '" . $data['sampleCode'] . "'";
-            } else if (isset($data['remoteSampleCode']) != "" && !empty($data['remoteSampleCode'])) {
-                $sWhere[] = " remote_sample_code like '" . $data['sampleCode'] . "'";
+                $uniqueId = $data['uniqueId'];
+                $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             }
-            if (isset($sWhere) && count($sWhere) > 0) {
-                $sQuery .= " WHERE " . implode(" AND ", $sWhere) . " limit 1";
-            } else {
-                $sQuery .= "limit 1";
+
+            if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+                $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
+            }
+
+            if (!empty($sQueryWhere)) {
+                $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
             }
             $rowData = $db->rawQueryOne($sQuery);
             if ($rowData) {
                 $update = "yes";
-                if ($user['access_type'] != 'testing-lab') {
-                    $sampleData['sampleCode'] = (!empty($rowData['remote_sample_code'])) ? $rowData['remote_sample_code'] : null;
-                    $sampleData['sampleCodeFormat'] = (!empty($rowData['remote_sample_code_format'])) ? $rowData['remote_sample_code_format'] : null;
-                    $sampleData['sampleCodeKey'] = (!empty($rowData['remote_sample_code_key'])) ? $rowData['remote_sample_code_key'] : null;
-                } else {
-                    $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : null;
-                    $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : null;
-                    $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : null;
-                }
+                $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
+                $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
+                $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
+                $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
             } else {
                 $sampleJson = $eidModel->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
                 $sampleData = json_decode($sampleJson, true);
@@ -113,42 +111,44 @@ try {
         if (!isset($data['countryId']) || $data['countryId'] == '') {
             $data['countryId'] = '';
         }
+
+        if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
+            $uniqueId = $data['uniqueId'] = $general->generateUUID();
+        }
+
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
         } else {
             $data['sampleCollectionDate'] = NULL;
         }
         $eidData = array(
-            'vlsm_country_id' => $data['countryId'],
+            'vlsm_country_id' => $data['formId'] ?: null,
+            'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
-            'request_created_datetime' => $general->getDateTime(),
+            'request_created_datetime' => $general->getCurrentDateTime(),
             'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => $general->getDateTime()
+            'last_modified_datetime' => $general->getCurrentDateTime()
         );
 
-        if ($user['access_type'] != 'testing-lab') {
-            $eidData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $eidData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $eidData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+        if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
+            $eidData['remote_sample_code'] = $sampleData['sampleCode'];
+            $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $eidData['remote_sample'] = 'yes';
-            $eidData['result_status'] = 9;
-            /* if ($roleUser['access_type'] == 'testing-lab') {
-                $eidData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
-            } */
+            if ($user['access_type'] === 'testing-lab') {
+                $eidData['sample_code'] = $sampleData['sampleCode'];
+            }
         } else {
-            $eidData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $eidData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $eidData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+            $eidData['sample_code'] = $sampleData['sampleCode'];
+            $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
             $eidData['remote_sample'] = 'no';
-            $eidData['result_status'] = 6;
         }
-        /* echo "<pre>";
-        print_r($eidData); 
-        die;*/
+
         $id = 0;
         if (isset($rowData) && $rowData['eid_id'] > 0) {
             $db = $db->where('eid_id', $rowData['eid_id']);
@@ -193,7 +193,7 @@ try {
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
             $approvedOn = explode(" ", $data['approvedOn']);
-            $data['approvedOn'] = $general->dateFormat($approvedOn[0]) . " " . $approvedOn[1];
+            $data['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
         } else {
             $data['approvedOn'] = NULL;
         }
@@ -201,45 +201,45 @@ try {
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
             $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
         } else {
             $data['sampleReceivedDate'] = NULL;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
             $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
         } else {
             $data['sampleTestedDateTime'] = NULL;
         }
 
         if (isset($data['rapidtestDate']) && trim($data['rapidtestDate']) != "") {
-            $data['rapidtestDate'] = $general->dateFormat($data['rapidtestDate']);
+            $data['rapidtestDate'] = $general->isoDateFormat($data['rapidtestDate']);
         } else {
             $data['rapidtestDate'] = NULL;
         }
 
         if (isset($data['childDob']) && trim($data['childDob']) != "") {
-            $data['childDob'] = $general->dateFormat($data['childDob']);
+            $data['childDob'] = $general->isoDateFormat($data['childDob']);
         } else {
             $data['childDob'] = NULL;
         }
 
         if (isset($data['mothersDob']) && trim($data['mothersDob']) != "") {
-            $data['mothersDob'] = $general->dateFormat($data['mothersDob']);
+            $data['mothersDob'] = $general->isoDateFormat($data['mothersDob']);
         } else {
             $data['mothersDob'] = NULL;
         }
 
 
         if (isset($data['motherTreatmentInitiationDate']) && trim($data['motherTreatmentInitiationDate']) != "") {
-            $data['motherTreatmentInitiationDate'] = $general->dateFormat($data['motherTreatmentInitiationDate']);
+            $data['motherTreatmentInitiationDate'] = $general->isoDateFormat($data['motherTreatmentInitiationDate']);
         } else {
             $data['motherTreatmentInitiationDate'] = NULL;
         }
 
         if (isset($data['previousPCRTestDate']) && trim($data['previousPCRTestDate']) != "") {
             $previousPCRTestDate = explode(" ", $data['previousPCRTestDate']);
-            $data['previousPCRTestDate'] = $general->dateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
+            $data['previousPCRTestDate'] = $general->isoDateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
         } else {
             $data['previousPCRTestDate'] = NULL;
         }
@@ -252,27 +252,27 @@ try {
             $motherVlResult = null;
         }
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
-            $data['reviewedOn'] = $general->dateFormat($data['reviewedOn']);
+            $data['reviewedOn'] = $general->isoDateFormat($data['reviewedOn']);
         } else {
             $data['reviewedOn'] = NULL;
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
             $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+            $data['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
         } else {
             $data['resultDispatchedOn'] = NULL;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
             $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = $general->dateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+            $data['sampleDispatchedOn'] = $general->isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
         } else {
             $data['sampleDispatchedOn'] = NULL;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $data['revisedOn'] = $general->dateFormat($data['revisedOn']);
+            $data['revisedOn'] = $general->isoDateFormat($data['revisedOn']);
         } else {
             $data['revisedOn'] = NULL;
         }
@@ -280,7 +280,7 @@ try {
         $eidData = array(
             'vlsm_instance_id'                                  => $instanceId,
             'vlsm_country_id'                                   => $data['formId'],
-            'unique_id'                                         => isset($data['uniqueId']) ? $data['uniqueId'] : null,
+            'unique_id'                                         => $uniqueId,
             'app_sample_code'                                   => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'facility_id'                                       => isset($data['facilityId']) ? $data['facilityId'] : null,
             'province_id'                                       => isset($data['provinceId']) ? $data['provinceId'] : null,
@@ -291,7 +291,7 @@ try {
             'caretaker_contact_consent'                         => isset($data['caretakerConsentForContact']) ? $data['caretakerConsentForContact'] : null,
             'caretaker_phone_number'                            => isset($data['caretakerPhoneNumber']) ? $data['caretakerPhoneNumber'] : null,
             'caretaker_address'                                 => isset($data['caretakerAddress']) ? $data['caretakerAddress'] : null,
-            'mother_name'                                       => isset($data['mothersName']) ? $data['mothersName'] : null,
+            'mother_name'                                       => (isset($data['mothersName']) && !empty($data['mothersName']) && $data['mothersName'] != 'undefined') ? $data['mothersName'] : null,
             'mother_dob'                                        => isset($data['mothersDob']) ? $data['mothersDob'] : null,
             'mother_marital_status'                             => isset($data['mothersMaritalStatus']) ? $data['mothersMaritalStatus'] : null,
             'mother_treatment'                                  => isset($data['motherTreatment']) ? implode(",", $data['motherTreatment']) : null,
@@ -344,15 +344,15 @@ try {
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                       => isset($data['sampleRejectionReason']) ? $data['sampleRejectionReason'] : null,
-            'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->dateFormat($data['rejectionDate']) : null,
+            'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
             'source_of_request'                                 => "app"
         );
 
         if ($rowData) {
-            $eidData['last_modified_datetime']  = $general->getDateTime();
+            $eidData['last_modified_datetime']  = $general->getCurrentDateTime();
             $eidData['last_modified_by']  = $user['user_id'];
         } else {
-            $eidData['sample_registered_at_lab']  = $general->getDateTime();
+            $eidData['sample_registered_at_lab']  = $general->getCurrentDateTime();
             $eidData['request_created_by']  = $user['user_id'];
         }
 
@@ -401,8 +401,6 @@ try {
             http_response_code(301);
         }
     }
-    $app = new \Vlsm\Models\App();
-    $trackId = $app->addApiTracking($user['user_id'], count($input['data']), 'add-request', 'eid', $requestUrl, $params, 'json');
     if ($update == "yes") {
         $msg = 'Successfully updated.';
     } else {
@@ -428,12 +426,13 @@ try {
     } else {
         $payload['token'] = null;
     }
+    $general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'eid', $requestUrl, $params, json_encode($payload), 'json');
     http_response_code(200);
     echo json_encode($payload);
     exit(0);
 } catch (Exception $exc) {
 
-    http_response_code(500);
+    // http_response_code(500);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),

@@ -37,7 +37,7 @@ $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesDb->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $userDb->getActiveUsers($facilityMap);
 $labTechniciansResults = array();
 foreach ($userResult as $user) {
@@ -86,7 +86,7 @@ if ($arr['hepatitis_sample_code'] == 'auto' || $arr['hepatitis_sample_code'] == 
 if (isset($hepatitisInfo['sample_collection_date']) && trim($hepatitisInfo['sample_collection_date']) != '' && $hepatitisInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $hepatitisInfo['sample_collection_date'];
     $expStr = explode(" ", $hepatitisInfo['sample_collection_date']);
-    $hepatitisInfo['sample_collection_date'] = $general->humanDateFormat($expStr[0]) . " " . $expStr[1];
+    $hepatitisInfo['sample_collection_date'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
     $hepatitisInfo['sample_collection_date'] = '';

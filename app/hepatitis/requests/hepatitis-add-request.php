@@ -41,7 +41,7 @@ $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesDb->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
-$facilityMap = $facilitiesDb->getFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $userDb->getActiveUsers($facilityMap);
 $labTechniciansResults = array();
 foreach ($userResult as $user) {
@@ -250,8 +250,9 @@ require($fileArray[$arr['vl_form']]);
                 function(data) {
                     if (data != 0) {
                         <?php if ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone') { ?>
-                            alert(alrt);
-                            $("#" + id).val('');
+                            // alert(alrt);
+                            // $("#" + id).val('');
+                            sampleCodeGeneration();
                             <?php if ($arr['vl_form'] == '3') { ?>
                                 $("#sampleCodeValue").html('').hide();
                             <?php }

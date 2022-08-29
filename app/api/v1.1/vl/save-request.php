@@ -29,6 +29,11 @@ try {
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
+    $logVal = null;
+    $absDecimalVal = null;
+    $absVal = null;
+    $txtVal = null;
+    $finalResult = null;
 
     $input = json_decode(file_get_contents("php://input"), true);
 
@@ -46,15 +51,14 @@ try {
 
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {
-        $response = array(
-            'status' => 'failed',
-            'timestamp' => time(),
-            'error' => 'Bearer Token Invalid',
-            'data' => array()
-        );
+        // $response = array(
+        //     'status' => 'failed',
+        //     'timestamp' => time(),
+        //     'error' => 'Bearer Token Invalid',
+        //     'data' => array()
+        // );
         http_response_code(401);
-        echo json_encode($response);
-        exit(0);
+        throw new Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = array();
@@ -62,14 +66,14 @@ try {
         $data = $field;
         $sampleFrom = '';
         $data['formId'] = $data['countryId'] = $general->getGlobalConfig('vl_form');
-        $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
+        $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
         $rowData = $db->rawQuery($sQuery);
         $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
         $sampleFrom = '';
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && count($province) > 0) {
+            if (isset($province) && !empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'province_name', 'province_details', 'province_id', true);
@@ -87,24 +91,35 @@ try {
         $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
-            exit();
+            continue;
+            //throw new Exception(_("Sample Collection Date is required"));
         }
 
         $update = "no";
         $rowData = false;
-        if ((isset($data['sampleCode']) && !empty($data['sampleCode'])) || (isset($data['remoteSampleCode']) && !empty($data['uniqueId'])) || (isset($data['uniqueId']) && !empty($data['uniqueId']))) {
-            $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
+        $uniqueId = null;
+        if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
+
+            $sQuery = "SELECT vl_sample_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
+
+            $sQueryWhere = array();
+
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
-                $sQuery .= "where unique_id like '" . $data['uniqueId'] . "'";
-            } else if (isset($data['sampleCode']) && !empty($data['sampleCode'])) {
-                $sQuery .= "where sample_code like '" . $data['sampleCode'] . "'";
-            } else if (isset($data['remoteSampleCode']) != "" && !empty($data['remoteSampleCode'])) {
-                $sQuery .= "where remote_sample_code like '" . $data['sampleCode'] . "'";
+                $uniqueId = $data['uniqueId'];
+                $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             }
-            $sQuery .= "limit 1";
+            if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+                $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
+            }
+
+            if (!empty($sQueryWhere)) {
+                $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
+            }
+
             $rowData = $db->rawQueryOne($sQuery);
             if ($rowData) {
                 $update = "yes";
+                $uniqueId = $rowData['unique_id'];
                 $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
                 $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
                 $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
@@ -116,40 +131,48 @@ try {
             $sampleJson = $vlModel->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
             $sampleData = json_decode($sampleJson, true);
         }
+
+        if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
+            $uniqueId = $general->generateUUID();
+        }
+
         if (!isset($data['countryId']) || $data['countryId'] == '') {
             $data['countryId'] = '';
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->dateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $sampleCollectionDate = $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
         } else {
-            $data['sampleCollectionDate'] = NULL;
+            $sampleCollectionDate = $data['sampleCollectionDate'] = NULL;
         }
         $vlData = array(
-            'vlsm_country_id' => $data['countryId'],
+            'vlsm_country_id' => $data['formId'] ?? null,
+            'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
-            'request_created_datetime' => $general->getDateTime(),
+            'request_created_datetime' => $general->getCurrentDateTime(),
             'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => $general->getDateTime()
+            'last_modified_datetime' => $general->getCurrentDateTime()
         );
 
-        if ($user['access_type'] != 'testing-lab') {
-            $vlData['remote_sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $vlData['remote_sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $vlData['remote_sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+        if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
+            $vlData['remote_sample_code'] = $sampleData['sampleCode'];
+            $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
             $vlData['remote_sample'] = 'yes';
             $vlData['result_status'] = 9;
-            /* if ($roleUser['access_type'] == 'testing-lab') {
-                $vlData['sample_code'] = !empty($data['appSampleCode']) ? $data['appSampleCode'] : null;
-            } */
+
+            if ($user['access_type'] === 'testing-lab') {
+                $vlData['sample_code'] = $sampleData['sampleCode'];
+                $vlData['result_status'] = 6;
+            }
         } else {
-            $vlData['sample_code'] = (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != "") ? $sampleData['sampleCode'] : null;
-            $vlData['sample_code_format'] = (isset($sampleData['sampleCodeFormat']) && $sampleData['sampleCodeFormat'] != "") ? $sampleData['sampleCodeFormat'] : null;
-            $vlData['sample_code_key'] = (isset($sampleData['sampleCodeKey']) && $sampleData['sampleCodeKey'] != "") ? $sampleData['sampleCodeKey'] : null;
+            $vlData['sample_code'] = $sampleData['sampleCode'];
+            $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
             $vlData['remote_sample'] = 'no';
             $vlData['result_status'] = 6;
         }
@@ -179,58 +202,44 @@ try {
             $status = 9;
         }
 
-        if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
-            $data['result'] = null;
-            $status = 4;
-        } else if (
-            isset($globalConfig['vl_auto_approve_api_results']) &&
-            $globalConfig['vl_auto_approve_api_results'] == "yes" &&
-            (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
-            (isset($data['result']) && !empty($data['result']))
-        ) {
-            $status = 7;
-        } else if ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
-            $status = 8;
-        }
-
         if (isset($data['approvedOnDateTime']) && trim($data['approvedOnDateTime']) != "") {
             $approvedOnDateTime = explode(" ", $data['approvedOnDateTime']);
-            $data['approvedOnDateTime'] = $general->dateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+            $data['approvedOnDateTime'] = $general->isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
         } else {
             $data['approvedOnDateTime'] = NULL;
         }
 
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
             $reviewedOn = explode(" ", $data['reviewedOn']);
-            $data['reviewedOn'] = $general->dateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+            $data['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
         } else {
             $data['reviewedOn'] = NULL;
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
             $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+            $data['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
         } else {
             $data['resultDispatchedOn'] = NULL;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
             $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = $general->dateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+            $data['sampleDispatchedOn'] = $general->isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
         } else {
             $data['sampleDispatchedOn'] = NULL;
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
             $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = $general->dateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+            $data['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
         } else {
             $data['resultDispatchedOn'] = NULL;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
             $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = $general->dateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+            $data['sampleDispatchedOn'] = $general->isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
         } else {
             $data['sampleDispatchedOn'] = NULL;
         }
@@ -238,48 +247,48 @@ try {
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
             $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = $general->dateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
         } else {
             $data['sampleReceivedDate'] = NULL;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
             $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
         } else {
             $data['sampleTestedDateTime'] = NULL;
         }
 
         if (!empty($data['sampleTestingDateAtLab']) && trim($data['sampleTestingDateAtLab']) != "") {
             $sampleTestedDate = explode(" ", $data['sampleTestingDateAtLab']);
-            $data['sampleTestingDateAtLab'] = $general->dateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestingDateAtLab'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
         } else {
             $data['sampleTestingDateAtLab'] = NULL;
         }
 
         if (!empty($data['sampleReceivedAtHubOn']) && trim($data['sampleReceivedAtHubOn']) != "") {
             $sampleReceivedAtHubOn = explode(" ", $data['sampleReceivedAtHubOn']);
-            $data['sampleReceivedAtHubOn'] = $general->dateFormat($sampleReceivedAtHubOn[0]) . " " . $sampleReceivedAtHubOn[1];
+            $data['sampleReceivedAtHubOn'] = $general->isoDateFormat($sampleReceivedAtHubOn[0]) . " " . $sampleReceivedAtHubOn[1];
         } else {
             $data['sampleReceivedAtHubOn'] = NULL;
         }
 
         if (isset($data['dateOfArtInitiation']) && trim($data['dateOfArtInitiation']) != "") {
             $dateOfArtInitiation = explode(" ", $data['dateOfArtInitiation']);
-            $data['dateOfArtInitiation'] = $general->dateFormat($dateOfArtInitiation[0]) . " " . $dateOfArtInitiation[1];
+            $data['dateOfArtInitiation'] = $general->isoDateFormat($dateOfArtInitiation[0]) . " " . $dateOfArtInitiation[1];
         } else {
             $data['dateOfArtInitiation'] = NULL;
         }
 
         if (isset($data['patientDob']) && trim($data['patientDob']) != "") {
             $dob = explode(" ", $data['patientDob']);
-            $data['patientDob'] = $general->dateFormat($dob[0]) . " " . $dob[1];
+            $data['patientDob'] = $general->isoDateFormat($dob[0]) . " " . $dob[1];
         } else {
             $data['patientDob'] = NULL;
         }
 
         if (isset($data['regimenInitiatedOn']) && trim($data['regimenInitiatedOn']) != "") {
             $regimenInitiatedOn = explode(" ", $data['regimenInitiatedOn']);
-            $data['regimenInitiatedOn'] = $general->dateFormat($regimenInitiatedOn[0]) . " " . $regimenInitiatedOn[1];
+            $data['regimenInitiatedOn'] = $general->isoDateFormat($regimenInitiatedOn[0]) . " " . $regimenInitiatedOn[1];
         } else {
             $data['regimenInitiatedOn'] = NULL;
         }
@@ -287,7 +296,7 @@ try {
         //Set Dispatched From Clinic To Lab Date
         if (isset($data['dateDispatchedFromClinicToLab']) && trim($data['dateDispatchedFromClinicToLab']) != "") {
             $dispatchedFromClinicToLabDate = explode(" ", $data['dateDispatchedFromClinicToLab']);
-            $data['dateDispatchedFromClinicToLab'] = $general->dateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
+            $data['dateDispatchedFromClinicToLab'] = $general->isoDateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
         } else {
             $data['dateDispatchedFromClinicToLab'] = NULL;
         }
@@ -306,24 +315,44 @@ try {
             $data['vlLog'] = '';
         }
 
-        $data['result'] = '';
-        if (isset($data['vlResult']) && trim($data['vlResult']) != '') {
-            $data['result'] = $data['vlResult'];
-        } else if ($data['vlLog'] != '') {
-            $data['result'] = $data['vlLog'];
+        if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
+            $finalResult = null;
+            $status = 4;
+        } else if (isset($data['vlResult']) && trim($data['vlResult']) != '') {
+            if (in_array(strtolower($data['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])) {
+                //Result is saved as entered
+                $finalResult  = $data['vlResult'];
+                $status = 5; // Invalid/Failed
+            } else {
+
+                $interpretedResults = $vlModel->interpretViralLoadResult($data['vlResult']);
+
+                //Result is saved as entered
+                $finalResult  = $data['vlResult'];
+                $logVal = $interpretedResults['logVal'];
+                $absDecimalVal = $interpretedResults['absDecimalVal'];
+                $absVal = $interpretedResults['absVal'];
+                $txtVal = $interpretedResults['txtVal'];
+            }
+            $status = 8;
+            if (
+                isset($globalConfig['vl_auto_approve_api_results']) &&
+                $globalConfig['vl_auto_approve_api_results'] == "yes"
+            ) {
+                $status = 7;
+            }
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
             $revisedOn = explode(" ", $data['revisedOn']);
-            $data['revisedOn'] = $general->dateFormat($revisedOn[0]) . " " . $revisedOn[1];
+            $data['revisedOn'] = $general->isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
         } else {
             $data['revisedOn'] = NULL;
         }
-
         $vlFulldata = array(
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $data['formId'],
-            'unique_id'                             => isset($data['uniqueId']) ? $data['uniqueId'] : null,
+            'unique_id'                             => $uniqueId,
             'app_sample_code'                       => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_code_title'                     => (isset($data['sampleCodeTitle']) && $data['sampleCodeTitle'] != '') ? $data['sampleCodeTitle'] :  'auto',
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',
@@ -337,9 +366,9 @@ try {
             'is_patient_pregnant'                   => (isset($data['patientPregnant']) && $data['patientPregnant'] != '') ? $data['patientPregnant'] :  NULL,
             'is_patient_breastfeeding'              => (isset($data['breastfeeding']) && $data['breastfeeding'] != '') ? $data['breastfeeding'] :  NULL,
             'patient_art_no'                        => (isset($data['patientArtNo']) && $data['patientArtNo'] != '') ? $data['patientArtNo'] :  NULL,
-            'treatment_initiated_date'              => $general->dateFormat($data['dateOfArtInitiation']),
+            'treatment_initiated_date'              => $general->isoDateFormat($data['dateOfArtInitiation']),
             'reason_for_regimen_change'             => $data['reasonForArvRegimenChange'],
-            'regimen_change_date'                   => $general->dateFormat($data['dateOfArvRegimenChange']),
+            'regimen_change_date'                   => $general->isoDateFormat($data['dateOfArvRegimenChange']),
             'current_regimen'                       => (isset($data['artRegimen']) && $data['artRegimen'] != '') ? $data['artRegimen'] :  NULL,
             'date_of_initiation_of_current_regimen' => $data['regimenInitiatedOn'],
             'patient_mobile_number'                 => (isset($data['patientPhoneNumber']) && $data['patientPhoneNumber'] != '') ? $data['patientPhoneNumber'] :  NULL,
@@ -347,15 +376,16 @@ try {
             'sample_type'                           => (isset($data['specimenType']) && $data['specimenType'] != '') ? $data['specimenType'] :  NULL,
             'arv_adherance_percentage'              => (isset($data['arvAdherence']) && $data['arvAdherence'] != '') ? $data['arvAdherence'] :  NULL,
             'reason_for_vl_testing'                 => (isset($data['stViralTesting'])) ? $data['stViralTesting'] : NULL,
-            'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? $general->dateFormat($data['rmTestingLastVLDate']) :  NULL,
+            'community_sample'                      => (isset($data['communitySample'])) ? $data['communitySample'] : NULL,
+            'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? $general->isoDateFormat($data['rmTestingLastVLDate']) :  NULL,
             'last_vl_result_routine'                => (isset($data['rmTestingVlValue']) && $data['rmTestingVlValue'] != '') ? $data['rmTestingVlValue'] :  NULL,
-            'last_vl_date_failure_ac'               => (isset($data['repeatTestingLastVLDate']) && $data['repeatTestingLastVLDate'] != '') ? $general->dateFormat($data['repeatTestingLastVLDate']) :  NULL,
+            'last_vl_date_failure_ac'               => (isset($data['repeatTestingLastVLDate']) && $data['repeatTestingLastVLDate'] != '') ? $general->isoDateFormat($data['repeatTestingLastVLDate']) :  NULL,
             'last_vl_result_failure_ac'             => (isset($data['repeatTestingVlValue']) && $data['repeatTestingVlValue'] != '') ? $data['repeatTestingVlValue'] :  NULL,
-            'last_vl_date_failure'                  => (isset($data['suspendTreatmentLastVLDate']) && $data['suspendTreatmentLastVLDate'] != '') ? $general->dateFormat($data['suspendTreatmentLastVLDate']) :  NULL,
+            'last_vl_date_failure'                  => (isset($data['suspendTreatmentLastVLDate']) && $data['suspendTreatmentLastVLDate'] != '') ? $general->isoDateFormat($data['suspendTreatmentLastVLDate']) :  NULL,
             'last_vl_result_failure'                => (isset($data['suspendTreatmentVlValue']) && $data['suspendTreatmentVlValue'] != '') ? $data['suspendTreatmentVlValue'] :  NULL,
             'request_clinician_name'                => (isset($data['reqClinician']) && $data['reqClinician'] != '') ? $data['reqClinician'] :  NULL,
             'request_clinician_phone_number'        => (isset($data['reqClinicianPhoneNumber']) && $data['reqClinicianPhoneNumber'] != '') ? $data['reqClinicianPhoneNumber'] :  NULL,
-            'test_requested_on'                     => (isset($data['requestDate']) && $data['requestDate'] != '') ? $general->dateFormat($data['requestDate']) :  NULL,
+            'test_requested_on'                     => (isset($data['requestDate']) && $data['requestDate'] != '') ? $general->isoDateFormat($data['requestDate']) :  NULL,
             'vl_focal_person'                       => (isset($data['vlFocalPerson']) && $data['vlFocalPerson'] != '') ? $data['vlFocalPerson'] :  NULL,
             'vl_focal_person_phone_number'          => (isset($data['vlFocalPersonPhoneNumber']) && $data['vlFocalPersonPhoneNumber'] != '') ? $data['vlFocalPersonPhoneNumber'] :  NULL,
             'lab_id'                                => (isset($data['labId']) && $data['labId'] != '') ? $data['labId'] :  NULL,
@@ -365,12 +395,14 @@ try {
             'sample_tested_datetime'                => $data['sampleTestingDateAtLab'],
             'sample_dispatched_datetime'            => $data['sampleDispatchedOn'],
             'result_dispatched_datetime'            => $data['resultDispatchedOn'],
+            'result_value_hiv_detection'            => (isset($data['hivDetection']) && $data['hivDetection'] != '') ? $data['hivDetection'] :  NULL,
+            'reason_for_failure'                    => (isset($data['reasonForFailure']) && $data['reasonForFailure'] != '') ? $data['reasonForFailure'] :  NULL,
             'is_sample_rejected'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] != '') ? $data['isSampleRejected'] : NULL,
             'reason_for_sample_rejection'           => (isset($data['rejectionReason']) && $data['rejectionReason'] != '') ? $data['rejectionReason'] :  NULL,
-            'rejection_on'                          => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->dateFormat($data['rejectionDate']) : null,
+            'rejection_on'                          => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
             'result_value_absolute'                 => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? $data['vlResult'] :  NULL,
             'result_value_absolute_decimal'         => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? number_format((float)$data['vlResult'], 2, '.', '') :  NULL,
-            'result'                                => (isset($data['result']) && $data['result'] != '') ? $data['result'] :  NULL,
+            'result'                                => $finalResult,
             'result_value_log'                      => (isset($data['vlLog']) && $data['vlLog'] != '') ? $data['vlLog'] :  NULL,
             'tested_by'                             => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  NULL,
             'result_approved_by'                    => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
@@ -382,8 +414,8 @@ try {
             'result_status'                         => $status,
             'funding_source'                        => (isset($data['fundingSource']) && trim($data['fundingSource']) != '') ? $data['fundingSource'] : NULL,
             'implementing_partner'                  => (isset($data['implementingPartner']) && trim($data['implementingPartner']) != '') ? $data['implementingPartner'] : NULL,
-            'request_created_datetime'              => $general->getDateTime(),
-            'last_modified_datetime'                => $general->getDateTime(),
+            'request_created_datetime'              => $general->getCurrentDateTime(),
+            'last_modified_datetime'                => $general->getCurrentDateTime(),
             'manual_result_entry'                   => 'yes',
             'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
             'external_sample_code'                  => isset($data['serialNo']) ? $data['serialNo'] : null,
@@ -399,6 +431,9 @@ try {
             'result_reviewed_datetime'              => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'source_of_request'                     => "app"
         );
+
+
+
         if (isset($data['patientFullName']) && $data['patientFullName'] != "") {
             $vlFulldata['patient_first_name'] = $general->crypto('encrypt', $data['patientFullName'], $vlFulldata['patient_art_no']);
         }
@@ -409,10 +444,10 @@ try {
             $vlFulldata['patient_last_name'] = $general->crypto('encrypt', $data['patientLastName'], $vlFulldata['patient_art_no']);
         }
         if ($rowData) {
-            $vlFulldata['last_modified_datetime']  = $general->getDateTime();
+            $vlFulldata['last_modified_datetime']  = $general->getCurrentDateTime();
             $vlFulldata['last_modified_by']  = $user['user_id'];
         } else {
-            $vlFulldata['sample_registered_at_lab']  = $general->getDateTime();
+            $vlFulldata['sample_registered_at_lab']  = $general->getCurrentDateTime();
             $vlFulldata['request_created_by']  = $user['user_id'];
         }
 
@@ -425,7 +460,6 @@ try {
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update($tableName, $vlFulldata);
-            // print_r($db->getLastError());
             // echo "ID=>" . $id;
         }
         if ($id > 0) {
@@ -462,14 +496,12 @@ try {
             http_response_code(301);
         }
     }
-    $app = new \Vlsm\Models\App();
-    $trackId = $app->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'VL', $requestUrl, $params, 'json');
     if ($update == "yes") {
-        $msg = 'Successfully updated.';
+        $msg = 'Successfully updated';
     } else {
-        $msg = 'Successfully added.';
+        $msg = 'Successfully added';
     }
-    if (isset($responseData) && count($responseData) > 0) {
+    if (isset($responseData) && !empty($responseData)) {
         $payload = array(
             'status' => 'success',
             'timestamp' => time(),
@@ -483,25 +515,25 @@ try {
             'message' => $msg
         );
     }
-    if (isset($user['token_updated']) && $user['token_updated'] == true) {
+
+    if (isset($user['token_updated']) && $user['token_updated'] === true) {
         $payload['token'] = $user['new_token'];
     } else {
         $payload['token'] = null;
     }
+    $general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'vl', $requestUrl, $params, json_encode($payload), 'json');
     http_response_code(200);
     echo json_encode($payload);
     exit(0);
 } catch (Exception $exc) {
 
-    http_response_code(500);
+    // http_response_code(500);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
         'data' => array()
     );
-
-
     echo json_encode($payload);
 
     error_log($exc->getMessage());
