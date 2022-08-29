@@ -1321,7 +1321,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 		var text = $('#testingPlatform').val();
 		var str1 = text.split("##");
 		var str = str1[0];
-		if (text == 'GeneXpert' || str.toLowerCase() == 'genexpert') {
+		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
 			$('.hivDetection').prop('disabled', false);
 			$('.hivDetection').show();
 		} else {

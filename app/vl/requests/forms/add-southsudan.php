@@ -1236,7 +1236,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var text = $('#testingPlatform').val();
           var str1 = text.split("##");
           var str = str1[0];
-          if (text == 'GeneXpert' || str.toLowerCase() == 'genexpert') {
+          if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
                $('.hivDetection').prop('disabled', false);
                $('.hivDetection').show();
           } else {
