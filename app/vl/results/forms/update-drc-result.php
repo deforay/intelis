@@ -472,14 +472,6 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr>
-										<!-- <td class="hivDetection resultSection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>"><?php echo _("HIV Detection"); ?></td>
-										<td class="hivDetection resultSection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
-											<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
-												<option value="">-- <?php echo _("Select"); ?> --</option>
-												<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>><?php echo _("HIV-1 Detected"); ?></option>
-												<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>><?php echo _("HIV-1 Not Detected"); ?></option>
-											</select>
-										</td> -->
 										<td><label for="">Décision prise </label></td>
 										<td>
 											<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
@@ -698,34 +690,6 @@ $disable = "disabled = 'disabled'";
 		}
 	}
 
-	$('#hivDetection').change(function() {
-		if (this.value == 'HIV-1 Not Detected') {
-			$('.specialResults').prop('checked', false).removeAttr('checked');
-			$('#vlResult').attr('disabled', false);
-			$('#vlLog').attr('disabled', false);
-			$("#vlResult").val('').css('pointer-events', 'none');
-			$("#vlLog").val('').css('pointer-events', 'none');
-			$(".vlResult, .vlLog").hide();
-			$("#reasonForFailure").removeClass('isRequired');
-		} else {
-			$("#vlResult").css('pointer-events', 'auto');
-			$("#vlLog").css('pointer-events', 'auto');
-			$("#vlResult").val('').css('pointer-events', 'auto');
-			$("#vlLog").val('').css('pointer-events', 'auto');
-			$(".vlResult, .vlLog").show();
-		}
-	});
-
-	$('#testingPlatform').change(function() {
-		var text = this.value;
-		var str1 = text.split("##");
-		var str = str1[0];
-		if (str1[0] == 'GeneXpert' || str.toLowerCase() == 'genexpert') {
-			$('.hivDetection').show();
-		} else {
-			$('.hivDetection').hide();
-		}
-	});
 	$('#failed').change(function() {
 		if ($('#failed').prop('checked')) {
 			$('.reasonForFailure').show();
