@@ -641,16 +641,7 @@ $disable = "disabled = 'disabled'";
 															</select>
 														</div>
 													</div>
-													<!-- <div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
-														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
-														<div class="col-lg-7">
-															<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
-																<option value="">-- Select --</option>
-																<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
-																<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
-															</select>
-														</div>
-													</div> -->
+
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="noResult">Sample Rejected? </label>
 														<div class="col-lg-7">
@@ -684,6 +675,16 @@ $disable = "disabled = 'disabled'";
 														<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
 															<input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
+														</div>
+													</div>
+													<div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
+														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
+														<div class="col-lg-7">
+															<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
+																<option value="">-- Select --</option>
+																<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
+																<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
+															</select>
 														</div>
 													</div>
 													<?php if (!isset($vlQueryInfo['is_sample_rejected']) || empty($vlQueryInfo['is_sample_rejected']) || $vlQueryInfo['is_sample_rejected'] != 'yes') { ?>

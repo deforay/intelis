@@ -460,14 +460,6 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-											<!-- <td class="hivDetection resultSection" style="display: none;"><?php echo _("HIV Detection"); ?></td>
-											<td class="hivDetection resultSection" style="display: none;">
-												<select name="hivDetection" id="hivDetection" class="form-control" title="Please choose HIV detection">
-													<option value="">-- <?php echo _("Select"); ?> --</option>
-													<option value="HIV-1 Detected"><?php echo _("HIV-1 Detected"); ?></option>
-													<option value="HIV-1 Not Detected"><?php echo _("HIV-1 Not Detected"); ?></option>
-												</select>
-											</td> -->
 											<td style="width: 25%;"><label for="">Décision prise </label></td>
 											<td style="width: 25%;">
 												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
@@ -476,8 +468,6 @@ $sFormat = '';
 													<option value="yes">Echantillon rejeté</option>
 												</select>
 											</td>
-										</tr>
-										<tr class="rejectionReason" style="display:none;">
 											<td class="rejectionReason" style="display:none;"><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 											<td class="rejectionReason" style="display:none;">
 												<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
@@ -490,6 +480,8 @@ $sFormat = '';
 													<?php } ?>
 												</select>
 											</td>
+										</tr>
+										<tr class="rejectionReason" style="display:none;">
 											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
 											<td class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></td>
@@ -754,34 +746,6 @@ $sFormat = '';
 		}
 	}
 
-	$('#hivDetection').change(function() {
-		if (this.value == 'HIV-1 Not Detected') {
-			$('.specialResults').prop('checked', false).removeAttr('checked');
-			$('#vlResult').attr('disabled', false);
-			$('#vlLog').attr('disabled', false);
-			$("#vlResult").val('').css('pointer-events', 'none');
-			$("#vlLog").val('').css('pointer-events', 'none');
-			$(".vlResult, .vlLog").hide();
-			$("#reasonForFailure").removeClass('isRequired');
-		} else {
-			$("#vlResult").css('pointer-events', 'auto');
-			$("#vlLog").css('pointer-events', 'auto');
-			$("#vlResult").val('').css('pointer-events', 'auto');
-			$("#vlLog").val('').css('pointer-events', 'auto');
-			$(".vlResult, .vlLog").show();
-		}
-	});
-
-	$('#testingPlatform').change(function() {
-		var text = this.value;
-		var str1 = text.split("##");
-		var str = str1[0];
-		if (str1[0] == 'GeneXpert' || str.toLowerCase() == 'genexpert') {
-			$('.hivDetection').show();
-		} else {
-			$('.hivDetection').hide();
-		}
-	});
 	$('#failed').change(function() {
 		if ($('#failed').prop('checked')) {
 			$('.reasonForFailure').show();
