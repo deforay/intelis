@@ -60,9 +60,9 @@ foreach ($syncedTypeResults as $synced) {
 									<?php } ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Synced Type"); ?>&nbsp;:</b></td>
+							<td><b><?php echo _("API Type"); ?>&nbsp;:</b></td>
 							<td>
-								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _('Please select the synced type'); ?>">
+								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _('Please select the API type'); ?>">
 									<?php echo $general->generateSelectOptions($syncedType, null, '--Select--'); ?>
 								</select>
 							</td>

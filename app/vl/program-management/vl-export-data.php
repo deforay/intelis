@@ -214,7 +214,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('vlResultExportInExcel.php')"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>
@@ -250,7 +250,13 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Lab Name"); ?></label>
 								</div>
 								<div class="col-md-3">
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_collection_date" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Collection Date"); ?></label> <br>
+								</div>
+								<div class="col-md-3">
 									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
+								</div>
+								<div class="col-md-3">
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_tested_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Tested On"); ?></label> <br>
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result"); ?></label>
@@ -263,6 +269,12 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="implementing_partner" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Implementing Partner"); ?></label>
+								</div>
+								<div class="col-md-3">
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="request_created_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Request Created On"); ?></label>
+								</div>
+								<div class="col-md-3">
+									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_on" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Last Modified On"); ?></label>
 								</div>
 							</div>
 						</div>
@@ -282,12 +294,15 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									<th><?php echo _("Patient's Name"); ?></th>
 									<th><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Lab Name"); ?></th>
+									<th><?php echo _("Sample Collection Date"); ?></th>
 									<th><?php echo _("Sample Type"); ?></th>
+									<th><?php echo _("Sample Tested On"); ?></th>
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Status"); ?></th>
 									<th><?php echo _("Funding Source"); ?></th>
 									<th><?php echo _("Implementing Partner"); ?></th>
-									<th><?php echo _("Action"); ?></th>
+									<th><?php echo _("Request Created On"); ?></th>
+									<th><?php echo _("Last Modified On"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -296,13 +311,6 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 								</tr>
 							</tbody>
 						</table>
-
-						<?php
-						if ($_SESSION['roleCode'] == 'ad' || $_SESSION['roleCode'] == 'AD') {
-						?>
-							<!-- &nbsp;<button class="btn btn-success pull-right" type="button" onclick="exportInexcel('vlResultAllFieldExportInExcel.php')"><i class="fa-solid fa-cloud-arrow-down"></i> Export Data for Dashboard</button> -->
-						<?php } ?>
-
 					</div>
 					<!-- /.box-body -->
 				</div>
@@ -333,11 +341,11 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 			placeholder: "<?php echo _("Select Batch Code"); ?>"
 		});
 		$('.daterangefield').daterangepicker({
-                locale: {
-                    cancelLabel: 'Clear',
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: 'Clear',
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				startDate: moment().subtract(29, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
@@ -450,12 +458,20 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 					"sClass": "center"
 				},
 				{
-					"sClass": "center",
-					"bSortable": false
+					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				}
 			],
 			"aaSorting": [
-				[0, "asc"]
+				[15, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -547,11 +563,11 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		$.unblockUI();
 	}
 
-	function exportInexcel(fileName) {
+	function exportInexcel() {
 		var withAlphaNum = null;
 		$.blockUI();
 		oTable.fnDraw();
-		$.post(fileName, {
+		$.post('vlResultExportInExcel.php', {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Sample_Type: $("#sampleType  option:selected").text(),
@@ -587,6 +603,22 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 			$("#breastFeeding").attr("disabled", true);
 		}
 	}
+
+	// function convertSearchResultToPdf(id) {
+	// 	$.blockUI();
+	// 	$.post("/vl/results/generate-result-pdf.php", {
+	// 			source: 'export-result',
+	// 			id: id
+	// 		},
+	// 		function(data) {
+	// 			$.unblockUI();
+	// 			if (data === "" || data === null || data === undefined) {
+	// 				alert('Cannot generate Result PDF');
+	// 			} else {
+	// 				window.open('/download.php?f=' + data, '_blank');
+	// 			}
+	// 		});
+	// }
 
 	function checkSampleCollectionDate() {
 		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {

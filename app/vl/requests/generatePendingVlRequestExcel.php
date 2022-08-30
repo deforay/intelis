@@ -1,6 +1,10 @@
 <?php
+
+use Vlsm\Utilities\DateUtils;
+
 ini_set('memory_limit', -1);
 $general = new \Vlsm\Models\General();
+$dateTimeUtil = new DateUtils();
 
 $sQuery = "SELECT  
                         vl.vl_sample_id,
@@ -74,8 +78,7 @@ $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 
-$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Created On", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-
+$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 
 if ($_SESSION['instanceType'] == 'standalone') {
 	if (($key = array_search("Remote Sample Code", $headings)) !== false) {
@@ -111,7 +114,7 @@ $borderStyle = array(
 	)
 );
 
-$sheet->mergeCells('A1:AG1');
+$sheet->mergeCells('A1:AH1');
 $nameValue = '';
 foreach ($_POST as $key => $value) {
 	if (trim($value) != '' && trim($value) != '-- Select --') {
@@ -132,7 +135,7 @@ if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
 		$colNo++;
 	}
 }
-$sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
+$sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
@@ -140,7 +143,16 @@ foreach ($rResult as $aRow) {
 	//date of birth
 	$dob = '';
 	if ($aRow['patient_dob'] != NULL && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-		$dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
+		$dob =  $dateTimeUtil->humanReadableDateFormat($aRow['patient_dob']);
+	}
+
+	$age = null;
+	$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
+	if (!empty($aRow['patient_dob'])) {
+		$age = $dateTimeUtil->ageInYearMonthDays($aRow['patient_dob']);
+		if (!empty($age) && $age['year'] > 0) {
+			$aRow['patient_age_in_years'] = $age['year'];
+		}
 	}
 	//set gender
 	$gender = '';
@@ -153,40 +165,39 @@ foreach ($rResult as $aRow) {
 	}
 	//sample collecion date
 	$sampleCollectionDate = '';
-	if ($aRow['sample_collection_date'] != NULL && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-		$expStr = explode(" ", $aRow['sample_collection_date']);
-		$sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
+	if (!empty($aRow['sample_collection_date'])) {
+		$sampleCollectionDate =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_collection_date']);
 	}
 	//treatment initiation date
 	$treatmentInitiationDate = '';
-	if ($aRow['treatment_initiated_date'] != NULL && trim($aRow['treatment_initiated_date']) != '' && $aRow['treatment_initiated_date'] != '0000-00-00') {
-		$treatmentInitiationDate =  date("d-m-Y", strtotime($aRow['treatment_initiated_date']));
+	if (!empty($aRow['treatment_initiated_date'])) {
+		$treatmentInitiationDate =  $dateTimeUtil->humanReadableDateFormat($aRow['treatment_initiated_date']);
 	}
 	//date of initiation of current regimen
 	$dateOfInitiationOfCurrentRegimen = '';
-	if ($aRow['date_of_initiation_of_current_regimen'] != NULL && trim($aRow['date_of_initiation_of_current_regimen']) != '' && $aRow['date_of_initiation_of_current_regimen'] != '0000-00-00') {
-		$dateOfInitiationOfCurrentRegimen =  date("d-m-Y", strtotime($aRow['date_of_initiation_of_current_regimen']));
+	if (!empty($aRow['date_of_initiation_of_current_regimen'])) {
+		$dateOfInitiationOfCurrentRegimen =  $dateTimeUtil->humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen']);
 	}
 	//requested date
 	$requestedDate = '';
-	if ($aRow['test_requested_on'] != NULL && trim($aRow['test_requested_on']) != '' && $aRow['test_requested_on'] != '0000-00-00') {
-		$requestedDate =  date("d-m-Y", strtotime($aRow['test_requested_on']));
+	if (!empty($aRow['test_requested_on'])) {
+		$requestedDate =  $dateTimeUtil->humanReadableDateFormat($aRow['test_requested_on']);
 	}
 
-	//requeste created date time
+	//request created date time
 	$requestCreatedDatetime = '';
-	if ($aRow['request_created_datetime'] != NULL && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
-		$requestCreatedDatetime =  date("d-m-Y", strtotime($aRow['request_created_datetime']));
+	if (!empty($aRow['request_created_datetime'])) {
+		$requestCreatedDatetime =  $dateTimeUtil->humanReadableDateFormat($aRow['request_created_datetime'], true);
 	}
 
 	$sampleTestedOn = '';
-	if ($aRow['sample_tested_datetime'] != NULL && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
-		$sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
+	if (!empty($aRow['sample_tested_datetime'])) {
+		$sampleTestedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_tested_datetime']);
 	}
 
 	$sampleReceivedOn = '';
-	if ($aRow['sample_received_at_vl_lab_datetime'] != NULL && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00') {
-		$sampleReceivedOn =  date("d-m-Y", strtotime($aRow['sample_received_at_vl_lab_datetime']));
+	if (!empty($aRow['sample_received_at_vl_lab_datetime'])) {
+		$sampleReceivedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 	}
 
 	//set ARV adherecne
@@ -206,25 +217,10 @@ foreach ($rResult as $aRow) {
 
 	//result dispatched date
 	$resultDispatchedDate = '';
-	if ($aRow['result_printed_datetime'] != NULL && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-		$expStr = explode(" ", $aRow['result_printed_datetime']);
-		$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
+	if (!empty($aRow['result_printed_datetime'])) {
+		$resultDispatchedDate =  $dateTimeUtil->humanReadableDateFormat($aRow['result_printed_datetime']);
 	}
-	//TAT result dispatched(in days)
-	// $tatdays = '';
-	// if (trim($sampleCollectionDate) != '' && trim($resultDispatchedDate) != '') {
-	// 	$sample_collection_date = strtotime($sampleCollectionDate);
-	// 	$result_dispatched_date = strtotime($resultDispatchedDate);
-	// 	$dayDiff = $result_dispatched_date - $sample_collection_date;
-	// 	$tatdays = (int)floor($dayDiff / (60 * 60 * 24));
-	// }
-	//set result log value
-	// $logVal = '';
-	// if ($aRow['result_value_log'] != NULL && trim($aRow['result_value_log']) != '') {
-	// 	$logVal = round($aRow['result_value_log'], 1);
-	// } else if ($aRow['result_value_absolute'] != NULL && trim($aRow['result_value_absolute']) != '' && $aRow['result_value_absolute'] > 0) {
-	// 	$logVal = round(log10((float)$aRow['result_value_absolute']), 1);
-	// }
+
 	if ($aRow['patient_first_name'] != '') {
 		$patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
 	} else {
@@ -268,7 +264,6 @@ foreach ($rResult as $aRow) {
 	$row[] = $arvAdherence;
 	$row[] = ucwords(str_replace("_", " ", $aRow['test_reason_name']));
 	$row[] = ucwords($aRow['request_clinician_name']);
-	$row[] = $requestCreatedDatetime;
 	$row[] = $requestedDate;
 	$row[] = $sampleRejection;
 	$row[] = $sampleTestedOn;
@@ -280,6 +275,7 @@ foreach ($rResult as $aRow) {
 	$row[] = ucfirst($aRow['lab_tech_comments']);
 	$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
 	$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+	$row[] = $requestCreatedDatetime;
 	$output[] = $row;
 	$no++;
 }

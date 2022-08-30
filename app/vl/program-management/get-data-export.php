@@ -17,14 +17,18 @@ $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name', 'vl.sample_collection_date', 's.sample_name', 'vl.sample_tested_datetime', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name', 'vl.request_created_datetime', 'vl.last_modified_datetime');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name', 'vl.sample_collection_date', 's.sample_name', 'vl.sample_tested_datetime', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name', 'vl.request_created_datetime', 'vl.last_modified_datetime');
 $sampleCode = 'sample_code';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -127,6 +131,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.result_dispatched_datetime,	
                         vl.request_created_datetime, 
                         vl.result_printed_datetime,	
+                        vl.last_modified_datetime,	
                         vl.result_status,
                         UPPER(s.sample_name) as sample_name,
                         b.batch_code,
@@ -344,15 +349,19 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
-     $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
-     $row[] = ucwords($aRow['facility_name']);
-     $row[] = ucwords($aRow['lab_name']);
-     $row[] = ucwords($aRow['sample_name']);
+     $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+     $row[] = ($aRow['facility_name']);
+     $row[] = ($aRow['lab_name']);
+     $row[] = $general->humanReadableDateFormat($aRow['sample_collection_date']);
+     $row[] = ($aRow['sample_name']);
+     $row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
      $row[] = $aRow['result'];
      $row[] = ucwords($aRow['status_name']);
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
-     $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><i class="fa-solid fa-file-lines"></i> ' . _("Result PDF") . '</a>';
+     $row[] = $general->humanReadableDateFormat($aRow['request_created_datetime'], true);
+     $row[] = $general->humanReadableDateFormat($aRow['last_modified_datetime'], true);
+     //$row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><i class="fa-solid fa-file-lines"></i> ' . _("Result PDF") . '</a>';
 
      $output['aaData'][] = $row;
 }

@@ -122,14 +122,26 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 //var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
 
+$hivDetectedStringsToSearch = [
+	'HIV-1 Detected',
+	'HIV 1 Detected',
+	'HIV1 Detected'
+];
+$hivNotDetectedStringsToSearch = [
+	'HIV-1 Not Detected',
+	'HIV 1 Not Detected',
+	'HIV1 Not Detected'
+];
 
-if (stripos($vlQueryInfo['result'], "HIV-1 Detected") !== false) {
+if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch)) {
 	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Detected", "", $vlQueryInfo['result']));
 	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
-} else if (stripos($vlQueryInfo['result'], "HIV-1 Not Detected") !== false) {
+} else if ($general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch)) {
 	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Not Detected", "", $vlQueryInfo['result']));
 	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
 }
+
+
 
 ?>
 <style>
