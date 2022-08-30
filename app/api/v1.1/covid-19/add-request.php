@@ -91,7 +91,7 @@ try {
         $rowData = false;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
-            
+
             $sQuery = "SELECT covid19_id, sample_code, unique_id, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
 
             $sQueryWhere = array();
@@ -99,8 +99,8 @@ try {
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            } 
-            
+            }
+
             if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
@@ -128,7 +128,7 @@ try {
             $sampleData = json_decode($sampleJson, true);
         }
 
-        if(empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null'){
+        if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $general->generateUUID();
         }
 
@@ -139,9 +139,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => null,
-            'request_created_datetime' => $general->getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime(),
             'last_modified_by' => null,
-            'last_modified_datetime' => $general->getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime()
         );
 
 
@@ -359,10 +359,10 @@ try {
             'source_of_request'                   => $data['sourceOfRequest'] ?: "api"
         );
         if ($rowData) {
-            $covid19Data['last_modified_datetime']  = $general->getCurrentDateTime();
+            $covid19Data['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime();
             $covid19Data['last_modified_by']  = $user['user_id'];
         } else {
-            $covid19Data['request_created_datetime']  = (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : $general->getCurrentDateTime();
+            $covid19Data['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime();
             $covid19Data['sample_registered_at_lab']  = $general->getCurrentDateTime();
             $covid19Data['request_created_by']  = $user['user_id'];
         }

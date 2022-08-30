@@ -129,9 +129,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
-            'request_created_datetime' => $general->getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime(),
             'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => $general->getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -349,7 +349,7 @@ try {
         );
 
         if ($rowData) {
-            $eidData['last_modified_datetime']  = $general->getCurrentDateTime();
+            $eidData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime();
             $eidData['last_modified_by']  = $user['user_id'];
         } else {
             $eidData['sample_registered_at_lab']  = $general->getCurrentDateTime();

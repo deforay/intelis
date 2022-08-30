@@ -68,7 +68,7 @@ try {
         $data['api'] = "yes";
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = $data['sampleCollectionDate']= (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
             continue;
@@ -123,9 +123,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => null,
-            'request_created_datetime' => $general->getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime(),
             'last_modified_by' => null,
-            'last_modified_datetime' => $general->getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -311,10 +311,10 @@ try {
             'source_of_request'                   => "app"
         );
         if ($rowData) {
-            $tbData['last_modified_datetime']  = $general->getCurrentDateTime();
+            $tbData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime();
             $tbData['last_modified_by']  = $user['user_id'];
         } else {
-            $tbData['request_created_datetime']  = (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : $general->getCurrentDateTime();
+            $tbData['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime();
             $tbData['sample_registered_at_lab']  = $general->getCurrentDateTime();
             $tbData['request_created_by']  = $user['user_id'];
         }

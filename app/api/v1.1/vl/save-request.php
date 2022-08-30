@@ -153,9 +153,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
-            'request_created_datetime' => $general->getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime(),
             'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => $general->getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -414,8 +414,8 @@ try {
             'result_status'                         => $status,
             'funding_source'                        => (isset($data['fundingSource']) && trim($data['fundingSource']) != '') ? $data['fundingSource'] : NULL,
             'implementing_partner'                  => (isset($data['implementingPartner']) && trim($data['implementingPartner']) != '') ? $data['implementingPartner'] : NULL,
-            'request_created_datetime'              => $general->getCurrentDateTime(),
-            'last_modified_datetime'                => $general->getCurrentDateTime(),
+            'request_created_datetime'              => (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime(),
+            'last_modified_datetime'                => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime(),
             'manual_result_entry'                   => 'yes',
             'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
             'external_sample_code'                  => isset($data['serialNo']) ? $data['serialNo'] : null,
@@ -444,7 +444,7 @@ try {
             $vlFulldata['patient_last_name'] = $general->crypto('encrypt', $data['patientLastName'], $vlFulldata['patient_art_no']);
         }
         if ($rowData) {
-            $vlFulldata['last_modified_datetime']  = $general->getCurrentDateTime();
+            $vlFulldata['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime();
             $vlFulldata['last_modified_by']  = $user['user_id'];
         } else {
             $vlFulldata['sample_registered_at_lab']  = $general->getCurrentDateTime();

@@ -685,7 +685,7 @@ if (stripos($vlQueryInfo['result'], "HIV-1 Detected") !== false) {
 															<input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 														</div>
 													</div>
-													<div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
+													<div class="col-md-4 hivDetection" style="<?php echo ((isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') || ($vlQueryInfo['is_sample_rejected'] == 'yes')) ? 'display: none;' : ''; ?>">
 														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
 														<div class="col-lg-7">
 															<select name="hivDetection" id="hivDetection" class="form-control hivDetection" title="Please choose HIV detection">
