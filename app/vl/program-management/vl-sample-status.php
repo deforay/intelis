@@ -6,7 +6,7 @@ $title = _("VL | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General(); 
+$general = new \Vlsm\Models\General();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -139,7 +139,7 @@ $batResult = $db->rawQuery($batQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
 <script src="/assets/js/exporting.js"></script>
@@ -151,10 +151,10 @@ $batResult = $db->rawQuery($batQuery);
 		});
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
 			locale: {
-				cancelLabel: 'Clear'
+				cancelLabel: 'Clear',
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			format: 'DD-MMM-YYYY',
-			separator: ' to ',
 			startDate: moment().subtract(179, 'days'),
 			endDate: moment(),
 			maxDate: moment(),

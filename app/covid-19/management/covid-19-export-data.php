@@ -254,7 +254,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var startDate = "";
@@ -273,11 +273,11 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 		});
 
 		$('#sampleCollectionDate,#sampleTestDate,#printDate,#sampleRecievedDate').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+                locale: {
+                    cancelLabel: 'Clear',
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
 				startDate: moment().subtract(29, 'days'),
 				endDate: moment(),
 				maxDate: moment(),

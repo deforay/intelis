@@ -207,7 +207,7 @@ foreach ($rejectionTypeResult as $type) {
   </section>
   <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
   var startDate = "";
@@ -220,10 +220,10 @@ foreach ($rejectionTypeResult as $type) {
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
-          cancelLabel: 'Clear'
+          cancelLabel: 'Clear',
+          format: 'DD-MMM-YYYY',
+          separator: ' to ',
         },
-        format: 'DD-MMM-YYYY',
-        separator: ' to ',
         startDate: moment().subtract(29, 'days'),
         endDate: moment(),
         maxDate: moment(),
@@ -299,7 +299,7 @@ foreach ($rejectionTypeResult as $type) {
         },
         {
           "sClass": "center",
-          "bSortable":false
+          "bSortable": false
         },
         //{"sClass":"center","bSortable":false},
       ],
@@ -525,7 +525,6 @@ foreach ($rejectionTypeResult as $type) {
   function hideReasonDiv(id) {
     $("#" + id).hide();
   }
-  
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

@@ -188,7 +188,7 @@ $lastUrl2 = '';
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var startDate = "";
@@ -204,11 +204,11 @@ $lastUrl2 = '';
 			placeholder: "<?php echo _("Select Testing Lab"); ?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+                locale: {
+                    cancelLabel: 'Clear',
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
 				startDate: moment().subtract(29, 'days'),
 				endDate: moment(),
 				maxDate: moment(),

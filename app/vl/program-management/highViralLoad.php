@@ -450,7 +450,7 @@ $batResult = $db->rawQuery($batQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var oTableViralLoad = null;
@@ -465,11 +465,11 @@ $batResult = $db->rawQuery($batQuery);
 			placeholder: "<?php echo _("Select Fields");?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+                locale: {
+                    cancelLabel: 'Clear',
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
 				startDate: moment().subtract(29, 'days'),
 				endDate: moment(),
 				maxDate: moment(),

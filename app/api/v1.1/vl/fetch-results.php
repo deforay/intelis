@@ -61,7 +61,7 @@ if (empty($user) || empty($user['user_id'])) {
     //     'data' => array()
     // );
     http_response_code(401);
-    throw new \Excption('Bearer Token Invalid');
+    throw new \Exception('Bearer Token Invalid');
 }
 
 try {

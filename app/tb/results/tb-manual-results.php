@@ -193,7 +193,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     </section>
     <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     var startDate = "";
@@ -210,10 +210,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         });
         $('#sampleCollectionDate').daterangepicker({
                 locale: {
-                    cancelLabel: 'Clear'
+                    cancelLabel: 'Clear',
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
                 },
-                format: 'DD-MMM-YYYY',
-                separator: ' to ',
                 startDate: moment().subtract(29, 'days'),
                 endDate: moment(),
                 maxDate: moment(),

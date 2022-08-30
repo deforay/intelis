@@ -50,10 +50,10 @@ $maxId = $general->createBatchCode();
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Create Batch");?></h1>
+        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Create Batch"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Batch");?></li>
+            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Batch"); ?></li>
         </ol>
     </section>
 
@@ -61,30 +61,30 @@ $maxId = $general->createBatchCode();
     <section class="content">
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
             </div>
             <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
                 <tr>
-                    <th><?php echo _("Facility");?></th>
+                    <th><?php echo _("Facility"); ?></th>
                     <td>
-                        <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple">
+                        <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
                             <?= $facilitiesDropdown; ?>
                         </select>
                     </td>
-                    <th><?php echo _("Sample Collection Date");?></th>
+                    <th><?php echo _("Sample Collection Date"); ?></th>
                     <td>
-                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:275px;background:#fff;" />
+                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:275px;background:#fff;" />
                     </td>
                 </tr>
                 <tr>
-                    <th><?php echo _("Date Sample Receieved at Lab");?></th>
+                    <th><?php echo _("Date Sample Receieved at Lab"); ?></th>
                     <td>
-                        <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date');?>" readonly style="width:275px;background:#fff;" />
+                        <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:275px;background:#fff;" />
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _('Filter Samples');?>" class="btn btn-success btn-sm">
-                        &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset Filters");?></span></button>
+                    <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _('Filter Samples'); ?>" class="btn btn-success btn-sm">
+                        &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset Filters"); ?></span></button>
                     </td>
                 </tr>
             </table>
@@ -96,9 +96,9 @@ $maxId = $general->createBatchCode();
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="batchCode" class="col-lg-4 control-label"><?php echo _("Batch Code");?> <span class="mandatory">*</span></label>
+                                    <label for="batchCode" class="col-lg-4 control-label"><?php echo _("Batch Code"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7" style="margin-left:3%;">
-                                        <input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _('Batch Code');?>" title="<?php echo _('Please enter batch code');?>" value="<?php echo date('Ymd') . $maxId; ?>" onblur="checkNameValidation('batch_details','batch_code',this,null,'<?php echo _('This batch code already exists.Try another batch code');?>',null)" />
+                                        <input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _('Batch Code'); ?>" title="<?php echo _('Please enter batch code'); ?>" value="<?php echo date('Ymd') . $maxId; ?>" onblur="checkNameValidation('batch_details','batch_code',this,null,'<?php echo _('This batch code already exists.Try another batch code'); ?>',null)" />
                                         <input type="hidden" name="batchCodeKey" id="batchCodeKey" value="<?php echo $maxId; ?>" />
                                         <input type="hidden" name="platform" id="platform" value="" />
                                     </div>
@@ -112,7 +112,7 @@ $maxId = $general->createBatchCode();
                                     <div class="col-md-12">
                                         <div class="col-md-12">
                                             <div style="width:60%;margin:0 auto;clear:both;">
-                                                <a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
+                                                <a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All"); ?></a>
                                             </div><br /><br />
                                             <select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
                                         </div>
@@ -124,8 +124,8 @@ $maxId = $general->createBatchCode();
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine');?>" onclick="validateNow();return false;"><?php echo _("Save and Next");?></a>
-                        <a href="tb-batches.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+                        <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _("Save and Next"); ?></a>
+                        <a href="tb-batches.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -140,7 +140,7 @@ $maxId = $general->createBatchCode();
 </div>
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     var startDate = "";
@@ -150,15 +150,15 @@ $maxId = $general->createBatchCode();
     $(document).ready(function() {
 
         $("#facilityName").select2({
-            placeholder: "<?php echo _("Select Facilities");?>"
+            placeholder: "<?php echo _("Select Facilities"); ?>"
         });
 
         $('.daterange').daterangepicker({
                 locale: {
-                    cancelLabel: 'Clear'
+                    cancelLabel: 'Clear',
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
                 },
-                format: 'DD-MMM-YYYY',
-                separator: ' to ',
                 startDate: moment().subtract(29, 'days'),
                 endDate: moment(),
                 maxDate: moment(),
@@ -192,8 +192,8 @@ $maxId = $general->createBatchCode();
     //$("#auditRndNo").multiselect({height: 100,minWidth: 150});
     $(document).ready(function() {
         $('.search').multiSelect({
-            selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
+            selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
+            selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
             afterInit: function(ms) {
                 var that = this,
                     $selectableSearch = that.$selectableUl.prev(),
@@ -258,7 +258,7 @@ $maxId = $general->createBatchCode();
         var fName = $("#facilityName").val();
         if (fName == null || fName == '') {
             $.unblockUI();
-            alert("<?php echo _("You have to choose a facility to proceed");?>");
+            alert("<?php echo _("You have to choose a facility to proceed"); ?>");
             return false;
         }
 
@@ -285,7 +285,7 @@ $maxId = $general->createBatchCode();
             $("#platform").val($("#machine").val());
             var selected = $(this).find('option:selected');
             noOfSamples = selected.data('no-of-samples');
-            $("#alertText").html("<?php echo _("You have picked");?> " + $("#machine option:selected").text() + " <?php echo _("testing platform and it has limit of maximum");?> " + noOfSamples + " <?php echo _("samples per batch");?>");
+            $("#alertText").html("<?php echo _("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _("testing platform and it has limit of maximum"); ?> " + noOfSamples + " <?php echo _("samples per batch"); ?>");
         } else {
             $('.ms-list').html('');
             $('#alertText').html('');

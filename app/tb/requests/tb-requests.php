@@ -272,7 +272,7 @@ foreach ($srcResults as $list) {
     </section>
     <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
 <?php
@@ -319,10 +319,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         loadVlRequestData();
         $('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
                 locale: {
-                    cancelLabel: 'Clear'
+                    cancelLabel: 'Clear',
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
                 },
-                format: 'DD-MMM-YYYY',
-                separator: ' to ',
                 startDate: moment().subtract(29, 'days'),
                 endDate: moment(),
                 maxDate: moment(),
