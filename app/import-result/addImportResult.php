@@ -35,7 +35,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Import"); ?> <?= strtoupper($type); ?> <?php echo _("Test Results From File"); ?></h1>
+		<h1><i class="fa-solid fa-list-check"></i> <?php echo _("Import"); ?> <?= strtoupper($type); ?> <?php echo _("Test Results From File"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Import Result"); ?></li>

@@ -27,7 +27,7 @@ foreach ($actions as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><span class="fa-solid fa-pen-to-square"></span> <?php echo _("User Activity Log"); ?></h1>
+		<h1><span class="fa-solid fa-file-lines"></span> <?php echo _("User Activity Log"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><span class="fa-solid fa-chart-pie"></span> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Audit Trail"); ?></li>
