@@ -898,9 +898,9 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
     }
   });
 
-  $("#vlRequestFormAng .labSection").on("change", function() {
+  $(".labSection").on("change", function() {
     if ($.trim(result) != '') {
-      if ($("#vlRequestFormAng .labSection").serialize() == $(__clone).serialize()) {
+      if ($(".labSection").serialize() == $(__clone).serialize()) {
         $(".reasonForResultChanges").css("visibility", "hidden");
         $("#reasonForResultChanges").removeClass("isRequired");
       } else {

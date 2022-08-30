@@ -258,6 +258,8 @@ try {
           $_POST['reviewedOn'] = NULL;
      }
 
+     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection']. ' ' . $finalResult :  $finalResult;
+     
      $vldata = array(
           'vlsm_instance_id'                      => $instanceId,
           'sample_reordered'                      => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',

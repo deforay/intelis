@@ -230,7 +230,7 @@ class Facilities
 
         $this->db->where('facility_type = 2');
         $this->db->orderBy("facility_name", "asc");
-
+        
         if ($allColumns) {
             return $this->db->get("facility_details");
         } else {

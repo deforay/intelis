@@ -1105,9 +1105,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
           }
      });
 
-     $("#vlRequestFormRwd .labSection").on("change", function() {
+     $(".labSection").on("change", function() {
           if ($.trim(result) != '') {
-               if ($("#vlRequestFormRwd .labSection").serialize() == $(__clone).serialize()) {
+               if ($(".labSection").serialize() == $(__clone).serialize()) {
                     $(".reasonForResultChanges").css("display", "none");
                     $("#reasonForResultChanges").removeClass("isRequired");
                } else {

@@ -90,6 +90,14 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	}
 }
 $disable = "disabled = 'disabled'";
+
+if (stripos($vlQueryInfo['result'], "HIV-1 Detected") !== false) {
+	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Detected", "", $vlQueryInfo['result']));
+	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
+} else if (stripos($vlQueryInfo['result'], "HIV-1 Not Detected") !== false) {
+	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Not Detected", "", $vlQueryInfo['result']));
+	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+}
 ?>
 <style>
 	.table>tbody>tr>td {
@@ -854,10 +862,25 @@ $disable = "disabled = 'disabled'";
 		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('99-aaa-9999 99:99');
 
 
-		__clone = $(".labSection").clone();
-		reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
-		resultValue = $("#vlResult").val();
-		specialResultsValue = $('.specialResults:checkbox:checked').val();
+		setTimeout(function() {
+			__clone = $(".labSection").clone();
+			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
+			resultValue = $("#vlResult").val();
+			specialResultsValue = $('.specialResults:checkbox:checked').val();
+
+			$(".labSection").on("change", function() {
+				if ($.trim(resultValue) != '' || specialResultsValue != '' || specialResultsValue != undefined) {
+					if ($(".labSection").serialize() === $(__clone).serialize()) {
+						$(".reasonForResultChanges").css("display", "none");
+						$("#reasonForResultChanges").removeClass("isRequired");
+					} else {
+						$(".reasonForResultChanges").css("display", "block");
+						$("#reasonForResultChanges").addClass("isRequired");
+					}
+				}
+			});
+
+		}, 500);
 
 
 	});
@@ -932,7 +955,7 @@ $disable = "disabled = 'disabled'";
 		}
 	});
 
-	$('.specialResults').change(function() {
+	$('.specialResults').on("change", function() {
 		if ($('.specialResults').is(':checked')) {
 			$('.specialResults').each(function() {
 				if ($(this).is(':checked')) {
@@ -998,18 +1021,7 @@ $disable = "disabled = 'disabled'";
 			$('.hivDetection').hide();
 		}
 	}
-	$(".labSection").on("change", function() {
 
-		if ($.trim(resultValue) != '' || specialResultsValue != '' || specialResultsValue != undefined) {
-			if ($(".labSection").serialize() === $(__clone).serialize()) {
-				$(".reasonForResultChanges").css("display", "none");
-				$("#reasonForResultChanges").removeClass("isRequired");
-			} else {
-				$(".reasonForResultChanges").css("display", "block");
-				$("#reasonForResultChanges").addClass("isRequired");
-			}
-		}
-	});
 
 	function checkRejectionReason() {
 		var rejectionReason = $("#rejectionReason").val();
