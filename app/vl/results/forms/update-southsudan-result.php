@@ -102,6 +102,7 @@ $hivNotDetectedStringsToSearch = [
 	'HIV1 Not Detected'
 ];
 
+$vlQueryInfo['result_value_hiv_detection'] = null;
 if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch)) {
 	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Detected", "", $vlQueryInfo['result']));
 	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
@@ -109,6 +110,7 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Not Detected", "", $vlQueryInfo['result']));
 	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
 }
+
 ?>
 <style>
 	.table>tbody>tr>td {
@@ -911,6 +913,9 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 		}
 	});
 	$("#noResult").on("change", function() {
+		if ($(this).val() == null || $(this).val() == '' || $(this).val() == undefined) {
+			return false;
+		}
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult').css('display', 'none');
@@ -1005,12 +1010,7 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 	$('#hivDetection').on("change", function() {
 
 		if (this.value == null || this.value == '') {
-			$("#noResult").val("");
-			$("#vlResult").css('pointer-events', 'auto');
-			$("#vlLog").css('pointer-events', 'auto');
-			$("#vlResult").val('').css('pointer-events', 'auto');
-			$("#vlLog").val('').css('pointer-events', 'auto');
-			$(".vlResult, .vlLog").show();
+			return false;
 		} else if (this.value == 'HIV-1 Not Detected') {
 			$("#noResult").val("no");
 			$('.specialResults').prop('checked', false).removeAttr('checked');
@@ -1022,10 +1022,6 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 			$("#reasonForFailure").removeClass('isRequired');
 		} else if (this.value == 'HIV-1 Detected') {
 			$("#noResult").val("no");
-			$("#vlResult").css('pointer-events', 'auto');
-			$("#vlLog").css('pointer-events', 'auto');
-			$("#vlResult").val('').css('pointer-events', 'auto');
-			$("#vlLog").val('').css('pointer-events', 'auto');
 			$(".vlResult, .vlLog").show();
 		}
 	});
