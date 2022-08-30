@@ -797,16 +797,17 @@ class General
         error_log(ob_get_clean());
     }
 
-    function checkIfStringExists(string $sourceString, array $itemsToSearch, int $offset = 0): bool 
+    // Returns false if string not matched, and returns string if matched
+    public function checkIfStringExists(string $sourceString, array $itemsToSearch, int $offset = 0)
     {
-        foreach($itemsToSearch as $needle) {
-            if(stripos($sourceString, $needle, $offset) !== false) {
-                return true; // stop on first true result
+        $response = false;
+        foreach ($itemsToSearch as $needle) {
+            if (stripos($sourceString, $needle, $offset) !== false) {
+                $response = $needle; // stop on first true result
             }
         }
-    
-        return false;
-    }    
+        return $response;
+    }
 
     public function isJSON($string)
     {
@@ -821,7 +822,7 @@ class General
             return stripslashes(json_encode(json_decode($json), JSON_PRETTY_PRINT));
         }
     }
-    
+
 
     public function addApiTracking($user, $records, $type, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
     {

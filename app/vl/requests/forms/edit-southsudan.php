@@ -26,7 +26,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	}
 }
 //check remote user
-$pdQuery = "SELECT * FROM province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
 	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
@@ -37,17 +37,17 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
 	$sampleCode = 'sample_code';
 }
-//check user exist in user_facility_map table
+//check user exists in user_facility_map table
 $chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
-	$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
+	$pdQuery = "SELECT * FROM geographical_divisions as pd JOIN facility_details as fd ON fd.facility_state_id=pd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id WHERE geo_parent = 0 AND user_id='" . $_SESSION['userId'] . "'";
 }
 $pdResult = $db->query($pdQuery);
 $province = '';
 $province .= "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
+	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Select --');
@@ -59,8 +59,8 @@ $aQuery = "SELECT * from r_vl_art_regimen where art_status ='active'";
 $aResult = $db->query($aQuery);
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
-	$facilityQuery = "SELECT * from facility_details where facility_id='" . $vlQueryInfo['facility_id'] . "' AND status='active'";
-	$facilityResult = $db->query($facilityQuery);
+	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
+	$facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
 }
 if (!isset($facilityResult[0]['facility_code'])) {
 	$facilityResult[0]['facility_code'] = '';
@@ -79,19 +79,6 @@ if (!isset($facilityResult[0]['facility_state'])) {
 }
 if (!isset($facilityResult[0]['facility_district'])) {
 	$facilityResult[0]['facility_district'] = '';
-}
-if (trim($facilityResult[0]['facility_state']) != '') {
-	$stateQuery = "SELECT * FROM province_details where province_name='" . $facilityResult[0]['facility_state'] . "'";
-	$stateResult = $db->query($stateQuery);
-}
-if (!isset($stateResult[0]['province_code'])) {
-	$stateResult[0]['province_code'] = '';
-}
-//district details
-$districtResult = array();
-if (trim($facilityResult[0]['facility_state']) != '') {
-	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $facilityResult[0]['facility_state'] . "' AND status='active'";
-	$districtResult = $db->query($districtQuery);
 }
 //set reason for changes history
 $rch = '';
@@ -122,6 +109,8 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 //var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
 
+$isGeneXpert = (!empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'],"genexpert") === 0)) ? true : false;
+
 $hivDetectedStringsToSearch = [
 	'HIV-1 Detected',
 	'HIV 1 Detected',
@@ -134,15 +123,19 @@ $hivNotDetectedStringsToSearch = [
 ];
 
 $vlQueryInfo['result_value_hiv_detection'] = null;
-if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch)) {
-	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Detected", "", $vlQueryInfo['result']));
-	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
-} else if ($general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch)) {
-	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Not Detected", "", $vlQueryInfo['result']));
-	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+if (!empty($vlQueryInfo['result']) && $isGeneXpert === true) {
+	$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
+	if ($detectedMatching !== false) {
+		$vlQueryInfo['result'] = trim(str_ireplace($detectedMatching, "", $vlQueryInfo['result']));
+		$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
+	} else {
+		$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
+		if ($notDetectedMatching !== false) {
+			$vlQueryInfo['result'] = trim(str_ireplace($notDetectedMatching, "", $vlQueryInfo['result']));
+			$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+		}
+	}
 }
-
-
 
 ?>
 <style>
@@ -708,7 +701,7 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="noResult">Sample Rejection </label>
 													<div class="col-lg-7">
-														<select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
+														<select name="noResult" id="noResult" class="form-control labSection" title="Please check if sample is rejected or not">
 															<option value="">-- Select --</option>
 															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
 															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
@@ -743,10 +736,10 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 														<input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 													</div>
 												</div>
-												<div class="col-md-4 hivDetection" style="<?php echo ((isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') || ($vlQueryInfo['is_sample_rejected'] == 'yes')) ? 'display: none;' : ''; ?>">
+												<div class="col-md-4 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert === true && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
 													<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
 													<div class="col-lg-7">
-														<select name="hivDetection" id="hivDetection" class="form-control hivDetection" title="Please choose HIV detection">
+														<select name="hivDetection" id="hivDetection" class="form-control hivDetection labSection" title="Please choose HIV detection">
 															<option value="">-- Select --</option>
 															<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
 															<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
@@ -1335,7 +1328,7 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 	});
 	$('#hivDetection').on("change", function() {
 
-		if (this.value == null || this.value == '') {
+		if (this.value == null || this.value == '' || this.value == undefined) {
 			return false;
 		} else if (this.value == 'HIV-1 Not Detected') {
 			$("#noResult").val("no");

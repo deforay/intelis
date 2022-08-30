@@ -91,6 +91,8 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 }
 $disable = "disabled = 'disabled'";
 
+$isGeneXpert = (!empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0)) ? true : false;
+
 $hivDetectedStringsToSearch = [
 	'HIV-1 Detected',
 	'HIV 1 Detected',
@@ -103,12 +105,18 @@ $hivNotDetectedStringsToSearch = [
 ];
 
 $vlQueryInfo['result_value_hiv_detection'] = null;
-if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch)) {
-	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Detected", "", $vlQueryInfo['result']));
-	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
-} else if ($general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch)) {
-	$vlQueryInfo['result'] = trim(str_ireplace("HIV-1 Not Detected", "", $vlQueryInfo['result']));
-	$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+if (!empty($vlQueryInfo['result']) && $isGeneXpert === true) {
+	$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
+	if ($detectedMatching !== false) {
+		$vlQueryInfo['result'] = trim(str_ireplace($detectedMatching, "", $vlQueryInfo['result']));
+		$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
+	} else {
+		$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
+		if ($notDetectedMatching !== false) {
+			$vlQueryInfo['result'] = trim(str_ireplace($notDetectedMatching, "", $vlQueryInfo['result']));
+			$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+		}
+	}
 }
 
 ?>
@@ -652,7 +660,7 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 												</div>
 												<div class="row">
 													<div class="col-md-4">
-														<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform<span class="mandatory">*</span> </label>
+														<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform <span class="mandatory">*</span> </label>
 														<div class="col-lg-7">
 															<select name="testingPlatform" id="testingPlatform" class="isRequired result-optional form-control labSection" title="Please choose the VL Testing Platform" onchange="hivDetectionChange()">
 																<option value="">-- Select --</option>
@@ -664,9 +672,9 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 													</div>
 
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="noResult">Sample Rejected? </label>
+														<label class="col-lg-5 control-label" for="noResult">Sample Rejected? <span class="mandatory">*</span> </label>
 														<div class="col-lg-7">
-															<select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
+															<select name="noResult" id="noResult" class="form-control labSection isRequired" title="Please check if sample is rejected or not">
 																<option value="">-- Select --</option>
 																<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
 																<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
@@ -698,10 +706,10 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 															<input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 														</div>
 													</div>
-													<div class="col-md-4 hivDetection" style="<?php echo ((isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') || ($vlQueryInfo['is_sample_rejected'] == 'yes')) ? 'display: none;' : ''; ?>">
+													<div class="col-md-4 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert === true && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
 														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
 														<div class="col-lg-7">
-															<select name="hivDetection" id="hivDetection" class="form-control hivDetection" title="Please choose HIV detection">
+															<select name="hivDetection" id="hivDetection" class="form-control hivDetection labSection" title="Please choose HIV detection">
 																<option value="">-- Select --</option>
 																<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
 																<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
@@ -1009,7 +1017,7 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 	});
 	$('#hivDetection').on("change", function() {
 
-		if (this.value == null || this.value == '') {
+		if (this.value == null || this.value == '' || this.value == undefined) {
 			return false;
 		} else if (this.value == 'HIV-1 Not Detected') {
 			$("#noResult").val("no");
