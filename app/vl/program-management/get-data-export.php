@@ -125,6 +125,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.sample_received_at_hub_datetime,							
                         vl.sample_received_at_vl_lab_datetime,							
                         vl.result_dispatched_datetime,	
+                        vl.request_created_datetime, 
                         vl.result_printed_datetime,	
                         vl.result_status,
                         UPPER(s.sample_name) as sample_name,

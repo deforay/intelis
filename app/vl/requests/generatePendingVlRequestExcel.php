@@ -33,6 +33,7 @@ $sQuery = "SELECT
                         vl.sample_received_at_vl_lab_datetime,							
                         vl.result_dispatched_datetime,	
                         vl.result_printed_datetime,	
+                        vl.request_created_datetime, 
                         vl.last_modified_datetime,
                         vl.result_status,
                         vl.data_sync,
@@ -73,7 +74,7 @@ $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 
-$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Created On", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 
 
 if ($_SESSION['instanceType'] == 'standalone') {
@@ -172,6 +173,12 @@ foreach ($rResult as $aRow) {
 		$requestedDate =  date("d-m-Y", strtotime($aRow['test_requested_on']));
 	}
 
+	//requeste created date time
+	$requestCreatedDatetime = '';
+	if ($aRow['request_created_datetime'] != NULL && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
+		$requestCreatedDatetime =  date("d-m-Y", strtotime($aRow['request_created_datetime']));
+	}
+
 	$sampleTestedOn = '';
 	if ($aRow['sample_tested_datetime'] != NULL && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
 		$sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
@@ -261,6 +268,7 @@ foreach ($rResult as $aRow) {
 	$row[] = $arvAdherence;
 	$row[] = ucwords(str_replace("_", " ", $aRow['test_reason_name']));
 	$row[] = ucwords($aRow['request_clinician_name']);
+	$row[] = $requestCreatedDatetime;
 	$row[] = $requestedDate;
 	$row[] = $sampleRejection;
 	$row[] = $sampleTestedOn;

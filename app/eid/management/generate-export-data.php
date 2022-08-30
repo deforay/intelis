@@ -25,9 +25,9 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 	if ($_SESSION['instanceType'] == 'standalone') {
-		$headings = array("S.No.", "Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+		$headings = array("S.No.", "Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Request Created On", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	} else {
-		$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+		$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Request Created On", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	}
 	$colNo = 1;
 
@@ -126,6 +126,12 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 			$expStr = explode(" ", $aRow['result_printed_datetime']);
 			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
+
+		//requeste created date time
+		$requestCreatedDatetime = '';
+		if ($aRow['request_created_datetime'] != NULL && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
+			$requestCreatedDatetime =  date("d-m-Y", strtotime($aRow['request_created_datetime']));
+		}
 		//TAT result dispatched(in days)
 		// $tatdays = '';
 		// if(trim($sampleCollectionDate)!= '' && trim($resultDispatchedDate)!= ''){
@@ -183,6 +189,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		$row[] = $sampleRejection;
 		$row[] = $sampleTestedOn;
 		$row[] = $eidResults[$aRow['result']];
+		$row[] = $requestCreatedDatetime;
 		$row[] = $sampleReceivedOn;
 		$row[] = $resultDispatchedDate;
 		$row[] = ucfirst($aRow['lab_tech_comments']);

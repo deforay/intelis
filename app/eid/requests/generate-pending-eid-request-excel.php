@@ -58,9 +58,9 @@ $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 if ($_SESSION['instanceType'] == 'standalone') {
-    $headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+    $headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Request Created On", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 } else {
-    $headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+    $headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Request Created On", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 }
 $colNo = 1;
 
@@ -160,6 +160,11 @@ foreach ($rResult as $aRow) {
         $resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
     }
 
+    //requeste created date time
+    $requestCreatedDatetime = '';
+    if ($aRow['request_created_datetime'] != NULL && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
+        $requestCreatedDatetime =  date("d-m-Y", strtotime($aRow['request_created_datetime']));
+    }
     //set result log value
     $logVal = '0.0';
     if ($aRow['result_value_log'] != NULL && trim($aRow['result_value_log']) != '') {
@@ -209,6 +214,7 @@ foreach ($rResult as $aRow) {
     $row[] = $sampleRejection;
     $row[] = $sampleTestedOn;
     $row[] = $eidResults[$aRow['result']];
+    $row[] = $requestCreatedDatetime;
     $row[] = $sampleReceivedOn;
     $row[] = $resultDispatchedDate;
     $row[] = ($aRow['lab_tech_comments']);
