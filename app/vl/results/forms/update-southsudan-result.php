@@ -833,8 +833,8 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 
 	$(document).ready(function() {
 
-		$("#noResult").trigger('change');
-		//$('.specialResults').trigger('change');
+		$("#noResult, #hivDetection").trigger('change');
+		$('.specialResults').trigger('change');
 
 
 		autoFillFocalDetails();
@@ -910,7 +910,7 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 			$(".review-approve-span").hide();
 		}
 	});
-	$("#noResult").change(function() {
+	$("#noResult").on("change", function() {
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult').css('display', 'none');
@@ -950,7 +950,6 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 			$(".result-fields").removeClass("isRequired");
 			$(".result-optional").removeClass("isRequired");
 			$(".result-span").show();
-			$(".result-fields").val("");
 			$('.vlResult,.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$(".result-span").hide();
@@ -1003,8 +1002,17 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 			$('#reasonForFailure').removeClass('isRequired');
 		}
 	});
-	$('#hivDetection').change(function() {
-		if (this.value == 'HIV-1 Not Detected') {
+	$('#hivDetection').on("change", function() {
+
+		if (this.value == null || this.value == '') {
+			$("#noResult").val("");
+			$("#vlResult").css('pointer-events', 'auto');
+			$("#vlLog").css('pointer-events', 'auto');
+			$("#vlResult").val('').css('pointer-events', 'auto');
+			$("#vlLog").val('').css('pointer-events', 'auto');
+			$(".vlResult, .vlLog").show();
+		} else if (this.value == 'HIV-1 Not Detected') {
+			$("#noResult").val("no");
 			$('.specialResults').prop('checked', false).removeAttr('checked');
 			$('#vlResult').attr('disabled', false);
 			$('#vlLog').attr('disabled', false);
@@ -1012,7 +1020,8 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 			$("#vlLog").val('').css('pointer-events', 'none');
 			$(".vlResult, .vlLog").hide();
 			$("#reasonForFailure").removeClass('isRequired');
-		} else {
+		} else if (this.value == 'HIV-1 Detected') {
+			$("#noResult").val("no");
 			$("#vlResult").css('pointer-events', 'auto');
 			$("#vlLog").css('pointer-events', 'auto');
 			$("#vlResult").val('').css('pointer-events', 'auto');

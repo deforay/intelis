@@ -714,7 +714,6 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 														</select>
 													</div>
 												</div>
-												<br>
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason<span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
@@ -888,7 +887,7 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 	$(document).ready(function() {
 
 		$('.specialResults').trigger('change');
-		$("#noResult").trigger('change');
+		$("#hivDetection, #noResult").trigger('change');
 		$("#labId,#fName,#sampleCollectionDate").trigger('change');
 
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
@@ -1260,7 +1259,7 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 			$(".review-approve-span").hide();
 		}
 	});
-	$("#noResult").change(function() {
+	$("#noResult").on("change", function() {
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult, .hivDetection').css('display', 'none');
@@ -1300,7 +1299,6 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 			$(".result-fields").removeClass("isRequired");
 			$(".result-optional").removeClass("isRequired");
 			$(".result-span").show();
-			$(".result-fields").val("");
 			$('.vlResult,.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$(".result-span").hide();
@@ -1334,8 +1332,17 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 			}
 		}
 	});
-	$('#hivDetection').change(function() {
-		if (this.value == 'HIV-1 Not Detected') {
+	$('#hivDetection').on("change", function() {
+
+		if (this.value == null || this.value == '') {
+			$("#noResult").val("");
+			$("#vlResult").css('pointer-events', 'auto');
+			$("#vlLog").css('pointer-events', 'auto');
+			$("#vlResult").val('').css('pointer-events', 'auto');
+			$("#vlLog").val('').css('pointer-events', 'auto');
+			$(".vlResult, .vlLog").show();
+		} else if (this.value == 'HIV-1 Not Detected') {
+			$("#noResult").val("no");
 			$('.specialResults').prop('checked', false).removeAttr('checked');
 			$('#vlResult').attr('disabled', false);
 			$('#vlLog').attr('disabled', false);
@@ -1343,12 +1350,9 @@ if ($general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToS
 			$("#vlLog").val('').css('pointer-events', 'none');
 			$(".vlResult, .vlLog").hide();
 			$("#reasonForFailure").removeClass('isRequired');
-		} else {
-			$("#vlResult").css('pointer-events', 'auto');
-			$("#vlLog").css('pointer-events', 'auto');
-			$("#vlResult").val('').css('pointer-events', 'auto');
-			$("#vlLog").val('').css('pointer-events', 'auto');
-			$(".vlResult, .vlLog").show();
+		} else if (this.value == 'HIV-1 Detected') {
+			$("#noResult").val("no");
+			$("#vlResult, #vlLog").show();
 		}
 	});
 
