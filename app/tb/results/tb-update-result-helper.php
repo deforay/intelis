@@ -123,21 +123,8 @@ try {
     }
 
     $tbData = array(
-        'vlsm_instance_id'                    => $instanceId,
-        'vlsm_country_id'                     => $_POST['formId'],
-        'facility_id'                         => !empty($_POST['facilityId']) ? $_POST['facilityId'] : null,
         'specimen_quality'                    => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
-        'province_id'                         => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
         'lab_id'                              => !empty($_POST['labId']) ? $_POST['labId'] : null,
-        'implementing_partner'                => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
-        'funding_source'                      => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
-        'patient_id'                          => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
-        'patient_type'                        => !empty($_POST['typeOfPatient']) ? json_encode($_POST['typeOfPatient']) : null,
-        'patient_name'                        => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
-        'patient_surname'                     => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
-        'patient_dob'                         => !empty($_POST['patientDob']) ? $_POST['patientDob'] : null,
-        'patient_gender'                      => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
-        'patient_age'                         => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
         'reason_for_tb_test'                  => !empty($_POST['reasonForTbTest']) ? json_encode($_POST['reasonForTbTest']) : null,
         'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
@@ -163,8 +150,7 @@ try {
         'last_modified_datetime'              => $db->now(),
         'request_created_by'                  => $_SESSION['userId'],
         'last_modified_by'                    => $_SESSION['userId'],
-        'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
-        'source_of_request'                   => "web"
+        'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
     );
 
     $id = 0;

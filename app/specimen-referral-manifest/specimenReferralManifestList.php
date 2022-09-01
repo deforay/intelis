@@ -151,7 +151,7 @@ require_once(APPLICATION_PATH . '/header.php');
         if (data == "" || data == null || data == undefined) {
           alert('Unable to generate manifest PDF');
         } else {
-          window.open('/uploads/package_barcode/' + data, '_blank');
+          window.open('/temporary/sample-manifests/' + data, '_blank');
         }
 
       });

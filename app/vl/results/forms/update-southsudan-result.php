@@ -861,10 +861,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 	$(document).ready(function() {
 
-		$("#noResult, #hivDetection").trigger('change');
-		$('.specialResults').trigger('change');
-
-
 		autoFillFocalDetails();
 		$('#labId').select2({
 			width: '100%',
@@ -900,6 +896,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		});
 		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('99-aaa-9999 99:99');
 
+		$('.specialResults').trigger('change');
+		$("#hivDetection, #noResult").trigger('change');
 
 		setTimeout(function() {
 			__clone = $(".labSection").clone();

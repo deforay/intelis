@@ -898,16 +898,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 	$(document).ready(function() {
 
-		$('.specialResults').trigger('change');
-		$("#hivDetection, #noResult").trigger('change');
-		$("#labId,#fName,#sampleCollectionDate").trigger('change');
 
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
+
 			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
-				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+				$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
 			}
 			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
-				// $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+				$('#sampleReceivedDate').val($('#sampleCollectionDate').val());
+				$('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
 			}
 			if ($("#labId").val() != "") {
 				$.post("/includes/get-sample-type.php", {
@@ -996,6 +995,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		//getAge();
 
 		getfacilityProvinceDetails($("#fName").val());
+
+		$('.specialResults').trigger('change');
+		$("#hivDetection, #noResult").trigger('change');
+		$("#labId,#fName,#sampleCollectionDate").trigger('change');
 
 		setTimeout(function() {
 			__clone = $(".labSection").clone();

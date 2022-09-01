@@ -55,7 +55,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<!-- /.box-body -->
 				<div class="box-footer">
 					<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-					<a href="vl-art-code-details.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+					<a href="vl-test-failure-reasons.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 				</div>
 				<!-- /.box-footer -->
 			</form>

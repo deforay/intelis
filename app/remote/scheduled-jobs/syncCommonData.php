@@ -283,6 +283,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                     }
                 }
 
+                // For users table, we do not want to sync password and few other fields
                 if ($dataType === 'users'){
                     $userColumnList = array('user_id', 'user_name', 'phone_number', 'email', 'updated_datetime');
                     $tableData = array_intersect_key($tableData, array_flip($userColumnList));

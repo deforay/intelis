@@ -220,9 +220,7 @@ class Users
             $columns = implode(",", $columns);
         }
         $uQuery = "SELECT $columns FROM " . $this->table . " where user_id= ?";
-        $user =  $this->db->rawQueryOne($uQuery, array($userId));
-        error_log($this->db->getLastQuery());
-        return $user;
+        return $this->db->rawQueryOne($uQuery, array($userId));
     }
 
     public function getAllUsers($facilityMap = null, $status = null, $type = null)

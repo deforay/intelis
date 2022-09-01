@@ -38,20 +38,20 @@ $batResult = $db->rawQuery($batQuery);
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
 							<td style="width:20%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code"); ?> :</b></td>
-							<td>
+							<td style="width:70%;vertical-align:middle;">
 								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _('Sample Manifest Code'); ?>" title="<?php echo _('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
-							<td>
+							<td style="width:10%;">
 								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span><?php echo _("Submit"); ?></span></button>
 							</td>
 						</tr>
-						<tr>
-							<th style="width:50%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
-							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select Sample Received at Testing Lab" readonly /></td>
+						<tr class="activateSample" style="display:none;">
+							<th style="width:20%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
+							<td style="width:70%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select datetime for Sample Received at Testing Lab" readonly /></td>
 
-							<td style="width:100%;" colspan="3">
-								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa-solid fa-square-check"></i> Activate Samples</a>
+							<td style="width:10%;">
+								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa-solid fa-square-check"></i> Activate Samples</a>
 							</td>
 						</tr>
 					</table>
@@ -74,7 +74,6 @@ $batResult = $db->rawQuery($batQuery);
 									<th><?php echo _("Sample Type"); ?></th>
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified Date"); ?></th>
-									<th><?php echo _("Status"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -95,7 +94,7 @@ $batResult = $db->rawQuery($batQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
 <?php
@@ -260,7 +259,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function activeSampleCode() {
 		if ($("#testDate").val() == "") {
-			alert("Please select the sample received at testing lab");
+			alert("Please select datetime for Sample Received at Testing Lab");
 			return false;
 		}
 		$.blockUI();

@@ -780,13 +780,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      let facilityName = true;
      $(document).ready(function() {
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
+
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
-                    $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+                    $('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
                }
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
-                    // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+                    $('#sampleReceivedDate').val($('#sampleCollectionDate').val());
+                    $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
                }
-
                if ($("#labId").val() != "") {
                     $.post("/includes/get-sample-type.php", {
                               facilityId: $('#labId').val(),
@@ -1099,7 +1100,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.femaleSection').show();
           }
      });
-     $("#sampleTestingDateAtLab").change(function() {
+     $("#sampleTestingDateAtLab").on("change", function() {
           if ($(this).val() != "") {
                $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
@@ -1183,8 +1184,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#reasonForFailure").removeClass('isRequired');
           } else if (this.value == 'HIV-1 Detected') {
                $("#noResult").val("no");
-			$(".vlResult, .vlLog").show();
-			$("#noResult").trigger("change");
+               $(".vlResult, .vlLog").show();
+               $("#noResult").trigger("change");
           }
      });
 
