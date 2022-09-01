@@ -3227,3 +3227,7 @@ UPDATE `r_sample_status` SET `status_name` = 'Failed/Invalid' WHERE `r_sample_st
 
 -- Amit 31-Aug-2022 version 5.0.7
 UPDATE `system_config` SET `value` = '5.0.7' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Amit 2-Sep-2022 version 5.0.8
+UPDATE `system_config` SET `value` = '5.0.8' WHERE `system_config`.`name` = 'sc_version';
