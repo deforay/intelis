@@ -3231,3 +3231,8 @@ UPDATE `system_config` SET `value` = '5.0.7' WHERE `system_config`.`name` = 'sc_
 
 -- Amit 2-Sep-2022 version 5.0.8
 UPDATE `system_config` SET `value` = '5.0.8' WHERE `system_config`.`name` = 'sc_version';
+
+UPDATE form_vl set is_sample_rejected = 'yes' where result_status = 4 and (is_sample_rejected is null or is_sample_rejected = 'no' or is_sample_rejected = '');
+
+-- UPDATE form_eid set is_sample_rejected = 'yes' where result_status = 4 and (is_sample_rejected is null or is_sample_rejected = 'no' or is_sample_rejected = '');
+-- UPDATE form_covid19 set is_sample_rejected = 'yes' where result_status = 4 and (is_sample_rejected is null or is_sample_rejected = 'no' or is_sample_rejected = '');
