@@ -259,11 +259,11 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
     foreach ($parsedData as $dataType => $dataValues) {
 
         if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
-            if ($dataType == 'healthFacilities' && !empty($dataValues)) {
+            if ($dataType === 'healthFacilities' && !empty($dataValues)) {
                 $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
                 $db = $db->where('facility_id', $updatedFacilities, 'IN');
                 $id = $db->delete('health_facilities');
-            } else if ($dataType == 'testingLabs' && !empty($dataValues)) {
+            } else if ($dataType === 'testingLabs' && !empty($dataValues)) {
                 $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
                 $db->where('facility_id', $updatedFacilities, 'IN');
                 $id = $db->delete('testing_labs');
@@ -271,7 +271,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
             $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
             $columnList = array_map('current', $db->rawQuery($tableColumns));
-
+            
             foreach ($dataValues as $tableDataValues) {
                 $tableData = array();
                 $updateColumns = array();
@@ -283,6 +283,11 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                     }
                 }
 
+                if ($dataType === 'users'){
+                    $userColumnList = array('user_id', 'user_name', 'phone_number', 'email', 'updated_datetime');
+                    $tableData = array_intersect_key($tableData, array_flip($userColumnList));
+                }
+
                 // getting column names using array_key
                 // we will update all columns ON DUPLICATE
                 $updateColumns = array_keys($tableData);
@@ -292,7 +297,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
                 // For updated facilities, we delete logo images (if any) and then we get new images (if any)
                 // this ensures that if the logo was there previously it gets removed
-                if ($dataType == 'facilities') {
+                if ($dataType === 'facilities') {
                     $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
                     if (file_exists($labLogoFolder) && is_dir($labLogoFolder)) {
                         $images = glob("$labLogoFolder/*.{jpg,png,gif,jpeg}", GLOB_BRACE);
@@ -317,7 +322,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
         }
 
         //update or insert testing labs signs
-        if ($dataType == 'labReportSignatories') {
+        if ($dataType === 'labReportSignatories') {
             foreach ($dataValues as $key => $sign) {
 
                 // Delete old signatures, before we save new ones

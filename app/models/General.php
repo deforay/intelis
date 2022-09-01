@@ -189,7 +189,7 @@ class General
 
         $fieldName = ($fieldName != null) ? $fieldName : '*';
 
-        $configQuery = "SELECT $fieldName from $tableName";
+        $configQuery = "SELECT $fieldName FROM $tableName";
 
         if ($condition != null) {
             $configQuery .= " WHERE $condition ";

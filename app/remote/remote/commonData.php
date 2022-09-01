@@ -195,6 +195,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
     $response['users'] = array();
     $userIds = array_column($response['facilities'], 'contact_person');
+    
     foreach($userIds as $userId){
         if(!empty($userId)){
             $userInfo = $general->fetchDataFromTable('user_details', "user_id = '$userId'");
