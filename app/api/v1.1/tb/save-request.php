@@ -40,16 +40,17 @@ try {
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = array();
+
+    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
+    $rowData = $db->rawQuery($sQuery);
+    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $formId = $general->getGlobalConfig('vl_form');
+
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
         $sampleFrom = '';
-        $formId = $general->getGlobalConfig('vl_form');
-        if ($data['formId'] == $formId) {
-        }
-        $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
-        $rowData = $db->rawQuery($sQuery);
-        $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
-        $sampleFrom = '';
+    
+        $data['formId'] = $formId;
         /* V1 name to Id mapping */
         if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
@@ -113,9 +114,8 @@ try {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
 
-        if (!isset($data['formId']) || $data['formId'] == '') {
-            $data['formId'] = '';
-        }
+        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
+
         $tbData = array(
             'vlsm_country_id' => $data['formId'] ?: null,
             'unique_id' => $uniqueId,
@@ -156,10 +156,6 @@ try {
         $tableName1 = "activity_log";
         $testTableName = 'tb_tests';
 
-        $instanceId = '';
-        if (empty($instanceId) && $data['instanceId']) {
-            $instanceId = $data['instanceId'];
-        }
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
             $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
@@ -255,7 +251,7 @@ try {
         }
 
         $tbData = array(
-            'vlsm_instance_id'                    => $instanceId,
+            'vlsm_instance_id'                    => $data['instanceId'],
             'vlsm_country_id'                     => $data['formId'],
             'unique_id'                           => $uniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,

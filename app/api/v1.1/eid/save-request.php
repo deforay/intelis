@@ -45,14 +45,17 @@ try {
         throw new \Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
+
+    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
+    $rowData = $db->rawQuery($sQuery);
+    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $formId = $general->getGlobalConfig('vl_form');
+
     $responseData = array();
-    foreach ($input['data'] as $rootKey => $field) {
-        $data = $field;
+    foreach ($input['data'] as $rootKey => $data) {
         $sampleFrom = '';
-        $data['formId'] = $data['countryId'] = $general->getGlobalConfig('vl_form');
-        $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
-        $rowData = $db->rawQuery($sQuery);
-        $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
+        $data['formId'] = $data['countryId'] = $formId;
+        
         $sampleFrom = '';
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
@@ -127,11 +130,14 @@ try {
         } else {
             $data['sampleCollectionDate'] = NULL;
         }
+
+        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
+
         $eidData = array(
             'vlsm_country_id' => $data['formId'] ?: null,
+            'vlsm_instance_id' => $data['instanceId'],
             'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
-            'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
             'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime(),
@@ -168,10 +174,7 @@ try {
         $tableName = "form_eid";
         $tableName1 = "activity_log";
 
-        $instanceId = '';
-        if (empty($instanceId) && $data['instanceId']) {
-            $instanceId = $data['instanceId'];
-        }
+        
 
         if (empty(trim($data['sampleCode']))) {
             $data['sampleCode'] = NULL;

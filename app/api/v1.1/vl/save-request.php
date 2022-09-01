@@ -22,7 +22,7 @@ try {
     $origJson = file_get_contents("php://input") ?: '[]';
     $input = json_decode($origJson, true);
 
-    if(empty($input) || empty($input['data'])) {
+    if (empty($input) || empty($input['data'])) {
         throw new \Exception("Invalid request");
     }
 
@@ -50,13 +50,14 @@ try {
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = array();
-    foreach ($input['data'] as $rootKey => $field) {
-        $data = $field;
+    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
+    $rowData = $db->rawQuery($sQuery);
+    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $formId = $general->getGlobalConfig('vl_form');
+
+    foreach ($input['data'] as $rootKey => $data) {
         $sampleFrom = '';
-        $data['formId'] = $data['countryId'] = $general->getGlobalConfig('vl_form');
-        $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
-        $rowData = $db->rawQuery($sQuery);
-        $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
+        $data['formId'] = $data['countryId'] = $formId;
         $sampleFrom = '';
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
@@ -133,6 +134,9 @@ try {
         } else {
             $sampleCollectionDate = $data['sampleCollectionDate'] = NULL;
         }
+
+        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
+
         $vlData = array(
             'vlsm_country_id' => $data['formId'] ?? null,
             'unique_id' => $uniqueId,
@@ -175,10 +179,7 @@ try {
         }
         $tableName = "form_vl";
         $tableName1 = "activity_log";
-        $instanceId = '';
-        if (empty($instanceId) && $data['instanceId']) {
-            $instanceId = $data['instanceId'];
-        }
+
 
         if (empty(trim($data['sampleCode']))) {
             $data['sampleCode'] = NULL;
@@ -310,7 +311,7 @@ try {
             $data['revisedOn'] = NULL;
         }
         $vlFulldata = array(
-            'vlsm_instance_id'                      => $instanceId,
+            'vlsm_instance_id'                      => $data['instanceId'],
             'vlsm_country_id'                       => $data['formId'],
             'unique_id'                             => $uniqueId,
             'app_sample_code'                       => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
@@ -394,8 +395,8 @@ try {
 
 
 
-        if (isset($data['patientFullName']) && $data['patientFullName'] != "") {
-            $vlFulldata['patient_first_name'] = $general->crypto('encrypt', $data['patientFullName'], $vlFulldata['patient_art_no']);
+        if (isset($data['patientFirstName']) && $data['patientFirstName'] != "") {
+            $vlFulldata['patient_first_name'] = $general->crypto('encrypt', $data['patientFirstName'], $vlFulldata['patient_art_no']);
         }
         if (isset($data['patientMiddleName']) && $data['patientMiddleName'] != "") {
             $vlFulldata['patient_middle_name'] = $general->crypto('encrypt', $data['patientMiddleName'], $vlFulldata['patient_art_no']);

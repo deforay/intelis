@@ -195,6 +195,8 @@ if ($vlQueryInfo['patient_last_name'] != '') {
      $patientLastName = '';
 }
 
+$patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
+
 ?>
 <style>
      .ui_tpicker_second_label {

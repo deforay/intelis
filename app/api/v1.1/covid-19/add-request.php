@@ -18,7 +18,7 @@ try {
     $origJson = file_get_contents("php://input") ?: '[]';
     $input = json_decode($origJson, true);
 
-    if(empty($input) || empty($input['data'])) {
+    if (empty($input) || empty($input['data'])) {
         throw new \Exception("Invalid request");
     }
 
@@ -47,16 +47,14 @@ try {
     $roleUser = $userDb->getUserRole($user['user_id']);
     /* print_r($input['data']);
     die; */
+
+    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
+    $rowData = $db->rawQuery($sQuery);
+    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $formId = $general->getGlobalConfig('vl_form');
+
     $responseData = array();
-    foreach ($input['data'] as $rootKey => $field) {
-        $data = $field;
-        $sampleFrom = '';
-        $formId = $general->getGlobalConfig('vl_form');
-        if ($data['formId'] == $formId) {
-        }
-        $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
-        $rowData = $db->rawQuery($sQuery);
-        $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
+    foreach ($input['data'] as $rootKey => $data) {
         $sampleFrom = '';
         /* V1 name to Id mapping */
         if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
@@ -135,6 +133,9 @@ try {
             $uniqueId = $general->generateUUID();
         }
 
+
+        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
+
         $covid19Data = array(
             'vlsm_country_id' => $data['formId'] ?: null,
             'unique_id' => $uniqueId,
@@ -181,10 +182,7 @@ try {
         $tableName1 = "activity_log";
         $testTableName = 'covid19_tests';
 
-        $instanceId = '';
-        if (empty($instanceId) && $data['instanceId']) {
-            $instanceId = $data['instanceId'];
-        }
+
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $data['arrivalDateTime'] = $general->isoDateFormat($data['arrivalDateTime'], true);
         } else {
@@ -258,7 +256,7 @@ try {
         }
 
         $covid19Data = array(
-            'vlsm_instance_id'                    => $instanceId,
+            'vlsm_instance_id'                    => $data['instanceId'],
             'vlsm_country_id'                     => $data['formId'],
             'unique_id'                           => $uniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,

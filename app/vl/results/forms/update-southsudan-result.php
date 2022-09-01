@@ -320,7 +320,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="patientFirstName">Patient Name (First Name, Last Name) </label>
-										<input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" <?php echo $disable; ?> value="<?php echo $patientFirstName; ?>" />
+										<input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" <?php echo $disable; ?> value="<?php echo $patientFullName; ?>" />
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">

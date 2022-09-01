@@ -323,7 +323,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
-     $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
+     $row[] = trim(implode(" ", array($patientFname, $patientMname, $patientLname)));
      $row[] = ucwords($aRow['lab_name']);
      $row[] = ucwords($aRow['facility_name']);
      $row[] = ucwords($aRow['facility_state']);

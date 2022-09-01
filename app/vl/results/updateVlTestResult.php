@@ -192,6 +192,9 @@ if ($vlQueryInfo['patient_last_name'] != '') {
 } else {
 	$patientLastName = '';
 }
+
+$patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
+
 ?>
 <style>
 	:disabled {
