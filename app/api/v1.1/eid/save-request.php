@@ -1,9 +1,12 @@
 <?php
 
 session_unset(); // no need of session in json response
+ini_set('memory_limit', -1);
+header('Content-Type: application/json');
+
+
 try {
-    ini_set('memory_limit', -1);
-    header('Content-Type: application/json');
+
     $general = new \Vlsm\Models\General();
     $userDb = new \Vlsm\Models\Users();
     $app = new \Vlsm\Models\App();
@@ -12,12 +15,16 @@ try {
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
 
-    $input = json_decode(file_get_contents("php://input"), true);
+    $origJson = file_get_contents("php://input") ?: '[]';
+    $input = json_decode($origJson, true);
+
+    if (empty($input) || empty($input['data'])) {
+        throw new \Exception("Invalid request");
+    }
 
     /* For API Tracking params */
     $requestUrl .= $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $params = file_get_contents("php://input");
 
     $auth = $general->getHeader('Authorization');
     if (!empty($auth)) {
@@ -28,15 +35,14 @@ try {
 
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {
-        $response = array(
-            'status' => 'failed',
-            'timestamp' => time(),
-            'error' => 'Bearer Token Invalid',
-            'data' => array()
-        );
+        // $response = array(
+        //     'status' => 'failed',
+        //     'timestamp' => time(),
+        //     'error' => 'Bearer Token Invalid',
+        //     'data' => array()
+        // );
         http_response_code(401);
-        echo json_encode($response);
-        exit(0);
+        throw new \Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = array();
@@ -117,8 +123,7 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $data['sampleCollectionDate'] = $general->isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $data['sampleCollectionDate'] = NULL;
         }
@@ -192,22 +197,19 @@ try {
         }
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
-            $approvedOn = explode(" ", $data['approvedOn']);
-            $data['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+            $data['approvedOn'] = $general->isoDateFormat($data['approvedOn'], true);
         } else {
             $data['approvedOn'] = NULL;
         }
 
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
-            $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = $general->isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = NULL;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
-            $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = $general->isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = NULL;
         }
@@ -238,8 +240,7 @@ try {
         }
 
         if (isset($data['previousPCRTestDate']) && trim($data['previousPCRTestDate']) != "") {
-            $previousPCRTestDate = explode(" ", $data['previousPCRTestDate']);
-            $data['previousPCRTestDate'] = $general->isoDateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
+            $data['previousPCRTestDate'] = $general->isoDateFormat($data['previousPCRTestDate']);
         } else {
             $data['previousPCRTestDate'] = NULL;
         }
@@ -258,21 +259,19 @@ try {
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
-            $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+            $data['resultDispatchedOn'] = $general->isoDateFormat($data['resultDispatchedOn'], true);
         } else {
             $data['resultDispatchedOn'] = NULL;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
-            $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = $general->isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+            $data['sampleDispatchedOn'] = $general->isoDateFormat($data['sampleDispatchedOn'], true);
         } else {
             $data['sampleDispatchedOn'] = NULL;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $data['revisedOn'] = $general->isoDateFormat($data['revisedOn']);
+            $data['revisedOn'] = $general->isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = NULL;
         }
@@ -426,13 +425,11 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'eid', $requestUrl, $params, json_encode($payload), 'json');
+
     http_response_code(200);
-    echo json_encode($payload);
-    exit(0);
 } catch (Exception $exc) {
 
-    // http_response_code(500);
+    http_response_code(400);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),
@@ -440,10 +437,10 @@ try {
         'data' => array()
     );
 
-
-    echo json_encode($payload);
-
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
 }
+$payload = json_encode($payload);
+$general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'eid', $requestUrl, $origJson, $payload, 'json');
+echo $payload;
+exit(0);

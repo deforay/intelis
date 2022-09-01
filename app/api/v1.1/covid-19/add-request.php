@@ -1,9 +1,11 @@
 <?php
 
 session_unset(); // no need of session in json response
+ini_set('memory_limit', -1);
+header('Content-Type: application/json');
+
 try {
-    ini_set('memory_limit', -1);
-    header('Content-Type: application/json');
+
     $general = new \Vlsm\Models\General();
     $userDb = new \Vlsm\Models\Users();
     $app = new \Vlsm\Models\App();
@@ -13,12 +15,16 @@ try {
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
 
-    $input = json_decode(file_get_contents("php://input"), true);
+    $origJson = file_get_contents("php://input") ?: '[]';
+    $input = json_decode($origJson, true);
+
+    if(empty($input) || empty($input['data'])) {
+        throw new \Exception("Invalid request");
+    }
 
     /* For API Tracking params */
     $requestUrl .= $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $params = file_get_contents("php://input");
 
     $auth = $general->getHeader('Authorization');
     if (!empty($auth)) {
@@ -29,15 +35,14 @@ try {
 
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {
-        $response = array(
-            'status' => 'failed',
-            'timestamp' => time(),
-            'error' => 'Bearer Token Invalid',
-            'data' => array()
-        );
+        // $response = array(
+        //     'status' => 'failed',
+        //     'timestamp' => time(),
+        //     'error' => 'Bearer Token Invalid',
+        //     'data' => array()
+        // );
         http_response_code(401);
-        echo json_encode($response);
-        exit(0);
+        throw new \Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     /* print_r($input['data']);
@@ -111,8 +116,6 @@ try {
 
             $rowData = $db->rawQueryOne($sQuery);
 
-            $general->var_error_log($sQuery);
-
             if ($rowData) {
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
@@ -183,8 +186,7 @@ try {
             $instanceId = $data['instanceId'];
         }
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
-            $arrivalDate = explode(" ", $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+            $data['arrivalDateTime'] = $general->isoDateFormat($data['arrivalDateTime'], true);
         } else {
             $data['arrivalDateTime'] = NULL;
         }
@@ -214,50 +216,43 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $data['sampleCollectionDate'] = $general->isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $data['sampleCollectionDate'] = NULL;
         }
 
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
-            $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = $general->isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = NULL;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
-            $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = $general->isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = NULL;
         }
 
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
-            $arrivalDate = explode(" ", $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+            $data['arrivalDateTime'] = $general->isoDateFormat($data['arrivalDateTime'], true);
         } else {
             $data['arrivalDateTime'] = NULL;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $revisedOn = explode(" ", $data['revisedOn']);
-            $data['revisedOn'] = $general->isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
+            $data['revisedOn'] = $general->isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = NULL;
         }
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
-            $approvedOn = explode(" ", $data['approvedOn']);
-            $data['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+            $data['approvedOn'] = $general->isoDateFormat($data['approvedOn'], true);
         } else {
             $data['approvedOn'] = NULL;
         }
 
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
-            $reviewedOn = explode(" ", $data['reviewedOn']);
-            $data['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+            $data['reviewedOn'] = $general->isoDateFormat($data['reviewedOn'], true);
         } else {
             $data['reviewedOn'] = NULL;
         }
@@ -414,8 +409,7 @@ try {
                 foreach ($data['c19Tests'] as $testKey => $test) {
                     if (isset($test['testName']) && !empty($test['testName'])) {
                         if (isset($test['testDate']) && trim($test['testDate']) != "") {
-                            $testedDateTime = explode(" ", $test['testDate']);
-                            $test['testDate'] = $general->isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
+                            $data['testDate'] = $general->isoDateFormat($data['testDate'], true);
                         } else {
                             $test['testDate'] = NULL;
                         }
@@ -507,24 +501,24 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'covid19', $requestUrl, $params, json_encode($payload), 'json');
+
     http_response_code(200);
-    echo json_encode($payload);
-    exit(0);
 } catch (Exception $exc) {
 
-    // http_response_code(500);
+    http_response_code(400);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
         'data' => array()
     );
-
-
-    echo json_encode($payload);
-
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
 }
+
+
+$payload = json_encode($payload);
+$general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'covid19', $requestUrl, $origJson, $payload, 'json');
+
+echo $payload;
+exit(0);

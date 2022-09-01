@@ -1168,8 +1168,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                hivDetectionChange();
           }
      });
-     $('#hivDetection').change(function() {
-          if (this.value == 'HIV-1 Not Detected') {
+     $('#hivDetection').on("change", function() {
+
+          if (this.value == null || this.value == '' || this.value == undefined) {
+               return false;
+          } else if (this.value == 'HIV-1 Not Detected') {
+               $("#noResult").val("no");
                $('.specialResults').prop('checked', false).removeAttr('checked');
                $('#vlResult').attr('disabled', false);
                $('#vlLog').attr('disabled', false);
@@ -1177,12 +1181,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#vlLog").val('').css('pointer-events', 'none');
                $(".vlResult, .vlLog").hide();
                $("#reasonForFailure").removeClass('isRequired');
-          } else {
-               $("#vlResult").css('pointer-events', 'auto');
-               $("#vlLog").css('pointer-events', 'auto');
-               $("#vlResult").val('').css('pointer-events', 'auto');
-               $("#vlLog").val('').css('pointer-events', 'auto');
-               $(".vlResult, .vlLog").show();
+          } else if (this.value == 'HIV-1 Detected') {
+               $("#noResult").val("no");
+			$(".vlResult, .vlLog").show();
+			$("#noResult").trigger("change");
           }
      });
 

@@ -350,15 +350,16 @@ class Vl
             } else {
                 $resultArray = explode("(", $result);
                 $exponentArray = explode("E", $resultArray[0]);
+                $absVal = ($resultArray[0]);
                 $vlResult = (float) $resultArray[0];
                 $absDecimalVal = (float) trim($vlResult);
                 $logVal = round(log10($absDecimalVal), 2);
             }
         } else {
+            $absVal = ($result);
             $absDecimalVal = (float) trim($result);
             $logVal = round(log10($absDecimalVal), 2);
             $txtVal = null;
-            $vlResult = $absDecimalVal;
         }
 
         return array(

@@ -1,27 +1,11 @@
 <?php
-// Allow from any origin
-if (isset($_SERVER['HTTP_ORIGIN'])) {
-    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
-}
 
-// Access-Control headers are received during OPTIONS requests
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-
-    exit(0);
-}
+ini_set('memory_limit', -1);
 session_unset(); // no need of session in json response
+header('Content-Type: application/json');
 
 try {
-    ini_set('memory_limit', -1);
-    header('Content-Type: application/json');
+
     $general = new \Vlsm\Models\General();
     $userDb = new \Vlsm\Models\Users();
     $app = new \Vlsm\Models\App();
@@ -35,12 +19,16 @@ try {
     $txtVal = null;
     $finalResult = null;
 
-    $input = json_decode(file_get_contents("php://input"), true);
+    $origJson = file_get_contents("php://input") ?: '[]';
+    $input = json_decode($origJson, true);
+
+    if(empty($input) || empty($input['data'])) {
+        throw new \Exception("Invalid request");
+    }
 
     /* For API Tracking params */
     $requestUrl .= $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $params = file_get_contents("php://input");
 
     $auth = $general->getHeader('Authorization');
     if (!empty($auth)) {
@@ -58,7 +46,7 @@ try {
         //     'data' => array()
         // );
         http_response_code(401);
-        throw new Exception(_("Bearer Token Invalid"));
+        throw new \Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = array();
@@ -141,8 +129,7 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $sampleCollectionDate = $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $data['sampleCollectionDate'] = $general->isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $sampleCollectionDate = $data['sampleCollectionDate'] = NULL;
         }
@@ -203,100 +190,74 @@ try {
         }
 
         if (isset($data['approvedOnDateTime']) && trim($data['approvedOnDateTime']) != "") {
-            $approvedOnDateTime = explode(" ", $data['approvedOnDateTime']);
-            $data['approvedOnDateTime'] = $general->isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+            $data['approvedOnDateTime'] = $general->isoDateFormat($data['approvedOnDateTime'], true);
         } else {
             $data['approvedOnDateTime'] = NULL;
         }
 
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
-            $reviewedOn = explode(" ", $data['reviewedOn']);
-            $data['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+            $data['reviewedOn'] = $general->isoDateFormat($data['reviewedOn'], true);
         } else {
             $data['reviewedOn'] = NULL;
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
-            $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+            $data['resultDispatchedOn'] = $general->isoDateFormat($data['resultDispatchedOn'], true);
         } else {
             $data['resultDispatchedOn'] = NULL;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
-            $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = $general->isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
-        } else {
-            $data['sampleDispatchedOn'] = NULL;
-        }
-
-        if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
-            $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
-        } else {
-            $data['resultDispatchedOn'] = NULL;
-        }
-
-        if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
-            $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = $general->isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+            $data['sampleDispatchedOn'] = $general->isoDateFormat($data['sampleDispatchedOn'], true);
         } else {
             $data['sampleDispatchedOn'] = NULL;
         }
 
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
-            $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = $general->isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = NULL;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
-            $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = $general->isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = NULL;
         }
 
         if (!empty($data['sampleTestingDateAtLab']) && trim($data['sampleTestingDateAtLab']) != "") {
-            $sampleTestedDate = explode(" ", $data['sampleTestingDateAtLab']);
-            $data['sampleTestingDateAtLab'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestingDateAtLab'] = $general->isoDateFormat($data['sampleTestingDateAtLab'], true);
         } else {
             $data['sampleTestingDateAtLab'] = NULL;
         }
 
         if (!empty($data['sampleReceivedAtHubOn']) && trim($data['sampleReceivedAtHubOn']) != "") {
-            $sampleReceivedAtHubOn = explode(" ", $data['sampleReceivedAtHubOn']);
-            $data['sampleReceivedAtHubOn'] = $general->isoDateFormat($sampleReceivedAtHubOn[0]) . " " . $sampleReceivedAtHubOn[1];
+            $data['sampleReceivedAtHubOn'] = $general->isoDateFormat($data['sampleReceivedAtHubOn'], true);
         } else {
             $data['sampleReceivedAtHubOn'] = NULL;
         }
 
         if (isset($data['dateOfArtInitiation']) && trim($data['dateOfArtInitiation']) != "") {
-            $dateOfArtInitiation = explode(" ", $data['dateOfArtInitiation']);
-            $data['dateOfArtInitiation'] = $general->isoDateFormat($dateOfArtInitiation[0]) . " " . $dateOfArtInitiation[1];
+            $data['dateOfArtInitiation'] = $general->isoDateFormat($data['dateOfArtInitiation'], true);
         } else {
             $data['dateOfArtInitiation'] = NULL;
         }
 
         if (isset($data['patientDob']) && trim($data['patientDob']) != "") {
-            $dob = explode(" ", $data['patientDob']);
-            $data['patientDob'] = $general->isoDateFormat($dob[0]) . " " . $dob[1];
+            $data['patientDob'] = $general->isoDateFormat($data['patientDob'], false);
         } else {
             $data['patientDob'] = NULL;
         }
 
         if (isset($data['regimenInitiatedOn']) && trim($data['regimenInitiatedOn']) != "") {
-            $regimenInitiatedOn = explode(" ", $data['regimenInitiatedOn']);
-            $data['regimenInitiatedOn'] = $general->isoDateFormat($regimenInitiatedOn[0]) . " " . $regimenInitiatedOn[1];
+            $data['regimenInitiatedOn'] = $general->isoDateFormat($data['regimenInitiatedOn'], true);
         } else {
             $data['regimenInitiatedOn'] = NULL;
         }
 
         //Set Dispatched From Clinic To Lab Date
         if (isset($data['dateDispatchedFromClinicToLab']) && trim($data['dateDispatchedFromClinicToLab']) != "") {
-            $dispatchedFromClinicToLabDate = explode(" ", $data['dateDispatchedFromClinicToLab']);
-            $data['dateDispatchedFromClinicToLab'] = $general->isoDateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
+            $data['dateDispatchedFromClinicToLab'] = $general->isoDateFormat($data['dateDispatchedFromClinicToLab'], true);
         } else {
             $data['dateDispatchedFromClinicToLab'] = NULL;
         }
@@ -344,8 +305,7 @@ try {
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $revisedOn = explode(" ", $data['revisedOn']);
-            $data['revisedOn'] = $general->isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
+            $data['revisedOn'] = $general->isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = NULL;
         }
@@ -521,22 +481,22 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'vl', $requestUrl, $params, json_encode($payload), 'json');
+
     http_response_code(200);
-    echo json_encode($payload);
-    exit(0);
 } catch (Exception $exc) {
 
-    // http_response_code(500);
+    http_response_code(400);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
         'data' => array()
     );
-    echo json_encode($payload);
-
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
 }
+
+$payload = json_encode($payload);
+$general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'vl', $requestUrl, $origJson, $payload, 'json');
+echo $payload;
+exit(0);

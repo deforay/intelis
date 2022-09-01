@@ -109,21 +109,39 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 //var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
 
-$isGeneXpert = (!empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'],"genexpert") === 0)) ? true : false;
+$isGeneXpert = (!empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0)) ? true : false;
 
-$hivDetectedStringsToSearch = [
-	'HIV-1 Detected',
-	'HIV 1 Detected',
-	'HIV1 Detected'
-];
-$hivNotDetectedStringsToSearch = [
-	'HIV-1 Not Detected',
-	'HIV 1 Not Detected',
-	'HIV1 Not Detected'
-];
+if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
+	$vlQueryInfo['result'] = trim(str_ireplace($vlQueryInfo['result_value_hiv_detection'], "", $vlQueryInfo['result']));
+} else if ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
 
-$vlQueryInfo['result_value_hiv_detection'] = null;
-if (!empty($vlQueryInfo['result']) && $isGeneXpert === true) {
+	$vlQueryInfo['result_value_hiv_detection'] = null;
+
+	$hivDetectedStringsToSearch = [
+		'HIV-1 Detected',
+		'HIV 1 Detected',
+		'HIV1 Detected',
+		'HIV 1Detected',
+		'HIV1Detected',
+		'HIV Detected',
+		'HIVDetected',
+	];
+
+	$hivNotDetectedStringsToSearch = [
+		'HIV-1 Not Detected',
+		'HIV-1 NotDetected',
+		'HIV-1Not Detected',
+		'HIV 1 Not Detected',
+		'HIV1 Not Detected',
+		'HIV 1Not Detected',
+		'HIV1Not Detected',
+		'HIV1NotDetected',
+		'HIV1 NotDetected',
+		'HIV 1NotDetected',
+		'HIV Not Detected',
+		'HIVNotDetected',
+	];
+
 	$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
 	if ($detectedMatching !== false) {
 		$vlQueryInfo['result'] = trim(str_ireplace($detectedMatching, "", $vlQueryInfo['result']));
@@ -1330,7 +1348,7 @@ if (!empty($vlQueryInfo['result']) && $isGeneXpert === true) {
 
 		if (this.value == null || this.value == '' || this.value == undefined) {
 			return false;
-		} else if (this.value == 'HIV-1 Not Detected') {
+		} else if (this.value === 'HIV-1 Not Detected') {
 			$("#noResult").val("no");
 			$('.specialResults').prop('checked', false).removeAttr('checked');
 			$('#vlResult').attr('disabled', false);
@@ -1339,9 +1357,10 @@ if (!empty($vlQueryInfo['result']) && $isGeneXpert === true) {
 			$("#vlLog").val('').css('pointer-events', 'none');
 			$(".vlResult, .vlLog").hide();
 			$("#reasonForFailure").removeClass('isRequired');
-		} else if (this.value == 'HIV-1 Detected') {
+		} else if (this.value === 'HIV-1 Detected') {
 			$("#noResult").val("no");
-			$("#vlResult, #vlLog").show();
+			$(".vlResult, .vlLog").show();
+			$("#noResult").trigger("change");
 		}
 	});
 

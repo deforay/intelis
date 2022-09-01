@@ -60,7 +60,7 @@ try {
         $absValRow = '2';
         $txtValCol = '';
         $txtValRow = '';
-        $testingDateCol = 'AC';
+        $testingDateCol = 'D';
         $testingDateRow = '2';
         $logAndAbsoluteValInSameCol = 'no';
         $sampleTypeCol = 'F';
@@ -166,7 +166,7 @@ try {
                 'result_value_absolute' => $d['absVal'],
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime' => $testingDate,
+                'sample_tested_datetime' => $d['testingDate'],
                 'result_status' => '6',
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag']

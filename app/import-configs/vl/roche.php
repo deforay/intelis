@@ -19,7 +19,7 @@ try {
     );
     $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName          = str_replace(" ", "-", $fileName);
-    $ranNumber = \Vlsm\Models\General::generateRandomString(12);
+    $ranNumber         = \Vlsm\Models\General::generateRandomString(12);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $ranNumber . "." . $extension;
 
@@ -57,7 +57,7 @@ try {
         $absValRow = '2';
         $txtValCol = '';
         $txtValRow = '';
-        $testingDateCol = 'AC';
+        $testingDateCol = 'D';
         $testingDateRow = '2';
         $logAndAbsoluteValInSameCol = 'no';
         $sampleTypeCol = 'F';
@@ -67,8 +67,10 @@ try {
 
         foreach ($sheetData as $rowIndex => $row) {
 
-            if ($rowIndex < $skipTillRow)
+            if ($rowIndex < $skipTillRow) {
                 continue;
+            }
+
 
             $sampleCode    = "";
             $batchCode     = "";
@@ -90,8 +92,10 @@ try {
 
 
 
-            if ($sampleCode == "")
+            if ($sampleCode == "") {
                 continue;
+            }
+
 
             /*
             $d=explode(" ",$row[$testingDateCol]);
@@ -108,7 +112,14 @@ try {
             */
 
 
-            $testingDate = date('Y-m-d H:i', strtotime($row[$testingDateCol]));
+            // $testingDate = date('Y-m-d H:i', strtotime($row[$testingDateCol]));
+
+            $testingDate = null;
+            $testingDateObject = DateTimeImmutable::createFromFormat('!d/m/Y H:i', $row[$testingDateCol]);
+            $errors = DateTimeImmutable::getLastErrors();
+            if (empty($errors['warning_count']) && empty($errors['error_count']) && !empty($testingDateObject) && $testingDateObject !== false) {
+                $testingDate = $testingDateObject->format('Y-m-d H:i');
+            }
 
             $vlResult = trim($row[$absValCol]);
 
@@ -146,7 +157,7 @@ try {
 
 
 
-            $infoFromFile[$sampleCode] = array(
+            $infoFromFile[$sampleCode] = [
                 "sampleCode" => $sampleCode,
                 "logVal" => trim($logVal),
                 "absVal" => $absVal,
@@ -156,7 +167,7 @@ try {
                 "testingDate" => $testingDate,
                 "sampleType" => $sampleType,
                 "batchCode" => $batchCode
-            );
+            ];
 
 
             $m++;
@@ -175,7 +186,7 @@ try {
                 'result_value_absolute' => $d['absVal'],
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime' => $testingDate,
+                'sample_tested_datetime' => $d['testingDate'],
                 'result_status' => 6,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag']
