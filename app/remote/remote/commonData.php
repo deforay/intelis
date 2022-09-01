@@ -7,9 +7,6 @@ ini_set('max_execution_time', -1);
 header('Content-Type: application/json');
 
 $general = new \Vlsm\Models\General();
-$app = new \Vlsm\Models\App();
-
-
 
 $payload = array();
 
@@ -195,6 +192,18 @@ if ($data['Key'] == 'vlsm-get-remote') {
         $signatureCondition = "added_on > '" . $data['facilityLastModified'] . "'";
     }
     $response['facilities'] = $general->fetchDataFromTable('facility_details', $condition);
+
+    $response['users'] = array();
+    $userIds = array_column($response['facilities'], 'contact_person');
+    foreach($userIds as $userId){
+        if(!empty($userId)){
+            $userInfo = $general->fetchDataFromTable('user_details', "user_id = '$userId'");
+            if(!empty($userInfo)){
+                $response['users'][] = $userInfo[0];
+            }
+        }
+    }
+
     $response['labReportSignatories'] = $general->fetchDataFromTable('lab_report_signatories', $signatureCondition);
 
 
@@ -203,7 +212,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
         $condition = "updated_datetime > '" . $data['healthFacilityLastModified'] . "'";
     }
 
-    $response['healthFacilities'] = $general->fetchDataFromTable('health_facilities', $condition);;
+    $response['healthFacilities'] = $general->fetchDataFromTable('health_facilities', $condition);
 
     $condition = null;
     if (isset($data['testingLabsLastModified']) && !empty($data['testingLabsLastModified'])) {

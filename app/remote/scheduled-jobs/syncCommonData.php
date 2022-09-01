@@ -58,6 +58,10 @@ $commonDataToSync = array(
     'province'  => array(
         'primaryKey' => 'province_id',
         'tableName' => 'province_details',
+    ), 
+    'users'  => array(
+        'primaryKey' => 'user_id',
+        'tableName' => 'user_details',
     ),
     'facilities'  => array(
         'primaryKey' => 'facility_id',

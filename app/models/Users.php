@@ -219,8 +219,10 @@ class Users
         if (is_array($columns)) {
             $columns = implode(",", $columns);
         }
-        $uQuery = "SELECT $columns FROM " . $this->table . " where user_id='$userId'";
-        return $this->db->rawQueryOne($uQuery);
+        $uQuery = "SELECT $columns FROM " . $this->table . " where user_id= ?";
+        $user =  $this->db->rawQueryOne($uQuery, array($userId));
+        error_log($this->db->getLastQuery());
+        return $user;
     }
 
     public function getAllUsers($facilityMap = null, $status = null, $type = null)
