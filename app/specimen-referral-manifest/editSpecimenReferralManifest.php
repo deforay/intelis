@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "Edit Specimen Referral Manifest";
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
@@ -286,11 +286,13 @@ $global = $general->getGlobalConfig();
 	$(document).ready(function() {
 
 		$('#daterange').daterangepicker({
-                locale: {
-                    cancelLabel: 'Clear',
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: 'Clear',
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: true,
 				startDate: moment().subtract(29, 'days'),
 				endDate: moment(),
 				maxDate: moment(),

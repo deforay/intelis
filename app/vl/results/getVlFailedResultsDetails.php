@@ -178,7 +178,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $sWhere = implode(' AND ', $sWhere);
     }
 
-$sQuery = $sQuery . ' where ' . $sWhere;
+$sQuery = $sQuery . ' WHERE ' . $sWhere;
 
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

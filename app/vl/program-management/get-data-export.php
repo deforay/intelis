@@ -298,20 +298,34 @@ if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) !=
           $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
      }
 }
+if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDatetime']) != '') {
+     $sRequestCreatedDatetime = '';
+     $eRequestCreatedDatetime = '';
 
+     $date = explode("to", $_POST['requestCreatedDatetime']);
+     if (isset($date[0]) && trim($date[0]) != "") {
+          $sRequestCreatedDatetime = $general->isoDateFormat(trim($date[0]));
+     }
+     if (isset($date[1]) && trim($date[1]) != "") {
+          $eRequestCreatedDatetime = $general->isoDateFormat(trim($date[1]));
+     }
 
-//$cWhere = '';
-if ($_SESSION['instanceType'] == 'remoteuser') {
-     if (!empty($facilityMap)) {
-          $sWhere[] =  "  vl.facility_id IN (" . $facilityMap . ")   ";
-          //$cWhere = " AND vl.facility_id IN (" . $facilityMap . ")  ";
+     if (trim($sRequestCreatedDatetime) == trim($eRequestCreatedDatetime)) {
+          $sWhere[] =  '  DATE(vl.request_created_datetime) like "' . $sRequestCreatedDatetime . '"';
+     } else {
+          $sWhere[] =  '  DATE(vl.request_created_datetime) >= "' . $sRequestCreatedDatetime . '" AND DATE(vl.request_created_datetime) <= "' . $eRequestCreatedDatetime . '"';
      }
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+
+
+if ($_SESSION['instanceType'] == 'remoteuser' && !empty($facilityMap)) {
+     $sWhere[] =  "  vl.facility_id IN (" . $facilityMap . ")   ";
+}
+if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' where ' . $sWhere;
+$sQuery = $sQuery . ' WHERE ' . $sWhere;
 
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

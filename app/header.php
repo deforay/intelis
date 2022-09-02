@@ -152,7 +152,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 
 ?>
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="<?= $_SESSION['APP_LOCALE']; ?>">
 
 <head>
 	<meta charset="utf-8" />

@@ -51,16 +51,16 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 				<div class="box">
 					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 							</td>
-							<td><b><?php echo _("Sample Received at Lab Date"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Sample Received at Lab Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _('Select Received Date'); ?>" style="width:220px;background:#fff;" />
 							</td>
 
-							<td><b><?php echo _("Sample Type"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 							<td>
 								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -75,25 +75,25 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Facility Name"); ?> :</b></td>
+							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Testing Lab"); ?> :</b></td>
+							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control daterangefield" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Viral Load"); ?> &nbsp;:</b></td>
+							<td><strong><?php echo _("Viral Load"); ?> &nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -104,34 +104,17 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									</option>
 								</select>
 							</td>
-							<td><b><?php echo _("Last Print Date"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Last Print Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control daterangefield" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<td colspan="2">
-								<div class="col-md-12">
-									<div class="col-md-6">
-										<b><?php echo _("Gender"); ?>&nbsp;:</b>
-										<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value)">
-											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option value="male"><?php echo _("Male"); ?></option>
-											<option value="female"><?php echo _("Female"); ?></option>
-											<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
-										</select>
-									</div>
-									<div class="col-md-6">
-										<b style=" position: absolute; "><?php echo _("Community Sample"); ?>&nbsp;:</b>
-										<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;margin-top: 20px;">
-											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option value="yes"><?php echo _("Yes"); ?></option>
-											<option value="no"><?php echo _("No"); ?></option>
-										</select>
-									</div>
-								</div>
+							<td><strong><?php echo _("Request Creation Date"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="requestCreatedDatetime" name="requestCreatedDatetime" class="form-control daterangefield" placeholder="<?php echo _('Select Request Created Datetime'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Status"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
 									<option value=""><?php echo _("All Status"); ?></option>
@@ -142,7 +125,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
-							<td><b><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -153,7 +136,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							<td colspan="2">
 								<div class="col-md-12">
 									<div class="col-md-6">
-										<b><?php echo _("Pregnant"); ?>&nbsp;:</b>
+										<strong><?php echo _("Pregnant"); ?>&nbsp;:</strong>
 										<select name="patientPregnant" id="patientPregnant" class="form-control" title="<?php echo _('Please choose pregnant option'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<option value="yes"><?php echo _("Yes"); ?></option>
@@ -161,7 +144,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 										</select>
 									</div>
 									<div class="col-md-6">
-										<b><?php echo _("Breastfeeding"); ?>&nbsp;:</b>
+										<strong><?php echo _("Breastfeeding"); ?>&nbsp;:</strong>
 										<select name="breastFeeding" id="breastFeeding" class="form-control" title="<?php echo _('Please choose pregnant option'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<option value="yes"><?php echo _("Yes"); ?></option>
@@ -172,7 +155,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -185,7 +168,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									?>
 								</select>
 							</td>
-							<td><b><?php echo _("Funding Sources"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -196,7 +179,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									<?php } ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Implementing Partners"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -206,6 +189,28 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
 									<?php } ?>
 								</select>
+							</td>
+						</tr>
+						<tr>
+
+							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+							<td><select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value)">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<option value="male"><?php echo _("Male"); ?></option>
+									<option value="female"><?php echo _("Female"); ?></option>
+									<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
+								</select>
+							</td>
+
+
+							<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
+
 							</td>
 						</tr>
 						<tr>
@@ -346,6 +351,8 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
+				showDropdowns: true,
+				alwaysShowCalendars: true,
 				startDate: moment().subtract(29, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
@@ -372,9 +379,8 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		});
 
 		$('#printDate').val("");
-		$('#sampleCollectionDate').val("");
+		$('#sampleCollectionDate, #requestCreatedDatetime, #sampleReceivedDate').val("");
 		//$('#sampleTestDate').val("");
-		$('#sampleReceivedDate').val("");
 
 		loadVlRequestData();
 
@@ -484,6 +490,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 				aoData.push({
 					"name": "sampleCollectionDate",
 					"value": $("#sampleCollectionDate").val()
+				});
+				aoData.push({
+					"name": "requestCreatedDatetime",
+					"value": $("#requestCreatedDatetime").val()
 				});
 				aoData.push({
 					"name": "sampleTestDate",

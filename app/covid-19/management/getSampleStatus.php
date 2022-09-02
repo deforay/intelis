@@ -103,7 +103,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $tQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
@@ -152,7 +152,7 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
 }
 // echo $vlSuppressionQuery;die;
@@ -195,7 +195,7 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tatSampleQuery .= " GROUP BY monthDate";
@@ -243,7 +243,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $testReasonQuery .= ' where '. implode(" AND ", $sWhere);
 }
 $testReasonQuery .= " GROUP BY tr.test_reason_name";

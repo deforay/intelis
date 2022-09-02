@@ -208,7 +208,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },
-				startDate: moment().subtract(29, 'days'),
+				showDropdowns: true,
+alwaysShowCalendars: true,
+startDate: moment().subtract(29, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

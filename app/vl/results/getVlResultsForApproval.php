@@ -149,7 +149,7 @@ if ($userType == 'remoteuser') {
 }
 $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
 
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = ' WHERE ' . implode(" AND ", $sWhere);
 }
 

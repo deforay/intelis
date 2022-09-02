@@ -1,6 +1,6 @@
 <?php
 $title = _("VL Control Report");
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 $sQuery = "SELECT * FROM r_sample_controls where r_sample_control_name!='s'";
 $sResult = $db->rawQuery($sQuery);
@@ -18,10 +18,10 @@ $sResult = $db->rawQuery($sQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("VL Control Report");?></h1>
+    <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("VL Control Report"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
-      <li class="active"><?php echo _("VL Control Report");?></li>
+      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+      <li class="active"><?php echo _("VL Control Report"); ?></li>
     </ol>
   </section>
   <!-- Main content -->
@@ -31,12 +31,12 @@ $sResult = $db->rawQuery($sQuery);
         <div class="box">
           <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:80%;">
             <tr>
-              <td><b><?php echo _("Sample Tested Date");?>&nbsp;</b><span class="mandatory">*</span></td>
-              <td><input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Tested Date');?>" readonly style="width:220px;background:#fff;" /></td>
-              <td><b><?php echo _("Control Type");?>&nbsp;</b><span class="mandatory">*</span></td>
+              <td><b><?php echo _("Sample Tested Date"); ?>&nbsp;</b><span class="mandatory">*</span></td>
+              <td><input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="width:220px;background:#fff;" /></td>
+              <td><b><?php echo _("Control Type"); ?>&nbsp;</b><span class="mandatory">*</span></td>
               <td>
-                <select id="cType" name="cType" class="form-control" title="<?php echo _('Choose control type');?>">
-                  <option value=""><?php echo _("-- Select --");?></option>
+                <select id="cType" name="cType" class="form-control" title="<?php echo _('Choose control type'); ?>">
+                  <option value=""><?php echo _("-- Select --"); ?></option>
                   <?php
                   foreach ($sResult as $control) {
                   ?>
@@ -48,8 +48,8 @@ $sResult = $db->rawQuery($sQuery);
               </td>
             </tr>
             <tr>
-              <td colspan="6">&nbsp;<input type="button" onclick="loadControlChart();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+              <td colspan="6">&nbsp;<input type="button" onclick="loadControlChart();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
               </td>
             </tr>
           </table>
@@ -82,21 +82,23 @@ $sResult = $db->rawQuery($sQuery);
           format: 'DD-MMM-YYYY',
           separator: ' to ',
         },
+        showDropdowns: true,
+        alwaysShowCalendars: true,
         startDate: moment().subtract(29, 'days'),
         endDate: moment(),
         maxDate: moment(),
         ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-				}
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+          'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+          'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+          'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+        }
       },
       function(start, end) {
         startDate = start.format('YYYY-MM-DD');
@@ -118,7 +120,7 @@ $sResult = $db->rawQuery($sQuery);
         });
       $.unblockUI();
     } else {
-      alert("<?php echo _("Please choose Sample Test Date Range and Control Type to generate the report");?>");
+      alert("<?php echo _("Please choose Sample Test Date Range and Control Type to generate the report"); ?>");
     }
   }
 </script>

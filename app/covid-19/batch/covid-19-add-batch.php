@@ -200,6 +200,8 @@ foreach ($testPlatformResult as $machine) {
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },
+                showDropdowns: true,
+                alwaysShowCalendars: true,
                 startDate: moment().subtract(29, 'days'),
                 endDate: moment(),
                 maxDate: moment(),

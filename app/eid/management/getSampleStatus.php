@@ -108,7 +108,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
 	$tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
@@ -155,7 +155,7 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
 	$vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
@@ -196,7 +196,7 @@ if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
 	$tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tatSampleQuery .= " GROUP BY monthDate";

@@ -169,7 +169,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' AND' . implode(" AND ", $sWhere);
 }
 else
