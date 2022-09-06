@@ -100,7 +100,7 @@ try {
         vl.consent_to_receive_sms                            as receiveSms,
         vl.sample_type                                       as specimenType,
         vl.arv_adherance_percentage                          as arvAdherence,
-        vl.reason_for_vl_testing                             as stViralTesting,
+        vl.reason_for_vl_testing                             as reasonForVLTesting,
         vl.community_sample                                  as communitySample,
         vl.last_vl_date_routine                              as rmTestingLastVLDate,
         vl.last_vl_result_routine                            as rmTestingVlValue,

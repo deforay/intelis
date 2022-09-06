@@ -85,7 +85,7 @@ $rch = '';
 $allChange = array();
 if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '' && $vlQueryInfo['reason_for_vl_result_changes'] != null) {
 	$allChange = json_decode($vlQueryInfo['reason_for_vl_result_changes'], true);
-	if (count($allChange) > 0) {
+	if (!empty($allChange)) {
 		$rch .= '<h4>Result Changes History</h4>';
 		$rch .= '<table style="width:100%;">';
 		$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
@@ -520,7 +520,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 																	$display = 'none';
 																}
 																?>
-																<input type="radio" class="isRequired" id="rmTesting" name="stViralTesting" value="routine" title="Please select indication/reason for testing" <?php echo $checked; ?> onclick="showTesting('rmTesting');">
+																<input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="routine" title="Please select indication/reason for testing" <?php echo $checked; ?> onclick="showTesting('rmTesting');">
 																<strong>Routine Monitoring</strong>
 															</label>
 														</div>
@@ -529,15 +529,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 											<div class="row rmTesting hideTestData" style="display:<?php echo $display; ?>;">
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label">Date of last viral load test</label>
+													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
-													<label for="rmTestingVlValue" class="col-lg-3 control-label">VL Value</label>
+													<label for="rmTestingVlValue" class="col-lg-3 control-label">VL Result</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_routine']; ?>" />
+														<input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_routine']; ?>" />
 														(copies/ml)
 													</div>
 												</div>
@@ -558,7 +558,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 																	$display = 'none';
 																}
 																?>
-																<input type="radio" class="isRequired" id="repeatTesting" name="stViralTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling (Reason for testing)" <?php echo $checked; ?> onclick="showTesting('repeatTesting');">
+																<input type="radio" class="isRequired" id="repeatTesting" name="reasonForVLTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling (Reason for testing)" <?php echo $checked; ?> onclick="showTesting('repeatTesting');">
 																<strong>Repeat VL test after suspected treatment failure adherence counselling </strong>
 															</label>
 														</div>
@@ -567,15 +567,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 											<div class="row repeatTesting hideTestData" style="display: <?php echo $display; ?>;">
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label">Date of last viral load test</label>
+													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
-													<label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Value</label>
+													<label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_failure_ac']; ?>" />
+														<input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_failure_ac']; ?>" />
 														(copies/ml)
 													</div>
 												</div>
@@ -596,7 +596,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 																	$display = 'none';
 																}
 																?>
-																<input type="radio" class="isRequired" id="suspendTreatment" name="stViralTesting" value="suspect" title="Suspect Treatment Failure (Reason for testing)" <?php echo $checked; ?> onclick="showTesting('suspendTreatment');">
+																<input type="radio" class="isRequired" id="suspendTreatment" name="reasonForVLTesting" value="suspect" title="Suspect Treatment Failure (Reason for testing)" <?php echo $checked; ?> onclick="showTesting('suspendTreatment');">
 																<strong>Suspect Treatment Failure</strong>
 															</label>
 														</div>
@@ -605,15 +605,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 											<div class="row suspendTreatment hideTestData" style="display: <?php echo $display; ?>;">
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label">Date of last viral load test</label>
+													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
-													<label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Value</label>
+													<label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Result</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_failure']; ?>" />
+														<input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_failure']; ?>" />
 														(copies/ml)
 													</div>
 												</div>
@@ -865,7 +865,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 											</div>
-											<?php if (count($allChange) > 0) { ?>
+											<?php if (!empty($allChange)) { ?>
 												<div class="row">
 													<div class="col-md-12"><?php echo $rch; ?></div>
 												</div>

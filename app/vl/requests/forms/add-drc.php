@@ -494,13 +494,13 @@ $sFormat = '';
 											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat </label></td>
 											<td>
 												<input type="text" class="vlResult form-control forceNumeric other-failed-results" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
-												<input type="checkbox" class="specialResults other-failed-results" id="vlLt20" name="vlLt20" value="yes" title="Please check VL value">
+												<input type="checkbox" class="specialResults other-failed-results" id="vlLt20" name="vlLt20" value="yes" title="Please check VL Result">
 												< 20<br>
-													<input type="checkbox" class="specialResults other-failed-results" id="vlLt40" name="vlLt40" value="yes" title="Please check VL value">
+													<input type="checkbox" class="specialResults other-failed-results" id="vlLt40" name="vlLt40" value="yes" title="Please check VL Result">
 													< 40<br>
-														<input type="checkbox" class="specialResults other-failed-results" id="vlLt400" name="vlLt400" value="yes" title="Please check VL value">
+														<input type="checkbox" class="specialResults other-failed-results" id="vlLt400" name="vlLt400" value="yes" title="Please check VL Result">
 														< 400<br>
-															<input type="checkbox" class="specialResults other-failed-results" id="vlTND" name="vlTND" value="yes" title="Please check VL value"> Target Not Detected / Non Détecté<br>
+															<input type="checkbox" class="specialResults other-failed-results" id="vlTND" name="vlTND" value="yes" title="Please check VL Result"> Target Not Detected / Non Détecté<br>
 															<input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed"> Failed<br>
 											</td>
 											<td style="text-align:center;"><label for="vlLog">Log </label></td>

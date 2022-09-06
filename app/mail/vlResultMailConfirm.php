@@ -165,7 +165,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
                   $field = 'consent_to_receive_sms';
                } elseif ($filedGroup[$f] == "Patient Mobile Number") {
                   $field = 'patient_mobile_number';
-               } elseif ($filedGroup[$f] == "Date Of Last Viral Load Test") {
+               } elseif ($filedGroup[$f] == "Date of Last VL Test") {
                   $field = 'last_viral_load_date';
                } elseif ($filedGroup[$f] == "Result Of Last Viral Load") {
                   $field = 'last_viral_load_result';

@@ -7498,7 +7498,7 @@ msgid "Patient Mobile Number"
 msgstr "ເບີໂທມືຖືຄົນເຈັບ"
 
 #: vl/result-mail/editTestResultEmailConfig.php:101
-msgid "Date Of Last Viral Load Test"
+msgid "Date of Last VL Test"
 msgstr "ວັນທີຂອງການທົດສອບViral Load ຄັ້ງສຸດທ້າຍ"
 
 #: vl/result-mail/editTestResultEmailConfig.php:102
