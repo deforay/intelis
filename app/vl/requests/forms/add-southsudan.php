@@ -1169,6 +1169,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                hivDetectionChange();
           }
      });
+     
      $('#hivDetection').on("change", function() {
           if (this.value == null || this.value == '' || this.value == undefined) {
                return false;

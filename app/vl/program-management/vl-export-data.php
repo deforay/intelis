@@ -347,13 +347,13 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		});
 		$('.daterangefield').daterangepicker({
 				locale: {
-					cancelLabel: 'Clear',
+					cancelLabel: "<?= _("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
 				showDropdowns: true,
 				alwaysShowCalendars: true,
-				startDate: moment().subtract(29, 'days'),
+				startDate: moment().subtract(28, 'days'),	
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -377,6 +377,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		$('.daterangefield').on('cancel.daterangepicker', function(ev, picker) {
 			$(this).val('');
 		});
+
 
 		$('#printDate').val("");
 		$('#sampleCollectionDate, #requestCreatedDatetime, #sampleReceivedDate').val("");

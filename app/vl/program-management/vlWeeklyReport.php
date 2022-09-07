@@ -220,7 +220,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
     });
     $('#sampleTestDate,#sampleCollectionDate,#femaleSampleTestDate,#femaleSampleCollectionDate').daterangepicker({
         locale: {
-          cancelLabel: 'Clear',
+          cancelLabel: "<?= _("Clear"); ?>",
           format: 'DD-MMM-YYYY',
           separator: ' to ',
         },

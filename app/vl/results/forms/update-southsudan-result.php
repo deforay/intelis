@@ -934,6 +934,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#rejectionDate').removeClass('isRequired');
 			$('#rejectionReason').val('');
 			$(".review-approve-span").hide();
+			$("#hivDetection, #noResult").trigger('change');
 		}
 	});
 	$("#noResult").on("change", function() {
@@ -1031,6 +1032,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reasonForFailure').removeClass('isRequired');
 		}
 	});
+
 	$('#hivDetection').on("change", function() {
 		if (this.value == null || this.value == '' || this.value == undefined) {
 			return false;
@@ -1049,6 +1051,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$(".vlResult, .vlLog").show();
 			$('#vlResult').addClass('isRequired');
 			$("#noResult").trigger("change");
+			$('#vlResult').addClass('isRequired');
 		}
 	});
 
