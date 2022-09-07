@@ -708,7 +708,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-4">
 													<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
 													<div class="col-lg-7">
-														<select name="testingPlatform" id="testingPlatform" class="form-control result-optional labSection" title="Please choose VL Testing Platform" onchange="hivDetectionChange()">
+														<select name="testingPlatform" id="testingPlatform" class="form-control result-optional labSection" title="Please choose VL Testing Platform">
 															<option value="">-- Select --</option>
 															<?php foreach ($importResult as $mName) { ?>
 																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
@@ -1275,6 +1275,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	});
 	$("#noResult").on("change", function() {
+
+		hivDetectionChange();
+
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult, .hivDetection').css('display', 'none');
@@ -1308,7 +1311,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
-			$(".hivDetection").trigger("change");
+			//$(".hivDetection").trigger("change");
 		} else {
 			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").removeClass("isRequired");
@@ -1325,7 +1328,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedOn').removeClass('isRequired');
 			$('#approvedBy').removeClass('isRequired');
 			$('#approvedOnDateTime').removeClass('isRequired');
-			$(".hivDetection").trigger("change");
+			//$(".hivDetection").trigger("change");
 		}
 	});
 
@@ -1367,11 +1370,14 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	});
 
-	function hivDetectionChange() {
-
+	$('#testingPlatform').on("change", function() {
 		$(".vlResult, .vlLog").show();
 		$('#vlResult, #noResult').addClass('isRequired');
 		$("#noResult").val("");
+		hivDetectionChange();
+	});
+
+	function hivDetectionChange() {
 
 		var text = $('#testingPlatform').val();
 		var str1 = text.split("##");

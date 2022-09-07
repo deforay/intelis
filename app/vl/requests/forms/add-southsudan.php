@@ -1114,7 +1114,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".review-approve-span").hide();
           }
      });
-     $("#noResult").change(function() {
+     $("#noResult").on("change", function() {
+
+          hivDetectionChange();
+
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
                $('.vlResult, .hivDetection').css('display', 'none');
@@ -1122,7 +1125,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#sampleTestingDateAtLab, #vlResult, .hivDetection").val("");
                $('.specialResults').prop('checked', false);
                $(".result-fields").val("");
-               $(".result-fields, .specialResults, .hivDetection").attr("disabled", true);
+               $(".result-fields, .specialResults").attr("disabled", true);
                $(".result-fields, .specialResults").removeClass("isRequired");
                $(".result-span").hide();
                $(".review-approve-span").show();
@@ -1133,6 +1136,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#approvedBy').addClass('isRequired');
                $('#approvedOnDateTime').addClass('isRequired');
                $(".result-optional").removeClass("isRequired");
+               $("#reasonForFailure").removeClass('isRequired');
           } else if ($(this).val() == 'no') {
                $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
@@ -1147,15 +1151,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').addClass('isRequired');
                $('#approvedBy').addClass('isRequired');
                $('#approvedOnDateTime').addClass('isRequired');
-               $(".hivDetection").trigger("change");
+               //$(".hivDetection").trigger("change");
           } else {
                $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").removeClass("isRequired");
                $(".result-optional").removeClass("isRequired");
                $(".result-span").show();
-               $(".result-fields").val("");
-               $('.vlResult').css('display', 'block');
-               $('.vlLog').css('display', 'block');
+               $('.vlResult,.vlLog').css('display', 'block');
                $('.rejectionReason').hide();
                $(".result-span").hide();
                $(".review-approve-span").hide();
@@ -1166,10 +1168,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').removeClass('isRequired');
                $('#approvedBy').removeClass('isRequired');
                $('#approvedOnDateTime').removeClass('isRequired');
-               $(".hivDetection").trigger("change");
+               //$(".hivDetection").trigger("change");
           }
      });
-     
+
      $('#hivDetection').on("change", function() {
           if (this.value == null || this.value == '' || this.value == undefined) {
                return false;
@@ -1236,11 +1238,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function hivDetectionChange() {
+     $('#testingPlatform').on("change", function() {
+          $(".vlResult, .vlLog").show();
+          $('#vlResult, #noResult').addClass('isRequired');
+          $("#noResult").val("");
+          hivDetectionChange();
+     });
 
-		$(".vlResult, .vlLog").show();
-		$('#vlResult, #noResult').addClass('isRequired');
-		$("#noResult").val("");
+     function hivDetectionChange() {
 
           var text = $('#testingPlatform').val();
           var str1 = text.split("##");
@@ -1250,7 +1255,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.hivDetection').show();
           } else {
                $('.hivDetection').hide();
-			$("#hivDetection").val("");
+               $("#hivDetection").val("");
           }
      }
 

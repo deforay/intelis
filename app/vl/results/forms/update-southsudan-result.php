@@ -680,7 +680,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-md-4">
 														<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform <span class="mandatory">*</span> </label>
 														<div class="col-lg-7">
-															<select name="testingPlatform" id="testingPlatform" class="isRequired result-optional form-control labSection" title="Please choose the VL Testing Platform" onchange="hivDetectionChange()">
+															<select name="testingPlatform" id="testingPlatform" class="isRequired result-optional form-control labSection" title="Please choose the VL Testing Platform">
 																<option value="">-- Select --</option>
 																<?php foreach ($importResult as $mName) { ?>
 																	<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
@@ -938,12 +938,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	});
 	$("#noResult").on("change", function() {
-		if ($(this).val() == null || $(this).val() == '' || $(this).val() == undefined) {
-			return false;
-		}
+
+		hivDetectionChange();
+
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
-			$('.vlResult').css('display', 'none');
+			$('.vlResult, .hivDetection').css('display', 'none');
 			$('.vlLog').css('display', 'none');
 			$("#sampleTestingDateAtLab, #vlResult, .hivDetection").val("");
 			$('.specialResults').prop('checked', false);
@@ -959,13 +959,13 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
+			$("#reasonForFailure").removeClass('isRequired');
 		} else if ($(this).val() == 'no') {
 			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
 			$(".result-span").show();
 			$(".review-approve-span").show();
-			$('.vlResult').css('display', 'block');
-			$('.vlLog').css('display', 'block');
+			$('.vlResult,.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionDate').removeClass('isRequired');
@@ -974,7 +974,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
-			$(".hivDetection").trigger("change");
+			//$(".hivDetection").trigger("change");
 		} else {
 			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").removeClass("isRequired");
@@ -991,7 +991,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedOn').removeClass('isRequired');
 			$('#approvedBy').removeClass('isRequired');
 			$('#approvedOnDateTime').removeClass('isRequired');
-			$(".hivDetection").trigger("change");
+			//$(".hivDetection").trigger("change");
 		}
 	});
 
@@ -1053,11 +1053,14 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	});
 
-	function hivDetectionChange() {
-
+	$('#testingPlatform').on("change", function() {
 		$(".vlResult, .vlLog").show();
 		$('#vlResult, #noResult').addClass('isRequired');
 		$("#noResult").val("");
+		hivDetectionChange();
+	});
+
+	function hivDetectionChange() {
 
 		var text = $('#testingPlatform').val();
 		var str1 = text.split("##");
