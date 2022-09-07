@@ -80,7 +80,7 @@ foreach ($commonResult as $key => $result) {
     $commonResultsList[$key]['show'] = ucwords($result);
 }
 /* Lab Technician Details */
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+$facilityMap = $facilitiesDb->getUserFacilityMap($user['user_id']);
 $userResult = $userDb->getActiveUsers($facilityMap);
 $labTechniciansList = array();
 foreach ($userResult as $row) {

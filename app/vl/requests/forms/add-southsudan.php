@@ -1241,7 +1241,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      $('#testingPlatform').on("change", function() {
           $(".vlResult, .vlLog").show();
           $('#vlResult, #noResult').addClass('isRequired');
-          $("#noResult").val("");
+          //$("#noResult").val("");
+		$("#noResult").trigger("change");
           hivDetectionChange();
      });
 
