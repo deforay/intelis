@@ -1041,8 +1041,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('.specialResults').prop('checked', false).removeAttr('checked');
 			$('#vlResult').attr('disabled', false);
 			$('#vlLog').attr('disabled', false);
-			$("#vlResult").val('').css('pointer-events', 'none');
-			$("#vlLog").val('').css('pointer-events', 'none');
+			$("#vlResult,#vlLog").val('');
 			$(".vlResult, .vlLog").hide();
 			$("#reasonForFailure").removeClass('isRequired');
 			$('#vlResult').removeClass('isRequired');

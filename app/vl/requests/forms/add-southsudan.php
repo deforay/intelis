@@ -1178,8 +1178,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.specialResults').prop('checked', false).removeAttr('checked');
                $('#vlResult').attr('disabled', false);
                $('#vlLog').attr('disabled', false);
-               $("#vlResult").val('').css('pointer-events', 'none');
-               $("#vlLog").val('').css('pointer-events', 'none');
+               $("#vlResult,#vlLog").val('');
                $(".vlResult, .vlLog").hide();
                $("#reasonForFailure").removeClass('isRequired');
                $('#vlResult').removeClass('isRequired');
