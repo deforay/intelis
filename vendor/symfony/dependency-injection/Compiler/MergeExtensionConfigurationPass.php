@@ -101,7 +101,7 @@ class MergeExtensionConfigurationPass implements CompilerPassInterface
  */
 class MergeExtensionConfigurationParameterBag extends EnvPlaceholderParameterBag
 {
-    private array $processedEnvPlaceholders;
+    private $processedEnvPlaceholders;
 
     public function __construct(parent $parameterBag)
     {
@@ -140,7 +140,7 @@ class MergeExtensionConfigurationParameterBag extends EnvPlaceholderParameterBag
 
     public function getUnusedEnvPlaceholders(): array
     {
-        return !isset($this->processedEnvPlaceholders) ? [] : array_diff_key(parent::getEnvPlaceholders(), $this->processedEnvPlaceholders);
+        return null === $this->processedEnvPlaceholders ? [] : array_diff_key(parent::getEnvPlaceholders(), $this->processedEnvPlaceholders);
     }
 }
 
@@ -151,7 +151,7 @@ class MergeExtensionConfigurationParameterBag extends EnvPlaceholderParameterBag
  */
 class MergeExtensionConfigurationContainerBuilder extends ContainerBuilder
 {
-    private string $extensionClass;
+    private $extensionClass;
 
     public function __construct(ExtensionInterface $extension, ParameterBagInterface $parameterBag = null)
     {
@@ -163,7 +163,7 @@ class MergeExtensionConfigurationContainerBuilder extends ContainerBuilder
     /**
      * {@inheritdoc}
      */
-    public function addCompilerPass(CompilerPassInterface $pass, string $type = PassConfig::TYPE_BEFORE_OPTIMIZATION, int $priority = 0): static
+    public function addCompilerPass(CompilerPassInterface $pass, string $type = PassConfig::TYPE_BEFORE_OPTIMIZATION, int $priority = 0): self
     {
         throw new LogicException(sprintf('You cannot add compiler pass "%s" from extension "%s". Compiler passes must be registered before the container is compiled.', get_debug_type($pass), $this->extensionClass));
     }
@@ -187,7 +187,7 @@ class MergeExtensionConfigurationContainerBuilder extends ContainerBuilder
     /**
      * {@inheritdoc}
      */
-    public function resolveEnvPlaceholders(mixed $value, string|bool $format = null, array &$usedEnvs = null): mixed
+    public function resolveEnvPlaceholders($value, $format = null, array &$usedEnvs = null)
     {
         if (true !== $format || !\is_string($value)) {
             return parent::resolveEnvPlaceholders($value, $format, $usedEnvs);

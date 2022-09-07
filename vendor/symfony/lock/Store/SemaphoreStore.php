@@ -107,7 +107,7 @@ class SemaphoreStore implements BlockingStoreInterface
     /**
      * {@inheritdoc}
      */
-    public function exists(Key $key): bool
+    public function exists(Key $key)
     {
         return $key->hasState(__CLASS__);
     }

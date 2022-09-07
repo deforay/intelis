@@ -49,11 +49,11 @@ class MongoDbStore implements PersistingStoreInterface
 {
     use ExpiringStoreTrait;
 
-    private Collection $collection;
-    private Client $client;
-    private string $uri;
-    private array $options;
-    private float $initialTtl;
+    private $collection;
+    private $client;
+    private $uri;
+    private $options;
+    private $initialTtl;
 
     /**
      * @param Collection|Client|string $mongo      An instance of a Collection or Client or URI @see https://docs.mongodb.com/manual/reference/connection-string/
@@ -88,7 +88,7 @@ class MongoDbStore implements PersistingStoreInterface
      * readPreference is primary for all queries.
      * @see https://docs.mongodb.com/manual/applications/replication/
      */
-    public function __construct(Collection|Client|string $mongo, array $options = [], float $initialTtl = 300.0)
+    public function __construct($mongo, array $options = [], float $initialTtl = 300.0)
     {
         $this->options = array_merge([
             'gcProbablity' => 0.001,
@@ -104,8 +104,10 @@ class MongoDbStore implements PersistingStoreInterface
             $this->collection = $mongo;
         } elseif ($mongo instanceof Client) {
             $this->client = $mongo;
-        } else {
+        } elseif (\is_string($mongo)) {
             $this->uri = $this->skimUri($mongo);
+        } else {
+            throw new InvalidArgumentException(sprintf('"%s()" requires "%s" or "%s" or URI as first argument, "%s" given.', __METHOD__, Collection::class, Client::class, get_debug_type($mongo)));
         }
 
         if (!($mongo instanceof Collection)) {
@@ -322,11 +324,13 @@ class MongoDbStore implements PersistingStoreInterface
 
     private function getCollection(): Collection
     {
-        if (isset($this->collection)) {
+        if (null !== $this->collection) {
             return $this->collection;
         }
 
-        $this->client ??= new Client($this->uri, $this->options['uriOptions'], $this->options['driverOptions']);
+        if (null === $this->client) {
+            $this->client = new Client($this->uri, $this->options['uriOptions'], $this->options['driverOptions']);
+        }
 
         $this->collection = $this->client->selectCollection(
             $this->options['database'],

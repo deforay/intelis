@@ -27,7 +27,7 @@ class ZookeeperStore implements PersistingStoreInterface
 {
     use ExpiringStoreTrait;
 
-    private \Zookeeper $zookeeper;
+    private $zookeeper;
 
     public function __construct(\Zookeeper $zookeeper)
     {
@@ -45,15 +45,11 @@ class ZookeeperStore implements PersistingStoreInterface
         }
 
         $host = $params['host'] ?? '';
-        $hosts = explode(',', $host);
-
-        foreach ($hosts as $index => $host) {
-            if (isset($params['port'])) {
-                $hosts[$index] = $host.':'.$params['port'];
-            }
+        if (isset($params['port'])) {
+            $host .= ':'.$params['port'];
         }
 
-        return new \Zookeeper(implode(',', $hosts));
+        return new \Zookeeper($host);
     }
 
     /**
@@ -100,7 +96,7 @@ class ZookeeperStore implements PersistingStoreInterface
         $resource = $this->getKeyResource($key);
         try {
             return $this->zookeeper->get($resource) === $this->getUniqueToken($key);
-        } catch (\ZookeeperException) {
+        } catch (\ZookeeperException $ex) {
             return false;
         }
     }

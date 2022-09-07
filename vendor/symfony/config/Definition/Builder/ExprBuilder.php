@@ -35,7 +35,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function always(\Closure $then = null): static
+    public function always(\Closure $then = null)
     {
         $this->ifPart = function () { return true; };
 
@@ -53,7 +53,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function ifTrue(\Closure $closure = null): static
+    public function ifTrue(\Closure $closure = null)
     {
         if (null === $closure) {
             $closure = function ($v) { return true === $v; };
@@ -69,7 +69,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function ifString(): static
+    public function ifString()
     {
         $this->ifPart = function ($v) { return \is_string($v); };
 
@@ -81,7 +81,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function ifNull(): static
+    public function ifNull()
     {
         $this->ifPart = function ($v) { return null === $v; };
 
@@ -93,7 +93,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function ifEmpty(): static
+    public function ifEmpty()
     {
         $this->ifPart = function ($v) { return empty($v); };
 
@@ -105,7 +105,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function ifArray(): static
+    public function ifArray()
     {
         $this->ifPart = function ($v) { return \is_array($v); };
 
@@ -117,7 +117,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function ifInArray(array $array): static
+    public function ifInArray(array $array)
     {
         $this->ifPart = function ($v) use ($array) { return \in_array($v, $array, true); };
 
@@ -129,7 +129,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function ifNotInArray(array $array): static
+    public function ifNotInArray(array $array)
     {
         $this->ifPart = function ($v) use ($array) { return !\in_array($v, $array, true); };
 
@@ -141,7 +141,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function castToArray(): static
+    public function castToArray()
     {
         $this->ifPart = function ($v) { return !\is_array($v); };
         $this->thenPart = function ($v) { return [$v]; };
@@ -154,7 +154,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function then(\Closure $closure): static
+    public function then(\Closure $closure)
     {
         $this->thenPart = $closure;
 
@@ -166,7 +166,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function thenEmptyArray(): static
+    public function thenEmptyArray()
     {
         $this->thenPart = function () { return []; };
 
@@ -182,7 +182,7 @@ class ExprBuilder
      *
      * @throws \InvalidArgumentException
      */
-    public function thenInvalid(string $message): static
+    public function thenInvalid(string $message)
     {
         $this->thenPart = function ($v) use ($message) { throw new \InvalidArgumentException(sprintf($message, json_encode($v))); };
 
@@ -196,7 +196,7 @@ class ExprBuilder
      *
      * @throws UnsetKeyException
      */
-    public function thenUnset(): static
+    public function thenUnset()
     {
         $this->thenPart = function () { throw new UnsetKeyException('Unsetting key.'); };
 
@@ -206,9 +206,11 @@ class ExprBuilder
     /**
      * Returns the related node.
      *
+     * @return NodeDefinition|ArrayNodeDefinition|VariableNodeDefinition
+     *
      * @throws \RuntimeException
      */
-    public function end(): NodeDefinition|ArrayNodeDefinition|VariableNodeDefinition
+    public function end()
     {
         if (null === $this->ifPart) {
             throw new \RuntimeException('You must specify an if part.');
@@ -224,8 +226,10 @@ class ExprBuilder
      * Builds the expressions.
      *
      * @param ExprBuilder[] $expressions An array of ExprBuilder instances to build
+     *
+     * @return array
      */
-    public static function buildExpressions(array $expressions): array
+    public static function buildExpressions(array $expressions)
     {
         foreach ($expressions as $k => $expr) {
             if ($expr instanceof self) {

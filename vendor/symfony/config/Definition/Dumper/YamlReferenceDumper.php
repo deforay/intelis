@@ -28,7 +28,7 @@ use Symfony\Component\Yaml\Inline;
  */
 class YamlReferenceDumper
 {
-    private ?string $reference = null;
+    private $reference;
 
     public function dump(ConfigurationInterface $configuration)
     {
@@ -193,7 +193,7 @@ class YamlReferenceDumper
 
     private function writeArray(array $array, int $depth)
     {
-        $isIndexed = array_is_list($array);
+        $isIndexed = array_values($array) === $array;
 
         foreach ($array as $key => $value) {
             if (\is_array($value)) {

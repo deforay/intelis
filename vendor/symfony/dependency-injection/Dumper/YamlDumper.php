@@ -37,18 +37,22 @@ use Symfony\Component\Yaml\Yaml;
  */
 class YamlDumper extends Dumper
 {
-    private YmlDumper $dumper;
+    private $dumper;
 
     /**
      * Dumps the service container as an YAML string.
+     *
+     * @return string
      */
-    public function dump(array $options = []): string
+    public function dump(array $options = [])
     {
-        if (!class_exists(YmlDumper::class)) {
+        if (!class_exists(\Symfony\Component\Yaml\Dumper::class)) {
             throw new LogicException('Unable to dump the container as the Symfony Yaml Component is not installed.');
         }
 
-        $this->dumper ??= new YmlDumper();
+        if (null === $this->dumper) {
+            $this->dumper = new YmlDumper();
+        }
 
         return $this->container->resolveEnvPlaceholders($this->addParameters()."\n".$this->addServices());
     }
@@ -57,7 +61,7 @@ class YamlDumper extends Dumper
     {
         $code = "    $id:\n";
         if ($class = $definition->getClass()) {
-            if (str_starts_with($class, '\\')) {
+            if ('\\' === substr($class, 0, 1)) {
                 $class = substr($class, 1);
             }
 
@@ -221,8 +225,12 @@ class YamlDumper extends Dumper
 
     /**
      * Dumps callable to YAML format.
+     *
+     * @param mixed $callable
+     *
+     * @return mixed
      */
-    private function dumpCallable(mixed $callable): mixed
+    private function dumpCallable($callable)
     {
         if (\is_array($callable)) {
             if ($callable[0] instanceof Reference) {
@@ -238,14 +246,16 @@ class YamlDumper extends Dumper
     /**
      * Dumps the value to YAML format.
      *
+     * @return mixed
+     *
      * @throws RuntimeException When trying to dump object or resource
      */
-    private function dumpValue(mixed $value): mixed
+    private function dumpValue($value)
     {
         if ($value instanceof ServiceClosureArgument) {
             $value = $value->getValues()[0];
 
-            return new TaggedValue('service_closure', $this->dumpValue($value));
+            return new TaggedValue('service_closure', $this->getServiceCall((string) $value, $value));
         }
         if ($value instanceof ArgumentInterface) {
             $tag = $value;

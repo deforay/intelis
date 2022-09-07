@@ -32,8 +32,9 @@ class CombinedStore implements SharedLockStoreInterface, LoggerAwareInterface
     use LoggerAwareTrait;
 
     /** @var PersistingStoreInterface[] */
-    private array $stores;
-    private StrategyInterface $strategy;
+    private $stores;
+    /** @var StrategyInterface */
+    private $strategy;
 
     /**
      * @param PersistingStoreInterface[] $stores The list of synchronized stores
@@ -189,7 +190,7 @@ class CombinedStore implements SharedLockStoreInterface, LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function exists(Key $key): bool
+    public function exists(Key $key)
     {
         $successCount = 0;
         $failureCount = 0;

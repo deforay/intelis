@@ -17,12 +17,23 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class AliasDeprecatedPublicServicesPass extends AbstractRecursivePass
 {
-    private array $aliases = [];
+    private $tagName;
+
+    private $aliases = [];
+
+    public function __construct(string $tagName = 'container.private')
+    {
+        if (0 < \func_num_args()) {
+            trigger_deprecation('symfony/dependency-injection', '5.3', 'Configuring "%s" is deprecated.', __CLASS__);
+        }
+
+        $this->tagName = $tagName;
+    }
 
     /**
      * {@inheritdoc}
      */
-    protected function processValue(mixed $value, bool $isRoot = false): mixed
+    protected function processValue($value, bool $isRoot = false)
     {
         if ($value instanceof Reference && isset($this->aliases[$id = (string) $value])) {
             return new Reference($this->aliases[$id], $value->getInvalidBehavior());
@@ -36,13 +47,13 @@ final class AliasDeprecatedPublicServicesPass extends AbstractRecursivePass
      */
     public function process(ContainerBuilder $container)
     {
-        foreach ($container->findTaggedServiceIds('container.private') as $id => $tags) {
+        foreach ($container->findTaggedServiceIds($this->tagName) as $id => $tags) {
             if (null === $package = $tags[0]['package'] ?? null) {
-                throw new InvalidArgumentException(sprintf('The "package" attribute is mandatory for the "container.private" tag on the "%s" service.', $id));
+                throw new InvalidArgumentException(sprintf('The "package" attribute is mandatory for the "%s" tag on the "%s" service.', $this->tagName, $id));
             }
 
             if (null === $version = $tags[0]['version'] ?? null) {
-                throw new InvalidArgumentException(sprintf('The "version" attribute is mandatory for the "container.private" tag on the "%s" service.', $id));
+                throw new InvalidArgumentException(sprintf('The "version" attribute is mandatory for the "%s" tag on the "%s" service.', $this->tagName, $id));
             }
 
             $definition = $container->getDefinition($id);
@@ -51,7 +62,7 @@ final class AliasDeprecatedPublicServicesPass extends AbstractRecursivePass
             }
 
             $container
-                ->setAlias($id, $aliasId = '.container.private.'.$id)
+                ->setAlias($id, $aliasId = '.'.$this->tagName.'.'.$id)
                 ->setPublic(true)
                 ->setDeprecated($package, $version, 'Accessing the "%alias_id%" service directly from the container is deprecated, use dependency injection instead.');
 

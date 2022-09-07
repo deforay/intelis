@@ -23,17 +23,14 @@ use Symfony\Component\Mime\Message;
  */
 class EnvelopeListener implements EventSubscriberInterface
 {
-    private ?Address $sender = null;
+    private $sender;
+    private $recipients;
 
     /**
-     * @var Address[]|null
-     */
-    private ?array $recipients = null;
-
-    /**
+     * @param Address|string        $sender
      * @param array<Address|string> $recipients
      */
-    public function __construct(Address|string $sender = null, array $recipients = null)
+    public function __construct($sender = null, array $recipients = null)
     {
         if (null !== $sender) {
             $this->sender = Address::create($sender);
@@ -61,7 +58,7 @@ class EnvelopeListener implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents(): array
+    public static function getSubscribedEvents()
     {
         return [
             // should be the last one to allow header changes by other listeners first

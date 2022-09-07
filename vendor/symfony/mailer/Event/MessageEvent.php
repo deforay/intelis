@@ -22,10 +22,10 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class MessageEvent extends Event
 {
-    private RawMessage $message;
-    private Envelope $envelope;
-    private string $transport;
-    private bool $queued;
+    private $message;
+    private $envelope;
+    private $transport;
+    private $queued;
 
     public function __construct(RawMessage $message, Envelope $envelope, string $transport, bool $queued = false)
     {

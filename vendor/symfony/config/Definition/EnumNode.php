@@ -20,7 +20,7 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  */
 class EnumNode extends ScalarNode
 {
-    private array $values;
+    private $values;
 
     public function __construct(?string $name, NodeInterface $parent = null, array $values = [], string $pathSeparator = BaseNode::DEFAULT_PATH_SEPARATOR)
     {
@@ -41,7 +41,7 @@ class EnumNode extends ScalarNode
     /**
      * {@inheritdoc}
      */
-    protected function finalizeValue(mixed $value): mixed
+    protected function finalizeValue($value)
     {
         $value = parent::finalizeValue($value);
 
@@ -53,5 +53,13 @@ class EnumNode extends ScalarNode
         }
 
         return $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function allowPlaceholders(): bool
+    {
+        return false;
     }
 }

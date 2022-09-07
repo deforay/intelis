@@ -23,9 +23,9 @@ use Symfony\Component\Mime\Message;
  */
 final class DelayedEnvelope extends Envelope
 {
-    private bool $senderSet = false;
-    private bool $recipientsSet = false;
-    private Message $message;
+    private $senderSet = false;
+    private $recipientsSet = false;
+    private $message;
 
     public function __construct(Message $message)
     {
@@ -52,7 +52,7 @@ final class DelayedEnvelope extends Envelope
     {
         parent::setRecipients($recipients);
 
-        $this->recipientsSet = (bool) parent::getRecipients();
+        $this->recipientsSet = parent::getRecipients();
     }
 
     /**

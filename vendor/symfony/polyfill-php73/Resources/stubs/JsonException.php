@@ -9,9 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\DependencyInjection\Attribute;
-
-#[\Attribute(\Attribute::TARGET_PARAMETER)]
-class MapDecorated
-{
+if (\PHP_VERSION_ID < 70300) {
+    class JsonException extends Exception
+    {
+    }
 }

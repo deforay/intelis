@@ -32,9 +32,9 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
     protected $container;
     protected $currentId;
 
-    private bool $processExpressions = false;
-    private ExpressionLanguage $expressionLanguage;
-    private bool $inExpression = false;
+    private $processExpressions = false;
+    private $expressionLanguage;
+    private $inExpression = false;
 
     /**
      * {@inheritdoc}
@@ -68,9 +68,11 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
     /**
      * Processes a value found in a definition tree.
      *
+     * @param mixed $value
+     *
      * @return mixed
      */
-    protected function processValue(mixed $value, bool $isRoot = false)
+    protected function processValue($value, bool $isRoot = false)
     {
         if (\is_array($value)) {
             foreach ($value as $k => $v) {
@@ -84,7 +86,7 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
         } elseif ($value instanceof ArgumentInterface) {
             $value->setValues($this->processValue($value->getValues()));
         } elseif ($value instanceof Expression && $this->processExpressions) {
-            $this->getExpressionLanguage()->compile((string) $value, ['this' => 'container', 'args' => 'args']);
+            $this->getExpressionLanguage()->compile((string) $value, ['this' => 'container']);
         } elseif ($value instanceof Definition) {
             $value->setArguments($this->processValue($value->getArguments()));
             $value->setProperties($this->processValue($value->getProperties()));
@@ -92,16 +94,7 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
 
             $changes = $value->getChanges();
             if (isset($changes['factory'])) {
-                if (\is_string($factory = $value->getFactory()) && str_starts_with($factory, '@=')) {
-                    if (!class_exists(Expression::class)) {
-                        throw new LogicException('Expressions cannot be used in service factories without the ExpressionLanguage component. Try running "composer require symfony/expression-language".');
-                    }
-                    $factory = new Expression(substr($factory, 2));
-                }
-                if (($factory = $this->processValue($factory)) instanceof Expression) {
-                    $factory = '@='.$factory;
-                }
-                $value->setFactory($factory);
+                $value->setFactory($this->processValue($value->getFactory()));
             }
             if (isset($changes['configurator'])) {
                 $value->setConfigurator($this->processValue($value->getConfigurator()));
@@ -112,19 +105,17 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
     }
 
     /**
+     * @return \ReflectionFunctionAbstract|null
+     *
      * @throws RuntimeException
      */
-    protected function getConstructor(Definition $definition, bool $required): ?\ReflectionFunctionAbstract
+    protected function getConstructor(Definition $definition, bool $required)
     {
         if ($definition->isSynthetic()) {
             return null;
         }
 
         if (\is_string($factory = $definition->getFactory())) {
-            if (str_starts_with($factory, '@=')) {
-                return new \ReflectionFunction(static function (...$args) {});
-            }
-
             if (!\function_exists($factory)) {
                 throw new RuntimeException(sprintf('Invalid service "%s": function "%s" does not exist.', $this->currentId, $factory));
             }
@@ -185,8 +176,10 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
 
     /**
      * @throws RuntimeException
+     *
+     * @return \ReflectionFunctionAbstract
      */
-    protected function getReflectionMethod(Definition $definition, string $method): \ReflectionFunctionAbstract
+    protected function getReflectionMethod(Definition $definition, string $method)
     {
         if ('__construct' === $method) {
             return $this->getConstructor($definition, true);
@@ -222,7 +215,7 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
 
     private function getExpressionLanguage(): ExpressionLanguage
     {
-        if (!isset($this->expressionLanguage)) {
+        if (null === $this->expressionLanguage) {
             if (!class_exists(ExpressionLanguage::class)) {
                 throw new LogicException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed. Try running "composer require symfony/expression-language".');
             }

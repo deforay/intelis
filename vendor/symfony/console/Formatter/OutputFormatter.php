@@ -21,9 +21,9 @@ use Symfony\Component\Console\Exception\InvalidArgumentException;
  */
 class OutputFormatter implements WrappableOutputFormatterInterface
 {
-    private bool $decorated;
-    private array $styles = [];
-    private OutputFormatterStyleStack $styleStack;
+    private $decorated;
+    private $styles = [];
+    private $styleStack;
 
     public function __clone()
     {
@@ -35,8 +35,10 @@ class OutputFormatter implements WrappableOutputFormatterInterface
 
     /**
      * Escapes "<" and ">" special chars in given text.
+     *
+     * @return string
      */
-    public static function escape(string $text): string
+    public static function escape(string $text)
     {
         $text = preg_replace('/([^\\\\]|^)([<>])/', '$1\\\\$2', $text);
 
@@ -92,7 +94,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function isDecorated(): bool
+    public function isDecorated()
     {
         return $this->decorated;
     }
@@ -108,7 +110,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function hasStyle(string $name): bool
+    public function hasStyle(string $name)
     {
         return isset($this->styles[strtolower($name)]);
     }
@@ -116,7 +118,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function getStyle(string $name): OutputFormatterStyleInterface
+    public function getStyle(string $name)
     {
         if (!$this->hasStyle($name)) {
             throw new InvalidArgumentException(sprintf('Undefined style: "%s".', $name));
@@ -128,7 +130,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function format(?string $message): ?string
+    public function format(?string $message)
     {
         return $this->formatAndWrap($message, 0);
     }
@@ -184,7 +186,10 @@ class OutputFormatter implements WrappableOutputFormatterInterface
         return strtr($output, ["\0" => '\\', '\\<' => '<', '\\>' => '>']);
     }
 
-    public function getStyleStack(): OutputFormatterStyleStack
+    /**
+     * @return OutputFormatterStyleStack
+     */
+    public function getStyleStack()
     {
         return $this->styleStack;
     }
@@ -256,7 +261,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
         $text = $prefix.preg_replace('~([^\\n]{'.$width.'})\\ *~', "\$1\n", $text);
         $text = rtrim($text, "\n").($matches[1] ?? '');
 
-        if (!$currentLineLength && '' !== $current && !str_ends_with($current, "\n")) {
+        if (!$currentLineLength && '' !== $current && "\n" !== substr($current, -1)) {
             $text = "\n".$text;
         }
 

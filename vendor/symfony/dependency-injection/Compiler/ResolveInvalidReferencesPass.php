@@ -29,9 +29,9 @@ use Symfony\Component\DependencyInjection\TypedReference;
  */
 class ResolveInvalidReferencesPass implements CompilerPassInterface
 {
-    private ContainerBuilder $container;
-    private RuntimeException $signalingException;
-    private string $currentId;
+    private $container;
+    private $signalingException;
+    private $currentId;
 
     /**
      * Process the ContainerBuilder to resolve invalid references.
@@ -46,16 +46,18 @@ class ResolveInvalidReferencesPass implements CompilerPassInterface
                 $this->processValue($definition);
             }
         } finally {
-            unset($this->container, $this->signalingException);
+            $this->container = $this->signalingException = null;
         }
     }
 
     /**
      * Processes arguments to determine invalid references.
      *
+     * @return mixed
+     *
      * @throws RuntimeException When an invalid reference is found
      */
-    private function processValue(mixed $value, int $rootLevel = 0, int $level = 0): mixed
+    private function processValue($value, int $rootLevel = 0, int $level = 0)
     {
         if ($value instanceof ServiceClosureArgument) {
             $value->setValues($this->processValue($value->getValues(), 1, 1));

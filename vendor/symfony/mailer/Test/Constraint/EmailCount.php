@@ -16,9 +16,9 @@ use Symfony\Component\Mailer\Event\MessageEvents;
 
 final class EmailCount extends Constraint
 {
-    private int $expectedValue;
-    private ?string $transport;
-    private bool $queued;
+    private $expectedValue;
+    private $transport;
+    private $queued;
 
     public function __construct(int $expectedValue, string $transport = null, bool $queued = false)
     {
