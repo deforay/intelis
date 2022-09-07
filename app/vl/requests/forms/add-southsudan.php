@@ -660,7 +660,7 @@ $sFormat = '';
                                                                            </div>
                                                                       </div>
                                                                  <?php } ?>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
@@ -1170,10 +1170,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
      $('#hivDetection').on("change", function() {
-
           if (this.value == null || this.value == '' || this.value == undefined) {
                return false;
-          } else if (this.value == 'HIV-1 Not Detected') {
+          } else if (this.value === 'HIV-1 Not Detected') {
                $("#noResult").val("no");
                $('.specialResults').prop('checked', false).removeAttr('checked');
                $('#vlResult').attr('disabled', false);
@@ -1182,9 +1181,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#vlLog").val('').css('pointer-events', 'none');
                $(".vlResult, .vlLog").hide();
                $("#reasonForFailure").removeClass('isRequired');
-          } else if (this.value == 'HIV-1 Detected') {
+               $('#vlResult').removeClass('isRequired');
+          } else if (this.value === 'HIV-1 Detected') {
                $("#noResult").val("no");
                $(".vlResult, .vlLog").show();
+               $('#vlResult').addClass('isRequired');
                $("#noResult").trigger("change");
           }
      });

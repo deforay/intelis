@@ -765,7 +765,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</div>
 													</div>
 												<?php } ?>
-												<div class="col-md-4">
+												<div class="col-md-4 vlResult">
 													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control labSection" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
@@ -1032,10 +1032,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	});
 	$('#hivDetection').on("change", function() {
-
 		if (this.value == null || this.value == '' || this.value == undefined) {
 			return false;
-		} else if (this.value == 'HIV-1 Not Detected') {
+		} else if (this.value === 'HIV-1 Not Detected') {
 			$("#noResult").val("no");
 			$('.specialResults').prop('checked', false).removeAttr('checked');
 			$('#vlResult').attr('disabled', false);
@@ -1044,9 +1043,11 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$("#vlLog").val('').css('pointer-events', 'none');
 			$(".vlResult, .vlLog").hide();
 			$("#reasonForFailure").removeClass('isRequired');
-		} else if (this.value == 'HIV-1 Detected') {
+			$('#vlResult').removeClass('isRequired');
+		} else if (this.value === 'HIV-1 Detected') {
 			$("#noResult").val("no");
 			$(".vlResult, .vlLog").show();
+			$('#vlResult').addClass('isRequired');
 			$("#noResult").trigger("change");
 		}
 	});
