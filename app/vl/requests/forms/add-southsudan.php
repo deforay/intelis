@@ -1242,7 +1242,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$(".vlResult, .vlLog").show();
 		$('#vlResult, #noResult').addClass('isRequired');
 		$("#noResult").val("");
-                    
+
           var text = $('#testingPlatform').val();
           var str1 = text.split("##");
           var str = str1[0];
@@ -1251,6 +1251,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.hivDetection').show();
           } else {
                $('.hivDetection').hide();
+			$("#hivDetection").val("");
           }
      }
 

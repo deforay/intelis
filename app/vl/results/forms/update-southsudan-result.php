@@ -1068,6 +1068,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('.hivDetection').show();
 		} else {
 			$('.hivDetection').hide();
+			$("#hivDetection").val("");
 		}
 	}
 
