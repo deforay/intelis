@@ -11,10 +11,12 @@
 
 namespace Symfony\Component\Console\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Completion\Output\BashCompletionOutput;
 use Symfony\Component\Console\Completion\Output\CompletionOutputInterface;
+use Symfony\Component\Console\Completion\Output\FishCompletionOutput;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,9 +28,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Wouter de Jong <wouter@wouterj.nl>
  */
+#[AsCommand(name: '|_complete', description: 'Internal command to provide shell completion suggestions')]
 final class CompleteCommand extends Command
 {
+    /**
+     * @deprecated since Symfony 6.1
+     */
     protected static $defaultName = '|_complete';
+
+    /**
+     * @deprecated since Symfony 6.1
+     */
     protected static $defaultDescription = 'Internal command to provide shell completion suggestions';
 
     private $completionOutputs;
@@ -41,7 +51,10 @@ final class CompleteCommand extends Command
     public function __construct(array $completionOutputs = [])
     {
         // must be set before the parent constructor, as the property value is used in configure()
-        $this->completionOutputs = $completionOutputs + ['bash' => BashCompletionOutput::class];
+        $this->completionOutputs = $completionOutputs + [
+            'bash' => BashCompletionOutput::class,
+            'fish' => FishCompletionOutput::class,
+        ];
 
         parent::__construct();
     }
@@ -172,7 +185,7 @@ final class CompleteCommand extends Command
 
         try {
             $completionInput->bind($this->getApplication()->getDefinition());
-        } catch (ExceptionInterface $e) {
+        } catch (ExceptionInterface) {
         }
 
         return $completionInput;
@@ -187,7 +200,7 @@ final class CompleteCommand extends Command
             }
 
             return $this->getApplication()->find($inputName);
-        } catch (CommandNotFoundException $e) {
+        } catch (CommandNotFoundException) {
         }
 
         return null;

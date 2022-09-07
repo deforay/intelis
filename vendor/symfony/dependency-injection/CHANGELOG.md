@@ -1,6 +1,29 @@
 CHANGELOG
 =========
 
+6.1
+---
+
+ * Add `#[MapDecorated]` attribute telling to which parameter the decorated service should be mapped in a decorator
+ * Add `#[AsDecorator]` attribute to make a service decorates another
+ * Add `$exclude` to `TaggedIterator` and `TaggedLocator` attributes
+ * Add `$exclude` to `tagged_iterator` and `tagged_locator` configurator
+ * Add an `env` function to the expression language provider
+ * Add an `Autowire` attribute to tell a parameter how to be autowired
+ * Allow using expressions as service factories
+ * Add argument type `closure` to help passing closures to services
+ * Deprecate `ReferenceSetArgumentTrait`
+ * Add `AbstractExtension` class for DI configuration/definition on a single file
+
+6.0
+---
+
+ * Remove `Definition::setPrivate()` and `Alias::setPrivate()`, use `setPublic()` instead
+ * Remove `inline()` in favor of `inline_service()` and `ref()` in favor of `service()` when using the PHP-DSL
+ * Remove `Definition::getDeprecationMessage()`, use `Definition::getDeprecation()` instead
+ * Remove `Alias::getDeprecationMessage()`, use `Alias::getDeprecation()` instead
+ * Remove the `Psr\Container\ContainerInterface` and `Symfony\Component\DependencyInjection\ContainerInterface` aliases of the `service_container` service
+
 5.4
 ---
  * Add `$defaultIndexMethod` and `$defaultPriorityMethod` to `TaggedIterator` and `TaggedLocator` attributes
