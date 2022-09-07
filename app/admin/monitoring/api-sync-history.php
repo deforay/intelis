@@ -108,7 +108,7 @@ foreach ($syncedTypeResults as $synced) {
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
 			locale: {
-				cancelLabel: 'Clear',
+				cancelLabel: "<?= _("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
 			},

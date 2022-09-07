@@ -151,7 +151,7 @@ $batResult = $db->rawQuery($batQuery);
 		});
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
 			locale: {
-				cancelLabel: 'Clear',
+				cancelLabel: "<?= _("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
 			},

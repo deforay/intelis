@@ -274,13 +274,13 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 
 		$('#sampleCollectionDate,#sampleTestDate,#printDate,#sampleRecievedDate').daterangepicker({
 				locale: {
-					cancelLabel: 'Clear',
+					cancelLabel: "<?= _("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
 				showDropdowns: true,
 				alwaysShowCalendars: true,
-				startDate: moment().subtract(29, 'days'),
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

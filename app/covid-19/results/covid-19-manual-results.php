@@ -204,13 +204,13 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 		});
 		$('#sampleCollectionDate').daterangepicker({
                 locale: {
-                    cancelLabel: 'Clear',
+                    cancelLabel: "<?= _("Clear"); ?>",
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },
 				showDropdowns: true,
 alwaysShowCalendars: true,
-startDate: moment().subtract(29, 'days'),
+startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

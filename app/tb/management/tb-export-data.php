@@ -272,13 +272,13 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 
 		$('#sampleCollectionDate,#sampleTestDate,#printDate,#sampleRecievedDate').daterangepicker({
 				locale: {
-					cancelLabel: 'Clear',
+					cancelLabel: "<?= _("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
 				showDropdowns: true,
 				alwaysShowCalendars: true,
-				startDate: moment().subtract(29, 'days'),
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

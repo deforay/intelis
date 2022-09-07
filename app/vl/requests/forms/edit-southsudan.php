@@ -1272,6 +1272,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#rejectionDate').removeClass('isRequired');
 			$('#rejectionReason').val('');
 			$(".review-approve-span").hide();
+			$("#hivDetection, #noResult").trigger('change');
 		}
 	});
 	$("#noResult").on("change", function() {
@@ -1348,7 +1349,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	});
 	$('#hivDetection').on("change", function() {
-
 		if (this.value == null || this.value == '' || this.value == undefined) {
 			return false;
 		} else if (this.value === 'HIV-1 Not Detected') {
@@ -1360,10 +1360,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$("#vlLog").val('').css('pointer-events', 'none');
 			$(".vlResult, .vlLog").hide();
 			$("#reasonForFailure").removeClass('isRequired');
+			$('#vlResult').removeClass('isRequired');
 		} else if (this.value === 'HIV-1 Detected') {
 			$("#noResult").val("no");
 			$(".vlResult, .vlLog").show();
 			$("#noResult").trigger("change");
+			$('#vlResult').addClass('isRequired');
 		}
 	});
 
