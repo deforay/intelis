@@ -1147,7 +1147,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').addClass('isRequired');
                $('#approvedBy').addClass('isRequired');
                $('#approvedOnDateTime').addClass('isRequired');
-               hivDetectionChange();
+               $(".hivDetection").trigger("change");
           } else {
                $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").removeClass("isRequired");
@@ -1166,7 +1166,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').removeClass('isRequired');
                $('#approvedBy').removeClass('isRequired');
                $('#approvedOnDateTime').removeClass('isRequired');
-               hivDetectionChange();
+               $(".hivDetection").trigger("change");
           }
      });
      
@@ -1238,6 +1238,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function hivDetectionChange() {
+
+		$(".vlResult, .vlLog").show();
+		$('#vlResult, #noResult').addClass('isRequired');
+		$("#noResult").val("");
+                    
           var text = $('#testingPlatform').val();
           var str1 = text.split("##");
           var str = str1[0];

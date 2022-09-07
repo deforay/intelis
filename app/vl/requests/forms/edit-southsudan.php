@@ -1308,7 +1308,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
-			hivDetectionChange();
+			$(".hivDetection").trigger("change");
 		} else {
 			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").removeClass("isRequired");
@@ -1325,7 +1325,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedOn').removeClass('isRequired');
 			$('#approvedBy').removeClass('isRequired');
 			$('#approvedOnDateTime').removeClass('isRequired');
-			hivDetectionChange();
+			$(".hivDetection").trigger("change");
 		}
 	});
 
@@ -1363,13 +1363,17 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		} else if (this.value === 'HIV-1 Detected') {
 			$("#noResult").val("no");
 			$(".vlResult, .vlLog").show();
-			$('#vlResult').addClass('isRequired');
 			$("#noResult").trigger("change");
 			$('#vlResult').addClass('isRequired');
 		}
 	});
 
 	function hivDetectionChange() {
+
+		$(".vlResult, .vlLog").show();
+		$('#vlResult, #noResult').addClass('isRequired');
+		$("#noResult").val("");
+
 		var text = $('#testingPlatform').val();
 		var str1 = text.split("##");
 		var str = str1[0];
