@@ -407,7 +407,7 @@ $sFormat = '';
                                              </div>
                                              <div class="box box-primary">
                                                   <div class="box-header with-border">
-                                                       <h3 class="box-title">Indication for Viral Load Testing</h3><small> (Please choose one):(To be completed by clinician)</small>
+                                                       <h3 class="box-title">Indication for Viral Load Testing  <span class="mandatory">*</span></h3><small> (Please choose one):(To be completed by clinician)</small>
                                                   </div>
                                                   <div class="box-body">
                                                        <div class="row">
@@ -1240,9 +1240,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      $('#testingPlatform').on("change", function() {
           $(".vlResult, .vlLog").show();
-          $('#vlResult, #noResult').addClass('isRequired');
-          //$("#noResult").val("");
-		$("#noResult").trigger("change");
+          //$('#vlResult, #noResult').addClass('isRequired');
+          $("#noResult").val("");
+          //$("#noResult").trigger("change");
           hivDetectionChange();
      });
 

@@ -60,7 +60,7 @@ if ($db->count > 0) {
   $data['testResults'] = $testResults;
 
 
-  $db->where('vl_sample_id', $sampleIds, 'IN')
+  $db->where('covid19_id', $sampleIds, 'IN')
     ->update('form_covid19', array('data_sync' => 1));
 }
 

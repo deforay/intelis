@@ -1372,9 +1372,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 	$('#testingPlatform').on("change", function() {
 		$(".vlResult, .vlLog").show();
-		$('#vlResult, #noResult').addClass('isRequired');
-		//$("#noResult").val("");
-		$("#noResult").trigger("change");
+		//$('#vlResult, #noResult').addClass('isRequired');
+		$("#noResult").val("");
+		//$("#noResult").trigger("change");
 		hivDetectionChange();
 	});
 
