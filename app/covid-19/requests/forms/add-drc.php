@@ -872,7 +872,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Revu le</td>
+                                            <th>Revu le</th>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revu le" title="Please enter the Revu le" /></td>
                                             <th>Revu par</th>
                                             <td>

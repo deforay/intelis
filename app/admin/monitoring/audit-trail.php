@@ -136,7 +136,6 @@ function getColumnValues($db, $tableName, $sampleCode)
 														echo '<td>' . $posts[$i][$colArr[$j]] . '</td>';
 													}
 												?>
-													</td>
 												<?php }
 												?>
 											</tr>

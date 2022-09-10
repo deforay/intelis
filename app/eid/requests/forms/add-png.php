@@ -217,8 +217,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="positive"> Positive </option>
-                                                <option value="negative" /> Negative </option>
-                                                <option value="unknown" /> Unknown </option>
+                                                <option value="negative"> Negative </option>
+                                                <option value="unknown"> Unknown </option>
                                             </select>
                                         </td>
 
@@ -239,7 +239,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes"> Yes </option>
-                                                <option value="no" /> No </option>
+                                                <option value="no"> No </option>
                                             </select>
                                         </td>
 
@@ -264,9 +264,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="yes" /> Yes </option>
+                                                <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
-                                                <option value="unknown" /> Unknown </option>
+                                                <option value="unknown"> Unknown </option>
                                             </select>
                                         </td>
                                     </tr>
@@ -280,7 +280,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="yes" /> Yes </option>
+                                                <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
                                             </select>
                                         </td>
@@ -295,7 +295,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="Confirmation of positive first EID PCR test result" /> Confirmation of positive first EID PCR test result </option>
+                                                <option value="Confirmation of positive first EID PCR test result"> Confirmation of positive first EID PCR test result </option>
                                                 <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="1st Test Positive"> 1st Test Positive </option>
@@ -369,7 +369,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>
                                                     <option value="yes"> Yes </option>
-                                                    <option value="no" /> No </option>
+                                                    <option value="no"> No </option>
                                                 </select>
                                             </td>
 
@@ -399,7 +399,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Reviewed On</td>
+                                            <th>Reviewed On</th>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                             <th>Reviewed By</th>
                                             <td>
@@ -409,7 +409,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Approved On</td>
+                                            <th>Approved On</th>
                                             <td><input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th>Approved By</th>
                                             <td>

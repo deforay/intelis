@@ -43,16 +43,56 @@ if (!empty($data['manifestCode'])) {
 
 
 $eidRemoteResult = $db->rawQuery($eidQuery);
+
+$removeKeys = array(
+  'sample_code',
+  'sample_code_key',
+  'sample_code_format',
+  'sample_code_title',
+  'sample_batch_id',
+  'sample_received_at_vl_lab_datetime',
+  'eid_test_platform',
+  'import_machine_name',
+  'sample_tested_datetime',
+  'is_sample_rejected',
+  'lab_id',
+  'result',
+  'tested_by',
+  'lab_tech_comments',
+  'result_approved_by',
+  'result_approved_datetime',
+  'revised_by',
+  'revised_on',
+  'result_reviewed_by',
+  'result_reviewed_datetime',
+  'result_dispatched_datetime',
+  'reason_for_changing',
+  'result_status',
+  'data_sync',
+  'reason_for_sample_rejection',
+  'rejection_on',
+  'last_modified_by',
+  'result_printed_datetime',
+  'last_modified_datetime'
+);
+
 $counter = 0;
 if ($db->count > 0) {
+  $payload = $eidRemoteResult;
+  // foreach ($eidRemoteResult as $row) {
+  //   $payload[] = array_diff_key($row, array_flip($removeKeys));
+  // }
+  
   $counter = $db->count;
   $sampleIds = array_column($eidRemoteResult, 'eid_id');
   $db->where('eid_id', $sampleIds, 'IN')
     ->update('form_eid', array('data_sync' => 1));
+} else {
+  $payload = json_encode([]);
 }
 
 
-$payload = json_encode($eidRemoteResult);
+$payload = json_encode($payload);
 
 $general->addApiTracking('vlsm-system', $counter, 'requests', 'eid', null, $origData, $payload, 'json', $labId);
 

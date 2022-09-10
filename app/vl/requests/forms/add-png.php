@@ -389,7 +389,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 													}
 													?>
 												</select>
-												</label>
 											</td>
 											<td class="laboratoryId"><label for="laboratoryId">Laboratory Name</label></td>
 											<td>

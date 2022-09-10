@@ -7,6 +7,8 @@ $cleanup = array(
     WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary',
 );
 
+$general = new \Vlsm\Models\General();
+
 $durationToDelete = 180 * 86400; // 180 days
 
 foreach ($cleanup as $folder) {

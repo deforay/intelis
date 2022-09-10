@@ -359,7 +359,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <td><label for="">Machine used to test </label></td>
-                                            <td><select name="machineName" id="machineName" class="labSecInput form-control rejected-input" title="Please select the machine name" ">
+                                            <td>
+                                                <select name="machineName" id="machineName" class="labSecInput form-control rejected-input" title="Please select the machine name">
                                                 <option value="">-- Select --</option>
                                                 </select>
                                             </td>
@@ -379,9 +380,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select></td>
                                         </tr>
                                         <tr>
-                                            <th>Authorized on</td>
+                                            <th>Authorized on</th>
                                             <td><input type="text" name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field form-control date rejected-input" placeholder="Authorized on" title="Please select the authorized on" /></td>
-                                            <th>Lab Technician (VL Testing)</td>
+                                            <th>Lab Technician (VL Testing)</th>
                                             <td>
                                                 <select name="tested_by" id="tested_by" class="form-control" title="Please select a Lab Technician (VL Testing)" style="width:100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>

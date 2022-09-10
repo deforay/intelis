@@ -478,7 +478,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th>Reviewed on</td>
+                                            <th>Reviewed on</th>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                         </tr>
                                         <tr>
@@ -506,7 +506,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select></td>
                                         </tr>
                                         <tr>
-                                            <th>Authorized on</td>
+                                            <th>Authorized on</th>
                                             <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On" /></td>
                                             <th></th>
                                             <td></td>

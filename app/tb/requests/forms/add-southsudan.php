@@ -447,7 +447,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="reviewedOn">Reviewed on</label></td>
+											<th><label class="label-control" for="reviewedOn">Reviewed on</label></th>
 											<td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
 										</tr>
 										<tr>
@@ -457,7 +457,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="approvedOn">Approved on</label></td>
+											<th><label class="label-control" for="approvedOn">Approved on</label></th>
 											<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
 

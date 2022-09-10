@@ -164,7 +164,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select> -->
                                             <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Clinician name" title="Please enter Clinician name" style="width:100%;" />
                                         </td>
-                                        </td>
                                         <td><label for="clinicianPhone">Clinician phone</label></td>
                                         <td>
                                             <input type="text" class="form-control" id="clinicianPhone" name="clinicianPhone" placeholder="Clinician phone" title="Please enter Clinician phone" style="width:100%;" />
@@ -607,7 +606,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Reviewed On</td>
+                                            <th>Reviewed On</th>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                             <th>Reviewed By</th>
                                             <td>
@@ -617,7 +616,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Approved On</td>
+                                            <th>Approved On</th>
                                             <td><input type="text" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th>Approved By</th>
                                             <td>
@@ -642,7 +641,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr>
 
-                                            <th><label for="isResultAuthorized">Referred On</label></td>
+                                            <th><label for="isResultAuthorized">Referred On</label></th>
                                             <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Referred On" title="Please enter when referred result" /></td>
                                             <th></th>
                                             <td></td>

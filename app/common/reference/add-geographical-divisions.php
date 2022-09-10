@@ -91,9 +91,9 @@ foreach ($geoParentInfo as $type) {
 </div>
 <!-- /.box -->
 
-</section>
-<!-- /.content -->
-</div>
+<!--</section>-->
+<!--<!-- /.content -->-->
+<!--</div>-->
 
 <script type="text/javascript">
     function validateNow() {

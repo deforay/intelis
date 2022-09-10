@@ -273,9 +273,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="yes" /> Yes </option>
+                                                <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
-                                                <option value="unknown" /> Unknown </option>
+                                                <option value="unknown"> Unknown </option>
                                             </select>
                                         </td>
                                     </tr>
@@ -289,7 +289,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="yes" /> Yes </option>
+                                                <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
                                             </select>
                                         </td>
@@ -392,7 +392,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
                                             <th>Machine used to test </th>
-                                            <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name" ">
+                                            <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name">
                                                 <option value="">-- Select --</option>
                                             </select>
                                             </td>
@@ -405,7 +405,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value="no"> No </option>
                                                 </select>
                                             </td>
-                                            </td>
                                             <th class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for sample rejection">
@@ -415,7 +414,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th style="width:25%;">Sample Test Date </td>
+                                            <th style="width:25%;">Sample Test Date </th>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
@@ -448,7 +447,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th>Reviewed on</td>
+                                            <th>Reviewed on</th>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter reviewed on" /></td>
                                         </tr>
                                         <tr>
