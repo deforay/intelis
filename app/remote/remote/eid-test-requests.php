@@ -92,10 +92,6 @@ if ($db->count > 0) {
   $payload = json_encode([]);
 }
 
-
-
 $general->addApiTracking('vlsm-system', $counter, 'requests', 'eid', null, $origData, $payload, 'json', $labId);
-
-
 
 echo $payload;
