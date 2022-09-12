@@ -17,11 +17,16 @@ class Results
     // $interpretFormat = false will keep the format as is
     public static function abbottTestingDateFormatter($inputTestingDate, $inputTestingDateFormat, $interpretFormat = true)
     {
+
+        if (empty($inputTestingDate)) {
+            return null;
+        }
+
         $general = new \Vlsm\Models\General();
 
         if ($interpretFormat === true) {
-            $find = ['am', 'pm', 'dd', 'mm', 'yyyy'];
-            $replace = ['', '', 'd', 'm', 'Y'];
+            $find =     ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];
+            $replace =  ['',   '',    'd', 'm',  'Y',    'y'];
             $dateFormat = trim(str_ireplace($find, $replace, strtolower($inputTestingDateFormat)));
         } else {
             $dateFormat = trim($inputTestingDateFormat);
@@ -29,10 +34,10 @@ class Results
 
         $numberOfColons = substr_count($inputTestingDate, ':');
 
-        if ($numberOfColons === 2) {
-            $testingDateFormat = "!$dateFormat H:i:s";
-        } else {
-            $testingDateFormat = "!$dateFormat h:i";
+        if ($numberOfColons === 1) {
+            $testingDateFormat = "$dateFormat h:i";
+        } else if ($numberOfColons === 2) {
+            $testingDateFormat = "$dateFormat H:i:s";
         }
 
         $checkIf12HourFormat = $general->checkIfStringExists($inputTestingDate, ['am', 'pm']);

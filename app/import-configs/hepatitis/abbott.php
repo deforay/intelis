@@ -109,10 +109,6 @@ try {
                     $batchCode = "";
                     $sampleType = "";
                     $resultFlag = "";
-                    echo "<pre>";
-                    print_r($sheetData);
-                    echo "</pre>";
-                    die;
 
                     $sampleCode = $sheetData[$sampleIdCol];
 
