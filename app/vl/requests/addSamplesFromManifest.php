@@ -204,6 +204,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				},
 				function(data) {
 					$.unblockUI();
+					console.log(data);
 					if (data != "") {
 						$('.activateSample').show();
 						$('#sampleId').val(data);

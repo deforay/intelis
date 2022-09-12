@@ -333,5 +333,34 @@ require($fileArray[$arr['vl_form']]);
         fMonth = (fMonth < 10) ? '0' + fMonth : fMonth;
         return splitDate[2] + '-' + fMonth + '-' + splitDate[0];
     }
+
+    function getfacilityProvinceDetails(obj) {
+        $.blockUI();
+        //check facility name`
+        var cName = $("#fName").val();
+        var pName = $("#province").val();
+        if (cName != '' && provinceName && facilityName) {
+            provinceName = false;
+        }
+        if (cName != '' && facilityName) {
+            $.post("/includes/siteInformationDropdownOptions.php", {
+                    cName: cName,
+                    testType: 'vl'
+                },
+                function(data) {
+                    if (data != "") {
+                        details = data.split("###");
+                        $("#province").html(details[0]);
+                        $("#district").html(details[1]);
+                    }
+                });
+        } else if (pName == '' && cName == '') {
+            provinceName = true;
+            facilityName = true;
+            $("#province").html("<?php echo $province; ?>");
+            $("#fName").html("<?php echo $facility; ?>");
+        }
+        $.unblockUI();
+    }
 </script>
 <?php include APPLICATION_PATH . '/footer.php';

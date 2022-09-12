@@ -87,7 +87,6 @@ if ($db->count > 0) {
   $sampleIds = array_column($eidRemoteResult, 'eid_id');
   $db->where('eid_id', $sampleIds, 'IN')
     ->update('form_eid', array('data_sync' => 1));
-
   $payload = json_encode($payload);
 } else {
   $payload = json_encode([]);

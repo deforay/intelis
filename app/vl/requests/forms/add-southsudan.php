@@ -154,7 +154,7 @@ $sFormat = '';
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="fillFacilityDetails();setSampleDispatchDate();">
+                                                       <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();">
                                                             <?php echo $facility;  ?>
                                                        </select>
                                                   </div>
@@ -407,7 +407,7 @@ $sFormat = '';
                                              </div>
                                              <div class="box box-primary">
                                                   <div class="box-header with-border">
-                                                       <h3 class="box-title">Indication for Viral Load Testing  <span class="mandatory">*</span></h3><small> (Please choose one):(To be completed by clinician)</small>
+                                                       <h3 class="box-title">Indication for Viral Load Testing <span class="mandatory">*</span></h3><small> (Please choose one):(To be completed by clinician)</small>
                                                   </div>
                                                   <div class="box-body">
                                                        <div class="row">
