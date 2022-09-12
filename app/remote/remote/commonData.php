@@ -249,9 +249,6 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
     $general->addApiTracking('vlsm-system', $counter, 'common-data-sync', 'common', null, $origData, $payload, 'json', $labId);
 
-
-
-
     echo $payload;
 } else {
     echo json_encode(array('status' => 'error', 'message' => 'Invalid request'));

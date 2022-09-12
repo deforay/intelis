@@ -125,7 +125,7 @@ class Facilities
         if (empty($labId)) return null;
 
         $fMapResult = "";
-        $this->db->where ("vl_lab_id", $labId);
+        $this->db->where("vl_lab_id", $labId);
         $fMapResult = $this->db->getValue('testing_lab_health_facilities_map', 'facility_id', null);
 
         if (count($fMapResult) > 0) {
@@ -230,7 +230,7 @@ class Facilities
 
         $this->db->where('facility_type = 2');
         $this->db->orderBy("facility_name", "asc");
-        
+
         if ($allColumns) {
             return $this->db->get("facility_details");
         } else {

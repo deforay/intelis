@@ -82,20 +82,17 @@ if ($db->count > 0) {
   // foreach ($eidRemoteResult as $row) {
   //   $payload[] = array_diff_key($row, array_flip($removeKeys));
   // }
-  
+
   $counter = $db->count;
   $sampleIds = array_column($eidRemoteResult, 'eid_id');
   $db->where('eid_id', $sampleIds, 'IN')
     ->update('form_eid', array('data_sync' => 1));
+
+  $payload = json_encode($payload);
 } else {
   $payload = json_encode([]);
 }
 
-
-$payload = json_encode($payload);
-
 $general->addApiTracking('vlsm-system', $counter, 'requests', 'eid', null, $origData, $payload, 'json', $labId);
-
-
 
 echo $payload;
