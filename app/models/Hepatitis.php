@@ -86,7 +86,7 @@ class Hepatitis
 
                 if (empty($provinceId) && !empty($provinceCode)) {
                     $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
-                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);                    
+                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -299,13 +299,39 @@ class Hepatitis
                 $hepatitisData['sample_code_key'] = $sampleData['sampleCodeKey'];
                 $hepatitisData['remote_sample'] = 'no';
                 $hepatitisData['result_status'] = 6;
-            }            
+            }
             $sQuery = "SELECT hepatitis_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_hepatitis ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
+
+            /* Update version in form attributes */
+            $version = $general->getSystemConfig('sc_version');
+            if (isset($version) && !empty($version)) {
+                $ipaddress = '';
+                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+                } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
+                } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                    $ipaddress = $_SERVER['REMOTE_ADDR'];
+                } else {
+                    $ipaddress = 'UNKNOWN';
+                }
+                $formAttributes = array(
+                    'vlsm_version'  => $version,
+                    'ip_address'    => $ipaddress
+                );
+                $hepatitisData['form_attributes'] = json_encode($formAttributes);
+            }
 
             $id = 0;
             if ($rowData) {

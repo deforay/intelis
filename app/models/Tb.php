@@ -343,6 +343,32 @@ class Tb
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
 
+            /* Update version in form attributes */
+            $version = $general->getSystemConfig('sc_version');
+            if (isset($version) && !empty($version)) {
+                $ipaddress = '';
+                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+                } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
+                } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                    $ipaddress = $_SERVER['REMOTE_ADDR'];
+                } else {
+                    $ipaddress = 'UNKNOWN';
+                }
+                $formAttributes = array(
+                    'vlsm_version'  => $version,
+                    'ip_address'    => $ipaddress
+                );
+                $tbData['form_attributes'] = json_encode($formAttributes);
+            }
+
             $id = 0;
             if ($rowData) {
                 // $this->db = $this->db->where('tb_id', $rowData['tb_id']);
