@@ -343,7 +343,7 @@ class Vl
             $unit = $unitArray[1];
         } else if (strpos($unit, 'Log') !== false && is_numeric($result)) {
             $logVal = $result;
-            $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+            $originalResultValue = $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
         } else if (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
             if (strpos($result, '< 2.00E+1') !== false) {
                 $vlResult = "< 20";

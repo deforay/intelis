@@ -803,7 +803,7 @@ class General
         $response = false;
         foreach ($itemsToSearch as $needle) {
             if (stripos($sourceString, $needle, $offset) !== false) {
-                $response = $needle; // stop on first true result
+                return $needle; // stop on first true result
             }
         }
         return $response;

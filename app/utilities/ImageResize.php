@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Helpers;
+namespace Vlsm\Utilities;
 
 use Exception;
 
