@@ -355,27 +355,7 @@ class General
 
         return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
     }
-
-    public function getEidResults()
-    {
-        $results = $this->db->rawQuery("SELECT * FROM r_eid_results where status='active' ORDER BY result_id DESC");
-        $response = array();
-        foreach ($results as $row) {
-            $response[$row['result_id']] = $row['result'];
-        }
-        return $response;
-    }
-
-    public function getCovid19Results()
-    {
-        $results = $this->db->rawQuery("SELECT * FROM r_covid19_results where status='active' ORDER BY result_id DESC");
-        $response = array();
-        foreach ($results as $row) {
-            $response[$row['result_id']] = $row['result'];
-        }
-        return $response;
-    }
-
+    
     public function getTbResults()
     {
         $results = $this->db->rawQuery("SELECT * FROM r_tb_results where status='active' ORDER BY result_id DESC");
@@ -438,20 +418,8 @@ class General
                 return $value;
             }
         }
-    }
 
-    public function getHttpValue($key)
-    {
-        // print_r($_SERVER);die;
-        foreach ($_SERVER as $header => $value) {
-            if (substr($header, 0, 5) == "HTTP_") {
-                $header = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($header, 5)))));
-                if (strtolower($key) == strtolower($header)) {
-                    return $value;
-                }
-            }
-        }
-        // return $out; 
+        return null;
     }
 
     public function getTestingPlatforms($testType = null)

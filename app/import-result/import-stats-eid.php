@@ -2,7 +2,8 @@
 
 // imported in importedStatistics.php
 
-$eidResults = $general->getEidResults();
+$eidObj = new \Vlsm\Models\Eid();
+$eidResults = $eidObj->getEidResults();
 
 $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, 
             SUM(CASE WHEN tsr.result = 'positive' THEN 1 ELSE 0 END) AS positive, 

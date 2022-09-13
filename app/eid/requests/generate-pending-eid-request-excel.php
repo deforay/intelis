@@ -11,7 +11,8 @@ ob_start();
 $general = new \Vlsm\Models\General();
 $dateTimeUtil = new DateUtils();
 
-$eidResults = $general->getEidResults();
+$eidModel = new \Vlsm\Models\Eid();
+$eidResults = $eidModel->getEidResults();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";
@@ -168,7 +169,7 @@ foreach ($rResult as $aRow) {
     //requeste created date time
     $requestCreatedDatetime = '';
     if ($aRow['request_created_datetime'] != NULL && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
-        $requestCreatedDatetime =  $dateTimeUtil->humanReadableDateFormat($aRow['request_created_datetime'], true);        
+        $requestCreatedDatetime =  $dateTimeUtil->humanReadableDateFormat($aRow['request_created_datetime'], true);
     }
     //set result log value
     $logVal = '0.0';

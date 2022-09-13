@@ -73,7 +73,8 @@ class SouthSudan_PDF extends MYPDF
 
 
 $dateUtils = new \Vlsm\Utilities\DateUtils();
-$covid19Results = $general->getCovid19Results();
+$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Results = $covid19Obj->getCovid19Results();
 
 $countryFormId = $general->getGlobalConfig('vl_form');
 $resultFilename = '';

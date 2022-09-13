@@ -20,7 +20,9 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidResults = $general->getEidResults();
+$eidObj = new \Vlsm\Models\Eid();
+$eidResults = $eidObj->getEidResults();
+
 $specimenTypeResult = $eidObj->getEidSampleTypes();
 
 $rKey = '';

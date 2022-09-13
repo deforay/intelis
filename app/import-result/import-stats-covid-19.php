@@ -2,7 +2,8 @@
 
 // imported in importedStatistics.php
 
-$covid19Results = $general->getCovid19Results();
+$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Results = $covid19Obj->getCovid19Results();
 
 $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, 
             SUM(CASE WHEN tsr.result = 'positive' THEN 1 ELSE 0 END) AS positive, 

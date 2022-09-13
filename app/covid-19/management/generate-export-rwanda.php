@@ -8,11 +8,14 @@ ob_start();
 
 $general = new \Vlsm\Models\General();
 
-$eidResults = $general->getEidResults();
+
 
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Symptoms = $covid19Obj->getCovid19Symptoms();
 $covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
+
+
+$covid19Results = $covid19Obj->getCovid19Results();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";
@@ -184,7 +187,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = $general->humanReadableDateFormat($aRow['travel_return_date']); */
 		$row[] = $sampleRejection;
 		$row[] = $sampleTestedOn;
-		$row[] = $eidResults[$aRow['result']];
+		$row[] = $covid19Results[$aRow['result']];
 		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);

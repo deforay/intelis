@@ -150,9 +150,8 @@ class Pdf_concatANG extends FPDI
 }
 
 
-
-
-$eidResults = $general->getEidResults();
+$eidModel = new \Vlsm\Models\Eid();
+$eidResults = $eidModel->getEidResults();
 
 $resultFilename = '';
 

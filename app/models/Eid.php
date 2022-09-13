@@ -127,7 +127,7 @@ class Eid
     }
 
 
-    public function getEidResults()
+    public function getEidResults(): array
     {
         $results = $this->db->rawQuery("SELECT * FROM r_eid_results where status='active' ORDER BY result_id DESC");
         $response = array();
@@ -150,16 +150,12 @@ class Eid
     public function generateExcelExport($params)
     {
         $general = new \Vlsm\Models\General();
-        $eidResults = $general->getEidResults();
 
-        //system config
-        $systemConfigQuery = "SELECT * from system_config";
-        $systemConfigResult = $this->db->query($systemConfigQuery);
-        $sarr = array();
-        // now we create an associative array so that we can easily create view variables
-        for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-            $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-        }
+        $eidModel = new \Vlsm\Models\Eid();
+        $eidResults = $eidModel->getEidResults();
+
+        //$sarr = $general->getSystemConfig();
+
         if (isset($_SESSION['eidRequestSearchResultQuery']) && trim($_SESSION['eidRequestSearchResultQuery']) != "") {
 
             $rResult = $this->db->rawQuery($_SESSION['eidRequestSearchResultQuery']);

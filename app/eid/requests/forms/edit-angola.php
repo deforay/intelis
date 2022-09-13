@@ -12,8 +12,8 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-
-$eidResults = $general->getEidResults();
+$eidObj = new \Vlsm\Models\Eid();
+$eidResults = $eidObj->getEidResults();
 
 
 // Getting the list of Provinces, Districts and Facilities

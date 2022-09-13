@@ -13,7 +13,8 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$eidResults = $general->getEidResults();
+$eidResults = $eidObj->getEidResults();
+
 $specimenTypeResult = $eidObj->getEidSampleTypes();
 /* To get testing platform names */
 $testPlatformResult = $general->getTestingPlatforms('eid');

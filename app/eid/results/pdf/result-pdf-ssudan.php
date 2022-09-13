@@ -1,7 +1,8 @@
 <?php
 
 // this file is included in eid/results/generate-result-pdf.php
-$eidResults = $general->getEidResults();
+$eidModel = new \Vlsm\Models\Eid();
+$eidResults = $eidModel->getEidResults();
 
 $resultFilename = '';
 
