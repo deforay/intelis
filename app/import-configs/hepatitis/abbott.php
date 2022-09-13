@@ -92,10 +92,10 @@ try {
                     $msg = new Message();
                     $msg->isempty(); // Returns true
 
-                    echo "<pre>";
-                    print_r($msg->toString(true));
-                    echo "</pre>";
-                    die;
+                    // echo "<pre>";
+                    // print_r($msg->toString(true));
+                    // echo "</pre>";
+                    // die;
                     $row++;
                     if ($row < $skip) {
                         if ($row == 8) {
@@ -108,7 +108,11 @@ try {
                     $sampleCode = "";
                     $batchCode = "";
                     $sampleType = "";
-                    $resultFlag = "";
+                    // $resultFlag = "";
+                    // echo "<pre>";
+                    // print_r($sheetData);
+                    // echo "</pre>";
+                    // die;
 
                     $sampleCode = $sheetData[$sampleIdCol];
 
@@ -185,10 +189,10 @@ try {
                 }
             }
         }
-        echo "<pre>";
-        print_r($infoFromFile);
-        echo "</pre>";
-        die;
+        // echo "<pre>";
+        // print_r($infoFromFile);
+        // echo "</pre>";
+        // die;
         $inc = 0;
         foreach ($infoFromFile as $sampleCode => $d) {
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
