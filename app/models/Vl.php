@@ -484,7 +484,7 @@ class Vl
                     $ipaddress = 'UNKNOWN';
                 }
                 $formAttributes = array(
-                    'vlsm_version'  => $version,
+                    'applicationVersion'  => $version,
                     'ip_address'    => $ipaddress
                 );
                 $vlData['form_attributes'] = json_encode($formAttributes);

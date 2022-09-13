@@ -170,11 +170,11 @@ try {
         $version = $general->getSystemConfig('sc_version');
 
         $formAttributes = array(
-            'vlsm_version'  => $version,
+            'applicationVersion'  => $version,
             'apiTransactionId' => $transactionId,
-            'app_version'   => $input['appVersion']
+            'mobileAppVersion'   => $input['appVersion']
         );
-        
+
         $covid19Data['form_attributes'] = json_encode($formAttributes);
 
 

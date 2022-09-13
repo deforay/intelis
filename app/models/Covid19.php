@@ -497,7 +497,7 @@ class Covid19
                     $ipaddress = 'UNKNOWN';
                 }
                 $formAttributes = array(
-                    'vlsm_version'  => $version,
+                    'applicationVersion'  => $version,
                     'ip_address'    => $ipaddress
                 );
                 $covid19Data['form_attributes'] = json_encode($formAttributes);

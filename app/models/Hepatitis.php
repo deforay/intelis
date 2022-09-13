@@ -327,7 +327,7 @@ class Hepatitis
                     $ipaddress = 'UNKNOWN';
                 }
                 $formAttributes = array(
-                    'vlsm_version'  => $version,
+                    'applicationVersion'  => $version,
                     'ip_address'    => $ipaddress
                 );
                 $hepatitisData['form_attributes'] = json_encode($formAttributes);

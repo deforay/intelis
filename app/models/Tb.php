@@ -363,7 +363,7 @@ class Tb
                     $ipaddress = 'UNKNOWN';
                 }
                 $formAttributes = array(
-                    'vlsm_version'  => $version,
+                    'applicationVersion'  => $version,
                     'ip_address'    => $ipaddress
                 );
                 $tbData['form_attributes'] = json_encode($formAttributes);

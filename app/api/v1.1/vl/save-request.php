@@ -174,11 +174,11 @@ try {
         $version = $general->getSystemConfig('sc_version');
 
         $formAttributes = array(
-            'vlsm_version'  => $version,
+            'applicationVersion'  => $version,
             'apiTransactionId' => $transactionId,
-            'app_version'   => $input['appVersion']
+            'mobileAppVersion'   => $input['appVersion']
         );
-        
+
         $vlData['form_attributes'] = json_encode($formAttributes);
 
 
