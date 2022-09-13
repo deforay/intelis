@@ -222,7 +222,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     separator: ' to ',
                 },
                 showDropdowns: true,
-                alwaysShowCalendars: true,
+                alwaysShowCalendars: false,
                 startDate: moment().subtract(28, 'days'),
                 endDate: moment(),
                 maxDate: moment(),

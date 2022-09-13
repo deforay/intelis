@@ -145,7 +145,7 @@ $batResult = $db->rawQuery($batQuery);
         },
         format: 'DD-MMM-YYYY',
         showDropdowns: true,
-        alwaysShowCalendars: true,
+        alwaysShowCalendars: false,
         startDate: moment().subtract(28, 'days'),
         endDate: moment(),
         maxDate: moment(),

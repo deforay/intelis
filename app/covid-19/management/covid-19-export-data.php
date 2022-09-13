@@ -279,7 +279,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 					separator: ' to ',
 				},
 				showDropdowns: true,
-				alwaysShowCalendars: true,
+				alwaysShowCalendars: false,
 				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),

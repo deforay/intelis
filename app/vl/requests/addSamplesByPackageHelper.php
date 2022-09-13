@@ -33,6 +33,11 @@ foreach ($sampleResult as $sampleRow) {
         $vldata['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $vldata['sample_code_key'] = $sampleData['sampleCodeKey'];
         $vldata['result_status'] = 6;
+        $vldata['data_sync'] = 0;
+
+        $vldata['last_modified_by'] = $_SESSION['userId'];
+        $vldata['last_modified_datetime'] = $general->getCurrentDateTime();
+
         if (!empty($_POST['testDate'])) {
             $vldata['sample_tested_datetime'] = null;
             $vldata['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];

@@ -184,7 +184,7 @@
 
 				(function checkNetworkConnection() {
 					$.ajax({
-						url: '<?php echo rtrim(SYSTEM_CONFIG['remoteURL'], "/"); ?>/api/v1.1/version.php',
+						url: '<?php echo rtrim(SYSTEM_CONFIG['remoteURL'], "/"); ?>/api/version.php',
 						cache: false,
 						success: function(data) {
 							$('.is-remote-server-reachable').fadeIn(1000);

@@ -265,7 +265,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
                     separator: ' to ',
                 },
 				showDropdowns: true,
-alwaysShowCalendars: true,
+alwaysShowCalendars: false,
 startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
