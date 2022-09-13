@@ -168,6 +168,34 @@ try {
             $vlData['result_status'] = 6;
         }
 
+        /* Update version in form attributes */
+        $version = $general->getSystemConfig('sc_version');
+        if (isset($version) && !empty($version)) {
+            $ipaddress = '';
+            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+            } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+            } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+            } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                $ipaddress = $_SERVER['HTTP_FORWARDED'];
+            } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                $ipaddress = $_SERVER['REMOTE_ADDR'];
+            } else {
+                $ipaddress = 'UNKNOWN';
+            }
+            $formAttributes = array(
+                'vlsm_version'  => $version,
+                'ip_address'    => $ipaddress,
+                'uuid'          => $uniqueId,
+                'app_version'   => $input['appVersion']
+            );
+            $vlData['form_attributes'] = json_encode($formAttributes);
+        }
+
         $id = 0;
         if ($rowData) {
             $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
