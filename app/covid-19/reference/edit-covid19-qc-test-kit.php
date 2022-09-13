@@ -2,7 +2,7 @@
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$generalObj = new \Vlsm\Models\General();
+$general = new \Vlsm\Models\General();
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
@@ -76,7 +76,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                                         </td>
                                         <td>
                                             <select id="expectedResult<?php echo ($key + 1); ?>" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results">
-                                                <?= $generalObj->generateSelectOptions($covid19Results, $subResult['expected'][$key], "--Select--"); ?>
+                                                <?= $general->generateSelectOptions($covid19Results, $subResult['expected'][$key], "--Select--"); ?>
                                             </select>
                                         </td>
                                         <td align="center" style="vertical-align:middle;">
@@ -91,7 +91,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                                     </td>
                                     <td>
                                         <select id="expectedResult1" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results">
-                                            <?= $generalObj->generateSelectOptions($covid19Results, null, "--Select--"); ?>
+                                            <?= $general->generateSelectOptions($covid19Results, null, "--Select--"); ?>
                                         </select>
                                     </td>
                                     <td align="center" style="vertical-align:middle;">

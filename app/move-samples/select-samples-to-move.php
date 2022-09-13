@@ -19,8 +19,7 @@ $implementingPartnerList = $general->fetchDataFromTable('r_implementation_partne
 //province data
 $pResult = $general->fetchDataFromTable('province_details');
 
-$province = "";
-$province .= "<option value=''> -- select -- </option>";
+$province = "<option value=''> -- select -- </option>";
 foreach ($pResult as $provinceName) {
 	$province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }

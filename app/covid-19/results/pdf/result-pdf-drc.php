@@ -183,8 +183,7 @@ if (sizeof($requestResult) > 0) {
         if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
             $smileyContent = '';
         }
-        $html = '';
-        $html .= '<table style="padding:0px 2px 2px 2px;">';
+        $html = '<table style="padding:0px 2px 2px 2px;">';
         $html .= '<tr>';
         $html .= '<td colspan="3">';
         $html .= '<table style="padding:2px;">';
@@ -313,9 +312,9 @@ if (sizeof($requestResult) > 0) {
             foreach ($covid19TestInfo as $indexKey => $rows) {
                 $html .= '<tr>
                                             <td align="center" width="15%">' . ($indexKey + 1) . '</td>
-                                            <td align="center" width="45%">' . $covid19TestInfo[$indexKey]['test_name'] . '</td>
-                                            <td align="center" width="25%">' . $general->humanReadableDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']) . '</td>
-                                            <td align="center" width="15%">' . ucwords($covid19TestInfo[$indexKey]['result']) . '</td>
+                                            <td align="center" width="45%">' . $rows['test_name'] . '</td>
+                                            <td align="center" width="25%">' . $general->humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>
+                                            <td align="center" width="15%">' . ucwords($rows['result']) . '</td>
                                         </tr>';
             }
             $html .= '</table>';
@@ -467,7 +466,7 @@ if (sizeof($requestResult) > 0) {
                 }
                 if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                     $remoteUrl = rtrim($remoteUrl, "/");
-                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid . '', 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
+                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $Cid, 'QRCODE,H', 170, $h, 20, 20, $style, 'N');
                 }
             }
             $pdf->lastPage();

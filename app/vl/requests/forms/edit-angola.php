@@ -21,8 +21,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
   $sampleCode = 'sample_code';
 }
 $pdResult = $db->query($pdQuery);
-$province = "";
-$province .= "<option value=''> -- Selecione -- </option>";
+$province = "<option value=''> -- Selecione -- </option>";
 foreach ($pdResult as $provinceName) {
   $province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }

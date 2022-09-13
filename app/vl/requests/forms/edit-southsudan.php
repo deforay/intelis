@@ -44,8 +44,7 @@ if ($chkUserFcMapResult) {
 	$pdQuery = "SELECT * FROM geographical_divisions as pd JOIN facility_details as fd ON fd.facility_state_id=pd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id WHERE geo_parent = 0 AND user_id='" . $_SESSION['userId'] . "'";
 }
 $pdResult = $db->query($pdQuery);
-$province = '';
-$province .= "<option value=''> -- Select -- </option>";
+$province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
 }

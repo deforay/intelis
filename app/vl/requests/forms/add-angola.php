@@ -13,13 +13,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
-$province = "";
-$province .= "<option value=''> -- Selecione -- </option>";
+$province = "<option value=''> -- Selecione -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
-$facility = "";
-$facility .= "<option value=''> -- Selecione -- </option>";
+$facility = "<option value=''> -- Selecione -- </option>";
 foreach ($fResult as $fDetails) {
 	$facility .= "<option value='" . $fDetails['facility_id'] . "'>" . ucwords($fDetails['facility_name']) . ' - ' . $fDetails['facility_code'] . "</option>";
 }

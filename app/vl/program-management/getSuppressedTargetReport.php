@@ -41,7 +41,7 @@ if (isset($_POST['facilityName']) && count($_POST['facilityName']) > 0) {
     }
     $out = $out . ')';
     if (isset($sWhere)) {
-        $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out . '';
+        $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
     } //  else {
     //      $setWhr = 'where';
     //      $sWhere = ' where ' . $sWhere;

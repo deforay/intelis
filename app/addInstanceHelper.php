@@ -42,8 +42,7 @@ function getMacWindows()
   $pmac = strpos($mycom, $findme);
 
   // Get Physical Address
-  $mac = substr($mycom, ($pmac + 36), 17);
-  return $mac;
+    return substr($mycom, ($pmac + 36), 17);
 }
 try {
   if (isset($_POST['fName']) && trim($_POST['fName']) != "") {

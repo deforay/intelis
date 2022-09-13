@@ -219,8 +219,7 @@ if (sizeof($requestResult) > 0) {
         if ($result['result_status'] == '4') {
             $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" style="width:25px;" alt="rejected"/>';
         }
-        $html = '';
-        $html .= '<table style="padding:0px 2px 2px 2px;">';
+        $html = '<table style="padding:0px 2px 2px 2px;">';
         $html .= '<tr>';
 
         $html .= '<td colspan="3">';

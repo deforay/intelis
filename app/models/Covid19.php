@@ -529,6 +529,7 @@ class Covid19
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastQuery());
             error_log('Insert Covid-19 Sample : ' . $e->getMessage());
         }
+        return 0;
     }
 
     public function generateCovid19QcCode()

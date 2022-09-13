@@ -204,14 +204,12 @@ class Users
     // These files don't need privileges check
     public function getSkippedPrivileges()
     {
-        $skippedPrivileges = array(
+        return array(
             '401.php',
             '404.php',
             'editProfile.php',
             'vlExportField.php'
         );
-
-        return $skippedPrivileges;
     }
 
     public function getUserInfo($userId, $columns = '*')

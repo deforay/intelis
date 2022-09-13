@@ -195,8 +195,7 @@ if (sizeof($requestResult) > 0) {
             }
         }
 
-        $html = '';
-        $html .= '<table style="padding:0px 2px 2px 2px;">';
+        $html = '<table style="padding:0px 2px 2px 2px;">';
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Échantillon id</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Date du prélèvement</td>';

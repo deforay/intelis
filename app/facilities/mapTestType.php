@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$type = (!empty($_GET['type'])) ? $_GET['type'] : $_GET['type'];
+$type = $_GET['type'];
 if ($type == 'health-facilities') {
 	$title = "Manage Health Facilities";
 } else if ($type == 'testing-labs') {

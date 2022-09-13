@@ -17,8 +17,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $rKey = '';
 $pdQuery = "SELECT * from geographical_divisions WHERE geo_parent = 0";
 $pdResult = $db->query($pdQuery);
-$province = '';
-$province .= "<option value=''> -- Select -- </option>";
+$province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
      $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
 }

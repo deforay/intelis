@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 ob_start();
 $title = _("VL | Add New Batch");
 

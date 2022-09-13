@@ -132,7 +132,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
                     $out = '("' . $fac[$s] . '"';
           }
           $out = $out . ')';
-               $sWhere[] = ' vl.lab_id IN ' . $out . '';
+               $sWhere[] = ' vl.lab_id IN ' . $out;
          
      }
 

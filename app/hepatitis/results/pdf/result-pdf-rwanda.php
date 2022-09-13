@@ -152,8 +152,7 @@ if (sizeof($requestResult) > 0) {
         $tndMessage = '';
         $messageTextSize = '12px';
 
-        $html = '';
-        $html .= '<table style="padding:0px 2px 2px 2px;">';
+        $html = '<table style="padding:0px 2px 2px 2px;">';
         /* $html .= '<tr>';
                 $html .= '<td colspan="3">';
                     $html .= '<table style="padding:2px;">';

@@ -414,8 +414,8 @@ if (sizeof($requestResult) > 0) {
             foreach ($tbTestInfo as $indexKey => $rows) {
                 $html .= '<tr>
                         <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . ($indexKey + 1) . '</td>
-                        <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $tbTestInfo[$indexKey]['test_result'] . '</td>
-                        <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $tbTestInfo[$indexKey]['actual_no'] . '</td>
+                        <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $rows['test_result'] . '</td>
+                        <td align="center" style="border:1px solid #ddd;line-height:20px;font-size:11px;font-weight:normal;">' . $rows['actual_no'] . '</td>
                     </tr>';
             }
             $html .= '</table>';

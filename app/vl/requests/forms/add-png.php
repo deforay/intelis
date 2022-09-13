@@ -22,8 +22,7 @@ $aQuery = "SELECT * from r_vl_art_regimen";
 $aResult = $db->query($aQuery);
 
 $pdResult = $db->query($pdQuery);
-$province = '';
-$province .= "<option data-code='' data-name='' value=''> -- Select -- </option>";
+$province = "<option data-code='' data-name='' value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . substr(strtoupper($provinceName['province_name']), 0, 3) . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }

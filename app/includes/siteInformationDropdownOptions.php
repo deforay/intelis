@@ -37,7 +37,7 @@ $provinceRequested = !empty($_POST['pName']) ? $_POST['pName'] : null;
 $districtRequested = !empty($_POST['dName']) ? $_POST['dName'] : null;
 $facilityTypeRequested = !empty($_POST['fType']) ? $_POST['fType'] : 1;   // 1 = Health Facilities
 
-$facilityTypeTable = !empty($facilityTypeRequested) ? $facilityTypeTableList[$facilityTypeRequested] : $facilityTypeTableList[$facilityTypeRequested];
+$facilityTypeTable = $facilityTypeTableList[$facilityTypeRequested];
 
 $facilityMap = null;
 if (empty($_POST['comingFromUser']) || $_POST['comingFromUser'] != 'yes') {
@@ -58,17 +58,17 @@ if (!empty($facilityIdRequested)) {
 } else if (!empty($provinceRequested) && !empty($districtRequested) && $_POST['requestType'] == 'patient') {
 	$provinceName = explode("##", $provinceRequested);
 	$districtOptions = getDistrictDropdown($provinceName[0], $districtRequested);
-	echo '' . "###" . $districtOptions . "###" . '';
+	echo "###" . $districtOptions . "###";
 } else if (!empty($provinceRequested) && !empty($districtRequested) && is_numeric($provinceRequested) && is_numeric($districtRequested)) {
 	$districtOptions = getDistrictDropdown($provinceRequested, $districtRequested);
-	echo '' . "###" . $districtOptions . "###" . '';
+	echo "###" . $districtOptions . "###";
 } else if (!empty($provinceRequested)) {
 	$provinceName = explode("##", $provinceRequested);
 
 	$facilityOptions = getFacilitiesDropdown($provinceName[0], null, $usersDb);
 	$districtOptions = getDistrictDropdown($provinceName[0]);
 
-	echo $facilityOptions . "###" . $districtOptions . "###" . '';
+	echo $facilityOptions . "###" . $districtOptions . "###";
 } else if (!empty($districtRequested)) {
 
 	$facilityOptions = getFacilitiesDropdown(null, $districtRequested, $usersDb);

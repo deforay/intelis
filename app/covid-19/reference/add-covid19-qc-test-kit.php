@@ -2,7 +2,7 @@
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$generalObj = new \Vlsm\Models\General();
+$general = new \Vlsm\Models\General();
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
@@ -68,7 +68,7 @@ $covid19Results = $covid19Obj->getCovid19Results();
                                 </td>
                                 <td>
                                     <select id="expectedResult1" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results">
-                                        <?= $generalObj->generateSelectOptions($covid19Results, null, "--Select--"); ?>
+                                        <?= $general->generateSelectOptions($covid19Results, null, "--Select--"); ?>
                                     </select>
                                 </td>
                                 <td align="center" style="vertical-align:middle;">
