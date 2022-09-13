@@ -153,9 +153,9 @@ class Vl
         // }
         if ($checkResult !== null) {
             error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
-            error_log("DUP::: Sample Key Code ====== " . $checkResult[$sampleCodeKeyCol]);
+            error_log("DUP::: Sample Key Code ====== " . $maxId);
             error_log('DUP::: ' . $this->db->getLastQuery());
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
+            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
         return json_encode($sCodeKey);
     }

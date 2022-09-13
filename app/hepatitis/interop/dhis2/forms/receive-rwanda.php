@@ -83,6 +83,7 @@ $eventsDataElementMapping = [
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
 $transactionId = $general->generateUUID();
+$version = $general->getSystemConfig('sc_version');
 
 foreach ($trackedEntityInstances as $tracker) {
 
@@ -297,6 +298,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $formAttributes = array();
         $formAttributes['apiTransactionId'] = $transactionId;
+        $formAttributes['applicationVersion'] = $version;
         $formAttributes['trackedEntityInstance'] = $tracker['trackedEntityInstance'];
         $formData['form_attributes'] = json_encode($formAttributes);
         //echo "<pre>";var_dump($formData);echo "</pre>";

@@ -142,7 +142,7 @@ class Hepatitis
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
+            return $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
 
         return json_encode($sCodeKey);

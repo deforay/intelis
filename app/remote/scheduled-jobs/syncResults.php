@@ -22,7 +22,7 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 
 // Checking if the network connection is available
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
-$headers = @get_headers($remoteUrl . '/api/v1.1/version.php');
+$headers = @get_headers($remoteUrl . '/api/version.php');
 if (strpos($headers[0], '200') === false) {
     error_log("No network connectivity while trying remote sync.");
     return false;

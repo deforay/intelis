@@ -16,7 +16,7 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 //update common data from remote to lab db
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
 
-$headers = @get_headers($remoteUrl . '/api/v1.1/version.php');
+$headers = @get_headers($remoteUrl . '/api/version.php');
 
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
