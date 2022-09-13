@@ -57,7 +57,7 @@ try {
     foreach ($input['data'] as $rootKey => $data) {
         $sampleFrom = '';
         $data['formId'] = $data['countryId'] = $formId;
-        
+
         $sampleFrom = '';
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
@@ -162,15 +162,41 @@ try {
             $eidData['remote_sample'] = 'no';
         }
 
+        /* Update version in form attributes */
+        $version = $general->getSystemConfig('sc_version');
+        if (isset($version) && !empty($version)) {
+            $ipaddress = '';
+            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+            } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+            } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+            } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                $ipaddress = $_SERVER['HTTP_FORWARDED'];
+            } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                $ipaddress = $_SERVER['REMOTE_ADDR'];
+            } else {
+                $ipaddress = 'UNKNOWN';
+            }
+            $formAttributes = array(
+                'vlsm_version'  => $version,
+                'ip_address'    => $ipaddress,
+                'uuid'          => $uniqueId,
+                'apiTransactionId' => $transactionId,
+                'app_version'   => $input['appVersion']
+            );
+            $eidData['form_attributes'] = json_encode($formAttributes);
+        }
+
         $id = 0;
         if (isset($rowData) && $rowData['eid_id'] > 0) {
             $db = $db->where('eid_id', $rowData['eid_id']);
             $id = $db->update("form_eid", $eidData);
             $data['eidSampleId'] = $rowData['eid_id'];
         } else {
-
-            $formAttributes = ['apiTransactionId' => $transactionId];
-                        
             $id = $db->insert("form_eid", $eidData);
             $data['eidSampleId'] = $id;
         }
@@ -179,7 +205,7 @@ try {
         $tableName = "form_eid";
         $tableName1 = "activity_log";
 
-        
+
 
         if (empty(trim($data['sampleCode']))) {
             $data['sampleCode'] = NULL;

@@ -51,7 +51,7 @@ try {
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
         $sampleFrom = '';
-    
+
         $data['formId'] = $formId;
         /* V1 name to Id mapping */
         if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
@@ -145,15 +145,41 @@ try {
             $tbData['remote_sample'] = 'no';
         }
 
+        /* Update version in form attributes */
+        $version = $general->getSystemConfig('sc_version');
+        if (isset($version) && !empty($version)) {
+            $ipaddress = '';
+            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+            } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+            } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+            } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                $ipaddress = $_SERVER['HTTP_FORWARDED'];
+            } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                $ipaddress = $_SERVER['REMOTE_ADDR'];
+            } else {
+                $ipaddress = 'UNKNOWN';
+            }
+            $formAttributes = array(
+                'vlsm_version'  => $version,
+                'ip_address'    => $ipaddress,
+                'uuid'          => $uniqueId,
+                'apiTransactionId' => $transactionId,
+                'app_version'   => $input['appVersion']
+            );
+            $tbData['form_attributes'] = json_encode($formAttributes);
+        }
+
         $id = 0;
         if ($rowData) {
             $db = $db->where('tb_id', $rowData['tb_id']);
             $id = $db->update("form_tb", $tbData);
             $data['tbSampleId'] = $rowData['tb_id'];
         } else {
-
-            $formAttributes = ['apiTransactionId' => $transactionId];
-
             $id = $db->insert("form_tb", $tbData);
             $data['tbSampleId'] = $id;
         }

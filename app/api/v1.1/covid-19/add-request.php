@@ -54,7 +54,7 @@ try {
     $formId = $general->getGlobalConfig('vl_form');
 
     $transactionId = $general->generateUUID();
-    
+
     $responseData = array();
     foreach ($input['data'] as $rootKey => $data) {
         $sampleFrom = '';
@@ -166,15 +166,41 @@ try {
             $covid19Data['remote_sample'] = 'no';
         }
 
+        /* Update version in form attributes */
+        $version = $general->getSystemConfig('sc_version');
+        if (isset($version) && !empty($version)) {
+            $ipaddress = '';
+            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+            } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+            } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+            } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                $ipaddress = $_SERVER['HTTP_FORWARDED'];
+            } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                $ipaddress = $_SERVER['REMOTE_ADDR'];
+            } else {
+                $ipaddress = 'UNKNOWN';
+            }
+            $formAttributes = array(
+                'vlsm_version'  => $version,
+                'ip_address'    => $ipaddress,
+                'uuid'          => $uniqueId,
+                'apiTransactionId' => $transactionId,
+                'app_version'   => $input['appVersion']
+            );
+            $covid19Data['form_attributes'] = json_encode($formAttributes);
+        }
+
         $id = 0;
         if ($rowData) {
             $db = $db->where('covid19_id', $rowData['covid19_id']);
             $id = $db->update("form_covid19", $covid19Data);
             $data['covid19SampleId'] = $rowData['covid19_id'];
         } else {
-
-            $formAttributes = ['apiTransactionId' => $transactionId];
-
             $id = $db->insert("form_covid19", $covid19Data);
             $data['covid19SampleId'] = $id;
         }
