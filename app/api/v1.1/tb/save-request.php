@@ -46,7 +46,10 @@ try {
     $instanceId = $rowData[0]['vlsm_instance_id'];
     $formId = $general->getGlobalConfig('vl_form');
 
+    /* Update form attributes */
     $transactionId = $general->generateUUID();
+    $version = $general->getSystemConfig('sc_version');
+    $deviceId = $general->getHeader('deviceId');
 
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
@@ -149,9 +152,10 @@ try {
         $version = $general->getSystemConfig('sc_version');
 
         $formAttributes = array(
-            'applicationVersion'  => $version,
-            'apiTransactionId' => $transactionId,
-            'mobileAppVersion'   => $input['appVersion']
+            'applicationVersion'    => $version,
+            'apiTransactionId'      => $transactionId,
+            'mobileAppVersion'      => $input['appVersion'],
+            'deviceId'              => $deviceId
         );
         $tbData['form_attributes'] = json_encode($formAttributes);
 
