@@ -16,7 +16,7 @@ $sources = array(
     'api' => 'API',
     'dhis2' => 'DHIS2'
 );
-
+$sampleReceivedfield = "sample_received_at_vl_lab_datetime";
 if (isset($_POST['testType']) && !empty($_POST['testType'])) {
     $testType = $_POST['testType'];
 }
@@ -40,13 +40,14 @@ if (isset($testType) && $testType == 'hepatitis') {
 if (isset($testType) && $testType == 'tb') {
     $table = "form_tb";
     $testName = 'TB';
+    $sampleReceivedfield = "sample_received_at_lab_datetime";
 }
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('l.facility_name',  'vl.source_of_request','vl.request_created_datetime');
-$orderColumns = array('l.facility_name', '','','','', 'vl.source_of_request','vl.request_created_datetime');
+$aColumns = array('l.facility_name',  'vl.source_of_request', 'vl.request_created_datetime');
+$orderColumns = array('l.facility_name', '', '', '', '', 'vl.source_of_request', 'vl.request_created_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -122,6 +123,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
         count(*) as 'samples',
         SUM(CASE WHEN (vl.result is not null AND vl.result not like '' AND result_status = 7) THEN 1 ELSE 0 END) AS 'samplesWithResults',
         SUM(CASE WHEN (vl.is_sample_rejected is not null AND vl.is_sample_rejected like 'yes') THEN 1 ELSE 0 END) AS 'rejected',
+        SUM(CASE WHEN (vl." . $sampleReceivedfield . " is not null AND vl." . $sampleReceivedfield . " not like '') THEN 1 ELSE 0 END) AS 'noOfSampleReceivedAtLab',
+        SUM(CASE WHEN (vl.result_sent_to_source is not null and vl.result_sent_to_source = 'sent') THEN 1 ELSE 0 END) AS 'noOfResultsReturned',
         MAX(request_created_datetime) AS 'lastRequest'
         FROM $table as vl 
         LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id";
@@ -188,8 +191,10 @@ foreach ($rResult as $key => $aRow) {
     $row[] = $aRow['labname'];
     $row[] = $testName;
     $row[] = $aRow['samples'];
+    $row[] = $aRow['noOfSampleReceivedAtLab'];
     $row[] = $aRow['samplesWithResults'];
     $row[] = $aRow['rejected'];
+    $row[] = $aRow['noOfResultsReturned'];
     $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper($aRow['source_of_request']);
     $row[] = $general->humanReadableDateFormat($aRow['lastRequest']);
 

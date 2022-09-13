@@ -91,15 +91,17 @@ $sources = array(
                                     <th><?php echo _("Lab Name"); ?></th>
                                     <th><?php echo _("Test Type"); ?></th>
                                     <th><?php echo _("No. of Samples Collected"); ?></th>
+                                    <th><?php echo _("No. of Samples Received at the Testing Lab"); ?></th>
                                     <th><?php echo _("No. of Samples with Test Result"); ?></th>
                                     <th><?php echo _("No. of Samples Rejected"); ?></th>
+                                    <th><?php echo _("No. of Results returned"); ?></th>
                                     <th><?php echo _("Source of Request"); ?></th>
                                     <th><?php echo _("Last Request Created On"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="7" class="dataTables_empty"><?php echo _("Please select the date range and test type to see the source of requests"); ?></td>
+                                    <td colspan="9" class="dataTables_empty"><?php echo _("Please select the date range and test type to see the source of requests"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -181,6 +183,12 @@ $sources = array(
             "bRetrieve": true,
             "aoColumns": [{
                 "sClass": "center"
+            }, {
+                "sClass": "center",
+                "bSortable": false
+            }, {
+                "sClass": "center",
+                "bSortable": false
             }, {
                 "sClass": "center",
                 "bSortable": false
