@@ -46,6 +46,8 @@ try {
     $instanceId = $rowData[0]['vlsm_instance_id'];
     $formId = $general->getGlobalConfig('vl_form');
 
+    $transactionId = $general->generateUUID();
+
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
         $sampleFrom = '';
@@ -54,7 +56,7 @@ try {
         /* V1 name to Id mapping */
         if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && count($province) > 0) {
+            if (isset($province) && !empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'province_name', 'province_details', 'province_id', true);
@@ -149,6 +151,9 @@ try {
             $id = $db->update("form_tb", $tbData);
             $data['tbSampleId'] = $rowData['tb_id'];
         } else {
+
+            $formAttributes = ['apiTransactionId' => $transactionId];
+
             $id = $db->insert("form_tb", $tbData);
             $data['tbSampleId'] = $id;
         }

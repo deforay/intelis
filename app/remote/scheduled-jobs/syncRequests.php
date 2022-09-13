@@ -27,6 +27,10 @@ $arr = $general->getGlobalConfig();
 
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
+
+
+$transactionId = $general->generateUUID();
+
 //get remote data
 if (empty($labId)) {
     echo "No Lab ID set in System Config";
@@ -185,6 +189,13 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                     // $request['last_modified_by'] = 0;
                     // $request['request_created_datetime'] = $general->getCurrentDateTime();
                     $request['source_of_request'] = "vlsts";
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+                    $request['form_attributes'] = json_encode($formAttributes);
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
                     /* echo "<pre>";
@@ -334,6 +345,15 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 $id = $db->update('form_eid', $request);
             } else {
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
+
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+
+                    $request['form_attributes'] = json_encode($formAttributes);
                     // $request['request_created_by'] = 0;
                     // $request['last_modified_by'] = 0;
                     // $request['request_created_datetime'] = $general->getCurrentDateTime();
@@ -494,6 +514,14 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     // $request['last_modified_by'] = 0;
                     // $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+
+                    $request['form_attributes'] = json_encode($formAttributes);                    
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
                     $db->insert('form_covid19', $request);
@@ -701,6 +729,16 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
+
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+
+                    $request['form_attributes'] = json_encode($formAttributes);
+
                     $db->insert('form_hepatitis', $request);
                     $id = $db->getInsertId();
                 }
@@ -894,6 +932,16 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
+
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+                    $request['form_attributes'] = json_encode($formAttributes);
+                    
+                    
                     $db->insert('form_tb', $request);
                     $id = $db->getInsertId();
                 }

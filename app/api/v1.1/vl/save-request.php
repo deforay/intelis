@@ -55,6 +55,8 @@ try {
     $instanceId = $rowData[0]['vlsm_instance_id'];
     $formId = $general->getGlobalConfig('vl_form');
 
+    $transactionId = $general->generateUUID();
+
     foreach ($input['data'] as $rootKey => $data) {
         $sampleFrom = '';
         $data['formId'] = $data['countryId'] = $formId;
@@ -174,6 +176,10 @@ try {
             $id = $db->update("form_vl", $vlData);
             $data['vlSampleId'] = $rowData['vl_sample_id'];
         } else {
+
+
+            $formAttributes = ['apiTransactionId' => $transactionId];
+
             $id = $db->insert("form_vl", $vlData);
             $data['vlSampleId'] = $id;
         }
