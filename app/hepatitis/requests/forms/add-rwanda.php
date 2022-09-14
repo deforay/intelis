@@ -73,7 +73,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label></td>
@@ -130,7 +130,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                         <?php } ?>
-                                        <th style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
+                                        <td style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </td>
                                         <td>
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
                                         </td>
@@ -143,7 +143,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title">DEMOGRAPHICS</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -224,15 +224,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <div class="box-header with-border">
                                 <h3 class="box-title">TEST RESULTS FOR SCREENING BY RDTs</h3>
                             </div>
-                            <table class="table" aria-hidden="true"  style="width:100%">
+                            <table class="table" aria-hidden="true" style="width:100%">
                                 <tr>
-                                    <th>Specimen Type <span class="mandatory">*</span></th>
+                                    <td>Specimen Type <span class="mandatory">*</span></td>
                                     <td>
                                         <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
-                                            <option value="">-- Select --</option>
-                                            <?php foreach ($specimenTypeResult as $name) { ?>
-                                                <option value="<?php echo $name['sample_id']; ?>"><?php echo ucwords($name['sample_name']); ?></option>
-                                            <?php } ?>
+                                            <?= $general->generateSelectOptions($specimenResult, null, '-- Select --'); ?>
                                         </select>
                                     </td>
                                     <th class="hbvFields"><label for="HBsAg">HBsAg Result</label></th>
@@ -246,7 +243,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="hcvFields"><label for="antiHcv">Anti-HCV Result</label></th>
+                                    <td class="hcvFields"><label for="antiHcv">Anti-HCV Result</label></td>
                                     <td class="hcvFields">
                                         <select class="hcvFields form-control" name="antiHcv" id="antiHcv" title="Please choose Anti-HCV result">
                                             <option value=''> -- Select -- </option>
@@ -255,7 +252,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <option value='intermediate'>Intermediate</option>
                                         </select>
                                     </td>
-                                    <th><label for="labTechnician">Lab Technician (screening test)</label></th>
+                                    <td><label for="labTechnician">Lab Technician (screening test)</label></td>
                                     <td>
                                         <select name="labTechnician" id="labTechnician" class="form-control" title="Please select a Lab Technician" style="width:100%;">
                                             <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>
@@ -270,7 +267,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <div class="box-header with-border">
                                         <h3 class="box-title">SECTION 2. TO BE FILLED AT VIRAL LOAD TESTING SITE</h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th><label for="">Sample Received Date </label></th>
                                             <td>
@@ -307,7 +304,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value='Follow up HBV VL'>Follow up HBV VL</option>
                                                 </select>
                                             </td>
-                                            <th>Is Sample Rejected?</th>
+                                            <td>Is Sample Rejected?</td>
                                             <td>
                                                 <select class="labSecInput form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>
@@ -360,12 +357,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td><label for="">Machine used to test </label></td>
                                             <td>
                                                 <select name="machineName" id="machineName" class="labSecInput form-control rejected-input" title="Please select the machine name">
-                                                <option value="">-- Select --</option>
+                                                    <option value="">-- Select --</option>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Is Result Authorized ?</th>
+                                            <td>Is Result Authorized ?</td>
                                             <td>
                                                 <select name=" isResultAuthorized" id="isResultAuthorized" class="labSecInput disabled-field form-control rejected-input" title="Is Result authorized ?" style="width:100%">
                                                     <option value="">-- Select --</option>
@@ -373,15 +370,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value='no'> No </option>
                                                 </select>
                                             </td>
-                                            <th>Authorized By</th>
+                                            <td>Authorized By</td>
                                             <td><select name="authorizedBy" id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
                                                 </select></td>
                                         </tr>
                                         <tr>
-                                            <th>Authorized on</th>
+                                            <td>Authorized on</td>
                                             <td><input type="text" name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field form-control date rejected-input" placeholder="Authorized on" title="Please select the authorized on" /></td>
-                                            <th>Lab Technician (VL Testing)</th>
+                                            <td>Lab Technician (VL Testing)</td>
                                             <td>
                                                 <select name="tested_by" id="tested_by" class="form-control" title="Please select a Lab Technician (VL Testing)" style="width:100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>
