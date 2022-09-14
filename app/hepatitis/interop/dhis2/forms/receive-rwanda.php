@@ -314,6 +314,5 @@ foreach ($trackedEntityInstances as $tracker) {
 }
 
 $response = array('received' => $receivedCounter, 'processed' => $processedCounter);
-$app = new \Vlsm\Models\App();
-$trackId = $app->addApiTracking(NULL, $processedCounter, 'DHIS2-Hepatitis-Receive', 'hepatitis');
-echo (json_encode($response));
+$general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'DHIS2-Hepatitis-Receive', 'hepatitis', $url, $data, null, 'json', null);
+echo json_encode($response);

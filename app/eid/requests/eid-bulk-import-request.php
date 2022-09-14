@@ -5,7 +5,7 @@ $title = "Bulk Import Test Requests";
 require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $countryFormId = $general->getGlobalConfig('vl_form');
-$fileName = WEB_ROOT. DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'covid-19' . DIRECTORY_SEPARATOR . $countryFormId . DIRECTORY_SEPARATOR . 'Covid19_Bulk_Import_Excel_Format.xlsx';
+$fileName = WEB_ROOT. DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'covid-19' . DIRECTORY_SEPARATOR . $countryFormId . DIRECTORY_SEPARATOR . 'Eid_Bulk_Import_Excel_Format.xlsx';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

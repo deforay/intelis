@@ -40,6 +40,8 @@ if (empty($user) || empty($user['user_id'])) {
     exit(0);
 }
 
+$transactionId = $general->generateUUID();
+
 try {
 
     $sQuery = "SELECT 
@@ -231,7 +233,7 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'eid', $requestUrl, $params, json_encode($payload), 'json');
+    $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'eid', $requestUrl, $params, json_encode($payload), 'json');
 
     http_response_code(200);
     echo json_encode($payload);

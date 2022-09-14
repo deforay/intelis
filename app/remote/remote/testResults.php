@@ -13,6 +13,8 @@ $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SC
 $allColResult = $db->rawQuery($allColumns);
 $oneDimensionalArray = array_map('current', $allColResult);
 
+$transactionId = $general->generateUUID();
+
 $sampleCode = array();
 $labId = null;
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
@@ -115,7 +117,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 $payload = json_encode($sampleCode);
 
 if ($counter > 0) {
-    $general->addApiTracking('vlsm-system', $counter, 'results', 'vl', null, $jsonResponse, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId,'vlsm-system', $counter, 'results', 'vl', null, $jsonResponse, $payload, 'json', $labId);
 }
 
 echo $payload;

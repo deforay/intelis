@@ -207,7 +207,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             //}
         }
         if ($counter > 0) {
-            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
+            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -366,7 +366,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             //}
         }
         if ($counter > 0) {
-            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'eid', $url, $json_data, $jsonResponse, 'json', $labId);
+            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -521,7 +521,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                         $formAttributes = array('syncTransactionId' => $transactionId);
                     }
 
-                    $request['form_attributes'] = json_encode($formAttributes);                    
+                    $request['form_attributes'] = json_encode($formAttributes);
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
                     $db->insert('form_covid19', $request);
@@ -582,7 +582,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 
         if ($counter > 0) {
-            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'covid19', $url, $json_data, $jsonResponse, 'json', $labId);
+            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -794,7 +794,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         }
 
         if ($counter > 0) {
-            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $json_data, $jsonResponse, 'json', $labId);
+            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
@@ -940,8 +940,8 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                         $formAttributes = array('syncTransactionId' => $transactionId);
                     }
                     $request['form_attributes'] = json_encode($formAttributes);
-                    
-                    
+
+
                     $db->insert('form_tb', $request);
                     $id = $db->getInsertId();
                 }
@@ -949,7 +949,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
         }
 
         if ($counter > 0) {
-            $general->addApiTracking('vlsm-system', $counter, 'receive-requests', 'tb', $url, $json_data, $jsonResponse, 'json', $labId);
+            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'tb', $url, $json_data, $jsonResponse, 'json', $labId);
         }
     }
 }
