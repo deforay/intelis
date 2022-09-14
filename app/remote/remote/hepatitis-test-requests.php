@@ -17,7 +17,7 @@ if (empty($labId)) {
 
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-
+$transactionId = $general->generateUUID();
 
 $facilityDb = new \Vlsm\Models\Facilities();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
@@ -63,6 +63,6 @@ if ($db->count > 0) {
 
 $payload = json_encode($data);
 
-$general->addApiTracking('vlsm-system', $counter, 'requests', 'hepatitis', null, $origData, $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', null, $origData, $payload, 'json', $labId);
 
 echo $payload;

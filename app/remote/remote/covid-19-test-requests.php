@@ -18,6 +18,8 @@ if (empty($labId)) {
 }
 
 
+$transactionId = $general->generateUUID();
+
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 
@@ -66,7 +68,7 @@ if ($db->count > 0) {
 
 $payload = json_encode($data);
 
-$general->addApiTracking('vlsm-system', $counter, 'requests', 'covid19', null, $origData, $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', null, $origData, $payload, 'json', $labId);
 
 
 

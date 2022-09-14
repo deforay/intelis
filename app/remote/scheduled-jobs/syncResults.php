@@ -28,6 +28,8 @@ if (strpos($headers[0], '200') === false) {
     return false;
 }
 
+$transactionId = $general->generateUUID();
+
 $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
 $sampleCode = !empty($_GET['sampleCode']) ? $_GET['sampleCode'] : null;
 
@@ -87,7 +89,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         $id = $db->update('form_vl', array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
     }
     if (count($vlLabResult) > 0) {
-        $general->addApiTracking('vlsm-system', count($vlLabResult), 'send-results', 'vl', $url, $json_data, $result, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', count($vlLabResult), 'send-results', 'vl', $url, $json_data, $result, 'json', $labId);
     }
 }
 
@@ -138,7 +140,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $id = $db->update('form_eid',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
     }
     if (count($eidLabResult) > 0) {
-        $general->addApiTracking('vlsm-system', count($eidLabResult), 'send-results', 'eid', $url, $json_data, $result, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', count($eidLabResult), 'send-results', 'eid', $url, $json_data, $result, 'json', $labId);
     }
 }
 
@@ -201,7 +203,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $id = $db->update('form_covid19',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
     }
     if (count($c19LabResult) > 0) {
-        $general->addApiTracking('vlsm-system', count($c19LabResult), 'send-results', 'covid19', $url, $json_data, $result, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', count($c19LabResult), 'send-results', 'covid19', $url, $json_data, $result, 'json', $labId);
     }
 }
 
@@ -259,7 +261,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         $id = $db->update('form_hepatitis',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
     }
     if (count($hepLabResult) > 0) {
-        $general->addApiTracking('vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $json_data, $result, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $json_data, $result, 'json', $labId);
     }
 }
 /* Get instance id for update last_remote_results_sync */

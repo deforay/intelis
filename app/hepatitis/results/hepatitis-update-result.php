@@ -273,7 +273,7 @@ require($fileArray[$arr['vl_form']]);
 		$.post("/import-configs/get-config-machine-by-config.php", {
 				configName: value,
 				machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name']  : '""'; ?>,
-				testType: 'eid'
+				testType: 'hepatitis'
 			},
 			function(data) {
 				$('#machineName').html('');

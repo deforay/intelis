@@ -18,6 +18,8 @@ $data = json_decode($jsonData, true);
 //error_log($jsonData);
 $counter = 0;
 
+$transactionId = $general->generateUUID();
+
 if ($data['Key'] == 'vlsm-get-remote') {
 
     $labId = $data['labId'] ?: null;
@@ -247,7 +249,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
         $payload = json_encode([]);
     }
 
-    $general->addApiTracking('vlsm-system', $counter, 'common-data-sync', 'common', null, $origData, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', null, $origData, $payload, 'json', $labId);
 
     echo $payload;
 } else {

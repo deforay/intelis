@@ -22,6 +22,8 @@ $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
 $app = new \Vlsm\Models\App();
 
+$transactionId = $general->generateUUID();
+
 $counter = 0;
 
 $facilityDb = new \Vlsm\Models\Facilities();
@@ -96,6 +98,6 @@ if ($db->count > 0) {
 }
 
 
-$general->addApiTracking('vlsm-system', $counter, 'requests', 'vl', null, $origData, $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', null, $origData, $payload, 'json', $labId);
 
 echo $payload;

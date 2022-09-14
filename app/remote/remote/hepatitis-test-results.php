@@ -9,6 +9,8 @@ $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
 $app = new \Vlsm\Models\App();
 
+$transactionId = $general->generateUUID();
+
 $sampleCode = array();
 $labId = null;
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
@@ -108,7 +110,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 $payload = json_encode($sampleCode);
 
 if ($counter > 0) {
-    $general->addApiTracking('vlsm-system', $counter, 'results', 'hepatitis', null, $jsonResponse, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'hepatitis', null, $jsonResponse, $payload, 'json', $labId);
 }
 
 echo $payload;

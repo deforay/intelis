@@ -12,6 +12,8 @@ $formResults = $db->rawQuery($query);
 //var_dump($formResults);die;
 $counter = 0;
 
+$transactionId = $general->generateUUID();
+
 
 foreach ($formResults as $row) {
 
@@ -225,6 +227,5 @@ foreach ($formResults as $row) {
 
 
 $response = array('processed' => $counter);
-$app = new \Vlsm\Models\App();
-$trackId = $app->addApiTracking(NULL, $counter, 'DHIS2-Hepatitis-Send', 'hepatitis');
-echo (json_encode($response));
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'DHIS2-Hepatitis-send', 'hepatitis', $url, $urlData, null, 'json', null);
+echo json_encode($response);

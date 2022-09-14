@@ -11,6 +11,9 @@ $facilityDb = new \Vlsm\Models\Facilities();
 $c19Db = new \Vlsm\Models\Covid19();
 $app = new \Vlsm\Models\App();
 $arr = $general->getGlobalConfig();
+
+$transactionId = $general->generateUUID();
+
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);
 /* echo "<pre>";
@@ -279,7 +282,7 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'covid19', $requestUrl, $params, json_encode($payload), 'json');
+    $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'covid19', $requestUrl, $params, json_encode($payload), 'json');
     http_response_code(200);
     echo json_encode($payload);
     exit(0);
