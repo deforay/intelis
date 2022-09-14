@@ -19,7 +19,8 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidResults = $general->getEidResults();
+$eidModel = new \Vlsm\Models\Eid();
+$eidResults = $eidModel->getEidResults();
 
 
 $rKey = '';
@@ -42,8 +43,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $rKey = '';
 }
 $pdResult = $db->query($pdQuery);
-$province = "";
-$province .= "<option value=''> -- Selecione -- </option>";
+$province = "<option value=''> -- Selecione -- </option>";
 foreach ($pdResult as $provinceName) {
     $province .= "<option value='" . $provinceName['province_name'] . "##" . (isset($provinceName['province_code']) && !empty($provinceName['province_code']) ? $provinceName['province_code'] : $provinceName['province_name']) . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
@@ -57,7 +57,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     <section class="content-header">
         <h1 style="font-size:1.45em;"><i class="fa-solid fa-pen-to-square"></i> SOLICITAÇÃO DE QUANTIFICAÇÃO DE DIAGNÓSTICO PRECOCE INFANTIL DO VIH</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
             <li class="active">Add EID Request</li>
         </ol>
     </section>
@@ -81,7 +81,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Nº de amostra </label></td>
@@ -191,7 +191,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title">DADOS DO PACIENTE</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
 
@@ -288,7 +288,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
                                 <br><br>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Sample Information</h4>
@@ -332,7 +332,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Informações laboratoriais </h3>
                                     </div>
-                                    <table class="table" style="width:100%">
+                                    <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <td><label for="labId">Lab Name</label> </td>
                                             <td>
@@ -395,7 +395,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th>Revisado Em</td>
+                                            <th>Revisado Em</th>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
                                         </tr>
                                     </table>

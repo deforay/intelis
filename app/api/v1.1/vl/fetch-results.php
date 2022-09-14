@@ -1,4 +1,7 @@
 <?php
+
+session_unset(); // no need of session in json response
+
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -17,7 +20,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 
     exit(0);
 }
-session_unset(); // no need of session in json response
+
 
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
@@ -28,7 +31,7 @@ $facilityDb = new \Vlsm\Models\Facilities();
 $app = new \Vlsm\Models\App();
 $arr = $general->getGlobalConfig();
 $user = null;
-$input = json_decode(file_get_contents("php://input"), true);
+
 /* echo "<pre>";
 print_r($input);
 die; */
@@ -36,6 +39,11 @@ die; */
 $requestUrl .= $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
+$input = json_decode($params, true);
+
+// if(empty($params) || empty($input)){
+//     throw new \Exception("Input parameters are missing");
+// }
 
 // The request has to send an Authorization Bearer token 
 $auth = $general->getHeader('Authorization');
@@ -46,15 +54,14 @@ if (!empty($auth)) {
 }
 // If authentication fails then do not proceed
 if (empty($user) || empty($user['user_id'])) {
-    $response = array(
-        'status' => 'failed',
-        'timestamp' => time(),
-        'error' => 'Bearer Token Invalid',
-        'data' => array()
-    );
+    // $response = array(
+    //     'status' => 'failed',
+    //     'timestamp' => time(),
+    //     'error' => 'Bearer Token Invalid',
+    //     'data' => array()
+    // );
     http_response_code(401);
-    echo json_encode($response);
-    exit(0);
+    throw new \Exception('Bearer Token Invalid');
 }
 
 try {
@@ -93,7 +100,7 @@ try {
         vl.consent_to_receive_sms                            as receiveSms,
         vl.sample_type                                       as specimenType,
         vl.arv_adherance_percentage                          as arvAdherence,
-        vl.reason_for_vl_testing                             as stViralTesting,
+        vl.reason_for_vl_testing                             as reasonForVLTesting,
         vl.community_sample                                  as communitySample,
         vl.last_vl_date_routine                              as rmTestingLastVLDate,
         vl.last_vl_result_routine                            as rmTestingVlValue,
@@ -259,10 +266,10 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, json_encode($payload), 'json');
+
     http_response_code(200);
-    echo json_encode($payload);
-    exit(0);
+    // echo json_encode($payload);
+    // exit(0);
 } catch (Exception $exc) {
 
     // http_response_code(500);
@@ -272,9 +279,13 @@ try {
         'error' => $exc->getMessage(),
         'data' => array()
     );
-    echo json_encode($payload);
+
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
 }
+
+$general->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, $payload, 'json');
+
+echo json_encode($payload);
+exit(0);

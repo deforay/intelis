@@ -169,7 +169,7 @@ $thresholdLimit = $arr['viral_load_threshold_limit'];
 
 			$sWhere[] = ' vl.vlsm_country_id="'.$arr['vl_form'].'"';
 
-            if (isset($sWhere) && sizeof($sWhere) > 0) {
+            if (isset($sWhere) && !empty($sWhere)) {
                 $sWhere =  ' AND ' . implode(" AND ", $sWhere);
            }
            else

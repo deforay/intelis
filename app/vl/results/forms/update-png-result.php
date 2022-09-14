@@ -64,8 +64,7 @@ if (!isset($stateResult[0]['province_code']) || $stateResult[0]['province_code']
 $districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "'";
 $districtResult = $db->query($districtQuery);
 
-$province = '';
-$province .= "<option value=''> -- Select -- </option>";
+$province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
@@ -153,7 +152,7 @@ $disable = "disabled = 'disabled'";
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
 		<ol class="breadcrumb">
-			<li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Add Vl Request</li>
 		</ol>
 	</section>
@@ -181,7 +180,7 @@ $disable = "disabled = 'disabled'";
 								</div>
 							</div>
 							<br />
-							<table class="table" style="width:100%">
+							<table class="table" aria-hidden="true"  style="width:100%">
 								<tr>
 									<td colspan="6" style="font-size: 18px; font-weight: bold;">Section 1: Clinic Information</td>
 								</tr>
@@ -443,7 +442,7 @@ $disable = "disabled = 'disabled'";
 								</tr>
 							</table>
 							<form class="form-inline" method='post' name='vlRequestForm' id='vlRequestForm' autocomplete="off" action="updateVlRequestHelperPng.php">
-								<table class="table" style="width:100%">
+								<table class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<td colspan="6" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 									</tr>

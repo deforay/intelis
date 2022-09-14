@@ -27,7 +27,7 @@ foreach ($actions as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><span class="fa-solid fa-pen-to-square"></span> <?php echo _("User Activity Log"); ?></h1>
+		<h1><span class="fa-solid fa-file-lines"></span> <?php echo _("User Activity Log"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><span class="fa-solid fa-chart-pie"></span> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Audit Trail"); ?></li>
@@ -39,7 +39,7 @@ foreach ($actions as $list) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th scope="row"><?php echo _("Date Range"); ?>&nbsp;:</th>
 							<td>
@@ -67,7 +67,7 @@ foreach ($actions as $list) {
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="auditTrailDataTable" class="table table-bordered table-striped">
+						<table id="auditTrailDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th><?php echo _("Audit Log"); ?></th>
@@ -92,7 +92,7 @@ foreach ($actions as $list) {
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var oTable = null;
@@ -108,11 +108,13 @@ foreach ($actions as $list) {
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
 				locale: {
-					cancelLabel: 'Clear'
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
 				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

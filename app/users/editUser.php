@@ -32,8 +32,7 @@ $selectedResult = $db->rawQuery($selectedQuery);
 //province Stratt
 $pdQuery = "SELECT * from geographical_divisions WHERE geo_parent = 0";
 $pdResult = $db->query($pdQuery);
-$province = '';
-$province .= "<option value=''> -- Select -- </option>";
+$province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
      $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
 }
@@ -51,7 +50,7 @@ $ftResult = $db->rawQuery($fQuery);
      <section class="content-header">
           <h1> <i class="fa-solid fa-user"></i> <?php echo _("Edit User"); ?></h1>
           <ol class="breadcrumb">
-               <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+               <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
                <li class="active"><?php echo _("Users"); ?></li>
           </ol>
      </section>

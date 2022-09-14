@@ -37,7 +37,7 @@ $batchResult = $db->rawQuery($batchQuery);
   <section class="content-header">
     <h1 class="fa fa-envelope"> E-mail Test Result</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
       <li class="active">E-mail Test Result</li>
     </ol>
   </section>
@@ -96,7 +96,7 @@ $batchResult = $db->rawQuery($batchQuery);
             </div>
             <div class="row">
               <div class="col-md-12">
-                <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
+                <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
                   <tr>
                     <td>&nbsp;<b>Sample Collection Date&nbsp;:</b></td>
                     <td>
@@ -254,7 +254,7 @@ $batchResult = $db->rawQuery($batchQuery);
 </div>
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
   noOfAllowedSamples = 100;
@@ -273,11 +273,13 @@ $batchResult = $db->rawQuery($batchQuery);
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
-          cancelLabel: 'Clear'
+          cancelLabel: "<?= _("Clear"); ?>",
+          format: 'DD-MMM-YYYY',
+          separator: ' to ',
         },
-        format: 'DD-MMM-YYYY',
-        separator: ' to ',
-        startDate: moment().subtract(29, 'days'),
+        showDropdowns: true,
+        alwaysShowCalendars: false,
+        startDate: moment().subtract(28, 'days'),
         endDate: moment(),
         maxDate: moment(),
         ranges: {

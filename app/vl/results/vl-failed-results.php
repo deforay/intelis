@@ -26,10 +26,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Failed/Hold Samples");?></h1>
+        <h1><i class="fa-solid fa-list-check"></i> <?php echo _("Failed/Hold Samples"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Test Request");?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Test Request"); ?></li>
         </ol>
     </section>
 
@@ -38,16 +38,16 @@ $batResult = $db->rawQuery($batQuery);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table id="advanceFilter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+                    <table id="advanceFilter" class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
                         <tr>
-                            <td><b><?php echo _("Sample Collection Date");?> :</b></td>
+                            <td><b><?php echo _("Sample Collection Date"); ?> :</b></td>
                             <td>
-                                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="background:#fff;" />
+                                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" />
                             </td>
-                            <td><b><?php echo _("Batch Code");?> :</b></td>
+                            <td><b><?php echo _("Batch Code"); ?> :</b></td>
                             <td>
-                                <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code');?>">
-                                    <option value=""> <?php echo _("-- Select --");?> </option>
+                                <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>">
+                                    <option value=""> <?php echo _("-- Select --"); ?> </option>
                                     <?php
                                     foreach ($batResult as $code) {
                                     ?>
@@ -57,10 +57,10 @@ $batResult = $db->rawQuery($batQuery);
                                     ?>
                                 </select>
                             </td>
-                            <td><b><?php echo _("Sample Type");?> :</b></td>
+                            <td><b><?php echo _("Sample Type"); ?> :</b></td>
                             <td>
-                                <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
-                                    <option value=""> <?php echo _("-- Select --");?> </option>
+                                <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+                                    <option value=""> <?php echo _("-- Select --"); ?> </option>
                                     <?php
                                     foreach ($sResult as $type) {
                                     ?>
@@ -72,45 +72,45 @@ $batResult = $db->rawQuery($batQuery);
                             </td>
                         </tr>
                         <tr>
-                            <td><b><?php echo _("Facility Name");?> :</b></td>
+                            <td><b><?php echo _("Facility Name"); ?> :</b></td>
                             <td>
-                                <select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name');?>" style="width:100%;">
+                                <select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
                                     <?= $facilitiesDropdown; ?>
                                 </select>
                             </td>
-                            <td><b><?php echo _("Province/State");?>&nbsp;:</b></td>
+                            <td><b><?php echo _("Province/State"); ?>&nbsp;:</b></td>
                             <td>
-                                <input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State');?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
+                                <input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
                             </td>
-                            <td><b><?php echo _("District/County");?> :</b></td>
+                            <td><b><?php echo _("District/County"); ?> :</b></td>
                             <td>
-                                <input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County');?>" onkeyup="loadVlRequestStateDistrict()" />
+                                <input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
                             </td>
                         </tr>
                         <tr>
-                            <td><b><?php echo _("Req. Sample Type");?> :</b></td>
+                            <td><b><?php echo _("Req. Sample Type"); ?> :</b></td>
                             <td colspan="5">
-                                <select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _('Please select request sample type');?>" style="width:23%;">
-                                    <option value=""><?php echo _("All");?></option>
-                                    <option value="result"><?php echo _("Sample With Result");?></option>
-                                    <option value="noresult"><?php echo _("Sample Without Result");?></option>
+                                <select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _('Please select request sample type'); ?>" style="width:23%;">
+                                    <option value=""><?php echo _("All"); ?></option>
+                                    <option value="result"><?php echo _("Sample With Result"); ?></option>
+                                    <option value="noresult"><?php echo _("Sample Without Result"); ?></option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-default btn-sm">
-                                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-                                &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options");?></span></button>
+                            <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
+                                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+                                &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
                             </td>
                             <td colspan="4">
-                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples");?></span></button>
+                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples"); ?></span></button>
                             </td>
                         </tr>
                     </table>
-                    <table id="filter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+                    <table id="filter" class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr id="">
                             <td>
-                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples");?></span></button>
+                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples"); ?></span></button>
                             </td>
                         </tr>
                     </table>
@@ -118,47 +118,47 @@ $batResult = $db->rawQuery($batQuery);
                         <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;">
                             <div class="col-md-12">
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Sample Code");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Sample Code"); ?></label>
                                 </div>
                                 <?php $i = 0;
                                 if ($_SESSION['instanceType'] != 'standalone') {
                                     $i = 1; ?>
                                     <div class="col-md-3">
-                                        <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code");?></label>
+                                        <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
                                     </div>
                                 <?php } ?>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_collection_date" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Collection Date");?></label> <br>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_collection_date" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Collection Date"); ?></label> <br>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Batch Code");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Batch Code"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Art No");?></label> <br>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Art No"); ?></label> <br>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient's Name");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient's Name"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="state" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Province/State");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="state" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("District/County");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("District/County"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Type");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Last Modified Date");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Last Modified Date"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Status");?></label>
+                                    <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Status"); ?></label>
                                 </div>
                             </div>
                         </div>
@@ -166,33 +166,33 @@ $batResult = $db->rawQuery($batQuery);
                     <!-- /.box-header -->
                     <div class="box-body">
                         <input type="hidden" name="checkedTests" id="checkedTests" />
-                        <table id="vlFailedResultDataTable" class="table table-bordered table-striped">
+                        <table id="vlFailedResultDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
-                                    <th><?php echo _("Sample Code");?></th>
+                                    <th><?php echo _("Sample Code"); ?></th>
                                     <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                        <th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
+                                        <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                     <?php } ?>
-                                    <th><?php echo _("Sample Collection");?><br /> <?php echo _("Date");?></th>
-                                    <th><?php echo _("Batch Code");?></th>
-                                    <th><?php echo _("Unique ART No");?></th>
-                                    <th><?php echo _("Patient's Name");?></th>
-                                    <th><?php echo _("Facility Name");?></th>
-                                    <th><?php echo _("Province/State");?></th>
-                                    <th><?php echo _("District/County");?></th>
-                                    <th><?php echo _("Sample Type");?></th>
-                                    <th><?php echo _("Result");?></th>
-                                    <th><?php echo _("Last Modified Date");?></th>
-                                    <th><?php echo _("Status");?></th>
+                                    <th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
+                                    <th><?php echo _("Batch Code"); ?></th>
+                                    <th><?php echo _("Unique ART No"); ?></th>
+                                    <th><?php echo _("Patient's Name"); ?></th>
+                                    <th><?php echo _("Facility Name"); ?></th>
+                                    <th><?php echo _("Province/State"); ?></th>
+                                    <th><?php echo _("District/County"); ?></th>
+                                    <th><?php echo _("Sample Type"); ?></th>
+                                    <th><?php echo _("Result"); ?></th>
+                                    <th><?php echo _("Last Modified Date"); ?></th>
+                                    <th><?php echo _("Status"); ?></th>
                                     <?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?>
-                                        <th><?php echo _("Action");?></th>
+                                        <th><?php echo _("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="16" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                                    <td colspan="16" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -200,19 +200,19 @@ $batResult = $db->rawQuery($batQuery);
                         if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
                         ?>
 
-                            <div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details");?>...</span><br />
+                            <div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details"); ?>...</span><br />
                                 <div class="progress" style="width:100%">
                                     <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                                     </div>
                                 </div>
                             </div> <!-- /printer_data_loading -->
                             <div id="printer_details" style="display:none">
-                                <span id="selected_printer"><?php echo _("No printer selected");?>!</span>
-                                <button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry");?></button>
+                                <span id="selected_printer"><?php echo _("No printer selected"); ?>!</span>
+                                <button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry"); ?></button>
                             </div><br /> <!-- /printer_details -->
                             <div id="printer_select" style="display:none">
-                            <?php echo _("Zebra Printer Options");?><br />
-                            <?php echo _("Printer");?>: <select id="printers"></select>
+                                <?php echo _("Zebra Printer Options"); ?><br />
+                                <?php echo _("Printer"); ?>: <select id="printers"></select>
                             </div> <!-- /printer_select -->
 
                         <?php
@@ -231,7 +231,7 @@ $batResult = $db->rawQuery($batQuery);
     </section>
     <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
 <?php
@@ -267,16 +267,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         }
         ?>
         $("#facilityName").select2({
-            placeholder: "<?php echo _("Select Facilities");?>"
+            placeholder: "<?php echo _("Select Facilities"); ?>"
         });
         loadVlRequestData();
         $('#sampleCollectionDate').daterangepicker({
                 locale: {
-                    cancelLabel: 'Clear'
+                    cancelLabel: "<?= _("Clear"); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
                 },
-                format: 'DD-MMM-YYYY',
-                separator: ' to ',
-                startDate: moment().subtract(29, 'days'),
+                showDropdowns: true,
+                alwaysShowCalendars: false,
+                startDate: moment().subtract(28, 'days'),
                 endDate: moment(),
                 maxDate: moment(),
                 ranges: {
@@ -523,7 +525,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             function(data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
-                    alert("<?php echo _("Unable to generate the excel file");?>");
+                    alert("<?php echo _("Unable to generate the excel file"); ?>");
                 } else {
                     location.href = '/temporary/' + data;
                 }
@@ -548,10 +550,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 function(data) {
                     $.unblockUI();
                     if (data > 0) {
-                        alert("<?php echo _("Retest has been submitted");?>.");
+                        alert("<?php echo _("Retest has been submitted"); ?>.");
                         oTable.fnDraw();
                     } else {
-                        alert("<?php echo _("Something went wrong. Please try again later");?>");
+                        alert("<?php echo _("Something went wrong. Please try again later"); ?>");
                     }
                 });
         }

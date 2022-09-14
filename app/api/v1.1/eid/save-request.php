@@ -1,9 +1,12 @@
 <?php
 
 session_unset(); // no need of session in json response
+ini_set('memory_limit', -1);
+header('Content-Type: application/json');
+
+
 try {
-    ini_set('memory_limit', -1);
-    header('Content-Type: application/json');
+
     $general = new \Vlsm\Models\General();
     $userDb = new \Vlsm\Models\Users();
     $app = new \Vlsm\Models\App();
@@ -12,12 +15,16 @@ try {
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
 
-    $input = json_decode(file_get_contents("php://input"), true);
+    $origJson = file_get_contents("php://input") ?: '[]';
+    $input = json_decode($origJson, true);
+
+    if (empty($input) || empty($input['data'])) {
+        throw new \Exception("Invalid request");
+    }
 
     /* For API Tracking params */
     $requestUrl .= $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $params = file_get_contents("php://input");
 
     $auth = $general->getHeader('Authorization');
     if (!empty($auth)) {
@@ -28,30 +35,37 @@ try {
 
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {
-        $response = array(
-            'status' => 'failed',
-            'timestamp' => time(),
-            'error' => 'Bearer Token Invalid',
-            'data' => array()
-        );
+        // $response = array(
+        //     'status' => 'failed',
+        //     'timestamp' => time(),
+        //     'error' => 'Bearer Token Invalid',
+        //     'data' => array()
+        // );
         http_response_code(401);
-        echo json_encode($response);
-        exit(0);
+        throw new \Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
+
+    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
+    $rowData = $db->rawQuery($sQuery);
+    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $formId = $general->getGlobalConfig('vl_form');
+
+    /* Update form attributes */
+    $transactionId = $general->generateUUID();
+    $version = $general->getSystemConfig('sc_version');
+    $deviceId = $general->getHeader('deviceId');
+
     $responseData = array();
-    foreach ($input['data'] as $rootKey => $field) {
-        $data = $field;
+    foreach ($input['data'] as $rootKey => $data) {
         $sampleFrom = '';
-        $data['formId'] = $data['countryId'] = $general->getGlobalConfig('vl_form');
-        $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
-        $rowData = $db->rawQuery($sQuery);
-        $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
+        $data['formId'] = $data['countryId'] = $formId;
+
         $sampleFrom = '';
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && count($province) > 0) {
+            if (isset($province) && !empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'province_name', 'province_details', 'province_id', true);
@@ -117,21 +131,23 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $data['sampleCollectionDate'] = $general->isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $data['sampleCollectionDate'] = NULL;
         }
+
+        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
+
         $eidData = array(
             'vlsm_country_id' => $data['formId'] ?: null,
+            'vlsm_instance_id' => $data['instanceId'],
             'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
-            'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
-            'request_created_datetime' => $general->getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime(),
             'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => $general->getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -149,6 +165,18 @@ try {
             $eidData['remote_sample'] = 'no';
         }
 
+        /* Update version in form attributes */
+        $version = $general->getSystemConfig('sc_version');
+
+        $formAttributes = array(
+            'applicationVersion'    => $version,
+            'apiTransactionId'      => $transactionId,
+            'mobileAppVersion'      => $input['appVersion'],
+            'deviceId'              => $deviceId
+        );
+        $eidData['form_attributes'] = json_encode($formAttributes);
+
+
         $id = 0;
         if (isset($rowData) && $rowData['eid_id'] > 0) {
             $db = $db->where('eid_id', $rowData['eid_id']);
@@ -163,10 +191,7 @@ try {
         $tableName = "form_eid";
         $tableName1 = "activity_log";
 
-        $instanceId = '';
-        if (empty($instanceId) && $data['instanceId']) {
-            $instanceId = $data['instanceId'];
-        }
+
 
         if (empty(trim($data['sampleCode']))) {
             $data['sampleCode'] = NULL;
@@ -192,22 +217,19 @@ try {
         }
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
-            $approvedOn = explode(" ", $data['approvedOn']);
-            $data['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+            $data['approvedOn'] = $general->isoDateFormat($data['approvedOn'], true);
         } else {
             $data['approvedOn'] = NULL;
         }
 
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
-            $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = $general->isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = NULL;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
-            $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = $general->isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = NULL;
         }
@@ -238,8 +260,7 @@ try {
         }
 
         if (isset($data['previousPCRTestDate']) && trim($data['previousPCRTestDate']) != "") {
-            $previousPCRTestDate = explode(" ", $data['previousPCRTestDate']);
-            $data['previousPCRTestDate'] = $general->isoDateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
+            $data['previousPCRTestDate'] = $general->isoDateFormat($data['previousPCRTestDate']);
         } else {
             $data['previousPCRTestDate'] = NULL;
         }
@@ -258,21 +279,19 @@ try {
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
-            $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+            $data['resultDispatchedOn'] = $general->isoDateFormat($data['resultDispatchedOn'], true);
         } else {
             $data['resultDispatchedOn'] = NULL;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
-            $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = $general->isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+            $data['sampleDispatchedOn'] = $general->isoDateFormat($data['sampleDispatchedOn'], true);
         } else {
             $data['sampleDispatchedOn'] = NULL;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $data['revisedOn'] = $general->isoDateFormat($data['revisedOn']);
+            $data['revisedOn'] = $general->isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = NULL;
         }
@@ -340,7 +359,7 @@ try {
             'result_reviewed_datetime'                          => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'revised_by'                                        => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on'                                        => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
-            'reason_for_changing'                               => (!empty($data['reasonForEidResultChanges']) && !empty($data['reasonForEidResultChanges'])) ? $data['reasonForEidResultChanges'] : null,
+            'reason_for_changing'                               => (isset($data['reasonForEidResultChanges']) && !empty($data['reasonForEidResultChanges'])) ? $data['reasonForEidResultChanges'] : null,
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                       => isset($data['sampleRejectionReason']) ? $data['sampleRejectionReason'] : null,
@@ -349,7 +368,7 @@ try {
         );
 
         if ($rowData) {
-            $eidData['last_modified_datetime']  = $general->getCurrentDateTime();
+            $eidData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime();
             $eidData['last_modified_by']  = $user['user_id'];
         } else {
             $eidData['sample_registered_at_lab']  = $general->getCurrentDateTime();
@@ -426,13 +445,11 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'eid', $requestUrl, $params, json_encode($payload), 'json');
+
     http_response_code(200);
-    echo json_encode($payload);
-    exit(0);
 } catch (Exception $exc) {
 
-    // http_response_code(500);
+    http_response_code(400);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),
@@ -440,10 +457,10 @@ try {
         'data' => array()
     );
 
-
-    echo json_encode($payload);
-
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
 }
+$payload = json_encode($payload);
+$general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'eid', $requestUrl, $origJson, $payload, 'json');
+echo $payload;
+exit(0);

@@ -13,7 +13,8 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$eidResults = $general->getEidResults();
+$eidModel = new \Vlsm\Models\Eid();
+$eidResults = $eidModel->getEidResults();
 
 
 // Getting the list of Provinces, Districts and Facilities
@@ -41,8 +42,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $rKey = '';
 }
 $pdResult = $db->query($pdQuery);
-$province = "";
-$province .= "<option value=''> -- Selecione -- </option>";
+$province = "<option value=''> -- Selecione -- </option>";
 foreach ($pdResult as $provinceName) {
     $province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
@@ -62,7 +62,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
     <section class="content-header">
         <h1><i class="fa-solid fa-pen-to-square"></i> SOLICITAÇÃO DE QUANTIFICAÇÃO DE DIAGNÓSTICO PRECOCE INFANTIL DO VIH</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
             <li class="active">Edit EID Request</li>
         </ol>
     </section>
@@ -86,7 +86,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                             </div>
-                            <table class="table" style="width:100%">
+                            <table class="table" aria-hidden="true"  style="width:100%">
                                 <tr>
                                     <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                         <td><label for="sampleCode">Nº de amostra </label></td>
@@ -173,7 +173,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                             <div class="box-header with-border">
                                 <h3 class="box-title">DADOS DO PACIENTE</h3>
                             </div>
-                            <table class="table" style="width:100%">
+                            <table class="table" aria-hidden="true"  style="width:100%">
 
                                 <tr>
                                     <th style="width:15% !important"><label for="childName">Nome da Criança </label></th>
@@ -267,7 +267,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                             </table>
 
                             <br><br>
-                            <table class="table">
+                            <table class="table" aria-hidden="true" >
                                 <tr>
                                     <th colspan=4 style="border-top:#ccc 2px solid;">
                                         <h4>Sample Information</h4>
@@ -311,7 +311,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Informações laboratoriais </h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                         <td>

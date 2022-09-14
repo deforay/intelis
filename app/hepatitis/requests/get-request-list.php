@@ -224,7 +224,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
      $_SESSION['hepatitisRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-     $sQuery = $sQuery . ' where ' . $sWhere;
+     $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
 // die($sQuery);
 if (isset($sOrder) && $sOrder != "") {

@@ -41,6 +41,7 @@ foreach ($sampleResult as $sampleRow) {
             $tbData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
         }
         $tbData['result_status'] = 6;
+        $tbData['data_sync'] = 0;
         $tbData['last_modified_by'] = $_SESSION['userId'];
         $tbData['last_modified_datetime'] = $general->getCurrentDateTime();
 

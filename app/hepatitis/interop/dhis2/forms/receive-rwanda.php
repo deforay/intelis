@@ -82,6 +82,9 @@ $eventsDataElementMapping = [
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
+$transactionId = $general->generateUUID();
+$version = $general->getSystemConfig('sc_version');
+
 foreach ($trackedEntityInstances as $tracker) {
 
     $receivedCounter++;
@@ -291,6 +294,13 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
         $formData['vlsm_country_id'] = 7; // RWANDA
         $formData['last_modified_datetime'] = $general->getCurrentDateTime();
+
+
+        $formAttributes = array();
+        $formAttributes['apiTransactionId'] = $transactionId;
+        $formAttributes['applicationVersion'] = $version;
+        $formAttributes['trackedEntityInstance'] = $tracker['trackedEntityInstance'];
+        $formData['form_attributes'] = json_encode($formAttributes);
         //echo "<pre>";var_dump($formData);echo "</pre>";
         //$updateColumns = array_keys($formData);
         //$db->onDuplicate($updateColumns, 'unique_id');

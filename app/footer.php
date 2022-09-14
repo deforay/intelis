@@ -56,7 +56,7 @@
 <script type="text/javascript">
 	window.additionalXHRParams = {
 		layout: 0,
-		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateRandomString(64); ?>'
+		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateUUID(); ?>'
 	};
 
 	$.ajaxSetup({
@@ -98,7 +98,7 @@
 					.always(function() {
 						//alert( "complete" );
 						$.unblockUI();
-						syncRequests(remoteUrl);
+						syncResults(remoteUrl);
 					});
 			}
 		}
@@ -122,7 +122,7 @@
 					})
 					.always(function() {
 						$.unblockUI();
-						syncResults(remoteUrl);
+						//syncResults(remoteUrl);
 					});
 			}
 		}
@@ -148,6 +148,7 @@
 					})
 					.always(function() {
 						$.unblockUI();
+						syncRequests(remoteUrl);
 					});
 			}
 		}
@@ -183,7 +184,7 @@
 
 				(function checkNetworkConnection() {
 					$.ajax({
-						url: '<?php echo rtrim(SYSTEM_CONFIG['remoteURL'], "/"); ?>/api/v1.1/version.php',
+						url: '<?php echo rtrim(SYSTEM_CONFIG['remoteURL'], "/"); ?>/api/version.php',
 						cache: false,
 						success: function(data) {
 							$('.is-remote-server-reachable').fadeIn(1000);

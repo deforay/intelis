@@ -13,7 +13,7 @@ require_once(APPLICATION_PATH . '/header.php');
   <section class="content-header">
     <h1><i class="fa-solid fa-heart-pulse"></i> <?php echo _("TB Test Reasons");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("TB Test Reasons");?></li>
     </ol>
   </section>
@@ -25,13 +25,13 @@ require_once(APPLICATION_PATH . '/header.php');
         <div class="box">
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-              <a href="add-tb-test-reasons.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add TB Test Reasons");?></a>
+              <a href="add-tb-test-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add TB Test Reasons");?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="testReasonDataTable" class="table table-bordered table-striped">
+            <table id="testReasonDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th><?php echo _("Test Reason");?></th>

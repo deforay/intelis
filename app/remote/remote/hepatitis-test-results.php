@@ -20,7 +20,6 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
     $lab = array();
     $options = [
-        'pointer' => '/result',
         'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
     ];
     $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
@@ -36,7 +35,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
     $counter = 0;
     foreach ($resultData as $key => $resultRow) {
-        $couner++;
+        $counter++;
         $lab = array();
         foreach ($oneDimensionalArray as $result) {
             if (isset($resultRow[$result])) {
@@ -69,9 +68,9 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
         $lab['last_modified_datetime'] = $general->getCurrentDateTime();
 
-        unset($lab['request_created_by']);
-        unset($lab['last_modified_by']);
-        unset($lab['request_created_datetime']);
+        // unset($lab['request_created_by']);
+        // unset($lab['last_modified_by']);
+        // unset($lab['request_created_datetime']);
 
         if ($lab['result_status'] != 7 && $lab['result_status'] != 4) {
             unset($lab['result']);
@@ -88,12 +87,11 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             $sampleCode[] = $lab['sample_code'];
             continue;
         }
-        $lab['source_of_request'] = 'vlsts';
+        //$lab['source_of_request'] = 'vlsts';
         $sResult = $db->rawQuery($sQuery);
         if ($sResult) {
             $db = $db->where('hepatitis_id', $sResult[0]['hepatitis_id']);
             $db->update('form_hepatitis', $lab);
-            error_log(var_export($lab, true));
             $id = $sResult[0]['hepatitis_id'];
         } else {
             $db->insert('form_hepatitis', $lab);

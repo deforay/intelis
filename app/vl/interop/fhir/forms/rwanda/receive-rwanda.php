@@ -78,6 +78,8 @@ $taskAttributes = $serviceAttributes = array();
 // echo prettyJson($json);
 // die;
 
+$transactionId = $general->generateUUID();
+$version = $general->getSystemConfig('sc_version');
 
 foreach ($entries as $entry) {
 
@@ -252,6 +254,8 @@ foreach ($entries as $entry) {
                 }
             }
 
+            $formData[$basedOnServiceRequest]['form_attributes']['applicationVersion'] = $version;
+            $formData[$basedOnServiceRequest]['form_attributes']['apiTransactionId'] = $transactionId;
             $formData[$basedOnServiceRequest]['form_attributes']['fhir'] = (array_merge($taskAttributes[$basedOnServiceRequest], $serviceAttributes[$basedOnServiceRequest]));
             $formData[$basedOnServiceRequest]['form_attributes'] = json_encode($formData[$basedOnServiceRequest]['form_attributes']);
             $formData[$basedOnServiceRequest]['request_created_datetime'] = $general->getCurrentDateTime();

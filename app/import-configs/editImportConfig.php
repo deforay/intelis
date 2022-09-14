@@ -48,9 +48,9 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1 class="fa fa-gears"> <?php echo _("Edit Instrument"); ?></h1>
+		<h1><i  class="fa fa-gears"></i> <?php echo _("Edit Instrument"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Edit Instrument"); ?></li>
 		</ol>
 	</section>
@@ -356,7 +356,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 													</div>
 												</td>
 												<td align="center" style="vertical-align:middle;">
-													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>
+													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>
 												</td>
 											</tr>
 										<?php
@@ -382,7 +382,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</div>
 											</td>
 											<td align="center" style="vertical-align:middle;">
-												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
+												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
 											</td>
 										</tr>
 									<?php } ?>
@@ -491,7 +491,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								<input type="text" name="longitude[]" id="longitude' + tableRowId + '" class="form-control " placeholder="<?php echo _('Longitude'); ?>" data-placement="bottom" title="<?php echo _('Longitude'); ?>"/>\
 							</div>\
 						</div>';
-		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
+		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
 		$(a).fadeIn(800);
 		tableRowId++;
 	}

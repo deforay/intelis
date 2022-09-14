@@ -233,22 +233,22 @@ try {
                'dtime' => $general->getCurrentDateTime()
           );
      }
-     if (count($allChange) > 0) {
+     if (!empty($allChange)) {
           $reasonForChanges = json_encode($allChange);
      }
      //set vl test reason
-     if (isset($_POST['stViralTesting']) && trim($_POST['stViralTesting']) != "") {
-          $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons where test_reason_name='" . $_POST['stViralTesting'] . "'";
+     if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
+          $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons where test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
           $reasonResult = $db->rawQuery($reasonQuery);
           if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
-               $_POST['stViralTesting'] = $reasonResult[0]['test_reason_id'];
+               $_POST['reasonForVLTesting'] = $reasonResult[0]['test_reason_id'];
           } else {
                $data = array(
-                    'test_reason_name' => $_POST['stViralTesting'],
+                    'test_reason_name' => $_POST['reasonForVLTesting'],
                     'test_reason_status' => 'active'
                );
                $id = $db->insert('r_vl_test_reasons', $data);
-               $_POST['stViralTesting'] = $id;
+               $_POST['reasonForVLTesting'] = $id;
           }
      }
      if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
@@ -258,6 +258,8 @@ try {
           $_POST['reviewedOn'] = NULL;
      }
 
+     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection']. ' ' . $finalResult :  $finalResult;
+     
      $vldata = array(
           'vlsm_instance_id'                      => $instanceId,
           'sample_reordered'                      => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',
@@ -281,7 +283,7 @@ try {
           'consent_to_receive_sms'                => (isset($_POST['receiveSms']) && $_POST['receiveSms'] != '') ? $_POST['receiveSms'] :  NULL,
           'sample_type'                           => (isset($_POST['specimenType']) && $_POST['specimenType'] != '') ? $_POST['specimenType'] :  NULL,
           'arv_adherance_percentage'              => (isset($_POST['arvAdherence']) && $_POST['arvAdherence'] != '') ? $_POST['arvAdherence'] :  NULL,
-          'reason_for_vl_testing'                 => (isset($_POST['stViralTesting'])) ? $_POST['stViralTesting'] : NULL,
+          'reason_for_vl_testing'                 => (isset($_POST['reasonForVLTesting'])) ? $_POST['reasonForVLTesting'] : NULL,
           'community_sample'                      => (isset($_POST['communitySample'])) ? $_POST['communitySample'] : NULL,
           'last_vl_date_routine'                  => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? $general->isoDateFormat($_POST['rmTestingLastVLDate']) :  NULL,
           'last_vl_result_routine'                => (isset($_POST['rmTestingVlValue']) && $_POST['rmTestingVlValue'] != '') ? $_POST['rmTestingVlValue'] :  NULL,

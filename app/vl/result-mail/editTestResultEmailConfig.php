@@ -31,8 +31,8 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
   <section class="content-header">
     <h1 class="fa fa-gears"> <?php echo _("Edit Test Result Email Configuration");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
-      <li><a href="testResultEmailConfig.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Manage Test Result Email/SMS Config");?></a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
+      <li><a href="testResultEmailConfig.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Manage Test Result Email/SMS Config");?></a></li>
       <li class="active"><?php echo _("Edit Test Result Email Configuration");?></li>
     </ol>
   </section>
@@ -98,7 +98,7 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
                       <option value="ART Regimen" <?php echo (in_array("ART Regimen", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("ART Regimen");?></option>
                       <option value="Patient consent to SMS Notification?" <?php echo (in_array("Patient consent to SMS Notification?", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("Patient consent to SMS Notification");?>?</option>
                       <option value="Patient Mobile Number" <?php echo (in_array("Patient Mobile Number", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("Patient Mobile Number");?></option>
-                      <option value="Date Of Last Viral Load Test" <?php echo (in_array("Date Of Last Viral Load Test", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("Date Of Last Viral Load Test");?></option>
+                      <option value="Date of Last VL Test" <?php echo (in_array("Date of Last VL Test", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("Date of Last VL Test");?></option>
                       <option value="Result Of Last Viral Load" <?php echo (in_array("Result Of Last Viral Load", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("Result Of Last Viral Load");?></option>
                       <option value="Viral Load Log" <?php echo (in_array("Viral Load Log", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("Viral Load Log");?></option>
                       <option value="Reason For VL Test" <?php echo (in_array("Reason For VL Test", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("Reason For VL Test");?></option>

@@ -60,6 +60,8 @@ try {
         $reviewByCol = '';
         $lotExpirationDateCol = 13;
 
+        $dateFormat = 'd/m/Y';
+
         if (strpos($mime_type, 'text/plain') !== false) {
             $infoFromFile = array();
             $testDateRow = "";
@@ -72,13 +74,9 @@ try {
                     $row++;
                     if ($row < $skip) {
                         if ($row == 8) {
-                            $timestamp = DateTime::createFromFormat('!m/d/Y h:i:s A', $sheetData[1]);
-                            if (!empty($timestamp)) {
-                                $timestamp = $timestamp->getTimestamp();
-                                $testingDate = date('Y-m-d H:i', ($timestamp));
-                            } else {
-                                $testingDate = null;
-                            }
+                            $testingDateArray = \Vlsm\Helpers\Results::abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
+                            $dateFormat = $testingDateArray['dateFormat'];
+                            $testingDate = $testingDateArray['testingDate'];
                         }
                         continue;
                     }
@@ -161,7 +159,7 @@ try {
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
                     if (trim($sheetData[$lotExpirationDateCol]) != '') {
-                        $timestamp = DateTime::createFromFormat('!m/d/Y', $sheetData[$lotExpirationDateCol]);
+                        $timestamp = DateTime::createFromFormat("!$dateFormat", $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
                             $lotExpirationDateVal = date('Y-m-d H:i', $timestamp);
@@ -236,7 +234,7 @@ try {
                 'result_value_absolute' => $d['absVal'],
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime' => $testingDate,
+                'sample_tested_datetime' => $d['testingDate'],
                 'result_status' => '6',
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],

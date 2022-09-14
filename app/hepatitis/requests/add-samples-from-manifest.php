@@ -14,9 +14,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-plus"></i> <?php echo _("Add Samples from Manifest"); ?></h1>
+		<h1><em class="fa-solid fa-plus"></em> <?php echo _("Add Samples from Manifest"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Hepatitis Test Request"); ?></li>
 		</ol>
 	</section>
@@ -26,7 +26,7 @@ require_once(APPLICATION_PATH . '/header.php');
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
+					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
 							<td style="width:20%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code"); ?> :</b></td>
 							<td>
@@ -37,9 +37,9 @@ require_once(APPLICATION_PATH . '/header.php');
 								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span><?php echo _("Submit"); ?></span></button>
 							</td>
 						</tr>
-						<tr>
+						<tr class="activateSample" style="display:none;">
 							<th style="width:50%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
-							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select Sample Received at Testing Lab" readonly /></td>
+							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select datetime for Sample Received at Testing Lab" readonly /></td>
 
 							<td style="width:100%;" colspan="3">
 								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa-solid fa-square-check"></i> <?php echo _("Activate Samples"); ?></a>
@@ -86,7 +86,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
 <?php
@@ -244,7 +244,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function activeSampleCode() {
 		if ($("#testDate").val() == "") {
-			alert("Please select the sample received at testing lab");
+			alert("Please select datetime for Sample Received at Testing Lab");
 			return false;
 		}
 		$.blockUI();

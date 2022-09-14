@@ -19,7 +19,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 $general = new \Vlsm\Models\General();
-$eidResults = $general->getEidResults();
+$eidModel = new \Vlsm\Models\Eid();
+$eidResults = $eidModel->getEidResults();
 $tableName = "form_eid";
 $primaryKey = "eid_id";
 

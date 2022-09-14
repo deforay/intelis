@@ -47,7 +47,7 @@ $packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString
   <section class="content-header">
     <h1><i class="fa-solid fa-pen-to-square"></i> Positive Confirmation Manifest</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
       <li><a href="/covid-19/results/covid-19-confirmation-manifest.php"> Manage Positive Confirmation Manifest</a></li>
       <li class="active">Add Positive Confirmation Manifest</li>
     </ol>

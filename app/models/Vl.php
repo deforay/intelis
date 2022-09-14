@@ -153,9 +153,9 @@ class Vl
         // }
         if ($checkResult !== null) {
             error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
-            error_log("DUP::: Sample Key Code ====== " . $checkResult[$sampleCodeKeyCol]);
+            error_log("DUP::: Sample Key Code ====== " . $maxId);
             error_log('DUP::: ' . $this->db->getLastQuery());
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
+            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
         return json_encode($sCodeKey);
     }
@@ -343,22 +343,23 @@ class Vl
             $unit = $unitArray[1];
         } else if (strpos($unit, 'Log') !== false && is_numeric($result)) {
             $logVal = $result;
-            $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+            $originalResultValue = $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
         } else if (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
             if (strpos($result, '< 2.00E+1') !== false) {
                 $vlResult = "< 20";
             } else {
                 $resultArray = explode("(", $result);
                 $exponentArray = explode("E", $resultArray[0]);
+                $absVal = ($resultArray[0]);
                 $vlResult = (float) $resultArray[0];
                 $absDecimalVal = (float) trim($vlResult);
                 $logVal = round(log10($absDecimalVal), 2);
             }
         } else {
+            $absVal = ($result);
             $absDecimalVal = (float) trim($result);
             $logVal = round(log10($absDecimalVal), 2);
             $txtVal = null;
-            $vlResult = $absDecimalVal;
         }
 
         return array(
@@ -463,6 +464,32 @@ class Vl
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
+            /* Update version in form attributes */
+            $version = $general->getSystemConfig('sc_version');
+            if (isset($version) && !empty($version)) {
+                $ipaddress = '';
+                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+                } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
+                } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                    $ipaddress = $_SERVER['REMOTE_ADDR'];
+                } else {
+                    $ipaddress = 'UNKNOWN';
+                }
+                $formAttributes = array(
+                    'applicationVersion'  => $version,
+                    'ip_address'    => $ipaddress
+                );
+                $vlData['form_attributes'] = json_encode($formAttributes);
+            }
+
 
             $id = 0;
             if ($rowData) {

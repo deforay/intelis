@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
-
+$usersDb = new \Vlsm\Models\Users();
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
@@ -37,7 +37,7 @@ $provinceRequested = !empty($_POST['pName']) ? $_POST['pName'] : null;
 $districtRequested = !empty($_POST['dName']) ? $_POST['dName'] : null;
 $facilityTypeRequested = !empty($_POST['fType']) ? $_POST['fType'] : 1;   // 1 = Health Facilities
 
-$facilityTypeTable = !empty($facilityTypeRequested) ? $facilityTypeTableList[$facilityTypeRequested] : $facilityTypeTableList[$facilityTypeRequested];
+$facilityTypeTable = $facilityTypeTableList[$facilityTypeRequested];
 
 $facilityMap = null;
 if (empty($_POST['comingFromUser']) || $_POST['comingFromUser'] != 'yes') {
@@ -47,32 +47,37 @@ if (!empty($facilityIdRequested)) {
 	$db->where("f.facility_id", $facilityIdRequested);
 	$facilityInfo = $db->getOne('facility_details f');
 
+	$labContactUser = $usersDb->getUserInfo($facilityInfo['contact_person']);
+	if(!empty($labContactUser)){
+		$facilityInfo['contact_person'] = $labContactUser['user_name'];
+	}
+
 	$provinceOptions = getProvinceDropdown($facilityInfo['facility_state']);
 	$districtOptions = getDistrictDropdown($facilityInfo['facility_state'], $facilityInfo['facility_district']);
 	echo $provinceOptions . "###" . $districtOptions . "###" . $facilityInfo['contact_person'];
 } else if (!empty($provinceRequested) && !empty($districtRequested) && $_POST['requestType'] == 'patient') {
 	$provinceName = explode("##", $provinceRequested);
 	$districtOptions = getDistrictDropdown($provinceName[0], $districtRequested);
-	echo '' . "###" . $districtOptions . "###" . '';
+	echo "###" . $districtOptions . "###";
 } else if (!empty($provinceRequested) && !empty($districtRequested) && is_numeric($provinceRequested) && is_numeric($districtRequested)) {
 	$districtOptions = getDistrictDropdown($provinceRequested, $districtRequested);
-	echo '' . "###" . $districtOptions . "###" . '';
+	echo "###" . $districtOptions . "###";
 } else if (!empty($provinceRequested)) {
 	$provinceName = explode("##", $provinceRequested);
 
-	$facilityOptions = getFacilitiesDropdown($provinceName[0], null);
+	$facilityOptions = getFacilitiesDropdown($provinceName[0], null, $usersDb);
 	$districtOptions = getDistrictDropdown($provinceName[0]);
 
-	echo $facilityOptions . "###" . $districtOptions . "###" . '';
+	echo $facilityOptions . "###" . $districtOptions . "###";
 } else if (!empty($districtRequested)) {
 
-	$facilityOptions = getFacilitiesDropdown(null, $districtRequested);
+	$facilityOptions = getFacilitiesDropdown(null, $districtRequested, $usersDb);
 	$testingLabsList = $facilitiesDb->getTestingLabs($testType);
 	$testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
 
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 } else if (!empty($facilityTypeRequested)) {
-	$facilityOptions = getFacilitiesDropdown(null, $districtRequested);
+	$facilityOptions = getFacilitiesDropdown(null, $districtRequested, $usersDb);
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 }
 
@@ -144,7 +149,7 @@ function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null)
 }
 
 
-function getFacilitiesDropdown($provinceName = null, $districtRequested = null)
+function getFacilitiesDropdown($provinceName = null, $districtRequested = null, $usersDb = null)
 {
 	global $db;
 	global $option;
@@ -178,6 +183,12 @@ function getFacilitiesDropdown($provinceName = null, $districtRequested = null)
 		}
 		foreach ($facilityInfo as $fDetails) {
 			$fcode = (isset($fDetails['facility_code']) && $fDetails['facility_code'] != "") ? ' - ' . $fDetails['facility_code'] : '';
+
+			$labContactUser = $usersDb->getUserInfo($fDetails['contact_person']);
+			var_dump($labContactUser);
+			if(!empty($labContactUser)){
+				$fDetails['contact_person'] = $labContactUser['user_name'];
+			}			
 
 			$facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (addslashes($fDetails['facility_name'])) . $fcode . "</option>";
 		}

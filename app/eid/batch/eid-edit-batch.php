@@ -67,7 +67,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 	<section class="content-header">
 		<h1>Edit Batch</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Batch</li>
 		</ol>
 	</section>
@@ -79,7 +79,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
+			<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
 
 					<th>Facility</th>
@@ -196,7 +196,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var startDate = "";
@@ -227,12 +227,14 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 			placeholder: "Select Facilities"
 		});
 		$('#sampleCollectionDate').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
+                locale: {
+                    cancelLabel: "<?= _("Clear"); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
+				showDropdowns: true,
+alwaysShowCalendars: false,
+startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

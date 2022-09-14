@@ -36,6 +36,8 @@ foreach ($sampleResult as $sampleRow) {
         $hepatitisData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $hepatitisData['sample_code_key'] = $sampleData['sampleCodeKey'];
         $hepatitisData['result_status'] = 6;
+        $hepatitisData['data_sync'] = 0;
+        $hepatitisData['last_modified_datetime'] = $general->getCurrentDateTime();
         if(!empty($_POST['testDate'])){
             $hepatitisData['sample_tested_datetime'] = null;
             $hepatitisData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];

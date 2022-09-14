@@ -13,7 +13,7 @@ $rsnInfo = $db->query($rsnQuery);
 	<section class="content-header">
 		<h1><i class="fa-solid fa-child"></i> Edit EID Sample Rejection Reasons</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">EID Sample Rejection Reasons</li>
 		</ol>
 	</section>

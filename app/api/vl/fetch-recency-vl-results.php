@@ -37,8 +37,8 @@ if (empty($user) || empty($user['user_id'])) {
 $sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
 $recencyId = !empty($_REQUEST['r']) ? explode(",", $db->escape($_REQUEST['r'])) : null;
 $from = !empty($_REQUEST['f']) ? $db->escape($_REQUEST['f']) : null;
-$to = !empty($_REQUEST['t']) ? $db->escape($_REQUEST['t']) : null;;
-$orderSortType = !empty($_REQUEST['orderSortType']) ? $db->escape($_REQUEST['orderSortType']) : null;;
+$to = !empty($_REQUEST['t']) ? $db->escape($_REQUEST['t']) : null;
+$orderSortType = !empty($_REQUEST['orderSortType']) ? $db->escape($_REQUEST['orderSortType']) : null;
 
 if (!$sampleCode && !$recencyId && (!$from || !$to)) {
     $response = array(

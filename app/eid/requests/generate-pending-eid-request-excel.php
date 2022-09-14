@@ -1,4 +1,7 @@
 <?php
+
+use Vlsm\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -6,8 +9,10 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
+$dateTimeUtil = new DateUtils();
 
-$eidResults = $general->getEidResults();
+$eidModel = new \Vlsm\Models\Eid();
+$eidResults = $eidModel->getEidResults();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";
@@ -57,10 +62,13 @@ $rResult = $db->rawQuery($sQuery);
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
+
+$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+
 if ($_SESSION['instanceType'] == 'standalone') {
-    $headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-} else {
-    $headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+    if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+        unset($headings[$key]);
+    }
 }
 $colNo = 1;
 
@@ -119,8 +127,8 @@ foreach ($rResult as $aRow) {
     $row = array();
     //date of birth
     $dob = '';
-    if ($aRow['child_dob'] != NULL && trim($aRow['child_dob']) != '' && $aRow['child_dob'] != '0000-00-00') {
-        $dob =  date("d-m-Y", strtotime($aRow['child_dob']));
+    if (!empty($aRow['child_dob'])) {
+        $dob =  $dateTimeUtil->humanReadableDateFormat($aRow['child_dob']);
     }
     //set gender
     $gender = '';
@@ -133,18 +141,17 @@ foreach ($rResult as $aRow) {
     }
     //sample collecion date
     $sampleCollectionDate = '';
-    if ($aRow['sample_collection_date'] != NULL && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", $aRow['sample_collection_date']);
-        $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
+    if (!empty($aRow['sample_collection_date'])) {
+        $sampleCollectionDate =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_collection_date']);
     }
 
     $sampleTestedOn = '';
-    if ($aRow['sample_tested_datetime'] != NULL && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
-        $sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
+    if (!empty($aRow['sample_tested_datetime'])) {
+        $sampleTestedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_tested_datetime']);
     }
 
-    if ($aRow['sample_received_at_vl_lab_datetime'] != NULL && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00') {
-        $sampleReceivedOn =  date("d-m-Y", strtotime($aRow['sample_received_at_vl_lab_datetime']));
+    if (!empty($aRow['sample_received_at_vl_lab_datetime'])) {
+        $sampleReceivedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
     }
 
 
@@ -156,10 +163,14 @@ foreach ($rResult as $aRow) {
     //result dispatched date
     $resultDispatchedDate = '';
     if ($aRow['result_printed_datetime'] != NULL && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", $aRow['result_printed_datetime']);
-        $resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
+        $resultDispatchedDate =  $dateTimeUtil->humanReadableDateFormat($aRow['result_printed_datetime']);
     }
 
+    //requeste created date time
+    $requestCreatedDatetime = '';
+    if ($aRow['request_created_datetime'] != NULL && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
+        $requestCreatedDatetime =  $dateTimeUtil->humanReadableDateFormat($aRow['request_created_datetime'], true);
+    }
     //set result log value
     $logVal = '0.0';
     if ($aRow['result_value_log'] != NULL && trim($aRow['result_value_log']) != '') {
@@ -214,6 +225,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['lab_tech_comments']);
     $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
     $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+    $row[] = $requestCreatedDatetime;
     $output[] = $row;
     $no++;
 }

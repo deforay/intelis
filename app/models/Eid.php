@@ -67,7 +67,7 @@ class Eid
 
                 if (empty($provinceId) && !empty($provinceCode)) {
                     $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
-                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);                    
+                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -119,15 +119,15 @@ class Eid
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
             error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
-            error_log("DUP::: Sample Key Code ====== " . $checkResult[$sampleCodeKeyCol]);
+            error_log("DUP::: Sample Key Code ====== " . $maxId);
             error_log('DUP::: ' . $this->db->getLastQuery());
-            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
+            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
         return json_encode($sCodeKey);
     }
 
 
-    public function getEidResults()
+    public function getEidResults(): array
     {
         $results = $this->db->rawQuery("SELECT * FROM r_eid_results where status='active' ORDER BY result_id DESC");
         $response = array();
@@ -150,16 +150,12 @@ class Eid
     public function generateExcelExport($params)
     {
         $general = new \Vlsm\Models\General();
-        $eidResults = $general->getEidResults();
 
-        //system config
-        $systemConfigQuery = "SELECT * from system_config";
-        $systemConfigResult = $this->db->query($systemConfigQuery);
-        $sarr = array();
-        // now we create an associative array so that we can easily create view variables
-        for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-            $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-        }
+        $eidModel = new \Vlsm\Models\Eid();
+        $eidResults = $eidModel->getEidResults();
+
+        //$sarr = $general->getSystemConfig();
+
         if (isset($_SESSION['eidRequestSearchResultQuery']) && trim($_SESSION['eidRequestSearchResultQuery']) != "") {
 
             $rResult = $this->db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
@@ -437,6 +433,33 @@ class Eid
             $sQuery .= " LIMIT 1";
 
             $rowData = $this->db->rawQueryOne($sQuery);
+
+            /* Update version in form attributes */
+            $version = $general->getSystemConfig('sc_version');
+            if (isset($version) && !empty($version)) {
+                $ipaddress = '';
+                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+                } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
+                } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                    $ipaddress = $_SERVER['REMOTE_ADDR'];
+                } else {
+                    $ipaddress = 'UNKNOWN';
+                }
+                $formAttributes = array(
+                    'applicationVersion'  => $version,
+                    'ip_address'    => $ipaddress
+                );
+                $eidData['form_attributes'] = json_encode($formAttributes);
+            }
+
             $id = 0;
             if ($rowData) {
                 // $this->db = $this->db->where('eid_id', $rowData['eid_id']);

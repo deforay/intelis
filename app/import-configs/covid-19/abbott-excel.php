@@ -161,7 +161,7 @@ try {
                 'result_reviewed_by' => $_SESSION['userId'],
                 'sample_code' => $d['sampleCode'],
                 'sample_type' => $d['sampleType'],
-                'sample_tested_datetime' => $testingDate,
+                'sample_tested_datetime' => $d['testingDate'],
                 'result_status' => '6',
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],

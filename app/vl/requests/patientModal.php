@@ -62,7 +62,7 @@ $pResult = $db->rawQuery($pQuery);
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="patientModalDataTable" class="table table-bordered table-striped">
+						<table id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th style="width:10%;">Select</th>

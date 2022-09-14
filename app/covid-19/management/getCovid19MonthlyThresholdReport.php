@@ -149,7 +149,7 @@ if (isset($sWhere) && count($sWhere) > 0) {
           }
           $out = $out . ')';
          
-               $sWhere[] = ' vl.lab_id IN ' . $out . '';
+               $sWhere[] = ' vl.lab_id IN ' . $out;
      }
 } else {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
@@ -162,7 +162,7 @@ if (isset($sWhere) && count($sWhere) > 0) {
                     $out = '("' . $fac[$s] . '"';
           }
           $out = $out . ')';
-               $sWhere[] = '  vl.lab_id IN ' . $out . '';
+               $sWhere[] = '  vl.lab_id IN ' . $out;
      }
 
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {

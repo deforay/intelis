@@ -10,6 +10,8 @@ $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 
+$activeTestModules = $general->getActiveTestModules();
+
 if (isset($_POST['testType'])) {
 	$tableName = $_POST['testType'];
 	$sampleCode = $_POST['sampleCode'];
@@ -44,9 +46,9 @@ function getColumnValues($db, $tableName, $sampleCode)
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Audit Trail"); ?></h1>
+		<h1><i class="fa-solid fa-clock-rotate-left"></i> <?php echo _("Audit Trail"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Audit Trail"); ?></li>
 		</ol>
 	</section>
@@ -58,25 +60,25 @@ function getColumnValues($db, $tableName, $sampleCode)
 				<div class="box">
 					<form name="form1" action="audit-trail.php" method="post" id="searchForm">
 
-						<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+						<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 							<tr>
 								<td><b><?php echo _("Test Type"); ?>&nbsp;:</b></td>
 								<td>
 									<select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
 										<option value="">-- Choose Test Type--</option>
-										<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+										<?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
 											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_vl') ? "selected='selected'" : ""; ?> value="audit_form_vl"><?php echo _("Viral Load"); ?></option>
 										<?php }
-										if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+										if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
 											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_eid') ? "selected='selected'" : ""; ?> value="audit_form_eid"><?php echo _("Early Infant Diagnosis"); ?></option>
 										<?php }
-										if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+										if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
 											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_covid19') ? "selected='selected'" : ""; ?> value="audit_form_covid19"><?php echo _("Covid-19"); ?></option>
 										<?php }
-										if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+										if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
 											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_hepatitis') ? "selected='selected'" : ""; ?> value='audit_form_hepatitis'><?php echo _("Hepatitis"); ?></option>
 										<?php }
-										if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+										if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
 											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_tb') ? "selected='selected'" : ""; ?> value='audit_form_tb'><?php echo _("TB"); ?></option>
 										<?php } ?>
 									</select>
@@ -136,7 +138,6 @@ function getColumnValues($db, $tableName, $sampleCode)
 														echo '<td>' . $posts[$i][$colArr[$j]] . '</td>';
 													}
 												?>
-													</td>
 												<?php }
 												?>
 											</tr>

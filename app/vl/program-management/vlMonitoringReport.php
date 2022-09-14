@@ -1,6 +1,6 @@
 <?php
 $title = _("VL Quarterly Monitoring Report");
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
@@ -158,9 +158,9 @@ $state = $geoLocationDb->getProvinces("yes");
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-book"></i> <?php echo _("VL Quarterly Monitoring Tool");?>
+		<h1><i class="fa-solid fa-book"></i> <?php echo _("VL Quarterly Monitoring Tool"); ?>
 			<!--<ol class="breadcrumb">-->
-			<!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
+			<!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
 			<!--</ol>-->
 
@@ -171,11 +171,11 @@ $state = $geoLocationDb->getProvinces("yes");
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
+							<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;"/>
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
 								<!--<div id="sla-data-range" class="mrp-container form-control">
 									<span class="mrp-icon"><i class="fa-solid fa-calendar-days"></i> &nbsp;</span>
 									<div class="mrp-monthdisplay ">
@@ -186,24 +186,24 @@ $state = $geoLocationDb->getProvinces("yes");
 									<input type="hidden" value="<?php echo $endDate; ?>" id="mrp-upperDate" />
 								</div>-->
 							</td>
-							<td><b><?php echo _("Lab Name");?> :</b></td>
+							<td><b><?php echo _("Lab Name"); ?> :</b></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>">
+								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Region/Province/State");?>&nbsp;:</b></td>
+							<td><b><?php echo _("Region/Province/State"); ?>&nbsp;:</b></td>
 							<td>
-								<select name="state" id="state" class="form-control" title="<?php echo _('Please choose Province/State/Region');?>" onkeyup="searchVlRequestData()">
+								<select name="state" id="state" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 
-							<td><b><?php echo _("District/County");?> :</b></td>
+							<td><b><?php echo _("District/County"); ?> :</b></td>
 							<td>
-								<select name="district" id="district" class="form-control" title="<?php echo _('Please choose District/County');?>" onkeyup="searchVlRequestData()">
+								<select name="district" id="district" class="form-control" title="<?php echo _('Please choose District/County'); ?>" onkeyup="searchVlRequestData()">
 								</select>
 							</td>
 						</tr>
@@ -214,33 +214,33 @@ $state = $geoLocationDb->getProvinces("yes");
               </td> -->
 						</tr>
 						<tr>
-							<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+							<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
 
-								&nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()"><?php echo _("Export to excel");?></button>
+								&nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()"><?php echo _("Export to excel"); ?></button>
 							</td>
 						</tr>
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlMonitoringTable" class="table table-bordered table-striped">
+						<table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
-									<th><?php echo _("Sample Code");?></th>
-									<th><?php echo _("Batch Code");?></th>
-									<th><?php echo _("Unique ART No");?></th>
-									<th><?php echo _("Patient's Name");?></th>
-									<th><?php echo _("Facility Name");?></th>
-									<th><?php echo _("Province/State/Region");?></th>
-									<th><?php echo _("District/County");?></th>
-									<th><?php echo _("Sample Type");?></th>
-									<th><?php echo _("Result");?></th>
-									<th><?php echo _("Status");?></th>
+									<th><?php echo _("Sample Code"); ?></th>
+									<th><?php echo _("Batch Code"); ?></th>
+									<th><?php echo _("Unique ART No"); ?></th>
+									<th><?php echo _("Patient's Name"); ?></th>
+									<th><?php echo _("Facility Name"); ?></th>
+									<th><?php echo _("Province/State/Region"); ?></th>
+									<th><?php echo _("District/County"); ?></th>
+									<th><?php echo _("Sample Type"); ?></th>
+									<th><?php echo _("Result"); ?></th>
+									<th><?php echo _("Status"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+									<td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -255,7 +255,7 @@ $state = $geoLocationDb->getProvinces("yes");
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var startDate = "";
@@ -263,30 +263,30 @@ $state = $geoLocationDb->getProvinces("yes");
 	var oTable = null;
 	$(document).ready(function() {
 		$('#sampleCollectionDate').daterangepicker({
-			locale: {
-          cancelLabel: 'Clear'
-        },
-        format: 'DD-MMM-YYYY',
-        separator: ' to ',
-        startDate: moment().subtract(6, 'days'),
-        endDate: moment(),
-        maxDate: moment(),
-        ranges: {
-          'Today': [moment(), moment()],
-          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-          'This Month': [moment().startOf('month'), moment().endOf('month')],
-          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-          'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-          'Last 18 Months': [moment().subtract('month', 18).startOf('month'), moment().endOf('month')],
-          'Last 24 Months': [moment().subtract('month', 24).startOf('month'), moment().endOf('month')]
-        }
-      },
-      function(start, end) {
-        startDate = start.format('YYYY-MM-DD');
-        endDate = end.format('YYYY-MM-DD');
-      });
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				startDate: moment().subtract(6, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+					'Last 18 Months': [moment().subtract('month', 18).startOf('month'), moment().endOf('month')],
+					'Last 24 Months': [moment().subtract('month', 24).startOf('month'), moment().endOf('month')]
+				}
+			},
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
 		$("#state").change(function() {
 			$.blockUI();
 			var pName = $(this).val();
@@ -364,8 +364,8 @@ $state = $geoLocationDb->getProvinces("yes");
 					"value": $("#facilityName").val()
 				});
 				aoData.push({
-				"name": "sampleCollectionDate",
-				"value": $("#sampleCollectionDate").val()
+					"name": "sampleCollectionDate",
+					"value": $("#sampleCollectionDate").val()
 				});
 				/*aoData.push({
 					"name": "sampleCollectionDate",
@@ -415,7 +415,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
-					alert("<?php echo _("Unable to generate excel file");?>");
+					alert("<?php echo _("Unable to generate excel file"); ?>");
 				} else {
 					location.href = '/temporary/' + data;
 				}
@@ -459,7 +459,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			content += '</div></div></div></div>';
 		}
 		content += '<div class="col-xs-1">';
-		content += '<button class="btn btn-info mpr-close"><?php echo _("Apply");?></button>';
+		content += '<button class="btn btn-info mpr-close"><?php echo _("Apply"); ?></button>';
 		content += '</div>';
 		content += '</div>';
 

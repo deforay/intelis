@@ -7,9 +7,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-gears"></i> <?php echo _("Instruments");?></h1>
+    <h1><em class="fa-solid fa-gears"></em> <?php echo _("Instruments");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("Instruments");?></li>
     </ol>
   </section>
@@ -20,11 +20,11 @@ require_once(APPLICATION_PATH . '/header.php');
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <a href="addImportConfig.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add Instrument");?></a>
+            <a href="addImportConfig.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Instrument");?></a>
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="importConfigDataTable" class="table table-bordered table-striped">
+            <table id="importConfigDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th><?php echo _("Instrument Name");?></th>

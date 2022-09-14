@@ -35,8 +35,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $rKey = '';
 }
 $pdResult = $db->query($pdQuery);
-$province = '';
-$province .= "<option value=''> -- Select -- </option>";
+$province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
      $province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
@@ -75,7 +74,7 @@ $sFormat = '';
      <section class="content-header">
           <h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
           <ol class="breadcrumb">
-               <li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+               <li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
                <li class="active">Add VL Request</li>
           </ol>
      </section>
@@ -357,7 +356,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="isRequired" id="rmTesting" name="stViralTesting" value="routine" title="Please check viral load indication testing type" onclick="showTesting('rmTesting');">
+                                                                                <input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="routine" title="Please check viral load indication testing type" onclick="showTesting('rmTesting');">
                                                                                 <strong>Routine Monitoring</strong>
                                                                            </label>
                                                                       </div>
@@ -366,19 +365,19 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row rmTesting hideTestData well" style="display:none;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of last viral load test</label>
+                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="rmTestingVlValue" class="col-lg-3 control-label">VL Value</label>
+                                                                 <label for="rmTestingVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)<br>
-                                                                      <input type="checkbox" id="rmTestingVlCheckValuelt20" name="rmTestingVlCheckValue" value="<20" title="Please check VL value">
+                                                                      <input type="checkbox" id="rmTestingVlCheckValuelt20" name="rmTestingVlCheckValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
-                                                                           <input type="checkbox" id="rmTestingVlCheckValueTnd" name="rmTestingVlCheckValue" value="tnd" title="Please check VL value"> Target Not Detected
+                                                                           <input type="checkbox" id="rmTestingVlCheckValueTnd" name="rmTestingVlCheckValue" value="tnd" title="Please check VL Result"> Target Not Detected
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -387,7 +386,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="" id="repeatTesting" name="stViralTesting" value="failure" title="Please check viral load indication testing type" onclick="showTesting('repeatTesting');">
+                                                                                <input type="radio" class="" id="repeatTesting" name="reasonForVLTesting" value="failure" title="Please check viral load indication testing type" onclick="showTesting('repeatTesting');">
                                                                                 <strong>Repeat VL test after suspected treatment failure adherence counselling </strong>
                                                                            </label>
                                                                       </div>
@@ -396,19 +395,19 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row repeatTesting hideTestData well" style="display:none;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of last viral load test</label>
+                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Value</label>
+                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)<br>
-                                                                      <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlCheckValue" value="<20" title="Please check VL value">
+                                                                      <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlCheckValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
-                                                                           <input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlCheckValue" value="tnd" title="Please check VL value"> Target Not Detected
+                                                                           <input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlCheckValue" value="tnd" title="Please check VL Result"> Target Not Detected
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -417,7 +416,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="" id="suspendTreatment" name="stViralTesting" value="suspect" title="Please check viral load indication testing type" onclick="showTesting('suspendTreatment');">
+                                                                                <input type="radio" class="" id="suspendTreatment" name="reasonForVLTesting" value="suspect" title="Please check viral load indication testing type" onclick="showTesting('suspendTreatment');">
                                                                                 <strong>Suspect Treatment Failure</strong>
                                                                            </label>
                                                                       </div>
@@ -426,19 +425,19 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row suspendTreatment hideTestData well" style="display: none;margin-bottom:20px;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of last viral load test</label>
+                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Value</label>
+                                                                 <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)<br>
-                                                                      <input type="checkbox" id="suspendTreatmentVlCheckValuelt20" name="suspendTreatmentVlCheckValue" value="<20" title="Please check VL value">
+                                                                      <input type="checkbox" id="suspendTreatmentVlCheckValuelt20" name="suspendTreatmentVlCheckValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
-                                                                           <input type="checkbox" id="suspendTreatmentVlCheckValueTnd" name="suspendTreatmentVlCheckValue" value="tnd" title="Please check VL value"> Target Not Detected
+                                                                           <input type="checkbox" id="suspendTreatmentVlCheckValueTnd" name="suspendTreatmentVlCheckValue" value="tnd" title="Please check VL Result"> Target Not Detected
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -448,7 +447,7 @@ $sFormat = '';
                                                                       <div class="form-group">
                                                                            <div class="col-lg-12">
                                                                                 <label class="radio-inline">
-                                                                                     <input type="radio" class="" id="recencyTest" name="stViralTesting" value="recency" title="Please check viral load indication testing type" onclick="showTesting('recency')">
+                                                                                     <input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" onclick="showTesting('recency')">
                                                                                      <strong>Confirmation Test for Recency</strong>
                                                                                 </label>
                                                                            </div>

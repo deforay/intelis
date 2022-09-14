@@ -195,6 +195,8 @@ if ($vlQueryInfo['patient_last_name'] != '') {
      $patientLastName = '';
 }
 
+$patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
+
 ?>
 <style>
      .ui_tpicker_second_label {
@@ -439,6 +441,35 @@ if ($arr['vl_form'] == 1) {
                          }
                     });
           }
+     }
+
+     function getfacilityProvinceDetails(obj) {
+          $.blockUI();
+          //check facility name`
+          var cName = $("#fName").val();
+          var pName = $("#province").val();
+          if (cName != '' && provinceName && facilityName) {
+               provinceName = false;
+          }
+          if (cName != '' && facilityName) {
+               $.post("/includes/siteInformationDropdownOptions.php", {
+                         cName: cName,
+                         testType: 'vl'
+                    },
+                    function(data) {
+                         if (data != "") {
+                              details = data.split("###");
+                              $("#province").html(details[0]);
+                              $("#district").html(details[1]);
+                         }
+                    });
+          } else if (pName == '' && cName == '') {
+               provinceName = true;
+               facilityName = true;
+               $("#province").html("<?php echo $province; ?>");
+               $("#fName").html("<?php echo $facility; ?>");
+          }
+          $.unblockUI();
      }
 </script>
 <?php require_once(APPLICATION_PATH . '/footer.php');

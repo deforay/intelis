@@ -133,6 +133,9 @@ try {
         $_POST['reviewedOn'] = NULL;
     }
     //echo $reasonForChanges;die;
+
+    $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection']. ' ' . $finalResult :  $finalResult;
+        
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] :  NULL,

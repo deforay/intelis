@@ -1,7 +1,7 @@
 <?php
 ob_start();
 $title = "Edit Specimen Referral Manifest";
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
@@ -113,7 +113,7 @@ $global = $general->getGlobalConfig();
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> Edit Specimen Referral Manifest</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li><a href="/specimen-referral-manifest/specimenReferralManifestList.php"> Manage Specimen Referral Manifest</a></li>
 			<li class="active">Edit Specimen Referral Manifest</li>
 		</ol>
@@ -264,7 +264,7 @@ $global = $general->getGlobalConfig();
 </section>
 <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
@@ -287,11 +287,13 @@ $global = $general->getGlobalConfig();
 
 		$('#daterange').daterangepicker({
 				locale: {
-					cancelLabel: 'Clear'
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
 				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

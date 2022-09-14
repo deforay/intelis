@@ -7,6 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
+
 $tableName = "user_details";
 $userName = ($_POST['username']);
 $password = ($_POST['password']);

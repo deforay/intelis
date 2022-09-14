@@ -14,7 +14,7 @@ $tstInfo = $db->query($tstQuery);
   <section class="content-header">
     <h1><i class="fa-solid fa-virus-covid"></i> Edit Covid-19 Test Reasons</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
       <li class="active">Covid-19 Test Reasons</li>
     </ol>
   </section>

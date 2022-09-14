@@ -9,7 +9,7 @@ require_once(APPLICATION_PATH . '/header.php');
 	<section class="content-header">
 		<h1><i class="fa-solid fa-flask-vial"></i> <?php echo _("Add VL Test Failure Reasons"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("VL Test Failure Reasons"); ?></li>
 		</ol>
 	</section>
@@ -55,7 +55,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<!-- /.box-body -->
 				<div class="box-footer">
 					<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-					<a href="vl-art-code-details.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+					<a href="vl-test-failure-reasons.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 				</div>
 				<!-- /.box-footer -->
 			</form>

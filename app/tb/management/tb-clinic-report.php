@@ -1,6 +1,6 @@
 <?php
 $title = _("TB | Clinics Report");
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $tsQuery = "SELECT * FROM r_sample_status";
@@ -33,10 +33,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1> <i class="fa-solid fa-book"></i> <?php echo _("Clinic Reports");?></h1>
+		<h1> <i class="fa-solid fa-book"></i> <?php echo _("Clinic Reports"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Clinic Reports");?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Clinic Reports"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -50,23 +50,23 @@ $batResult = $db->rawQuery($batQuery);
 							<div class="widget-content">
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-										<li class="active"><a href="#highTbReportTable" data-toggle="tab"><?php echo _("Positivity Report");?></a></li>
-										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _("Sample Rejection Report");?></a></li>
-										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _("Results Not Available Report");?></a></li>
-										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _("Data Quality Check");?></a></li>
+										<li class="active"><a href="#highTbReportTable" data-toggle="tab"><?php echo _("Positivity Report"); ?></a></li>
+										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _("Sample Rejection Report"); ?></a></li>
+										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _("Results Not Available Report"); ?></a></li>
+										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _("Data Quality Check"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
-										<div class="tab-pane fade in active" >
-											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+										<div class="tab-pane fade in active">
+											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --");?> </option>
+														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
@@ -76,10 +76,10 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Sample Type"); ?>&nbsp;:</b></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
-															<option value=""> <?php echo _("-- Select --");?> </option>
+														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
@@ -91,28 +91,28 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Facility Name & Code"); ?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td>&nbsp;<b><?php echo _("Contact Status");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Contact Status"); ?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status');?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --");?> </option>
-															<option value="yes"><?php echo _("Completed");?></option>
-															<option value="no"><?php echo _("Not Completed");?></option>
-															<option value="all" selected="selected"><?php echo _("All");?></option>
+														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status'); ?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
+															<option value="yes"><?php echo _("Completed"); ?></option>
+															<option value="no"><?php echo _("Not Completed"); ?></option>
+															<option value="all" selected="selected"><?php echo _("All"); ?></option>
 														</select>
 													</td>
-													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
+													<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
 													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="">
-															<option value=""> <?php echo _("-- Select --");?> </option>
-															<option value="male"><?php echo _("Male");?></option>
-															<option value="female"><?php echo _("Female");?></option>
-															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
+														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
+															<option value="male"><?php echo _("Male"); ?></option>
+															<option value="female"><?php echo _("Female"); ?></option>
+															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
 												</tr>
@@ -123,48 +123,48 @@ $batResult = $db->rawQuery($batQuery);
 													<td></td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel");?></button>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel"); ?></button>
 													</td>
 												</tr>
 											</table>
 
-											<table id="highTbReportTable" class="table table-bordered table-striped">
+											<table id="highTbReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
-														<th><?php echo _("Sample Code");?></th>
+														<th><?php echo _("Sample Code"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
+															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Facility Name");?></th>
-														<th><?php echo _("Patient's ID");?></th>
-														<th><?php echo _("Patient's Name");?></th>
-														<th><?php echo _("Sample Collection Date");?></th>
-														<th><?php echo _("Sample Tested Date");?></th>
-														<th><?php echo _("Testing Lab");?></th>
-														<th><?php echo _("Result");?></th>
-														<th><?php echo _("Status");?></th>
+														<th><?php echo _("Facility Name"); ?></th>
+														<th><?php echo _("Patient's ID"); ?></th>
+														<th><?php echo _("Patient's Name"); ?></th>
+														<th><?php echo _("Sample Collection Date"); ?></th>
+														<th><?php echo _("Sample Tested Date"); ?></th>
+														<th><?php echo _("Testing Lab"); ?></th>
+														<th><?php echo _("Result"); ?></th>
+														<th><?php echo _("Status"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="7" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+														<td colspan="7" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --");?> </option>
+														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
@@ -174,10 +174,10 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Sample Type"); ?>&nbsp;:</b></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
-															<option value=""> <?php echo _("-- Select --");?> </option>
+														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
@@ -189,19 +189,19 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Facility Name & Code"); ?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
+													<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
 													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="">
-															<option value=""> <?php echo _("-- Select --");?> </option>
-															<option value="male"><?php echo _("Male");?></option>
-															<option value="female"><?php echo _("Female");?></option>
-															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
+														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
+															<option value="male"><?php echo _("Male"); ?></option>
+															<option value="female"><?php echo _("Female"); ?></option>
+															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
 													<td></td>
@@ -212,45 +212,45 @@ $batResult = $db->rawQuery($batQuery);
 													<td></td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel");?></button>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel"); ?></button>
 													</td>
 												</tr>
 											</table>
-											<table id="sampleRjtReportTable" class="table table-bordered table-striped">
+											<table id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
-														<th><?php echo _("Sample Code");?></th>
+														<th><?php echo _("Sample Code"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
+															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Facility Name");?></th>
-														<th><?php echo _("Patient's ID");?></th>
-														<th><?php echo _("Patient's Name");?></th>
-														<th><?php echo _("Sample Collection Date");?></th>
-														<th><?php echo _("VL Lab Name");?></th>
-														<th><?php echo _("Rejection Reason");?></th>
+														<th><?php echo _("Facility Name"); ?></th>
+														<th><?php echo _("Patient's ID"); ?></th>
+														<th><?php echo _("Patient's Name"); ?></th>
+														<th><?php echo _("Sample Collection Date"); ?></th>
+														<th><?php echo _("VL Lab Name"); ?></th>
+														<th><?php echo _("Rejection Reason"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+														<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Collection Date');?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<b><?php echo _("Batch Code");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _('Please select batch code');?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --");?> </option>
+														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
@@ -260,10 +260,10 @@ $batResult = $db->rawQuery($batQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<b><?php echo _("Sample Type");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Sample Type"); ?>&nbsp;:</b></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _('Please select sample type');?>">
-															<option value=""> <?php echo _("-- Select --");?> </option>
+														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
@@ -275,19 +275,19 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td>&nbsp;<b><?php echo _("Facility Name & Code");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Facility Name & Code"); ?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td><b><?php echo _("Gender");?>&nbsp;:</b></td>
+													<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
 													<td>
-														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="">
-															<option value=""> <?php echo _("-- Select --");?> </option>
-															<option value="male"><?php echo _("Male");?></option>
-															<option value="female"><?php echo _("Female");?></option>
-															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
+														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
+															<option value="male"><?php echo _("Male"); ?></option>
+															<option value="female"><?php echo _("Female"); ?></option>
+															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
 													<td></td>
@@ -298,87 +298,87 @@ $batResult = $db->rawQuery($batQuery);
 													<td></td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel");?></button>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel"); ?></button>
 													</td>
 												</tr>
 											</table>
-											<table id="notAvailReportTable" class="table table-bordered table-striped">
+											<table id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
-														<th><?php echo _("Sample Code");?></th>
+														<th><?php echo _("Sample Code"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
+															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Facility Name");?></th>
-														<th><?php echo _("Patient's ID");?></th>
-														<th><?php echo _("Patient's Name");?></th>
-														<th><?php echo _("Sample Collection Date");?></th>
-														<th><?php echo _("VL Lab Name");?></th>
+														<th><?php echo _("Facility Name"); ?></th>
+														<th><?php echo _("Patient's ID"); ?></th>
+														<th><?php echo _("Patient's Name"); ?></th>
+														<th><?php echo _("Sample Collection Date"); ?></th>
+														<th><?php echo _("VL Lab Name"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="4" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+														<td colspan="4" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
+													<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Sample Collection Date');?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
-													<td>&nbsp;<b><?php echo _("Fields");?>&nbsp;:</b></td>
+													<td>&nbsp;<b><?php echo _("Fields"); ?>&nbsp;:</b></td>
 													<td>
-														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _('Please fields');?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --");?> </option>
-															<option value="sample_code"><?php echo _("Sample Code");?></option>
-															<option value="sample_collection_date"><?php echo _("Sample Collection Date");?></option>
-															<option value="sample_batch_id"><?php echo _("Batch Code");?></option>
-															<option value="patient_id"><?php echo _("Patient ID");?></option>
-															<option value="patient_name"><?php echo _("Patient's Name");?></option>
-															<option value="facility_id"><?php echo _("Facility Name");?></option>
-															<option value="facility_state"><?php echo _("Province");?></option>
-															<option value="facility_district"><?php echo _("County");?></option>
-															<option value="sample_type"><?php echo _("Sample Type");?></option>
-															<option value="result"><?php echo _("Result");?></option>
-															<option value="result_status"><?php echo _("Status");?></option>
+														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _('Please fields'); ?>" style="width:220px;">
+															<option value=""> <?php echo _("-- Select --"); ?> </option>
+															<option value="sample_code"><?php echo _("Sample Code"); ?></option>
+															<option value="sample_collection_date"><?php echo _("Sample Collection Date"); ?></option>
+															<option value="sample_batch_id"><?php echo _("Batch Code"); ?></option>
+															<option value="patient_id"><?php echo _("Patient ID"); ?></option>
+															<option value="patient_name"><?php echo _("Patient's Name"); ?></option>
+															<option value="facility_id"><?php echo _("Facility Name"); ?></option>
+															<option value="facility_state"><?php echo _("Province"); ?></option>
+															<option value="facility_district"><?php echo _("County"); ?></option>
+															<option value="sample_type"><?php echo _("Sample Type"); ?></option>
+															<option value="result"><?php echo _("Result"); ?></option>
+															<option value="result_status"><?php echo _("Status"); ?></option>
 														</select>
 													</td>
 												</tr>
 
 												<tr>
-													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel");?></button>
+													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel"); ?></button>
 													</td>
 												</tr>
 											</table>
-											<table id="incompleteReport" class="table table-bordered table-striped">
+											<table id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
-														<th><?php echo _("Sample Code");?></th>
+														<th><?php echo _("Sample Code"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
+															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Sample Collection Date");?></th>
-														<th><?php echo _("Batch Code");?></th>
-														<th><?php echo _("Patient's Name");?></th>
-														<th><?php echo _("Facility Name");?></th>
-														<th><?php echo _("Province/State");?></th>
-														<th><?php echo _("District/County");?></th>
-														<th><?php echo _("Sample Type");?></th>
-														<th><?php echo _("Result");?></th>
-														<th><?php echo _("Status");?></th>
+														<th><?php echo _("Sample Collection Date"); ?></th>
+														<th><?php echo _("Batch Code"); ?></th>
+														<th><?php echo _("Patient's Name"); ?></th>
+														<th><?php echo _("Facility Name"); ?></th>
+														<th><?php echo _("Province/State"); ?></th>
+														<th><?php echo _("District/County"); ?></th>
+														<th><?php echo _("Sample Type"); ?></th>
+														<th><?php echo _("Result"); ?></th>
+														<th><?php echo _("Status"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="12" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+														<td colspan="12" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -395,7 +395,7 @@ $batResult = $db->rawQuery($batQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var oTableViralLoad = null;
@@ -404,18 +404,20 @@ $batResult = $db->rawQuery($batQuery);
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
-			placeholder: "<?php echo _("Select Facilities");?>"
+			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
 		$("#formField").select2({
-			placeholder: "<?php echo _("Select Fields");?>"
+			placeholder: "<?php echo _("Select Fields"); ?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: 'Clear'
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
 				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -481,7 +483,7 @@ $batResult = $db->rawQuery($batQuery);
 					"sClass": "center",
 					"bSortable": false
 				},
-				
+
 			],
 			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
 					[6, "desc"]
@@ -779,14 +781,14 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function updateStatus(id, value) {
-		conf = confirm("<?php echo _("Do you wisht to change the contact completed status?");?>");
+		conf = confirm("<?php echo _("Do you wisht to change the contact completed status?"); ?>");
 		if (conf) {
 			$.post("/vl/program-management/updateContactCompletedStatus.php", {
 					id: id,
 					value: value
 				},
 				function(data) {
-					alert("<?php echo _("Status updated successfully");?>");
+					alert("<?php echo _("Status updated successfully"); ?>");
 					oTableViralLoad.fnDraw();
 				});
 		} else {
@@ -796,7 +798,7 @@ $batResult = $db->rawQuery($batQuery);
 
 	function exportHighViralLoadInexcel() {
 		var markAsComplete = false;
-		confm = confirm("<?php echo _("Do you want to mark these as complete ?");?>");
+		confm = confirm("<?php echo _("Do you want to mark these as complete ?"); ?>");
 		if (confm) {
 			var markAsComplete = true;
 		}
@@ -812,7 +814,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file");?>");
+					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -832,7 +834,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file");?>");
+					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -852,7 +854,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file");?>");
+					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;
@@ -869,7 +871,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file");?>");
+					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					location.href = '/temporary/' + data;

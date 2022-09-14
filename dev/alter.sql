@@ -3224,3 +3224,22 @@ UPDATE `system_config` SET `value` = '5.0.6' WHERE `system_config`.`name` = 'sc_
 
 -- Amit 22-Aug-2022
 UPDATE `r_sample_status` SET `status_name` = 'Failed/Invalid' WHERE `r_sample_status`.`status_id` = 5;
+
+-- Amit 31-Aug-2022 version 5.0.7
+UPDATE `system_config` SET `value` = '5.0.7' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Amit 2-Sep-2022 version 5.0.8
+UPDATE `system_config` SET `value` = '5.0.8' WHERE `system_config`.`name` = 'sc_version';
+
+UPDATE form_vl set is_sample_rejected = 'yes' where result_status = 4 and (is_sample_rejected is null or is_sample_rejected = 'no' or is_sample_rejected = '');
+
+-- UPDATE form_eid set is_sample_rejected = 'yes' where result_status = 4 and (is_sample_rejected is null or is_sample_rejected = 'no' or is_sample_rejected = '');
+-- UPDATE form_covid19 set is_sample_rejected = 'yes' where result_status = 4 and (is_sample_rejected is null or is_sample_rejected = 'no' or is_sample_rejected = '');
+
+-- Amit 13-Sep-2022
+UPDATE form_vl set result_sent_to_source = 'sent' where source_of_request = 'vlsts' AND result_status in (4,7) and (result_sent_to_source is null or result_sent_to_source = 'not-sent' or result_sent_to_source = '');
+UPDATE form_eid set result_sent_to_source = 'sent' where source_of_request = 'vlsts' AND result_status in (4,7) and (result_sent_to_source is null or result_sent_to_source = 'not-sent' or result_sent_to_source = '');
+UPDATE form_covid19 set result_sent_to_source = 'sent' where source_of_request = 'vlsts' AND result_status in (4,7) and (result_sent_to_source is null or result_sent_to_source = 'not-sent' or result_sent_to_source = '');
+UPDATE form_hepatitis set result_sent_to_source = 'sent' where source_of_request = 'vlsts' AND result_status in (4,7) and (result_sent_to_source is null or result_sent_to_source = 'not-sent' or result_sent_to_source = '');
+UPDATE form_tb set result_sent_to_source = 'sent' where source_of_request = 'vlsts' AND result_status in (4,7) and (result_sent_to_source is null or result_sent_to_source = 'not-sent' or result_sent_to_source = '');

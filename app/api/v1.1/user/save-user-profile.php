@@ -110,7 +110,7 @@ try {
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
-            $resizeObj = new \Vlsm\Helpers\ImageResize($signatureImagePath);
+            $resizeObj = new \Vlsm\Utilities\ImageResize($signatureImagePath);
             $resizeObj->resizeToWidth(100);
             $resizeObj->save($signatureImagePath);
             $data['user_signature'] = $imageName;

@@ -2,7 +2,7 @@
 ob_start();
 
 // print_r("Prasath");die;
-$general = new \Vlsm\Models\General(); 
+$general = new \Vlsm\Models\General();
 $whereCondition = '';
 $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
@@ -85,8 +85,10 @@ $tQuery = "SELECT COUNT(hepatitis_id) as total,status_id,status_name
 
 //filter
 $sWhere = array();
-if(!empty($whereCondition))
-    $sWhere[]=$whereCondition;
+if (!empty($whereCondition)) {
+    $sWhere[] = $whereCondition;
+}
+
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -103,8 +105,8 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $tQuery .= " where " . implode(" AND ", $sWhere);
+if (isset($sWhere) && !empty($sWhere)) {
+    $tQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 $tResult = $db->rawQuery($tQuery);
@@ -112,8 +114,10 @@ $tResult = $db->rawQuery($tQuery);
 
 //HVL and LVL Samples
 $sWhere = array();
-if(!empty($whereCondition))
-    $sWhere[]=$whereCondition;
+if (!empty($whereCondition)) {
+    $sWhere[] = $whereCondition;
+}
+
 $vlSuppressionQuery = "SELECT   COUNT(hepatitis_id) as total,
                                 SUM(CASE
                                         WHEN (vl.hcv_vl_result = 'positive') THEN 1
@@ -156,7 +160,7 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
@@ -194,7 +198,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tatSampleQuery .= " GROUP BY monthDate";
@@ -217,7 +221,7 @@ foreach ($tatResult as $sRow) {
     $result['date'][$j] = $sRow["monthDate"];
     $j++;
 }
-$sWhere=array();
+$sWhere = array();
 $testReasonQuery = "SELECT count(c.sample_code) AS total, tr.test_reason_name 
                     from form_hepatitis as c 
                     INNER JOIN r_hepatitis_test_reasons as tr ON c.reason_for_hepatitis_test = tr.test_reason_id 
@@ -241,8 +245,8 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 
-if (isset($sWhere) && sizeof($sWhere) > 0) {
-    $testReasonQuery .= ' where '.implode(" AND ", $sWhere);
+if (isset($sWhere) && !empty($sWhere)) {
+    $testReasonQuery .= ' where ' . implode(" AND ", $sWhere);
 }
 $testReasonQuery = $testReasonQuery . " GROUP BY tr.test_reason_name";
 $testReasonResult = $db->rawQuery($testReasonQuery);

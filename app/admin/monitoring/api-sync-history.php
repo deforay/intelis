@@ -21,10 +21,10 @@ foreach ($syncedTypeResults as $synced) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("API Sync History"); ?></h1>
+		<h1><i class="fa-solid  fa-circle-nodes"></i> <?php echo _("API History"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("API Sync History"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("API History"); ?></li>
 		</ol>
 	</section>
 
@@ -33,7 +33,7 @@ foreach ($syncedTypeResults as $synced) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true"  cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
 							<td>
@@ -60,9 +60,9 @@ foreach ($syncedTypeResults as $synced) {
 									<?php } ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Synced Type"); ?>&nbsp;:</b></td>
+							<td><b><?php echo _("API Type"); ?>&nbsp;:</b></td>
 							<td>
-								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _('Please select the synced type'); ?>">
+								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _('Please select the API type'); ?>">
 									<?php echo $general->generateSelectOptions($syncedType, null, '--Select--'); ?>
 								</select>
 							</td>
@@ -73,7 +73,7 @@ foreach ($syncedTypeResults as $synced) {
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped">
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th><?php echo _("Number of Records Synced"); ?></th>
@@ -100,7 +100,7 @@ foreach ($syncedTypeResults as $synced) {
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var oTable = null;
@@ -108,10 +108,10 @@ foreach ($syncedTypeResults as $synced) {
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
 			locale: {
-				cancelLabel: 'Clear'
+				cancelLabel: "<?= _("Clear"); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			format: 'DD-MMM-YYYY',
-			separator: ' to ',
 			startDate: moment().subtract(7, 'days'),
 			endDate: moment(),
 			maxDate: moment(),

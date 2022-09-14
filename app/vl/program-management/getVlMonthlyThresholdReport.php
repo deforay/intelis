@@ -158,11 +158,11 @@ if (isset($sWhere) && $sWhere != "") {
           }
           $out = $out.')';
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out . '';
+               $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
           } else {
                $setWhr = 'where';
                $sWhere = ' where ' . $sWhere;
-               $sWhere = $sWhere . ' vl.lab_id IN ' . $out . '';
+               $sWhere = $sWhere . ' vl.lab_id IN ' . $out;
           }
      }
      

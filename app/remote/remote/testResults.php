@@ -94,7 +94,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         }
 
         try {
-            $lab['source_of_request'] = 'vlsts';
+            //$lab['source_of_request'] = 'vlsts';
             $sResult = $db->rawQuery($sQuery);
             if ($sResult) {
                 $db = $db->where('vl_sample_id', $sResult[0]['vl_sample_id']);

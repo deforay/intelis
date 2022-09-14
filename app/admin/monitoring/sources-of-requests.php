@@ -14,6 +14,8 @@ $sources = array(
     'dhis2' => 'DHIS2'
 );
 
+$activeTestModules = $general->getActiveTestModules();
+
 ?>
 <style>
     .select2-selection__choice {
@@ -28,9 +30,9 @@ $sources = array(
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Sources of Requests Report"); ?></h1>
+        <h1><i class="fa-solid fa-circle-notch"></i> <?php echo _("Sources of Requests Report"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Sources of Requests Report"); ?></li>
         </ol>
     </section>
@@ -40,7 +42,7 @@ $sources = array(
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
                             <td>
@@ -49,19 +51,19 @@ $sources = array(
                             <td><b><?php echo _("Test Types"); ?>&nbsp;:</b></td>
                             <td>
                                 <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
-                                    <?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+                                    <?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
-                                    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+                                    if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
                                         <option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
                                     <?php }
-                                    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+                                    if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
                                         <option value="covid19"><?php echo _("Covid-19"); ?></option>
                                     <?php }
-                                    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+                                    if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
                                         <option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
                                     <?php }
-                                    if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+                                    if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
                                         <option value='tb'><?php echo _("TB"); ?></option>
                                     <?php } ?>
                                 </select>
@@ -85,21 +87,23 @@ $sources = array(
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="sampleReportsDataTable" class="table table-bordered table-striped">
+                        <table id="sampleReportsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                             <thead>
                                 <tr>
                                     <th><?php echo _("Lab Name"); ?></th>
                                     <th><?php echo _("Test Type"); ?></th>
                                     <th><?php echo _("No. of Samples Collected"); ?></th>
+                                    <th><?php echo _("No. of Samples Received at the Testing Lab"); ?></th>
                                     <th><?php echo _("No. of Samples with Test Result"); ?></th>
                                     <th><?php echo _("No. of Samples Rejected"); ?></th>
+                                    <th><?php echo _("No. of Results returned"); ?></th>
                                     <th><?php echo _("Source of Request"); ?></th>
                                     <th><?php echo _("Last Request Created On"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="7" class="dataTables_empty"><?php echo _("Please select the date range and test type to see the source of requests"); ?></td>
+                                    <td colspan="9" class="dataTables_empty"><?php echo _("Please select the date range and test type to see the source of requests"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -113,7 +117,7 @@ $sources = array(
     </section>
     <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     var oTable = null;
@@ -127,10 +131,10 @@ $sources = array(
 
         $('#dateRange').daterangepicker({
                 locale: {
-                    cancelLabel: 'Clear'
+                    cancelLabel: "<?= _("Clear"); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
                 },
-                format: 'DD-MMM-YYYY',
-                separator: ' to ',
                 startDate: moment().subtract(12, 'months'),
                 endDate: moment(),
                 maxDate: moment(),
@@ -181,6 +185,12 @@ $sources = array(
             "bRetrieve": true,
             "aoColumns": [{
                 "sClass": "center"
+            }, {
+                "sClass": "center",
+                "bSortable": false
+            }, {
+                "sClass": "center",
+                "bSortable": false
             }, {
                 "sClass": "center",
                 "bSortable": false

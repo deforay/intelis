@@ -226,7 +226,7 @@ try {
     }
     //Indication for Viral Load Testing
     $rmVLValue = NULL;
-    if (isset($_POST['stViralTesting']) && $_POST['stViralTesting'] == 'routine') {
+    if (isset($_POST['reasonForVLTesting']) && $_POST['reasonForVLTesting'] == 'routine') {
         if (isset($_POST['rmTestingVlValue']) && $_POST['rmTestingVlValue'] != '') {
             $rmVLValue = $_POST['rmTestingVlValue'];
         } else if (isset($_POST['rmTestingVlCheckValue']) && $_POST['rmTestingVlCheckValue'] != '') {
@@ -234,7 +234,7 @@ try {
         }
     }
     $repeatTestingVLValue = NULL;
-    if (isset($_POST['stViralTesting']) && $_POST['stViralTesting'] == 'failure') {
+    if (isset($_POST['reasonForVLTesting']) && $_POST['reasonForVLTesting'] == 'failure') {
         if (isset($_POST['repeatTestingVlValue']) && $_POST['repeatTestingVlValue'] != '') {
             $repeatTestingVLValue = $_POST['repeatTestingVlValue'];
         } else if (isset($_POST['repeatTestingVlCheckValue']) && $_POST['repeatTestingVlCheckValue'] != '') {
@@ -242,7 +242,7 @@ try {
         }
     }
     $suspendedTreatmentVLValue = NULL;
-    if (isset($_POST['stViralTesting']) && $_POST['stViralTesting'] == 'suspect') {
+    if (isset($_POST['reasonForVLTesting']) && $_POST['reasonForVLTesting'] == 'suspect') {
         if (isset($_POST['suspendTreatmentVlValue']) && $_POST['suspendTreatmentVlValue'] != '') {
             $suspendedTreatmentVLValue = $_POST['suspendTreatmentVlValue'];
         } else if (isset($_POST['suspendTreatmentVlCheckValue']) && $_POST['suspendTreatmentVlCheckValue'] != '') {
@@ -251,18 +251,18 @@ try {
     }
 
     //set vl test reason
-    if (isset($_POST['stViralTesting']) && trim($_POST['stViralTesting']) != "") {
-        $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons where test_reason_name='" . $_POST['stViralTesting'] . "'";
+    if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
+        $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons where test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
         $reasonResult = $db->rawQuery($reasonQuery);
         if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
-            $_POST['stViralTesting'] = $reasonResult[0]['test_reason_id'];
+            $_POST['reasonForVLTesting'] = $reasonResult[0]['test_reason_id'];
         } else {
             $data = array(
-                'test_reason_name' => $_POST['stViralTesting'],
+                'test_reason_name' => $_POST['reasonForVLTesting'],
                 'test_reason_status' => 'active'
             );
             $id = $db->insert('r_vl_test_reasons', $data);
-            $_POST['stViralTesting'] = $id;
+            $_POST['reasonForVLTesting'] = $id;
         }
     }
 
@@ -293,7 +293,7 @@ try {
         'patient_mobile_number' => (isset($_POST['patientPhoneNumber']) && $_POST['patientPhoneNumber'] != '') ? $_POST['patientPhoneNumber'] : NULL,
         'sample_type' => (isset($_POST['specimenType']) && $_POST['specimenType'] != '') ? $_POST['specimenType'] : NULL,
         'arv_adherance_percentage' => (isset($_POST['arvAdherence']) && $_POST['arvAdherence'] != '') ? $_POST['arvAdherence'] : NULL,
-        'reason_for_vl_testing' => (isset($_POST['stViralTesting'])) ? $_POST['stViralTesting'] : NULL,
+        'reason_for_vl_testing' => (isset($_POST['reasonForVLTesting'])) ? $_POST['reasonForVLTesting'] : NULL,
         'last_vl_date_routine' => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? $general->isoDateFormat($_POST['rmTestingLastVLDate']) : NULL,
         'last_vl_result_routine' => $rmVLValue,
         'last_vl_date_failure_ac' => (isset($_POST['repeatTestingLastVLDate']) && $_POST['repeatTestingLastVLDate'] != '') ? $general->isoDateFormat($_POST['repeatTestingLastVLDate']) : NULL,

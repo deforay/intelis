@@ -125,7 +125,7 @@ class Facilities
         if (empty($labId)) return null;
 
         $fMapResult = "";
-        $this->db->where ("vl_lab_id", $labId);
+        $this->db->where("vl_lab_id", $labId);
         $fMapResult = $this->db->getValue('testing_lab_health_facilities_map', 'facility_id', null);
 
         if (count($fMapResult) > 0) {

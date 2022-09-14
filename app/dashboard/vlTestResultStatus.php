@@ -23,7 +23,7 @@ $batResult = $db->rawQuery($batQuery);
   <section class="content-header">
     <h1>VL Test Result Status [<?php echo ucwords($tsResult[0]['status_name']); ?> ]</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
       <li class="active">VL Test Result Status [<?php echo ucwords($tsResult[0]['status_name']); ?> ]</li>
     </ol>
   </section>
@@ -33,7 +33,7 @@ $batResult = $db->rawQuery($batQuery);
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
             <tr>
               <td><b>Sample Collection Date&nbsp;:</b></td>
               <td>
@@ -127,7 +127,7 @@ $batResult = $db->rawQuery($batQuery);
           </span>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="vlTestResultStatusDataTable" class="table table-bordered table-striped">
+            <table id="vlTestResultStatusDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th>Sample Code</th>
@@ -159,7 +159,7 @@ $batResult = $db->rawQuery($batQuery);
   </section>
   <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
   var startDate = "";
@@ -169,11 +169,13 @@ $batResult = $db->rawQuery($batQuery);
     loadResultStatusData();
     $('#sampleCollectionDate').daterangepicker({
         locale: {
-          cancelLabel: 'Clear'
+          cancelLabel: "<?= _("Clear"); ?>",
+          format: 'DD-MMM-YYYY',
+          separator: ' to ',
         },
-        format: 'DD-MMM-YYYY',
-        separator: ' to ',
-        startDate: moment().subtract(29, 'days'),
+        showDropdowns: true,
+alwaysShowCalendars: false,
+startDate: moment().subtract(28, 'days'),
         endDate: moment(),
         maxDate: moment(),
         ranges: {

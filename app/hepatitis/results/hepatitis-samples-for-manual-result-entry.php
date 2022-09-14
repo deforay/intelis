@@ -201,7 +201,7 @@ if (isset($sWhere) && count($sWhere) > 0)
      $sWhere = implode(' AND ', $sWhere);
 
 
-$sQuery = $sQuery . ' where ' . $sWhere;
+$sQuery = $sQuery . ' WHERE ' . $sWhere;
 //echo $sQuery; die();
 $_SESSION['vlResultQuery'] = $sQuery;
 //echo $_SESSION['vlResultQuery'];die;

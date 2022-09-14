@@ -123,7 +123,7 @@ class Covid19
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
+            return $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
 
         return json_encode($sCodeKey);
@@ -476,6 +476,33 @@ class Covid19
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
+
+            /* Update version in form attributes */
+            $version = $general->getSystemConfig('sc_version');
+            if (isset($version) && !empty($version)) {
+                $ipaddress = '';
+                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+                } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
+                } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                    $ipaddress = $_SERVER['REMOTE_ADDR'];
+                } else {
+                    $ipaddress = 'UNKNOWN';
+                }
+                $formAttributes = array(
+                    'applicationVersion'  => $version,
+                    'ip_address'    => $ipaddress
+                );
+                $covid19Data['form_attributes'] = json_encode($formAttributes);
+            }
+
             $id = 0;
             if ($rowData) {
                 // $this->db = $this->db->where('covid19_id', $rowData['covid19_id']);
@@ -502,6 +529,7 @@ class Covid19
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastQuery());
             error_log('Insert Covid-19 Sample : ' . $e->getMessage());
         }
+        return 0;
     }
 
     public function generateCovid19QcCode()

@@ -2,8 +2,7 @@
 ob_start();
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
-$province = "";
-$province .= "<option value=''> -- Selecione -- </option>";
+$province = "<option value=''> -- Selecione -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
@@ -110,7 +109,7 @@ $disable = "disabled = 'disabled'";
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Edit Vl Request</li>
 		</ol>
 	</section>
@@ -136,7 +135,7 @@ $disable = "disabled = 'disabled'";
 									<div class="box-header with-border">
 										<h3 class="box-title">A. UNIDADE DE SOLICITAÇÃO</h3>
 									</div>
-									<table class="table" style="width:100%">
+									<table class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<td><label for="province">Província </label></td>
 											<td>
@@ -208,7 +207,7 @@ $disable = "disabled = 'disabled'";
                             <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa-solid fa-magnifying-glass"></i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>-->
 										<h4>B. DADOS DO PACIENTE</h4>
 									</div>
-									<table class="table" style="width:100%">
+									<table class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<td style="width:14%;"><label for="patientFirstName">Nome completo </label></td>
 											<td style="width:14%;">
@@ -276,7 +275,7 @@ $disable = "disabled = 'disabled'";
 									<div class="box-header with-border">
 										<h3 class="box-title">C. INFORMAÇÃO DE TRATAMENTO</h3>
 									</div>
-									<table class="table" style="width:100%">
+									<table class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<td style="width:14%;"><label for="">Data de início de TARV </label></td>
 											<td style="width:14%;">
@@ -396,7 +395,7 @@ $disable = "disabled = 'disabled'";
 									<div class="box-header with-border">
 										<h3 class="box-title">D. INDICAÇÃO PARA SOLICITAÇÃO DE CARGA VIRAL</h3>
 									</div>
-									<table class="table" style="width:100%">
+									<table class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<td colspan="6">
 												<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Monitoria de rotina</label>
@@ -441,7 +440,7 @@ $disable = "disabled = 'disabled'";
 									<div class="box-header with-border">
 										<h3 class="box-title">E. UNIDADE DE COLHEITA</h3>
 									</div>
-									<table class="table" style="width:100%">
+									<table class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<td style="width:14%;"><label for="fName">Nome da Unidade de colheita (se diferente da Unidade de solicitação) </label></td>
 											<td style="width:14%;">
@@ -490,7 +489,7 @@ $disable = "disabled = 'disabled'";
 									<div class="box-header with-border">
 										<h3 class="box-title">Informações laboratoriais</h3>
 									</div>
-									<table class="table" style="width:100%">
+									<table class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<td style="width:14%;"><label for="sampleCode"> Nº de amostra </label><span class="mandatory">*</span></td>
 											<td style="width:14%;">
@@ -995,9 +994,9 @@ $disable = "disabled = 'disabled'";
 		}
 	});
 
-	$("#vlRequestFormAng .labSection").on("change", function() {
+	$(".labSection").on("change", function() {
 		if ($.trim(result) != '') {
-			if ($("#vlRequestFormAng .labSection").serialize() == $(__clone).serialize()) {
+			if ($(".labSection").serialize() == $(__clone).serialize()) {
 				$(".reasonForResultChanges").css("visibility", "hidden");
 				$("#reasonForResultChanges").removeClass("isRequired");
 			} else {

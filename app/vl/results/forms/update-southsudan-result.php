@@ -10,8 +10,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 $lResult = $facilitiesDb->getTestingLabs('vl', true, true);
 
-$province = '';
-$province .= "<option value=''> -- Select -- </option>";
+$province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
@@ -72,7 +71,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
 	$rch .= '<tbody>';
 	$allChange = json_decode($vlQueryInfo['reason_for_vl_result_changes'], true);
-	if (count($allChange) > 0) {
+	if (!empty($allChange)) {
 		$allChange = array_reverse($allChange);
 		foreach ($allChange as $change) {
 			$usrQuery = "SELECT user_name FROM user_details where user_id='" . $change['usr'] . "'";
@@ -90,6 +89,53 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	}
 }
 $disable = "disabled = 'disabled'";
+
+$isGeneXpert = (!empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0)) ? true : false;
+
+if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
+	$vlQueryInfo['result'] = trim(str_ireplace($vlQueryInfo['result_value_hiv_detection'], "", $vlQueryInfo['result']));
+} else if ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
+
+	$vlQueryInfo['result_value_hiv_detection'] = null;
+
+	$hivDetectedStringsToSearch = [
+		'HIV-1 Detected',
+		'HIV 1 Detected',
+		'HIV1 Detected',
+		'HIV 1Detected',
+		'HIV1Detected',
+		'HIV Detected',
+		'HIVDetected',
+	];
+
+	$hivNotDetectedStringsToSearch = [
+		'HIV-1 Not Detected',
+		'HIV-1 NotDetected',
+		'HIV-1Not Detected',
+		'HIV 1 Not Detected',
+		'HIV1 Not Detected',
+		'HIV 1Not Detected',
+		'HIV1Not Detected',
+		'HIV1NotDetected',
+		'HIV1 NotDetected',
+		'HIV 1NotDetected',
+		'HIV Not Detected',
+		'HIVNotDetected',
+	];
+
+	$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
+	if ($detectedMatching !== false) {
+		$vlQueryInfo['result'] = trim(str_ireplace($detectedMatching, "", $vlQueryInfo['result']));
+		$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
+	} else {
+		$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
+		if ($notDetectedMatching !== false) {
+			$vlQueryInfo['result'] = trim(str_ireplace($notDetectedMatching, "", $vlQueryInfo['result']));
+			$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+		}
+	}
+}
+
 ?>
 <style>
 	.table>tbody>tr>td {
@@ -110,7 +156,7 @@ $disable = "disabled = 'disabled'";
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
 		<ol class="breadcrumb">
-			<li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Enter VL Result</li>
 		</ol>
 	</section>
@@ -273,7 +319,7 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="patientFirstName">Patient Name (First Name, Last Name) </label>
-										<input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" <?php echo $disable; ?> value="<?php echo $patientFirstName; ?>" />
+										<input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" <?php echo $disable; ?> value="<?php echo $patientFullName; ?>" />
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">
@@ -448,7 +494,7 @@ $disable = "disabled = 'disabled'";
 																$display = 'none';
 															}
 															?>
-															<input type="radio" class="" id="rmTesting" name="stViralTesting" value="routine" title="Please check routine monitoring" <?php echo $disable; ?> <?php echo $checked; ?> onclick="showTesting('rmTesting');">
+															<input type="radio" class="" id="rmTesting" name="reasonForVLTesting" value="routine" title="Please check routine monitoring" <?php echo $disable; ?> <?php echo $checked; ?> onclick="showTesting('rmTesting');">
 															<strong>Routine Monitoring</strong>
 														</label>
 													</div>
@@ -457,15 +503,15 @@ $disable = "disabled = 'disabled'";
 										</div>
 										<div class="row rmTesting hideTestData" style="display:<?php echo $display; ?>;">
 											<div class="col-md-6">
-												<label class="col-lg-5 control-label">Date of last viral load test</label>
+												<label class="col-lg-5 control-label">Date of Last VL Test</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-6">
-												<label for="rmTestingVlValue" class="col-lg-3 control-label">VL Value</label>
+												<label for="rmTestingVlValue" class="col-lg-3 control-label">VL Result</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_routine']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_routine']; ?>" <?php echo $disable; ?> />
 													(copies/ml)
 												</div>
 											</div>
@@ -486,7 +532,7 @@ $disable = "disabled = 'disabled'";
 																$display = 'none';
 															}
 															?>
-															<input type="radio" class="" id="repeatTesting" name="stViralTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling" <?php echo $disable; ?> <?php echo $checked; ?> onclick="showTesting('repeatTesting');">
+															<input type="radio" class="" id="repeatTesting" name="reasonForVLTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling" <?php echo $disable; ?> <?php echo $checked; ?> onclick="showTesting('repeatTesting');">
 															<strong>Repeat VL test after suspected treatment failure adherence counselling </strong>
 														</label>
 													</div>
@@ -495,15 +541,15 @@ $disable = "disabled = 'disabled'";
 										</div>
 										<div class="row repeatTesting hideTestData" style="display: <?php echo $display; ?>;">
 											<div class="col-md-6">
-												<label class="col-lg-5 control-label">Date of last viral load test</label>
+												<label class="col-lg-5 control-label">Date of Last VL Test</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-6">
-												<label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Value</label>
+												<label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_failure_ac']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_failure_ac']; ?>" <?php echo $disable; ?> />
 													(copies/ml)
 												</div>
 											</div>
@@ -524,7 +570,7 @@ $disable = "disabled = 'disabled'";
 																$display = 'none';
 															}
 															?>
-															<input type="radio" class="" id="suspendTreatment" name="stViralTesting" value="suspect" title="Suspect Treatment Failure" <?php echo $disable; ?> <?php echo $checked; ?> onclick="showTesting('suspendTreatment');">
+															<input type="radio" class="" id="suspendTreatment" name="reasonForVLTesting" value="suspect" title="Suspect Treatment Failure" <?php echo $disable; ?> <?php echo $checked; ?> onclick="showTesting('suspendTreatment');">
 															<strong>Suspect Treatment Failure</strong>
 														</label>
 													</div>
@@ -533,15 +579,15 @@ $disable = "disabled = 'disabled'";
 										</div>
 										<div class="row suspendTreatment hideTestData" style="display: <?php echo $display; ?>;">
 											<div class="col-md-6">
-												<label class="col-lg-5 control-label">Date of last viral load test</label>
+												<label class="col-lg-5 control-label">Date of Last VL Test</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-6">
-												<label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Value</label>
+												<label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Result</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Value" title="Please enter vl value" value="<?php echo $vlQueryInfo['last_vl_result_failure']; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_failure']; ?>" <?php echo $disable; ?> />
 													(copies/ml)
 												</div>
 											</div>
@@ -631,9 +677,9 @@ $disable = "disabled = 'disabled'";
 												</div>
 												<div class="row">
 													<div class="col-md-4">
-														<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform<span class="mandatory">*</span> </label>
+														<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform <span class="mandatory">*</span> </label>
 														<div class="col-lg-7">
-															<select name="testingPlatform" id="testingPlatform" class="isRequired result-optional form-control labSection" title="Please choose the VL Testing Platform" onchange="hivDetectionChange()">
+															<select name="testingPlatform" id="testingPlatform" class="isRequired result-optional form-control labSection" title="Please choose the VL Testing Platform">
 																<option value="">-- Select --</option>
 																<?php foreach ($importResult as $mName) { ?>
 																	<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
@@ -643,9 +689,9 @@ $disable = "disabled = 'disabled'";
 													</div>
 
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="noResult">Sample Rejected? </label>
+														<label class="col-lg-5 control-label" for="noResult">Sample Rejected? <span class="mandatory">*</span> </label>
 														<div class="col-lg-7">
-															<select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
+															<select name="noResult" id="noResult" class="form-control labSection isRequired" title="Please check if sample is rejected or not">
 																<option value="">-- Select --</option>
 																<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
 																<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
@@ -677,10 +723,10 @@ $disable = "disabled = 'disabled'";
 															<input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 														</div>
 													</div>
-													<div class="col-md-4 hivDetection" style="<?php echo (isset($vlQueryInfo['vl_test_platform']) && $vlQueryInfo['vl_test_platform'] != 'GeneXpert') ? 'display: none;' : ''; ?>">
+													<div class="col-md-4 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert === true && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
 														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
 														<div class="col-lg-7">
-															<select name="hivDetection" id="hivDetection" class="form-control hivDetection" title="Please choose HIV detection">
+															<select name="hivDetection" id="hivDetection" class="form-control hivDetection labSection" title="Please choose HIV detection">
 																<option value="">-- Select --</option>
 																<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
 																<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
@@ -718,7 +764,7 @@ $disable = "disabled = 'disabled'";
 														</div>
 													</div>
 												<?php } ?>
-												<div class="col-md-4">
+												<div class="col-md-4 vlResult">
 													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control labSection" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
@@ -780,7 +826,7 @@ $disable = "disabled = 'disabled'";
 													</div>
 												</div>
 												<?php
-												if (count($allChange) > 0) {
+												if (!empty($allChange)) {
 												?>
 													<div class="row">
 														<div class="col-md-12"><?php echo $rch; ?></div>
@@ -813,10 +859,6 @@ $disable = "disabled = 'disabled'";
 	let specialResultsValue = null;
 
 	$(document).ready(function() {
-
-		$("#noResult").trigger('change');
-		//$('.specialResults').trigger('change');
-
 
 		autoFillFocalDetails();
 		$('#labId').select2({
@@ -853,11 +895,28 @@ $disable = "disabled = 'disabled'";
 		});
 		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('99-aaa-9999 99:99');
 
+		$('.specialResults').trigger('change');
+		$("#hivDetection, #noResult").trigger('change');
 
-		__clone = $(".labSection").clone();
-		reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
-		resultValue = $("#vlResult").val();
-		specialResultsValue = $('.specialResults:checkbox:checked').val();
+		setTimeout(function() {
+			__clone = $(".labSection").clone();
+			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
+			resultValue = $("#vlResult").val();
+			specialResultsValue = $('.specialResults:checkbox:checked').val();
+
+			$(".labSection").on("change", function() {
+				if ($.trim(resultValue) != '' || specialResultsValue != '' || specialResultsValue != undefined) {
+					if ($(".labSection").serialize() === $(__clone).serialize()) {
+						$(".reasonForResultChanges").css("display", "none");
+						$("#reasonForResultChanges").removeClass("isRequired");
+					} else {
+						$(".reasonForResultChanges").css("display", "block");
+						$("#reasonForResultChanges").addClass("isRequired");
+					}
+				}
+			});
+
+		}, 500);
 
 
 	});
@@ -874,12 +933,16 @@ $disable = "disabled = 'disabled'";
 			$('#rejectionDate').removeClass('isRequired');
 			$('#rejectionReason').val('');
 			$(".review-approve-span").hide();
+			$("#hivDetection, #noResult").trigger('change');
 		}
 	});
-	$("#noResult").change(function() {
+	$("#noResult").on("change", function() {
+
+		hivDetectionChange();
+
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
-			$('.vlResult').css('display', 'none');
+			$('.vlResult, .hivDetection').css('display', 'none');
 			$('.vlLog').css('display', 'none');
 			$("#sampleTestingDateAtLab, #vlResult, .hivDetection").val("");
 			$('.specialResults').prop('checked', false);
@@ -895,13 +958,13 @@ $disable = "disabled = 'disabled'";
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
+			$("#reasonForFailure").removeClass('isRequired');
 		} else if ($(this).val() == 'no') {
 			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
 			$(".result-span").show();
 			$(".review-approve-span").show();
-			$('.vlResult').css('display', 'block');
-			$('.vlLog').css('display', 'block');
+			$('.vlResult,.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionDate').removeClass('isRequired');
@@ -910,13 +973,12 @@ $disable = "disabled = 'disabled'";
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
-			hivDetectionChange();
+			//$(".hivDetection").trigger("change");
 		} else {
 			$(".result-fields, .specialResults").attr("disabled", false);
 			$(".result-fields").removeClass("isRequired");
 			$(".result-optional").removeClass("isRequired");
 			$(".result-span").show();
-			$(".result-fields").val("");
 			$('.vlResult,.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$(".result-span").hide();
@@ -928,11 +990,11 @@ $disable = "disabled = 'disabled'";
 			$('#reviewedOn').removeClass('isRequired');
 			$('#approvedBy').removeClass('isRequired');
 			$('#approvedOnDateTime').removeClass('isRequired');
-			hivDetectionChange();
+			//$(".hivDetection").trigger("change");
 		}
 	});
 
-	$('.specialResults').change(function() {
+	$('.specialResults').on("change", function() {
 		if ($('.specialResults').is(':checked')) {
 			$('.specialResults').each(function() {
 				if ($(this).is(':checked')) {
@@ -969,25 +1031,37 @@ $disable = "disabled = 'disabled'";
 			$('#reasonForFailure').removeClass('isRequired');
 		}
 	});
-	$('#hivDetection').change(function() {
-		if (this.value == 'HIV-1 Not Detected') {
+
+	$('#hivDetection').on("change", function() {
+		if (this.value == null || this.value == '' || this.value == undefined) {
+			return false;
+		} else if (this.value === 'HIV-1 Not Detected') {
+			$("#noResult").val("no");
 			$('.specialResults').prop('checked', false).removeAttr('checked');
 			$('#vlResult').attr('disabled', false);
 			$('#vlLog').attr('disabled', false);
-			$("#vlResult").val('').css('pointer-events', 'none');
-			$("#vlLog").val('').css('pointer-events', 'none');
+			$("#vlResult,#vlLog").val('');
 			$(".vlResult, .vlLog").hide();
 			$("#reasonForFailure").removeClass('isRequired');
-		} else {
-			$("#vlResult").css('pointer-events', 'auto');
-			$("#vlLog").css('pointer-events', 'auto');
-			$("#vlResult").val('').css('pointer-events', 'auto');
-			$("#vlLog").val('').css('pointer-events', 'auto');
+			$('#vlResult').removeClass('isRequired');
+		} else if (this.value === 'HIV-1 Detected') {
+			$("#noResult").val("no");
 			$(".vlResult, .vlLog").show();
+			$("#noResult").trigger("change");
+			$('#vlResult').addClass('isRequired');
 		}
 	});
 
+	$('#testingPlatform').on("change", function() {
+		$(".vlResult, .vlLog").show();
+		$('#vlResult, #noResult').addClass('isRequired');
+		//$("#noResult").val("");
+		$("#noResult").trigger("change");
+		hivDetectionChange();
+	});
+
 	function hivDetectionChange() {
+
 		var text = $('#testingPlatform').val();
 		var str1 = text.split("##");
 		var str = str1[0];
@@ -996,20 +1070,10 @@ $disable = "disabled = 'disabled'";
 			$('.hivDetection').show();
 		} else {
 			$('.hivDetection').hide();
+			$("#hivDetection").val("");
 		}
 	}
-	$(".labSection").on("change", function() {
 
-		if ($.trim(resultValue) != '' || specialResultsValue != '' || specialResultsValue != undefined) {
-			if ($(".labSection").serialize() === $(__clone).serialize()) {
-				$(".reasonForResultChanges").css("display", "none");
-				$("#reasonForResultChanges").removeClass("isRequired");
-			} else {
-				$(".reasonForResultChanges").css("display", "block");
-				$("#reasonForResultChanges").addClass("isRequired");
-			}
-		}
-	});
 
 	function checkRejectionReason() {
 		var rejectionReason = $("#rejectionReason").val();

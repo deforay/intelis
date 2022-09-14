@@ -1,6 +1,6 @@
 <?php
 $title = _("EID Quarterly Monitoring Report");
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
@@ -161,9 +161,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-book"></i> <?php echo _("EARLY INFANT DIAGNOSIS - Testing Target Report");?>
+    <h1><i class="fa-solid fa-book"></i> <?php echo _("EARLY INFANT DIAGNOSIS - Testing Target Report"); ?>
       <!--<ol class="breadcrumb">-->
-      <!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
+      <!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->
       <!--</ol>-->
 
@@ -174,54 +174,54 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
+              <td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
               <td>
-                <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="background:#fff;" />
+                <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
               </td>
-              <td><b><?php echo _("Lab Name");?> :</b></td>
+              <td><b><?php echo _("Lab Name"); ?> :</b></td>
               <td style="width: 30%;">
-                <select id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple>
+                <select id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple>
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>
 
             </tr>
             <tr>
-              <td><b><?php echo _("Target Type");?>&nbsp;:</b></td>
+              <td><b><?php echo _("Target Type"); ?>&nbsp;:</b></td>
               <td>
-                <select class="form-control" id="targetType" name="targetType" title="<?php echo _('Please select Target Type');?>">
-                  <option value="1"><?php echo _("Monthly Targets not met");?></option>
-                  <option value="2"><?php echo _("Monthly Targets met");?></option>
-                  <option value="3"><?php echo _("Show all");?></option>
+                <select class="form-control" id="targetType" name="targetType" title="<?php echo _('Please select Target Type'); ?>">
+                  <option value="1"><?php echo _("Monthly Targets not met"); ?></option>
+                  <option value="2"><?php echo _("Monthly Targets met"); ?></option>
+                  <option value="3"><?php echo _("Show all"); ?></option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+              <td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
 
-                &nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()"><?php echo _("Export to excel");?></button>
+                &nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()"><?php echo _("Export to excel"); ?></button>
               </td>
             </tr>
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="vlMonitoringTable" class="table table-bordered table-striped">
+            <table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
-                  <th><?php echo _("Facility Name");?></th>
-                  <th><?php echo _("Month");?> </th>
-                  <th> <?php echo _("Number of Samples Received");?> </th>
-                  <th> <?php echo _("Number of Samples Rejected");?> </th>
-                  <th><?php echo _("Number of Samples Tested");?></th>
-                  <th><?php echo _("Monthly Test Target");?></th>
+                  <th><?php echo _("Facility Name"); ?></th>
+                  <th><?php echo _("Month"); ?> </th>
+                  <th> <?php echo _("Number of Samples Received"); ?> </th>
+                  <th> <?php echo _("Number of Samples Rejected"); ?> </th>
+                  <th><?php echo _("Number of Samples Tested"); ?></th>
+                  <th><?php echo _("Monthly Test Target"); ?></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                  <td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                 </tr>
               </tbody>
             </table>
@@ -237,7 +237,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   <!-- /.content -->
 </div>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
   var startDate = "";
@@ -245,16 +245,18 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   var oTable = null;
   $(document).ready(function() {
     $("#facilityName").multipleSelect({
-      placeholder: "<?php echo _("Select facility name");?>",
+      placeholder: "<?php echo _("Select facility name"); ?>",
       width: '100%'
     });
     $('#sampleTestDate').daterangepicker({
         locale: {
-          cancelLabel: 'Clear'
+          cancelLabel: "<?= _("Clear"); ?>",
+          format: 'DD-MMM-YYYY',
+          separator: ' to ',
         },
-        format: 'DD-MMM-YYYY',
-        separator: ' to ',
-        startDate: moment().subtract(29, 'days'),
+        showDropdowns: true,
+        alwaysShowCalendars: false,
+        startDate: moment().subtract(28, 'days'),
         endDate: moment(),
         maxDate: moment(),
         ranges: {
@@ -356,7 +358,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       },
       function(data) {
         if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _("Unable to generate excel file");?>");
+          alert("<?php echo _("Unable to generate excel file"); ?>");
         } else {
           location.href = '/temporary/' + data;
         }
@@ -400,7 +402,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       content += '</div></div></div></div>';
     }
     content += '<div class="col-xs-1">';
-    content += "<button class='btn btn-info mpr-close'><?php echo _("Apply");?></button>";
+    content += "<button class='btn btn-info mpr-close'><?php echo _("Apply"); ?></button>";
     content += '</div>';
     content += '</div>';
 

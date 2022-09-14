@@ -26,6 +26,33 @@ class General
         $this->db = $db;
     }
 
+    public function getActiveTestModules(): array
+    {
+        $response = array();
+
+        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
+            $response[] = 'vl';
+        }
+
+        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
+            $response[] = 'eid';
+        }
+
+        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
+            $response[] = 'covid19';
+        }
+
+        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
+            $response[] = 'hepatitis';
+        }
+
+        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
+            $response[] = 'tb';
+        }
+
+        return $response;
+    }
+
     public static function generateRandomString($length = 32)
     {
         $randomString = '';
@@ -189,7 +216,7 @@ class General
 
         $fieldName = ($fieldName != null) ? $fieldName : '*';
 
-        $configQuery = "SELECT $fieldName from $tableName";
+        $configQuery = "SELECT $fieldName FROM $tableName";
 
         if ($condition != null) {
             $configQuery .= " WHERE $condition ";
@@ -356,26 +383,6 @@ class General
         return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
     }
 
-    public function getEidResults()
-    {
-        $results = $this->db->rawQuery("SELECT * FROM r_eid_results where status='active' ORDER BY result_id DESC");
-        $response = array();
-        foreach ($results as $row) {
-            $response[$row['result_id']] = $row['result'];
-        }
-        return $response;
-    }
-
-    public function getCovid19Results()
-    {
-        $results = $this->db->rawQuery("SELECT * FROM r_covid19_results where status='active' ORDER BY result_id DESC");
-        $response = array();
-        foreach ($results as $row) {
-            $response[$row['result_id']] = $row['result'];
-        }
-        return $response;
-    }
-
     public function getTbResults()
     {
         $results = $this->db->rawQuery("SELECT * FROM r_tb_results where status='active' ORDER BY result_id DESC");
@@ -438,20 +445,8 @@ class General
                 return $value;
             }
         }
-    }
 
-    public function getHttpValue($key)
-    {
-        // print_r($_SERVER);die;
-        foreach ($_SERVER as $header => $value) {
-            if (substr($header, 0, 5) == "HTTP_") {
-                $header = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($header, 5)))));
-                if (strtolower($key) == strtolower($header)) {
-                    return $value;
-                }
-            }
-        }
-        // return $out; 
+        return null;
     }
 
     public function getTestingPlatforms($testType = null)
@@ -797,6 +792,18 @@ class General
         error_log(ob_get_clean());
     }
 
+    // Returns false if string not matched, and returns string if matched
+    public function checkIfStringExists(string $sourceString, array $itemsToSearch, int $offset = 0)
+    {
+        $response = false;
+        foreach ($itemsToSearch as $needle) {
+            if (stripos($sourceString, $needle, $offset) !== false) {
+                return $needle; // stop on first true result
+            }
+        }
+        return $response;
+    }
+
     public function isJSON($string)
     {
         return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
@@ -810,6 +817,7 @@ class General
             return stripslashes(json_encode(json_decode($json), JSON_PRETTY_PRINT));
         }
     }
+
 
     public function addApiTracking($user, $records, $type, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
     {

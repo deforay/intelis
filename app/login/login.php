@@ -45,10 +45,10 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 ?>
 
-<!-- CSRF TOKEN -->
-<?php $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateRandomString(64); ?>
+<!-- LOGIN PAGE -->
+<?php $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateUUID(); ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?= $_SESSION['APP_LOCALE']; ?>">
 
 <head>
 	<meta charset="utf-8">
@@ -152,7 +152,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 								<input type="text" style="height: 70%;" id="challengeResponse" name="captcha" placeholder="<?php echo _('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _('Please enter the text from the image'); ?>." maxlength="40">
 							</div>
 							<div>
-								<img id="capChaw" width="254px" height="100px" src="/includes/captcha.php/<?php echo random_int(0, PHP_INT_MAX); ?>" />
+								<img id="capChaw" width="254px" height="100px" alt="verification" src="/includes/captcha.php/<?php echo random_int(0, PHP_INT_MAX); ?>" />
 								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa-solid fa-arrows-rotate"></i> <?php echo _("Get New Image"); ?></a>
 							</div>
 						</div>
@@ -174,6 +174,17 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<script src="/assets/js/deforayValidation.js"></script>
 	<script src="/assets/js/jquery.blockUI.js"></script>
 	<script type="text/javascript">
+		window.additionalXHRParams = {
+			layout: 0,
+			'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateUUID(); ?>'
+		};
+
+		$.ajaxSetup({
+			headers: window.additionalXHRParams
+		});
+
+		let captchaflag = false;
+
 		function getCaptcha(captchaDivId) {
 			var d = new Date();
 			var randstr = d.getFullYear() + d.getSeconds() + d.getMilliseconds() + Math.random();
@@ -190,8 +201,8 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 			if (flag) {
 				challenge_field = document.getElementById("challengeResponse").value;
-				if (captchaflag == true) {
-					if (challenge_field != "") {
+				if (captchaflag === true) {
+					if (challenge_field !== "") {
 						$.post('/includes/check-captcha-route.php', {
 								challenge_field: challenge_field,
 								format: "html"
@@ -213,7 +224,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						return false;
 					}
 				} else {
-					// document.getElementById('loginForm').submit();
+					document.getElementById('loginForm').submit();
 				}
 			}
 		}

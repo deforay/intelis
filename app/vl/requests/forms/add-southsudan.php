@@ -44,8 +44,7 @@ if ($chkUserFcMapResult) {
      $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
 }
 $pdResult = $db->query($pdQuery);
-$province = '';
-$province .= "<option value=''> -- Select -- </option>";
+$province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
      $province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
@@ -78,7 +77,7 @@ $sFormat = '';
      <section class="content-header">
           <h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
           <ol class="breadcrumb">
-               <li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+               <li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
                <li class="active">Add Vl Request</li>
           </ol>
      </section>
@@ -154,7 +153,7 @@ $sFormat = '';
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="fillFacilityDetails();setSampleDispatchDate();">
+                                                       <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();">
                                                             <?php echo $facility;  ?>
                                                        </select>
                                                   </div>
@@ -407,7 +406,7 @@ $sFormat = '';
                                              </div>
                                              <div class="box box-primary">
                                                   <div class="box-header with-border">
-                                                       <h3 class="box-title">Indication for Viral Load Testing</h3><small> (Please choose one):(To be completed by clinician)</small>
+                                                       <h3 class="box-title">Indication for Viral Load Testing <span class="mandatory">*</span></h3><small> (Please choose one):(To be completed by clinician)</small>
                                                   </div>
                                                   <div class="box-body">
                                                        <div class="row">
@@ -415,7 +414,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="isRequired" id="rmTesting" name="stViralTesting" value="routine" title="Please select indication/reason for testing" onclick="showTesting('rmTesting');">
+                                                                                <input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="routine" title="Please select indication/reason for testing" onclick="showTesting('rmTesting');">
                                                                                 <strong>Routine Monitoring</strong>
                                                                            </label>
                                                                       </div>
@@ -424,15 +423,15 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row rmTesting hideTestData" style="display:none;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of last viral load test</label>
+                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="rmTestingVlValue" class="col-lg-3 control-label">VL Value</label>
+                                                                 <label for="rmTestingVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)
                                                                  </div>
                                                             </div>
@@ -442,7 +441,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="isRequired" id="repeatTesting" name="stViralTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling (Reason for testing)" onclick="showTesting('repeatTesting');">
+                                                                                <input type="radio" class="isRequired" id="repeatTesting" name="reasonForVLTesting" value="failure" title="Repeat VL test after suspected treatment failure adherence counseling (Reason for testing)" onclick="showTesting('repeatTesting');">
                                                                                 <strong>Repeat VL test after suspected treatment failure adherence counselling </strong>
                                                                            </label>
                                                                       </div>
@@ -451,15 +450,15 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row repeatTesting hideTestData" style="display:none;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of last viral load test</label>
+                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Value</label>
+                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)
                                                                  </div>
                                                             </div>
@@ -469,7 +468,7 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="isRequired" id="suspendTreatment" name="stViralTesting" value="suspect" title="Suspect Treatment Failure (Reason for testing)" onclick="showTesting('suspendTreatment');">
+                                                                                <input type="radio" class="isRequired" id="suspendTreatment" name="reasonForVLTesting" value="suspect" title="Suspect Treatment Failure (Reason for testing)" onclick="showTesting('suspendTreatment');">
                                                                                 <strong>Suspect Treatment Failure</strong>
                                                                            </label>
                                                                       </div>
@@ -478,15 +477,15 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row suspendTreatment hideTestData" style="display: none;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of last viral load test</label>
+                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Value</label>
+                                                                 <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Value" title="Please enter vl value" />
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)
                                                                  </div>
                                                             </div>
@@ -660,7 +659,7 @@ $sFormat = '';
                                                                            </div>
                                                                       </div>
                                                                  <?php } ?>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
@@ -780,13 +779,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      let facilityName = true;
      $(document).ready(function() {
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
+
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
-                    $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+                    $('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
                }
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
-                    // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+                    $('#sampleReceivedDate').val($('#sampleCollectionDate').val());
+                    $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
                }
-
                if ($("#labId").val() != "") {
                     $.post("/includes/get-sample-type.php", {
                               facilityId: $('#labId').val(),
@@ -1099,7 +1099,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.femaleSection').show();
           }
      });
-     $("#sampleTestingDateAtLab").change(function() {
+     $("#sampleTestingDateAtLab").on("change", function() {
           if ($(this).val() != "") {
                $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
@@ -1113,7 +1113,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".review-approve-span").hide();
           }
      });
-     $("#noResult").change(function() {
+     $("#noResult").on("change", function() {
+
+          hivDetectionChange();
+
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
                $('.vlResult, .hivDetection').css('display', 'none');
@@ -1121,7 +1124,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#sampleTestingDateAtLab, #vlResult, .hivDetection").val("");
                $('.specialResults').prop('checked', false);
                $(".result-fields").val("");
-               $(".result-fields, .specialResults, .hivDetection").attr("disabled", true);
+               $(".result-fields, .specialResults").attr("disabled", true);
                $(".result-fields, .specialResults").removeClass("isRequired");
                $(".result-span").hide();
                $(".review-approve-span").show();
@@ -1132,6 +1135,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#approvedBy').addClass('isRequired');
                $('#approvedOnDateTime').addClass('isRequired');
                $(".result-optional").removeClass("isRequired");
+               $("#reasonForFailure").removeClass('isRequired');
           } else if ($(this).val() == 'no') {
                $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
@@ -1146,15 +1150,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').addClass('isRequired');
                $('#approvedBy').addClass('isRequired');
                $('#approvedOnDateTime').addClass('isRequired');
-               hivDetectionChange();
+               //$(".hivDetection").trigger("change");
           } else {
                $(".result-fields, .specialResults").attr("disabled", false);
                $(".result-fields").removeClass("isRequired");
                $(".result-optional").removeClass("isRequired");
                $(".result-span").show();
-               $(".result-fields").val("");
-               $('.vlResult').css('display', 'block');
-               $('.vlLog').css('display', 'block');
+               $('.vlResult,.vlLog').css('display', 'block');
                $('.rejectionReason').hide();
                $(".result-span").hide();
                $(".review-approve-span").hide();
@@ -1165,24 +1167,27 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').removeClass('isRequired');
                $('#approvedBy').removeClass('isRequired');
                $('#approvedOnDateTime').removeClass('isRequired');
-               hivDetectionChange();
+               //$(".hivDetection").trigger("change");
           }
      });
-     $('#hivDetection').change(function() {
-          if (this.value == 'HIV-1 Not Detected') {
+
+     $('#hivDetection').on("change", function() {
+          if (this.value == null || this.value == '' || this.value == undefined) {
+               return false;
+          } else if (this.value === 'HIV-1 Not Detected') {
+               $("#noResult").val("no");
                $('.specialResults').prop('checked', false).removeAttr('checked');
                $('#vlResult').attr('disabled', false);
                $('#vlLog').attr('disabled', false);
-               $("#vlResult").val('').css('pointer-events', 'none');
-               $("#vlLog").val('').css('pointer-events', 'none');
+               $("#vlResult,#vlLog").val('');
                $(".vlResult, .vlLog").hide();
                $("#reasonForFailure").removeClass('isRequired');
-          } else {
-               $("#vlResult").css('pointer-events', 'auto');
-               $("#vlLog").css('pointer-events', 'auto');
-               $("#vlResult").val('').css('pointer-events', 'auto');
-               $("#vlLog").val('').css('pointer-events', 'auto');
+               $('#vlResult').removeClass('isRequired');
+          } else if (this.value === 'HIV-1 Detected') {
+               $("#noResult").val("no");
                $(".vlResult, .vlLog").show();
+               $('#vlResult').addClass('isRequired');
+               $("#noResult").trigger("change");
           }
      });
 
@@ -1232,7 +1237,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
+     $('#testingPlatform').on("change", function() {
+          $(".vlResult, .vlLog").show();
+          //$('#vlResult, #noResult').addClass('isRequired');
+          $("#noResult").val("");
+          //$("#noResult").trigger("change");
+          hivDetectionChange();
+     });
+
      function hivDetectionChange() {
+
           var text = $('#testingPlatform').val();
           var str1 = text.split("##");
           var str = str1[0];
@@ -1241,6 +1255,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.hivDetection').show();
           } else {
                $('.hivDetection').hide();
+               $("#hivDetection").val("");
           }
      }
 

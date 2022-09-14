@@ -53,7 +53,7 @@ foreach ($srcResults as $list) {
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Covid-19 Test Requests"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Test Request"); ?></li>
 		</ol>
 	</section>
@@ -63,7 +63,7 @@ foreach ($srcResults as $list) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table id="advanceFilter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+					<table id="advanceFilter" class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
 							<td><b><?php echo _("Sample Collection Date"); ?> :</b></td>
 							<td>
@@ -184,12 +184,12 @@ foreach ($srcResults as $list) {
 							</td>
 							<td colspan="4">
 								<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add new Covid-19 Request"); ?></a>
+									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add new Covid-19 Request"); ?></a>
 									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Bulk Import Covid-19 Request"); ?></a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Bulk Import Covid-19 Request"); ?></a>
 									<?php }
 									if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Quick Add Covid-19 Request"); ?></a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Quick Add Covid-19 Request"); ?></a>
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
@@ -198,19 +198,19 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 					</table>
-					<table id="filter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+					<table id="filter" class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
 
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
 									<?php if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?= _("Quick Add Covid-19 Request"); ?></a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?= _("Quick Add Covid-19 Request"); ?></a>
 									<?php } ?>
 
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?= _("Add new Covid-19 Request"); ?></a>
+									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?= _("Add new Covid-19 Request"); ?></a>
 									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <i class="fa-solid fa-plus"></i> <?= _("Bulk Import Covid-19 Requests"); ?></a>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?= _("Bulk Import Covid-19 Requests"); ?></a>
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
@@ -223,7 +223,7 @@ foreach ($srcResults as $list) {
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped">
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -292,7 +292,7 @@ foreach ($srcResults as $list) {
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
 <?php
@@ -338,12 +338,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		});
 		loadVlRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
+                locale: {
+                    cancelLabel: "<?= _("Clear"); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
+				showDropdowns: true,
+alwaysShowCalendars: false,
+startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

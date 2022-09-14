@@ -3,12 +3,12 @@ ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
 $generalDb = new \Vlsm\Models\General();
-$covid19Db = new \Vlsm\Models\Covid19();
+$covid19Obj = new \Vlsm\Models\Covid19();
 $facilityDb = new \Vlsm\Models\Facilities();
 $userDb = new \Vlsm\Models\Users();
 
-$covid19Results = $covid19Db->getCovid19Results();
-$code = $covid19Db->generateCovid19QcCode();
+$covid19Results = $covid19Obj->getCovid19Results();
+$code = $covid19Obj->generateCovid19QcCode();
 $testingLabs = $facilityDb->getTestingLabs("covid19");
 $users = $userDb->getAllUsers(null, null, "drop-down");
 
@@ -34,8 +34,7 @@ if ($chkUserFcMapResult) {
     $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
 }
 $pdResult = $db->query($pdQuery);
-$province = "";
-$province .= "<option value=''> -- Select -- </option>";
+$province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
     $province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
@@ -46,7 +45,7 @@ foreach ($pdResult as $provinceName) {
     <section class="content-header">
         <h1><i class="fa-solid fa-virus-covid"></i> <?php echo _("Edit Covid-19 QC Test Kit"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Covid-19 QC Test Kit"); ?></li>
         </ol>
     </section>

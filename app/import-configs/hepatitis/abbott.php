@@ -62,6 +62,8 @@ try {
         $reviewByCol = '';
         $lotExpirationDateCol = 13;
 
+        $dateFormat = 'd/m/Y';
+
         if (strpos($mime_type, 'text/plain') !== false) {
             $infoFromFile = array();
             $testDateRow = "";
@@ -69,10 +71,10 @@ try {
 
             $row = 1;
             if (($handle = fopen(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName, "r")) !== false) {
-                
+
                 while (($sheetData = fgetcsv($handle, 10000, ",")) !== FALSE) {
                     $num = count($sheetData);
-                    
+
 
                     // Create a Message object from a HL7 string
                     $msg = new Message($sheetData[0]); // Either \n or \r can be used as segment endings
@@ -89,26 +91,28 @@ try {
                     // Check if a message is empty
                     $msg = new Message();
                     $msg->isempty(); // Returns true
-                    
-                    echo "<pre>";print_r($msg->toString(true));echo "</pre>";die;
+
+                    // echo "<pre>";
+                    // print_r($msg->toString(true));
+                    // echo "</pre>";
+                    // die;
                     $row++;
                     if ($row < $skip) {
                         if ($row == 8) {
-                            $timestamp = DateTime::createFromFormat('!m/d/Y h:i:s A', $sheetData[1]);
-                            if (!empty($timestamp)) {
-                                $timestamp = $timestamp->getTimestamp();
-                                $testingDate = date('Y-m-d H:i', ($timestamp));
-                            } else {
-                                $testingDate = null;
-                            }
+                            $testingDateArray = \Vlsm\Helpers\Results::abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
+                            $dateFormat = $testingDateArray['dateFormat'];
+                            $testingDate = $testingDateArray['testingDate'];
                         }
-                        // continue;
+                        continue;
                     }
                     $sampleCode = "";
                     $batchCode = "";
                     $sampleType = "";
-                    $resultFlag = "";
-                    echo "<pre>";print_r($sheetData);echo "</pre>";die;
+                    // $resultFlag = "";
+                    // echo "<pre>";
+                    // print_r($sheetData);
+                    // echo "</pre>";
+                    // die;
 
                     $sampleCode = $sheetData[$sampleIdCol];
 
@@ -185,7 +189,10 @@ try {
                 }
             }
         }
-        echo "<pre>";print_r($infoFromFile);echo "</pre>";die;
+        // echo "<pre>";
+        // print_r($infoFromFile);
+        // echo "</pre>";
+        // die;
         $inc = 0;
         foreach ($infoFromFile as $sampleCode => $d) {
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
@@ -199,7 +206,7 @@ try {
                 'result_reviewed_by' => $_SESSION['userId'],
                 'sample_code' => $d['sampleCode'],
                 'sample_type' => $d['sampleType'],
-                'sample_tested_datetime' => $testingDate,
+                'sample_tested_datetime' => $d['testingDate'],
                 'result_status' => '6',
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
@@ -239,7 +246,10 @@ try {
             } else {
                 $data['sample_details'] = 'New Sample';
             }
-            echo "<pre>";print_r($data);echo "</pre>";continue;
+            echo "<pre>";
+            print_r($data);
+            echo "</pre>";
+            continue;
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '') {
                 $data['result_imported_datetime'] = $general->getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];

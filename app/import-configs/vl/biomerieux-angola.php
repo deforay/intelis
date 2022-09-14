@@ -152,7 +152,7 @@ try {
                 'result_value_absolute' => $d['absVal'],
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime' => $testingDate,
+                'sample_tested_datetime' => $d['testingDate'],
                 'result_status' => '6',
                 'lot_number' => $d['lotNumber'],
                 'import_machine_file_name' => $fileName,

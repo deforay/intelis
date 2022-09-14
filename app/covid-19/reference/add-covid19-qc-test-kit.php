@@ -2,7 +2,7 @@
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$generalObj = new \Vlsm\Models\General();
+$general = new \Vlsm\Models\General();
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
@@ -13,7 +13,7 @@ $covid19Results = $covid19Obj->getCovid19Results();
     <section class="content-header">
         <h1><i class="fa-solid fa-virus-covid"></i> <?php echo _("Add Covid-19 QC Test Kit"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Covid-19 QC Test Kit"); ?></li>
         </ol>
     </section>
@@ -68,11 +68,11 @@ $covid19Results = $covid19Obj->getCovid19Results();
                                 </td>
                                 <td>
                                     <select id="expectedResult1" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results">
-                                        <?= $generalObj->generateSelectOptions($covid19Results, null, "--Select--"); ?>
+                                        <?= $general->generateSelectOptions($covid19Results, null, "--Select--"); ?>
                                     </select>
                                 </td>
                                 <td align="center" style="vertical-align:middle;">
-                                    <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
+                                    <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
                                 </td>
                             </tr>
                         </tbody>
@@ -141,7 +141,7 @@ $covid19Results = $covid19Obj->getCovid19Results();
 
         b.innerHTML = '<input type="text" name="qcTestLable[]" id="qcTestLable' + tableRowId + '" class="isRequired form-control" placeholder="<?php echo _('QC Test Label'); ?>" title="<?php echo _('Please enter qc test label'); ?>" onblur="checkLabelName(this);"/ >';
         c.innerHTML = '<select id="expectedResult' + tableRowId + '" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results"><option value="">--Select--</option><?php foreach ($covid19Results as $key => $row) { ?><option value="<?php echo $key; ?>"><?php echo $row; ?></option><?php } ?></select>';
-        d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
+        d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
         $(a).fadeIn(800);
         tableRowId++;
     }

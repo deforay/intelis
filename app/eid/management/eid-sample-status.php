@@ -19,7 +19,7 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 
 $sarr = $general->getSystemConfig();
 
-if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser') {
+if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser' && !empty($sarr['sc_testing_lab_id'])) {
 	$testingLabs = $facilitiesDb->getTestingLabs('eid', true, false, "facility_id = " . $sarr['sc_testing_lab_id']);
 } else {
 	$testingLabs = $facilitiesDb->getTestingLabs('eid');
@@ -42,7 +42,7 @@ $batResult = $db->rawQuery($batQuery);
 	<section class="content-header">
 		<h1><i class="fa-solid fa-book"></i> <?php echo _("EID Sample Status Report"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("EID Sample Status"); ?></li>
 		</ol>
 	</section>
@@ -52,7 +52,7 @@ $batResult = $db->rawQuery($batQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 							<td>
@@ -105,7 +105,7 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<div class="box-body">
 						<button class="btn btn-success pull-right" type="button" onclick="eidExportTAT()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel"); ?></button>
-						<table id="eidRequestDataTable" class="table table-bordered table-striped">
+						<table id="eidRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th><?php echo _("EID Sample ID"); ?></th>
@@ -133,7 +133,7 @@ $batResult = $db->rawQuery($batQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
 <script src="/assets/js/exporting.js"></script>
@@ -144,11 +144,11 @@ $batResult = $db->rawQuery($batQuery);
 			placeholder: "<?php echo _("Select Testing Lab"); ?>"
 		});
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
-				locale: {
-					cancelLabel: 'Clear'
-				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+                locale: {
+                    cancelLabel: "<?= _("Clear"); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
 				startDate: moment().subtract(179, 'days'),
 				endDate: moment(),
 				maxDate: moment(),

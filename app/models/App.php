@@ -18,44 +18,6 @@ class App
         $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
     }
 
-    public static function generateAuthToken($length = 8, $type = 'alphanum')
-    {
-        // Possible seeds
-        $seeds['alpha'] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwqyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwqyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwqyz';
-        $seeds['numeric'] = '01234567890123456789012345678901234567890123456789';
-        $seeds['alphanum'] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwqyz0123456789abcdefghijklmnopqrstuvwqyz0123456789abcdefghijklmnopqrstuvwqyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $seeds['hexidec'] = '0123456789abcdef';
-
-        if (isset($seeds[$type])) {
-            $keyspace = $seeds[$type];
-        }
-
-        $pieces = [];
-        $max = mb_strlen($keyspace, '8bit') - 1;
-        for ($i = 0; $i < $length; ++$i) {
-            $pieces[] = $keyspace[random_int(0, $max)];
-        }
-        return implode('', $pieces);
-    }
-
-    public function fetchAuthToken($input)
-    {
-        $response['status'] = false;
-        if (isset($input['authToken']) && !empty($input['authToken'])) {
-            $queryParams = array($input['authToken']);
-            $response['data'] = $this->db->rawQueryOne("SELECT user_id,user_name,phone_number,login_id,status FROM user_details as ud WHERE ud.api_token = ?", $queryParams);
-            if ($response['data']) {
-                $response['status'] = true;
-            } else {
-                $response['message'] = "You are not activated try to log in again";
-            }
-        } else {
-            $response['status'] = false;
-            $response['message'] = "Unauthorised access";
-        }
-        return $response;
-    }
-
     public function generateSelectOptions($options)
     {
         $i = 0;
@@ -340,17 +302,6 @@ class App
         return $response;
     }
 
-    public function fetchAllDetailsBySampleCode($sampleCode)
-    {
-        if (empty($sampleCode)) {
-            return null;
-        }
-        $sQuery = "SELECT * FROM form_covid19 WHERE sample_code like '$sampleCode%' OR remote_sample_code LIKE '$sampleCode%'";
-        $result =  $this->db->rawQueryOne($sQuery);
-        $result['tests'] = $this->getCovid19TestsByFormId($result['covid19_id']);
-        return $result;
-    }
-
     public function getCovid19TestsByFormId($formId)
     {
         if (empty($formId)) {
@@ -396,16 +347,5 @@ class App
             return null;
         }
         return $this->db->rawQuery("SELECT test_id as testId, covid19_id as covid19Id, facility_id as facilityId, test_name as testName, kit_lot_no as kitLotNo, kit_expiry_date as kitExpiryDate, tested_by as testedBy, sample_tested_datetime as testDate, testing_platform as testingPlatform, result as testResult FROM covid19_tests WHERE `covid19_id` = $c19Id ORDER BY test_id ASC");
-    }
-
-    public function generateUniqueId($tableName, $fieldName)
-    {
-        $general = new \Vlsm\Models\General($this->db);
-        do {
-            $uniqueId = $general->generateUUID();
-            $dublicate = $this->db->rawQueryOne("SELECT $fieldName FROM $tableName where $fieldName = '$uniqueId'");
-        } while ($dublicate);
-
-        return $uniqueId;
     }
 }

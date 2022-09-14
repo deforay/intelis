@@ -1,9 +1,11 @@
 <?php
 
 session_unset(); // no need of session in json response
+ini_set('memory_limit', -1);
+header('Content-Type: application/json');
+
 try {
-    ini_set('memory_limit', -1);
-    header('Content-Type: application/json');
+
     $general = new \Vlsm\Models\General();
     $userDb = new \Vlsm\Models\Users();
     $app = new \Vlsm\Models\App();
@@ -13,12 +15,16 @@ try {
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
 
-    $input = json_decode(file_get_contents("php://input"), true);
+    $origJson = file_get_contents("php://input") ?: '[]';
+    $input = json_decode($origJson, true);
+
+    if (empty($input) || empty($input['data'])) {
+        throw new \Exception("Invalid request");
+    }
 
     /* For API Tracking params */
     $requestUrl .= $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $params = file_get_contents("php://input");
 
     $auth = $general->getHeader('Authorization');
     if (!empty($auth)) {
@@ -29,34 +35,36 @@ try {
 
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {
-        $response = array(
-            'status' => 'failed',
-            'timestamp' => time(),
-            'error' => 'Bearer Token Invalid',
-            'data' => array()
-        );
+        // $response = array(
+        //     'status' => 'failed',
+        //     'timestamp' => time(),
+        //     'error' => 'Bearer Token Invalid',
+        //     'data' => array()
+        // );
         http_response_code(401);
-        echo json_encode($response);
-        exit(0);
+        throw new \Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     /* print_r($input['data']);
     die; */
+
+    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
+    $rowData = $db->rawQuery($sQuery);
+    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $formId = $general->getGlobalConfig('vl_form');
+
+    /* Update form attributes */
+    $transactionId = $general->generateUUID();
+    $version = $general->getSystemConfig('sc_version');
+    $deviceId = $general->getHeader('deviceId');
+
     $responseData = array();
-    foreach ($input['data'] as $rootKey => $field) {
-        $data = $field;
-        $sampleFrom = '';
-        $formId = $general->getGlobalConfig('vl_form');
-        if ($data['formId'] == $formId) {
-        }
-        $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
-        $rowData = $db->rawQuery($sQuery);
-        $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
+    foreach ($input['data'] as $rootKey => $data) {
         $sampleFrom = '';
         /* V1 name to Id mapping */
         if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && count($province) > 0) {
+            if (isset($province) && !empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'province_name', 'province_details', 'province_id', true);
@@ -91,7 +99,7 @@ try {
         $rowData = false;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
-            
+
             $sQuery = "SELECT covid19_id, sample_code, unique_id, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
 
             $sQueryWhere = array();
@@ -99,8 +107,8 @@ try {
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            } 
-            
+            }
+
             if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
@@ -110,8 +118,6 @@ try {
             }
 
             $rowData = $db->rawQueryOne($sQuery);
-
-            $general->var_error_log($sQuery);
 
             if ($rowData) {
                 $update = "yes";
@@ -128,9 +134,12 @@ try {
             $sampleData = json_decode($sampleJson, true);
         }
 
-        if(empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null'){
+        if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $general->generateUUID();
         }
+
+
+        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
 
         $covid19Data = array(
             'vlsm_country_id' => $data['formId'] ?: null,
@@ -139,9 +148,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => null,
-            'request_created_datetime' => $general->getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime(),
             'last_modified_by' => null,
-            'last_modified_datetime' => $general->getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime()
         );
 
 
@@ -159,6 +168,18 @@ try {
             $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
             $covid19Data['remote_sample'] = 'no';
         }
+
+        /* Update version in form attributes */
+        $version = $general->getSystemConfig('sc_version');
+
+        $formAttributes = array(
+            'applicationVersion'    => $version,
+            'apiTransactionId'      => $transactionId,
+            'mobileAppVersion'      => $input['appVersion'],
+            'deviceId'              => $deviceId
+        );
+        $covid19Data['form_attributes'] = json_encode($formAttributes);
+
 
         $id = 0;
         if ($rowData) {
@@ -178,13 +199,9 @@ try {
         $tableName1 = "activity_log";
         $testTableName = 'covid19_tests';
 
-        $instanceId = '';
-        if (empty($instanceId) && $data['instanceId']) {
-            $instanceId = $data['instanceId'];
-        }
+
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
-            $arrivalDate = explode(" ", $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+            $data['arrivalDateTime'] = $general->isoDateFormat($data['arrivalDateTime'], true);
         } else {
             $data['arrivalDateTime'] = NULL;
         }
@@ -214,56 +231,49 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $data['sampleCollectionDate'] = $general->isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $data['sampleCollectionDate'] = NULL;
         }
 
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
-            $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = $general->isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = NULL;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
-            $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = $general->isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = NULL;
         }
 
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
-            $arrivalDate = explode(" ", $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+            $data['arrivalDateTime'] = $general->isoDateFormat($data['arrivalDateTime'], true);
         } else {
             $data['arrivalDateTime'] = NULL;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $revisedOn = explode(" ", $data['revisedOn']);
-            $data['revisedOn'] = $general->isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
+            $data['revisedOn'] = $general->isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = NULL;
         }
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
-            $approvedOn = explode(" ", $data['approvedOn']);
-            $data['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+            $data['approvedOn'] = $general->isoDateFormat($data['approvedOn'], true);
         } else {
             $data['approvedOn'] = NULL;
         }
 
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
-            $reviewedOn = explode(" ", $data['reviewedOn']);
-            $data['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+            $data['reviewedOn'] = $general->isoDateFormat($data['reviewedOn'], true);
         } else {
             $data['reviewedOn'] = NULL;
         }
 
         $covid19Data = array(
-            'vlsm_instance_id'                    => $instanceId,
+            'vlsm_instance_id'                    => $data['instanceId'],
             'vlsm_country_id'                     => $data['formId'],
             'unique_id'                           => $uniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
@@ -351,7 +361,7 @@ try {
             'result_reviewed_datetime'            => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'result_approved_by'                  => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
             'result_approved_datetime'            => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  NULL,
-            'reason_for_changing'                 => (!empty($_POST['reasonForCovid19ResultChanges']) && !empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
+            'reason_for_changing'                 => (isset($_POST['reasonForCovid19ResultChanges']) && !empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
             'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
             'data_sync'                           => 0,
@@ -359,10 +369,10 @@ try {
             'source_of_request'                   => $data['sourceOfRequest'] ?: "api"
         );
         if ($rowData) {
-            $covid19Data['last_modified_datetime']  = $general->getCurrentDateTime();
+            $covid19Data['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime();
             $covid19Data['last_modified_by']  = $user['user_id'];
         } else {
-            $covid19Data['request_created_datetime']  = (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : $general->getCurrentDateTime();
+            $covid19Data['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime();
             $covid19Data['sample_registered_at_lab']  = $general->getCurrentDateTime();
             $covid19Data['request_created_by']  = $user['user_id'];
         }
@@ -414,8 +424,7 @@ try {
                 foreach ($data['c19Tests'] as $testKey => $test) {
                     if (isset($test['testName']) && !empty($test['testName'])) {
                         if (isset($test['testDate']) && trim($test['testDate']) != "") {
-                            $testedDateTime = explode(" ", $test['testDate']);
-                            $test['testDate'] = $general->isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
+                            $data['testDate'] = $general->isoDateFormat($data['testDate'], true);
                         } else {
                             $test['testDate'] = NULL;
                         }
@@ -507,24 +516,24 @@ try {
     } else {
         $payload['token'] = null;
     }
-    $general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'covid19', $requestUrl, $params, json_encode($payload), 'json');
+
     http_response_code(200);
-    echo json_encode($payload);
-    exit(0);
 } catch (Exception $exc) {
 
-    // http_response_code(500);
+    http_response_code(400);
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
         'data' => array()
     );
-
-
-    echo json_encode($payload);
-
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
 }
+
+
+$payload = json_encode($payload);
+$general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'covid19', $requestUrl, $origJson, $payload, 'json');
+
+echo $payload;
+exit(0);

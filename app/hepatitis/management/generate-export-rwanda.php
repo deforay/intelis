@@ -8,7 +8,8 @@ ob_start();
 
 $general = new \Vlsm\Models\General();
 
-$eidResults = $general->getEidResults();
+$eidObj = new \Vlsm\Models\Eid();
+$eidResults = $eidObj->getEidResults();
 
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Symptoms = $covid19Obj->getCovid19Symptoms();

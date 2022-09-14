@@ -65,8 +65,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $rKey = '';
 }
 $pdResult = $db->query($pdQuery);
-$province = "";
-$province .= "<option value=''> -- Select -- </option>";
+$province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
     $province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
     $provinceSelect .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
@@ -105,7 +104,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     <section class="content-header">
         <h1><i class="fa-solid fa-pen-to-square"></i> COVID-19 VIRUS LABORATORY TEST PNG REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> HOME</a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> HOME</a></li>
             <li class="active">Add New Request</li>
         </ol>
     </section>
@@ -130,7 +129,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">EPID</label> </td>
@@ -227,7 +226,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
@@ -301,7 +300,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         PATIENT HISTORY
                                     </h3>
                                 </div>
-                                <table id="responseTable" class="table table-bordered">
+                                <table id="responseTable" class="table table-bordered" aria-hidden="true" >
                                     <th><label for="suspectedCase">Is the suspected case</label></th>
                                     <td>
                                         <select name="suspectedCase" id="suspectedCase" class="form-control" title="Please choose suspected case">
@@ -320,7 +319,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </tr>
                                     <tr>
                                         <td colspan="4">
-                                            <table id="symptomsTable" class="table table-bordered table-striped">
+                                            <table id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
                                                     $diarrhée = "";
@@ -402,7 +401,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         TEST REASON
                                     </h3>
                                 </div>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width: 15%;"><label for="reasonForCovid19Test">Reason for Test Request<span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
@@ -419,7 +418,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         COMORBIDITIES
                                     </h3>
                                 </div>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th><label for="ifOtherDiseases">Does the patient have another diagnosis/etiology for their illness?</label></th>
                                         <td>
@@ -448,7 +447,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </tr>
                                     <tr class="comorbidities-row" style="<?php echo ($covid19Info['medical_history'] != 'yes') ? 'display:none' : ''; ?>">
                                         <td colspan="4">
-                                            <table id="comorbiditiesTable" class="table table-bordered">
+                                            <table id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                     <tr>
@@ -474,7 +473,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         SAMPLE COLLECTION
                                     </h3>
                                 </div>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width: 15%;"><label for="specimenType"> Type of sample collection <span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
@@ -493,7 +492,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         HEALTH OUTCOME
                                     </h3>
                                 </div>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width: 15%;"><label for="healthOutcome"> Health Outcome</label></th>
                                         <td style="width: 35%;">
@@ -519,7 +518,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">RESPIRATORY LABORATORY DIAGNOSTIC RESULTS </h3>
                                     </div>
-                                    <table class="table" style="width:100%">
+                                    <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th><label for="sampleReceivedDate">Date of Sample Received </label></th>
                                             <td>
@@ -556,7 +555,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped">
+                                                <table class="table table-bordered table-striped" aria-hidden="true" >
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test No</th>
@@ -570,40 +569,40 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                         <?php if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) {
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
-                                                                    <td class="text-center"><?php echo ($indexKey + 1); ?> <input type="hidden" name="testId[]" value="<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>"></td>
+                                                                    <td class="text-center"><?php echo ($indexKey + 1); ?> <input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
                                                                     <td>
                                                                         <select onchange="otherCovidTestName(this.value,<?php echo ($indexKey + 1); ?>)" class="form-control test-name-table-input" id="testName<?php echo ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
                                                                             <option value="">-- Select --</option>
-                                                                            <option value="Real Time RT-PCR" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>>Real Time RT-PCR</option>
-                                                                            <option value="RDT-Antibody" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>RDT-Antibody</option>
-                                                                            <option value="RDT-Antigen" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>RDT-Antigen</option>
-                                                                            <option value="ELISA" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>ELISA</option>
-                                                                            <option value="other" <?php echo (isset($covid19TestInfo[$indexKey]['test_name']) && $covid19TestInfo[$indexKey]['test_name'] == 'other') ? "selected='selected'" : ""; ?>>Others</option>
+                                                                            <option value="Real Time RT-PCR" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>>Real Time RT-PCR</option>
+                                                                            <option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>RDT-Antibody</option>
+                                                                            <option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>RDT-Antigen</option>
+                                                                            <option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>ELISA</option>
+                                                                            <option value="other" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'other') ? "selected='selected'" : ""; ?>>Others</option>
                                                                         </select>
                                                                         <?php
                                                                         $value = '';
-                                                                        if ($covid19TestInfo[$indexKey]['test_name'] != 'Real Time RT-PCR' && $covid19TestInfo[$indexKey]['test_name'] != 'RDT-Antibody' && $covid19TestInfo[$indexKey]['test_name'] != 'RDT-Antigen' && $covid19TestInfo[$indexKey]['test_name'] != 'ELISA' && $covid19TestInfo[$indexKey]['test_name'] != 'other') {
-                                                                            $value = 'value="' . $covid19TestInfo[$indexKey]['test_name'] . '"';
+                                                                        if ($rows['test_name'] != 'Real Time RT-PCR' && $rows['test_name'] != 'RDT-Antibody' && $rows['test_name'] != 'RDT-Antigen' && $rows['test_name'] != 'ELISA' && $rows['test_name'] != 'other') {
+                                                                            $value = 'value="' . $rows['test_name'] . '"';
                                                                             $show =  "block";
                                                                         } else {
                                                                             $show =  "none";
                                                                         } ?>
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?php echo ($indexKey + 1); ?>" class="form-control testNameOther<?php echo ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
-                                                                    <td><input type="text" value="<?php echo $general->humanReadableDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?php echo ($indexKey + 1); ?>" /></td>
+                                                                    <td><input type="text" value="<?php echo $general->humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?php echo ($indexKey + 1); ?>" /></td>
                                                                     <td>
                                                                         <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
-                                                                            <?= $general->generateSelectOptions($testPlatformList, $covid19TestInfo[$indexKey]['testing_platform'], '-- Select --'); ?>
+                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --'); ?>
                                                                         </select>
                                                                     </td>
                                                                     <td>
                                                                         <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo ($indexKey + 1); ?>" title="Please select the result for row <?php echo ($indexKey + 1); ?>">
-                                                                            <?= $general->generateSelectOptions($covid19Results, $covid19TestInfo[$indexKey]['result'], '-- Select --'); ?>
+                                                                            <?= $general->generateSelectOptions($covid19Results, $rows['result'], '-- Select --'); ?>
                                                                         </select>
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
-                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
-                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($covid19TestInfo[$indexKey]['test_id']); ?>');"><i class="fa-solid fa-minus"></i></a>
+                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><i class="fa-solid fa-minus"></i></a>
                                                                     </td>
                                                                 </tr>
                                                             <?php }
@@ -634,7 +633,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                     </select>
                                                                 </td>
                                                                 <td style="vertical-align:middle;text-align: center;width:100px;">
-                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                     <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
                                                                 </td>
                                                             </tr>
@@ -1049,7 +1048,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
-                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
             </td>
         </tr>`;

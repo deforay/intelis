@@ -45,22 +45,13 @@ foreach ($userResult as $user) {
 }
 
 // Comorbidity
-$comorbidityData = array();
-$comorbidityQuery = "SELECT DISTINCT comorbidity_id, comorbidity_name FROM r_hepatitis_comorbidities WHERE comorbidity_status ='active'";
-$comorbidityResult = $db->rawQuery($comorbidityQuery);
-foreach ($comorbidityResult as $comorbidity) {
-    $comorbidityData[$comorbidity['comorbidity_id']] = ucwords($comorbidity['comorbidity_name']);
-}
+$comorbidityData = $hepatitisDb->getHepatitisComorbidities();
 $comorbidityInfo = $hepatitisDb->getComorbidityByHepatitisId($id);
 
 // Risk Factors
-$riskFactorsData = array();
-$riskFactorsQuery = "SELECT DISTINCT riskfactor_id, riskfactor_name FROM r_hepatitis_risk_factors WHERE riskfactor_status ='active'";
-$riskFactorsResult = $db->rawQuery($riskFactorsQuery);
-foreach ($riskFactorsResult as $riskFactors) {
-    $riskFactorsData[$riskFactors['riskfactor_id']] = ucwords($riskFactors['riskfactor_name']);
-}
+$riskFactorsData = $hepatitisDb->getHepatitisRiskFactors();
 $riskFactorsInfo = $hepatitisDb->getRiskFactorsByHepatitisId($id);
+
 
 //$id = ($_GET['id']);
 $hepatitisQuery = "SELECT * FROM form_hepatitis where hepatitis_id=?";
@@ -110,12 +101,9 @@ foreach ($rejectionTypeResult as $type) {
     }
     $rejectionReason .= '</optgroup>';
 }
-// speciment Type
-$specimenResult = array();
-$specimenTypeResult = $general->fetchDataFromTable('r_hepatitis_sample_type', "status = 'active'");
-foreach ($specimenTypeResult as $name) {
-    $specimenResult[$name['sample_id']] = ucwords($name['sample_name']);
-}
+// Specimen Type
+$specimenResult = $hepatitisDb->getHepatitisSampleTypes();
+
 // Import machine config
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 $testPlatformList = array();

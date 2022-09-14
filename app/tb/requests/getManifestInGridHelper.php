@@ -19,7 +19,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 $general = new \Vlsm\Models\General();
-$covid19Results = $general->getCovid19Results();
+$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Results = $covid19Obj->getCovid19Results();
 $tableName = "form_tb";
 $primaryKey = "tb_id";
 
@@ -203,8 +204,8 @@ foreach ($rResult as $aRow) {
      $row[] = $patientFname . " " . $patientLname;
      $row[] = ucwords($aRow['facility_state']);
      $row[] = ucwords($aRow['facility_district']);
-     $row[] = $covid19Results[$aRow['result']];;
-     $row[] = $aRow['last_modified_datetime'];
+     $row[] = $covid19Results[$aRow['result']];
+    $row[] = $aRow['last_modified_datetime'];
      $row[] = ucwords($aRow['status_name']);
 
      $output['aaData'][] = $row;

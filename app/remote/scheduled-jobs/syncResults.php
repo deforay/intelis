@@ -22,7 +22,7 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 
 // Checking if the network connection is available
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
-$headers = @get_headers($remoteUrl . '/api/v1.1/version.php');
+$headers = @get_headers($remoteUrl . '/api/version.php');
 if (strpos($headers[0], '200') === false) {
     error_log("No network connectivity while trying remote sync.");
     return false;
@@ -84,7 +84,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 
     if (!empty($result) && count($result) > 0) {
         $db = $db->where('sample_code', $result, 'IN');
-        $id = $db->update('form_vl', array('data_sync' => 1));
+        $id = $db->update('form_vl', array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
     }
     if (count($vlLabResult) > 0) {
         $general->addApiTracking('vlsm-system', count($vlLabResult), 'send-results', 'vl', $url, $json_data, $result, 'json', $labId);
@@ -135,7 +135,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
     if (!empty($result) && count($result) > 0) {
         $db = $db->where('sample_code', $result, 'IN');
-        $id = $db->update('form_eid', array('data_sync' => 1));
+        $id = $db->update('form_eid',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
     }
     if (count($eidLabResult) > 0) {
         $general->addApiTracking('vlsm-system', count($eidLabResult), 'send-results', 'eid', $url, $json_data, $result, 'json', $labId);
@@ -198,7 +198,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
     if (!empty($result) && count($result) > 0) {
         $db = $db->where('sample_code', $result, 'IN');
-        $id = $db->update('form_covid19', array('data_sync' => 1));
+        $id = $db->update('form_covid19',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
     }
     if (count($c19LabResult) > 0) {
         $general->addApiTracking('vlsm-system', count($c19LabResult), 'send-results', 'covid19', $url, $json_data, $result, 'json', $labId);
@@ -256,7 +256,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
     if (!empty($result) && count($result) > 0) {
         $db = $db->where('sample_code', $result, 'IN');
-        $id = $db->update('form_hepatitis', array('data_sync' => 1));
+        $id = $db->update('form_hepatitis',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
     }
     if (count($hepLabResult) > 0) {
         $general->addApiTracking('vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $json_data, $result, 'json', $labId);

@@ -165,7 +165,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
                   $field = 'consent_to_receive_sms';
                } elseif ($filedGroup[$f] == "Patient Mobile Number") {
                   $field = 'patient_mobile_number';
-               } elseif ($filedGroup[$f] == "Date Of Last Viral Load Test") {
+               } elseif ($filedGroup[$f] == "Date of Last VL Test") {
                   $field = 'last_viral_load_date';
                } elseif ($filedGroup[$f] == "Result Of Last Viral Load") {
                   $field = 'last_viral_load_result';
@@ -276,7 +276,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
          <form id="vlResultMailConfirmForm" name="vlResultMailConfirmForm" method="post" action="vlResultMailHelper.php">
             <div class="row">
                <div class="col-lg-12" style="text-align:center !important;">
-                  <table class="table table-bordered table-striped" style="width:18%;margin-left:41%;">
+                  <table class="table table-bordered table-striped" aria-hidden="true"  style="width:18%;margin-left:41%;">
                      <thead>
                         <tr>
                            <th style="text-align:center;background-color:#71b9e2;color:#FFFFFF;">Selected Sample(s)</th>

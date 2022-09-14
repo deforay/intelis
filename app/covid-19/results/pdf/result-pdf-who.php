@@ -1,7 +1,8 @@
 <?php
 
 // this file is included in covid-19/results/generate-result-pdf.php
-$covid19Results = $general->getCovid19Results();
+$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Results = $covid19Obj->getCovid19Results();
 
 $resultFilename = '';
 
@@ -177,8 +178,7 @@ if (sizeof($requestResult) > 0) {
         if ($result['result_status'] == '4') {
             $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
         }
-        $html = '';
-        $html .= '<table style="padding:0px 2px 2px 2px;">';
+        $html = '<table style="padding:0px 2px 2px 2px;">';
         $html .= '<tr>';
         $html .= '<td colspan="3">';
         $html .= '<table style="padding:2px;">';
@@ -332,9 +332,9 @@ if (sizeof($requestResult) > 0) {
             foreach ($covid19TestInfo as $indexKey => $rows) {
                 $html .= '<tr>
                                             <td align="center" width="15%">' . ($indexKey + 1) . '</td>
-                                            <td align="center" width="45%">' . $covid19TestInfo[$indexKey]['test_name'] . '</td>
-                                            <td align="center" width="25%">' . $general->humanReadableDateFormat($covid19TestInfo[$indexKey]['sample_tested_datetime']) . '</td>
-                                            <td align="center" width="15%">' . ucwords($covid19TestInfo[$indexKey]['result']) . '</td>
+                                            <td align="center" width="45%">' . $rows['test_name'] . '</td>
+                                            <td align="center" width="25%">' . $general->humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>
+                                            <td align="center" width="15%">' . ucwords($rows['result']) . '</td>
                                         </tr>';
             }
             $html .= '</table>';

@@ -17,3 +17,7 @@
     margin-top: 30px;
     text-transform: uppercase;
 }
+
+select[readonly] {
+    pointer-events: none;
+}

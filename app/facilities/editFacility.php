@@ -56,7 +56,7 @@ $signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=
 $editTestType = '';
 $div = '';
 if (!empty($testTypeInfo)) {
-	$div .= '<table class="table table-bordered table-striped"><thead><th> Test Type</th> <th> Monthly Target <span class="mandatory">*</span></th><th>Suppressed Monthly Target <span class="mandatory">*</span></th> </thead><tbody>';
+	$div .= '<table class="table table-bordered table-striped" aria-hidden="true" ><thead><th> Test Type</th> <th> Monthly Target <span class="mandatory">*</span></th><th>Suppressed Monthly Target <span class="mandatory">*</span></th> </thead><tbody>';
 	$tf = 0;
 	foreach ($testTypeInfo as $test) {
 		if ($editTestType) {
@@ -129,7 +129,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 	<section class="content-header">
 		<h1><i class="fa-solid fa-hospital"></i> <?php echo _("Edit Facility"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Facilities"); ?></li>
 		</ol>
 	</section>
@@ -620,7 +620,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												</select>
 											</td>
 											<td style="vertical-align:middle;text-align: center;width:10%;">
-												<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+												<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
 												<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);deletedRow(<?php echo $row['signatory_id'] ?>);"><i class="fa-solid fa-minus"></i></a>
 											</td>
 										</tr>
@@ -646,7 +646,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											</select>
 										</td>
 										<td style="vertical-align:middle;text-align: center;width:10%;">
-											<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+											<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
 											<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
 										</td>
 									</tr>
@@ -922,7 +922,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 				$('.availablePlatforms').hide();
 			}
 			if (facility && (testType.length > 0) && facility == '2') {
-				var div = '<table class="table table-bordered table-striped"><thead><th> <?php echo _("Test Type"); ?></th> <th> <?php echo _("Monthly Target"); ?> <span class="mandatory">*</span></th><th><?php echo _("Suppressed Monthly Target"); ?> <span class="mandatory">*</span></th> </thead><tbody>';
+				var div = '<table class="table table-bordered table-striped" aria-hidden="true" ><thead><th> <?php echo _("Test Type"); ?></th> <th> <?php echo _("Monthly Target"); ?> <span class="mandatory">*</span></th><th><?php echo _("Suppressed Monthly Target"); ?> <span class="mandatory">*</span></th> </thead><tbody>';
 				for (var i = 0; i < testType.length; i++) {
 					var testOrg = '';
 					if ($('#monTar' + i).val())
@@ -994,7 +994,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 				</select>
 			</td>
 			<td style="vertical-align:middle;text-align: center;width:10%;">
-				<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+				<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
 				<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
 			</td>
 		</tr>`;

@@ -12,7 +12,7 @@ $riskfactorInfo = $db->query($riskfactorQuery);
 	<section class="content-header">
 		<h1><i class="fa-solid fa-square-h"></i> Edit Hepatitis Risk Factors</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Hepatitis Risk Factors</li>
 		</ol>
 	</section>

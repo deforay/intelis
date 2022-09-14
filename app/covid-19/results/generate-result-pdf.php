@@ -325,7 +325,8 @@ if (sizeof($requestResult) > 0) {
 		$expStr = explode(" ", $printedTime);
 		$printDate = $general->humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
-		$covid19Results = $general->getCovid19Results();
+		$covid19Obj = new \Vlsm\Models\Covid19();
+		$covid19Results = $covid19Obj->getCovid19Results();
 		$countryFormId = $general->getGlobalConfig('vl_form');
 
 		$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";

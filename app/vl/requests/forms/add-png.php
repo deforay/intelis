@@ -22,8 +22,7 @@ $aQuery = "SELECT * from r_vl_art_regimen";
 $aResult = $db->query($aQuery);
 
 $pdResult = $db->query($pdQuery);
-$province = '';
-$province .= "<option data-code='' data-name='' value=''> -- Select -- </option>";
+$province = "<option data-code='' data-name='' value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . substr(strtoupper($provinceName['province_name']), 0, 3) . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
 }
@@ -37,7 +36,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
 		<ol class="breadcrumb">
-			<li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Add VL Request</li>
 		</ol>
 	</section>
@@ -80,7 +79,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 								</div>
 
 								<br />
-								<table class="table" style="width:100%">
+								<table class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<td colspan="6" style="font-size: 18px; font-weight: bold;">Section 1: Clinic Information</td>
 									</tr>
@@ -389,7 +388,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 													}
 													?>
 												</select>
-												</label>
 											</td>
 											<td class="laboratoryId"><label for="laboratoryId">Laboratory Name</label></td>
 											<td>

@@ -66,7 +66,7 @@ try {
         $absValRow = '2';
         $txtValCol = '';
         $txtValRow = '';
-        $testingDateCol = 'AC';
+        $testingDateCol = 'D';
         $testingDateRow = '2';
         $logAndAbsoluteValInSameCol = 'no';
         $sampleTypeCol = 'F';

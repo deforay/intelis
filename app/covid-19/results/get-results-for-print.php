@@ -20,7 +20,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 $general = new \Vlsm\Models\General();
 
-$covid19Results = $general->getCovid19Results();
+$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Results = $covid19Obj->getCovid19Results();
 
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
@@ -233,7 +234,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
     }
 }
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
 }
 if (isset($sOrder) && $sOrder != "") {

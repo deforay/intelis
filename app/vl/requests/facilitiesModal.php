@@ -46,7 +46,7 @@ $type = $_GET['type'];
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:10px;">
+          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:10px;">
             <tr>
               <td><b>Hub&nbsp;:</b></td>
               <td>
@@ -93,7 +93,7 @@ $type = $_GET['type'];
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="facilityModalDataTable" class="table table-bordered table-striped">
+            <table id="facilityModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th style="width:10%;">Select</th>

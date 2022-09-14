@@ -27,7 +27,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   <section class="content-header">
     <h1><i class="fa-solid fa-book"></i> <?php echo _("Sample Rejection Report");?></h1>
     <ol class="breadcrumb">
-      <!-- <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li> -->
+      <!-- <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li> -->
       <li><i class="fa-solid fa-book"></i> <?php echo _("Hepatitis");?></li>
       <li><?php echo _("Management");?></li>
       <li class="active"><?php echo _("Rejection Result");?></li>
@@ -39,7 +39,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
               <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
               <td>
@@ -85,7 +85,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   </section>
   <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/highcharts.js"></script>
 <script>
@@ -95,10 +95,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
-          cancelLabel: 'Clear'
+          cancelLabel: "<?= _("Clear"); ?>",
+          format: 'DD-MMM-YYYY',
+          separator: ' to ',
         },
-        format: 'DD-MMM-YYYY',
-        separator: ' to ',
         startDate: moment().subtract('days', 365),
         endDate: moment(),
         maxDate: moment(),

@@ -6,6 +6,7 @@ if (php_sapi_name() == 'cli') {
 }
 
 $general = new \Vlsm\Models\General();
+//$dateUtils = new \vlsm\Utilities\DateUtils();
 
 $systemConfig = SYSTEM_CONFIG;
 
@@ -16,7 +17,7 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
 
-$headers = @get_headers($remoteUrl . '/api/v1.1/version.php');
+$headers = @get_headers($remoteUrl . '/api/version.php');
 
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
@@ -26,6 +27,10 @@ $arr = $general->getGlobalConfig();
 
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
+
+
+$transactionId = $general->generateUUID();
+
 //get remote data
 if (empty($labId)) {
     echo "No Lab ID set in System Config";
@@ -97,9 +102,9 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            'request_created_datetime',
-            'request_created_by',
-            'last_modified_by',
+            //'request_created_datetime',
+            //'request_created_by',
+            //'last_modified_by',
             'data_sync'
         );
 
@@ -131,21 +136,66 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             $exsvlResult = $db->query($exsvlQuery);
             if (!empty($exsvlResult)) {
 
-                // $dataToUpdate = array();
+                $removeMoreKeys = array(
+                    'sample_code',
+                    'sample_code_key',
+                    'sample_code_format',
+                    'sample_code_title',
+                    'sample_batch_id',
+                    'lab_id',
+                    'vl_test_platform',
+                    'sample_received_at_hub_datetime',
+                    'sample_received_at_vl_lab_datetime',
+                    'sample_tested_datetime',
+                    'result_dispatched_datetime',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection',
+                    'rejection_on',
+                    'result_value_absolute',
+                    'result_value_absolute_decimal',
+                    'result_value_text',
+                    'result',
+                    'result_value_log',
+                    'result_value_hiv_detection',
+                    'reason_for_failure',
+                    'result_reviewed_by',
+                    'result_reviewed_datetime',
+                    'vl_focal_person',
+                    'vl_focal_person_phone_number',
+                    'tested_by',
+                    'result_approved_by',
+                    'result_approved_datetime',
+                    'lab_tech_comments',
+                    'reason_for_vl_result_changes',
+                    'revised_by',
+                    'revised_on',
+                    'last_modified_by',
+                    'last_modified_datetime',
+                    'manual_result_entry',
+                    'result_status',
+                    'data_sync',
+                    'result_printed_datetime',
+                    'vl_result_category'
+                );
 
-                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                // // $dataToUpdate['source_of_request'] = "vlsts";
-                // // $dataToUpdate['source_of_request'] = 'vlsts';
+                $request = array_diff_key($request, array_flip($removeMoreKeys));
+
                 $db = $db->where('vl_sample_id', $exsvlResult[0]['vl_sample_id']);
                 $id = $db->update('form_vl', $request);
             } else {
                 $request['source_of_request'] = 'vlsts';
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
-                    $request['request_created_by'] = 0;
-                    $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getCurrentDateTime();
+                    // $request['request_created_by'] = 0;
+                    // $request['last_modified_by'] = 0;
+                    // $request['request_created_datetime'] = $general->getCurrentDateTime();
                     $request['source_of_request'] = "vlsts";
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+                    $request['form_attributes'] = json_encode($formAttributes);
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
                     /* echo "<pre>";
@@ -222,9 +272,9 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            'request_created_by',
-            'last_modified_by',
-            'request_created_datetime',
+            //'request_created_by',
+            //'last_modified_by',
+            //'request_created_datetime',
             'data_sync'
         );
 
@@ -257,17 +307,56 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
-                // $dataToUpdate = array();
-                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                // $dataToUpdate['source_of_request'] = 'vlsts';
+                $removeMoreKeys = array(
+                    'sample_code',
+                    'sample_code_key',
+                    'sample_code_format',
+                    'sample_code_title',
+                    'sample_batch_id',
+                    'sample_received_at_vl_lab_datetime',
+                    'eid_test_platform',
+                    'import_machine_name',
+                    'sample_tested_datetime',
+                    'is_sample_rejected',
+                    'lab_id',
+                    'result',
+                    'tested_by',
+                    'lab_tech_comments',
+                    'result_approved_by',
+                    'result_approved_datetime',
+                    'revised_by',
+                    'revised_on',
+                    'result_reviewed_by',
+                    'result_reviewed_datetime',
+                    'result_dispatched_datetime',
+                    'reason_for_changing',
+                    'result_status',
+                    'data_sync',
+                    'reason_for_sample_rejection',
+                    'rejection_on',
+                    'last_modified_by',
+                    'result_printed_datetime',
+                    'last_modified_datetime'
+                );
+
+                $request = array_diff_key($request, array_flip($removeMoreKeys));
+
                 $db = $db->where('eid_id', $exsvlResult[0]['eid_id']);
                 $id = $db->update('form_eid', $request);
             } else {
                 if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
-                    $request['request_created_by'] = 0;
-                    $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getCurrentDateTime();
+
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+
+                    $request['form_attributes'] = json_encode($formAttributes);
+                    // $request['request_created_by'] = 0;
+                    // $request['last_modified_by'] = 0;
+                    // $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
@@ -330,9 +419,9 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            'request_created_by',
-            'last_modified_by',
-            'request_created_datetime',
+            //'request_created_by',
+            //'last_modified_by',
+            //'request_created_datetime',
             'data_sync'
         );
 
@@ -378,19 +467,61 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
-                // $dataToUpdate = array();
-                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                // $dataToUpdate['source_of_request'] = 'vlsts';
+                $removeMoreKeys = array(
+                    'sample_code',
+                    'sample_code_key',
+                    'sample_code_format',
+                    'sample_code_title',
+                    'sample_batch_id',
+                    'sample_received_at_vl_lab_datetime',
+                    'lab_id',
+                    'sample_condition',
+                    'lab_technician',
+                    'testing_point',
+                    'is_sample_rejected',
+                    'result',
+                    'result_sent_to_source',
+                    'other_diseases',
+                    'tested_by',
+                    'result_approved_by',
+                    'result_approved_datetime',
+                    'is_result_authorised',
+                    'authorized_by',
+                    'authorized_on',
+                    'revised_by',
+                    'revised_on',
+                    'result_reviewed_by',
+                    'result_reviewed_datetime',
+                    'reason_for_changing',
+                    'rejection_on',
+                    'result_status',
+                    'data_sync',
+                    'reason_for_sample_rejection',
+                    'last_modified_by',
+                    'result_printed_datetime',
+                    'result_dispatched_datetime',
+                    'last_modified_datetime'
+                );
+
+                $request = array_diff_key($request, array_flip($removeMoreKeys));
+
                 $db = $db->where('covid19_id', $exsvlResult[0]['covid19_id']);
                 $db->update('form_covid19', $request);
                 $id = $exsvlResult[0]['covid19_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
-                    $request['request_created_by'] = 0;
-                    $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getCurrentDateTime();
+                    // $request['request_created_by'] = 0;
+                    // $request['last_modified_by'] = 0;
+                    // $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+
+                    $request['form_attributes'] = json_encode($formAttributes);                    
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
                     $db->insert('form_covid19', $request);
@@ -508,9 +639,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            'request_created_by',
-            'last_modified_by',
-            'request_created_datetime',
+            //'request_created_by',
+            //'last_modified_by',
+            //'request_created_datetime',
             'data_sync'
         );
 
@@ -549,21 +680,65 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
-                // $dataToUpdate = array();
-                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                // $dataToUpdate['source_of_request'] = 'vlsts';
+                $removeMoreKeys = array(
+                    'sample_code',
+                    'sample_code_key',
+                    'sample_code_format',
+                    'sample_code_title',
+                    'sample_batch_id',
+                    'sample_received_at_vl_lab_datetime',
+                    'lab_id',
+                    'sample_condition',
+                    'sample_tested_datetime',
+                    'vl_testing_site',
+                    'is_sample_rejected',
+                    'result',
+                    'hcv_vl_result',
+                    'hbv_vl_result',
+                    'hcv_vl_count',
+                    'hbv_vl_count',
+                    'hepatitis_test_platform',
+                    'import_machine_name',
+                    'is_result_authorised',
+                    'result_reviewed_by',
+                    'result_reviewed_datetime',
+                    'authorized_by',
+                    'authorized_on',
+                    'revised_by',
+                    'revised_on',
+                    'result_status',
+                    'result_sent_to_source',
+                    'data_sync',
+                    'last_modified_by',
+                    'last_modified_datetime',
+                    'result_printed_datetime',
+                    'result_dispatched_datetime',
+                    'reason_for_vl_test'
+                );
+
+                $request = array_diff_key($request, array_flip($removeMoreKeys));
+
                 $db = $db->where('hepatitis_id', $exsvlResult[0]['hepatitis_id']);
                 $db->update('form_hepatitis', $request);
                 $id = $exsvlResult[0]['hepatitis_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
-                    $request['request_created_by'] = 0;
-                    $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getCurrentDateTime();
+                    // $request['request_created_by'] = 0;
+                    // $request['last_modified_by'] = 0;
+                    // $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
+
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+
+                    $request['form_attributes'] = json_encode($formAttributes);
+
                     $db->insert('form_hepatitis', $request);
                     $id = $db->getInsertId();
                 }
@@ -671,9 +846,9 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            'request_created_by',
-            'last_modified_by',
-            'request_created_datetime',
+            //'request_created_by',
+            //'last_modified_by',
+            //'request_created_datetime',
             'data_sync'
         );
 
@@ -708,21 +883,65 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             $exsvlResult = $db->query($exsvlQuery);
             if ($exsvlResult) {
 
-                // $dataToUpdate = array();
-                // $dataToUpdate['sample_package_code'] = $request['sample_package_code'];
-                // $dataToUpdate['sample_package_id'] = $request['sample_package_id'];
-                // $dataToUpdate['source_of_request'] = 'vlsts';
+                $removeMoreKeys = array(
+                    'sample_code',
+                    'sample_code_key',
+                    'sample_code_format',
+                    'sample_code_title',
+                    'sample_batch_id',
+                    'specimen_quality',
+                    'lab_id',
+                    'reason_for_tb_test',
+                    'tests_requested',
+                    'specimen_type',
+                    'sample_collection_date',
+                    'sample_received_at_lab_datetime',
+                    'is_sample_rejected',
+                    'result',
+                    'xpert_mtb_result',
+                    'result_sent_to_source',
+                    'result_dispatched_datetime',
+                    'result_reviewed_by',
+                    'result_reviewed_datetime',
+                    'result_approved_by',
+                    'result_approved_datetime',
+                    'sample_tested_datetime',
+                    'tested_by',
+                    'rejection_on',
+                    'result_status',
+                    'data_sync',
+                    'reason_for_sample_rejection',
+                    'sample_registered_at_lab',
+                    'last_modified_by',
+                    'last_modified_datetime',
+                    'request_created_by',
+                    'last_modified_by',
+                    'lab_technician'
+                );
+
+                $request = array_diff_key($request, array_flip($removeMoreKeys));
+
                 $db = $db->where('tb_id', $exsvlResult[0]['tb_id']);
                 $db->update('form_tb', $request);
                 $id = $exsvlResult[0]['tb_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
-                    $request['request_created_by'] = 0;
-                    $request['last_modified_by'] = 0;
-                    $request['request_created_datetime'] = $general->getCurrentDateTime();
+                    // $request['request_created_by'] = 0;
+                    // $request['last_modified_by'] = 0;
+                    // $request['request_created_datetime'] = $general->getCurrentDateTime();
                     //$request['result_status'] = 6;
                     $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
+
+                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
+                        $formAttributes = json_decode($request['form_attributes'], true);
+                        $formAttributes['syncTransactionId'] = $transactionId;
+                    } else {
+                        $formAttributes = array('syncTransactionId' => $transactionId);
+                    }
+                    $request['form_attributes'] = json_encode($formAttributes);
+                    
+                    
                     $db->insert('form_tb', $request);
                     $id = $db->getInsertId();
                 }

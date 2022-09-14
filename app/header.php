@@ -152,7 +152,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 
 ?>
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="<?= $_SESSION['APP_LOCALE']; ?>">
 
 <head>
 	<meta charset="utf-8" />
@@ -420,13 +420,13 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<?php }
 											if (isset($_SESSION['privileges']) && in_array("audit-trail.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview audit-trail-menu">
-													<a href="/admin/monitoring/audit-trail.php"><span class="fa-solid fa-file-lines"></span> <?php echo _("Audit Trail"); ?></a>
+													<a href="/admin/monitoring/audit-trail.php"><span class="fa-solid fa-clock-rotate-left"></span> <?php echo _("Audit Trail"); ?></a>
 												</li>
 											<?php }
 
 											if (isset($_SESSION['privileges']) && in_array("api-sync-history.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview api-sync-history-menu">
-													<a href="/admin/monitoring/api-sync-history.php"><span class="fa-solid fa-cloud"></span> <?php echo _("API Sync History"); ?></a>
+													<a href="/admin/monitoring/api-sync-history.php"><span class="fa-solid fa-circle-nodes"></span> <?php echo _("API History"); ?></a>
 												</li>
 											<?php }
 											if (isset($_SESSION['privileges']) && in_array("sources-of-requests.php", $_SESSION['privileges'])) { ?>

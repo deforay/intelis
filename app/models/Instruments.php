@@ -28,8 +28,7 @@ class Instruments
             $db->where("(JSON_SEARCH(supported_tests, 'all', '$testType') IS NOT NULL) AND (supported_tests IS NOT NULL)");
         }
         $db->orderBy('machine_name', 'ASC');
-        $instruments = $db->get($this->table);
-        return $instruments;
+        return $db->get($this->table);
     }
     public function getInstrumentByName($instrumentName)
     {

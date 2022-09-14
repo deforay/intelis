@@ -11894,7 +11894,7 @@ msgid "Patient Mobile Number"
 msgstr "Nom du patient"
 
 #: vl/result-mail/editTestResultEmailConfig.php:101
-msgid "Date Of Last Viral Load Test"
+msgid "Date of Last VL Test"
 msgstr ""
 
 #: vl/result-mail/editTestResultEmailConfig.php:102

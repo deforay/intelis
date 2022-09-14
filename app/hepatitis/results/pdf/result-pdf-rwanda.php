@@ -38,30 +38,30 @@ if (sizeof($requestResult) > 0) {
         }
         // create new PDF document
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'EARLY INFANT DIAGNOSIS PATIENT REPORT');
+        $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'HEPATATIS - VIRAL LOAD PATIENT REPORT');
         // set document information
-        $pdf->SetCreator('VLSM');
-        $pdf->SetTitle('Hepatitis Patient Report');
+        $pdf->setCreator('VLSM');
+        $pdf->setTitle('Hepatitis Patient Report');
         //$pdf->SetSubject('TCPDF Tutorial');
         //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
         // set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+        $pdf->setHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
         // set header and footer fonts
         $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
         $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
         // set default monospaced font
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->setDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 14, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->setMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 14, PDF_MARGIN_RIGHT);
+        $pdf->setHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->setFooterMargin(PDF_MARGIN_FOOTER);
 
         // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -75,7 +75,7 @@ if (sizeof($requestResult) > 0) {
         // ---------------------------------------------------------
 
         // set font
-        $pdf->SetFont('helvetica', '', 18);
+        $pdf->setFont('helvetica', '', 18);
 
         $pdf->AddPage();
         if (!isset($result['facility_code']) || trim($result['facility_code']) == '') {
@@ -152,8 +152,7 @@ if (sizeof($requestResult) > 0) {
         $tndMessage = '';
         $messageTextSize = '12px';
 
-        $html = '';
-        $html .= '<table style="padding:0px 2px 2px 2px;">';
+        $html = '<table style="padding:0px 2px 2px 2px;">';
         /* $html .= '<tr>';
                 $html .= '<td colspan="3">';
                     $html .= '<table style="padding:2px;">';

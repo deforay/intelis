@@ -15,9 +15,10 @@ class DateUtils
     public function verifyDateFormat($date, $format = 'Y-m-d', $strict = true): bool
     {
         $date = trim($date);
+        $response = false;
 
         if (empty($date) || 'undefined' === $date || 'null' === $date) {
-            return false;
+            $response = false;
         } else {
             try {
                 $dateTime = DateTimeImmutable::createFromFormat($format, $date);
@@ -25,39 +26,43 @@ class DateUtils
                     $errors = DateTimeImmutable::getLastErrors();
                     if (!empty($errors['warning_count']) || !empty($errors['error_count'])) {
                         //error_log("Invalid date format ($format) :: $date");
-                        return false;
+                        $response = false;
                     }
                 }
-                return $dateTime !== false;
+                $response = $dateTime !== false;
             } catch (Exception $e) {
                 //error_log("Invalid date format ($format) :: $date :: " . $e->getMessage());
-                return false;
+                $response = false;
             }
         }
+        return $response;
     }
 
     // Function to get the verify if date is valid or not
     public function verifyIfDateValid($date): bool
     {
         $date = trim($date);
+        $response = false;
 
         if (empty($date) || 'undefined' === $date || 'null' === $date) {
-            return false;
+            $response = false;
         } else {
             try {
                 $dateTime = new DateTimeImmutable($date);
                 $errors = DateTimeImmutable::getLastErrors();
                 if (!empty($errors['warning_count']) || !empty($errors['error_count'])) {
                     //error_log("Invalid date :: $date");
-                    return false;
+                    $response = false;
                 } else {
-                    return true;
+                    $response = true;
                 }
             } catch (Exception $e) {
                 //error_log("Invalid date :: $date :: " . $e->getMessage());
-                return false;
+                $response = false;
             }
         }
+
+        return $response;
     }
 
     // Returns the given date in d-M-Y format 
@@ -70,7 +75,7 @@ class DateUtils
         } else {
 
             if ($includeTime === true) {
-                $format = $format . " H:i:s";
+                $format = $format . " H:i";
             }
 
             return (new DateTimeImmutable($date))->format($format);
@@ -94,17 +99,35 @@ class DateUtils
             if ($includeTime === true) {
                 $format = $format . " H:i:s";
             }
-            return (new DateTimeImmutable($date))->format($format);            
+            return (new DateTimeImmutable($date))->format($format);
         }
     }
 
     // returns age array in year, months, days
     public function ageInYearMonthDays($dateOfBirth)
     {
+        if (false === $this->verifyIfDateValid($dateOfBirth)) {
+            return null;
+        }
         $bday = new DateTimeImmutable($dateOfBirth);
         $today = new DateTimeImmutable();
         $diff = $today->diff($bday);
         // printf(' Your age : %d years, %d month, %d days', $diff->y, $diff->m, $diff->d);
         return array("year" => $diff->y, "months" => $diff->m, "days" => $diff->d);
+    }
+
+    public function dateDiff($dateString1, $dateString2, $format = null)
+    {
+        if (false === $this->verifyIfDateValid($dateString1) || false === $this->verifyIfDateValid($dateString2)) {
+            return null;
+        }
+        $datetime1 = new DateTimeImmutable($dateString1);
+        $datetime2 = new DateTimeImmutable($dateString2);
+        $interval = $datetime1->diff($datetime2);
+        if ($format === null) {
+            return $interval->format('%a days');
+        } else {
+            return $interval->format($format);
+        }
     }
 }

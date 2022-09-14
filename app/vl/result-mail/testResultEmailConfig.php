@@ -7,9 +7,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-gears"></i> <?php echo _("Test Result Email/SMS Configuration"); ?></h1>
+    <h1><em class="fa-solid fa-gears"></em> <?php echo _("Test Result Email/SMS Configuration"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
       <li class="active"> <?php echo _("Test Result Email/SMS Configuration"); ?></li>
     </ol>
   </section>
@@ -24,7 +24,7 @@ require_once(APPLICATION_PATH . '/header.php');
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="resultEmailConfigDataTable" class="table table-bordered table-striped">
+            <table id="resultEmailConfigDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th><?php echo _("Config Name"); ?></th>

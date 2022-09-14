@@ -40,20 +40,26 @@ try {
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = array();
+
+    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
+    $rowData = $db->rawQuery($sQuery);
+    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $formId = $general->getGlobalConfig('vl_form');
+
+    /* Update form attributes */
+    $transactionId = $general->generateUUID();
+    $version = $general->getSystemConfig('sc_version');
+    $deviceId = $general->getHeader('deviceId');
+
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
         $sampleFrom = '';
-        $formId = $general->getGlobalConfig('vl_form');
-        if ($data['formId'] == $formId) {
-        }
-        $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
-        $rowData = $db->rawQuery($sQuery);
-        $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
-        $sampleFrom = '';
+
+        $data['formId'] = $formId;
         /* V1 name to Id mapping */
         if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && count($province) > 0) {
+            if (isset($province) && !empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'province_name', 'province_details', 'province_id', true);
@@ -68,7 +74,7 @@ try {
         $data['api'] = "yes";
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = $data['sampleCollectionDate']= (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
             continue;
@@ -113,9 +119,8 @@ try {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
 
-        if (!isset($data['formId']) || $data['formId'] == '') {
-            $data['formId'] = '';
-        }
+        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
+
         $tbData = array(
             'vlsm_country_id' => $data['formId'] ?: null,
             'unique_id' => $uniqueId,
@@ -123,9 +128,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => null,
-            'request_created_datetime' => $general->getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime(),
             'last_modified_by' => null,
-            'last_modified_datetime' => $general->getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -143,6 +148,18 @@ try {
             $tbData['remote_sample'] = 'no';
         }
 
+        /* Update version in form attributes */
+        $version = $general->getSystemConfig('sc_version');
+
+        $formAttributes = array(
+            'applicationVersion'    => $version,
+            'apiTransactionId'      => $transactionId,
+            'mobileAppVersion'      => $input['appVersion'],
+            'deviceId'              => $deviceId
+        );
+        $tbData['form_attributes'] = json_encode($formAttributes);
+
+
         $id = 0;
         if ($rowData) {
             $db = $db->where('tb_id', $rowData['tb_id']);
@@ -156,10 +173,6 @@ try {
         $tableName1 = "activity_log";
         $testTableName = 'tb_tests';
 
-        $instanceId = '';
-        if (empty($instanceId) && $data['instanceId']) {
-            $instanceId = $data['instanceId'];
-        }
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
             $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
@@ -255,7 +268,7 @@ try {
         }
 
         $tbData = array(
-            'vlsm_instance_id'                    => $instanceId,
+            'vlsm_instance_id'                    => $data['instanceId'],
             'vlsm_country_id'                     => $data['formId'],
             'unique_id'                           => $uniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
@@ -303,7 +316,7 @@ try {
             'lab_tech_comments'                   => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'revised_by'                          => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on'                          => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
-            'reason_for_changing'                 => (!empty($data['reasonFortbResultChanges']) && !empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
+            'reason_for_changing'                 => (isset($data['reasonFortbResultChanges']) && !empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
             'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
             'data_sync'                           => 0,
@@ -311,10 +324,10 @@ try {
             'source_of_request'                   => "app"
         );
         if ($rowData) {
-            $tbData['last_modified_datetime']  = $general->getCurrentDateTime();
+            $tbData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime();
             $tbData['last_modified_by']  = $user['user_id'];
         } else {
-            $tbData['request_created_datetime']  = (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : $general->getCurrentDateTime();
+            $tbData['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? $general->isoDateFormat($data['createdOn'], true) : $general->getCurrentDateTime();
             $tbData['sample_registered_at_lab']  = $general->getCurrentDateTime();
             $tbData['request_created_by']  = $user['user_id'];
         }

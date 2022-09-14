@@ -4,9 +4,7 @@
 
 $general = new \Vlsm\Models\General();
 $sampleData = array();
-$sampleQuery = 'SELECT hepatitis_id FROM form_hepatitis where sample_code IS NULL AND (sample_package_code LIKE "' . $_POST['samplePackageCode'] . '" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '")';
+$sampleQuery = 'SELECT hepatitis_id FROM form_hepatitis WHERE sample_code IS NULL AND (sample_package_code LIKE "' . $_POST['samplePackageCode'] . '" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '")';
 $sampleResult = $db->query($sampleQuery);
-foreach ($sampleResult as $sampleRow) {
-    array_push($sampleData, $sampleRow['hepatitis_id']);
-}
+$sampleData = array_column($sampleResult, 'hepatitis_id');
 echo implode(',', $sampleData);

@@ -86,7 +86,7 @@ class Hepatitis
 
                 if (empty($provinceId) && !empty($provinceCode)) {
                     $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
-                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);                    
+                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -142,7 +142,7 @@ class Hepatitis
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
-            return $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $checkResult[$sampleCodeKeyCol], $user);
+            return $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
 
         return json_encode($sCodeKey);
@@ -232,6 +232,30 @@ class Hepatitis
         return $response;
     }
 
+    public function getHepatitisComorbidities()
+    {
+        $comorbidityData = array();
+        $comorbidityQuery = "SELECT DISTINCT comorbidity_id, comorbidity_name FROM r_hepatitis_comorbidities WHERE comorbidity_status ='active'";
+        $comorbidityResult = $this->db->rawQuery($comorbidityQuery);
+        foreach ($comorbidityResult as $comorbidity) {
+            $comorbidityData[$comorbidity['comorbidity_id']] = ucwords($comorbidity['comorbidity_name']);
+        }
+
+        return $comorbidityData;
+    }
+
+    public function getHepatitisRiskFactors()
+    {
+        $riskFactorsData = array();
+        $riskFactorsQuery = "SELECT DISTINCT riskfactor_id, riskfactor_name FROM r_hepatitis_risk_factors WHERE riskfactor_status ='active'";
+        $riskFactorsResult = $this->db->rawQuery($riskFactorsQuery);
+        foreach ($riskFactorsResult as $riskFactors) {
+            $riskFactorsData[$riskFactors['riskfactor_id']] = ucwords($riskFactors['riskfactor_name']);
+        }
+
+        return $riskFactorsData;
+    }
+
     public function insertSampleCode($params)
     {
         $general = new \Vlsm\Models\General();
@@ -299,13 +323,39 @@ class Hepatitis
                 $hepatitisData['sample_code_key'] = $sampleData['sampleCodeKey'];
                 $hepatitisData['remote_sample'] = 'no';
                 $hepatitisData['result_status'] = 6;
-            }            
+            }
             $sQuery = "SELECT hepatitis_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_hepatitis ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
+
+            /* Update version in form attributes */
+            $version = $general->getSystemConfig('sc_version');
+            if (isset($version) && !empty($version)) {
+                $ipaddress = '';
+                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+                } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+                } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
+                } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                    $ipaddress = $_SERVER['REMOTE_ADDR'];
+                } else {
+                    $ipaddress = 'UNKNOWN';
+                }
+                $formAttributes = array(
+                    'applicationVersion'  => $version,
+                    'ip_address'    => $ipaddress
+                );
+                $hepatitisData['form_attributes'] = json_encode($formAttributes);
+            }
 
             $id = 0;
             if ($rowData) {

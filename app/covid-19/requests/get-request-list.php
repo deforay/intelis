@@ -258,7 +258,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 
 
-if (isset($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      $_SESSION['covid19RequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }

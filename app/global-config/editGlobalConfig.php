@@ -44,7 +44,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 	<section class="content-header">
 		<h1><i  class="fa-solid fa-gears"></i> <?php echo _("Edit General Configuration"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Manage General Config"); ?></li>
 		</ol>
 	</section>

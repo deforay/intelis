@@ -68,9 +68,9 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><?php echo _("Edit Batch");?></h1>
+		<h1><?php echo _("Edit Batch"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active">Batch</li>
 		</ol>
 	</section>
@@ -79,14 +79,14 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
 			</div>
-			<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
+			<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
 
-					<th><?php echo _("Facility");?></th>
+					<th><?php echo _("Facility"); ?></th>
 					<td>
-						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple">
+						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
@@ -94,19 +94,19 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 					<td></td>
 				</tr>
 				<tr>
-					<th><?php echo _("Sample Collection Date");?></th>
+					<th><?php echo _("Sample Collection Date"); ?></th>
 					<td>
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:275px;background:#fff;" />
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:275px;background:#fff;" />
 					</td>
 					<th>Date Sample Receieved at Lab</th>
 					<td>
-						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date');?>" readonly style="width:275px;background:#fff;" />
+						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:275px;background:#fff;" />
 					</td>
 				</tr>
 				<tr>
 					<th><?php echo _("Positions"); ?></th>
 					<td>
-						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion');?>">
+						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion'); ?>">
 							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Numeric"); ?></option>
 							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Alpha Numeric"); ?></option>
 						</select>
@@ -115,8 +115,8 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 					<td></td>
 				</tr>
 				<tr>
-					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _('Filter Samples');?>" class="btn btn-success btn-sm">
-						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset Filters");?></span></button>
+					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _('Filter Samples'); ?>" class="btn btn-success btn-sm">
+						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset Filters"); ?></span></button>
 					</td>
 				</tr>
 			</table>
@@ -128,9 +128,9 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="batchCode" class="col-lg-4 control-label"><?php echo _("Batch Code");?> <span class="mandatory">*</span></label>
+									<label for="batchCode" class="col-lg-4 control-label"><?php echo _("Batch Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _('Batch Code');?>" title="<?php echo _('Please enter batch code');?>" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _("This batch code already exists.Try another code");?>',null)" />
+										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _('Batch Code'); ?>" title="<?php echo _('Please enter batch code'); ?>" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _("This batch code already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -138,10 +138,10 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="machine" class="col-lg-4 control-label"><?php echo _("Testing Platform");?> <span class="mandatory">*</span></label>
+									<label for="machine" class="col-lg-4 control-label"><?php echo _("Testing Platform"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine');?>">
-											<option value=""> <?php echo _("-- Select --");?> </option>
+										<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine'); ?>">
+											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<?php
 											foreach ($testPlatformResult as $machine) {
 											?>
@@ -151,7 +151,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="covid-19-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position');?>"><i class="fa-solid fa-arrow-down-1-9"></i> <?php echo _("Edit Position");?></a></div>
+							<div class="col-md-6"><a href="covid-19-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position'); ?>"><i class="fa-solid fa-arrow-down-1-9"></i> <?php echo _("Edit Position"); ?></a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-8">
@@ -159,7 +159,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 									<div class="col-md-12">
 										<div class="col-md-12">
 											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
+												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All"); ?></a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
 												<?php
@@ -182,8 +182,8 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
 						<input type="hidden" name="resultSample" id="resultSample" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
-						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
-						<a href="covid-19-batches.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
+						<a href="covid-19-batches.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -197,7 +197,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var startDate = "";
@@ -225,15 +225,17 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 		<?php }
 		?>
 		$("#facilityName").select2({
-			placeholder: "<?php echo _('Select Facilities');?>"
+			placeholder: "<?php echo _('Select Facilities'); ?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: 'Clear'
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
 				},
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
-				startDate: moment().subtract(29, 'days'),
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -252,10 +254,10 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 		$('#sampleCollectionDate').val("");
 		var unSelectedLength = $('.search > option').length - $(".search :selected").length;
 		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
-			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'><?php echo _('Available samples');?>(" + unSelectedLength + ")</div>",
-			selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'><?php echo _('Selected samples');?>(" + $(".search :selected").length + ")</div>",
+			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
+			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
+			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'><?php echo _('Available samples'); ?>(" + unSelectedLength + ")</div>",
+			selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'><?php echo _('Selected samples'); ?>(" + $(".search :selected").length + ")</div>",
 			afterInit: function(ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
