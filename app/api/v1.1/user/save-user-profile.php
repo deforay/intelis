@@ -11,6 +11,7 @@ $jsonResponse = file_get_contents('php://input');
 // error_log("------ USER API START-----");
 // error_log($jsonResponse);
 // error_log("------ USER API END -----");
+$transactionId = $general->generateUUID();
 
 try {
     ini_set('memory_limit', -1);
@@ -169,5 +170,5 @@ try {
     error_log("Save User Profile API : " . $exc->getMessage());
     error_log($exc->getTraceAsString());
 }
-$trackId = $app->addApiTracking($data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], json_encode($decode), 'REST');
+$trackId = $app->addApiTracking($transactionId, $data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], json_encode($decode), 'REST');
 exit(0);

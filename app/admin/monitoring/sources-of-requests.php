@@ -42,13 +42,13 @@ $activeTestModules = $general->getActiveTestModules();
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
-                            <td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
+                            <td><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
                             <td>
                                 <input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
                             </td>
-                            <td><b><?php echo _("Test Types"); ?>&nbsp;:</b></td>
+                            <td><strong><?php echo _("Test Types"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
                                     <?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
@@ -68,7 +68,7 @@ $activeTestModules = $general->getActiveTestModules();
                                     <?php } ?>
                                 </select>
                             </td>
-                            <td><b><?php echo _("Lab Name"); ?>&nbsp;:</b></td>
+                            <td><strong><?php echo _("Lab Name"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select style="width:220px;" class="form-control select2" id="labName" name="labName" title="<?php echo _('Please select the Lab name'); ?>">
                                     <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
@@ -76,7 +76,7 @@ $activeTestModules = $general->getActiveTestModules();
                             </td>
                         </tr>
                         <tr>
-                            <td><b><?php echo _("Source of Request"); ?>&nbsp;:</b></td>
+                            <td><strong><?php echo _("Source of Request"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select style="width:220px;" class="form-control" id="srcRequest" name="srcRequest" title="<?php echo _('Source of Requests'); ?>">
                                     <?php echo $general->generateSelectOptions(array('api' => 'api', 'app' => 'app', 'web' => 'web', 'hl7' => 'hl7'), null, '--All--'); ?>

@@ -819,17 +819,18 @@ class General
     }
 
 
-    public function addApiTracking($user, $records, $type, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
+    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
     {
 
         try {
             $requestData = (!empty($requestData) && !$this->isJSON($requestData)) ? json_encode($requestData) : $requestData;
             $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData) : $responseData;
             $data = array(
+                'transaction_id'    => $transactionId ?: null,
                 'requested_by'      => $user ?: 'vlsm-system',
                 'requested_on'      => $this->getCurrentDateTime(),
-                'number_of_records' => $records ?: 0,
-                'request_type'      => $type ?: null,
+                'number_of_records' => $numberOfRecords ?: 0,
+                'request_type'      => $requestType ?: null,
                 'test_type'         => $testType ?: null,
                 'api_url'           => $url ?: null,
                 'request_data'      => $requestData,

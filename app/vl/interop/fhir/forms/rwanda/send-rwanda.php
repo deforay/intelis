@@ -24,6 +24,8 @@ $facilityDb = new \Vlsm\Models\Facilities();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
+$transactionId = $general->generateUUID();
+
 $fhir = new Fhir($interopConfig['FHIR']['url'], $interopConfig['FHIR']['auth']);
 
 //$query = "SELECT * FROM form_vl WHERE (source_of_request LIKE 'fhir' OR unique_id like 'fhir%') AND result_status = 7 AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')";
@@ -109,5 +111,5 @@ foreach ($formResults as $row) {
 
 $response = json_encode(array('timestamp' => time(), 'processed' => $counter, 'response' => $resp));
 $app = new \Vlsm\Models\App();
-$trackId = $app->addApiTracking('vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json);
+$trackId = $app->addApiTracking($transactionId, 'vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json);
 echo prettyJson($response);

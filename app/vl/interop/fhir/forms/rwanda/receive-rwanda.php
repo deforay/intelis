@@ -350,7 +350,7 @@ if (!empty($errors)) {
 }
 
 $app = new \Vlsm\Models\App();
-$trackId = $app->addApiTracking('vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json);
+$trackId = $app->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json);
 
 echo prettyJson($response);
 

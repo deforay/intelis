@@ -3243,3 +3243,8 @@ UPDATE form_eid set result_sent_to_source = 'sent' where source_of_request = 'vl
 UPDATE form_covid19 set result_sent_to_source = 'sent' where source_of_request = 'vlsts' AND result_status in (4,7) and (result_sent_to_source is null or result_sent_to_source = 'not-sent' or result_sent_to_source = '');
 UPDATE form_hepatitis set result_sent_to_source = 'sent' where source_of_request = 'vlsts' AND result_status in (4,7) and (result_sent_to_source is null or result_sent_to_source = 'not-sent' or result_sent_to_source = '');
 UPDATE form_tb set result_sent_to_source = 'sent' where source_of_request = 'vlsts' AND result_status in (4,7) and (result_sent_to_source is null or result_sent_to_source = 'not-sent' or result_sent_to_source = '');
+
+
+-- Amit 14-Sep-2022
+ALTER TABLE `track_api_requests` ADD `transaction_id` VARCHAR(256) NULL DEFAULT NULL AFTER `api_track_id`;
+

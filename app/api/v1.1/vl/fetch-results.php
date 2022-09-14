@@ -64,6 +64,8 @@ if (empty($user) || empty($user['user_id'])) {
     throw new \Exception('Bearer Token Invalid');
 }
 
+$transactionId = $general->generateUUID();
+
 try {
 
     $sQuery = "SELECT 
@@ -285,7 +287,7 @@ try {
     error_log($exc->getTraceAsString());
 }
 
-$general->addApiTracking($user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, $payload, 'json');
 
 echo json_encode($payload);
 exit(0);

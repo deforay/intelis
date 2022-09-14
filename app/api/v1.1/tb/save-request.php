@@ -423,7 +423,7 @@ try {
         $payload['token'] = null;
     }
 
-    $general->addApiTracking($user['user_id'], count($input['data']), 'save-request', 'tb', $requestUrl, $params, json_encode($payload), 'json');
+    $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'tb', $requestUrl, $params, json_encode($payload), 'json');
 
     http_response_code(200);
     echo json_encode($payload);

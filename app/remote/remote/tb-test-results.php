@@ -9,17 +9,19 @@ $jsonResponse = file_get_contents('php://input');
 $general = new \Vlsm\Models\General();
 $usersModel = new \Vlsm\Models\Users();
 
+$transactionId = $general->generateUUID();
+
 $sampleCode = array();
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_tb'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
-    
+
 
     $lab = array();
     $options = [
         'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
-    ];    
+    ];
     $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
     foreach ($parsedData as $key => $resultRow) {
         $counter++;
@@ -94,8 +96,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 $payload = json_encode($sampleCode);
 
 if ($counter > 0) {
-    $general->addApiTracking('vlsm-system', $counter, 'results', 'eid', null, $jsonResponse, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', null, $jsonResponse, $payload, 'json', $labId);
 }
 
 echo $payload;
-
