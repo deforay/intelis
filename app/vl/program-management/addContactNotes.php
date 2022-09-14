@@ -48,7 +48,7 @@
           <!-- form start -->
           <div class="form-horizontal" id="contactNotes">
             <div class="box-body">
-              <table class="table">
+              <table class="table" aria-hidden="true" >
                 <tr>
                   <td><b>Sample Code:<small><?php echo $vlResult[0]['sample_code']; ?></small></b></td>
                   <td><b>Contacted Date:<small><?php echo $vlResult[0]['sample_collection_date']; ?></small></b></td>
@@ -85,7 +85,7 @@
 
           <!--histroy of contact notes-->
           <div class="col-md-12">
-            <h4><a id="history" href="javascript:void(0);" style="text-decoration: none;" onclick="formToggler('+');">Show History <i class="fa-solid fa-plus"></i></a></h4>
+            <h4><a id="history" href="javascript:void(0);" style="text-decoration: none;" onclick="formToggler('+');">Show History <em class="fa-solid fa-plus"></em></a></h4>
           </div>
           <div class="row" id="showHistory" style="display: none;">
             <div class="col-xs-12">
@@ -93,7 +93,7 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                   <h3>Contact Notes History</h3>
-                  <table id="contactNotesDetails" class="table table-bordered table-striped">
+                  <table id="contactNotesDetails" class="table table-bordered table-striped" aria-hidden="true" >
                     <thead>
                       <tr>
                         <th>Contact Notes</th>
@@ -187,7 +187,7 @@
         $("#history").attr("onclick", "formToggler('-')");
       } else {
         $("#showHistory").slideToggle();
-        $("#history").html('Show History <i class="fa-solid fa-plus"></i>');
+        $("#history").html('Show History <em class="fa-solid fa-plus"></em>');
         $("#history").attr("onclick", "formToggler('-')");
       }
     }

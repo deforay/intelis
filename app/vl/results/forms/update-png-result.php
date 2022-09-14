@@ -152,7 +152,7 @@ $disable = "disabled = 'disabled'";
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
 		<ol class="breadcrumb">
-			<li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Add Vl Request</li>
 		</ol>
 	</section>
@@ -180,7 +180,7 @@ $disable = "disabled = 'disabled'";
 								</div>
 							</div>
 							<br />
-							<table class="table" style="width:100%">
+							<table class="table" aria-hidden="true"  style="width:100%">
 								<tr>
 									<td colspan="6" style="font-size: 18px; font-weight: bold;">Section 1: Clinic Information</td>
 								</tr>
@@ -442,7 +442,7 @@ $disable = "disabled = 'disabled'";
 								</tr>
 							</table>
 							<form class="form-inline" method='post' name='vlRequestForm' id='vlRequestForm' autocomplete="off" action="updateVlRequestHelperPng.php">
-								<table class="table" style="width:100%">
+								<table class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<td colspan="6" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 									</tr>

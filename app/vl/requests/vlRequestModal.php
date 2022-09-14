@@ -38,7 +38,7 @@ $batResult = $db->rawQuery($batQuery);
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:10px;width: 98%;">
+          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:10px;width: 98%;">
             <tr>
               <td><b>Sample Collection Date&nbsp;:</b></td>
               <td>
@@ -97,7 +97,7 @@ $batResult = $db->rawQuery($batQuery);
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="vlRequestDataTable" class="table table-bordered table-striped">
+            <table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th>Select</th>

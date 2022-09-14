@@ -161,7 +161,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> Add Batch Controls Position</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Batch</li>
 		</ol>
 	</section>

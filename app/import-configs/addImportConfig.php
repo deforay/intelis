@@ -6,6 +6,8 @@ require_once(APPLICATION_PATH . '/header.php');
 $userDb = new \Vlsm\Models\Users();
 $general = new \Vlsm\Models\General();
 
+$activeTestModules = $general->getActiveTestModules();
+
 $userList = $userDb->getAllUsers(null, null, 'drop-down');
 ?>
 <style>
@@ -19,9 +21,9 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1 class="fa fa-gears"> <?php echo _("Add Instrument"); ?></h1>
+		<h1><em class="fa fa-gears"></em> <?php echo _("Add Instrument"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Add Instrument"); ?></li>
 		</ol>
 	</section>
@@ -55,19 +57,19 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 									<label for="supportedTests" class="col-lg-4 control-label"><?php echo _("Supported Tests"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
-											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+											<?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
 												<option value='vl'><?php echo _("Viral Load"); ?></option>
 											<?php }
-											if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+											if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
 												<option value='eid'><?php echo _("EID"); ?></option>
 											<?php }
-											if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+											if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
 												<option value='covid19'><?php echo _("Covid-19"); ?></option>
 											<?php }
-											if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+											if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
 												<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
 											<?php }
-											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+											if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
 												<option value='tb'><?php echo _("TB"); ?></option>
 											<?php } ?> ?>
 										</select>
@@ -305,7 +307,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 											</div>
 										</td>
 										<td align="center" style="vertical-align:middle;">
-											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
+											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
 										</td>
 									</tr>
 								</tbody>
@@ -444,7 +446,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								<input type="text" name="longitude[]" id="longitude' + tableRowId + '" class="form-control " placeholder="<?php echo _('Longitude'); ?>" data-placement="bottom" title="<?php echo _('Longitude'); ?>"/>\
 							</div>\
 						</div>';
-		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
+		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
 		$(a).fadeIn(800);
 		tableRowId++;
 	}

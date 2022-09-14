@@ -10,7 +10,7 @@ $rejReaons = $general->getRejectionReasons('tb');
   <section class="content-header">
     <h1><i class="fa-solid fa-heart-pulse"></i> <?php echo _("Add TB Sample Rejection Reasons");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("TB Sample Rejection Reasons");?></li>
     </ol>
   </section>

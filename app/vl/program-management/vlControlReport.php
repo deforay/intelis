@@ -20,7 +20,7 @@ $sResult = $db->rawQuery($sQuery);
   <section class="content-header">
     <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("VL Control Report"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
       <li class="active"><?php echo _("VL Control Report"); ?></li>
     </ol>
   </section>
@@ -29,7 +29,7 @@ $sResult = $db->rawQuery($sQuery);
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:80%;">
+          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:80%;">
             <tr>
               <td><b><?php echo _("Sample Tested Date"); ?>&nbsp;</b><span class="mandatory">*</span></td>
               <td><input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="width:220px;background:#fff;" /></td>

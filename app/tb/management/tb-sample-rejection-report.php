@@ -27,7 +27,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   <section class="content-header">
     <h1><i class="fa-solid fa-book"></i> <?php echo _("Sample Rejection Report");?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("Rejection Result");?></li>
     </ol>
   </section>
@@ -37,7 +37,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
               <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
               <td>

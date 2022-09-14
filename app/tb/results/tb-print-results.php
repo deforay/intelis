@@ -23,7 +23,7 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
     <section class="content-header">
         <h1><i class="fa-solid fa-print"></i> <?php echo _("Print TB Results"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Print TB Results"); ?></li>
         </ol>
     </section>
@@ -43,7 +43,7 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
                                         <div class="tab-pane fade in active" id="notPrintedData">
-                                            <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
                                                     <td>
@@ -136,7 +136,7 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                 </div>
                                             </span>
 
-                                            <table id="notPrintedTable" class="table table-bordered table-striped">
+                                            <table id="notPrintedTable" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
@@ -165,7 +165,7 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                             <input type="hidden" name="totalSamplesList" id="totalSamplesList" />
                                         </div>
                                         <div class="tab-pane fade" id="printedData">
-                                            <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
                                                     <td>
@@ -257,7 +257,7 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                     </div>
                                                 </div>
                                             </span>
-                                            <table id="alreadyPrintedTable" class="table table-bordered table-striped">
+                                            <table id="alreadyPrintedTable" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>

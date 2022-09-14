@@ -111,7 +111,7 @@ foreach ($rejectionTypeResult as $type) {
 	<section class="content-header">
 		<h1><?= _("Imported Results"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Test Request</li>
 		</ol>
 	</section>
@@ -150,7 +150,7 @@ foreach ($rejectionTypeResult as $type) {
 								<input type="button" onclick="acceptAllSamples();" value="<?= _("Accept All Samples"); ?>" class="btn btn-success btn-sm">
 								<br><strong class="text-danger"><?= _("Only accepts samples that do not have status field already selected"); ?></strong>
 							</div>
-							<table id="vlRequestDataTable" class="table table-bordered table-striped">
+							<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 								<thead>
 									<tr>
 										<!--<th style="width: 1%;"><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -174,7 +174,7 @@ foreach ($rejectionTypeResult as $type) {
 								</tbody>
 							</table>
 						</div>
-						<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 100%;">
+						<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 100%;">
 							<tr>
 								<input type="hidden" name="checkedTests" id="checkedTests" />
 								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />

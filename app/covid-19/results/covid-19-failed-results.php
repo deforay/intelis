@@ -27,7 +27,7 @@ $batResult = $db->rawQuery($batQuery);
     <section class="content-header">
         <h1><i class="fa-solid fa-list-check"></i> <?php echo _("Failed/Hold Samples");?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
             <li class="active"><?php echo _("Test Request");?></li>
         </ol>
     </section>
@@ -37,7 +37,7 @@ $batResult = $db->rawQuery($batQuery);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table id="advanceFilter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+                    <table id="advanceFilter" class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
                         <tr>
                             <td><b><?php echo _("Sample Collection Date");?> :</b></td>
                             <td>
@@ -95,7 +95,7 @@ $batResult = $db->rawQuery($batQuery);
                             </td>
                         </tr>
                     </table>
-                    <table id="filter" class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+                    <table id="filter" class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr id="">
                             <td>
                                 &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples");?></span></button>
@@ -106,7 +106,7 @@ $batResult = $db->rawQuery($batQuery);
                     <!-- /.box-header -->
                     <div class="box-body">
                         <input type="hidden" name="checkedTests" id="checkedTests" />
-                        <table id="covid19FailedRequestDataTable" class="table table-bordered table-striped">
+                        <table id="covid19FailedRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>

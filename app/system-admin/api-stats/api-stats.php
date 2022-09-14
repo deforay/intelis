@@ -8,9 +8,9 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <i class="fa-solid fa-gears"></i> <?php echo _("API Stats"); ?></h1>
+    <h1> <em class="fa-solid fa-gears"></em> <?php echo _("API Stats"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/system-admin/edit-config/index.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+      <li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
       <li class="active"><?php echo _("API Stats"); ?></li>
     </ol>
   </section>
@@ -24,7 +24,7 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
         <div class="box">
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="apiStatsDataTable" class="table table-bordered table-striped">
+            <table id="apiStatsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th><?php echo _("Requested On"); ?></th>

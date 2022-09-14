@@ -9,7 +9,7 @@ require_once(APPLICATION_PATH . '/header.php');
     <section class="content-header">
         <h1><i class="fa-solid fa-virus-covid"></i> <?php echo _("Covid-19 QC Test Kits"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Covid-19 QC Test Kits"); ?></li>
         </ol>
     </section>
@@ -21,12 +21,12 @@ require_once(APPLICATION_PATH . '/header.php');
                 <div class="box">
                     <div class="box-header with-border">
                         <?php if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-                            <a href="add-covid19-qc-test-kit.php" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> <?php echo _("Add New Covid-19 QC Test Kit"); ?></a>
+                            <a href="add-covid19-qc-test-kit.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add New Covid-19 QC Test Kit"); ?></a>
                         <?php } ?>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="qcTestKitsDataTable" class="table table-bordered table-striped">
+                        <table id="qcTestKitsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                             <thead>
                                 <tr>
                                     <th><?php echo _("QC Test Kit Name"); ?></th>

@@ -77,7 +77,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> Create Specimen Referral Manifest</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li><a href="/specimen-referral-manifest/specimenReferralManifestList.php"> Manage Specimen Referral Manifest</a></li>
 			<li class="active">Create Specimen Referral Manifest</li>
 		</ol>

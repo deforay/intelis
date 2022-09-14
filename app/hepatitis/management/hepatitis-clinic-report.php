@@ -35,7 +35,7 @@ $batResult = $db->rawQuery($batQuery);
 	<section class="content-header">
 		<h1> <i class="fa-solid fa-book"></i> <?php echo _("Clinic Reports"); ?></h1>
 		<ol class="breadcrumb">
-			<!-- <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li> -->
+			<!-- <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li> -->
 			<li> <i class="fa-solid fa-book"></i> <?php echo _("Hepatitis"); ?></li>
 			<li><?php echo _("Management"); ?></li>
 			<li class="active"><?php echo _("Clinic Reports"); ?></li>
@@ -59,7 +59,7 @@ $batResult = $db->rawQuery($batQuery);
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
-											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
 													<td>
@@ -132,7 +132,7 @@ $batResult = $db->rawQuery($batQuery);
 												</tr>
 											</table>
 
-											<table id="highViralLoadReportTable" class="table table-bordered table-striped">
+											<table id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -158,7 +158,7 @@ $batResult = $db->rawQuery($batQuery);
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
 													<td>
@@ -221,7 +221,7 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 											</table>
-											<table id="sampleRjtReportTable" class="table table-bordered table-striped">
+											<table id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -244,7 +244,7 @@ $batResult = $db->rawQuery($batQuery);
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 													<td>
@@ -307,7 +307,7 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 											</table>
-											<table id="notAvailReportTable" class="table table-bordered table-striped">
+											<table id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -329,7 +329,7 @@ $batResult = $db->rawQuery($batQuery);
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<table class="table" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 													<td>
@@ -361,7 +361,7 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 											</table>
-											<table id="incompleteReport" class="table table-bordered table-striped">
+											<table id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>

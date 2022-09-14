@@ -145,7 +145,7 @@ if (!empty($patientData)) {
     <section class="content-header">
         <h1><i class="fa-solid fa-pen-to-square"></i> COVID-19 VIRUS LABORATORY TEST DRC REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Accueil</a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Accueil</a></li>
             <li class="active">Ajouter une nouvelle demande</li>
         </ol>
     </section>
@@ -168,7 +168,7 @@ if (!empty($patientData)) {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">À remplir par le clinicien / infirmier demandeur</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                         <tr>
                                             <?php
@@ -252,7 +252,7 @@ if (!empty($patientData)) {
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa-solid fa-magnifying-glass"></i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
@@ -342,7 +342,7 @@ if (!empty($patientData)) {
                                         Definition de cas
                                     </h3>
                                 </div>
-                                <table id="responseTable" class="table table-bordered">
+                                <table id="responseTable" class="table table-bordered" aria-hidden="true" >
                                     <tr>
                                         <td colspan="2">
                                             <label class="radio-inline" style="margin-left:0;">
@@ -507,7 +507,7 @@ if (!empty($patientData)) {
                                         Signes vitaux du patient
                                     </h3>
                                 </div>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width:15% !important">Fever/Temperature (&deg;C)</th>
                                         <td style="width:35% !important;">
@@ -585,7 +585,7 @@ if (!empty($patientData)) {
                                     </tr>
                                     <tr class="symptoms" style="display: <?php echo ($covid19Info['asymptomatic'] == 'yes') ? "none" : "contents"; ?>;">
                                         <td colspan="4">
-                                            <table id="symptomsTable" class="table table-bordered table-striped">
+                                            <table id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
                                                     $diarrhée = "";
@@ -654,7 +654,7 @@ if (!empty($patientData)) {
                                     </tr>
                                     <tr class="comorbidities-row" style="<?php echo ($covid19Info['medical_history'] != 'yes') ? 'display:none' : ''; ?>">
                                         <td colspan="4">
-                                            <table id="comorbiditiesTable" class="table table-bordered">
+                                            <table id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                     <tr>
@@ -676,7 +676,7 @@ if (!empty($patientData)) {
                                     </tr>
                                 </table>
 
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois ? Have you been hospitalized in the past 12 months ? </th>
                                         <td style="width:35% !important;">
@@ -723,7 +723,7 @@ if (!empty($patientData)) {
                                         VOYAGE ET CONTACT
                                     </h3>
                                 </div>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width: 15% !important;"><label for="hasRecentTravelHistory">Avez-vous voyagé au cours des 14 derniers jours ? </label></th>
                                         <td style="width:35% !important;">
@@ -793,7 +793,7 @@ if (!empty($patientData)) {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Réservé à une utilisation en laboratoire </h3>
                                     </div>
-                                    <table class="table" style="width:100%">
+                                    <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th><label for="">Date de réception de l'échantillon </label></th>
                                             <td>
@@ -848,7 +848,7 @@ if (!empty($patientData)) {
 
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped" id="testNameTable">
+                                                <table class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test non</th>
@@ -892,7 +892,7 @@ if (!empty($patientData)) {
                                                                         </select>
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;">
-                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                         <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><i class="fa-solid fa-minus"></i></a>
                                                                     </td>
                                                                 </tr>
@@ -921,7 +921,7 @@ if (!empty($patientData)) {
                                                                     </select>
                                                                 </td>
                                                                 <td style="vertical-align:middle;text-align: center;">
-                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                     <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
                                                                 </td>
                                                             </tr>
@@ -1710,7 +1710,7 @@ if (!empty($patientData)) {
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${tableRowId}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Sélectionner --'); ?></select>
             </td>
             <td style="vertical-align:middle;text-align: center;">
-                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
             </td>
         </tr>`;

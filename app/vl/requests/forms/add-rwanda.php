@@ -74,7 +74,7 @@ $sFormat = '';
      <section class="content-header">
           <h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
           <ol class="breadcrumb">
-               <li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+               <li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
                <li class="active">Add VL Request</li>
           </ol>
      </section>

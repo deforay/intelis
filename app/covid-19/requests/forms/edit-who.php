@@ -75,7 +75,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     <section class="content-header">
         <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("WHO COVID-19 VIRUS LABORATORY TEST REQUEST FORM");?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
             <?php if (isset($covid19Info['result']) && $covid19Info['result'] != "") { ?>
                 <li class="active"><?php echo _("View Request");?></li>
             <?php } else { ?>
@@ -103,7 +103,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                         <tr>
                                             <?php
@@ -195,7 +195,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border">
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -250,7 +250,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
                                 <br><br>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>SPECIMEN INFORMATION</h4>
@@ -303,7 +303,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 </table>
 
                                 <br><br>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>CLINICAL DETAILS</h4>
@@ -358,7 +358,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" style="width:100%">
+                                    <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th><label for="">Sample Received Date </label></th>
                                             <td>
@@ -405,7 +405,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped" id="testNameTable">
+                                                <table class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test No.</th>
@@ -429,7 +429,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                         </select>
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;">
-                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                         <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><i class="fa-solid fa-minus"></i></a>
                                                                     </td>
                                                                 </tr>
@@ -447,7 +447,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                     </select>
                                                                 </td>
                                                                 <td style="vertical-align:middle;text-align: center;">
-                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                                                                    <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                     <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
                                                                 </td>
                                                             </tr>
@@ -741,7 +741,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
         c.innerHTML = '<input type="text" name="testName[]" id="testName' + tableRowId + '" class="form-control test-name-table-input" placeholder="Test name" title="Please enter the test name for row ' + tableRowId + '"/>';
         d.innerHTML = '<input type="text" name="testDate[]" id="testDate' + tableRowId + '" class="form-control test-name-table-input dateTime" placeholder="Tested on"  title="Please enter the tested on for row ' + tableRowId + '"/>';
         e.innerHTML = '<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult' + tableRowId + '" title="Please select the result for row ' + tableRowId + '"><option value=""> -- Select -- </option><?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?> <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option> <?php } ?> </select>';
-        f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
+        f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
         $(a).fadeIn(800);
         $('.dateTime').datetimepicker({
             changeMonth: true,

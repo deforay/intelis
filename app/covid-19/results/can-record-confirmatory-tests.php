@@ -45,7 +45,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> Record Confirmatory Tests</h1>
 		<ol class="breadcrumb">
-			<li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> Home </a></li>
+			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home </a></li>
 			<li class="active">Record Confirmatory Tests</li>
 		</ol>
 	</section>
@@ -54,7 +54,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
+					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
 						<tr>
 							<td><b>Sample Collection Date&nbsp;:</b></td>
 							<td>
@@ -147,7 +147,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 								<option value="reject" <?php echo ($status == 'reject') ? "selected='selected'" : "" ?>>Rejected Samples</option>
 							</select>
 						</div><br>
-						<table id="vlRequestDataTable" class="table table-bordered table-striped">
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th>Sample Code</th>

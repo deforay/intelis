@@ -133,7 +133,7 @@ if (!isset($_SESSION['adminUserId'])) {
         <ul class="sidebar-menu">
           <li class="treeview manage">
             <a href="#">
-              <i class="fa-solid fa-gears"></i>
+              <em class="fa-solid fa-gears"></em>
               <span><?php echo _("Admin"); ?></span>
               <span class="pull-right-container">
                 <i class="fa-solid fa-angle-left pull-right"></i>

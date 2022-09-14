@@ -50,7 +50,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
     <section class="content-header">
         <h1><i class="fa-solid fa-pen-to-square"></i> Hepatitis LABORATORY REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
             <li class="active">Hepatitis Request</li>
         </ol>
     </section>
@@ -71,7 +71,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                         <div class="box-header with-border">
                             <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                         </div>
-                        <table class="table" style="width:100%">
+                        <table class="table" aria-hidden="true"  style="width:100%">
                             <?php if ($hepatitisInfo['remote_sample'] == 'yes') { ?>
                                 <tr>
                                     <?php
@@ -155,7 +155,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                         <div class="box-header with-border">
                             <h3 class="box-title">DEMOGRAPHICS</h3>
                         </div>
-                        <table class="table" style="width:100%">
+                        <table class="table" aria-hidden="true"  style="width:100%">
 
                             <tr>
                                 <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -222,7 +222,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                     <div class="box-header with-border">
                         <h3 class="box-title">TEST RESULTS FOR SCREENING BY RDTs</h3>
                     </div>
-                    <table class="table" style="width:100%">
+                    <table class="table" aria-hidden="true"  style="width:100%">
                         <tr>
                             <th>Specimen Type <span class="mandatory">*</span></th>
                             <td>
@@ -270,7 +270,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                 <div class="box-header with-border">
                                     <h3 class="box-title">TO BE FILLED AT VIRAL LOAD TESTING SITE </h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <th><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                         <td>

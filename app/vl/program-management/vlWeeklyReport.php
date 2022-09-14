@@ -31,7 +31,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
   <section class="content-header">
     <h1><i class="fa-solid fa-calendar-check"></i> <?php echo _("VL Lab Weekly Report"); ?>
       <!--<ol class="breadcrumb">-->
-      <!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
+      <!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->
       <!--</ol>-->
     </h1>
@@ -84,7 +84,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                           </td>
                         </tr>
                       </table>
-                      <table id="vlWeeklyReportDataTable" class="table table-bordered table-striped">
+                      <table id="vlWeeklyReportDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                         <thead>
                           <tr>
                             <th rowspan="2"><?php echo _("Province/State"); ?></th>
@@ -161,7 +161,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                           </td>
                         </tr>
                       </table>
-                      <table id="vlWeeklyFemaleReportDataTable" class="table table-bordered table-striped">
+                      <table id="vlWeeklyFemaleReportDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                         <thead>
                           <tr>
                             <th><?php echo _("Province/State"); ?></th>

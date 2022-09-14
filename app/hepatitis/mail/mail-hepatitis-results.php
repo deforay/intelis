@@ -37,7 +37,7 @@ $batchResult = $db->rawQuery($batchQuery);
   <section class="content-header">
     <h1 class="fa fa-envelope"> E-mail Test Result</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
       <li class="active">E-mail Test Result</li>
     </ol>
   </section>
@@ -96,7 +96,7 @@ $batchResult = $db->rawQuery($batchQuery);
             </div>
             <div class="row">
               <div class="col-md-12">
-                <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
+                <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
                   <tr>
                     <td>&nbsp;<b>Sample Collection Date&nbsp;:</b></td>
                     <td>

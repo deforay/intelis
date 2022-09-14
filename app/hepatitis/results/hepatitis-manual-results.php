@@ -49,7 +49,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 	<section class="content-header">
 		<h1><i class="fa-solid fa-list-check"></i> <?php echo _("Enter Hepatitis Result Manually"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/dashboard/index.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?> </a></li>
+			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?> </a></li>
 			<li class="active"><?php echo _("Enter Hepatitis Result Manually"); ?></li>
 		</ol>
 	</section>
@@ -58,7 +58,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
+					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
 						<tr>
 							<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 							<td>
@@ -153,7 +153,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
 						<br>
 
-						<table id="vlRequestDataTable" class="table table-bordered table-striped">
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>

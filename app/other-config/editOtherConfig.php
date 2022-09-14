@@ -17,7 +17,7 @@ for ($i = 0; $i < sizeof($otherConfigResult); $i++) {
   <section class="content-header">
     <h1 class="fa fa-gears"> Edit Email/SMS Configuration</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
       <li class="active">Manage Email/SMS Config</li>
     </ol>
   </section>

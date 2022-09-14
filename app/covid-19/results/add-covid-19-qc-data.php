@@ -34,7 +34,7 @@ foreach ($pdResult as $provinceName) {
     <section class="content-header">
         <h1><i class="fa-solid fa-virus-covid"></i> <?php echo _("Add Covid-19 QC Test Kit"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Covid-19 QC Test Kit"); ?></li>
         </ol>
     </section>

@@ -64,7 +64,7 @@ unset($_SESSION['controllertrack']);
     <section class="content-header">
         <h1>Imported Results</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -76,7 +76,7 @@ unset($_SESSION['controllertrack']);
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="vlRequestDataTable" class="table table-bordered table-striped">
+                        <table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                             <thead>
                                 <tr>
                                     <th style="width: 13%;">No. of Results imported</th>
@@ -95,7 +95,7 @@ unset($_SESSION['controllertrack']);
                             </tbody>
                         </table>
                     </div>
-                    <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 75%;">
+                    <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 75%;">
                         <tr>
                             <td>
                                 <a href="/eid/results/eid-print-results.php" class="btn btn-success btn-sm">Continue </a>

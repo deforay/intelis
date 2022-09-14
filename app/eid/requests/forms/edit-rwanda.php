@@ -77,7 +77,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
     <section class="content-header">
         <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Add EID Request"); ?></li>
         </ol>
     </section>
@@ -101,7 +101,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <?php if (!empty($sCode)) { ?>
                                         <tr>
                                             <td colspan="6">
@@ -203,7 +203,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                 <div class="box-header with-border">
                                     <h3 class="box-title">CHILD and MOTHER INFORMATION</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
@@ -251,7 +251,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
 
 
                                 <br><br>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Infant and Mother's Health Information</h4>
@@ -353,7 +353,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                 </table>
 
                                 <br><br>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th colspan=4 style="border-top:#000 1px solid;">
                                             <h4>Sample Information</h4>
@@ -389,7 +389,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" style="width:100%">
+                                    <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th><label for="">Sample Received Date </label></th>
                                             <td>

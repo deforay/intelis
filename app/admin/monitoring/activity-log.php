@@ -39,7 +39,7 @@ foreach ($actions as $list) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th scope="row"><?php echo _("Date Range"); ?>&nbsp;:</th>
 							<td>
@@ -67,7 +67,7 @@ foreach ($actions as $list) {
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="auditTrailDataTable" class="table table-bordered table-striped">
+						<table id="auditTrailDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th><?php echo _("Audit Log"); ?></th>

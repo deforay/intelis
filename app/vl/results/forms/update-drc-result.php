@@ -64,7 +64,7 @@ $disable = "disabled = 'disabled'";
 	<section class="content-header">
 		<h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">ENter VL Result</li>
 		</ol>
 	</section>
@@ -90,7 +90,7 @@ $disable = "disabled = 'disabled'";
 									<h3 class="box-title">Information sur la structure de soins</h3>
 								</div>
 								<!-- <h4 id="sampleCodeValue">exemple de code:< ?php echo $vlQueryInfo['sample_code']; ?></h4>-->
-								<table class="table" style="width:100%">
+								<table class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<td><label for="sampleCode">Échantillon id </label></td>
 										<td>
@@ -186,7 +186,7 @@ $disable = "disabled = 'disabled'";
 								<div class="box-header with-border">
 									<h3 class="box-title">Information sur le patient </h3>
 								</div>
-								<table class="table" style="width:100%">
+								<table class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<td style="width:10%;"><label for="">Date de naissance </label></td>
 										<td style="width:15%;">
@@ -383,7 +383,7 @@ $disable = "disabled = 'disabled'";
 								<div class="box-header with-border">
 									<h3 class="box-title">Informations sur le prélèvement </h3>
 								</div>
-								<table class="table" style="width:100%">
+								<table class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<td><label for="">Date du prélèvement </label></td>
 										<td>
@@ -442,7 +442,7 @@ $disable = "disabled = 'disabled'";
 								<div class="box-header with-border">
 									<h3 class="box-title">2. Réservé au Laboratoire de biologie moléculaire </h3>
 								</div>
-								<table class="table" style="width:100%">
+								<table class="table" aria-hidden="true"  style="width:100%">
 									<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 										<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
 										<td>

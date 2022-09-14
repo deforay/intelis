@@ -160,7 +160,7 @@ $state = $geoLocationDb->getProvinces("yes");
 	<section class="content-header">
 		<h1><i class="fa-solid fa-book"></i> <?php echo _("VL Quarterly Monitoring Tool"); ?>
 			<!--<ol class="breadcrumb">-->
-			<!--  <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>-->
+			<!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
 			<!--</ol>-->
 
@@ -171,7 +171,7 @@ $state = $geoLocationDb->getProvinces("yes");
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 							<td>
@@ -223,7 +223,7 @@ $state = $geoLocationDb->getProvinces("yes");
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlMonitoringTable" class="table table-bordered table-striped">
+						<table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>

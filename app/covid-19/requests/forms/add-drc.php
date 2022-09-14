@@ -101,7 +101,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
     <section class="content-header">
         <h1><i class="fa-solid fa-pen-to-square"></i> COVID-19 VIRUS LABORATORY TEST DRC REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Accueil</a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Accueil</a></li>
             <li class="active">Ajouter une nouvelle demande</li>
         </ol>
     </section>
@@ -126,7 +126,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">À remplir par le clinicien / infirmier demandeur</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Échantillon ID </label></td>
@@ -195,7 +195,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa-solid fa-magnifying-glass"></i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
@@ -289,7 +289,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         Definition de cas
                                     </h3>
                                 </div>
-                                <table id="responseTable" class="table table-bordered">
+                                <table id="responseTable" class="table table-bordered" aria-hidden="true" >
                                     <tr>
                                         <td colspan="2">
                                             <label class="radio-inline" style="margin-left:0;">
@@ -455,7 +455,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         Signes vitaux du patient
                                     </h3>
                                 </div>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width:15% !important">Fièvre / température (&deg;C)</th>
                                         <td style="width:35% !important;">
@@ -533,7 +533,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
                                     <tr class="symptoms">
                                         <td colspan="4">
-                                            <table id="symptomsTable" class="table table-bordered table-striped">
+                                            <table id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
                                                     $diarrhée = "";
@@ -600,7 +600,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
                                     <tr class="comorbidities-row" style="display: none;">
                                         <td colspan="4">
-                                            <table id="comorbiditiesTable" class="table table-bordered">
+                                            <table id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                     <tr>
@@ -621,7 +621,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                 </table>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois? </th>
                                         <td style="width:35% !important;">
@@ -669,7 +669,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         VOYAGE ET CONTACT
                                     </h3>
                                 </div>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width: 15% !important;"><label for="hasRecentTravelHistory">Avez-vous voyagé au cours des 14 derniers jours ? </label></th>
                                         <td style="width:35% !important;">
@@ -749,7 +749,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Réservé à une utilisation en laboratoire </h3>
                                     </div>
-                                    <table class="table" style="width:100%">
+                                    <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th><label for="">Date de réception de l'échantillon </label></th>
                                             <td>
@@ -794,7 +794,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped">
+                                                <table class="table table-bordered table-striped" aria-hidden="true" >
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test non</th>
@@ -828,7 +828,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                                 </select>
                                                             </td>
                                                             <td style="vertical-align:middle;text-align: center;">
-                                                                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                                                                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
                                                             </td>
                                                         </tr>
@@ -1593,7 +1593,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         c.innerHTML = '<select onchange="otherCovidTestName(this.value,' + tableRowId + ')" class="form-control test-name-table-input" id="testName' + tableRowId + '" name="testName[]" title="Veuillez saisir le nom du test pour les lignes ' + tableRowId + '"> <option value="">--Select--</option> <option value="PCR/RT-PCR">PCR/RT-PCR</option> <option value="RdRp-SARS Cov-2">RdRp-SARS Cov-2</option> <option value="GeneXpert">GeneXpert</option> <option value="Rapid Antigen Test">Rapid Antigen Test</option><option value="other">Others</option> </select> <input type="text" name="testName[]" id="testName' + tableRowId + '" class="form-control testInputOther' + tableRowId + '" placeholder="Entrez le nom du test ' + tableRowId + '" title="Veuillez saisir le nom du test pour les lignes ' + tableRowId + '" style="display: none;margin-top: 10px;"/>';
         d.innerHTML = '<input type="text" name="testDate[]" id="testDate' + tableRowId + '" class="form-control test-name-table-input dateTime" placeholder="Testé sur"  title="Veuillez sélectionner la Date de l analyse pour la ligne ' + tableRowId + '"/>';
         e.innerHTML = '<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult' + tableRowId + '" title="Veuillez sélectionner le résultat pour la ligne ' + tableRowId + '"><option value=""> -- Sélectionner -- </option><?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?> <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option> <?php } ?> </select>';
-        f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
+        f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
         $(a).fadeIn(800);
         $('.dateTime').datetimepicker({
             changeMonth: true,

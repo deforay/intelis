@@ -26,6 +26,33 @@ class General
         $this->db = $db;
     }
 
+    public function getActiveTestModules(): array
+    {
+        $response = array();
+
+        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
+            $response[] = 'vl';
+        }
+
+        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
+            $response[] = 'eid';
+        }
+
+        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
+            $response[] = 'covid19';
+        }
+
+        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
+            $response[] = 'hepatitis';
+        }
+
+        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
+            $response[] = 'tb';
+        }
+
+        return $response;
+    }
+
     public static function generateRandomString($length = 32)
     {
         $randomString = '';

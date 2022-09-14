@@ -43,7 +43,7 @@ $batchResult = $db->rawQuery($batchQuery);
   <section class="content-header">
     <h1 class="fa fa-envelope"> <?php echo _("E-mail Test Result"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
       <li class="active"><?php echo _("E-mail Test Result"); ?></li>
     </ol>
   </section>
@@ -106,7 +106,7 @@ $batchResult = $db->rawQuery($batchQuery);
                 <br>
                 <br>
                 <h4><?php echo _("Please use the following to filter the samples you wish to email"); ?></h4>
-                <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
+                <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
                   <tr>
                     <td>&nbsp;<b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
                     <td>

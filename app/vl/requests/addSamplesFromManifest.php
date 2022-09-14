@@ -23,9 +23,9 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-plus"></i> <?php echo _("Add Samples from Manifest"); ?></h1>
+		<h1><em class="fa-solid fa-plus"></em> <?php echo _("Add Samples from Manifest"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Test Request"); ?></li>
 		</ol>
 	</section>
@@ -35,7 +35,7 @@ $batResult = $db->rawQuery($batQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
+					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
 							<td style="width:20%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code"); ?> :</b></td>
 							<td style="width:70%;vertical-align:middle;">

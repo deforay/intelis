@@ -10,9 +10,9 @@ $sResult = $db->rawQuery($sQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <i class="fa-solid fa-gears"></i> <?php echo _("User Login History"); ?></h1>
+    <h1> <em class="fa-solid fa-gears"></em> <?php echo _("User Login History"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/system-admin/edit-config/index.php"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home"); ?></a></li>
+      <li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
       <li class="active"><?php echo _("Manage User Login History"); ?></li>
     </ol>
   </section>
@@ -24,7 +24,7 @@ $sResult = $db->rawQuery($sQuery);
 
 
         <div class="box">
-          <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
               <td><b><?php echo _("Date"); ?>&nbsp;:</b></td>
               <td>
@@ -56,7 +56,7 @@ $sResult = $db->rawQuery($sQuery);
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="userLoginHistoryDataTable" class="table table-bordered table-striped">
+            <table id="userLoginHistoryDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th><?php echo _("Login Id"); ?></th>

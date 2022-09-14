@@ -69,7 +69,7 @@ foreach ($testPlatformResult as $machine) {
     <section class="content-header">
         <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Create Batch");?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> <?php echo _("Home");?></a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
             <li class="active"><?php echo _("Batch");?></li>
         </ol>
     </section>
@@ -80,7 +80,7 @@ foreach ($testPlatformResult as $machine) {
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
             </div>
-            <table class="table" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
+            <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
                 <tr>
                     <th><?php echo _("Testing Platform");?>&nbsp;<span class="mandatory">*</span> </th>
                     <td>

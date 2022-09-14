@@ -12,9 +12,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-gears"></i> Specimen Referral Manifest</h1>
+    <h1><em class="fa-solid fa-gears"></em> Specimen Referral Manifest</h1>
     <ol class="breadcrumb">
-      <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
       <li class="active">Manage Specimen Referral Manifest</li>
     </ol>
   </section>
@@ -25,13 +25,13 @@ require_once(APPLICATION_PATH . '/header.php');
         <div class="box">
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("addSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
-              <a href="addSpecimenReferralManifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right"> <i class="fa-solid fa-plus"></i> Add Specimen Referral Manifest</a>
+              <a href="addSpecimenReferralManifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> Add Specimen Referral Manifest</a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="specimenReferralManifestDataTable" class="table table-bordered table-striped">
+            <table id="specimenReferralManifestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <!-- <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="checkPackageData" onclick="checkAllPackageRows(this);"/></th> -->

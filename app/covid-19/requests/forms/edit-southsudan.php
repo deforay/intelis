@@ -92,7 +92,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     <section class="content-header">
         <h1><i class="fa-solid fa-pen-to-square"></i> COVID-19 VIRUS LABORATORY TEST REQUEST FORM</h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
             <li class="active">Edit Request</li>
         </ol>
     </section>
@@ -115,7 +115,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <!-- <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                         <tr>
                                             <?php
@@ -212,7 +212,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Case ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa-solid fa-magnifying-glass"></i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
                                 </div>
-                                <table class="table" style="width:100%">
+                                <table class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <th style="width:15% !important"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -295,7 +295,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">SPECIMEN INFORMATION</h3>
                                 </div>
-                                <table class="table">
+                                <table class="table" aria-hidden="true" >
 
                                     <tr>
                                         <td colspan=4>
@@ -368,7 +368,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" style="width:100%">
+                                    <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th><label for="">Sample Received Date </label></th>
                                             <td>
@@ -443,7 +443,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped" id="testNameTable">
+                                                <table class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test No.</th>
@@ -510,7 +510,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                         </select>
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
-                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                                                                        <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                         <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><i class="fa-solid fa-minus"></i></a>
                                                                     </td>
                                                                 </tr>
@@ -969,7 +969,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
-                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><i class="fa-solid fa-plus"></i></a>&nbsp;
+                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
             </td>
         </tr>`;
