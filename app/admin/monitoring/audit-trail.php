@@ -223,6 +223,7 @@ require_once(APPLICATION_PATH . '/footer.php');
 			scrollX: true,
 			scrollCollapse: true,
 			paging: false,
+			"aaSorting": [1, "asc"]
 		});
 	});
 </script>
