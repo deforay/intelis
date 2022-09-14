@@ -349,13 +349,7 @@ if (!empty($errors)) {
     $response['errors'] = $errors;
 }
 
-$app = new \Vlsm\Models\App();
-$trackId = $app->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json);
+
+$trackId = $general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json', null);
 
 echo prettyJson($response);
-
-
-
-
-        // $formData['province_id'] = !empty($prov['province_id']) ? $prov['province_id'] : 1;
-        // $formData['request_created_by'] = 1;

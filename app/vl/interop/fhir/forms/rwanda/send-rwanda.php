@@ -110,6 +110,7 @@ foreach ($formResults as $row) {
 
 
 $response = json_encode(array('timestamp' => time(), 'processed' => $counter, 'response' => $resp));
-$app = new \Vlsm\Models\App();
-$trackId = $app->addApiTracking($transactionId, 'vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json);
+
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json, null, 'json', null);
+
 echo prettyJson($response);

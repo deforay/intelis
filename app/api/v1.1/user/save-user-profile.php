@@ -170,5 +170,5 @@ try {
     error_log("Save User Profile API : " . $exc->getMessage());
     error_log($exc->getTraceAsString());
 }
-$trackId = $app->addApiTracking($transactionId, $data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], json_encode($decode), 'REST');
+$trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], json_encode($decode), $payload, 'json', null);
 exit(0);
