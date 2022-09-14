@@ -14,6 +14,8 @@ $sources = array(
     'dhis2' => 'DHIS2'
 );
 
+$activeTestModules = $general->getActiveTestModules();
+
 ?>
 <style>
     .select2-selection__choice {
@@ -49,19 +51,19 @@ $sources = array(
                             <td><b><?php echo _("Test Types"); ?>&nbsp;:</b></td>
                             <td>
                                 <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
-                                    <?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+                                    <?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
-                                    if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+                                    if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
                                         <option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
                                     <?php }
-                                    if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+                                    if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
                                         <option value="covid19"><?php echo _("Covid-19"); ?></option>
                                     <?php }
-                                    if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+                                    if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
                                         <option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
                                     <?php }
-                                    if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+                                    if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
                                         <option value='tb'><?php echo _("TB"); ?></option>
                                     <?php } ?>
                                 </select>
