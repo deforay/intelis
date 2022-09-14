@@ -37,7 +37,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 				LEFT JOIN user_details as tester ON a.tested_by = tester.user_id 
 				LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
 				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id 
-				WHERE sample_code = ? OR remote_sample_code = ? OR unique_id like ? order by revision";
+				WHERE sample_code = ? OR remote_sample_code = ? OR unique_id like ?";
 	return $db->rawQuery($sql, array($sampleCode, $sampleCode, $sampleCode));
 }
 ?>
