@@ -348,7 +348,7 @@ $tableResult = $db->rawQuery($sQuery);
         }
     }
     <?php
-    if ($collectionTotal > 0) { ?>
+    if (isset($collectionTotal) && $collectionTotal > 0) { ?>
         $('#<?php echo $samplesCollectionChart; ?>').highcharts({
             chart: {
                 type: 'column',
