@@ -112,6 +112,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         endDate = end.format('YYYY-MM-DD');
       });
     searchResultData();
+    $('#sampleCollectionDate').val("");
   });
 
   function searchResultData() {
