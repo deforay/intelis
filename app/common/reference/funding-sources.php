@@ -30,10 +30,10 @@ require_once(APPLICATION_PATH . '/header.php');
 						<table id="partnerTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
-									<th><?php echo _("Funding Source Name");?></th>
-									<th><?php echo _("Status");?></th>
+									<th scope="row"><?php echo _("Funding Source Name");?></th>
+									<th scope="row"><?php echo _("Status");?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<!-- <th>Action</th> -->
+										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>
 							</thead>

@@ -19,9 +19,9 @@ require_once(APPLICATION_PATH . '/header.php');
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <a href="editOtherConfig.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-pen-to-square"></em></i> Edit Other Config</a>
-            <a href="editResultEmailConfig.php" class="btn btn-warning pull-right" style="margin-right:10px;"> <em class="fa-solid fa-pen-to-square"></em></i> Edit Result Email Config</a>
-            <a href="editRequestEmailConfig.php" class="btn btn-default pull-right" style="margin-right:10px;"> <em class="fa-solid fa-pen-to-square"></em></i> Edit Request Email Config</a>
+            <a href="editOtherConfig.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-pen-to-square"></em></em> Edit Other Config</a>
+            <a href="editResultEmailConfig.php" class="btn btn-warning pull-right" style="margin-right:10px;"> <em class="fa-solid fa-pen-to-square"></em></em> Edit Result Email Config</a>
+            <a href="editRequestEmailConfig.php" class="btn btn-default pull-right" style="margin-right:10px;"> <em class="fa-solid fa-pen-to-square"></em></em> Edit Request Email Config</a>
           </div>
           <!-- /.box-header -->
           <div class="box-body">

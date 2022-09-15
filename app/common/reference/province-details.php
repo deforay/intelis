@@ -30,10 +30,10 @@ require_once(APPLICATION_PATH . '/header.php');
 						<table id="samTypDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
-									<th><?php echo _("Province Name");?></th>
-									<th><?php echo _("Province Code");?></th>
+									<th scope="row"><?php echo _("Province Name");?></th>
+									<th scope="row"><?php echo _("Province Code");?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<th><?php echo _("Action");?></th>
+										<th scope="row"><?php echo _("Action");?></th>
 									<?php } ?>
 								</tr>
 							</thead>

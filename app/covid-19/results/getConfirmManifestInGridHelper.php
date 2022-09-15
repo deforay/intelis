@@ -163,7 +163,7 @@ foreach ($rResult as $aRow) {
     $row[] = $humanDate;
     if ($package || $edit) {
         if ($edit) {
-            $editBtn = '<a href="covid-19-edit-confirmation-manifest.php?id=' . base64_encode($aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</i></a>';
+            $editBtn = '<a href="covid-19-edit-confirmation-manifest.php?id=' . base64_encode($aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
         } else {
             $editBtn = '';
         }

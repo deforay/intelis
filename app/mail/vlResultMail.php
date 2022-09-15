@@ -41,7 +41,7 @@ $batchResult = $db->rawQuery($batchQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1 class="fa fa-envelope"> <?php echo _("E-mail Test Result"); ?></h1>
+    <h1> <?php echo _("E-mail Test Result"); ?></h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
       <li class="active"><?php echo _("E-mail Test Result"); ?></li>
@@ -144,7 +144,7 @@ $batchResult = $db->rawQuery($batchQuery);
                     </td>
                   </tr>
                   <tr>
-                    <td><b class="showPregnant"><?php echo _("Pregnant"); ?>&nbsp;:</strong></td>
+                    <td><strong class="showPregnant"><?php echo _("Pregnant"); ?>&nbsp;:</strong></td>
                     <td>
                       <input type="radio" name="pregnant" title="<?php echo _('Please choose type'); ?>" class="pregnant showPregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;<?php echo _("Yes"); ?>
                       <input type="radio" name="pregnant" title="<?php echo _('Please choose type'); ?>" class="pregnant showPregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;<?php echo _("No"); ?>

@@ -42,7 +42,7 @@ if (!class_exists('DRC_PDF')) {
                 }
                 $this->SetFont('helvetica', '', 10);
                 $this->SetTextColor(0, 0, 250);
-                $this->writeHTMLCell(0, 0, 0, 22, '<i>Département de Biologie Médicale</i>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 22, '<em>Département de Biologie Médicale</em>', 0, 0, 0, true, 'C', true);
                 $this->SetTextColor(0, 0, 0);
                 $this->SetFont('helvetica', 'U', 11);
                 $this->writeHTMLCell(0, 0, 0, 27, 'Laboratoire National de Référence Pour la Grippe et les virus respiratoires', 0, 0, 0, true, 'C', true);
@@ -380,7 +380,7 @@ $html .= '</tr>';
 $html .= '<td width="100%" style="line-height:20px;border-bottom:2px solid #d3d3d3;" colspan="3"></td>';
 $html .= '</tr>';
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:left;color:#545252;" colspan="3"><br><br>' . str_replace($real, $french, $resultPrintedDate) . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Department de virologie</i></td>';
+$html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:left;color:#545252;" colspan="3"><br><br>' . str_replace($real, $french, $resultPrintedDate) . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Department de virologie</em></td>';
 $html .= '</tr>'; */
 
 $html .= '</table>';

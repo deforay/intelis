@@ -25,10 +25,10 @@ require_once(APPLICATION_PATH . '/header.php');
                         <table id="syncDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                             <thead>
                                 <tr>
-                                    <th>Lab Name</th>
-                                    <th>Sync Date and Time</th>
-                                    <th>No. of records synced</th>
-                                    <th>Type of Sync</th>
+                                    <th scope="row">Lab Name</th>
+                                    <th scope="row">Sync Date and Time</th>
+                                    <th scope="row">No. of records synced</th>
+                                    <th scope="row">Type of Sync</th>
                                 </tr>
                             </thead>
                             <tbody>

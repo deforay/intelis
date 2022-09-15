@@ -34,10 +34,10 @@ require_once(APPLICATION_PATH . '/header.php');
 						<table id="comorbiditiesDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
-									<th><?php echo _("Comorbidity Name"); ?></th>
-									<th><?php echo _("Comorbidity Status"); ?></th>
+									<th scope="row"><?php echo _("Comorbidity Name"); ?></th>
+									<th scope="row"><?php echo _("Comorbidity Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<!-- <th>Action</th> -->
+										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>
 							</thead>

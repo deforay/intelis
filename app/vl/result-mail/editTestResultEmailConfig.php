@@ -29,7 +29,7 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1 class="fa fa-gears"> <?php echo _("Edit Test Result Email Configuration");?></h1>
+    <h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo _("Edit Test Result Email Configuration");?></h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
       <li><a href="testResultEmailConfig.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Manage Test Result Email/SMS Config");?></a></li>

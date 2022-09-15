@@ -29,10 +29,10 @@ require_once(APPLICATION_PATH . '/header.php');
                         <table id="vlTestFailureReasonDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                             <thead>
                                 <tr>
-                                    <th><?php echo _("Failure Reason"); ?></th>
-                                    <th><?php echo _("Status"); ?></th>
+                                    <th scope="row"><?php echo _("Failure Reason"); ?></th>
+                                    <th scope="row"><?php echo _("Status"); ?></th>
                                     <?php if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-                                        <th>Action</th>
+                                        <th scope="row">Action</th>
                                     <?php } ?>
                                 </tr>
                             </thead>

@@ -218,7 +218,7 @@ if (trim($id) != '') {
         $tbl .= '<td align="right" style="font-size:10px;width:15%;"><strong>Received By : <br>(at Referral lab/NRL)</strong></td><td style="width:18.33%;"></td>';
         $tbl .= '</tr>';
         $tbl .= '</table>';
-        //$tbl.='<br/><br/><b style="text-align:left;">Printed On:  </strong>'.date('d/m/Y H:i:s');
+        //$tbl.='<br/><br/><strong style="text-align:left;">Printed On:  </strong>'.date('d/m/Y H:i:s');
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C', true);
 
         $filename = trim($bResult[0]['package_code']) . '-' . date('Ymd') . '-' . $general->generateRandomString(6) . '-Manifest.pdf';

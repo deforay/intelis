@@ -447,7 +447,7 @@ $state = $geoLocationDb->getProvinces("yes");
 		var d = new Date();
 		for (y = 0; y < 2; y++) {
 			content += '<div class="col-xs-6" ><div class="mpr-calendar row" id="mpr-calendar-' + (y + 1) + '">' +
-				'<h5 class="col-xs-12"><i class="mpr-yeardown fa fa-chevron-circle-left"></i><span>' + (startYear + y).toString() + '</span><i class="mpr-yearup fa fa-chevron-circle-right"></i></h5><div class="mpr-monthsContainer"><div class="mpr-MonthsWrapper">';
+				'<h5 class="col-xs-12"><em class="mpr-yeardown fa fa-chevron-circle-left"></em><span>' + (startYear + y).toString() + '</span><em class="mpr-yearup fa fa-chevron-circle-right"></em></h5><div class="mpr-monthsContainer"><div class="mpr-MonthsWrapper">';
 			for (m = 0; m < 12; m++) {
 				var monthval;
 				if ((m + 1) < 10)

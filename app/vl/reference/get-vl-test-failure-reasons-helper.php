@@ -151,7 +151,7 @@ foreach ($rResult as $aRow) {
     } else {
         $row[] = ucwords($aRow['status']);
     }
-    $row[] = '<a href="edit-vl-test-failure-reason.php?id=' . base64_encode($aRow['failure_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</i></a>';
+    $row[] = '<a href="edit-vl-test-failure-reason.php?id=' . base64_encode($aRow['failure_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     $output['aaData'][] = $row;
 }
 
