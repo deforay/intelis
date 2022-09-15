@@ -168,7 +168,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
     $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 
-if(count($sWhere) > 0)
+if(!empty($sWhere))
     $sWhere = ' where ' .implode(' AND ',$sWhere);
 else
     $sWhere = "";
@@ -236,7 +236,7 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['status_name']);
 
     
-        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Failed result retest").'" onclick="retestSample(\'' . trim(base64_encode($aRow['hepatitis_id'])) . '\')"><i class="fa-solid fa-arrows-rotate"></i>'. _("Retest").'</a>';
+        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Failed result retest").'" onclick="retestSample(\'' . trim(base64_encode($aRow['hepatitis_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>'. _("Retest").'</a>';
     
     $output['aaData'][] = $row;
 }

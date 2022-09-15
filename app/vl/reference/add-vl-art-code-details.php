@@ -20,7 +20,7 @@ foreach ($categoryInfo as $category) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-flask-vial"></i> <?php echo _("Add Viral Load ART Regimen");?></h1>
+		<h1><em class="fa-solid fa-flask-vial"></em> <?php echo _("Add Viral Load ART Regimen");?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
 			<li class="active"><?php echo _("Viral Load ART Regimen");?></li>

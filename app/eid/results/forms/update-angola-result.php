@@ -60,7 +60,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-pen-to-square"></i> SOLICITAÇÃO DE QUANTIFICAÇÃO DE DIAGNÓSTICO PRECOCE INFANTIL DO VIH</h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> SOLICITAÇÃO DE QUANTIFICAÇÃO DE DIAGNÓSTICO PRECOCE INFANTIL DO VIH</h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
             <li class="active">Edit EID Request</li>

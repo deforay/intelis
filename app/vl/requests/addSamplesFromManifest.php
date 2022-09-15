@@ -51,7 +51,7 @@ $batResult = $db->rawQuery($batQuery);
 							<td style="width:70%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select datetime for Sample Received at Testing Lab" readonly /></td>
 
 							<td style="width:10%;">
-								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa-solid fa-square-check"></i> Activate Samples</a>
+								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><em class="fa-solid fa-square-check"></em> Activate Samples</a>
 							</td>
 						</tr>
 					</table>

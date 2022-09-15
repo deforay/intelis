@@ -288,12 +288,12 @@ foreach ($rResult as $aRow) {
           } else {
                $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
           }
-          $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ',\'\');"><i class="fa-solid fa-print"></i> ' . _("Print") . '</a>';
+          $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ',\'\');"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
      } else {
-          $print = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Enter Result") . '</a>';
+          $print = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("edit-locked-vl-samples", $_SESSION['privileges'])) {
-                    $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><i class="fa-solid fa-lock"></i>' . _("Locked") . '</a>';
+                    $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
                }
           }
      }

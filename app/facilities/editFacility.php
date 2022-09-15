@@ -127,7 +127,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-hospital"></i> <?php echo _("Edit Facility"); ?></h1>
+		<h1><em class="fa-solid fa-hospital"></em> <?php echo _("Edit Facility"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Facilities"); ?></li>
@@ -621,7 +621,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											</td>
 											<td style="vertical-align:middle;text-align: center;width:10%;">
 												<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-												<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);deletedRow(<?php echo $row['signatory_id'] ?>);"><i class="fa-solid fa-minus"></i></a>
+												<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);deletedRow(<?php echo $row['signatory_id'] ?>);"><em class="fa-solid fa-minus"></em></a>
 											</td>
 										</tr>
 									<?php }
@@ -647,7 +647,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 										</td>
 										<td style="vertical-align:middle;text-align: center;width:10%;">
 											<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-											<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
+											<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
 										</td>
 									</tr>
 								<?php } ?>
@@ -995,7 +995,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			</td>
 			<td style="vertical-align:middle;text-align: center;width:10%;">
 				<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-				<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
+				<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
 			</td>
 		</tr>`;
 		$("#signDetails").append(rowString);

@@ -153,7 +153,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 							</div>
 							<div>
 								<img id="capChaw" width="254px" height="100px" alt="verification" src="/includes/captcha.php/<?php echo random_int(0, PHP_INT_MAX); ?>" />
-								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa-solid fa-arrows-rotate"></i> <?php echo _("Get New Image"); ?></a>
+								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?php echo _("Get New Image"); ?></a>
 							</div>
 						</div>
 

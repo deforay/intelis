@@ -67,7 +67,7 @@ foreach ($testPlatformResult as $machine) {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Create Batch");?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Create Batch");?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
             <li class="active"><?php echo _("Batch");?></li>
@@ -143,7 +143,7 @@ foreach ($testPlatformResult as $machine) {
                                     <div class="col-md-12">
                                         <div class="col-md-12">
                                             <div style="width:60%;margin:0 auto;clear:both;">
-                                                <a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<em class="icon-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
+                                                <a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All");?></a>
                                             </div><br /><br />
                                             <select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
                                         </div>

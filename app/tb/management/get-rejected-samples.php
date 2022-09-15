@@ -76,7 +76,7 @@ if (isset($tResult) && count($tResult) > 0) {
 <?php }
 if (isset($tableResult) && count($tableResult) > 0) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel");?></button>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel");?></button>
     </div>
 <?php } ?>
 <table id="tbRequestDataTable" class="table table-bordered table-striped table-hover">

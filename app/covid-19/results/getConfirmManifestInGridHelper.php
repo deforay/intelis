@@ -144,7 +144,7 @@ if (isset($_SESSION['privileges']) && (in_array("covid-19-edit-confirmation-mani
 
 foreach ($rResult as $aRow) {
     $humanDate = "";
-    $printBarcode = '<a href="generate-confirmation-manifest.php?id='. base64_encode($aRow['manifest_code']).'" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Barcode" target="_blank"><i class="fa-solid fa-barcode"></i> Print Barcode</a>';
+    $printBarcode = '<a href="generate-confirmation-manifest.php?id='. base64_encode($aRow['manifest_code']).'" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Barcode" target="_blank"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['request_created_datetime'];
         $humanDate =  date("d-M-Y H:i:s", strtotime($date));
@@ -163,7 +163,7 @@ foreach ($rResult as $aRow) {
     $row[] = $humanDate;
     if ($package || $edit) {
         if ($edit) {
-            $editBtn = '<a href="covid-19-edit-confirmation-manifest.php?id=' . base64_encode($aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><i class="fa-solid fa-pen-to-square"></i> Edit</i></a>';
+            $editBtn = '<a href="covid-19-edit-confirmation-manifest.php?id=' . base64_encode($aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</i></a>';
         } else {
             $editBtn = '';
         }

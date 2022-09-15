@@ -168,7 +168,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-book"></i> Viral Load Suppression - Monthly Target Report
+    <h1><em class="fa-solid fa-book"></em> Viral Load Suppression - Monthly Target Report
       <!--<ol class="breadcrumb">-->
       <!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->

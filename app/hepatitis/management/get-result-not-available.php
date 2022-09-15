@@ -154,7 +154,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         }
     }
     
-if(count($sWhere) > 0)
+if(!empty($sWhere))
 {
     $sWhere = ' AND '.implode(' AND ',$sWhere);
 }

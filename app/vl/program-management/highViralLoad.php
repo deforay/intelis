@@ -29,7 +29,7 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1> <i class="fa-solid fa-book"></i> <?php echo _("Clinic Reports");?></h1>
+		<h1> <em class="fa-solid fa-book"></em> <?php echo _("Clinic Reports");?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
 			<li class="active"><?php echo _("Clinic Reports");?></li>
@@ -140,7 +140,7 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel");?></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
@@ -249,7 +249,7 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel");?></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
@@ -354,7 +354,7 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel");?></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>
@@ -408,7 +408,7 @@ $batResult = $db->rawQuery($batQuery);
 												<tr>
 													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel");?></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel");?></button>
 													</td>
 												</tr>
 											</table>

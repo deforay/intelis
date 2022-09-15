@@ -91,7 +91,7 @@ $sampleSuggestionDisplay = 'display:none;';
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-pen-to-square"></i> COVID-19 VIRUS LABORATORY TEST REQUEST FORM</h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> COVID-19 VIRUS LABORATORY TEST REQUEST FORM</h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
             <li class="active">Edit Request</li>
@@ -478,7 +478,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
                                                                         <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><i class="fa-solid fa-minus"></i></a>
+                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
                                                                     </td>
                                                                 </tr>
                                                         <?php }
@@ -809,7 +809,7 @@ $sampleSuggestionDisplay = 'display:none;';
             </td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
+                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
             </td>
         </tr>`;
 

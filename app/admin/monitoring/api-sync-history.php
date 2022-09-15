@@ -21,7 +21,7 @@ foreach ($syncedTypeResults as $synced) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid  fa-circle-nodes"></i> <?php echo _("API History"); ?></h1>
+		<h1><em class="fa-solid  fa-circle-nodes"></em> <?php echo _("API History"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("API History"); ?></li>

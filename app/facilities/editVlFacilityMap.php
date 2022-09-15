@@ -19,7 +19,7 @@ $hcResult = $db->rawQuery($hcQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-hospital"></i> Edit Facility Map </h1>
+    <h1><em class="fa-solid fa-hospital"></em> Edit Facility Map </h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
       <li class=""><a href="facilityMap.php">Facility Map</a></li>

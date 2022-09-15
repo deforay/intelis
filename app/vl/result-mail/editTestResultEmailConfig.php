@@ -75,7 +75,7 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
                   <label for="rs_field" class="col-lg-3 control-label"><?php echo _("Choose Fields");?> *</label>
                   <div class="col-lg-9">
                     <div style="width:100%;margin:0 auto;clear:both;">
-                      <a href="#" id="select-all-field" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<em class="icon-chevron-right"></em></a> <a href="#" id="deselect-all-field" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
+                      <a href="#" id="select-all-field" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-field" style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All");?></a>
                     </div><br /><br />
                     <select id="rs_field" name="rs_field[]" multiple="multiple" class="search isRequired" title="Please select email fields">
                       <option value="Sample ID" <?php echo (in_array("Sample ID", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("Sample ID");?></option>

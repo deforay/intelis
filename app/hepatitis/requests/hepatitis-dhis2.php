@@ -41,7 +41,7 @@ foreach ($srcResults as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i><?php echo _("Hepatitis Test Requests"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em><?php echo _("Hepatitis Test Requests"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Test Request"); ?></li>
@@ -199,8 +199,8 @@ foreach ($srcResults as $list) {
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
 									
-										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <i class="fa-solid fa-download"></i> Receive Test Requests from DHIS2</a>
-										<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();" class="btn btn-warning btn-sm pull-right"> <i class="fa-solid fa-upload"></i> Send Results to DHIS2</a>
+										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em> Receive Test Requests from DHIS2</a>
+										<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();" class="btn btn-warning btn-sm pull-right"> <em class="fa-solid fa-upload"></em> Send Results to DHIS2</a>
 								
 								<?php } ?>
 

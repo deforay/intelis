@@ -225,7 +225,7 @@ $batchResult = $db->rawQuery($batchQuery);
                   <label for="sample" class="col-lg-3 control-label"><?php echo _("Choose Sample(s)"); ?> <span class="mandatory">*</span></label>
                   <div class="col-lg-9">
                     <div style="width:100%;margin:0 auto;clear:both;">
-                      <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="icon-chevron-right"></em></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All"); ?></a>
+                      <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All"); ?></a>
                     </div><br /><br />
                     <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="<?php echo _('Please select sample(s)'); ?>"></select>
                   </div>
@@ -246,7 +246,7 @@ $batchResult = $db->rawQuery($batchQuery);
             <input type="hidden" id="reportEmail" name="reportEmail" />
             <input type="hidden" name="pdfFile" id="pdfFile" />
             <a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>&nbsp;
-            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Next"); ?> <i class="fa-solid fa-chevron-right"></i></a>
+            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Next"); ?> <em class="fa-solid fa-chevron-right"></em></a>
           </div>
           <!-- /.box-footer -->
         </form>

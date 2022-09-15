@@ -141,7 +141,7 @@ foreach ($rResult as $aRow) {
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
                <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
-    $edit = '<a href="edit-covid19-qc-test-kit.php?id=' . base64_encode($aRow['testkit_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Edit") . '</i></a>';
+    $edit = '<a href="edit-covid19-qc-test-kit.php?id=' . base64_encode($aRow['testkit_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</i></a>';
     $row = array();
     $row[] = ucwords($aRow['testkit_name']);
     $row[] = date("d-m-Y H:i:s", strtotime($aRow['updated_datetime']));

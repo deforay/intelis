@@ -156,7 +156,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 
-if(count($sWhere) > 0)
+if(!empty($sWhere))
 {
     $sWhere = ' AND '.implode(' AND ',$sWhere);
 }

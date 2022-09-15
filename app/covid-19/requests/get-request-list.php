@@ -337,14 +337,14 @@ foreach ($rResult as $aRow) {
      $row[] = (is_numeric($aRow['result'])) ? ucwords($aRow['resultTxt']) : ucwords($aRow['result']);
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ucwords($aRow['status_name']);
-     //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['covid19_id']).'\');"><i class="fa-solid fa-barcode"></i> Print Barcode</a>';
+     //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['covid19_id']).'\');"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
      //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['covid19_id']) . '\',900,520);"> Result</a>';
 
      if ($editRequest) {
-          $edit = '<a href="covid-19-edit-request.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Edit") . '</i></a>';
+          $edit = '<a href="covid-19-edit-request.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</i></a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("edit-locked-covid19-samples", $_SESSION['privileges'])) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><i class="fa-solid fa-lock"></i>' . _("Locked") . '</a>';
+                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
                }
           }
      }
@@ -352,7 +352,7 @@ foreach ($rResult as $aRow) {
 
      if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
           if ($aRow['data_sync'] == 0) {
-               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Sync this sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"><i class="fa-solid fa-arrows-rotate"></i> ' . _("Sync") . '</a>';
+               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Sync this sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"><em class="fa-solid fa-arrows-rotate"></em> ' . _("Sync") . '</a>';
           }
      } else {
           $sync = "";
@@ -360,7 +360,7 @@ foreach ($rResult as $aRow) {
 
      if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
           $fac = $aRow['patient_id'];
-          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><i class="fa-solid fa-barcode"></i> ' . _("Barcode") . ' </a>';
+          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><em class="fa-solid fa-barcode"></em> ' . _("Barcode") . ' </a>';
      }
      $actions = "";
      if ($editRequest) {

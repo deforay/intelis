@@ -46,7 +46,7 @@ foreach ($srcResults as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Viral Load Test Requests"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Viral Load Test Requests"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Test Request"); ?></li>
@@ -216,7 +216,7 @@ foreach ($srcResults as $list) {
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 								&nbsp;
 								<?php if (isset($_SESSION['privileges']) && in_array("export-vl-requests.php", $_SESSION['privileges'])) { ?>
-									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa-solid fa-file-excel"></i>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a>
+									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 							</td>
 						</tr>
@@ -232,12 +232,12 @@ foreach ($srcResults as $list) {
 								?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 								<?php if (isset($_SESSION['privileges']) && in_array("export-vl-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><i class="fa-solid fa-file-excel"></i>&nbsp;&nbsp;<?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;<?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 
 								<?php if (isset($interopConfig['FHIR']['url']) && !empty($interopConfig['FHIR']['url'])) { ?>
-									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><i class="fa-solid fa-paper-plane"></i> <?php echo _("EMR/FHIR - SEND RESULTS"); ?></a>
-									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><i class="fa-solid fa-download"></i> <?php echo _("EMR/FHIR - GET TESTS"); ?></a>
+									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><em class="fa-solid fa-paper-plane"></em> <?php echo _("EMR/FHIR - SEND RESULTS"); ?></a>
+									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><em class="fa-solid fa-download"></em> <?php echo _("EMR/FHIR - GET TESTS"); ?></a>
 								<?php } ?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
 							</td>

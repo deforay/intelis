@@ -198,7 +198,7 @@ $tableResult = $db->rawQuery($sQuery);
                 <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->
             </div>
             <div class="icon">
-                <i class="icon-pie-chart"></i>
+                <em class="fa-solid fa-chart-pie"></em>
             </div>
         </div>
         <div id="collectionSite<?php echo $unique; ?>">

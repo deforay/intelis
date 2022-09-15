@@ -183,7 +183,7 @@
     function formToggler(symbol) {
       if (symbol == "+") {
         $("#showHistory").slideToggle();
-        $("#history").html('Hide History <i class="fa-solid fa-minus"></i>');
+        $("#history").html('Hide History <em class="fa-solid fa-minus"></em>');
         $("#history").attr("onclick", "formToggler('-')");
       } else {
         $("#showHistory").slideToggle();

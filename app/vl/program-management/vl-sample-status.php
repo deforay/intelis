@@ -38,7 +38,7 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-book"></i> <?php echo _("VL Sample Status Report"); ?></h1>
+		<h1><em class="fa-solid fa-book"></em> <?php echo _("VL Sample Status Report"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("VL Sample Status Report"); ?></li>
@@ -110,7 +110,7 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-body">
-						<button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> Export to excel</button>
+						<button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> Export to excel</button>
 						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>

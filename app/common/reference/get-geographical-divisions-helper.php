@@ -136,7 +136,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['geo_code'];
     $row[] = ucwords($aRow['geo_status']);
     if (isset($_SESSION['privileges']) && in_array("edit-geographical-divisions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
-        $row[] = '<a href="edit-geographical-divisions.php?id=' . base64_encode($aRow['geo_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Edit") . '</i></a>';
+        $row[] = '<a href="edit-geographical-divisions.php?id=' . base64_encode($aRow['geo_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</i></a>';
     }
     $output['aaData'][] = $row;
 }

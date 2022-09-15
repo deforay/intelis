@@ -38,7 +38,7 @@ foreach ($srcResults as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("EID Test Requests"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("EID Test Requests"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Test Request"); ?></li>
@@ -174,7 +174,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;
 							</td>
@@ -192,7 +192,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
 							</td>

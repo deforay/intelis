@@ -31,10 +31,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-book"></i> <?php echo _("Hepatitis Sample Status Report"); ?></h1>
+		<h1><em class="fa-solid fa-book"></em> <?php echo _("Hepatitis Sample Status Report"); ?></h1>
 		<ol class="breadcrumb">
 			<!-- <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li> -->
-			<li><i class="fa-solid fa-book"></i> <?php echo _("Hepatitis"); ?></li>
+			<li><em class="fa-solid fa-book"></em> <?php echo _("Hepatitis"); ?></li>
 			<li><?php echo _("Management"); ?></li>
 			<li class="active"><?php echo _("Hepatitis Sample Status"); ?></li>
 		</ol>
@@ -97,7 +97,7 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-body">
-						<button class="btn btn-success pull-right" type="button" onclick="hepatitisExportTAT()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export to excel"); ?></button>
+						<button class="btn btn-success pull-right" type="button" onclick="hepatitisExportTAT()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
 						<table id="hepatitisRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
