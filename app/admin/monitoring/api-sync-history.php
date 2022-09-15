@@ -21,7 +21,7 @@ foreach ($syncedTypeResults as $synced) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid  fa-circle-nodes"></i> <?php echo _("API History"); ?></h1>
+		<h1><em class="fa-solid  fa-circle-nodes"></em> <?php echo _("API History"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("API History"); ?></li>
@@ -35,11 +35,11 @@ foreach ($syncedTypeResults as $synced) {
 				<div class="box">
 					<table class="table" aria-hidden="true"  cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><b><?php echo _("Date Range"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
 							</td>
-							<td><b><?php echo _("Test Type"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Test Type"); ?>&nbsp;:</strong></td>
 							<td>
 								<select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
 									<option value=""><?php echo _("-- Select --"); ?></option>
@@ -60,7 +60,7 @@ foreach ($syncedTypeResults as $synced) {
 									<?php } ?>
 								</select>
 							</td>
-							<td><b><?php echo _("API Type"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("API Type"); ?>&nbsp;:</strong></td>
 							<td>
 								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _('Please select the API type'); ?>">
 									<?php echo $general->generateSelectOptions($syncedType, null, '--Select--'); ?>

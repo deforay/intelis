@@ -74,6 +74,8 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<link rel="stylesheet" href="/assets/css/fonts.css">
 	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.6.1.1.css">
+
 	<!-- Theme style -->
 	<link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
 	<link href="/assets/css/deforayModal.css" rel="stylesheet" />
@@ -139,12 +141,12 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 					<form id="loginForm" name="loginForm" class="form-horizontal" role="form" method="post" action="loginProcess.php" onsubmit="validateNow();return false;">
 						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 						<div style="margin-bottom: 5px" class="input-group">
-							<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+							<span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
 							<input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter the user name'); ?>" onblur="checkLoginAttempts('user_login_history','login_id', this.id,'')">
 						</div>
 
 						<div style="margin-bottom: 5px" class="input-group">
-							<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+							<span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
 							<input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>">
 						</div>
 						<div style="margin-bottom: 5px;display:none" class="input-group" id="captcha">
@@ -153,7 +155,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 							</div>
 							<div>
 								<img id="capChaw" width="254px" height="100px" alt="verification" src="/includes/captcha.php/<?php echo random_int(0, PHP_INT_MAX); ?>" />
-								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><i class="fa-solid fa-arrows-rotate"></i> <?php echo _("Get New Image"); ?></a>
+								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?php echo _("Get New Image"); ?></a>
 							</div>
 						</div>
 

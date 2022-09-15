@@ -48,7 +48,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i  class="fa fa-gears"></i> <?php echo _("Edit Instrument"); ?></h1>
+		<h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo _("Edit Instrument"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Edit Instrument"); ?></li>
@@ -170,7 +170,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								if (in_array('vl', $sInfo['supported_tests']) || in_array('eid', $sInfo['supported_tests']) && in_array('covid19', $sInfo['supported_tests']) || in_array('hepatitis', $sInfo['supported_tests']) || in_array('tb', $sInfo['supported_tests'])) {
 									$ua = "";
 								} ?>
-								<table cellpadding="0" cellspacing="0" border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;<?php echo $ua; ?>;">
+								<table border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;<?php echo $ua; ?>;">
 									<thead>
 										<tr>
 											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
@@ -258,7 +258,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								</table>
 								<br>
 								<hr>
-								<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
+								<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 									<thead>
 										<tr>
 											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
@@ -316,7 +316,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 							<h3 class="box-title "><?php echo _("Machine Names"); ?></h3>
 						</div>
 						<div class="box-body">
-							<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
+							<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
 										<th style="text-align:center;"><?php echo _("Machine Name"); ?> <span class="mandatory">*</span></th>
@@ -382,7 +382,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 												</div>
 											</td>
 											<td align="center" style="vertical-align:middle;">
-												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
+												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
 											</td>
 										</tr>
 									<?php } ?>
@@ -491,7 +491,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								<input type="text" name="longitude[]" id="longitude' + tableRowId + '" class="form-control " placeholder="<?php echo _('Longitude'); ?>" data-placement="bottom" title="<?php echo _('Longitude'); ?>"/>\
 							</div>\
 						</div>';
-		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
+		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 		tableRowId++;
 	}

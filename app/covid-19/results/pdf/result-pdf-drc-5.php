@@ -42,7 +42,7 @@ if (!class_exists('DRC_PDF')) {
                 }
                 $this->SetFont('helvetica', '', 10);
                 $this->SetTextColor(0, 0, 250);
-                $this->writeHTMLCell(0, 0, 0, 22, '<i>Département de Biologie Médicale</i>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 22, '<em>Département de Biologie Médicale</em>', 0, 0, 0, true, 'C', true);
                 $this->SetTextColor(0, 0, 0);
                 $this->SetFont('helvetica', 'U', 11);
                 $this->writeHTMLCell(0, 0, 0, 27, 'Laboratoire National de Référence Pour la Grippe et les virus respiratoires', 0, 0, 0, true, 'C', true);
@@ -345,13 +345,13 @@ $html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;" colspan="2"><b>Resultats SARS-CoV-2 &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>' . $covid19Results[$result['result']] . '</b><br><span style="font-size:8;font-weight:normal;">(Result)</span></td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $resultPrintedDate . '&nbsp;&nbsp;' . $resultPrintedTime . '<br><span style="font-size:8;font-weight:normal;">(Result Returned On)</span></td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;" colspan="2"><strong>Resultats SARS-CoV-2 &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $covid19Results[$result['result']] . '</strong><br><span style="font-size:8;font-weight:normal;">(Result)</span></td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;"><strong>Date de Sortie Résultats &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $resultPrintedDate . '&nbsp;&nbsp;' . $resultPrintedTime . '<br><span style="font-size:8;font-weight:normal;">(Result Returned On)</span></td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3">
-            <br><br><b>Fait à Kinshasa, le: </b>' . $general->humanReadableDateFormat($result['result_approved_datetime']) .
+            <br><br><strong>Fait à Kinshasa, le: </strong>' . $general->humanReadableDateFormat($result['result_approved_datetime']) .
     '<br><span style="font-size:8;font-weight:normal;">(Done in Kinshasa, on)</span></td>';
 $html .= '</tr>';
 
@@ -380,7 +380,7 @@ $html .= '</tr>';
 $html .= '<td width="100%" style="line-height:20px;border-bottom:2px solid #d3d3d3;" colspan="3"></td>';
 $html .= '</tr>';
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:left;color:#545252;" colspan="3"><br><br>' . str_replace($real, $french, $resultPrintedDate) . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Department de virologie</i></td>';
+$html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:left;color:#545252;" colspan="3"><br><br>' . str_replace($real, $french, $resultPrintedDate) . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Department de virologie</em></td>';
 $html .= '</tr>'; */
 
 $html .= '</table>';

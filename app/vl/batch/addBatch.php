@@ -76,7 +76,7 @@ foreach ($testPlatformResult as $machine) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("Create Batch"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Create Batch"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Batch"); ?></li>
@@ -92,7 +92,7 @@ foreach ($testPlatformResult as $machine) {
 			</div>
 			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
-					<th><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
+					<th scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
 					<td>
 						<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine'); ?>" style="width:280px;">
 							<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -104,7 +104,7 @@ foreach ($testPlatformResult as $machine) {
 							<?php } ?>
 						</select>
 					</td>
-					<th><?php echo _("Sample Type"); ?></th>
+					<th scope="col"><?php echo _("Sample Type"); ?></th>
 					<td>
 						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>" style="width:150px;">
 							<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -119,11 +119,11 @@ foreach ($testPlatformResult as $machine) {
 					</td>
 				</tr>
 				<tr>
-					<th><?php echo _("Sample Collection Date"); ?></th>
+					<th scope="col"><?php echo _("Sample Collection Date"); ?></th>
 					<td>
 						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:275px;background:#fff;" />
 					</td>
-					<th><?php echo _("Facility"); ?></th>
+					<th scope="col"><?php echo _("Facility"); ?></th>
 					<td>
 						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
@@ -131,11 +131,11 @@ foreach ($testPlatformResult as $machine) {
 					</td>
 				</tr>
 				<tr>
-					<th><?php echo _("Date Sample Receieved at Lab"); ?></th>
+					<th scope="col"><?php echo _("Date Sample Receieved at Lab"); ?></th>
 					<td>
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:275px;background:#fff;" />
 					</td>
-					<th><?php echo _("Patient Gender"); ?></th>
+					<th scope="col"><?php echo _("Patient Gender"); ?></th>
 					<td>
 						<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" onchange="enableFemaleSection(this);" style="width:150px;">
 							<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -146,23 +146,23 @@ foreach ($testPlatformResult as $machine) {
 					</td>
 				</tr>
 				<tr>
-					<th><?php echo _("Positions"); ?></th>
+					<th scope="col"><?php echo _("Positions"); ?></th>
 					<td>
 						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion'); ?>">
 							<option value="numeric"><?php echo _("Numeric"); ?></option>
 							<option value="alpha-numeric"><?php echo _("Alpha Numeric"); ?></option>
 						</select>
 					</td>
-					<th></th>
+					<th scope="col"></th>
 					<td></td>
 				</tr>
 				<tr class="showFemaleSection">
-					<td><b><?php echo _("Is Patient Pregnant"); ?>&nbsp;:</b></td>
+					<td><strong><?php echo _("Is Patient Pregnant"); ?>&nbsp;:</strong></td>
 					<td>
 						<input type="radio" name="pregnant" title="<?php echo _('Please choose type'); ?>" class="pregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;<?php echo _("Yes"); ?>
 						<input type="radio" name="pregnant" title="<?php echo _('Please choose type'); ?>" class="pregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;<?php echo _("No"); ?>
 					</td>
-					<td><b><?php echo _("Is Patient Breastfeeding"); ?>&nbsp;:</b></td>
+					<td><strong><?php echo _("Is Patient Breastfeeding"); ?>&nbsp;:</strong></td>
 					<td>
 						<input type="radio" name="breastfeeding" title="<?php echo _('Please choose type'); ?>" class="breastfeeding" id="breastFeedingYes" value="yes" disabled="disabled" />&nbsp;&nbsp;<?php echo _("Yes"); ?>
 						<input type="radio" name="breastfeeding" title="<?php echo _('Please choose type'); ?>" class="breastfeeding" id="breastFeedingNo" value="no" disabled="disabled" />&nbsp;&nbsp;<?php echo _("No"); ?>
@@ -199,7 +199,7 @@ foreach ($testPlatformResult as $machine) {
 									<div class="col-md-12">
 										<div class="col-md-12">
 											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All"); ?></a>
+												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All"); ?></a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
 										</div>

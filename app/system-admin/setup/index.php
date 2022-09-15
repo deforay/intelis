@@ -52,23 +52,23 @@ $path = '/assets/img/remote-bg.jpg';
                     <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
                     <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
               <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name');?>" title="<?php echo _('Please enter the user name');?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
               <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?php echo _('Email Id');?>" title="<?php echo _('Please enter the email id');?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-log-in"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-right-to-bracket"></em></span>
               <input id="login-id" type="text" class="form-control isRequired" name="loginid" value="" placeholder="<?php echo _('Login Id');?>" title="<?php echo _('Please enter the login id');?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
               <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?php echo _('Password');?>" title="<?php echo _('Please enter the password');?>" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
               <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password');?>" title="" />
             </div>
                         <div style="margin-top:10px" class="form-group">

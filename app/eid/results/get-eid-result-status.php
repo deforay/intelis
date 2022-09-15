@@ -250,7 +250,7 @@ foreach ($rResult as $aRow) {
     }
     $row[] = $aRow['last_modified_datetime'];
     $row[] = $status;
-    //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['eid_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><i class="fa-solid fa-pen-to-square"></i> Result</a>';
+    //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['eid_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Result</a>';
 
     $output['aaData'][] = $row;
 }

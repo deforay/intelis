@@ -20,7 +20,7 @@ require_once(APPLICATION_PATH . '/header.php');
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <a href="editTestResultEmailConfig.php" class="btn btn-default pull-right" style="margin-right:10px;"><i class="fa-solid fa-pen-to-square"></i></i> <?php echo _("Edit"); ?></a>
+            <a href="editTestResultEmailConfig.php" class="btn btn-default pull-right" style="margin-right:10px;"><em class="fa-solid fa-pen-to-square"></em></em> <?php echo _("Edit"); ?></a>
           </div>
           <!-- /.box-header -->
           <div class="box-body">

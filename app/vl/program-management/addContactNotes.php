@@ -50,10 +50,10 @@
             <div class="box-body">
               <table class="table" aria-hidden="true" >
                 <tr>
-                  <td><b>Sample Code:<small><?php echo $vlResult[0]['sample_code']; ?></small></b></td>
-                  <td><b>Contacted Date:<small><?php echo $vlResult[0]['sample_collection_date']; ?></small></b></td>
-                  <td><b>Patient Name:<small><?php echo $vlResult[0]['patient_first_name'] . " " . $vlResult[0]['patient_last_name']; ?></small></b></td>
-                  <td><b>Patient Code:<small><?php echo $vlResult[0]['patient_art_no']; ?></small></b></td>
+                  <td><strong>Sample Code:<small><?php echo $vlResult[0]['sample_code']; ?></small></strong></td>
+                  <td><strong>Contacted Date:<small><?php echo $vlResult[0]['sample_collection_date']; ?></small></strong></td>
+                  <td><strong>Patient Name:<small><?php echo $vlResult[0]['patient_first_name'] . " " . $vlResult[0]['patient_last_name']; ?></small></strong></td>
+                  <td><strong>Patient Code:<small><?php echo $vlResult[0]['patient_art_no']; ?></small></strong></td>
                 </tr>
               </table>
               <div class="row">
@@ -183,7 +183,7 @@
     function formToggler(symbol) {
       if (symbol == "+") {
         $("#showHistory").slideToggle();
-        $("#history").html('Hide History <i class="fa-solid fa-minus"></i>');
+        $("#history").html('Hide History <em class="fa-solid fa-minus"></em>');
         $("#history").attr("onclick", "formToggler('-')");
       } else {
         $("#showHistory").slideToggle();

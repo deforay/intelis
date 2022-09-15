@@ -8,7 +8,7 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-flask-vial"></i> <?php echo _("Viral Load Sample Rejection Reasons");?></h1>
+    <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _("Viral Load Sample Rejection Reasons");?></h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
       <li class="active"><?php echo _("Viral Load Sample Rejection Reasons");?></li>
@@ -31,12 +31,12 @@ require_once(APPLICATION_PATH . '/header.php');
             <table id="samRejReasonDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
-                  <th><?php echo _("Rejection Reason");?></th>
-                  <th><?php echo _("Rejection Reason Type");?></th>
-                  <th><?php echo _("Rejection Reason Code");?></th>
-                  <th><?php echo _("Rejection Reason Status");?></th>
+                  <th scope="row"><?php echo _("Rejection Reason");?></th>
+                  <th scope="row"><?php echo _("Rejection Reason Type");?></th>
+                  <th scope="row"><?php echo _("Rejection Reason Code");?></th>
+                  <th scope="row"><?php echo _("Rejection Reason Status");?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-                    <!-- <th>Action</th> -->
+                    <!-- <th scope="row">Action</th> -->
                   <?php } ?>
                 </tr>
               </thead>

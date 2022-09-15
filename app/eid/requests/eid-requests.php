@@ -38,7 +38,7 @@ foreach ($srcResults as $list) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("EID Test Requests"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("EID Test Requests"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Test Request"); ?></li>
@@ -52,11 +52,11 @@ foreach ($srcResults as $list) {
 				<div class="box">
 					<table id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
-							<td><b><?php echo _("Sample Collection Date"); ?> :</b></td>
+							<td><strong><?php echo _("Sample Collection Date"); ?> :</strong></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" />
 							</td>
-							<td><b><?php echo _("Batch Code"); ?> :</b></td>
+							<td><strong><?php echo _("Batch Code"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -69,7 +69,7 @@ foreach ($srcResults as $list) {
 									?>
 								</select>
 							</td>
-							<td><b><?php echo _("Req. Sample Type"); ?> :</b></td>
+							<td><strong><?php echo _("Req. Sample Type"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _('Please select request sample type'); ?>">
 									<option value=""><?php echo _("All"); ?></option>
@@ -80,29 +80,29 @@ foreach ($srcResults as $list) {
 
 						</tr>
 						<tr>
-							<td><b><?php echo _("Facility Name"); ?> :</b></td>
+							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Province/State"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
-							<td><b><?php echo _("District/County"); ?> :</b></td>
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
 								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Testing Lab"); ?> :</b></td>
+							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -111,7 +111,7 @@ foreach ($srcResults as $list) {
 									<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 								</select>
 							</td>
-							<td><b><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -121,7 +121,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Funding Sources"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -132,7 +132,7 @@ foreach ($srcResults as $list) {
 									<?php } ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Implementing Partners"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -143,7 +143,7 @@ foreach ($srcResults as $list) {
 									<?php } ?>
 								</select>
 							</td>
-							<td><b><?php echo _("Source of Request"); ?> :</b></td>
+							<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
@@ -151,11 +151,11 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Select Sample Received Date At Lab"); ?> :</b></td>
+							<td><strong><?php echo _("Select Sample Received Date At Lab"); ?> :</strong></td>
 							<td>
 								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
 							</td>
-							<td><b><?php echo _("Sample Tested Date"); ?> :</b></td>
+							<td><strong><?php echo _("Sample Tested Date"); ?> :</strong></td>
 							<td>
 								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
 							</td>
@@ -174,7 +174,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;
 							</td>
@@ -192,7 +192,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
 							</td>

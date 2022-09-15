@@ -300,11 +300,11 @@ if (sizeof($requestResult) > 0) {
             /* Test Result Section */
             $html .= '<table border="1">
                                         <tr>
-                                            <td align="center" width="15%"><b>Test No</b></td>
-                                            <td align="center" width="45%"><b>Test Method</b></td>
-                                            <td align="center" width="25%"><b>Date of Testing</b></td>
-                                            <td align="center" width="15%"><b>Test Platform</b></td>
-                                            <td align="center" width="15%"><b>Test Result</b></td>
+                                            <td align="center" width="15%"><strong>Test No</strong></td>
+                                            <td align="center" width="45%"><strong>Test Method</strong></td>
+                                            <td align="center" width="25%"><strong>Date of Testing</strong></td>
+                                            <td align="center" width="15%"><strong>Test Platform</strong></td>
+                                            <td align="center" width="15%"><strong>Test Result</strong></td>
                                         </tr>';
 
             foreach ($covid19TestInfo as $indexKey => $rows) {

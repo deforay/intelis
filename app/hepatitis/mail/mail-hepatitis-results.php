@@ -35,7 +35,7 @@ $batchResult = $db->rawQuery($batchQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1 class="fa fa-envelope"> E-mail Test Result</h1>
+    <h1> E-mail Test Result</h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
       <li class="active">E-mail Test Result</li>
@@ -98,11 +98,11 @@ $batchResult = $db->rawQuery($batchQuery);
               <div class="col-md-12">
                 <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:90%;">
                   <tr>
-                    <td>&nbsp;<b>Sample Collection Date&nbsp;:</b></td>
+                    <td>&nbsp;<strong>Sample Collection Date&nbsp;:</strong></td>
                     <td>
                       <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
                     </td>
-                    <td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+                    <td>&nbsp;<strong>Sample Type&nbsp;:</strong></td>
                     <td>
                       <select class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
                         <option value=""> -- Select -- </option>
@@ -117,7 +117,7 @@ $batchResult = $db->rawQuery($batchQuery);
                     </td>
                   </tr>
                   <tr>
-                    <td>&nbsp;<b>Facility Name&nbsp;:</b></td>
+                    <td>&nbsp;<strong>Facility Name&nbsp;:</strong></td>
                     <td>
                       <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
                         <?php
@@ -129,7 +129,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         ?>
                       </select>
                     </td>
-                    <td><b>Gender&nbsp;:</b></td>
+                    <td><strong>Gender&nbsp;:</strong></td>
                     <td>
                       <select name="gender" id="gender" class="form-control" title="Please choose gender" onchange="enablePregnant(this);">
                         <option value=""> -- Select -- </option>
@@ -140,7 +140,7 @@ $batchResult = $db->rawQuery($batchQuery);
                     </td>
                   </tr>
                   <tr>
-                    <td>&nbsp;<b>Province/State &nbsp;:</b></td>
+                    <td>&nbsp;<strong>Province/State &nbsp;:</strong></td>
                     <td>
                       <select name="state" id="state" class="form-control" title="Please choose province/state" onchange="getProvinceDistricts();" style="width:275px;">
                         <option value=""> -- Select -- </option>
@@ -151,7 +151,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php } ?>
                       </select>
                     </td>
-                    <td>&nbsp;<b>District/County&nbsp;:</b></td>
+                    <td>&nbsp;<strong>District/County&nbsp;:</strong></td>
                     <td>
                       <select name="district" id="district" class="form-control" title="Please choose district/county">
                         <option value=""> -- Select -- </option>
@@ -159,7 +159,7 @@ $batchResult = $db->rawQuery($batchQuery);
                     </td>
                   </tr>
                   <tr>
-                    <td class=""><b>Batch&nbsp;:</b></td>
+                    <td class=""><strong>Batch&nbsp;:</strong></td>
                     <td>
                       <select name="batch" id="batch" class="form-control" title="Please choose batch" style="width:275px;" multiple="multiple">
                         <option value=""> -- Select -- </option>
@@ -170,7 +170,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php } ?>
                       </select>
                     </td>
-                    <td class=""><b>Sample Status&nbsp;:</b></td>
+                    <td class=""><strong>Sample Status&nbsp;:</strong></td>
                     <td>
                       <select name="sampleStatus" id="sampleStatus" class="form-control" title="Please choose sample status">
                         <option value=""> -- Select -- </option>
@@ -180,7 +180,7 @@ $batchResult = $db->rawQuery($batchQuery);
                     </td>
                   </tr>
                   <tr>
-                    <td class=""><b>Mail Sent Status&nbsp;:</b></td>
+                    <td class=""><strong>Mail Sent Status&nbsp;:</strong></td>
                     <td>
                       <select name="sampleMailSentStatus" id="sampleMailSentStatus" class="form-control" title="Please choose sample mail sent status" style="width:275px;">
                         <option value="no">Samples Not yet Mailed</option>
@@ -201,7 +201,7 @@ $batchResult = $db->rawQuery($batchQuery);
             </div>
             <div class="row">
               <div class="col-md-4"></div>
-              <div class="col-md-8"><b>Please select maximum 100 samples</b></div>
+              <div class="col-md-8"><strong>Please select maximum 100 samples</strong></div>
             </div>
             <div class="row" id="sampleDetails">
               <div class="col-md-9">
@@ -209,7 +209,7 @@ $batchResult = $db->rawQuery($batchQuery);
                   <label for="sample" class="col-lg-3 control-label">Choose Sample(s) <span class="mandatory">*</span></label>
                   <div class="col-lg-9">
                     <div style="width:100%;margin:0 auto;clear:both;">
-                      <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+                      <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
                     </div><br /><br />
                     <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="Please select sample(s)">
                       <?php
@@ -239,7 +239,7 @@ $batchResult = $db->rawQuery($batchQuery);
             <input type="hidden" id="reportEmail" name="reportEmail" />
             <input type="hidden" name="pdfFile" id="pdfFile" />
             <a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default"> Cancel</a>&nbsp;
-            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;">Next <i class="fa-solid fa-chevron-right"></i></a>
+            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;">Next <em class="fa-solid fa-chevron-right"></em></a>
           </div>
           <!-- /.box-footer -->
         </form>
@@ -326,7 +326,7 @@ startDate: moment().subtract(28, 'days'),
       afterSelect: function() {
         //button disabled
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
-          $("#errorMsg").html("<b>You have selected " + this.qs2.cache().matchedResultsCount + " Samples out of the maximum allowed " + noOfAllowedSamples + " samples</b>");
+          $("#errorMsg").html("<strong>You have selected " + this.qs2.cache().matchedResultsCount + " Samples out of the maximum allowed " + noOfAllowedSamples + " samples</strong>");
           $("#requestSubmit").attr("disabled", true);
           $("#requestSubmit").css("pointer-events", "none");
         }
@@ -335,7 +335,7 @@ startDate: moment().subtract(28, 'days'),
       },
       afterDeselect: function() {
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
-          $("#errorMsg").html("<b>You have selected " + this.qs2.cache().matchedResultsCount + " Samples out of the maximum allowed " + noOfAllowedSamples + " samples</b>");
+          $("#errorMsg").html("<strong>You have selected " + this.qs2.cache().matchedResultsCount + " Samples out of the maximum allowed " + noOfAllowedSamples + " samples</strong>");
           $("#requestSubmit").attr("disabled", true);
           $("#requestSubmit").css("pointer-events", "none");
         } else if (this.qs2.cache().matchedResultsCount <= noOfAllowedSamples) {

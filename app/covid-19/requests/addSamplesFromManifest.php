@@ -28,7 +28,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
-							<td style="width:50%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code"); ?> :</b></td>
+							<td style="width:50%;vertical-align:middle;"><strong><?php echo _("Enter Sample Manifest Code"); ?> :</strong></td>
 							<td style="width:50%;vertical-align:middle;">
 								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _('Sample manifest code'); ?>" title="<?php echo _('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
@@ -41,13 +41,13 @@ require_once(APPLICATION_PATH . '/header.php');
 							<th style="width:50%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
 							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select datetime for Sample Received at Testing Lab" readonly /></td>
 							<td style="width:20%;" colspan="3">
-								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><i class="fa-solid fa-square-check"></i> <?php echo _("Activate Samples"); ?></a>
+								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><em class="fa-solid fa-square-check"></em> <?php echo _("Activate Samples"); ?></a>
 							</td>
 						</tr>
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table id="covid19ManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table id="covid19ManifestDataTable" class="table table-bordered table-striped table-vcenter" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>

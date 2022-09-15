@@ -25,10 +25,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-book"></i> <?php echo _("Sample Rejection Report");?></h1>
+    <h1><em class="fa-solid fa-book"></em> <?php echo _("Sample Rejection Report");?></h1>
     <ol class="breadcrumb">
       <!-- <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li> -->
-      <li><i class="fa-solid fa-book"></i> <?php echo _("Hepatitis");?></li>
+      <li><em class="fa-solid fa-book"></em> <?php echo _("Hepatitis");?></li>
       <li><?php echo _("Management");?></li>
       <li class="active"><?php echo _("Rejection Result");?></li>
     </ol>
@@ -41,11 +41,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         <div class="box">
           <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b><?php echo _("Sample Collection Date");?>&nbsp;:</b></td>
+              <td><strong><?php echo _("Sample Collection Date");?>&nbsp;:</strong></td>
               <td>
                 <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
               </td>
-              <td>&nbsp;<b><?php echo _("Lab");?> &nbsp;:</b></td>
+              <td>&nbsp;<strong><?php echo _("Lab");?> &nbsp;:</strong></td>
               <td>
                 <select class="form-control" id="labName" name="labName" title="<?php echo _('Please select lab name');?>" style="width:220px;">
                   <?= $testingLabsDropdown; ?>
@@ -54,7 +54,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             </tr>
             <tr>
 
-              <td>&nbsp;<b><?php echo _("Clinic Name");?> &nbsp;:</b></td>
+              <td>&nbsp;<strong><?php echo _("Clinic Name");?> &nbsp;:</strong></td>
               <td>
                 <select class="form-control" id="clinicName" name="clinicName" title="<?php echo _('Please select clinic name');?>" multiple="multiple" style="width:220px;">
                   <?= $facilitiesDropdown; ?>

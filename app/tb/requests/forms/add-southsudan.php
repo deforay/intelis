@@ -68,7 +68,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> TB LABORATORY TEST REQUEST FORM</h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> TB LABORATORY TEST REQUEST FORM</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Add New Request</li>
@@ -108,9 +108,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample code" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
 											</td>
 										<?php } ?>
-										<th></th>
+										<th scope="row"></th>
 										<td></td>
-										<th></th>
+										<th scope="row"></th>
 										<td></td>
 									</tr>
 								</table>
@@ -139,7 +139,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 									</tr>
 									<tr>
-										<th><label for="requestedDate">Date of request <span class="mandatory">*</span></label></th>
+										<th scope="row"><label for="requestedDate">Date of request <span class="mandatory">*</span></label></th>
 										<td>
 											<input type="text" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date of request date" style="width:100%;" />
 										</td>
@@ -177,33 +177,33 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								</div>
 								<div class="box-header with-border">
 									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
-									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa-solid fa-magnifying-glass"></i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
+									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
 								</div>
 								<table class="table" aria-hidden="true"  style="width:100%">
 									<tr>
-										<th><label for="patientId">Unique ART Number</label></th>
+										<th scope="row"><label for="patientId">Unique ART Number</label></th>
 										<td>
 											<input type="text" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
-										<th><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
+										<th scope="row"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
 										<td>
 											<input type="text" class="form-control isRequired" id="firstName" name="firstName" placeholder="First Name" title="Please enter First name" style="width:100%;" onchange="" />
 										</td>
 									</tr>
 									<tr>
-										<th><label for="lastName">Sur name </label></th>
+										<th scope="row"><label for="lastName">Sur name </label></th>
 										<td>
 											<input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
 										</td>
-										<th><label for="patientDob">Date of Birth </label></th>
+										<th scope="row"><label for="patientDob">Date of Birth </label></th>
 										<td>
 											<input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
 										</td>
 									</tr>
 									<tr>
-										<th>Age (years)</th>
+										<th scope="row">Age (years)</th>
 										<td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
-										<th><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
+										<th scope="row"><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
 										<td>
 											<select class="form-control isRequired" name="patientGender" id="patientGender" title="Please select the gender">
 												<option value=''> -- Select -- </option>
@@ -214,7 +214,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 									</tr>
 									<tr>
-										<th><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
+										<th scope="row"><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
 										<td>
 											<select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" multiple>
 												<option value=''> -- Select -- </option>
@@ -228,7 +228,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										<td>
 											<input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
 										</td>
-										<!-- <th><label for="typeOfPatient">Reason for Examination <span class="mandatory">*</span> </label></th>
+										<!-- <th scope="row"><label for="typeOfPatient">Reason for Examination <span class="mandatory">*</span> </label></th>
 										<td>
 											<select name="reasonForTbTest" id="reasonForTbTest" class="select2 form-control isRequired" title="Please choose reason for examination" style="width:100%" multiple>
 												<?= $general->generateSelectOptions($tbReasonsForTesting, null, '-- Select --'); ?>
@@ -288,11 +288,11 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								</div>
 								<table class="table" aria-hidden="true" >
 									<tr>
-										<th><label class="label-control" for="sampleCollectionDate">Date Specimen Collected <span class="mandatory">*</span></label></th>
+										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected <span class="mandatory">*</span></label></th>
 										<td>
 											<input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
 										</td>
-										<th><label class="label-control" for="specimenType">Specimen Type <span class="mandatory">*</span></label></th>
+										<th scope="row"><label class="label-control" for="specimenType">Specimen Type <span class="mandatory">*</span></label></th>
 										<td>
 											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%" onchange="showOther(this.value,'specimenTypeOther')">
 												<?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
@@ -304,7 +304,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 									</tr>
 									<tr>
-										<th>
+										<th scope="row">
 											<label class="label-control" for="testNumber">Specimen Number</label>
 										</th>
 										<td>
@@ -315,7 +315,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												} ?>
 											</select>
 										</td>
-										<th>
+										<th scope="row">
 											<label class="label-control" for="testTypeRequested">Test(s) requested </label>
 										</th>
 										<td>
@@ -351,30 +351,30 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="sampleReceivedDate">Date of Reception </label></th>
+											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Reception </label></th>
 											<td>
 												<input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
+											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
 											<td>
 												<input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample tested" style="width:100%;" />
 											</td>
 
-											<th><label class="label-control" for="sampleDispatchedDate">Sample Dispatched On</label></th>
+											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample Dispatched On</label></th>
 											<td>
 												<input type="text" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="testedBy">Tested By</label></th>
+											<th scope="row"><label class="label-control" for="testedBy">Tested By</label></th>
 											<td>
 												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
+											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
 													<option value=''> -- Select -- </option>
@@ -391,7 +391,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<?php echo $rejectionReason; ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
+											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
 											<td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
 										</tr>
 										<tr class="platform microscopy">
@@ -440,23 +440,23 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="reviewedBy">Reviewed By</label></th>
+											<th scope="row"><label class="label-control" for="reviewedBy">Reviewed By</label></th>
 											<td>
 												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="reviewedOn">Reviewed on</label></th>
+											<th scope="row"><label class="label-control" for="reviewedOn">Reviewed on</label></th>
 											<td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
 										</tr>
 										<tr>
-											<th><label class="label-control" for="approvedBy">Approved By</label></th>
+											<th scope="row"><label class="label-control" for="approvedBy">Approved By</label></th>
 											<td>
 												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th><label class="label-control" for="approvedOn">Approved on</label></th>
+											<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></th>
 											<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
 

@@ -158,7 +158,7 @@ $state = $geoLocationDb->getProvinces("yes");
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-book"></i> <?php echo _("VL Quarterly Monitoring Tool"); ?>
+		<h1><em class="fa-solid fa-book"></em> <?php echo _("VL Quarterly Monitoring Tool"); ?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -173,11 +173,11 @@ $state = $geoLocationDb->getProvinces("yes");
 				<div class="box">
 					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
 								<!--<div id="sla-data-range" class="mrp-container form-control">
-									<span class="mrp-icon"><i class="fa-solid fa-calendar-days"></i> &nbsp;</span>
+									<span class="mrp-icon"><em class="fa-solid fa-calendar-days"></em> &nbsp;</span>
 									<div class="mrp-monthdisplay ">
 										<span class="mrp-lowerMonth"><?php echo date('M', strtotime('-2 month')); ?> <?php echo $startYear; ?></span> <span class="mrp-to"> to </span>
 										<span class="mrp-upperMonth"><?php echo date('M'); ?> <?php echo date('Y'); ?></span>
@@ -186,7 +186,7 @@ $state = $geoLocationDb->getProvinces("yes");
 									<input type="hidden" value="<?php echo $endDate; ?>" id="mrp-upperDate" />
 								</div>-->
 							</td>
-							<td><b><?php echo _("Lab Name"); ?> :</b></td>
+							<td><strong><?php echo _("Lab Name"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>">
 									<?= $testingLabsDropdown; ?>
@@ -194,21 +194,21 @@ $state = $geoLocationDb->getProvinces("yes");
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Region/Province/State"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Region/Province/State"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="state" id="state" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 
-							<td><b><?php echo _("District/County"); ?> :</b></td>
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
 								<select name="district" id="district" class="form-control" title="<?php echo _('Please choose District/County'); ?>" onkeyup="searchVlRequestData()">
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<!-- <td><b>Sample Test Date&nbsp;:</b></td>
+							<!-- <td><strong>Sample Test Date&nbsp;:</strong></td>
               <td>
                 <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="background:#fff;" />
               </td> -->
@@ -447,7 +447,7 @@ $state = $geoLocationDb->getProvinces("yes");
 		var d = new Date();
 		for (y = 0; y < 2; y++) {
 			content += '<div class="col-xs-6" ><div class="mpr-calendar row" id="mpr-calendar-' + (y + 1) + '">' +
-				'<h5 class="col-xs-12"><i class="mpr-yeardown fa fa-chevron-circle-left"></i><span>' + (startYear + y).toString() + '</span><i class="mpr-yearup fa fa-chevron-circle-right"></i></h5><div class="mpr-monthsContainer"><div class="mpr-MonthsWrapper">';
+				'<h5 class="col-xs-12"><em class="mpr-yeardown fa fa-chevron-circle-left"></em><span>' + (startYear + y).toString() + '</span><em class="mpr-yearup fa fa-chevron-circle-right"></em></h5><div class="mpr-monthsContainer"><div class="mpr-MonthsWrapper">';
 			for (m = 0; m < 12; m++) {
 				var monthval;
 				if ((m + 1) < 10)

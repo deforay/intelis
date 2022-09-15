@@ -32,7 +32,7 @@ foreach ($pdResult as $provinceName) {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-virus-covid"></i> <?php echo _("Add Covid-19 QC Test Kit"); ?></h1>
+        <h1><em class="fa-solid fa-virus-covid"></em> <?php echo _("Add Covid-19 QC Test Kit"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Covid-19 QC Test Kit"); ?></li>
@@ -162,7 +162,7 @@ foreach ($pdResult as $provinceName) {
                         </div>
                         <br>
                     </div>
-                    <table id="qcTestTableRoot" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;display:none;">
+                    <table id="qcTestTableRoot" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;display:none;">
                         <thead>
                             <tr>
                                 <th style="text-align:center;"><?php echo _("QC Test Label"); ?></th>

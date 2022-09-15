@@ -11,7 +11,7 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-virus-covid"></i> <?php echo _("Covid-19 Test Reasons"); ?></h1>
+		<h1><em class="fa-solid fa-virus-covid"></em> <?php echo _("Covid-19 Test Reasons"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Covid-19 Test Reasons"); ?></li>
@@ -34,10 +34,10 @@ require_once(APPLICATION_PATH . '/header.php');
 						<table id="testReasonDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
-									<th><?php echo _("Test Reason"); ?></th>
-									<th><?php echo _("Test Reason Status"); ?></th>
+									<th scope="row"><?php echo _("Test Reason"); ?></th>
+									<th scope="row"><?php echo _("Test Reason Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<!-- <th>Action</th> -->
+										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>
 							</thead>

@@ -18,7 +18,7 @@ $tstInfo = $db->query($tstQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-flask-vial"></i> Edit VL Test Reasons</h1>
+		<h1><em class="fa-solid fa-flask-vial"></em> Edit VL Test Reasons</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">VL Test Reasons</li>

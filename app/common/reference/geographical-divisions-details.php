@@ -30,11 +30,11 @@ require_once(APPLICATION_PATH . '/header.php');
 						<table id="samTypDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
-									<th><?php echo _("Name");?></th>
-									<th><?php echo _("Code");?></th>
-									<th><?php echo _("Status");?></th>
+									<th scope="row"><?php echo _("Name");?></th>
+									<th scope="row"><?php echo _("Code");?></th>
+									<th scope="row"><?php echo _("Status");?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<th><?php echo _("Action");?></th>
+										<th scope="row"><?php echo _("Action");?></th>
 									<?php } ?>
 								</tr>
 							</thead>

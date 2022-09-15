@@ -42,7 +42,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i  class="fa-solid fa-gears"></i> <?php echo _("Edit General Configuration"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Edit General Configuration"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Manage General Config"); ?></li>
@@ -57,7 +57,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 				<div class="pull-right" style="font-size:15px;">
 					<?php if (isset($_SESSION['privileges']) && in_array("editGlobalConfig.php", $_SESSION['privileges']) && !isset($_GET['e'])) { ?>
 						<div class="col-sm-6 pull-right">
-							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <i class="fa-solid fa-pen-to-square"></i></i> <?php echo _("Edit General Config"); ?></a>
+							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <em class="fa-solid fa-pen-to-square"></em></em> <?php echo _("Edit General Config"); ?></a>
 						</div>
 					<?php } ?>
 					<br>
@@ -1173,7 +1173,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															</div>
 														</div>
 														<div style="width:100%;margin:10px auto;clear:both;">
-															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All"); ?></a>
+															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All"); ?></a>
 														</div><br /><br />
 														<select id="r_mandatory_fields" name="r_mandatory_fields[]" multiple="multiple" class="search readPage">
 															<option value="facility_code" <?php echo (in_array('facility_code', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility Code"); ?></option>

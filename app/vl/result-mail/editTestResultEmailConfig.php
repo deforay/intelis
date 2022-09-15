@@ -29,7 +29,7 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1 class="fa fa-gears"> <?php echo _("Edit Test Result Email Configuration");?></h1>
+    <h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo _("Edit Test Result Email Configuration");?></h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
       <li><a href="testResultEmailConfig.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Manage Test Result Email/SMS Config");?></a></li>
@@ -75,7 +75,7 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
                   <label for="rs_field" class="col-lg-3 control-label"><?php echo _("Choose Fields");?> *</label>
                   <div class="col-lg-9">
                     <div style="width:100%;margin:0 auto;clear:both;">
-                      <a href="#" id="select-all-field" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-field" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
+                      <a href="#" id="select-all-field" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-field" style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All");?></a>
                     </div><br /><br />
                     <select id="rs_field" name="rs_field[]" multiple="multiple" class="search isRequired" title="Please select email fields">
                       <option value="Sample ID" <?php echo (in_array("Sample ID", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _("Sample ID");?></option>

@@ -76,7 +76,7 @@ if (isset($tResult) && count($tResult) > 0) {
 <?php }
 if (isset($tableResult) && count($tableResult) > 0) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Export Excel");?></button>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel");?></button>
     </div>
 <?php } ?>
 <table id="tbRequestDataTable" class="table table-bordered table-striped table-hover">
@@ -127,7 +127,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 enabled: false
             },
             tooltip: {
-                pointFormat: '{point.number}: <b>{point.y}</b>'
+                pointFormat: '{point.number}: <strong>{point.y}</strong>'
             },
             plotOptions: {
                 pie: {
@@ -135,7 +135,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                     cursor: 'pointer',
                     dataLabels: {
                         enabled: true,
-                        format: '<b>{point.name}</b>: {point.y}',
+                        format: '<strong>{point.name}</strong>: {point.y}',
                         style: {
                             color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                         }
@@ -182,7 +182,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 enabled: false
             },
             tooltip: {
-                pointFormat: '{point.name}: <b>{point.y}</b>'
+                pointFormat: '{point.name}: <strong>{point.y}</strong>'
             },
             plotOptions: {
                 pie: {
@@ -190,7 +190,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                     cursor: 'pointer',
                     dataLabels: {
                         enabled: true,
-                        format: '<b>{point.name}</b>: {point.y}',
+                        format: '<strong>{point.name}</strong>: {point.y}',
                         style: {
                             color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                         }

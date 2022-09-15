@@ -79,23 +79,23 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
               <input id="login-username" type="text" class="form-control isRequired" name="userName" value="" placeholder="<?= _("User Name"); ?>" title="Please enter your name">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
               <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _("Email ID"); ?>" title="Please enter your email id">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-log-in"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-right-to-bracket"></em></span>
               <input id="login-id" type="text" class="form-control isRequired" name="loginId" value="" placeholder="<?= _("Login ID"); ?>" title="Please enter your login id">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
               <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?= _("Password"); ?>" title="Please enter your password" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+              <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
               <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?= _("Confirm Password"); ?>" title="" />
             </div>
             <div style="margin-top:10px" class="form-group">

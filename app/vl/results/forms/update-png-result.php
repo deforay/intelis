@@ -150,7 +150,7 @@ $disable = "disabled = 'disabled'";
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> VIRAL LOAD LABORATORY REQUEST FORM </h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> VIRAL LOAD LABORATORY REQUEST FORM </h1>
 		<ol class="breadcrumb">
 			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Add Vl Request</li>
@@ -480,7 +480,7 @@ $disable = "disabled = 'disabled'";
 										<td class="reasonequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"></td>
 									</tr>
 									<tr class="show-rejection" style="display:none;">
-										<th>Rejection Date<span class="mandatory">*</span></th>
+										<th scope="row">Rejection Date<span class="mandatory">*</span></th>
 										<td><input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										<td></td>
 										<td></td>
@@ -664,7 +664,7 @@ $disable = "disabled = 'disabled'";
 									<tr class="change-reason">
 										<th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
 										<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForResultChanges" id="reasonForResultChanges" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
-										<th></th>
+										<th scope="row"></th>
 										<td></td>
 									</tr>
 								</table>

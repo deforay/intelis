@@ -160,11 +160,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><i class="fa-solid fa-book"></i> <?php echo _("Hepatitis Testing Target Report");?>
+    <h1><em class="fa-solid fa-book"></em> <?php echo _("Hepatitis Testing Target Report");?>
     </h1>
     <ol class="breadcrumb">
       <!-- <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li> -->
-      <li><i class="fa-solid fa-book"></i> <?php echo _("Hepatitis");?></li>
+      <li><em class="fa-solid fa-book"></em> <?php echo _("Hepatitis");?></li>
       <li><?php echo _("Management");?></li>
       <li class="active"><?php echo _("Testing Target Report");?></li>
     </ol>
@@ -176,11 +176,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         <div class="box">
           <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
+              <td><strong><?php echo _("Sample Test Date");?>&nbsp;:</strong></td>
               <td>
                 <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="background:#fff;" />
               </td>
-              <td><b><?php echo _("Lab Name");?> :</b></td>
+              <td><strong><?php echo _("Lab Name");?> :</strong></td>
               <td style="width: 30%;">
                 <select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple>
                   <?= $testingLabsDropdown; ?>
@@ -189,7 +189,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
             </tr>
             <tr>
-              <td><b><?php echo _("Target Type");?>&nbsp;:</b></td>
+              <td><strong><?php echo _("Target Type");?>&nbsp;:</strong></td>
               <td>
                 <select class="form-control" id="targetType" name="targetType" title="<?php echo _('Please select Target Type');?>">
                   <option value="1"><?php echo _("Monthly Targets not met");?></option>
@@ -391,7 +391,7 @@ startDate: moment().subtract(28, 'days'),
     var d = new Date();
     for (y = 0; y < 2; y++) {
       content += '<div class="col-xs-6" ><div class="mpr-calendar row" id="mpr-calendar-' + (y + 1) + '">' +
-        '<h5 class="col-xs-12"><i class="mpr-yeardown fa fa-chevron-circle-left"></i><span>' + (startYear + y).toString() + '</span><i class="mpr-yearup fa fa-chevron-circle-right"></i></h5><div class="mpr-monthsContainer"><div class="mpr-MonthsWrapper">';
+        '<h5 class="col-xs-12"><em class="mpr-yeardown fa fa-chevron-circle-left"></em><span>' + (startYear + y).toString() + '</span><em class="mpr-yearup fa fa-chevron-circle-right"></em></h5><div class="mpr-monthsContainer"><div class="mpr-MonthsWrapper">';
       for (m = 0; m < 12; m++) {
         var monthval;
         if ((m + 1) < 10)

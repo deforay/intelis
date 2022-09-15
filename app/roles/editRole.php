@@ -49,7 +49,7 @@ if ($priInfo) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-user"></i> <?php echo _("Edit Role");?></h1>
+		<h1><em class="fa-solid fa-user"></em> <?php echo _("Edit Role");?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
 			<li class="active"><?php echo _("Roles");?></li>
@@ -135,8 +135,8 @@ if ($priInfo) {
 								</div>
 							</div>
 							<div class="form-group" style="padding-left:138px;">
-								<strong><?php echo _("Select All");?></strong> <a style="color: #333;" href="javascript:void(0);" id="cekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll' /> <i class='fa fa-check'></i></a>
-								&nbsp&nbsp&nbsp&nbsp<strong><?php echo _("Unselect All");?></strong> <a style="color: #333;" href="javascript:void(0);" id="unCekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll' /> <i class='fa fa-times'></i></a>
+								<strong><?php echo _("Select All");?></strong> <a style="color: #333;" href="javascript:void(0);" id="cekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll' /> <em class="fa-solid fa-check"></em></a>
+								&nbsp;&nbsp;&nbsp;&nbsp;<strong><?php echo _("Unselect All");?></strong> <a style="color: #333;" href="javascript:void(0);" id="unCekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll' /> <em class='fa-solid fa-x'></em></a>
 							</div>
 							<table class="table table-striped table-hover responsive-utilities jambo_table">
 								<?php
@@ -174,10 +174,11 @@ if ($priInfo) {
 												$allowChecked = "";
 											}
 											echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
-                              <label class='labelName'>" . ucwords($privilege['display_name']) . "</label>
+                              <strong>" . $privilege['display_name'] . "</strong>
                               <br>
-                              <input type='radio' class='cekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' $allowChecked> <i class='fa fa-check'></i>
-                              <input type='radio' class='unCekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' $denyChecked>  <i class='fa fa-times'></i>
+                              <label><input type='radio' class='cekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' $allowChecked> <em class='fa-solid fa-check'></em></label>
+							  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              <label><input type='radio' class='unCekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' $denyChecked>  <em class='fa-solid fa-x'></em></label>
                           </div>";
 										}
 										echo "</td></tr>";

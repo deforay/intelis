@@ -260,7 +260,7 @@ foreach ($tatResult as $sRow) {
 				enabled: false
 			},
 			tooltip: {
-				pointFormat: "<?php echo _("EID Samples"); ?> :<b>{point.y}</b>"
+				pointFormat: "<?php echo _("EID Samples"); ?> :<strong>{point.y}</strong>"
 			},
 			plotOptions: {
 				pie: {
@@ -270,7 +270,7 @@ foreach ($tatResult as $sRow) {
 					dataLabels: {
 						enabled: true,
 						useHTML: true,
-						format: '<div style="padding-bottom:10px;"><b>{point.name}</b>: {point.y}</div>',
+						format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
 						style: {
 
 							//crop:false,
@@ -332,7 +332,7 @@ foreach ($tatResult as $sRow) {
 				enabled: false
 			},
 			tooltip: {
-				pointFormat: "<?php echo _("Samples"); ?> :<b>{point.y}</b>"
+				pointFormat: "<?php echo _("Samples"); ?> :<strong>{point.y}</strong>"
 			},
 			plotOptions: {
 				pie: {
@@ -342,7 +342,7 @@ foreach ($tatResult as $sRow) {
 					dataLabels: {
 						enabled: true,
 						useHTML: true,
-						format: '<div style="padding-bottom:10px;"><b>{point.name}</b>: {point.y}</div>',
+						format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
 						style: {
 							color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
 						},

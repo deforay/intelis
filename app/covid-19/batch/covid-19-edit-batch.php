@@ -84,34 +84,34 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
 
-					<th><?php echo _("Facility"); ?></th>
+					<th scope="col"><?php echo _("Facility"); ?></th>
 					<td>
 						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
-					<th></th>
+					<th scope="col"></th>
 					<td></td>
 				</tr>
 				<tr>
-					<th><?php echo _("Sample Collection Date"); ?></th>
+					<th scope="col"><?php echo _("Sample Collection Date"); ?></th>
 					<td>
 						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:275px;background:#fff;" />
 					</td>
-					<th>Date Sample Receieved at Lab</th>
+					<th scope="col">Date Sample Receieved at Lab</th>
 					<td>
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:275px;background:#fff;" />
 					</td>
 				</tr>
 				<tr>
-					<th><?php echo _("Positions"); ?></th>
+					<th scope="col"><?php echo _("Positions"); ?></th>
 					<td>
 						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion'); ?>">
 							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Numeric"); ?></option>
 							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Alpha Numeric"); ?></option>
 						</select>
 					</td>
-					<th></th>
+					<th scope="col"></th>
 					<td></td>
 				</tr>
 				<tr>
@@ -151,7 +151,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="covid-19-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position'); ?>"><i class="fa-solid fa-arrow-down-1-9"></i> <?php echo _("Edit Position"); ?></a></div>
+							<div class="col-md-6"><a href="covid-19-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position'); ?>"><em class="fa-solid fa-arrow-down-1-9"></em> <?php echo _("Edit Position"); ?></a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-8">
@@ -159,7 +159,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 									<div class="col-md-12">
 										<div class="col-md-12">
 											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All"); ?></a>
+												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All"); ?></a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
 												<?php
