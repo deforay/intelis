@@ -82,7 +82,7 @@ foreach ($testPlatformResult as $machine) {
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
             </div>
-            <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
+            <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
                 <tr>
                     <th>Testing Platform&nbsp;<span class="mandatory">*</span> </th>
                     <td>

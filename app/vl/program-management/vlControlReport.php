@@ -29,7 +29,7 @@ $sResult = $db->rawQuery($sQuery);
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:80%;">
+          <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:80%;">
             <tr>
               <td><b><?php echo _("Sample Tested Date"); ?>&nbsp;</b><span class="mandatory">*</span></td>
               <td><input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="width:220px;background:#fff;" /></td>

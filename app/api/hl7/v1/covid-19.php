@@ -526,7 +526,6 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
 
         $covid19Data['source_of_request'] = 'hl7';
         $id = 0;
-        $covid19Data['source_of_request'] = 'hl7';
         if (!empty($_POST['covid19SampleId'])) {
             $db = $db->where('covid19_id', $_POST['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);

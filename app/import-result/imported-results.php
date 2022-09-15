@@ -174,7 +174,7 @@ foreach ($rejectionTypeResult as $type) {
 								</tbody>
 							</table>
 						</div>
-						<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 100%;">
+						<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 100%;">
 							<tr>
 								<input type="hidden" name="checkedTests" id="checkedTests" />
 								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />

@@ -46,7 +46,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-clock-rotate-left"></i> <?php echo _("Audit Trail"); ?></h1>
+		<h1><em class="fa-solid fa-clock-rotate-left"></em> <?php echo _("Audit Trail"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Audit Trail"); ?></li>
@@ -60,9 +60,9 @@ function getColumnValues($db, $tableName, $sampleCode)
 				<div class="box">
 					<form name="form1" action="audit-trail.php" method="post" id="searchForm">
 
-						<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+						<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 							<tr>
-								<td><b><?php echo _("Test Type"); ?>&nbsp;:</b></td>
+								<td><strong><?php echo _("Test Type"); ?>&nbsp;:</strong></td>
 								<td>
 									<select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
 										<option value="">-- Choose Test Type--</option>
@@ -83,10 +83,9 @@ function getColumnValues($db, $tableName, $sampleCode)
 										<?php } ?>
 									</select>
 								</td>
-								<td>&nbsp;<b><?php echo _("Sample Code"); ?>&nbsp;:</b></td>
+								<td>&nbsp;<strong><?php echo _("Sample Code"); ?>&nbsp;:</strong></td>
 								<td>
-									<input type="text" value="<?php if (isset($_POST['sampleCode'])) echo htmlspecialchars($_POST['sampleCode']);
-																else echo ""; ?>" name="sampleCode" id="sampleCode" class="form-control" />
+									<input type="text" value="<?= htmlspecialchars($_POST['sampleCode']);  ?>" name="sampleCode" id="sampleCode" class="form-control" />
 								</td>
 							<tr>
 								<td colspan="4">&nbsp;<input type="submit" value="<?php echo _("Submit"); ?>" class="btn btn-success btn-sm">
@@ -106,7 +105,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 						<!-- /.box-header -->
 						<div class="box-body">
 							<h3> Audit Trail for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
-							<table id="auditTable" class="table-bordered table table-striped table-hover">
+							<table id="auditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
 								<thead>
 									<tr>
 										<?php
@@ -125,7 +124,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 								</thead>
 								<tbody>
 									<?php
-									if (count($posts) > 0) {
+									if (!empty($posts)) {
 										for ($i = 0; $i < count($posts); $i++) {
 									?>
 											<tr>
@@ -155,7 +154,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 							<p>
 							<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
 							</p>
-							<table class="current table table-striped table-hover table-bordered">
+							<table class="current table table-striped table-hover table-bordered" aria-hidden="true">
 								<thead>
 									<tr>
 										<?php
@@ -173,7 +172,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 								</thead>
 								<tbody>
 									<?php
-									if (count($posts) > 0) {
+									if (!empty($posts)) {
 										for ($i = 0; $i < count($posts); $i++) {
 									?>
 											<tr>

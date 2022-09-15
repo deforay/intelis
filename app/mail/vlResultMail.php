@@ -106,7 +106,7 @@ $batchResult = $db->rawQuery($batchQuery);
                 <br>
                 <br>
                 <h4><?php echo _("Please use the following to filter the samples you wish to email"); ?></h4>
-                <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
+                <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:90%;">
                   <tr>
                     <td>&nbsp;<b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
                     <td>

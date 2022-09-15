@@ -84,7 +84,7 @@ foreach ($rejectionTypeResult as $type) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;">
+					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
 						<tr>
 							<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 							<td>

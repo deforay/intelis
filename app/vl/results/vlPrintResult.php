@@ -55,7 +55,7 @@ $batResult = $db->rawQuery($batQuery);
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="notPrintedData">
-											<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 													<td>
@@ -208,7 +208,7 @@ $batResult = $db->rawQuery($batQuery);
 											<input type="hidden" name="totalSamplesList" id="totalSamplesList" />
 										</div>
 										<div class="tab-pane fade" id="printedData">
-											<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
 													<td>
