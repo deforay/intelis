@@ -177,7 +177,7 @@ $state = $geoLocationDb->getProvinces("yes");
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
 								<!--<div id="sla-data-range" class="mrp-container form-control">
-									<span class="mrp-icon"><i class="fa-solid fa-calendar-days"></i> &nbsp;</span>
+									<span class="mrp-icon"><em class="fa-solid fa-calendar-days"></em> &nbsp;</span>
 									<div class="mrp-monthdisplay ">
 										<span class="mrp-lowerMonth"><?php echo date('M', strtotime('-2 month')); ?> <?php echo $startYear; ?></span> <span class="mrp-to"> to </span>
 										<span class="mrp-upperMonth"><?php echo date('M'); ?> <?php echo date('Y'); ?></span>

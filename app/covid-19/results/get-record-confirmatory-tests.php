@@ -329,7 +329,7 @@ foreach ($rResult as $aRow) {
 
           $print = '<a href="update-record-confirmatory-tests.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Enter Result</a>';
      } else {
-          $print = '<a href="update-record-confirmatory-tests.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-warning btn-xs" style="margin-right: 2px;" title="Result"><i class="fa-solid fa-eye"></i> View</a>';
+          $print = '<a href="update-record-confirmatory-tests.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-warning btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-eye"></em> View</a>';
      }
 
 

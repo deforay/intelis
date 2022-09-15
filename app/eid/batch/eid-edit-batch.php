@@ -150,7 +150,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="eid-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><i class="fa-solid fa-arrow-down-1-9"></i>  Edit Position</a></div>
+							<div class="col-md-6"><a href="eid-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-8">

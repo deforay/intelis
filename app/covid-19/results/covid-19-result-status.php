@@ -69,7 +69,7 @@ foreach ($rejectionTypeResult as $type) {
 
   <!-- for sample rejection -->
   <div id="rejectReasonDiv">
-    <a href="javascript:void(0)" style="float:right;color:red;" onclick="hideReasonDiv('rejectReasonDiv')"><i class="fa-solid fa-xmark"></i></a>
+    <a href="javascript:void(0)" style="float:right;color:red;" onclick="hideReasonDiv('rejectReasonDiv')"><em class="fa-solid fa-xmark"></em></a>
     <div class="arrow-right"></div>
     <input type="hidden" name="statusDropDownId" id="statusDropDownId" />
     <h3 style="color:red;"><?php echo _("Choose Rejection Reason"); ?></h3>
