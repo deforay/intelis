@@ -25,7 +25,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 
 	if ($sarr['sc_user_type'] == 'standalone') {
-		if (($key = array_search('vl.remote_sample_code', $headings)) !== false) {
+		if (($key = array_search('Remote Sample Code', $headings)) !== false) {
 			unset($headings[$key]);
 		}
 	}
