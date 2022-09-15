@@ -460,21 +460,12 @@ try {
         if ($id > 0) {
             $c19Data = $app->getTableDataUsingId('form_covid19', 'covid19_id', $data['covid19SampleId']);
             $c19SampleCode = (isset($c19Data['sample_code']) && $c19Data['sample_code']) ? $c19Data['sample_code'] : $c19Data['remote_sample_code'];
-            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = array(
-                    'status' => 'success',
-                    'sampleCode' => $c19SampleCode,
-                    'uniqueId' => $c19Data['unique_id'],
-                    'appSampleCode' => $c19Data['app_sample_code'],
-                );
-            } else {
-                $responseData[$rootKey] = array(
-                    'status' => 'success',
-                    'sampleCode' => $c19SampleCode,
-                    'uniqueId' => $c19Data['unique_id'],
-                    'appSampleCode' => $c19Data['app_sample_code'],
-                );
-            }
+            $responseData[$rootKey] = array(
+                'status' => 'success',
+                'sampleCode' => $c19SampleCode,
+                'uniqueId' => $c19Data['unique_id'],
+                'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $c19Data['app_sample_code'] : null,
+            );
             http_response_code(200);
         } else {
             if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {

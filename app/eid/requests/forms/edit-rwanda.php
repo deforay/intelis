@@ -101,7 +101,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
                                     <?php if (!empty($sCode)) { ?>
                                         <tr>
                                             <td colspan="6">
@@ -167,9 +167,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                             <!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
                                             <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
-                                                <?php
-                                                foreach ($implementingPartnerList as $implementingPartner) {
-                                                ?>
+                                                <?php foreach ($implementingPartnerList as $implementingPartner) { ?>
                                                     <option value="<?php echo ($implementingPartner['i_partner_id']); ?>" <?php echo ($eidInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
                                                 <?php } ?>
                                             </select>
@@ -203,7 +201,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                 <div class="box-header with-border">
                                     <h3 class="box-title">CHILD and MOTHER INFORMATION</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
@@ -251,7 +249,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
 
 
                                 <br><br>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Infant and Mother's Health Information</h4>
@@ -326,8 +324,8 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         <td>
                                             <select class="form-control isRequired" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="yes"> Yes </option>
-                                                <option value="no"> No </option>
+                                                <option value="yes" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value="no" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                             </select>
                                         </td>
                                     </tr>
@@ -353,7 +351,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                 </table>
 
                                 <br><br>
-                                <table class="table" aria-hidden="true" >
+                                <table class="table" aria-hidden="true">
                                     <tr>
                                         <th colspan=4 style="border-top:#000 1px solid;">
                                             <h4>Sample Information</h4>
@@ -389,7 +387,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th><label for="">Sample Received Date </label></th>
                                             <td>
@@ -428,13 +426,17 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                                 </select>
                                             </td>
                                         </tr>
+                                        <tr class="show-rejection rejected" style="display:none;">
+                                            <td>Rejection Date<span class="mandatory">*</span></td>
+                                            <td><input value="<?php echo $general->humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                         <tr>
                                             <td style="width:25%;"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                             </td>
-
-
                                             <th>Result</th>
                                             <td>
                                                 <select class="form-control result-focus" name="result" id="result">

@@ -389,20 +389,12 @@ try {
         if ($id > 0) {
             $eidData = $app->getTableDataUsingId($tableName, 'eid_id', $data['eidSampleId']);
             $eidSampleCode = (isset($eidData['sample_code']) && $eidData['sample_code']) ? $eidData['sample_code'] : $eidData['remote_sample_code'];
-            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = array(
-                    'status' => 'success',
-                    'sampleCode' => $eidSampleCode,
-                    'uniqueId' => $eidData['unique_id'],
-                    'appSampleCode' => $eidData['app_sample_code'],
-                );
-            } else {
-                $responseData[$rootKey] = array(
-                    'sampleCode' => $eidSampleCode,
-                    'uniqueId' => $eidData['unique_id'],
-                    'appSampleCode' => $eidData['app_sample_code'],
-                );
-            }
+            $responseData[$rootKey] = array(
+                'status' => 'success',
+                'sampleCode' => $eidSampleCode,
+                'uniqueId' => $eidData['unique_id'],
+                'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $eidData['app_sample_code'] : null,
+            );
             http_response_code(200);
         } else {
             if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
