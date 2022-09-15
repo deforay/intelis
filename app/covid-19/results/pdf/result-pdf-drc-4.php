@@ -315,13 +315,13 @@ $html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;" colspan="2"><b>Resultats SARS-CoV-2 &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>' . $covid19Results[$result['result']] . '</b><br><span style="font-size:8;font-weight:normal;">(Result)</span></td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $resultPrintedDate . '&nbsp;&nbsp;' . $resultPrintedTime . '<br><span style="font-size:8;font-weight:normal;">(Result Returned On)</span></td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;" colspan="2"><strong>Resultats SARS-CoV-2 &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $covid19Results[$result['result']] . '</strong><br><span style="font-size:8;font-weight:normal;">(Result)</span></td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;"><strong>Date de Sortie Résultats &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $resultPrintedDate . '&nbsp;&nbsp;' . $resultPrintedTime . '<br><span style="font-size:8;font-weight:normal;">(Result Returned On)</span></td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3">
-            <br><br><b>Fait à Kinshasa, le: </b>' . $general->humanReadableDateFormat($result['result_approved_datetime']) .
+            <br><br><strong>Fait à Kinshasa, le: </strong>' . $general->humanReadableDateFormat($result['result_approved_datetime']) .
     '<br><span style="font-size:8;font-weight:normal;">(Done in Kinshasa, on)</span></td>';
 $html .= '</tr>';
 

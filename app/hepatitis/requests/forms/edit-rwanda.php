@@ -197,18 +197,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><label for="patientPhoneNumber">Phone number</label></th>
+                                        <th scope="row"><label for="patientPhoneNumber">Phone number</label></th>
                                         <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient Phone Number" title="Patient Phone Number" style="width:100%;" value="<?php echo $hepatitisInfo['patient_phone_number']; ?>" /></td>
 
-                                        <th><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo $general->humanReadableDateFormat($hepatitisInfo['patient_dob']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><label for="patientAge">Patient Age (years)</label></th>
+                                        <th scope="row"><label for="patientAge">Patient Age (years)</label></th>
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" value="<?php echo $hepatitisInfo['patient_age']; ?>" /></td>
-                                        <th><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="patientGender" id="patientGender">
                                                 <option value=''> -- Select -- </option>
@@ -227,10 +227,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td><input class="form-control" value="<?php echo $hepatitisInfo['patient_district']; ?>" id="patientDistrict" name="patientDistrict" placeholder="Patient District" title="Please enter the patient district" style="width:100%;"></td>
                                     </tr>
                                     <tr>
-                                        <th><label for="patientCity">Village</label></th>
+                                        <th scope="row"><label for="patientCity">Village</label></th>
                                         <td><input type="text" class="form-control" value="<?php echo $hepatitisInfo['patient_city']; ?>" id="patientCity" name="patientCity" placeholder="Patient Village" title="Please enter the patient village" style="width:100%;" /></td>
 
-                                        <th><label for="patientGender">Insurance</label></th>
+                                        <th scope="row"><label for="patientGender">Insurance</label></th>
                                         <td>
                                             <select class="form-control" name="insurance" id="insurance" title="Please select the Insurance">
                                                 <option value=''> -- Select -- </option>
@@ -284,7 +284,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="labTechnician">Lab Technician </label></th>
+                                    <th scope="row"><label for="labTechnician">Lab Technician </label></th>
                                     <td>
                                         <select name="labTechnician" id="labTechnician" class="form-control" title="Please select a Lab Technician" style="width:100%;">
                                             <?= $general->generateSelectOptions($labTechniciansResults, (isset($hepatitisInfo['lab_technician']) && $hepatitisInfo['lab_technician'] != '') ? $hepatitisInfo['lab_technician'] : $_SESSION['userId'], '-- Select --'); ?>
@@ -303,7 +303,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </div>
                                     <table class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th><label for="">Sample Received Date </label></th>
+                                            <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
                                                 <input value="<?php echo $general->humanReadableDateFormat($hepatitisInfo['sample_received_at_vl_lab_datetime']) ?>" type="text" class="labSecInput form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" style="width:100%;" />
                                             </td>
@@ -315,11 +315,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th><label for="sampleTestedDateTime">VL Testing Date</label></th>
+                                            <th scope="row"><label for="sampleTestedDateTime">VL Testing Date</label></th>
                                             <td>
                                                 <input value="<?php echo $general->humanReadableDateFormat($hepatitisInfo['sample_tested_datetime']) ?>" type="text" class="labSecInput form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter testing date" style="width:100%;" />
                                             </td>
-                                            <th><label for="vlTestingSite">VL Testing Site</label></th>
+                                            <th scope="row"><label for="vlTestingSite">VL Testing Site</label></th>
                                             <td>
                                                 <select class="labSecInput form-control" id="vlTestingSite" name="vlTestingSite" title="Please select testing site" style="width:100%;">
                                                     <?= $testingLabsDropdown; ?>
@@ -327,7 +327,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th><label for="reasonVlTest">VL test purpose</label></th>
+                                            <th scope="row"><label for="reasonVlTest">VL test purpose</label></th>
                                             <td>
                                                 <select class="labSecInput form-control" name="reasonVlTest" id="reasonVlTest">
                                                     <option value=''> -- Select -- </option>
@@ -355,7 +355,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
-                                            <th>Rejection Date<span class="mandatory">*</span></th>
+                                            <th scope="row">Rejection Date<span class="mandatory">*</span></th>
                                             <td><input value="<?php echo $general->humanReadableDateFormat($hepatitisInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
                                         <!-- <tr>

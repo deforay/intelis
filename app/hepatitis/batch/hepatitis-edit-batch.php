@@ -84,21 +84,21 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
 
-					<th>Facility</th>
+					<th scope="col">Facility</th>
 					<td>
 						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
-					<th></th>
+					<th scope="col"></th>
 					<td></td>
 				</tr>
 				<tr>
-					<th>Sample Collection Date</th>
+					<th scope="col">Sample Collection Date</th>
 					<td>
 						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
 					</td>
-					<th>Date Sample Receieved at Lab</th>
+					<th scope="col">Date Sample Receieved at Lab</th>
 					<td>
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
 					</td>
@@ -150,7 +150,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 									<div class="col-md-12">
 										<div class="col-md-12">
 											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="icon-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
 												<?php

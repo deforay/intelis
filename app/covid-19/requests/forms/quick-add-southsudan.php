@@ -92,7 +92,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <table class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
-                                            <th><label for="sampleCode">Sample ID </label></th>
+                                            <th scope="row"><label for="sampleCode">Sample ID </label></th>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
                                                 <input type="hidden" id="sampleCode" name="sampleCode" />
@@ -130,14 +130,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Case Identification" title="Please enter Case ID" style="width:100%;" onchange="" />
                                         </td>
 
-                                        <th><label for="externalSampleCode">DHIS2 Case ID </label></th>
+                                        <th scope="row"><label for="externalSampleCode">DHIS2 Case ID </label></th>
                                         <td><input type="text" class="form-control" id="externalSampleCode" name="externalSampleCode" placeholder="DHIS2 Case ID" title="Please enter DHIS2 Case ID" style="width:100%;" /></td>
-                                        <th>Specimen Type <span class="mandatory">*</span></th>
+                                        <th scope="row">Specimen Type <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
@@ -145,18 +145,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Sample Collection Date <span class="mandatory">*</span> </th>
+                                        <th scope="row">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td>
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
                                         </td>
 
-                                        <th><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
+                                        <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Is Sample Rejected? <span class="mandatory">*</span> </th>
+                                        <th scope="row">Is Sample Rejected? <span class="mandatory">*</span> </th>
                                         <td>
                                             <select class="form-control isRequired" name="isSampleRejected" id="isSampleRejected">
                                                 <option value=''> -- Select -- </option>
@@ -186,7 +186,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select name="testingPoint" id="testingPoint" class="form-control" title="Please select a Testing Point" style="width:100%;">
                                             </select>
                                         </td>
-                                        <th></th>
+                                        <th scope="row"></th>
                                         <td></td>
                                     </tr>
                                 </table>

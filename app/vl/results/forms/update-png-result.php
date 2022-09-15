@@ -480,7 +480,7 @@ $disable = "disabled = 'disabled'";
 										<td class="reasonequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"></td>
 									</tr>
 									<tr class="show-rejection" style="display:none;">
-										<th>Rejection Date<span class="mandatory">*</span></th>
+										<th scope="row">Rejection Date<span class="mandatory">*</span></th>
 										<td><input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										<td></td>
 										<td></td>
@@ -664,7 +664,7 @@ $disable = "disabled = 'disabled'";
 									<tr class="change-reason">
 										<th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
 										<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForResultChanges" id="reasonForResultChanges" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
-										<th></th>
+										<th scope="row"></th>
 										<td></td>
 									</tr>
 								</table>

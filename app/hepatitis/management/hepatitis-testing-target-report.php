@@ -176,11 +176,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         <div class="box">
           <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b><?php echo _("Sample Test Date");?>&nbsp;:</b></td>
+              <td><strong><?php echo _("Sample Test Date");?>&nbsp;:</strong></td>
               <td>
                 <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date');?>" readonly style="background:#fff;" />
               </td>
-              <td><b><?php echo _("Lab Name");?> :</b></td>
+              <td><strong><?php echo _("Lab Name");?> :</strong></td>
               <td style="width: 30%;">
                 <select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple>
                   <?= $testingLabsDropdown; ?>
@@ -189,7 +189,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
             </tr>
             <tr>
-              <td><b><?php echo _("Target Type");?>&nbsp;:</b></td>
+              <td><strong><?php echo _("Target Type");?>&nbsp;:</strong></td>
               <td>
                 <select class="form-control" id="targetType" name="targetType" title="<?php echo _('Please select Target Type');?>">
                   <option value="1"><?php echo _("Monthly Targets not met");?></option>

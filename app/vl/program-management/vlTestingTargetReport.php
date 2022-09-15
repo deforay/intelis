@@ -178,11 +178,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         <div class="box">
           <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b>Sample Test Date&nbsp;:</b></td>
+              <td><strong>Sample Test Date&nbsp;:</strong></td>
               <td>
                 <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="background:#fff;" />
               </td>
-              <td><b>Lab Name :</b></td>
+              <td><strong>Lab Name :</strong></td>
               <td style="width: 30%;">
                 <select id="facilityName" name="facilityName" title="Please select facility name" multiple>
                   <?= $testingLabsDropdown; ?>
@@ -191,7 +191,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
             </tr>
             <tr>
-              <td><b>Target Type&nbsp;:</b></td>
+              <td><strong>Target Type&nbsp;:</strong></td>
               <td>
                 <select class="form-control" id="targetType" name="targetType" title="Please select Target Type">
                   <option value="1">Monthly Targets not met</option>

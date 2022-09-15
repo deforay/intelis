@@ -206,15 +206,15 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
                                         </td>
-                                        <th><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control " id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo $general->humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Patient Age (years)</th>
+                                        <th scope="row">Patient Age (years)</th>
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" value="<?php echo $covid19Info['patient_age']; ?>" /></td>
-                                        <th><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control " name="patientGender" id="patientGender">
                                                 <option value=''> -- Select -- </option>
@@ -226,24 +226,24 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Phone number</th>
+                                        <th scope="row">Phone number</th>
                                         <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient Phone Number" title="Patient Phone Number" style="width:100%;" value="<?php echo $covid19Info['patient_phone_number']; ?>" /></td>
 
-                                        <th>Patient address</th>
+                                        <th scope="row">Patient address</th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Patient Address" title="Patient Address" style="width:100%;" onchange=""><?php echo $covid19Info['patient_address']; ?></textarea></td>
                                     </tr>
                                     <tr>
-                                        <th>Patient Province</th>
+                                        <th scope="row">Patient Province</th>
                                         <td><input type="text" value="<?php echo $covid19Info['patient_province']; ?>" class="form-control " id="patientProvince" name="patientProvince" placeholder="Patient Province" title="Please enter the patient province" style="width:100%;" /></td>
 
-                                        <th>Patient District</th>
+                                        <th scope="row">Patient District</th>
                                         <td><input class="form-control" value="<?php echo $covid19Info['patient_district']; ?>" id="patientDistrict" name="patientDistrict" placeholder="Patient District" title="Please enter the patient district" style="width:100%;"></td>
                                     </tr>
                                     <tr>
-                                        <th>Country of Residence</th>
+                                        <th scope="row">Country of Residence</th>
                                         <td><input type="text" class="form-control" value="<?php echo $covid19Info['patient_nationality']; ?>" id="patientNationality" name="patientNationality" placeholder="Country of Residence" title="Please enter transit" style="width:100%;" /></td>
 
-                                        <th></th>
+                                        <th scope="row"></th>
                                         <td></td>
                                     </tr>
                                     <tr>
@@ -252,23 +252,23 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Airline</th>
+                                        <th scope="row">Airline</th>
                                         <td><input type="text" class="form-control " value="<?php echo $covid19Info['flight_airline']; ?>" id="airline" name="airline" placeholder="Airline" title="Please enter the airline" style="width:100%;" /></td>
 
-                                        <th>Seat Number</th>
+                                        <th scope="row">Seat Number</th>
                                         <td><input type="text" class="form-control " value="<?php echo $covid19Info['flight_seat_no']; ?>" id="seatNo" name="seatNo" placeholder="Seat Number" title="Please enter the seat number" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
-                                        <th>Arrival Date and Time</th>
+                                        <th scope="row">Arrival Date and Time</th>
                                         <td><input type="text" class="form-control dateTime" value="<?php echo $general->humanReadableDateFormat($covid19Info['flight_arrival_datetime']); ?>" id="arrivalDateTime" name="arrivalDateTime" placeholder="Arrival Date and Time" title="Please enter the arrival date and time" style="width:100%;" /></td>
 
-                                        <th>Airport of Departure</th>
+                                        <th scope="row">Airport of Departure</th>
                                         <td><input type="text" class="form-control" value="<?php echo $covid19Info['flight_airport_of_departure']; ?>" id="airportOfDeparture" name="airportOfDeparture" placeholder="Airport of Departure" title="Please enter the airport of departure" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
-                                        <th>Transit</th>
+                                        <th scope="row">Transit</th>
                                         <td><input type="text" class="form-control" value="<?php echo $covid19Info['flight_transit']; ?>" id="transit" name="transit" placeholder="Transit" title="Please enter transit" style="width:100%;" /></td>
-                                        <th>Reason of Visit (if applicable)</th>
+                                        <th scope="row">Reason of Visit (if applicable)</th>
                                         <td><input type="text" class="form-control" value="<?php echo $covid19Info['reason_of_visit']; ?>" id="reasonOfVisit" name="reasonOfVisit" placeholder="Reason of Visit" title="Please enter reason of visit" style="width:100%;" /></td>
 
                                     </tr>
@@ -361,11 +361,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
                                     </tr>
                                     <tr>
-                                        <th>Patient's Occupation</th>
+                                        <th scope="row">Patient's Occupation</th>
                                         <td>
                                             <input class="form-control" value="<?php echo $covid19Info['patient_occupation']; ?>" type="text" name="patientOccupation" id="patientOccupation" placeholder="Patient's Occupation" />
                                         </td>
-                                        <th></th>
+                                        <th scope="row"></th>
                                         <td></td>
 
                                     </tr>
@@ -394,7 +394,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <option value='no' <?php echo ($covid19Info['is_sample_collected'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                             </select>
                                         </td>
-                                        <th>Reason for Covid-19 Testing <span class="mandatory">*</span></th>
+                                        <th scope="row">Reason for Covid-19 Testing <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="reasonForCovid19Test" id="reasonForCovid19Test" class="form-control " title="Please choose specimen type" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -407,7 +407,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <td style="width:35% !important;">
                                             <input class="form-control " type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($covid19Info['sample_collection_date']); ?>" />
                                         </td>
-                                        <th>Specimen Type <span class="mandatory">*</span></th>
+                                        <th scope="row">Specimen Type <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="specimenType" id="specimenType" class="form-control " title="Please choose specimen type" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -433,7 +433,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     </div>
                                     <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
-                                            <th><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
+                                            <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                             <td>
                                                 <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                             </td>
@@ -444,7 +444,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
                                         <tr>
-                                            <th>Is Sample Rejected? <span class="mandatory">*</span></th>
+                                            <th scope="row">Is Sample Rejected? <span class="mandatory">*</span></th>
                                             <td>
                                                 <select class="form-control result-focus isRequired" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>
@@ -471,7 +471,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </td>
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
-                                            <th>Rejection Date<span class="mandatory">*</span></th>
+                                            <th scope="row">Rejection Date<span class="mandatory">*</span></th>
                                             <td><input value="<?php echo $general->humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                             <td></td>
                                             <td></td>
@@ -543,21 +543,21 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </td>
                                         </tr>
                                         <tr class="change-reason" style="display: none;">
-                                            <th>Reason for Changing <span class="mandatory">*</span></td>
+                                            <th scope="row">Reason for Changing <span class="mandatory">*</span></td>
                                             <td colspan="3"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                         <tr>
-                                            <th>Reviewed By</th>
+                                            <th scope="row">Reviewed By</th>
                                             <td>
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose reviewed by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_reviewed_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th>Reviewed on</td>
+                                            <th scope="row">Reviewed on</td>
                                             <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                         </tr>
                                         <tr>
-                                            <th>Is Result Authorized ?</th>
+                                            <th scope="row">Is Result Authorized ?</th>
                                             <td>
                                                 <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control isRequired" title="Is Result authorized ?" style="width:100%">
                                                     <option value="">-- Select --</option>
@@ -565,13 +565,13 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                     <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
-                                            <th>Authorized By</th>
+                                            <th scope="row">Authorized By</th>
                                             <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control isRequired" placeholder="Authorized By" /></td>
                                         </tr>
                                         <tr>
-                                            <th>Authorized on</td>
+                                            <th scope="row">Authorized on</td>
                                             <td><input type="text" value="<?php echo $general->humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date isRequired" placeholder="Authorized on" /></td>
-                                            <th></th>
+                                            <th scope="row"></th>
                                             <td></td>
                                         </tr>
                                         <!-- <tr>
@@ -581,7 +581,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </td>
 
 
-                                            <th>Result</th>
+                                            <th scope="row">Result</th>
                                             <td>
                                                 <select class="form-control" name="result" id="result">
                                                     <option value=''> -- Select -- </option>

@@ -85,7 +85,7 @@ $packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString
                 <div class="col-md-12">
                   <div class="col-md-12">
                     <div style="width:60%;margin:0 auto;clear:both;">
-                      <a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+                      <a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="icon-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
                     </div><br /><br />
                     <select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
                   </div>

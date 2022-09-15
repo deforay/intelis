@@ -179,11 +179,11 @@ foreach ($rejectionTypeResult as $type) {
 								<input type="hidden" name="checkedTests" id="checkedTests" />
 								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />
 								<td style=" width: 30%; ">
-									<b><?= _("Comments") ?>&nbsp;</b>
+									<strong><?= _("Comments") ?>&nbsp;</strong>
 									<textarea style="height: 34px;width: 100%;" class="form-control" id="comments" name="comments" placeholder="Comments"></textarea>
 								</td>
 								<td style=" width: 20%; ">
-									<b><?= _("Tested By"); ?><span class="mandatory">*</span>&nbsp;</b>
+									<strong><?= _("Tested By"); ?><span class="mandatory">*</span>&nbsp;</strong>
 									<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
 										<option value="">-- Select --</option>
 										<?php
@@ -196,7 +196,7 @@ foreach ($rejectionTypeResult as $type) {
 									</select>
 								</td>
 								<td style=" width: 20%; ">
-									<b><?= _("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;</b>
+									<strong><?= _("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;</strong>
 									<!--<input type="text" name="reviewedBy" id="reviewedBy" class="form-control" title="Please enter Reviewed By" placeholder ="Reviewed By"/>-->
 									<select name="reviewedBy" id="reviewedBy" class="form-control" title="Please choose reviewed by" style="width: 100%;">
 										<option value="">-- Select --</option>
@@ -210,7 +210,7 @@ foreach ($rejectionTypeResult as $type) {
 									</select>
 								</td>
 								<td style=" width: 20%; ">
-									<b><?= _("Approved By"); ?><span class="mandatory">*</span>&nbsp;</b>
+									<strong><?= _("Approved By"); ?><span class="mandatory">*</span>&nbsp;</strong>
 									<!--<input type="text" name="approvedBy" id="approvedBy" class="form-control" title="Please enter Approved By" placeholder ="Approved By"/>-->
 									<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" style="width: 100%;">
 										<option value="">-- Select --</option>

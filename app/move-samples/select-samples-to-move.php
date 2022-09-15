@@ -64,7 +64,7 @@ foreach ($fResult as $fDetails) {
 			</div>
 			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 90%;">
 				<tr>
-					<td>&nbsp;<b>From Lab Name&nbsp;:<span class="mandatory">*</span></b></td>
+					<td>&nbsp;<strong>From Lab Name&nbsp;:<span class="mandatory">*</span></strong></td>
 					<td>
 						<select style="width: 100%;" class="form-control" id="labName" name="labName" title="Please select lab name">
 							<option value="">-- select --</option>
@@ -77,7 +77,7 @@ foreach ($fResult as $fDetails) {
 							?>
 						</select>
 					</td>
-					<td>&nbsp;<b>Test Type&nbsp;:<span class="mandatory">*</span></b></td>
+					<td>&nbsp;<strong>Test Type&nbsp;:<span class="mandatory">*</span></strong></td>
 					<td>
 						<select style="width: 100%;" class="form-control" id="testType" name="testType" title="Choose one test type">
 							<option value="">-- select --</option>
@@ -97,14 +97,14 @@ foreach ($fResult as $fDetails) {
 					</td>
 				</tr>
 				<tr>
-					<td>&nbsp;<b>Province&nbsp;:</b></td>
+					<td>&nbsp;<strong>Province&nbsp;:</strong></td>
 					<td>
 						<select style="width: 100%;" class="form-control" id="provinceName" name="provinceName" title="Please select province name" onchange="getfacilityDetails(this);">
 							<option value="">-- select --</option>
 							<?php echo $province; ?>
 						</select>
 					</td>
-					<td>&nbsp;<b>District&nbsp;:</b></td>
+					<td>&nbsp;<strong>District&nbsp;:</strong></td>
 					<td>
 						<select style="width: 100%;" class="form-control" id="districtName" name="districtName" title="Please select district name" onchange="getfacilityDistrictwise(this);">
 							<option value="">-- select --</option>
@@ -112,14 +112,14 @@ foreach ($fResult as $fDetails) {
 					</td>
 				</tr>
 				<tr>
-					<td>&nbsp;<b>Facility Name&nbsp;:</b></td>
+					<td>&nbsp;<strong>Facility Name&nbsp;:</strong></td>
 					<td>
 						<select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name">
 							<option value="">-- select --</option>
 							<?php echo $facility; ?>
 						</select>
 					</td>
-					<td><b>Sample Collection Date&nbsp;:</b></td>
+					<td><strong>Sample Collection Date&nbsp;:</strong></td>
 					<td>
 						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="background:#fff;width: 100%;" />
 					</td>
@@ -175,7 +175,7 @@ foreach ($fResult as $fDetails) {
 								<div class="form-group">
 									<div class="col-md-12">
 										<div style="width:60%;margin:0 auto;clear:both;">
-											<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+											<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="icon-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
 										</div><br /><br />
 										<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
 									</div>

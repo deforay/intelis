@@ -1173,7 +1173,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															</div>
 														</div>
 														<div style="width:100%;margin:10px auto;clear:both;">
-															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All"); ?></a>
+															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="icon-chevron-right"></em></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All"); ?></a>
 														</div><br /><br />
 														<select id="r_mandatory_fields" name="r_mandatory_fields[]" multiple="multiple" class="search readPage">
 															<option value="facility_code" <?php echo (in_array('facility_code', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Facility Code"); ?></option>

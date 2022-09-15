@@ -94,7 +94,7 @@ $result = $db->rawQuery($query);
     <label for="sample" class="col-lg-3 control-label"><?php echo _("Choose Sample(s)");?> <span class="mandatory">*</span></label>
     <div class="col-lg-9">
       <div style="width:100%;margin:0 auto;clear:both;">
-        <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
+        <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<em class="icon-chevron-right"></em></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;<?php echo _("Deselect All");?></a>
       </div><br /><br />
       <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="<?php echo _('Please select sample(s)');?>">
         <?php
@@ -140,7 +140,7 @@ $result = $db->rawQuery($query);
       },
       afterSelect: function() {
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
-          $("#errorMsg").html("<b><?php echo _("You have selected");?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed");?> " + noOfAllowedSamples + " <?php echo _("samples");?></b>");
+          $("#errorMsg").html("<strong><?php echo _("You have selected");?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed");?> " + noOfAllowedSamples + " <?php echo _("samples");?></strong>");
           $("#requestSubmit").attr("disabled", true);
           $("#requestSubmit").css("pointer-events", "none");
         }
@@ -149,7 +149,7 @@ $result = $db->rawQuery($query);
       },
       afterDeselect: function() {
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
-          $("#errorMsg").html("<b><?php echo _("You have selected");?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed");?> " + noOfAllowedSamples + " <?php echo _("samples");?></b>");
+          $("#errorMsg").html("<strong><?php echo _("You have selected");?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed");?> " + noOfAllowedSamples + " <?php echo _("samples");?></strong>");
           $("#requestSubmit").attr("disabled", true);
           $("#requestSubmit").css("pointer-events", "none");
         } else if (this.qs2.cache().matchedResultsCount <= noOfAllowedSamples) {

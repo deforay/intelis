@@ -139,7 +139,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><label for="investigatorName">Investigator’s name </label></th>
+                                        <th scope="row"><label for="investigatorName">Investigator’s name </label></th>
                                         <td>
                                             <!-- <select name="investigatorName" id="investigatorName" class="form-control" title="Please select a Investigator's name" style="width:100%;">
                                                 <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>
@@ -203,7 +203,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                             <!-- </tr> -->
                                         <?php } else { ?>
-                                            <th></th>
+                                            <th scope="row"></th>
                                             <td></td>
                                         <?php } ?>
                                     </tr>
@@ -230,15 +230,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient ID" title="Please enter the Patient ID" style="width:100%;" />
                                         </td>
-                                        <th><label for="patientDob">Patient date of birth<span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientDob">Patient date of birth<span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Age (years)</th>
+                                        <th scope="row">Age (years)</th>
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Age (in years)" title="Please enter Age (in years)" style="width:100%;" /></td>
-                                        <th><label for="patientGender">Sex <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientGender">Sex <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="patientGender" id="patientGender" title="Please select the gender">
                                                 <option value=''> -- Select -- </option>
@@ -249,19 +249,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><label for="patientPhoneNumber">Patient phone</label></th>
+                                        <th scope="row"><label for="patientPhoneNumber">Patient phone</label></th>
                                         <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient phone" title="Please enter the patient phone" style="width:100%;" /></td>
-                                        <th><label for="patientAddress">Patient Address</label></th>
+                                        <th scope="row"><label for="patientAddress">Patient Address</label></th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Patient Address" title="Please enter the Patient Address" style="width:100%;"></textarea></td>
                                     </tr>
                                     <tr>
-                                        <th><label for="patientProvince">Province</label></th>
+                                        <th scope="row"><label for="patientProvince">Province</label></th>
                                         <td>
                                             <select class="form-control " name="patientProvince" id="patientProvince" title="Please select the patient province" onchange="getPatientDistrictDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                        <th><label for="patientDistrict">District</label></th>
+                                        <th scope="row"><label for="patientDistrict">District</label></th>
                                         <td>
                                             <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please select the patient district" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
@@ -270,9 +270,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     </tr>
                                     <tr>
-                                        <th><label for="patientCity">Village</label></th>
+                                        <th scope="row"><label for="patientCity">Village</label></th>
                                         <td><input class="form-control" id="patientCity" name="patientCity" placeholder="City/Village" title="Please enter the City/Village" style="width:100%;"></td>
-                                        <th><label for="patientNationality">Country of origin</label></th>
+                                        <th scope="row"><label for="patientNationality">Country of origin</label></th>
                                         <td>
                                             <select name="patientNationality" id="patientNationality" class="form-control" title="Please choose Country of origin:" style="width:100%">
                                                 <?= $general->generateSelectOptions($nationalityList, null, '-- Select --'); ?>
@@ -287,7 +287,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </h3>
                                 </div>
                                 <table id="responseTable" class="table table-bordered" aria-hidden="true" >
-                                    <th><label for="suspectedCase">Is the suspected case</label></th>
+                                    <th scope="row"><label for="suspectedCase">Is the suspected case</label></th>
                                     <td>
                                         <select name="suspectedCase" id="suspectedCase" class="form-control" title="Please choose suspected case">
                                             <option value="">--Select--</option>
@@ -296,7 +296,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <option value="unknown">Unknown</option>
                                         </select>
                                     </td>
-                                    <th><label for="dateOfSymptomOnset">Date of symptom onset</label></th>
+                                    <th scope="row"><label for="dateOfSymptomOnset">Date of symptom onset</label></th>
                                     <td>
                                         <input class="form-control date" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date of symptom onset" title="Please choose Date of symptom onset" />
                                     </td>
@@ -338,7 +338,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr class="historyfield">
-                                        <!-- <th><label for="overseas">Overseas</label></th>
+                                        <!-- <th scope="row"><label for="overseas">Overseas</label></th>
                                         <td>
                                             <input class="historyfield form-control" type="text" name="overseas" id="overseas" placeholder="Overseas" title="Please enter the overseas" />
                                         </td> -->
@@ -361,11 +361,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><label for="patientOccupation">Patient's Occupation</label></th>
+                                        <th scope="row"><label for="patientOccupation">Patient's Occupation</label></th>
                                         <td>
                                             <input class="form-control" type="text" name="patientOccupation" id="patientOccupation" placeholder="Patient's Occupation" title="Please enter the patient's occupation" />
                                         </td>
-                                        <th><label for="hasRecentTravelHistory"><b>In past 14 days</b> has the patient been in a healthcare facility (as a patient, worker, or visitor) in PNG or other country(ies) with confirmed COVID-19?</label><span class="mandatory">*</span></th>
+                                        <th scope="row"><label for="hasRecentTravelHistory"><strong>In past 14 days</strong> has the patient been in a healthcare facility (as a patient, worker, or visitor) in PNG or other country(ies) with confirmed COVID-19?</label><span class="mandatory">*</span></th>
                                         <td>
                                             <select name="hasRecentTravelHistory" id="hasRecentTravelHistory" class="form-control isRequired" title="Please choose if the patient has had a recent history of travelling to an affected area" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -376,7 +376,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><label for="contactWithConfirmedCase">Cared for a COVID-19 patient?</th>
+                                        <th scope="row"><label for="contactWithConfirmedCase">Cared for a COVID-19 patient?</th>
                                         <td>
                                             <select name="contactWithConfirmedCase" id="contactWithConfirmedCase" class="form-control" title="Please choose if the person cared for a COVID-19 patient" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -411,7 +411,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </div>
                                 <table class="table" aria-hidden="true" >
                                     <tr>
-                                        <th><label for="ifOtherDiseases">Does the patient have another diagnosis/etiology for their illness?</label></th>
+                                        <th scope="row"><label for="ifOtherDiseases">Does the patient have another diagnosis/etiology for their illness?</label></th>
                                         <td>
                                             <select name="ifOtherDiseases" id="ifOtherDiseases" class="form-control" title="Please choose If you have another diagnosis">
                                                 <option value="">-- Select --</option>
@@ -420,13 +420,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="unknown">Unknown</option>
                                             </select>
                                         </td>
-                                        <th><label for="otherDiseases">If it is yes? Then Please specify</label></th>
+                                        <th scope="row"><label for="otherDiseases">If it is yes? Then Please specify</label></th>
                                         <td>
                                             <input class="form-control" type="text" name="otherDiseases" id="otherDiseases" placeholder="Another diagnosis" title="Please enter the another diagnosis" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><label for="medicalHistory">Comorbidities Medical History</label></th>
+                                        <th scope="row"><label for="medicalHistory">Comorbidities Medical History</label></th>
                                         <td>
                                             <select name="medicalHistory" id="medicalHistory" class="form-control" title="Please choose the comorbidities medical history">
                                                 <option value="">-- Select --</option>
@@ -511,7 +511,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </div>
                                     <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
-                                            <th><label for="sampleReceivedDate">Date of Sample Received </label></th>
+                                            <th scope="row"><label for="sampleReceivedDate">Date of Sample Received </label></th>
                                             <td>
                                                 <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> style="width:100%;" />
                                             </td>
@@ -523,7 +523,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                         <tr>
-                                            <th><label for="isSampleRejected">Is sample Rejected?</label></th>
+                                            <th scope="row"><label for="isSampleRejected">Is sample Rejected?</label></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select Is sample rejected or not">
                                                     <option value="">--Select--</option>
@@ -605,9 +605,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Reviewed On</th>
+                                            <th scope="row">Reviewed On</th>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
-                                            <th>Reviewed By</th>
+                                            <th scope="row">Reviewed By</th>
                                             <td>
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
@@ -615,9 +615,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Approved On</th>
+                                            <th scope="row">Approved On</th>
                                             <td><input type="text" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
-                                            <th>Approved By</th>
+                                            <th scope="row">Approved By</th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
@@ -626,7 +626,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr>
 
-                                            <th><label for="isResultAuthorized">Referred for other testing?</label></th>
+                                            <th scope="row"><label for="isResultAuthorized">Referred for other testing?</label></th>
                                             <td>
                                                 <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control" title="Please select referred for other testing?" style="width:100%">
                                                     <option value="">-- Select --</option>
@@ -634,15 +634,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value='no'> No </option>
                                                 </select>
                                             </td>
-                                            <th><label for="isResultAuthorized">Referred By</label></th>
+                                            <th scope="row"><label for="isResultAuthorized">Referred By</label></th>
                                             <td><input type="text" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Referred By" title="Please enter who referred result" /></td>
 
                                         </tr>
                                         <tr>
 
-                                            <th><label for="isResultAuthorized">Referred On</label></th>
+                                            <th scope="row"><label for="isResultAuthorized">Referred On</label></th>
                                             <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Referred On" title="Please enter when referred result" /></td>
-                                            <th></th>
+                                            <th scope="row"></th>
                                             <td></td>
                                         </tr>
                                     </table>

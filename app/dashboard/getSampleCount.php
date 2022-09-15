@@ -177,7 +177,7 @@ $tableResult = $db->rawQuery($sQuery);
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
         <tr>
-            <td style="vertical-align:middle;padding-left: 0px;"><b><?php echo _("Collection Point"); ?>&nbsp;:</b>
+            <td style="vertical-align:middle;padding-left: 0px;"><strong><?php echo _("Collection Point"); ?>&nbsp;:</strong>
                 <select id="facilityId<?php echo $unique; ?>" name="facilityId" class="form-control" multiple title="<?php echo _('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
                     <?php foreach ($facilityInfo as $facility) { ?>
                         <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?></option>
@@ -383,7 +383,7 @@ $tableResult = $db->rawQuery($sQuery);
             tooltip: {
                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true

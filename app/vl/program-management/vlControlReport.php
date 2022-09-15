@@ -31,9 +31,9 @@ $sResult = $db->rawQuery($sQuery);
         <div class="box">
           <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:80%;">
             <tr>
-              <td><b><?php echo _("Sample Tested Date"); ?>&nbsp;</b><span class="mandatory">*</span></td>
+              <td><strong><?php echo _("Sample Tested Date"); ?>&nbsp;</strong><span class="mandatory">*</span></td>
               <td><input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="width:220px;background:#fff;" /></td>
-              <td><b><?php echo _("Control Type"); ?>&nbsp;</b><span class="mandatory">*</span></td>
+              <td><strong><?php echo _("Control Type"); ?>&nbsp;</strong><span class="mandatory">*</span></td>
               <td>
                 <select id="cType" name="cType" class="form-control" title="<?php echo _('Choose control type'); ?>">
                   <option value=""><?php echo _("-- Select --"); ?></option>

@@ -120,7 +120,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
-							<td><b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>

@@ -59,11 +59,11 @@ $lastUrl2 = '';
 				<div class="box">
 					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
 						<tr>
-							<td><b><?php echo _("Sample Collection Date&nbsp"); ?>;:</b></td>
+							<td><strong><?php echo _("Sample Collection Date&nbsp"); ?>;:</strong></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" value="<?php echo $collectionDate; ?>" />
 							</td>
-							<td>&nbsp;<b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
+							<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -76,7 +76,7 @@ $lastUrl2 = '';
 									?>
 								</select>
 							</td>
-							<td><b><?php echo _("Facility Name"); ?> :</b></td>
+							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
@@ -84,7 +84,7 @@ $lastUrl2 = '';
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Testing Lab"); ?> :</b></td>
+							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>

@@ -28,7 +28,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
-							<td style="width:50%;vertical-align:middle;"><b><?php echo _("Enter Sample Manifest Code"); ?> :</b></td>
+							<td style="width:50%;vertical-align:middle;"><strong><?php echo _("Enter Sample Manifest Code"); ?> :</strong></td>
 							<td style="width:50%;vertical-align:middle;">
 								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _('Sample manifest code'); ?>" title="<?php echo _('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />

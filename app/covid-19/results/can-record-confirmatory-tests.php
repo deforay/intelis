@@ -56,11 +56,11 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 				<div class="box">
 					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
 						<tr>
-							<td><b>Sample Collection Date&nbsp;:</b></td>
+							<td><strong>Sample Collection Date&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" value="<?php echo $collectionDate; ?>" />
 							</td>
-							<td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+							<td>&nbsp;<strong>Batch Code&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
 									<option value=""> -- Select -- </option>
@@ -75,7 +75,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 							</td>
 
 
-							<td><b>Facility Name :</b></td>
+							<td><strong>Facility Name :</strong></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
 									<option value=""> -- Select -- </option>

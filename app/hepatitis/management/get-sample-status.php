@@ -300,7 +300,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Hepatitis Samples"); ?> :<b>{point.y}</b>"
+                pointFormat: "<?php echo _("Hepatitis Samples"); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -310,7 +310,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     dataLabels: {
                         enabled: true,
                         useHTML: true,
-                        format: '<div style="padding-bottom:10px;"><b>{point.name}</b>: {point.y}</div>',
+                        format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
                         style: {
 
                             //crop:false,
@@ -373,7 +373,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Samples"); ?> :<b>{point.y}</b>"
+                pointFormat: "<?php echo _("Samples"); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -383,7 +383,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     dataLabels: {
                         enabled: true,
                         useHTML: true,
-                        format: '<div style="padding-bottom:10px;"><b>{point.name}</b>: {point.y}</div>',
+                        format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
                         style: {
                             color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                         },
@@ -428,7 +428,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Samples"); ?> :<b>{point.y}</b>"
+                pointFormat: "<?php echo _("Samples"); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -438,7 +438,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     dataLabels: {
                         enabled: true,
                         useHTML: true,
-                        format: '<div style="padding-bottom:10px;"><b>{point.name}</b>: {point.y}</div>',
+                        format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
                         style: {
                             color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                         },
@@ -608,7 +608,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Test Reasons"); ?> :<b>{point.y}</b>"
+                pointFormat: "<?php echo _("Test Reasons"); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -618,7 +618,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     dataLabels: {
                         enabled: true,
                         useHTML: true,
-                        format: '<div style="padding-bottom:10px;"><b>{point.name}</b>: {point.y}</div>',
+                        format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
                         style: {
 
                             //crop:false,

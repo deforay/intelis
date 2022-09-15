@@ -140,7 +140,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Échantillon ID" title="Échantillon ID" style="width:100%;" onchange="checkSampleNameValidation('form_covid19','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
                                             </td>
                                         <?php } ?>
-                                        <th><label for="testNumber">Prélévement</label></th>
+                                        <th scope="row"><label for="testNumber">Prélévement</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
@@ -153,7 +153,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <th><label for="province">Province </label><span class="mandatory">*</span></th>
+                                        <th scope="row"><label for="province">Province </label><span class="mandatory">*</span></th>
                                         <td>
                                             <select class="form-control isRequired" name="province" id="province" title="Province" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
@@ -193,7 +193,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">INFORMATION PATIENT</h3>&nbsp;&nbsp;&nbsp;
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
-                                    <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa-solid fa-magnifying-glass"></i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><b>&nbsp;No Patient Found</b></span>
+                                    <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><i class="fa-solid fa-magnifying-glass"></i>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
                                 <table class="table" aria-hidden="true"  style="width:100%">
 
@@ -212,15 +212,15 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" <?= ($generateAutomatedPatientCode) ? "readonly='readonly'" : "" ?> />
                                         </td>
-                                        <th><label for="patientDob">Date de naissance</label></th>
+                                        <th scope="row"><label for="patientDob">Date de naissance</label></th>
                                         <td>
                                             <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Age (years)</th>
+                                        <th scope="row">Age (years)</th>
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Age (years)" title="Age (years)" style="width:100%;" onchange="" /></td>
-                                        <th><label for="patientGender">Sexe <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientGender">Sexe <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="patientGender" id="patientGender">
                                                 <option value=''> -- Sélectionner -- </option>
@@ -231,7 +231,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><label for="isPatientPregnant">Enceinte</label></th>
+                                        <th scope="row"><label for="isPatientPregnant">Enceinte</label></th>
                                         <td>
                                             <select class="form-control" name="isPatientPregnant" id="isPatientPregnant">
                                                 <option value=''> -- Sélectionner -- </option>
@@ -242,17 +242,17 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Numéro de téléphone</th>
+                                        <th scope="row">Numéro de téléphone</th>
                                         <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Numéro de téléphone" title="Numéro de téléphone" style="width:100%;" onchange="" /></td>
 
-                                        <th>Courriel du patient</th>
+                                        <th scope="row">Courriel du patient</th>
                                         <td><input type="text" class="form-control " id="patientEmail" name="patientEmail" placeholder="Courriel du patient" title="Courriel du patient" style="width:100%;" /></td>
                                     </tr>
 
                                     <tr>
-                                        <th>Adresse du patient</th>
+                                        <th scope="row">Adresse du patient</th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Adresse du patient" title="Adresse du patient" style="width:100%;" onchange=""></textarea></td>
-                                        <th>Province du patient</th>
+                                        <th scope="row">Province du patient</th>
                                         <td>
                                             <select class="form-control ajax-select2" id="patientProvince" name="patientProvince" placeholder="Province du patient" style="width:100%;">
                                                 <option value="">-- Sélectionner --</option>
@@ -262,19 +262,19 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
 
                                     <tr>
-                                        <th>Commune</th>
+                                        <th scope="row">Commune</th>
                                         <td><select class="form-control ajax-select2" id="patientZone" name="patientZone" placeholder="Commune" style="width:100%;">
                                                 <?= $general->generateSelectOptions($patienZones, null, '-- Sélectionner --'); ?>
                                             </select>
                                         </td>
-                                        <th>Zone de Santé du Patient</th>
+                                        <th scope="row">Zone de Santé du Patient</th>
                                         <td><select class="form-control ajax-select2" id="patientDistrict" name="patientDistrict" placeholder="Zone de Santé du Patient" style="width:100%;">
                                                 <?= $general->generateSelectOptions($patienDistrict, null, '-- Sélectionner --'); ?>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Pays de résidence</th>
+                                        <th scope="row">Pays de résidence</th>
                                         <td>
                                             <select class="form-control select2" id="patientNationality" name="patientNationality" title="Nationalité du patient">
                                                 <?= $general->generateSelectOptions($countyData, null, '-- Sélectionner --'); ?>
@@ -410,7 +410,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <td colspan="2">
                                             <label class="radio-inline" style="margin-left:0;">
                                                 <input type="radio" id="reason3" name="reasonForCovid19Test" value="3" onchange="checkSubReason(this,'Cas_confirme_de_COVID_19');">
-                                                <strong><b>Cas confirme de covid-19</strong>
+                                                <strong>Cas confirme de covid-19</strong>
                                             </label>
 
                                         </td>
@@ -428,7 +428,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <td colspan="2">
                                             <label class="radio-inline" style="margin-left:0;">
                                                 <input type="radio" id="reason4" name="reasonForCovid19Test" value="4" onchange="checkSubReason(this,'Non_cas_contact_de_COVID_19');">
-                                                <strong><b>Non cas contact de COVID-19</strong>
+                                                <strong>Non cas contact de COVID-19</strong>
                                             </label>
 
                                         </td>
@@ -528,7 +528,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                 <option value="unknown">Inconnu</option>
                                             </select>
                                         </td>
-                                        <th></th>
+                                        <th scope="row"></th>
                                         <td></td>
                                     </tr>
                                     <tr class="symptoms">
@@ -545,7 +545,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                             <label class="radio-inline" style="width:4%;margin-left:0;">
                                                                 <input type="checkbox" class="checkSymptoms" id="xsymptom<?php echo $symptomId; ?>" name="symptom[]" value="<?php echo $symptomId; ?>" title="Veuillez choisir la valeur pour <?php echo $symptomName; ?>" onclick="checkSubSymptoms(this.value,<?php echo $symptomId; ?>,<?php echo $index; ?>);">
                                                             </label>
-                                                            <label class="radio-inline" for="symptom<?php echo $symptomId; ?>" style="padding-left:17px !important;margin-left:0;"><b><?php echo $symptomName; ?></b></label>
+                                                            <label class="radio-inline" for="symptom<?php echo $symptomId; ?>" style="padding-left:17px !important;margin-left:0;"><strong><?php echo $symptomName; ?></strong></label>
                                                         </td> -->
                                                         <th style="width:50%;"><?php echo $symptomName; ?></th>
                                                         <td style="width:50%;">
@@ -692,37 +692,37 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             <input type="text" class="form-control date" id="returnDate" name="returnDate" placeholder="e.g 09-Jan-1992" title="Date de retour" />
                                         </td>
 
-                                        <th>Compagnie aérienne</th>
+                                        <th scope="row">Compagnie aérienne</th>
                                         <td><input type="text" class="form-control " id="airline" name="airline" placeholder="Compagnie aérienne" title="Compagnie aérienne" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
-                                        <th>Numéro de siège</th>
+                                        <th scope="row">Numéro de siège</th>
                                         <td><input type="text" class="form-control " id="seatNo" name="seatNo" placeholder="Numéro de siège" title="Numéro de siège" style="width:100%;" /></td>
 
-                                        <th>Date et heure d'arrivée</th>
+                                        <th scope="row">Date et heure d'arrivée</th>
                                         <td><input type="text" class="form-control dateTime" id="arrivalDateTime" name="arrivalDateTime" placeholder="Date et heure d'arrivée" title="Date et heure d'arrivée" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
-                                        <th>Aeroport DE DEPART</th>
+                                        <th scope="row">Aeroport DE DEPART</th>
                                         <td><input type="text" class="form-control " id="airportOfDeparture" name="airportOfDeparture" placeholder="Aeroport DE DEPART" title="Aeroport DE DEPART" style="width:100%;" /></td>
 
-                                        <th>Transit</th>
+                                        <th scope="row">Transit</th>
                                         <td><input type="text" class="form-control" id="transit" name="transit" placeholder="Transit" title="Transit" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
-                                        <th>Raison de la visite (le cas échéant)</th>
+                                        <th scope="row">Raison de la visite (le cas échéant)</th>
                                         <td><input type="text" class="form-control" id="reasonOfVisit" name="reasonOfVisit" placeholder="Raison de la visite (le cas échéant)" title="Raison de la visite (le cas échéant)" style="width:100%;" /></td>
 
-                                        <th>Occupation du patient</th>
+                                        <th scope="row">Occupation du patient</th>
                                         <td>
                                             <input class="form-control" type="text" name="patientOccupation" id="patientOccupation" placeholder="Occupation du patient" title="Occupation du patient" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Raison de la visite (le cas échéant)</th>
+                                        <th scope="row">Raison de la visite (le cas échéant)</th>
                                         <td><input type="text" class="form-control" id="reasonOfVisit" name="reasonOfVisit" placeholder="Raison de la visite (le cas échéant)" title="Raison de la visite (le cas échéant)" style="width:100%;" /></td>
 
-                                        <th>Occupation du patient</th>
+                                        <th scope="row">Occupation du patient</th>
                                         <td>
                                             <input class="form-control" type="text" name="patientOccupation" id="patientOccupation" placeholder="Occupation du patient" title="Occupation du patient" />
                                         </td>
@@ -737,7 +737,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                 <option value="unknown">Inconnu</option>
                                             </select>
                                         </td>
-                                        <th></th>
+                                        <th scope="row"></th>
                                         <td></td>
                                     </tr>
                                 </table>
@@ -751,11 +751,11 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </div>
                                     <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
-                                            <th><label for="">Date de réception de l'échantillon </label></th>
+                                            <th scope="row"><label for="">Date de réception de l'échantillon </label></th>
                                             <td>
                                                 <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Veuillez saisir la date de réception de l'échantillon" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td>
-                                            <th><label for="sampleCondition">Condition de l'échantillon</label></th>
+                                            <th scope="row"><label for="sampleCondition">Condition de l'échantillon</label></th>
                                             <td>
                                                 <select class="form-control" name="sampleCondition" id="sampleCondition" title="Condition de l'échantillon">
                                                     <option value=''> -- Sélectionner -- </option>
@@ -771,7 +771,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
                                                 </select>
                                             </td>
-                                            <th>L'échantillon est-il rejeté?</th>
+                                            <th scope="row">L'échantillon est-il rejeté?</th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="L'échantillon est-il rejeté?">
                                                     <option value="">--Select--</option>
@@ -789,7 +789,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
-                                            <th>Date de rejet<span class="mandatory">*</span></th>
+                                            <th scope="row">Date de rejet<span class="mandatory">*</span></th>
                                             <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Date de rejet" /></td>
                                         </tr>
                                         <tr>
@@ -871,9 +871,9 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Revu le</th>
+                                            <th scope="row">Revu le</th>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revu le" title="Please enter the Revu le" /></td>
-                                            <th>Revu par</th>
+                                            <th scope="row">Revu par</th>
                                             <td>
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revu par" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
@@ -881,7 +881,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Le résultat est-il autorisé?</th>
+                                            <th scope="row">Le résultat est-il autorisé?</th>
                                             <td>
                                                 <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control" title="Le résultat est-il autorisé?" style="width:100%">
                                                     <option value="">-- Sélectionner --</option>
@@ -889,7 +889,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                     <option value='no'> Non </option>
                                                 </select>
                                             </td>
-                                            <th>Approuvé par</th>
+                                            <th scope="row">Approuvé par</th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
@@ -897,11 +897,11 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Approuvé le</th>
+                                            <th scope="row">Approuvé le</th>
                                             <td>
                                                 <input type="text" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
                                             </td>
-                                            <th></th>
+                                            <th scope="row"></th>
                                             <td></td>
                                         </tr>
                                     </table>

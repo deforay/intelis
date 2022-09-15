@@ -53,7 +53,7 @@ $covid19Results = $covid19Obj->getCovid19Results();
                         </div>
                         <br>
                     </div>
-                    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
+                    <table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
                         <thead>
                             <tr>
                                 <th style="text-align:center;"><?php echo _("QC Test Label"); ?> <span class="mandatory">*</span></th>

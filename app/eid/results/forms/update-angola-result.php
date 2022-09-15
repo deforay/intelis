@@ -186,11 +186,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="childDob">Data de Nascimento <span class="mandatory">*</span> </label></th>
+                                    <th scope="row"><label for="childDob">Data de Nascimento <span class="mandatory">*</span> </label></th>
                                     <td>
                                         <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                     </td>
-                                    <th><label for="childGender">Género <span class="mandatory">*</span> </label></th>
+                                    <th scope="row"><label for="childGender">Género <span class="mandatory">*</span> </label></th>
                                     <td>
                                         <select class="form-control isRequired" name="childGender" id="childGender">
                                             <option value=''> -- Selecione -- </option>
@@ -201,9 +201,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Idade da criança (em meses)</th>
+                                    <th scope="row">Idade da criança (em meses)</th>
                                     <td><input type="number" max="24" maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?php echo $eidInfo['child_age']; ?>" /></td>
-                                    <th>Profilaxia da Criança</th>
+                                    <th scope="row">Profilaxia da Criança</th>
                                     <td>
                                         <select class="form-control" name="childTreatment[]" id="childTreatment">
                                             <option value=''> -- Selecione -- </option>
@@ -216,7 +216,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 
                                 </tr>
                                 <tr>
-                                    <th>Alimentação da Criança</th>
+                                    <th scope="row">Alimentação da Criança</th>
                                     <td>
                                         <select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
                                             <option value=''> -- Selecione -- </option>
@@ -231,20 +231,20 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                             </optgroup>
                                         </select>
                                     </td>
-                                    <th> </th>
+                                    <th scope="row"> </th>
                                     <td></td>
 
                                 </tr>
 
 
                                 <tr>
-                                    <th>Nome da Mãe </th>
+                                    <th scope="row">Nome da Mãe </th>
                                     <td><input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Nome da Mãe" title="Nome da Mãe" style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" /></td>
-                                    <th>Nº Processo Clínico</th>
+                                    <th scope="row">Nº Processo Clínico</th>
                                     <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?php echo $eidInfo['mother_id'] ?>" /></td>
                                 </tr>
                                 <tr>
-                                    <th>Mãe da Criança Autoriza Contacto</th>
+                                    <th scope="row">Mãe da Criança Autoriza Contacto</th>
                                     <td>
                                         <select class="form-control" name="motherConsentForContact" id="motherConsentForContact">
                                             <option value=''> -- Selecione -- </option>
@@ -252,14 +252,14 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                             <option value='no' <?php echo ($eidInfo['caretaker_contact_consent'] == 'no') ? "selected='selected'" : ""; ?>> Não </option>
                                         </select>
                                     </td>
-                                    <th>Telemóvel</th>
+                                    <th scope="row">Telemóvel</th>
                                     <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Telemóvel" title="Caretaker Phone Number" style="width:100%;" value="<?php echo $eidInfo['caretaker_phone_number'] ?>" /></td>
                                 </tr>
 
                                 <tr>
-                                    <th>Tratamento ARV da Mãe</th>
+                                    <th scope="row">Tratamento ARV da Mãe</th>
                                     <td><input type="text" class="form-control " id="motherTreatment" name="motherTreatment[]" placeholder="Tratamento ARV da Mãe" title="Tratamento ARV da Mãe" style="width:100%;" value="<?php echo $eidInfo['mother_treatment'] ?>" /></td>
-                                    <th>Data de início</th>
+                                    <th scope="row">Data de início</th>
                                     <td><input type="text" class="form-control date" id="motherTreatmentInitiationDate" name="motherTreatmentInitiationDate" placeholder="Data de início" title="Data de início" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['mother_treatment_initiation_date']); ?>" /></td>
                                 </tr>
 
@@ -290,11 +290,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Técnico Responsável pela Colheita </th>
+                                    <th scope="row">Técnico Responsável pela Colheita </th>
                                     <td>
                                         <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Técnico Responsável pela Colheita" value="<?php echo $eidInfo['sample_requestor_name']; ?>" />
                                     </td>
-                                    <th>Contacto</th>
+                                    <th scope="row">Contacto</th>
                                     <td>
                                         <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Contacto" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
                                     </td>
@@ -319,21 +319,21 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                                 <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Selecione --'); ?>
                                             </select>
                                         </td>
-                                        <th></th>
+                                        <th scope="row"></th>
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <th><label for="">Data e Hora da Recepção da Amostra <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="">Data e Hora da Recepção da Amostra <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Data e Hora da Recepção da Amostra" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" />
                                         </td>
-                                        <th><label for="">Responsável da recepção </label></th>
+                                        <th scope="row"><label for="">Responsável da recepção </label></th>
                                         <td>
                                             <input type="text" class="form-control" id="labReceptionPerson" name="labReceptionPerson" placeholder="Responsável da recepção" title="Técnico Responsável pela Recepção da Amostra " <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $eidInfo['lab_reception_person']; ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Rejeição da amostra ? <span class="mandatory">*</span></th>
+                                        <th scope="row">Rejeição da amostra ? <span class="mandatory">*</span></th>
                                         <td>
                                             <select class="form-control isRequired" name="isSampleRejected" id="isSampleRejected" title="Rejeição da amostra ?">
                                                 <option value=''> -- Selecione -- </option>
@@ -342,7 +342,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                             </select>
                                         </td>
 
-                                        <th>Razão de rejeição</th>
+                                        <th scope="row">Razão de rejeição</th>
                                         <td>
                                             <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                 <option value="">-- Selecione --</option>
@@ -360,7 +360,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         </td>
                                     </tr>
                                     <tr class="show-rejection" style="display:none;">
-                                        <th>Data de Rejeição<span class="mandatory">*</span></th>
+                                        <th scope="row">Data de Rejeição<span class="mandatory">*</span></th>
                                         <td><input value="<?php echo $general->humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date Data de Rejeição" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Data de Rejeição" /></td>
                                         <td></td>
                                         <td></td>
@@ -372,7 +372,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         </td>
 
 
-                                        <th>Resultado</th>
+                                        <th scope="row">Resultado</th>
                                         <td>
                                             <select class="result-focus form-control isRequired" name="result" id="result">
                                                 <option value=''> -- Selecione -- </option>
@@ -383,19 +383,19 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Revisados ​Pela</th>
+                                        <th scope="row">Revisados ​Pela</th>
                                         <td>
                                             <select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose Revisados ​Pela" style="width: 100%;">
                                                 <?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th>Revisado Em</td>
+                                        <th scope="row">Revisado Em</td>
                                         <td><input type="text" value="<?= $general->humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
                                     </tr>
                                     <tr class="change-reason">
                                         <th class="change-reason" style="display: none;">Razão para mudar <span class="mandatory">*</span></td>
                                         <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Insira o motivo da mudança" title="Por favor, indique o motivo da mudança"></textarea></td>
-                                        <th></th>
+                                        <th scope="row"></th>
                                         <td></td>
                                     </tr>
                                 </table>

@@ -35,11 +35,11 @@ $batResult = $db->rawQuery($batQuery);
         <div class="box">
           <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
             <tr>
-              <td><b>Sample Collection Date&nbsp;:</b></td>
+              <td><strong>Sample Collection Date&nbsp;:</strong></td>
               <td>
                 <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
               </td>
-              <td>&nbsp;<b>Batch Code&nbsp;:</b></td>
+              <td>&nbsp;<strong>Batch Code&nbsp;:</strong></td>
               <td>
                 <select class="form-control" id="batchCode" name="batchCode" title="Please select batch code">
                   <option value=""> -- Select -- </option>
@@ -54,7 +54,7 @@ $batResult = $db->rawQuery($batQuery);
               </td>
             </tr>
             <tr>
-              <td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+              <td>&nbsp;<strong>Sample Type&nbsp;:</strong></td>
               <td>
                 <select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
                   <option value=""> -- Select -- </option>
@@ -68,7 +68,7 @@ $batResult = $db->rawQuery($batQuery);
                 </select>
               </td>
 
-              <td>&nbsp;<b>Facility Name & Code&nbsp;:</b></td>
+              <td>&nbsp;<strong>Facility Name & Code&nbsp;:</strong></td>
               <td>
                 <select class="form-control" id="facilityName" name="facilityName" title="Please select facility name">
                   <option value=""> -- Select -- </option>

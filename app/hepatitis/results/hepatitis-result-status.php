@@ -86,11 +86,11 @@ foreach ($rejectionTypeResult as $type) {
 				<div class="box">
 					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
 						<tr>
-							<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<td>&nbsp;<b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
+							<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -106,7 +106,7 @@ foreach ($rejectionTypeResult as $type) {
 						</tr>
 						<tr>
 
-							<td>&nbsp;<b><?php echo _("Facility Name & Code"); ?>&nbsp;:</b></td>
+							<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -119,7 +119,7 @@ foreach ($rejectionTypeResult as $type) {
 									?>
 								</select>
 							</td>
-							<td>&nbsp;<b><?php echo _("Show Samples that are"); ?> &nbsp;:</b></td>
+							<td>&nbsp;<strong><?php echo _("Show Samples that are"); ?> &nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="statusFilter" name="statusFilter" title="<?php echo _('Please choose a status'); ?>" style="width:220px;">
 									<option value="notApprovedOrRejected"> <?php echo _("Not Approved/Rejected"); ?> </option>

@@ -134,7 +134,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 						</div> -->
 						<?php if (SYSTEM_CONFIG['modules']['vl'] || SYSTEM_CONFIG['modules']['eid'] || SYSTEM_CONFIG['modules']['covid19']) { ?>
 							<div class="box-body">
-								<table cellpadding="0" cellspacing="0" border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;display:none;">
+								<table border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;display:none;">
 									<thead>
 										<tr>
 											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
@@ -222,7 +222,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								</table>
 								<br>
 								<hr>
-								<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
+								<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 									<thead>
 										<tr>
 											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
@@ -280,7 +280,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 							<h3 class="box-title "><?php echo _("Machine Names"); ?></h3>
 						</div>
 						<div class="box-body">
-							<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
+							<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
 										<th style="text-align:center;"><?php echo _("Machine Name"); ?> <span class="mandatory">*</span></th>

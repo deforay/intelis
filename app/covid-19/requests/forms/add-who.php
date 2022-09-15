@@ -192,15 +192,15 @@ foreach ($fResult as $fDetails) {
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
                                         </td>
-                                        <th><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Patient Age (years)</th>
+                                        <th scope="row">Patient Age (years)</th>
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
-                                        <th><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="patientGender" id="patientGender">
                                                 <option value=''> -- Select -- </option>
@@ -212,17 +212,17 @@ foreach ($fResult as $fDetails) {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Phone number</th>
+                                        <th scope="row">Phone number</th>
                                         <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient Phone Number" title="Patient Phone Number" style="width:100%;" onchange="" /></td>
 
-                                        <th>Patient address</th>
+                                        <th scope="row">Patient address</th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Patient Address" title="Patient Address" style="width:100%;" onchange=""></textarea></td>
                                     </tr>
                                     <tr>
-                                        <th>Province</th>
+                                        <th scope="row">Province</th>
                                         <td><input type="text" class="form-control " id="patientProvince" name="patientProvince" placeholder="Patient Province" title="Please enter the patient province" style="width:100%;" /></td>
 
-                                        <th>District</th>
+                                        <th scope="row">District</th>
                                         <td><input class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Patient District" title="Please enter the patient district" style="width:100%;"></td>
                                     </tr>
                                 </table>
@@ -247,7 +247,7 @@ foreach ($fResult as $fDetails) {
                                         <td style="width:35% !important;">
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
                                         </td>
-                                        <th>Specimen Type <span class="mandatory">*</span></th>
+                                        <th scope="row">Specimen Type <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -258,7 +258,7 @@ foreach ($fResult as $fDetails) {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Is clinical sample post-mortem ?</th>
+                                        <th scope="row">Is clinical sample post-mortem ?</th>
                                         <td>
                                             <select name="isSamplePostMortem" id="isSamplePostMortem" class="form-control" title="Is Clinical Sample Post-mortem ?" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -266,7 +266,7 @@ foreach ($fResult as $fDetails) {
                                                 <option value='no'> No </option>
                                             </select>
                                         </td>
-                                        <th>Priority Status</th>
+                                        <th scope="row">Priority Status</th>
                                         <td>
                                             <select name="priorityStatus" id="priorityStatus" class="form-control" title="Priority Status" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -314,11 +314,11 @@ foreach ($fResult as $fDetails) {
                                         </td>
                                     </tr>
                                     <tr class="historyfield">
-                                        <th>If Yes, Country Name(s)</th>
+                                        <th scope="row">If Yes, Country Name(s)</th>
                                         <td>
                                             <input class="historyfield form-control" type="text" name="countryName" id="countryName" placeholder="Country Name(s)" />
                                         </td>
-                                        <th>Return Date</th>
+                                        <th scope="row">Return Date</th>
                                         <td>
                                             <input class="historyfield form-control date" type="text" name="returnDate" id="returnDate" placeholder="Return Date" />
                                         </td>
@@ -337,7 +337,7 @@ foreach ($fResult as $fDetails) {
                                     </div>
                                     <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
-                                            <th><label for="">Sample Received Date </label></th>
+                                            <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
                                                 <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td>
@@ -351,7 +351,7 @@ foreach ($fResult as $fDetails) {
                                                 </select>
                                             </td>
                                         <tr>
-                                            <th>Is Sample Rejected?</th>
+                                            <th scope="row">Is Sample Rejected?</th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>
@@ -369,7 +369,7 @@ foreach ($fResult as $fDetails) {
                                             </td>
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
-                                            <th>Rejection Date<span class="mandatory">*</span></th>
+                                            <th scope="row">Rejection Date<span class="mandatory">*</span></th>
                                             <td><input class="form-control date rejection-show" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                             <td></td>
                                             <td></td>
@@ -420,18 +420,18 @@ foreach ($fResult as $fDetails) {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Reviewed By</th>
+                                            <th scope="row">Reviewed By</th>
                                             <td>
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th>Reviewed on</td>
+                                            <th scope="row">Reviewed on</td>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                         </tr>
                                         <tr>
 
-                                            <th>Is Result Authorized ?</th>
+                                            <th scope="row">Is Result Authorized ?</th>
                                             <td>
                                                 <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control" title="Is Result authorized ?" style="width:100%">
                                                     <option value="">-- Select --</option>
@@ -439,15 +439,15 @@ foreach ($fResult as $fDetails) {
                                                     <option value='no'> No </option>
                                                 </select>
                                             </td>
-                                            <th>Authorized By</th>
+                                            <th scope="row">Authorized By</th>
                                             <td><input type="text" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Authorized By" /></td>
 
                                         </tr>
                                         <tr>
 
-                                            <th>Authorized on</td>
+                                            <th scope="row">Authorized on</td>
                                             <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" /></td>
-                                            <th></th>
+                                            <th scope="row"></th>
                                             <td></td>
 
                                         </tr>
