@@ -200,10 +200,6 @@ $output = array(
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => array()
 );
-// $editRequest = false;
-// if (isset($_SESSION['privileges']) && (in_array("covid19-edit-request.php", $_SESSION['privileges']))) {
-//     $editRequest = true;
-// }
 
 foreach ($rResult as $aRow) {
 

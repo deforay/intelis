@@ -1,9 +1,6 @@
 <?php
 $title = _("EID | View All Requests");
 
-// echo "<pre>";
-// var_dump($_SESSION['privileges']);die;
-
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
@@ -225,7 +222,7 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified On"); ?></th>
 									<th><?php echo _("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSION['privileges'])) || (in_array("eid-view-request.php", $_SESSION['privileges']))) { ?>
+									<?php if (!empty($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSION['privileges'])) || (in_array("eid-view-request.php", $_SESSION['privileges']))) { ?>
 										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>

@@ -41,8 +41,8 @@ $userDb = new \Vlsm\Models\Users();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $labTechnicians = $userDb->getActiveUsers($facilityMap);
 
-$healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
-$testingLabs = $facilitiesDb->getTestingLabs('covid19');
+$healthFacilities = $facilitiesDb->getHealthFacilities('hepatitis');
+$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);

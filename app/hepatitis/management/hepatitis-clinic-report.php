@@ -11,9 +11,9 @@ $tsResult = $db->rawQuery($tsQuery);
 $facilitiesDb = new \Vlsm\Models\Facilities();
 
 
-$healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
+$healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('covid19');
+$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 
@@ -21,7 +21,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 $sQuery = "SELECT * FROM r_covid19_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$batQuery = "SELECT batch_code FROM batch_details WHERE test_type='covid19' AND batch_status='completed'";
+$batQuery = "SELECT batch_code FROM batch_details WHERE test_type='hepatitis' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 ?>
 <style>
