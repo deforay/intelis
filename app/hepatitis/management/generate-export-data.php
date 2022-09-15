@@ -23,17 +23,10 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 	if ($_SESSION['instanceType'] == 'standalone') {
-		if ($arr['vl_form'] == 1) {
-			$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
-		} else {
-			$headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-		}
+		$headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	} else {
-		if ($arr['vl_form'] == 1) {
-			$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
-		} else {
-			$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-		}
+
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	}
 
 	$colNo = 1;
@@ -91,15 +84,15 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$no = 1;
 	foreach ($rResult as $aRow) {
 		$row = array();
-		// if($arr['vl_form'] == 1){
-		// 	// Get testing platform and test method 
-		// 	$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";
-		// 	$covid19TestInfo = $db->rawQuery($covid19TestQuery);
-		// 	foreach ($covid19TestInfo as $indexKey => $rows) {
-		// 		$testPlatform = $rows['testing_platform'];
-		// 		$testMethod = $rows['test_name'];
-		// 	}
-		// }
+		if ($arr['vl_form'] == 1) {
+			// Get testing platform and test method 
+			$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";
+			$covid19TestInfo = $db->rawQuery($covid19TestQuery);
+			foreach ($covid19TestInfo as $indexKey => $rows) {
+				$testPlatform = $rows['testing_platform'];
+				$testMethod = $rows['test_name'];
+			}
+		}
 
 		//date of birth
 		$dob = '';
@@ -156,79 +149,33 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		} else {
 			$sourceOfArtPOE = $aRow['source_of_alert_other'];
 		}
-
-		if ($arr['vl_form'] == 1) {
-
-			$row[] = $no;
-			if ($_SESSION['instanceType'] == 'standalone') {
-				$row[] = $aRow["sample_code"];
-			} else {
-				$row[] = $aRow["sample_code"];
-				$row[] = $aRow["remote_sample_code"];
-			}
-			$row[] = ucwords($aRow['labName']);
-			$row[] = ucwords($aRow['testing_point']);
-			$row[] = ucwords($aRow['labTechnician']);
-			$row[] = ucwords($sourceOfArtPOE);
-			$row[] = ucwords($aRow['facility_district']);
-			$row[] = ucwords($aRow['facility_state']);
-			$row[] = ucwords($aRow['facility_name']);
-			$row[] = $aRow['patient_id'];
-			$row[] = $patientFname . " " . $patientLname;
-			$row[] = $general->humanReadableDateFormat($aRow['patient_dob']);
-			$row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
-			$row[] = ucwords($aRow['patient_gender']);
-			$row[] = ucwords($aRow['nationality']);
-			$row[] = ucwords($aRow['patient_province']);
-			$row[] = ucwords($aRow['patient_district']);
-			$row[] = ucwords($aRow['patient_city']);
-			$row[] = $general->humanReadableDateFormat($aRow['sample_collection_date']);
-			$row[] = ucwords($aRow['test_reason_name']);
-			$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
-			$row[] = $general->humanReadableDateFormat($aRow['request_created_datetime']);
-			$row[] = ucwords($aRow['sample_condition']);
-			$row[] = ucwords($aRow['status_name']);
-			$row[] = ucwords($aRow['sample_name']);
-			$row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
-			// $row[] = ucwords($testPlatform);
-			// $row[] = ucwords($testMethod);
-			$row[] = ucwords($aRow['hcv_vl_result']);
-			$row[] = ucwords($aRow['hbv_vl_result']);
-			$row[] = $general->humanReadableDateFormat($aRow['result_printed_datetime']);
+		$row = array();
+		$row[] = $no;
+		if ($_SESSION['instanceType'] == 'standalone') {
+			$row[] = $aRow["sample_code"];
 		} else {
-
-			$row[] = $no;
-			if ($_SESSION['instanceType'] == 'standalone') {
-				$row[] = $aRow["sample_code"];
-			} else {
-				$row[] = $aRow["sample_code"];
-				$row[] = $aRow["remote_sample_code"];
-			}
-			$row[] = ucwords($aRow['facility_name']);
-			$row[] = $aRow['facility_code'];
-			$row[] = ucwords($aRow['facility_district']);
-			$row[] = ucwords($aRow['facility_state']);
-			$row[] = $aRow['patient_id'];
-			$row[] = $patientFname . " " . $patientLname;
-			$row[] = $dob;
-			$row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
-			$row[] = $gender;
-			$row[] = $sampleCollectionDate;
-			$row[] = $general->humanReadableDateFormat($aRow['date_of_symptom_onset']);
-			$row[] = ucwords($aRow['contact_with_confirmed_case']);
-			$row[] = ucwords($aRow['has_recent_travel_history']);
-			$row[] = ucwords($aRow['travel_country_names']);
-			$row[] = $general->humanReadableDateFormat($aRow['travel_return_date']);
-			$row[] = $sampleRejection;
-			$row[] = $sampleTestedOn;
-			$row[] = ucwords($aRow['hcv_vl_result']);
-			$row[] = ucwords($aRow['hbv_vl_result']);
-			$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
-			$row[] = $resultDispatchedDate;
-			$row[] = ucfirst($aRow['lab_tech_comments']);
-			$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
-			$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+			$row[] = $aRow["sample_code"];
+			$row[] = $aRow["remote_sample_code"];
 		}
+		$row[] = ucwords($aRow['facility_name']);
+		$row[] = $aRow['facility_code'];
+		$row[] = ucwords($aRow['facility_district']);
+		$row[] = ucwords($aRow['facility_state']);
+		$row[] = $aRow['patient_id'];
+		$row[] = $patientFname . " " . $patientLname;
+		$row[] = $dob;
+		$row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+		$row[] = $gender;
+		$row[] = $sampleCollectionDate;
+		$row[] = $sampleRejection;
+		$row[] = $sampleTestedOn;
+		$row[] = ucwords($aRow['hcv_vl_result']);
+		$row[] = ucwords($aRow['hbv_vl_result']);
+		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = $resultDispatchedDate;
+		$row[] = ucfirst($aRow['lab_tech_comments']);
+		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
+		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
 		$output[] = $row;
 		$no++;
 	}
