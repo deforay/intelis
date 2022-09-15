@@ -73,7 +73,7 @@ unset($_SESSION['controllertrack']);
                             </tbody>
                         </table>
                     </div>
-                    <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 75%;">
+                    <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 75%;">
                         <tr>
                             <td>
                                 <?php

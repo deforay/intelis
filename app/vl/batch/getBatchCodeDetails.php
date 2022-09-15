@@ -173,7 +173,7 @@ foreach ($rResult as $aRow) {
 
 
     $row = array();
-    $printBarcode = '<a href="/vl/batch/generateBarcode.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><i class="fa-solid fa-barcode"></i> ' . _("Print Batch PDF") . '</a>';
+    $printBarcode = '<a href="/vl/batch/generateBarcode.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><i class="fa-solid fa-barcode"></i> ' . _("Print Batch PDF") . '</a>';
 
     $editPosition = '<a href="' . $editPositionFileName . '?id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><i class="fa-solid fa-arrow-down-1-9"></i> ' . _("Edit Position") . '</a>';
 
