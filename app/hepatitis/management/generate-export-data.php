@@ -11,7 +11,7 @@ $general = new \Vlsm\Models\General();
 
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
-
+$sarr = $general->getSystemConfig();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
@@ -22,13 +22,13 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
-	if ($_SESSION['instanceType'] == 'standalone') {
-		$headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-	} else {
+	$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 
-		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	if ($sarr['sc_user_type'] == 'standalone') {
+		if (($key = array_search('vl.remote_sample_code', $headings)) !== false) {
+			unset($headings[$key]);
+		}
 	}
-
 	$colNo = 1;
 
 	$styleArray = array(
@@ -151,11 +151,11 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		}
 		$row = array();
 		$row[] = $no;
-		if ($_SESSION['instanceType'] == 'standalone') {
-			$row[] = $aRow["sample_code"];
-		} else {
+		if ($sarr['sc_user_type'] == 'standalone') {
 			$row[] = $aRow["sample_code"];
 			$row[] = $aRow["remote_sample_code"];
+		} else {
+			$row[] = $aRow["sample_code"];
 		}
 		$row[] = ucwords($aRow['facility_name']);
 		$row[] = $aRow['facility_code'];
