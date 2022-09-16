@@ -62,7 +62,7 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 		<!-- <pre><?php print_r($arr); ?></pre> -->
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box">
+				<div class="box" id="filterDiv">
 					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th><?php echo _("Sample Collection Date"); ?></th>
@@ -255,6 +255,7 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
+	let searchExecuted = false;
 	var startDate = "";
 	var endDate = "";
 	var selectedTests = [];
@@ -327,6 +328,10 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 				$("#iCol" + colNo + "-sort").hide();
 			}
 		}
+
+		$("#filterDiv input, #filterDiv select").on("change", function(){
+			searchExecuted = false;
+		});
 	});
 
 	function fnShowHide(iCol) {
@@ -450,6 +455,7 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 	}
 
 	function searchVlRequestData() {
+		searchExecuted = true;
 		var flag = false;
 		$(".filter-input ").each(function() {
 			if ($(this).val() != "") {
@@ -484,6 +490,9 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 	}
 
 	function exportInexcel(fileName) {
+		if(searchExecuted === false){
+     		searchVlRequestData();
+  		}
 		var withAlphaNum = null;
 		$.blockUI();
 		oTable.fnDraw();
