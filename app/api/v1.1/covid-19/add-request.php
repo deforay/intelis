@@ -463,6 +463,7 @@ try {
             $responseData[$rootKey] = array(
                 'status' => 'success',
                 'sampleCode' => $c19SampleCode,
+                'transactionId' => $transactionId,
                 'uniqueId' => $c19Data['unique_id'],
                 'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $c19Data['app_sample_code'] : null,
             );

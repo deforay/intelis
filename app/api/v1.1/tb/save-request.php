@@ -369,6 +369,7 @@ try {
             $responseData[$rootKey] = array(
                 'status' => 'success',
                 'sampleCode' => $tbSampleCode,
+                'transactionId' => $transactionId,
                 'uniqueId' => $tbData['unique_id'],
                 'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $tbData['app_sample_code'] : null,
             );

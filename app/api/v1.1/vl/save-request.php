@@ -443,6 +443,7 @@ try {
             $responseData[$rootKey] = array(
                 'status' => 'success',
                 'sampleCode' => $vlSampleCode,
+                'transactionId' => $transactionId,
                 'uniqueId' => $vlFulldata['unique_id'],
                 'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $vlFulldata['app_sample_code'] : null,
             );

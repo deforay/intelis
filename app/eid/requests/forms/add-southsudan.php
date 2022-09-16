@@ -83,13 +83,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <table class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                            <td><label for="sampleCode">Sample ID </label></td>
+                                            <td class="labels"><label for="sampleCode">Sample ID </label></td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
                                                 <input type="hidden" id="sampleCode" name="sampleCode" />
                                             </td>
                                         <?php } else { ?>
-                                            <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
+                                            <td class="labels"><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                             <td>
                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
                                             </td>
@@ -100,19 +100,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
+                                        <td class="labels"><label for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control isRequired" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                        <td><label for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
+                                        <td class="labels"><label for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control isRequired" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
-                                        <td><label for="facilityId">Health Facility/POE </label><span class="mandatory">*</span></td>
+                                        <td class="labels"><label for="facilityId">Health Facility/POE </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
                                                 <?php echo $facility; ?>
@@ -120,7 +120,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><label for="supportPartner">Implementing Partner </label></td>
+                                        <td class="labels"><label for="supportPartner">Implementing Partner </label></td>
                                         <td>
                                             <!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
                                             <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
@@ -132,7 +132,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <td><label for="fundingSource">Funding Partner</label></td>
+                                        <td class="labels"><label for="fundingSource">Funding Partner</label></td>
                                         <td>
                                             <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
@@ -164,7 +164,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Infant ID or Infant Name" title="Enter art number or patient name" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
@@ -375,7 +375,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row">Testing Platform </th>
                                             <td><select name="eidPlatform" id="eidPlatform" class="form-control result-optional" title="Please select the testing platform">
