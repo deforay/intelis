@@ -56,7 +56,7 @@ $eidResults = $eidModel->getEidResults();
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box">
+				<div class="box" id="filterDiv">
 					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th><?php echo _("Sample Collection Date"); ?></th>
@@ -269,6 +269,7 @@ $eidResults = $eidModel->getEidResults();
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
+	let searchExecuted = false;
 	var startDate = "";
 	var endDate = "";
 	var selectedTests = [];
@@ -369,6 +370,10 @@ $eidResults = $eidModel->getEidResults();
 				$("#iCol" + colNo + "-sort").hide();
 			}
 		}
+		$("#filterDiv input, #filterDiv select").on("change", function(){
+			searchExecuted = false;
+		});
+
 	});
 
 	function fnShowHide(iCol) {
@@ -500,6 +505,7 @@ $eidResults = $eidModel->getEidResults();
 	}
 
 	function searchVlRequestData() {
+		searchExecuted = true;
 		$.blockUI();
 		oTable.fnDraw();
 		$.unblockUI();
@@ -524,6 +530,9 @@ $eidResults = $eidModel->getEidResults();
 	}
 
 	function exportInexcel(fileName) {
+		if(searchExecuted === false){
+     		searchVlRequestData();
+  		}
 		var withAlphaNum = null;
 		$.blockUI();
 		oTable.fnDraw();
