@@ -96,7 +96,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 
 		//date of birth
 		$dob = '';
-		if ($aRow['patient_dob'] != NULL && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
+		if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
 			$dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
 		}
 		//set gender
@@ -110,25 +110,25 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		}
 		//sample collecion date
 		$sampleCollectionDate = '';
-		if ($aRow['sample_collection_date'] != NULL && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+		if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", $aRow['sample_collection_date']);
 			$sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
 		$sampleTestedOn = '';
-		if ($aRow['sample_tested_datetime'] != NULL && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
+		if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
 			$sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
 		}
 
 
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != NULL && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
 		}
 		//result dispatched date
 		$resultDispatchedDate = '';
-		if ($aRow['result_printed_datetime'] != NULL && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+		if ($aRow['result_printed_datetime'] != null && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", $aRow['result_printed_datetime']);
 			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
@@ -164,7 +164,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row[] = $aRow['patient_id'];
 		$row[] = $patientFname . " " . $patientLname;
 		$row[] = $dob;
-		$row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+		$row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = $gender;
 		$row[] = $sampleCollectionDate;
 		$row[] = $sampleRejection;

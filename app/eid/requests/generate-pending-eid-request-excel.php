@@ -157,25 +157,25 @@ foreach ($rResult as $aRow) {
 
     //set sample rejection
     $sampleRejection = 'No';
-    if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != NULL && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+    if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
         $sampleRejection = 'Yes';
     }
     //result dispatched date
     $resultDispatchedDate = '';
-    if ($aRow['result_printed_datetime'] != NULL && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+    if ($aRow['result_printed_datetime'] != null && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
         $resultDispatchedDate =  $dateTimeUtil->humanReadableDateFormat($aRow['result_printed_datetime']);
     }
 
     //requeste created date time
     $requestCreatedDatetime = '';
-    if ($aRow['request_created_datetime'] != NULL && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
+    if ($aRow['request_created_datetime'] != null && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
         $requestCreatedDatetime =  $dateTimeUtil->humanReadableDateFormat($aRow['request_created_datetime'], true);
     }
     //set result log value
     $logVal = '0.0';
-    if ($aRow['result_value_log'] != NULL && trim($aRow['result_value_log']) != '') {
+    if ($aRow['result_value_log'] != null && trim($aRow['result_value_log']) != '') {
         $logVal = round($aRow['result_value_log'], 1);
-    } else if ($aRow['result_value_absolute'] != NULL && trim($aRow['result_value_absolute']) != '' && $aRow['result_value_absolute'] > 0) {
+    } else if ($aRow['result_value_absolute'] != null && trim($aRow['result_value_absolute']) != '' && $aRow['result_value_absolute'] > 0) {
         $logVal = round(log10((float)$aRow['result_value_absolute']), 1);
     }
 
@@ -211,7 +211,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['child_name'];
     $row[] = $aRow['mother_id'];
     $row[] = $dob;
-    $row[] = ($aRow['child_age'] != NULL && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
+    $row[] = ($aRow['child_age'] != null && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
     $row[] = $gender;
     $row[] = ucwords($aRow['has_infant_stopped_breastfeeding']);
     $row[] = ucwords($aRow['pcr_test_performed_before']);

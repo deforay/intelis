@@ -29,7 +29,7 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim($_SESSIO
                         $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
                 else
                         $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected'];
-                if(trim($aRow['sample_tested_datetime'])  == NULL  && trim($aRow['sample_collection_date']) != '')
+                if(trim($aRow['sample_tested_datetime'])  == null  && trim($aRow['sample_collection_date']) != '')
                         $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
                 else
                         $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived'];
@@ -45,7 +45,7 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim($_SESSIO
                         $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
                 else
                         $row['totalRejected'] = 0;
-                if(trim($aRow['sample_tested_datetime'])  == NULL  && trim($aRow['sample_collection_date']) != '')
+                if(trim($aRow['sample_tested_datetime'])  == null  && trim($aRow['sample_collection_date']) != '')
                         $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
                 else
                         $row['totalReceived'] = 0;
@@ -62,7 +62,7 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim($_SESSIO
                         $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
                 else
                         $row['totalRejected'] = 0;
-            if(trim($aRow['sample_tested_datetime'])  == NULL  && trim($aRow['sample_collection_date']) != '')
+            if(trim($aRow['sample_tested_datetime'])  == null  && trim($aRow['sample_collection_date']) != '')
                         $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
                 else
                         $row['totalReceived'] = 0;

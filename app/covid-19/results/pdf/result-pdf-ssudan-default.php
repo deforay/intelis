@@ -197,7 +197,7 @@ $smileyContent = '';
 $showMessage = '';
 $tndMessage = '';
 $messageTextSize = '12px';
-if ($result['result'] != NULL && trim($result['result']) != '') {
+if ($result['result'] != null && trim($result['result']) != '') {
     $resultType = is_numeric($result['result']);
     if ($result['result'] == 'positive') {
         $vlResult = $result['result'];
@@ -482,7 +482,7 @@ if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
     //Update print datetime in VL tbl.
     $vlQuery = "SELECT result_printed_datetime FROM form_covid19 as vl WHERE vl.covid19_id ='" . $result['covid19_id'] . "'";
     $vlResult = $db->query($vlQuery);
-    if ($vlResult[0]['result_printed_datetime'] == NULL || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+    if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
         $db = $db->where('covid19_id', $result['covid19_id']);
         $db->update($tableName2, array('result_printed_datetime' => $currentDateTime, 'result_dispatched_datetime' => $currentDateTime));
     }

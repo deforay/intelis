@@ -33,21 +33,21 @@ try {
 		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
 		$_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
 	} else {
-		$_POST['sampleCollectionDate'] = NULL;
+		$_POST['sampleCollectionDate'] = null;
 	}
 
 	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
 		$sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
 		$_POST['sampleDispatchedDate'] = $general->isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
 	} else {
-		$_POST['sampleDispatchedDate'] = NULL;
+		$_POST['sampleDispatchedDate'] = null;
 	}
 
 	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
 		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
 		$_POST['approvedOnDateTime'] = $general->isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
 	} else {
-		$_POST['approvedOnDateTime'] = NULL;
+		$_POST['approvedOnDateTime'] = null;
 	}
 
 
@@ -57,42 +57,42 @@ try {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
 		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
-		$_POST['sampleReceivedDate'] = NULL;
+		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
 		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
-		$_POST['sampleTestedDateTime'] = NULL;
+		$_POST['sampleTestedDateTime'] = null;
 	}
 
 	if (isset($_POST['rapidtestDate']) && trim($_POST['rapidtestDate']) != "") {
 		$rapidtestDate = explode(" ", $_POST['rapidtestDate']);
 		$_POST['rapidtestDate'] = $general->isoDateFormat($rapidtestDate[0]) . " " . $rapidtestDate[1];
 	} else {
-		$_POST['rapidtestDate'] = NULL;
+		$_POST['rapidtestDate'] = null;
 	}
 
 	if (isset($_POST['childDob']) && trim($_POST['childDob']) != "") {
 		$childDob = explode(" ", $_POST['childDob']);
 		$_POST['childDob'] = $general->isoDateFormat($childDob[0]) . " " . $childDob[1];
 	} else {
-		$_POST['childDob'] = NULL;
+		$_POST['childDob'] = null;
 	}
 
 	if (isset($_POST['mothersDob']) && trim($_POST['mothersDob']) != "") {
 		$mothersDob = explode(" ", $_POST['mothersDob']);
 		$_POST['mothersDob'] = $general->isoDateFormat($mothersDob[0]) . " " . $mothersDob[1];
 	} else {
-		$_POST['mothersDob'] = NULL;
+		$_POST['mothersDob'] = null;
 	}
 
 	if (isset($_POST['motherTreatmentInitiationDate']) && trim($_POST['motherTreatmentInitiationDate']) != "") {
 		$motherTreatmentInitiationDate = explode(" ", $_POST['motherTreatmentInitiationDate']);
 		$_POST['motherTreatmentInitiationDate'] = $general->isoDateFormat($motherTreatmentInitiationDate[0]) . " " . $motherTreatmentInitiationDate[1];
 	} else {
-		$_POST['motherTreatmentInitiationDate'] = NULL;
+		$_POST['motherTreatmentInitiationDate'] = null;
 	}
 
 
@@ -136,13 +136,13 @@ try {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
 		$_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
-		$_POST['reviewedOn'] = NULL;
+		$_POST['reviewedOn'] = null;
 	}
 	if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != "") {
 		$resultDispatchedOn = explode(" ", $_POST['resultDispatchedOn']);
 		$_POST['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
 	} else {
-		$_POST['resultDispatchedOn'] = NULL;
+		$_POST['resultDispatchedOn'] = null;
 	}
 	if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == 9) {
 		$_POST['status'] = 9;
@@ -206,10 +206,10 @@ try {
 		'result_reviewed_by'                				=> (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
 		'result_reviewed_datetime'          				=> (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'result_dispatched_datetime'          				=> (isset($_POST['resultDispatchedOn']) && $_POST['resultDispatchedOn'] != "") ? $_POST['resultDispatchedOn'] : null,
-		'tested_by' 										=> (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
-		'lab_tech_comments' 									=> (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  NULL,
-		'result_approved_by' 								=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
-		'result_approved_datetime' 							=> (isset($_POST['approvedOnDateTime']) && $_POST['approvedOnDateTime'] != '') ? $_POST['approvedOnDateTime'] :  NULL,
+		'tested_by' 										=> (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
+		'lab_tech_comments' 									=> (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  null,
+		'result_approved_by' 								=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
+		'result_approved_datetime' 							=> (isset($_POST['approvedOnDateTime']) && $_POST['approvedOnDateTime'] != '') ? $_POST['approvedOnDateTime'] :  null,
 		'revised_by' 										=> (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
 		'revised_on' 										=> (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
 		'reason_for_changing'				  				=> (!empty($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
@@ -230,10 +230,10 @@ try {
 		$eidData['last_modified_by'] =  $_SESSION['userId'];
 	}
 	// if ($_SESSION['instanceType'] == 'remoteuser') {
-	//   //$eidData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : NULL;
+	//   //$eidData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
 	// } else {
 	//   if ($_POST['sampleCodeCol'] != '') {
-	//     //$eidData['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : NULL;
+	//     //$eidData['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;
 	//   } else {
 	//     $eidModel = new \Vlsm\Models\Eid();
 

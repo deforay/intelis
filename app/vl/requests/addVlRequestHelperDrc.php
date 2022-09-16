@@ -10,7 +10,7 @@ $general = new \Vlsm\Models\General();
 $vlModel = new \Vlsm\Models\Vl();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
-$vl_result_category = NULL;
+$vl_result_category = null;
 $isRejected = false;
 $logVal = null;
 $absDecimalVal = null;
@@ -40,7 +40,7 @@ try {
     //  $end_date = date('Y-m-31');
     //  $labVlQuery='select MAX(lab_code) FROM form_vl as vl where vl.vlsm_country_id="3" AND DATE(vl.request_created_datetime) >= "'.$start_date.'" AND DATE(vl.request_created_datetime) <= "'.$end_date.'"';
     //  $labVlResult = $db->rawQuery($labVlQuery);
-    //  if(isset($labVlResult) && trim($labVlResult[0]['MAX(lab_code)'])!='' && $labVlResult[0]['MAX(lab_code)']!=NULL){
+    //  if(isset($labVlResult) && trim($labVlResult[0]['MAX(lab_code)'])!='' && $labVlResult[0]['MAX(lab_code)']!= null){
     //     $_POST['labNo'] = $labVlResult[0]['MAX(lab_code)']+1;
     //  }else{
     //     $_POST['labNo'] = 1;
@@ -50,48 +50,48 @@ try {
     if (isset($_POST['dateOfDemand']) && trim($_POST['dateOfDemand']) != "") {
         $_POST['dateOfDemand'] = $general->isoDateFormat($_POST['dateOfDemand']);
     } else {
-        $_POST['dateOfDemand'] = NULL;
+        $_POST['dateOfDemand'] = null;
     }
     //Set dob
     if (isset($_POST['dob']) && trim($_POST['dob']) != "") {
         $_POST['dob'] = $general->isoDateFormat($_POST['dob']);
     } else {
-        $_POST['dob'] = NULL;
+        $_POST['dob'] = null;
     }
     //Set is patient new
     if (!isset($_POST['isPatientNew']) || trim($_POST['isPatientNew']) == '') {
-        $_POST['isPatientNew'] = NULL;
-        $_POST['dateOfArtInitiation'] = NULL;
+        $_POST['isPatientNew'] = null;
+        $_POST['dateOfArtInitiation'] = null;
     } else if ($_POST['isPatientNew'] == "yes") {
         //Ser ARV initiation date
         if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
             $_POST['dateOfArtInitiation'] = $general->isoDateFormat($_POST['dateOfArtInitiation']);
         } else {
-            $_POST['dateOfArtInitiation'] = NULL;
+            $_POST['dateOfArtInitiation'] = null;
         }
     } else if ($_POST['isPatientNew'] == "no") {
-        $_POST['dateOfArtInitiation'] = NULL;
+        $_POST['dateOfArtInitiation'] = null;
     }
     //Set gender/it's realted values
     if (!isset($_POST['gender']) || trim($_POST['gender']) == '') {
-        $_POST['gender'] = NULL;
-        $_POST['breastfeeding'] = NULL;
-        $_POST['patientPregnant'] = NULL;
-        $_POST['trimester'] = NULL;
+        $_POST['gender'] = null;
+        $_POST['breastfeeding'] = null;
+        $_POST['patientPregnant'] = null;
+        $_POST['trimester'] = null;
     } else if ($_POST['gender'] == "female") {
         if (!isset($_POST['breastfeeding']) || trim($_POST['breastfeeding']) == "") {
-            $_POST['breastfeeding'] = NULL;
+            $_POST['breastfeeding'] = null;
         }
         if (!isset($_POST['patientPregnant']) || trim($_POST['patientPregnant']) == "") {
-            $_POST['patientPregnant'] = NULL;
+            $_POST['patientPregnant'] = null;
         }
         if (!isset($_POST['trimester']) || trim($_POST['trimester']) == "") {
-            $_POST['trimester'] = NULL;
+            $_POST['trimester'] = null;
         }
     } else if ($_POST['gender'] == "male") {
-        $_POST['breastfeeding'] = NULL;
-        $_POST['patientPregnant'] = NULL;
-        $_POST['trimester'] = NULL;
+        $_POST['breastfeeding'] = null;
+        $_POST['patientPregnant'] = null;
+        $_POST['trimester'] = null;
     }
 
     //Set ARV current regimen
@@ -107,13 +107,13 @@ try {
     }
     //Regimen change section
     if (!isset($_POST['hasChangedRegimen']) || trim($_POST['hasChangedRegimen']) == '') {
-        $_POST['hasChangedRegimen'] = NULL;
-        $_POST['reasonForArvRegimenChange'] = NULL;
-        $_POST['dateOfArvRegimenChange'] = NULL;
+        $_POST['hasChangedRegimen'] = null;
+        $_POST['reasonForArvRegimenChange'] = null;
+        $_POST['dateOfArvRegimenChange'] = null;
     }
     if (trim($_POST['hasChangedRegimen']) == "no") {
-        $_POST['reasonForArvRegimenChange'] = NULL;
-        $_POST['dateOfArvRegimenChange'] = NULL;
+        $_POST['reasonForArvRegimenChange'] = null;
+        $_POST['dateOfArvRegimenChange'] = null;
     } else if (trim($_POST['hasChangedRegimen']) == "yes") {
         if (isset($_POST['dateOfArvRegimenChange']) && trim($_POST['dateOfArvRegimenChange']) != "") {
             $_POST['dateOfArvRegimenChange'] = $general->isoDateFormat($_POST['dateOfArvRegimenChange']);
@@ -130,46 +130,46 @@ try {
                 $id = $db->insert('r_vl_test_reasons', $data);
                 $_POST['vlTestReason'] = $id;
             } else {
-                $_POST['vlTestReason'] = NULL;
+                $_POST['vlTestReason'] = null;
             }
         }
     } else {
-        $_POST['vlTestReason'] = NULL;
+        $_POST['vlTestReason'] = null;
     }
     //Set Viral load no.
     if (!isset($_POST['viralLoadNo']) || trim($_POST['viralLoadNo']) == '') {
-        $_POST['viralLoadNo'] = NULL;
+        $_POST['viralLoadNo'] = null;
     }
     //Set last VL test date
     if (isset($_POST['lastViralLoadTestDate']) && trim($_POST['lastViralLoadTestDate']) != "") {
         $_POST['lastViralLoadTestDate'] = $general->isoDateFormat($_POST['lastViralLoadTestDate']);
     } else {
-        $_POST['lastViralLoadTestDate'] = NULL;
+        $_POST['lastViralLoadTestDate'] = null;
     }
     //Set sample collection date
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
         $sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
         $_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
-        $_POST['sampleCollectionDate'] = NULL;
+        $_POST['sampleCollectionDate'] = null;
     }
     //Sample type section
     if (isset($_POST['specimenType']) && trim($_POST['specimenType']) != "") {
         if (trim($_POST['specimenType']) != 2) {
-            $_POST['conservationTemperature'] = NULL;
-            $_POST['durationOfConservation'] = NULL;
+            $_POST['conservationTemperature'] = null;
+            $_POST['durationOfConservation'] = null;
         }
     } else {
-        $_POST['specimenType'] = NULL;
-        $_POST['conservationTemperature'] = NULL;
-        $_POST['durationOfConservation'] = NULL;
+        $_POST['specimenType'] = null;
+        $_POST['conservationTemperature'] = null;
+        $_POST['durationOfConservation'] = null;
     }
     //Set sample received date
     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
         $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
-        $_POST['sampleReceivedDate'] = NULL;
+        $_POST['sampleReceivedDate'] = null;
     }
     // //Set sample rejection reason
     // if (isset($_POST['status']) && trim($_POST['status']) != '') {
@@ -184,11 +184,11 @@ try {
     //             $_POST['rejectionReason'] = $id;
     //         }
     //     } else {
-    //         $_POST['rejectionReason'] = NULL;
+    //         $_POST['rejectionReason'] = null;
     //     }
     // } else {
     //     $_POST['status'] = 6;
-    //     $_POST['rejectionReason'] = NULL;
+    //     $_POST['rejectionReason'] = null;
     // }
 
     /* if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -199,26 +199,26 @@ try {
         $sampleTestedDate = explode(" ", $_POST['sampleTestingDateAtLab']);
         $_POST['sampleTestingDateAtLab'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
-        $_POST['sampleTestingDateAtLab'] = NULL;
+        $_POST['sampleTestingDateAtLab'] = null;
     }
     //Set Dispatched From Clinic To Lab Date
     if (isset($_POST['dateDispatchedFromClinicToLab']) && trim($_POST['dateDispatchedFromClinicToLab']) != "") {
         $dispatchedFromClinicToLabDate = explode(" ", $_POST['dateDispatchedFromClinicToLab']);
         $_POST['dateDispatchedFromClinicToLab'] = $general->isoDateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
     } else {
-        $_POST['dateDispatchedFromClinicToLab'] = NULL;
+        $_POST['dateDispatchedFromClinicToLab'] = null;
     }
     //Set sample testing date
     if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletionOfViralLoad']) != "") {
         $dateofCompletionofViralLoad = explode(" ", $_POST['dateOfCompletionOfViralLoad']);
         $_POST['dateOfCompletionOfViralLoad'] = $general->isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
     } else {
-        $_POST['dateOfCompletionOfViralLoad'] = NULL;
+        $_POST['dateOfCompletionOfViralLoad'] = null;
     }
     if (!isset($_POST['sampleCode']) || trim($_POST['sampleCode']) == '') {
-        $_POST['sampleCode'] = NULL;
+        $_POST['sampleCode'] = null;
     }
-    $testingPlatform = NULL;
+    $testingPlatform = null;
     if (isset($_POST['testingPlatform']) && trim($_POST['testingPlatform']) != '') {
         $platForm = explode("##", $_POST['testingPlatform']);
         $testingPlatform = $platForm[0];
@@ -292,22 +292,22 @@ try {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
         $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
-        $_POST['reviewedOn'] = NULL;
+        $_POST['reviewedOn'] = null;
     }
 
     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
         $approvedOn = explode(" ", $_POST['approvedOn']);
         $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
-        $_POST['approvedOn'] = NULL;
+        $_POST['approvedOn'] = null;
     }
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => 3,
         'is_sample_rejected' => ($isRejected === true) ? 'yes' : 'no',
-        'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] :  NULL),
+        'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] : null),
         'facility_id' => $_POST['clinicName'],
-        'province_id' => (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  NULL,
+        'province_id' => (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  null,
         'request_clinician_name' => $_POST['clinicianName'],
         'request_clinician_phone_number' => $_POST['clinicanTelephone'],
         'facility_support_partner' => $_POST['implementingPartner'],
@@ -336,7 +336,7 @@ try {
         'reason_for_sample_rejection' => $_POST['rejectionReason'],
         //'sample_code'=>$_POST['sampleCode'],
         //'lab_code'=>$_POST['labNo'],
-        'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] :  NULL),
+        'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] : null),
         'sample_tested_datetime' => $_POST['dateOfCompletionOfViralLoad'],
         'vl_test_platform' => $testingPlatform,
         'result_value_absolute'                 => $absVal ?: null,
@@ -346,17 +346,17 @@ try {
         'result_value_log'                      => $logVal ?: null,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-        'result_approved_by'        => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
-        'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  NULL,
+        'result_approved_by'        => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
+        'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
         'date_test_ordered_by_physician' => $_POST['dateOfDemand'],
-        'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : NULL,
-        'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : NULL,
+        'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
+        'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
         'vl_test_number' => $_POST['viralLoadNo'],
         'sample_collection_date' => $_POST['sampleCollectionDate'],
         'date_dispatched_from_clinic_to_lab' => $_POST['dateDispatchedFromClinicToLab'],
         //'result_printed_datetime'=>$_POST['sampleTestingDateAtLab'],
-        'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  NULL,
-        'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
+        'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  null,
+        'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
         'request_created_by' => $_SESSION['userId'],
         'request_created_datetime' => $db->now(),
         'last_modified_by' => $_SESSION['userId'],
@@ -402,15 +402,15 @@ try {
     //     }
 
     //     if ($_SESSION['instanceType'] == 'remoteuser') {
-    //         $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
-    //         $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
+    //         $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
+    //         $vldata['remote_sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  null;
     //         $vldata['remote_sample'] = 'yes';
     //     } else {
-    //         $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  NULL;
-    //         $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  NULL;
+    //         $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
+    //         $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  null;
     //         $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
     //     }
-    //     $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '' ? $_POST['sampleCodeFormat'] :  NULL);
+    //     $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '' ? $_POST['sampleCodeFormat'] : null);
     //     $id = $db->insert($tableName, $vldata);
     // }
     if ($id > 0) {

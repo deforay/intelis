@@ -18,14 +18,14 @@ try {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
 		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
-		$_POST['sampleReceivedDate'] = NULL;
+		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
 		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
-		$_POST['sampleTestedDateTime'] = NULL;
+		$_POST['sampleTestedDateTime'] = null;
 	}
 
 
@@ -44,7 +44,7 @@ try {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
 		$_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
-		$_POST['reviewedOn'] = NULL;
+		$_POST['reviewedOn'] = null;
 	}
 
 	$hepatitisData = array(
@@ -73,8 +73,8 @@ try {
 		'data_sync'                           => 0,
 		'last_modified_by'                     => $_SESSION['userId'],
 		'last_modified_datetime'               => $general->getCurrentDateTime(),
-		'result_printed_datetime' 			  => NULL,
-		'result_dispatched_datetime' 		  => NULL,
+		'result_printed_datetime' 			  => null,
+		'result_dispatched_datetime' 		  => null,
 		'reason_for_vl_test'				  => isset($_POST['reasonVlTest']) ? $_POST['reasonVlTest'] : null,
 	);
 
