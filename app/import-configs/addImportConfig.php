@@ -21,7 +21,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa fa-gears"></em> <?php echo _("Add Instrument"); ?></h1>
+		<h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo _("Add Instrument"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Add Instrument"); ?></li>
@@ -134,7 +134,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 						</div> -->
 						<?php if (SYSTEM_CONFIG['modules']['vl'] || SYSTEM_CONFIG['modules']['eid'] || SYSTEM_CONFIG['modules']['covid19']) { ?>
 							<div class="box-body">
-								<table cellpadding="0" cellspacing="0" border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;display:none;">
+								<table border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;display:none;">
 									<thead>
 										<tr>
 											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
@@ -222,7 +222,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								</table>
 								<br>
 								<hr>
-								<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
+								<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 									<thead>
 										<tr>
 											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
@@ -280,7 +280,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 							<h3 class="box-title "><?php echo _("Machine Names"); ?></h3>
 						</div>
 						<div class="box-body">
-							<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="width:100%;">
+							<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
 										<th style="text-align:center;"><?php echo _("Machine Name"); ?> <span class="mandatory">*</span></th>
@@ -307,7 +307,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 											</div>
 										</td>
 										<td align="center" style="vertical-align:middle;">
-											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
+											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
 										</td>
 									</tr>
 								</tbody>
@@ -446,7 +446,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								<input type="text" name="longitude[]" id="longitude' + tableRowId + '" class="form-control " placeholder="<?php echo _('Longitude'); ?>" data-placement="bottom" title="<?php echo _('Longitude'); ?>"/>\
 							</div>\
 						</div>';
-		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
+		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 		tableRowId++;
 	}

@@ -221,7 +221,6 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $data['sampleRejectionReason'] = $respondID;
         }
         $data['sampleCode'] = $spm->getField(2);
-        $data['sampleCode'] = $spm->getField(2);
         if ($spm->getField(4) != "" && !empty($spm->getField(4))) {
             $vlSampleDetails = $vlDb->getVlSampleTypesByName($spm->getField(4));
             $data['specimenType'] = $vlSampleDetails[0]['sample_id'];

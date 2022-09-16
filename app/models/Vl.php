@@ -55,9 +55,12 @@ class Vl
         $general = new \Vlsm\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
-        // $humanFormatSampleCollectionDate = $sampleCollectionDate;
 
-        $dateObj = new \DateTime($sampleCollectionDate);
+        $dateUtils = new \Vlsm\Utilities\DateUtils();
+        if($dateUtils->verifyIfDateValid($sampleCollectionDate) === false){
+            $sampleCollectionDate = 'now';
+        }
+        $dateObj = new \DateTimeImmutable($sampleCollectionDate);
 
         $year = $dateObj->format('y');
         $month = $dateObj->format('m');

@@ -44,7 +44,7 @@ $eidResults = $eidModel->getEidResults();
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-book"></i> <?php echo _("Export Data"); ?>
+		<h1><em class="fa-solid fa-book"></em> <?php echo _("Export Data"); ?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -57,23 +57,23 @@ $eidResults = $eidModel->getEidResults();
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th><?php echo _("Sample Collection Date"); ?></th>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<td><b><?php echo _("Sample Received at Lab Date"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Sample Received at Lab Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _('Select Received Date'); ?>" style="width:220px;background:#fff;" />
 							</td>
-							<td><b><?php echo _("Results Dispatched Date"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Results Dispatched Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="resultDispatchedOn" name="resultDispatchedOn" class="form-control daterangefield" placeholder="<?php echo _('Results Dispatched Date'); ?>" style="width:220px;background:#fff;" />
 							</td>
 						</tr>
 						<tr>
-							<td><b><?php echo _("Sample Type"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 							<td>
 								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -127,7 +127,7 @@ $eidResults = $eidModel->getEidResults();
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
-							<td><b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -171,7 +171,7 @@ $eidResults = $eidModel->getEidResults();
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('generate-export-data.php')"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('generate-export-data.php')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>

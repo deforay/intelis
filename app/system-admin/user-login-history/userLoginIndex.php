@@ -24,14 +24,14 @@ $sResult = $db->rawQuery($sQuery);
 
 
         <div class="box">
-          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+          <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><b><?php echo _("Date"); ?>&nbsp;:</b></td>
+              <td><strong><?php echo _("Date"); ?>&nbsp;:</strong></td>
               <td>
                 <input type="" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _('Select User Date'); ?>" readonly style="width:220px;background:#fff;" />
               </td>
 
-              <td><b><?php echo _("Login ID"); ?>&nbsp;:</b></td>
+              <td><strong><?php echo _("Login ID"); ?>&nbsp;:</strong></td>
               <td>
                 <select style="width:220px;" class="form-control" id="loginId" name="loginId" title="<?php echo _('Please select login id'); ?>">
                   <option value=""> <?php echo _("-- Select --"); ?> </option>

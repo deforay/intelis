@@ -163,7 +163,7 @@ if (isset($_SESSION['privileges']) && (in_array("editSpecimenReferralManifest.ph
 
 foreach ($rResult as $aRow) {
     $humanDate = "";
-    $printBarcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print bar code" onclick="generateManifestPDF(\'' . base64_encode($aRow['package_id']) . '\',\'pk1\');"><i class="fa-solid fa-barcode"></i> Print Barcode</a>';
+    $printBarcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print bar code" onclick="generateManifestPDF(\'' . base64_encode($aRow['package_id']) . '\',\'pk1\');"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['request_created_datetime'];
         $humanDate =  date("d-M-Y H:i:s", strtotime($date));
@@ -182,7 +182,7 @@ foreach ($rResult as $aRow) {
     $row[] = $humanDate;
     if ($package) {
         if ($_SESSION['roleCode'] == 'AD' || $_SESSION['roleCode'] == 'ad') {
-            $editBtn = '<a href="editSpecimenReferralManifest.php?t=' . base64_encode($_POST['module']) . '&id=' . base64_encode($aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><i class="fa-solid fa-pen-to-square"></i> Edit</i></a>';
+            $editBtn = '<a href="editSpecimenReferralManifest.php?t=' . base64_encode($_POST['module']) . '&id=' . base64_encode($aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
         } else {
             $editBtn = '';
         }

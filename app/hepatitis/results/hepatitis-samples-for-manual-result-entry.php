@@ -233,10 +233,10 @@ $hepatitisDb = new \Vlsm\Models\Hepatitis();
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $row = array();
-     $print = '<a href="hepatitis-update-result.php?id=' . base64_encode($aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Enter Result") . '</a>';
+     $print = '<a href="hepatitis-update-result.php?id=' . base64_encode($aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';
      if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
           if (isset($_SESSION['privileges']) && !in_array("edit-locked-hepatitis-samples", $_SESSION['privileges'])) {
-               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><i class="fa-solid fa-lock"></i> ' . _("Locked") . '</a>';
+               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em> ' . _("Locked") . '</a>';
           }
      }
 

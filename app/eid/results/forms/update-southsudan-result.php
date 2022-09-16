@@ -62,7 +62,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Edit EID Request"); ?></li>
@@ -88,7 +88,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                             </div>
-                            <table class="table" aria-hidden="true"  style="width:100%">
+                            <table class="table" aria-hidden="true" style="width:100%">
                                 <tr>
                                     <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                         <td><label for="sampleCode">Sample ID </label></td>
@@ -152,7 +152,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </select>
                                     </td>
                                     <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
-                                        <th>Testing Laboratory <span class="mandatory">*</span></th>
+                                        <th scope="row">Testing Laboratory <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
                                                 <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
@@ -162,7 +162,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 </tr>
                             </table>
                             <br><br>
-                            <table class="table" aria-hidden="true"  style="width:100%">
+                            <table class="table" aria-hidden="true" style="width:100%">
 
                                 <tr>
                                     <th style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
@@ -175,11 +175,11 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="childDob">Date of Birth </label></th>
+                                    <th scope="row"><label for="childDob">Date of Birth </label></th>
                                     <td>
                                         <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="" />
                                     </td>
-                                    <th><label for="childGender">Gender </label></th>
+                                    <th scope="row"><label for="childGender">Gender </label></th>
                                     <td>
                                         <select class="form-control " name="childGender" id="childGender">
                                             <option value=''> -- Select -- </option>
@@ -190,16 +190,16 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Infant Age (months)</th>
+                                    <th scope="row">Infant Age (months)</th>
                                     <td><input type="number" max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?php echo $eidInfo['child_age']; ?>" /></td>
-                                    <th>Mother ART Number</th>
+                                    <th scope="row">Mother ART Number</th>
                                     <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?php echo $eidInfo['mother_id'] ?>" onchange="" /></td>
                                 </tr>
                                 <tr>
-                                    <th>Caretaker phone number</th>
+                                    <th scope="row">Caretaker phone number</th>
                                     <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?php echo $eidInfo['caretaker_phone_number'] ?>" onchange="" /></td>
 
-                                    <th>Infant caretaker address</th>
+                                    <th scope="row">Infant caretaker address</th>
                                     <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?php echo $eidInfo['caretaker_address'] ?></textarea></td>
 
                                 </tr>
@@ -210,7 +210,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
 
                             <br><br>
-                            <table class="table" aria-hidden="true"  style="width:100%">
+                            <table class="table" aria-hidden="true" style="width:100%">
                                 <tr>
                                     <th colspan=4>
                                         <h4>Infant and Mother's Health Information</h4>
@@ -239,7 +239,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 </tr>
 
                                 <tr>
-                                    <th>Infant Rapid HIV Test Done</th>
+                                    <th scope="row">Infant Rapid HIV Test Done</th>
                                     <td>
                                         <select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
                                             <option value=''> -- Select -- </option>
@@ -249,13 +249,13 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </select>
                                     </td>
 
-                                    <th>If yes, test date :</th>
+                                    <th scope="row">If yes, test date :</th>
                                     <td>
                                         <input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="if yes, test date" value="<?php echo $general->humanReadableDateFormat($eidInfo['rapid_test_date']); ?>">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Rapid Test Result</th>
+                                    <th scope="row">Rapid Test Result</th>
                                     <td>
                                         <select class="form-control" name="rapidTestResult" id="rapidTestResult">
                                             <option value=''> -- Select -- </option>
@@ -266,7 +266,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </select>
                                     </td>
 
-                                    <th>Infant still breastfeeding?</th>
+                                    <th scope="row">Infant still breastfeeding?</th>
                                     <td>
                                         <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
                                             <option value=''> -- Select -- </option>
@@ -277,12 +277,12 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Age (months) breastfeeding stopped :</th>
+                                    <th scope="row">Age (months) breastfeeding stopped :</th>
                                     <td>
                                         <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
                                     </td>
 
-                                    <th>PCR test performed on child before :</th>
+                                    <th scope="row">PCR test performed on child before :</th>
                                     <td>
                                         <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
                                             <option value=''> -- Select -- </option>
@@ -292,7 +292,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Previous PCR Test Result :</th>
+                                    <th scope="row">Previous PCR Test Result :</th>
                                     <td>
                                         <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
                                             <option value=''> -- Select -- </option>
@@ -302,13 +302,13 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </select>
                                     </td>
 
-                                    <th>Previous PCR test date :</th>
+                                    <th scope="row">Previous PCR test date :</th>
                                     <td>
                                         <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo $general->humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Reason for 2nd PCR :</th>
+                                    <th scope="row">Reason for 2nd PCR :</th>
                                     <td>
                                         <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                             <option value=''> -- Select -- </option>
@@ -318,13 +318,13 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
                                         </select>
                                     </td>
-                                    <th></th>
+                                    <th scope="row"></th>
                                     <td></td>
                                 </tr>
                             </table>
 
                             <br><br>
-                            <table class="table" aria-hidden="true" >
+                            <table class="table" aria-hidden="true">
                                 <tr>
                                     <th colspan=4>
                                         <h4>Sample Information</h4>
@@ -343,21 +343,21 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Requesting Officer</th>
+                                    <th scope="row">Requesting Officer</th>
                                     <td>
                                         <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?php echo $eidInfo['sample_requestor_name']; ?>" />
                                     </td>
-                                    <th>Sample Requestor Phone</th>
+                                    <th scope="row">Sample Requestor Phone</th>
                                     <td>
                                         <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
+                                    <th scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                     <td>
                                         <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                     </td>
-                                    <th></th>
+                                    <th scope="row"></th>
                                     <td></td>
                                 </tr>
                             </table>
@@ -370,30 +370,30 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 <div class="box-header with-border">
                                     <h3 class="box-title">B. Reserved for Laboratory Use </h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <th>Testing Laboratory <span class="mandatory">*</span></th>
+                                        <th scope="row">Testing Laboratory <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
                                                 <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                             </select>
                                         </td>
 
-                                        <th>Testing Platform</th>
+                                        <th scope="row">Testing Platform</th>
                                         <td><select name="eidPlatform" id="eidPlatform" class="form-control isRequired result-optional" title="Please select the testing platform">
                                                 <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Machine used to test </th>
+                                        <th scope="row">Machine used to test </th>
                                         <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name" ">
                                                 <?= $general->generateSelectOptions($machine, $eidInfo['import_machine_name'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                     
 
-                                        <th>Is Sample Rejected? <span class=" mandatory">*</span></th>
+                                        <th scope="row">Is Sample Rejected? <span class=" mandatory">*</span></th>
                                         <td>
                                             <select class="form-control isRequired" name="isSampleRejected" id="isSampleRejected" title="Please select if sample is rejected or not">
                                                 <option value=''> -- Select -- </option>
@@ -421,16 +421,15 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 <?php }  ?>
                                             </select>
                                         </td>
-                                        <th>Rejection Date<span class="mandatory">*</span></th>
+                                        <th scope="row">Rejection Date<span class="mandatory">*</span></th>
                                         <td><input value="<?php echo $general->humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please enter sample rejection date" /></td>
-
                                     </tr>
                                     <tr>
                                         <th style="width:25%;">Sample Test Date</th>
                                         <td style="width:25%;">
                                             <input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the Sample Tested Date and Time" <?php echo $labFieldDisabled; ?> onchange="" value="<?= $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                         </td>
-                                        <th>Result</th>
+                                        <th scope="row">Result</th>
                                         <td>
                                             <select class="form-control isRequired" name="result" id="result" data-result="<?= $eidInfo['result']; ?>" title="Please enter the EID Test Result">
                                                 <option value=''> -- Select -- </option>
@@ -441,11 +440,11 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Results Dispatched Date</th>
+                                        <th scope="row">Results Dispatched Date</th>
                                         <td>
                                             <input type="text" value="<?php echo $eidInfo['result_dispatched_datetime']; ?>" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                         </td>
-                                        <th>Tested By</th>
+                                        <th scope="row">Tested By</th>
                                         <td>
                                             <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by">
                                                 <?= $general->generateSelectOptions($userInfo, $eidInfo['tested_by'], '-- Select --'); ?>
@@ -453,18 +452,18 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($eidInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></th>
+                                        <th scope="row">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($eidInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></th>
                                         <td>
                                             <select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose reviewed by" style="width: 100%;">
                                                 <?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th>Reviewed on <span class="mandatory review-approve-span" style="display: <?php echo ($eidInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></td>
+                                        <th scope="row">Reviewed on <span class="mandatory review-approve-span" style="display: <?php echo ($eidInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></td>
                                         <td><input type="text" value="<?= $general->humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter reviewed on" /></td>
 
                                     </tr>
                                     <tr>
-                                        <th>Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($eidInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></th>
+                                        <th scope="row">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($eidInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></th>
                                         <td>
                                             <select name="approvedBy" id="approvedBy" class="form-control labSection isRequired" title="Please choose approved by">
                                                 <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>

@@ -81,24 +81,24 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 100%;">
+			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
 
-					<th>Facility</th>
+					<th scope="col">Facility</th>
 					<td>
 						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
-					<th></th>
+					<th scope="col"></th>
 					<td></td>
 				</tr>
 				<tr>
-					<th>Sample Collection Date</th>
+					<th scope="col">Sample Collection Date</th>
 					<td>
 						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
 					</td>
-					<th>Date Sample Receieved at Lab</th>
+					<th scope="col">Date Sample Receieved at Lab</th>
 					<td>
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
 					</td>
@@ -142,7 +142,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="hepatitis-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><i class="fa-solid fa-arrow-down-1-9"></i>  Edit Position</a></div>
+							<div class="col-md-6"><a href="hepatitis-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-8">
@@ -150,7 +150,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 									<div class="col-md-12">
 										<div class="col-md-12">
 											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
 												<?php

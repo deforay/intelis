@@ -22,7 +22,7 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-pen-to-square"></i> Covid-19 Test Requests - DHIS2</h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> Covid-19 Test Requests - DHIS2</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Test Request</li>
@@ -35,15 +35,15 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 
-					<table id="filter" class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+					<table id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
 
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
 									<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <i class="fa-solid fa-download"></i> Receive Test Requests from DHIS2</a>
-										<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();" class="btn btn-warning btn-sm pull-right"> <i class="fa-solid fa-upload"></i> Send Results to DHIS2</a>
+										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em> Receive Test Requests from DHIS2</a>
+										<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();" class="btn btn-warning btn-sm pull-right"> <em class="fa-solid fa-upload"></em> Send Results to DHIS2</a>
 								<?php }
 								} ?>
 

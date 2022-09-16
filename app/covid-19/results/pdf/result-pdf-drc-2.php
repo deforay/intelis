@@ -307,18 +307,18 @@ $html .= '<td width="55%" style="line-height:14px;font-size:15px;text-align:left
 $html .= '</tr>';
 if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
     $html .= '<tr>';
-    $html .= '<td style="line-height:14px;font-size:12px;text-align:left;" colspan="3"><b>Tests de Controle :</b></td>';
+    $html .= '<td style="line-height:14px;font-size:12px;text-align:left;" colspan="3"><strong>Tests de Controle :</strong></td>';
     $html .= '</tr>';
 
     foreach ($covid19TestInfo as $indexKey => $rows) {
         $html .= '<tr>';
-        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;" colspan="2"><b>Resultats ' . ($indexKey + 1) . 'éme Prélévement &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords($rows['result']) . '</td>';
-        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;"><b>Date de Sortie Résultats &nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $general->humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>';
+        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;" colspan="2"><strong>Resultats ' . ($indexKey + 1) . 'éme Prélévement &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords($rows['result']) . '</td>';
+        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;"><strong>Date de Sortie Résultats &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $general->humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>';
         $html .= '</tr>';
     }
 }
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:14px;font-size:12px;text-align:center;" colspan="3"><b>Fait à Goma, le :</b>' . $general->humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
+$html .= '<td width="100%" style="line-height:14px;font-size:12px;text-align:center;" colspan="3"><strong>Fait à Goma, le :</strong>' . $general->humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
 $html .= '</tr>';
 
 

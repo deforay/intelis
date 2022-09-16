@@ -316,9 +316,9 @@ foreach ($rResult as $aRow) {
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
      if ($aRow['is_result_authorised'] == 'yes') {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['covid19_id'] . ');"><i class="fa-solid fa-file-lines"></i> ' . _("Result PDF") . '</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['covid19_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
      } else {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="' . _("View") . '"><i class="fa-solid fa-ban"></i> ' . _("Not Authorized") . '</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="' . _("View") . '"><em class="fa-solid fa-ban"></em> ' . _("Not Authorized") . '</a>';
      }
 
      $output['aaData'][] = $row;

@@ -202,7 +202,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
   var count_elem = document.getElementById('specimenReferralManifestDataTable');
   var div = document.createElement('div');
-  div.innerHTML = '<span class="selectedRows" style="font-weight:bold;">0 Row(s) Selected</span>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info btn-xs printBarcode" href="javascript:void(0);" onclick="generateManifestPDF(\' \',\'pk2\');" style="display:none;margin-bottom: 1vh;"><i class="fa-solid fa-barcode"></i> Print Barcode</a>';
+  div.innerHTML = '<span class="selectedRows" style="font-weight:bold;">0 Row(s) Selected</span>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info btn-xs printBarcode" href="javascript:void(0);" onclick="generateManifestPDF(\' \',\'pk2\');" style="display:none;margin-bottom: 1vh;"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
   count_elem.parentNode.insertBefore(div, count_elem);
 </script>
 <?php

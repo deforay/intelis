@@ -46,7 +46,11 @@ class Hepatitis
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateObj = new \DateTime($sampleCollectionDate);
+        $dateUtils = new \Vlsm\Utilities\DateUtils();
+        if($dateUtils->verifyIfDateValid($sampleCollectionDate) === false){
+            $sampleCollectionDate = 'now';
+        }
+        $dateObj = new \DateTimeImmutable($sampleCollectionDate);
 
         $year = $dateObj->format('y');
         $month = $dateObj->format('m');

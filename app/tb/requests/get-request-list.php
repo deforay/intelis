@@ -215,7 +215,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
      $sWhere[] = 'vl.result_status!=9 ';
 }
-if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      $_SESSION['tbRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
@@ -289,10 +289,10 @@ foreach ($rResult as $aRow) {
      $row[] = ucwords($aRow['status_name']);
 
      if ($editRequest) {
-          $edit = '<a href="tb-edit-request.php?id=' . base64_encode($aRow['tb_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Edit") . '</i></a>';
+          $edit = '<a href="tb-edit-request.php?id=' . base64_encode($aRow['tb_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("edit-locked-tb-samples", $_SESSION['privileges'])) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><i class="fa-solid fa-lock"></i>' . _("Locked") . '</a>';
+                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
                }
           }
      }
@@ -300,7 +300,7 @@ foreach ($rResult as $aRow) {
 
      if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
           if ($aRow['data_sync'] == 0) {
-               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Sync this sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"><i class="fa-solid fa-arrows-rotate"></i> ' . _("Sync") . '</a>';
+               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Sync this sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"><em class="fa-solid fa-arrows-rotate"></em> ' . _("Sync") . '</a>';
           }
      } else {
           $sync = "";
@@ -308,7 +308,7 @@ foreach ($rResult as $aRow) {
 
      if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
           $fac = ucwords($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
-          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><i class="fa-solid fa-barcode"> </i> ' . _("Barcode") . ' </a>';
+          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><em class="fa-solid fa-barcode"></em> ' . _("Barcode") . ' </a>';
      }
      $actions = "";
      if ($editRequest) {

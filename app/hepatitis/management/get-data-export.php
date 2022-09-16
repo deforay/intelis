@@ -260,7 +260,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           //$cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
 }
-if(count($sWhere) > 0)
+if(!empty($sWhere))
     $sWhere = ' where ' .implode(' AND ',$sWhere);
 else
     $sWhere = "";
@@ -339,10 +339,10 @@ foreach ($rResult as $aRow) {
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
      if ($aRow['is_result_authorised'] == 'yes') {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['hepatitis_id'] . ');"><i class="fa-solid fa-file-lines"></i> ' . _("Result PDF") . '</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['hepatitis_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
           $row[] = '';
      } else {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="' . _("View") . '"><i class="fa-solid fa-ban"></i> ' . _("Not Authorized") . '</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="' . _("View") . '"><em class="fa-solid fa-ban"></em> ' . _("Not Authorized") . '</a>';
      }
 
      $output['aaData'][] = $row;

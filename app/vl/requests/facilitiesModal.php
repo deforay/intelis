@@ -46,23 +46,23 @@ $type = $_GET['type'];
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:10px;">
+          <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:10px;">
             <tr>
-              <td><b>Hub&nbsp;:</b></td>
+              <td><strong>Hub&nbsp;:</strong></td>
               <td>
                 <input type="text" id="hub" name="hub" class="form-control" placeholder="Enter Hub" style="background:#fff;" />
               </td>
-              <td>&nbsp;<b>District/County&nbsp;:</b></td>
+              <td>&nbsp;<strong>District/County&nbsp;:</strong></td>
               <td>
                 <input type="text" id="district" name="district" class="form-control" placeholder="Enter District/County" />
               </td>
             </tr>
             <tr>
-              <td><b>Province/State&nbsp;:</b></td>
+              <td><strong>Province/State&nbsp;:</strong></td>
               <td>
                 <input type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State" style="background:#fff;" />
               </td>
-              <td>&nbsp;<b>Clinic Type&nbsp;:</b></td>
+              <td>&nbsp;<strong>Clinic Type&nbsp;:</strong></td>
               <td>
                 <?php
                 if ($type == 'all') {

@@ -51,7 +51,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-book"></i> <?php echo _("Export Data"); ?>
+		<h1><em class="fa-solid fa-book"></em> <?php echo _("Export Data"); ?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -65,7 +65,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th><?php echo _("Sample Collection Date"); ?></th>
 							<td>
@@ -120,7 +120,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
-							<td><b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
+							<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -165,7 +165,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo $reportType; ?>')"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo $reportType; ?>')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>

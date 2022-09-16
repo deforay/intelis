@@ -375,7 +375,7 @@ foreach ($rResult as $aRow) {
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
      $row[] = $general->humanReadableDateFormat($aRow['request_created_datetime'], true);
      $row[] = $general->humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     //$row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><i class="fa-solid fa-file-lines"></i> ' . _("Result PDF") . '</a>';
+     //$row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
 
      $output['aaData'][] = $row;
 }

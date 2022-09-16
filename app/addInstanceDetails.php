@@ -46,20 +46,20 @@ ob_start();
           <div class="row">
             <div class="col-xs-12">
               <div class="box">
-                <table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 98%;">
+                <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
                   <tr>
-                    <td><b>Instance/Facility Name&nbsp;<span class="mandatory">*</span></b> <br>
+                    <td><strong>Instance/Facility Name&nbsp;<span class="mandatory">*</span></strong> <br>
                     </td>
                     <td>
                       <input type="text" class="form-control isRequired" name="fName" id="fName" title="Please enter instance name" placeholder="Instance/Facility Name" />
                     </td>
-                    <td>&nbsp;<b>Instance/Facility ID&nbsp;</b></td>
+                    <td>&nbsp;<strong>Instance/Facility ID&nbsp;</strong></td>
                     <td>
                       <input type="text" class="form-control " id="fCode" name="fCode" placeholder="Instance/Facility Code" title="Please enter facility code" />
                     </td>
                   </tr>
                   <tr>
-                    <td><b>Instance/Facility Type&nbsp;<span class="mandatory">*</span></b></td>
+                    <td><strong>Instance/Facility Type&nbsp;<span class="mandatory">*</span></strong></td>
                     <td>
                       <select class="form-control isRequired" id="fType" name="fType" title="Please choose instance type">
                         <option value="">-- Select --</option>
@@ -68,7 +68,7 @@ ob_start();
                         <option value="Both">Both</option>
                       </select>
                     </td>
-                    <td style="display:none">&nbsp;<b>Logo Image&nbsp;</b></td>
+                    <td style="display:none">&nbsp;<strong>Logo Image&nbsp;</strong></td>
                     <td style="display:none">
                       <div class="fileinput fileinput-new" data-provides="fileinput">
                         <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
@@ -82,7 +82,7 @@ ob_start();
                         </div>
                       </div>
                       <div class="box-body">
-                        <b>Please make sure logo image size of:</b> <code>80x80</code>
+                        <strong>Please make sure logo image size of:</strong> <code>80x80</code>
                       </div>
                     </td>
                   </tr>

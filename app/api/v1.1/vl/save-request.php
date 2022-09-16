@@ -440,20 +440,12 @@ try {
         if ($id > 0) {
             $vlFulldata = $app->getTableDataUsingId($tableName, 'vl_sample_id', $data['vlSampleId']);
             $vlSampleCode = (isset($vlFulldata['sample_code']) && $vlFulldata['sample_code']) ? $vlFulldata['sample_code'] : $vlFulldata['remote_sample_code'];
-            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = array(
-                    'status' => 'success',
-                    'sampleCode' => $vlSampleCode,
-                    'uniqueId' => $vlFulldata['unique_id'],
-                    'appSampleCode' => $vlFulldata['app_sample_code'],
-                );
-            } else {
-                $responseData[$rootKey] = array(
-                    'sampleCode' => $vlSampleCode,
-                    'uniqueId' => $vlFulldata['unique_id'],
-                    'appSampleCode' => $vlFulldata['app_sample_code'],
-                );
-            }
+            $responseData[$rootKey] = array(
+                'status' => 'success',
+                'sampleCode' => $vlSampleCode,
+                'uniqueId' => $vlFulldata['unique_id'],
+                'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $vlFulldata['app_sample_code'] : null,
+            );
             http_response_code(200);
         } else {
             if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {

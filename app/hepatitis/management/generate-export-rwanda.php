@@ -1,20 +1,15 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+	session_start();
 }
 ob_start();
 
 
 
 $general = new \Vlsm\Models\General();
+$hepatitisDb = new \Vlsm\Models\Hepatitis();
 
-$eidObj = new \Vlsm\Models\Eid();
-$eidResults = $eidObj->getEidResults();
-
-$covid19Obj = new \Vlsm\Models\Covid19();
-$covid19Symptoms = $covid19Obj->getCovid19Symptoms();
-$covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
-
+$hepatitisResults = $hepatitisDb->getHepatitisResults();
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
@@ -23,16 +18,16 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-// die($_SESSION['covid19ResultQuery']);
-if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery']) != "") {
+// die($_SESSION['hepatitisResultQuery']);
+if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQuery']) != "") {
 
-	$rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
+	$rResult = $db->rawQuery($_SESSION['hepatitisResultQuery']);
 
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 
-	$headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date","Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	$headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 
 	$colNo = 1;
 
@@ -86,7 +81,9 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	}
 	$sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
 
-	$no = 1;$sysmtomsArr = array();$comorbiditiesArr = array();
+	$no = 1;
+	$sysmtomsArr = array();
+	$comorbiditiesArr = array();
 	foreach ($rResult as $aRow) {
 		$row = array();
 		//date of birth
@@ -143,20 +140,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';
-        }
-        /* To get Symptoms and Comorbidities details */
-        $covid19SelectedSymptoms = $covid19Obj->getCovid19SymptomsByFormId($aRow['covid19_id']);
-        foreach ($covid19Symptoms as $symptomId => $symptomName) {
-			if($covid19SelectedSymptoms[$symptomId] == 'yes'){
-				$sysmtomsArr[] =$symptomName.':'.$covid19SelectedSymptoms[$symptomId];
-			}
-        }
-        $covid19SelectedComorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($aRow['covid19_id']);
-        foreach ($covid19Comorbidities as $comId => $comName) {
-			if($covid19SelectedComorbidities[$symptomId] == 'yes'){
-				$comorbiditiesArr[] =$comName.':'.$covid19SelectedComorbidities[$comId];
-			}
-        }
+		}
 
 		$row[] = $no;
 		$row[] = $aRow[$sampleCode];
@@ -169,18 +153,10 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = $dob;
 		$row[] = ($aRow['patient_age'] != NULL && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = $gender;
-        $row[] = $sampleCollectionDate;
-        /* To get Symptoms and Comorbidities details */
-        $row[] = implode(',',$sysmtomsArr);
-        $row[] = implode(',',$comorbiditiesArr);
-		/* $row[] = $general->humanReadableDateFormat($aRow['date_of_symptom_onset']);
-		$row[] = ucwords($aRow['contact_with_confirmed_case']);
-		$row[] = ucwords($aRow['has_recent_travel_history']);
-		$row[] = ucwords($aRow['travel_country_names']);
-		$row[] = $general->humanReadableDateFormat($aRow['travel_return_date']); */
+		$row[] = $sampleCollectionDate;
 		$row[] = $sampleRejection;
 		$row[] = $sampleTestedOn;
-		$row[] = $eidResults[$aRow['result']];
+		$row[] = $hepatitisResults[$aRow['result']];
 		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ucfirst($aRow['lab_tech_comments']);
@@ -205,7 +181,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		}
 	}
 	$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
-	$filename = 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+	$filename = 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 	echo $filename;
 }

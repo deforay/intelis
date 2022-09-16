@@ -311,7 +311,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<table style="padding:2px;">';
         if ((isset($result['hcv_vl_count']) && $result['hcv_vl_count'] != "") && (isset($result['hbv_vl_count']) && $result['hbv_vl_count'] != "")) {
             $html .= '<tr>';
-            $html .= '<td colspan="2" style="line-height:50px;font-size:14px;text-align:left;">&nbsp;&nbsp;<b>TEST REQUESTED : </b>' . $result['sample_tested_datetime'] . '</td>';
+            $html .= '<td colspan="2" style="line-height:50px;font-size:14px;text-align:left;">&nbsp;&nbsp;<strong>TEST REQUESTED : </strong>' . $result['sample_tested_datetime'] . '</td>';
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td colspan="2" style="line-height:2px;"></td>';
@@ -334,7 +334,7 @@ if (sizeof($requestResult) > 0) {
                 $resultVal = ($result['hbv_vl_count']);
             }
             $html .= '<tr style="background-color:#dbdbdb;">';
-            $html .= '<td style="line-height:50px;font-size:16px;font-weight:bold;text-align:left;">&nbsp;&nbsp;<b>TEST REQUESTED : </b>' . $result['sample_tested_datetime'] . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' . $resultTxt . ' : ' . $resultVal . '</td>';
+            $html .= '<td style="line-height:50px;font-size:16px;font-weight:bold;text-align:left;">&nbsp;&nbsp;<strong>TEST REQUESTED : </strong>' . $result['sample_tested_datetime'] . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' . $resultTxt . ' : ' . $resultVal . '</td>';
             $html .= '</tr>';
         }
 

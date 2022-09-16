@@ -54,11 +54,11 @@ $path = '/assets/img/remote-bg.jpg';
                     <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
                     <form id="loginForm" name="loginForm" class="form-horizontal" role="form" method="post" action="adminLoginProcess.php" onsubmit="validateNow();return false;">
                         <div style="margin-bottom: 5px" class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
                             <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name');?>" title="<?php echo _('Please enter the user name');?>">
                         </div>
                         <div style="margin-bottom: 5px" class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
                             <input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="<?php echo _('Password');?>" title="<?php echo _('Please enter the password');?>">
                         </div>
                         <div style="margin-top:10px" class="form-group">

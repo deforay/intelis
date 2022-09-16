@@ -303,10 +303,10 @@ if (sizeof($requestResult) > 0) {
             /* Test Result Section */
             $html .= '<table border="1">
                                         <tr>
-                                            <td align="center" width="15%"><b>Test non</b></td>
-                                            <td align="center" width="45%"><b>Nom du Testkit (ou) Méthode de test utilisée</b></td>
-                                            <td align="center" width="25%"><b>Date de l" analyse</b></td>
-                                            <td align="center" width="15%"><b>Résultat du test</b></td>
+                                            <td align="center" width="15%"><strong>Test non</strong></td>
+                                            <td align="center" width="45%"><strong>Nom du Testkit (ou) Méthode de test utilisée</strong></td>
+                                            <td align="center" width="25%"><strong>Date de l" analyse</strong></td>
+                                            <td align="center" width="15%"><strong>Résultat du test</strong></td>
                                         </tr>';
 
             foreach ($covid19TestInfo as $indexKey => $rows) {

@@ -222,7 +222,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
      $sWhere[] = ' vl.result_status!=9';
 }
-if (isset($sWhere) && !empty($sWhere) && sizeof($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      $_SESSION['hepatitisRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
@@ -302,10 +302,10 @@ foreach ($rResult as $aRow) {
      $row[] = ucwords($aRow['status_name']);
 
      if ($editRequest) {
-          $edit = '<a href="hepatitis-edit-request.php?id=' . base64_encode($aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><i class="fa-solid fa-pen-to-square"></i> ' . _("Edit") . '</i></a>';
+          $edit = '<a href="hepatitis-edit-request.php?id=' . base64_encode($aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("edit-locked-hepatitis-samples", $_SESSION['privileges'])) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><i class="fa-solid fa-lock"></i>' . _("Locked") . '</a>';
+                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
                }
           }
      }
@@ -320,7 +320,7 @@ foreach ($rResult as $aRow) {
 
      if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
           $fac = ucwords($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
-          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><i class="fa-solid fa-barcode"> </i> ' . _("Barcode") . ' </a>';
+          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><em class="fa-solid fa-barcode"></em> ' . _("Barcode") . ' </a>';
      }
      $actions = "";
      if ($editRequest) {

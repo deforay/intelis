@@ -50,7 +50,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-book"></i> <?php echo _("Export Data"); ?>
+		<h1><em class="fa-solid fa-book"></em> <?php echo _("Export Data"); ?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -64,7 +64,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th><?php echo _("Sample Collection Date"); ?></th>
 							<td>
@@ -113,7 +113,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
-									<option value="7"><?php echo _("Accepted"); ?></option>
+									<option value="7" selected><?php echo _("Accepted"); ?></option>
 									<option value="4"><?php echo _("Rejected"); ?></option>
 								</select>
 							</td>
@@ -152,7 +152,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo $reportType; ?>')"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo $reportType; ?>')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>
@@ -205,7 +205,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -257,14 +257,14 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
 		$('#sampleCollectionDate,#sampleTestDate,#printDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -285,9 +285,7 @@ startDate: moment().subtract(28, 'days'),
 				endDate = end.format('YYYY-MM-DD');
 			});
 
-		$('#printDate').val("");
-		//$('#sampleCollectionDate').val("");
-		$('#sampleTestDate').val("");
+		$('#printDate, #sampleCollectionDate').val("");
 		loadVlRequestData();
 
 		$(".showhideCheckBox").change(function() {

@@ -61,7 +61,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa-solid fa-pen-to-square"></i> <?php echo _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM"); ?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Add New Request"); ?></li>
@@ -185,15 +185,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
                                         </td>
-                                        <th><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Patient Age (years)</th>
+                                        <th scope="row">Patient Age (years)</th>
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
-                                        <th><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="patientGender" id="patientGender">
                                                 <option value=''> -- Select -- </option>
@@ -205,26 +205,26 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Phone number</th>
+                                        <th scope="row">Phone number</th>
                                         <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient Phone Number" title="Patient Phone Number" style="width:100%;" onchange="" /></td>
 
-                                        <th>Patient address</th>
+                                        <th scope="row">Patient address</th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Patient Address" title="Patient Address" style="width:100%;" onchange=""></textarea></td>
                                     </tr>
 
                                     <tr>
-                                        <th>Patient Province</th>
+                                        <th scope="row">Patient Province</th>
                                         <td><input type="text" class="form-control " id="patientProvince" name="patientProvince" placeholder="Patient Province" title="Please enter the patient province" style="width:100%;" /></td>
 
-                                        <th>Patient District</th>
+                                        <th scope="row">Patient District</th>
                                         <td><input class="form-control" id="patientDistrict" name="patientDistrict" placeholder="Patient District" title="Please enter the patient district" style="width:100%;"></td>
                                     </tr>
 
                                     <tr>
-                                        <th>Country of Residence</th>
+                                        <th scope="row">Country of Residence</th>
                                         <td><input type="text" class="form-control" id="patientNationality" name="patientNationality" placeholder="Country of Residence" title="Please enter transit" style="width:100%;" /></td>
 
-                                        <th></th>
+                                        <th scope="row"></th>
                                         <td></td>
                                     </tr>
                                     <tr>
@@ -233,23 +233,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Airline</th>
+                                        <th scope="row">Airline</th>
                                         <td><input type="text" class="form-control " id="airline" name="airline" placeholder="Airline" title="Please enter the airline" style="width:100%;" /></td>
 
-                                        <th>Seat Number</th>
+                                        <th scope="row">Seat Number</th>
                                         <td><input type="text" class="form-control " id="seatNo" name="seatNo" placeholder="Seat Number" title="Please enter the seat number" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
-                                        <th>Arrival Date and Time</th>
+                                        <th scope="row">Arrival Date and Time</th>
                                         <td><input type="text" class="form-control dateTime" id="arrivalDateTime" name="arrivalDateTime" placeholder="Arrival Date and Time" title="Please enter the arrival date and time" style="width:100%;" /></td>
 
-                                        <th>Airport of Departure</th>
+                                        <th scope="row">Airport of Departure</th>
                                         <td><input type="text" class="form-control " id="airportOfDeparture" name="airportOfDeparture" placeholder="Airport of Departure" title="Please enter the airport of departure" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
-                                        <th>Transit</th>
+                                        <th scope="row">Transit</th>
                                         <td><input type="text" class="form-control" id="transit" name="transit" placeholder="Transit" title="Please enter transit" style="width:100%;" /></td>
-                                        <th>Reason of Visit (if applicable)</th>
+                                        <th scope="row">Reason of Visit (if applicable)</th>
                                         <td><input type="text" class="form-control" id="reasonOfVisit" name="reasonOfVisit" placeholder="Reason of Visit" title="Please enter reason of visit" style="width:100%;" /></td>
 
                                     </tr>
@@ -342,11 +342,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     </tr>
                                     <tr>
-                                        <th>Patient's Occupation</th>
+                                        <th scope="row">Patient's Occupation</th>
                                         <td>
                                             <input class="form-control" type="text" name="patientOccupation" id="patientOccupation" placeholder="Patient's Occupation" />
                                         </td>
-                                        <th></th>
+                                        <th scope="row"></th>
                                         <td></td>
 
                                     </tr>
@@ -374,7 +374,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value='no'> No </option>
                                             </select>
                                         </td>
-                                        <th>Reason for Covid-19 Testing <span class="mandatory">*</span></th>
+                                        <th scope="row">Reason for Covid-19 Testing <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="reasonForCovid19Test" id="reasonForCovid19Test" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -383,7 +383,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Specimen Type <span class="mandatory">*</span></th>
+                                        <th scope="row">Specimen Type <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -412,7 +412,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </div>
                                     <table class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
-                                            <th><label for="">Sample Received Date </label></th>
+                                            <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
                                                 <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td>
@@ -423,7 +423,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                         <tr>
-                                            <th>Is Sample Rejected?</th>
+                                            <th scope="row">Is Sample Rejected?</th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>
@@ -441,7 +441,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
-                                            <th>Rejection Date<span class="mandatory">*</span></th>
+                                            <th scope="row">Rejection Date<span class="mandatory">*</span></th>
                                             <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date" /></td>
                                             <td></td>
                                             <td></td>
@@ -471,7 +471,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             </td>
                                                             <td style="vertical-align:middle;text-align: center;">
                                                                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                                                                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>
+                                                                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -492,9 +492,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Reviewed On</th>
+                                            <th scope="row">Reviewed On</th>
                                             <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
-                                            <th>Reviewed By</th>
+                                            <th scope="row">Reviewed By</th>
                                             <td>
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
@@ -502,9 +502,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Approved On</th>
+                                            <th scope="row">Approved On</th>
                                             <td><input type="text" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
-                                            <th>Approved By</th>
+                                            <th scope="row">Approved By</th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
@@ -513,7 +513,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr>
 
-                                            <th>Is Result Authorized ?</th>
+                                            <th scope="row">Is Result Authorized ?</th>
                                             <td>
                                                 <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control" title="Is Result authorized ?" style="width:100%">
                                                     <option value="">-- Select --</option>
@@ -521,7 +521,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value='no'> No </option>
                                                 </select>
                                             </td>
-                                            <th>Authorized By</th>
+                                            <th scope="row">Authorized By</th>
                                             <td><select name="authorizedBy" id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
                                                 </select></td>
@@ -529,9 +529,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr>
 
-                                            <th>Authorized on</th>
+                                            <th scope="row">Authorized on</th>
                                             <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On" /></td>
-                                            <th></th>
+                                            <th scope="row"></th>
                                             <td></td>
 
                                         </tr>
@@ -769,7 +769,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         c.innerHTML = '<input type="text" name="testName[]" id="testName' + tableRowId + '" class="form-control test-name-table-input" placeholder="Test name" title="Please enter the test name for row ' + tableRowId + '"/>';
         d.innerHTML = '<input type="text" name="testDate[]" id="testDate' + tableRowId + '" class="form-control test-name-table-input dateTime" placeholder="Tested on"  title="Please enter the tested on for row ' + tableRowId + '"/>';
         e.innerHTML = '<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult' + tableRowId + '" title="Please select the result for row ' + tableRowId + '"><option value=""> -- Select -- </option><?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?> <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option> <?php } ?> </select>';
-        f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><i class="fa-solid fa-minus"></i></a>';
+        f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
         $(a).fadeIn(800);
         $('.dateTime').datetimepicker({
             changeMonth: true,

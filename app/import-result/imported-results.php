@@ -117,7 +117,7 @@ foreach ($rejectionTypeResult as $type) {
 	</section>
 	<!-- for sample rejection -->
 	<div id="rejectReasonDiv">
-		<a href="javascript:void(0)" style="float:right;color:red;" title="close" onclick="hideReasonDiv('rejectReasonDiv')"><i class="fa-solid fa-xmark"></i></a>
+		<a href="javascript:void(0)" style="float:right;color:red;" title="close" onclick="hideReasonDiv('rejectReasonDiv')"><em class="fa-solid fa-xmark"></em></a>
 		<div class="arrow-right"></div>
 		<input type="hidden" name="statusDropDownId" id="statusDropDownId" />
 		<h3 style="color:red;">Choose Rejection Reason</h3>
@@ -137,10 +137,10 @@ foreach ($rejectionTypeResult as $type) {
 						<div class="box-header without-border">
 							<div class="box-header with-border">
 								<ul style="list-style: none;float: right;">
-									<li style="float:left;margin-right:40px;"><i class="fa-solid fa-exclamation" style="color:#e8000b;"></i> <?= _("Sample Code/ID not from VLSM"); ?></li>
-									<li style="float:left;margin-right:40px;"><i class="fa-solid fa-exclamation" style="color:#86c0c8;"></i> <?= _("Result already exists for this sample"); ?></li>
-									<li style="float:left;margin-right:40px;"><i class="fa-solid fa-exclamation" style="color:#337ab7;"></i> <?= _("Result for sample from VLSM"); ?></li>
-									<li style="float:left;margin-right:20px;"><i class="fa-solid fa-exclamation" style="color:#7d8388;"></i> <?= _("Control"); ?></li>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#e8000b;"></em> <?= _("Sample Code/ID not from VLSM"); ?></li>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#86c0c8;"></em> <?= _("Result already exists for this sample"); ?></li>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#337ab7;"></em> <?= _("Result for sample from VLSM"); ?></li>
+									<li style="float:left;margin-right:20px;"><em class="fa-solid fa-exclamation" style="color:#7d8388;"></em> <?= _("Control"); ?></li>
 								</ul>
 							</div>
 						</div>
@@ -174,16 +174,16 @@ foreach ($rejectionTypeResult as $type) {
 								</tbody>
 							</table>
 						</div>
-						<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:30px;width: 100%;">
+						<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 100%;">
 							<tr>
 								<input type="hidden" name="checkedTests" id="checkedTests" />
 								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />
 								<td style=" width: 30%; ">
-									<b><?= _("Comments") ?>&nbsp;</b>
+									<strong><?= _("Comments") ?>&nbsp;</strong>
 									<textarea style="height: 34px;width: 100%;" class="form-control" id="comments" name="comments" placeholder="Comments"></textarea>
 								</td>
 								<td style=" width: 20%; ">
-									<b><?= _("Tested By"); ?><span class="mandatory">*</span>&nbsp;</b>
+									<strong><?= _("Tested By"); ?><span class="mandatory">*</span>&nbsp;</strong>
 									<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
 										<option value="">-- Select --</option>
 										<?php
@@ -196,7 +196,7 @@ foreach ($rejectionTypeResult as $type) {
 									</select>
 								</td>
 								<td style=" width: 20%; ">
-									<b><?= _("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;</b>
+									<strong><?= _("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;</strong>
 									<!--<input type="text" name="reviewedBy" id="reviewedBy" class="form-control" title="Please enter Reviewed By" placeholder ="Reviewed By"/>-->
 									<select name="reviewedBy" id="reviewedBy" class="form-control" title="Please choose reviewed by" style="width: 100%;">
 										<option value="">-- Select --</option>
@@ -210,7 +210,7 @@ foreach ($rejectionTypeResult as $type) {
 									</select>
 								</td>
 								<td style=" width: 20%; ">
-									<b><?= _("Approved By"); ?><span class="mandatory">*</span>&nbsp;</b>
+									<strong><?= _("Approved By"); ?><span class="mandatory">*</span>&nbsp;</strong>
 									<!--<input type="text" name="approvedBy" id="approvedBy" class="form-control" title="Please enter Approved By" placeholder ="Approved By"/>-->
 									<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" style="width: 100%;">
 										<option value="">-- Select --</option>
@@ -415,7 +415,7 @@ foreach ($rejectionTypeResult as $type) {
 			//selectedTestsIdValue[indexValue] = result;
 			$("#rejectReasonName" + rejectDropDown).html(
 				$("#" + obj.id + " option:selected").text() +
-				'<input type="hidden" id="rejectedReasonId' + rejectDropDown + '" name="rejectedReasonId[]" value="' + obj.value + '"/><a href="javascript:void(0)" style="float:right;color:red;" title="cancel" onclick="showRejectedReasonList(' + rejectDropDown + ');"><i class="fa-solid fa-xmark"></i></a>'
+				'<input type="hidden" id="rejectedReasonId' + rejectDropDown + '" name="rejectedReasonId[]" value="' + obj.value + '"/><a href="javascript:void(0)" style="float:right;color:red;" title="cancel" onclick="showRejectedReasonList(' + rejectDropDown + ');"><em class="fa-solid fa-xmark"></em></a>'
 			);
 		} else {
 			$("#rejectedReasonId" + rejectDropDown).val('');

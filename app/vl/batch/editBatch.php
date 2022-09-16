@@ -84,14 +84,14 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width: 80%;">
+			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 80%;">
 
 				<tr>
-					<td>&nbsp;<b>Sample Collection Date&nbsp;:</b></td>
+					<td>&nbsp;<strong>Sample Collection Date&nbsp;:</strong></td>
 					<td>
 						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
 					</td>
-					<td>&nbsp;<b>Sample Type&nbsp;:</b></td>
+					<td>&nbsp;<strong>Sample Type&nbsp;:</strong></td>
 					<td>
 						<select class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
 							<option value=""> -- Select -- </option>
@@ -106,13 +106,13 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 					</td>
 				</tr>
 				<tr>
-					<td>&nbsp;<b>Facility Name & Code&nbsp;:</b></td>
+					<td>&nbsp;<strong>Facility Name & Code&nbsp;:</strong></td>
 					<td>
 						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
-					<td><b>Gender&nbsp;:</b></td>
+					<td><strong>Gender&nbsp;:</strong></td>
 					<td>
 						<select name="gender" id="gender" class="form-control" title="Please choose gender" onchange="enableFemaleSection(this);">
 							<option value=""> -- Select -- </option>
@@ -123,23 +123,23 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 					</td>
 				</tr>
 				<tr>
-					<th><?php echo _("Positions"); ?></th>
+					<th scope="col"><?php echo _("Positions"); ?></th>
 					<td>
 						<select id="positions-type" class="form-control" title="Please select the postion">
 							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Numeric"); ?></option>
 							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Alpha Numeric"); ?></option>
 						</select>
 					</td>
-					<th></th>
+					<th scope="col"></th>
 					<td></td>
 				</tr>
 				<tr class="showFemaleSection">
-					<td><b>Pregnant&nbsp;:</b></td>
+					<td><strong>Pregnant&nbsp;:</strong></td>
 					<td>
 						<input type="radio" name="pregnant" title="Please choose type" class="pregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;Yes
 						<input type="radio" name="pregnant" title="Please choose type" class="pregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;No
 					</td>
-					<td><b>Is Patient Breastfeeding&nbsp;:</b></td>
+					<td><strong>Is Patient Breastfeeding&nbsp;:</strong></td>
 					<td>
 						<input type="radio" name="breastfeeding" title="Please choose type" class="breastfeeding" id="breastFeedingYes" value="yes" disabled="disabled" />&nbsp;&nbsp;Yes
 						<input type="radio" name="breastfeeding" title="Please choose type" class="breastfeeding" id="breastFeedingNo" value="no" disabled="disabled" />&nbsp;&nbsp;No
@@ -182,7 +182,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="editBatchControlsPosition.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><i class="fa-solid fa-arrow-down-1-9"></i>  Edit Position</a></div>
+							<div class="col-md-6"><a href="editBatchControlsPosition.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-8">
@@ -190,7 +190,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 									<div class="col-md-12">
 										<div class="col-md-12">
 											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<i class="icon-chevron-right"></i></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><i class="icon-chevron-left"></i>&nbsp;Deselect All</a>
+												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
 												<?php

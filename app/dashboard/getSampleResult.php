@@ -395,7 +395,7 @@ if ($table == "form_covid19") {
             tooltip: {
                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true
@@ -463,7 +463,7 @@ if ($table == "form_covid19") {
             tooltip: {
                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true
@@ -525,7 +525,7 @@ if ($table == "form_covid19") {
             tooltip: {
                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true
@@ -586,7 +586,7 @@ if ($table == "form_covid19") {
             tooltip: {
                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true
@@ -654,7 +654,7 @@ if ($table == "form_covid19") {
 
             tooltip: {
                 formatter: function() {
-                    return '<b>' + this.x + '</b><br/>' +
+                    return '<strong>' + this.x + '</strong><br/>' +
                         this.series.name + ': ' + this.y + '<br/>' +
                         'Total: ' + this.point.stackTotal;
                 }

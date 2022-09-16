@@ -36,7 +36,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-book"></i> <?php echo _("Export Result"); ?>
+		<h1><em class="fa-solid fa-book"></em> <?php echo _("Export Result"); ?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -49,7 +49,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
@@ -219,7 +219,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel()"><i class="fa-solid fa-cloud-arrow-down"></i> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>

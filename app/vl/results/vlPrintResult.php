@@ -33,7 +33,7 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-print"></i> <?php echo _("Print VL Results"); ?></h1>
+		<h1><em class="fa-solid fa-print"></em> <?php echo _("Print VL Results"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Print VL Results"); ?></li>
@@ -55,13 +55,13 @@ $batResult = $db->rawQuery($batQuery);
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="notPrintedData">
-											<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
-													<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
-													<td><b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -75,7 +75,7 @@ $batResult = $db->rawQuery($batQuery);
 														</select>
 													</td>
 
-													<td><b><?php echo _("Sample Type"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
 														<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -90,19 +90,19 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td><b><?php echo _("Facility Name"); ?> :</b></td>
+													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 													<td>
 														<select class="form-control" id="facility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td><b><?php echo _("Testing Labs"); ?> :</b></td>
+													<td><strong><?php echo _("Testing Labs"); ?> :</strong></td>
 													<td>
 														<select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
-													<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -113,11 +113,11 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td><b><?php echo _("ART Number"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("ART Number"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="artNo" name="artNo" class="form-control" placeholder="<?php echo _('ART Number'); ?>" style="width:220px;" onkeyup="searchVlRequestData()" />
 													</td>
-													<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
@@ -208,13 +208,13 @@ $batResult = $db->rawQuery($batQuery);
 											<input type="hidden" name="totalSamplesList" id="totalSamplesList" />
 										</div>
 										<div class="tab-pane fade" id="printedData">
-											<table class="table" aria-hidden="true"  cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
-													<td><b><?php echo _("Sample Collection Date"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
-													<td><b><?php echo _("Batch Code"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="printBatchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -228,7 +228,7 @@ $batResult = $db->rawQuery($batQuery);
 														</select>
 													</td>
 
-													<td><b><?php echo _("Sample Type"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
 														<select style="width:220px;" class="form-control" id="printSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -243,19 +243,19 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td><b><?php echo _("Facility Name"); ?> :</b></td>
+													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 													<td>
 														<select class="form-control" id="printFacility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td><b><?php echo _("Testing Labs"); ?> :</b></td>
+													<td><strong><?php echo _("Testing Labs"); ?> :</strong></td>
 													<td>
 														<select class="form-control" id="printLabId" name="printLabId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
-													<td><b><?php echo _("Gender"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="gender" id="printGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -266,11 +266,11 @@ $batResult = $db->rawQuery($batQuery);
 													</td>
 												</tr>
 												<tr>
-													<td><b><?php echo _("ART Number"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("ART Number"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="printArtNo" name="artNo" class="form-control" placeholder="<?php echo _('ART Number'); ?>" style="width:220px;" onkeyup="searchPrintedVlRequestData()" />
 													</td>
-													<td><b><?php echo _("Sample Test Date"); ?>&nbsp;:</b></td>
+													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>

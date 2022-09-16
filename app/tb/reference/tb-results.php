@@ -7,7 +7,7 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><i class="fa-solid fa-heart-pulse"></i> <?php echo _("TB Results"); ?></h1>
+		<h1><em class="fa-solid fa-heart-pulse"></em> <?php echo _("TB Results"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("TB Results"); ?></li>
@@ -29,11 +29,11 @@ require_once(APPLICATION_PATH . '/header.php');
 						<table id="sampTypDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
-									<th><?php echo _("Result Name"); ?></th>
-									<th><?php echo _("Result Type"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Result Name"); ?></th>
+									<th scope="row"><?php echo _("Result Type"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<!-- <th>Action</th> -->
+										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>
 							</thead>

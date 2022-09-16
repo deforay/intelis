@@ -365,22 +365,13 @@ try {
         die; */
         if ($id > 0) {
             $tbData = $app->getTableDataUsingId('form_tb', 'tb_id', $data['tbSampleId']);
-            $c19SampleCode = (isset($tbData['sample_code']) && $tbData['sample_code']) ? $tbData['sample_code'] : $tbData['remote_sample_code'];
-            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = array(
-                    'status' => 'success',
-                    'sampleCode' => $c19SampleCode,
-                    'uniqueId' => $tbData['unique_id'],
-                    'appSampleCode' => $tbData['app_sample_code'],
-                );
-            } else {
-                $responseData[$rootKey] = array(
-                    'status' => 'success',
-                    'sampleCode' => $c19SampleCode,
-                    'uniqueId' => $tbData['unique_id'],
-                    'appSampleCode' => $tbData['app_sample_code'],
-                );
-            }
+            $tbSampleCode = (isset($tbData['sample_code']) && $tbData['sample_code']) ? $tbData['sample_code'] : $tbData['remote_sample_code'];
+            $responseData[$rootKey] = array(
+                'status' => 'success',
+                'sampleCode' => $tbSampleCode,
+                'uniqueId' => $tbData['unique_id'],
+                'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $tbData['app_sample_code'] : null,
+            );
             http_response_code(200);
         } else {
             if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
