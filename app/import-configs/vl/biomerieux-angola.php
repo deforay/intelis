@@ -39,7 +39,7 @@ try {
 
         $bquery    = "select MAX(batch_code_key) from batch_details";
         $bvlResult = $db->rawQuery($bquery);
-        if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != NULL) {
+        if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
             $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
             $maxBatchCodeKey = "00" . $maxBatchCodeKey;
         } else {

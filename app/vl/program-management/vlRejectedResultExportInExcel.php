@@ -78,7 +78,7 @@ if(isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralL
           $row = array();
           //sample collecion date
           $sampleCollectionDate = '';
-          if($aRow['sample_collection_date']!= NULL && trim($aRow['sample_collection_date'])!='' && $aRow['sample_collection_date']!='0000-00-00 00:00:00'){
+          if($aRow['sample_collection_date']!= null && trim($aRow['sample_collection_date'])!='' && $aRow['sample_collection_date']!='0000-00-00 00:00:00'){
                $expStr = explode(" ",$aRow['sample_collection_date']);
                $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
           }

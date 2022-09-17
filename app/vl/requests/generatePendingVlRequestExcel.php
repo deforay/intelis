@@ -142,7 +142,7 @@ foreach ($rResult as $aRow) {
 	$row = array();
 	//date of birth
 	$dob = '';
-	if ($aRow['patient_dob'] != NULL && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
+	if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
 		$dob =  $dateTimeUtil->humanReadableDateFormat($aRow['patient_dob']);
 	}
 
@@ -252,7 +252,7 @@ foreach ($rResult as $aRow) {
 	$row[] = $aRow['patient_art_no'];
 	$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 	$row[] = $dob;
-	$row[] = ($aRow['patient_age_in_years'] != NULL && trim($aRow['patient_age_in_years']) != '' && $aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
+	$row[] = ($aRow['patient_age_in_years'] != null && trim($aRow['patient_age_in_years']) != '' && $aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 	$row[] = $gender;
 	$row[] = $sampleCollectionDate;
 	$row[] = (isset($aRow['sample_name'])) ? ucwords($aRow['sample_name']) : '';

@@ -359,7 +359,7 @@ $disable = "disabled = 'disabled'";
 															if (trim($vlQueryInfo['reason_for_vl_testing']) == 'routine' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'routine') {
 																$checked = 'checked="checked"';
 																$display = 'block';
-																if ($vlQueryInfo['last_vl_result_routine'] != NULL && trim($vlQueryInfo['last_vl_result_routine']) != '' && trim($vlQueryInfo['last_vl_result_routine']) != '<20' && trim($vlQueryInfo['last_vl_result_routine']) != 'tnd') {
+																if ($vlQueryInfo['last_vl_result_routine'] != null && trim($vlQueryInfo['last_vl_result_routine']) != '' && trim($vlQueryInfo['last_vl_result_routine']) != '<20' && trim($vlQueryInfo['last_vl_result_routine']) != 'tnd') {
 																	$vlValue = $vlQueryInfo['last_vl_result_routine'];
 																}
 															} else {
@@ -404,7 +404,7 @@ $disable = "disabled = 'disabled'";
 															if (trim($vlQueryInfo['reason_for_vl_testing']) == 'failure' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'failure') {
 																$checked = 'checked="checked"';
 																$display = 'block';
-																if ($vlQueryInfo['last_vl_result_failure_ac'] != NULL && trim($vlQueryInfo['last_vl_result_failure_ac']) != '' && trim($vlQueryInfo['last_vl_result_failure_ac']) != '<20' && trim($vlQueryInfo['last_vl_result_failure_ac']) != 'tnd') {
+																if ($vlQueryInfo['last_vl_result_failure_ac'] != null && trim($vlQueryInfo['last_vl_result_failure_ac']) != '' && trim($vlQueryInfo['last_vl_result_failure_ac']) != '<20' && trim($vlQueryInfo['last_vl_result_failure_ac']) != 'tnd') {
 																	$vlValue = $vlQueryInfo['last_vl_result_failure_ac'];
 																}
 															} else {
@@ -449,7 +449,7 @@ $disable = "disabled = 'disabled'";
 															if (trim($vlQueryInfo['reason_for_vl_testing']) == 'suspect' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'suspect') {
 																$checked = 'checked="checked"';
 																$display = 'block';
-																if ($vlQueryInfo['last_vl_result_failure'] != NULL && trim($vlQueryInfo['last_vl_result_failure']) != '' && trim($vlQueryInfo['last_vl_result_failure']) != '<20' && trim($vlQueryInfo['last_vl_result_failure']) != 'tnd') {
+																if ($vlQueryInfo['last_vl_result_failure'] != null && trim($vlQueryInfo['last_vl_result_failure']) != '' && trim($vlQueryInfo['last_vl_result_failure']) != '<20' && trim($vlQueryInfo['last_vl_result_failure']) != 'tnd') {
 																	$vlValue = $vlQueryInfo['last_vl_result_failure'];
 																}
 															} else {

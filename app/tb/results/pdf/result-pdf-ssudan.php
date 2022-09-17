@@ -279,7 +279,7 @@ if (sizeof($requestResult) > 0) {
         $showMessage = '';
         $tndMessage = '';
         $messageTextSize = '12px';
-        if ($result['result'] != NULL && trim($result['result']) != '') {
+        if ($result['result'] != null && trim($result['result']) != '') {
             $resultType = is_numeric($result['result']);
             if ($result['result'] == 'positive') {
                 $tbResult = $result['result'];
@@ -520,7 +520,7 @@ if (sizeof($requestResult) > 0) {
             //Update print datetime in TB tbl.
             $tbQuery = "SELECT result_printed_datetime FROM form_tb as tb WHERE tb.tb_id ='" . $result['tb_id'] . "'";
             $tbResult = $db->query($tbQuery);
-            if ($tbResult[0]['result_printed_datetime'] == NULL || trim($tbResult[0]['result_printed_datetime']) == '' || $tbResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+            if ($tbResult[0]['result_printed_datetime'] == null || trim($tbResult[0]['result_printed_datetime']) == '' || $tbResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                 $db = $db->where('tb_id', $result['tb_id']);
                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
             }

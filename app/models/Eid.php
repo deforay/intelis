@@ -226,7 +226,7 @@ class Eid
                 $row = array();
                 //date of birth
                 $dob = '';
-                if ($aRow['child_dob'] != NULL && trim($aRow['child_dob']) != '' && $aRow['child_dob'] != '0000-00-00') {
+                if ($aRow['child_dob'] != null && trim($aRow['child_dob']) != '' && $aRow['child_dob'] != '0000-00-00') {
                     $dob =  date("d-m-Y", strtotime($aRow['child_dob']));
                 }
                 //set gender
@@ -240,38 +240,38 @@ class Eid
                 }
                 //sample collecion date
                 $sampleCollectionDate = '';
-                if ($aRow['sample_collection_date'] != NULL && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+                if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $expStr = explode(" ", $aRow['sample_collection_date']);
                     $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
                 }
 
                 $sampleTestedOn = '';
-                if ($aRow['sample_tested_datetime'] != NULL && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
+                if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
                     $sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
                 }
 
-                if ($aRow['sample_received_at_vl_lab_datetime'] != NULL && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00') {
+                if ($aRow['sample_received_at_vl_lab_datetime'] != null && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00') {
                     $sampleReceivedOn =  date("d-m-Y", strtotime($aRow['sample_received_at_vl_lab_datetime']));
                 }
 
 
                 //set sample rejection
                 $sampleRejection = 'No';
-                if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != NULL && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+                if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
                     $sampleRejection = 'Yes';
                 }
                 //result dispatched date
                 $resultDispatchedDate = '';
-                if ($aRow['result_printed_datetime'] != NULL && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+                if ($aRow['result_printed_datetime'] != null && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
                     $expStr = explode(" ", $aRow['result_printed_datetime']);
                     $resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
                 }
 
                 //set result log value
                 $logVal = '0.0';
-                if ($aRow['result_value_log'] != NULL && trim($aRow['result_value_log']) != '') {
+                if ($aRow['result_value_log'] != null && trim($aRow['result_value_log']) != '') {
                     $logVal = round($aRow['result_value_log'], 1);
-                } else if ($aRow['result_value_absolute'] != NULL && trim($aRow['result_value_absolute']) != '' && $aRow['result_value_absolute'] > 0) {
+                } else if ($aRow['result_value_absolute'] != null && trim($aRow['result_value_absolute']) != '' && $aRow['result_value_absolute'] > 0) {
                     $logVal = round(log10((float)$aRow['result_value_absolute']), 1);
                 }
                 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -307,7 +307,7 @@ class Eid
                 $row[] = $aRow['child_name'];
                 $row[] = $aRow['mother_id'];
                 $row[] = $dob;
-                $row[] = ($aRow['child_age'] != NULL && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
+                $row[] = ($aRow['child_age'] != null && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
                 $row[] = $gender;
                 $row[] = ucwords($aRow['has_infant_stopped_breastfeeding']);
                 $row[] = ucwords($aRow['pcr_test_performed_before']);

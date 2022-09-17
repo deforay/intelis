@@ -436,7 +436,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'sample_received_at_vl_lab_datetime'                 => isset($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
             'is_sample_rejected'                                 => isset($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
             'result'                                             => isset($_POST['result']) ? $_POST['result'] : null,
-            'tested_by'                                         => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  NULL,
+            'tested_by'                                         => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                         => isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,

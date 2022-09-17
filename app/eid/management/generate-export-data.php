@@ -117,7 +117,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != NULL && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
 		}
 
@@ -166,7 +166,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		$row[] = $aRow['child_name'];
 		$row[] = $aRow['mother_id'];
 		$row[] = $dob;
-		$row[] = ($aRow['child_age'] != NULL && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
+		$row[] = ($aRow['child_age'] != null && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
 		$row[] = $gender;
 		$row[] = ucwords($aRow['has_infant_stopped_breastfeeding']);
 		$row[] = ucwords($aRow['pcr_test_performed_before']);

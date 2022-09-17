@@ -233,7 +233,7 @@ if (sizeof($requestResult) > 0) {
 		$showMessage = '';
 		$tndMessage = '';
 		$messageTextSize = '12px';
-		if ($result['result'] != NULL && trim($result['result']) != '') {
+		if ($result['result'] != null && trim($result['result']) != '') {
 			$resultType = is_numeric($result['result']);
 			if (in_array(strtolower(trim($result['result'])), array("< 20", "< 40", "< 800", "< 400", "tnd", "target not detected", "not detected", "below detection level"))) {
 				$vlResult = 'TND*';
@@ -558,7 +558,7 @@ if (sizeof($requestResult) > 0) {
 			//Update print datetime in VL tbl.
 			$vlQuery = "SELECT result_printed_datetime FROM form_vl as vl WHERE vl.vl_sample_id ='" . $result['vl_sample_id'] . "'";
 			$vlResult = $db->query($vlQuery);
-			if ($vlResult[0]['result_printed_datetime'] == NULL || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+			if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
 				$db = $db->where('vl_sample_id', $result['vl_sample_id']);
 				$db->update($tableName2, array('result_printed_datetime' => $general->getCurrentDateTime()));
 			}

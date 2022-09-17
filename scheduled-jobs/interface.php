@@ -119,7 +119,7 @@ if (count($interfaceInfo) > 0) {
                 $txtVal = $interpretedResults['txtVal'];
             }
 
-            $testedByUserId = $approvedByUserId = $reviewedByUserId = NULL;
+            $testedByUserId = $approvedByUserId = $reviewedByUserId = null;
             // if ^ exists it means the Operator Name has both tester and releaser name
             if (strpos(strtolower($result['tested_by']), '^') !== false) {
                 $operatorArray = explode("^", $result['tested_by']);
@@ -145,8 +145,8 @@ if (count($interfaceInfo) > 0) {
                 'vl_test_platform' => $result['machine_used'],
                 'result_status' => 7,
                 'manual_result_entry' => 'no',
-                'result_printed_datetime' => NULL,
-                'result_dispatched_datetime' => NULL,
+                'result_printed_datetime' => null,
+                'result_dispatched_datetime' => null,
                 'last_modified_datetime' => $db->now(),
                 'data_sync' => 0
             );
@@ -198,8 +198,8 @@ if (count($interfaceInfo) > 0) {
                 'manual_result_entry' => 'no',
                 'result_approved_by' => (isset($approved['eid']) && $approved['eid'] != "") ? $approved['eid'] : null,
                 'result_reviewed_by' => (isset($reviewed['eid']) && $reviewed['eid'] != "") ? $reviewed['eid'] : null,
-                'result_printed_datetime' => NULL,
-                'result_dispatched_datetime' => NULL,
+                'result_printed_datetime' => null,
+                'result_dispatched_datetime' => null,
                 'last_modified_datetime' => $db->now(),
                 'data_sync' => 0
             );
@@ -267,8 +267,8 @@ if (count($interfaceInfo) > 0) {
                 'manual_result_entry' => 'no',
                 'result_approved_by' => (isset($approved['hepatitis']) && $approved['hepatitis'] != "") ? $approved['hepatitis'] : null,
                 'result_reviewed_by' => (isset($reviewed['hepatitis']) && $reviewed['hepatitis'] != "") ? $reviewed['hepatitis'] : null,
-                'result_printed_datetime' => NULL,
-                'result_dispatched_datetime' => NULL,
+                'result_printed_datetime' => null,
+                'result_dispatched_datetime' => null,
                 'last_modified_datetime' => $db->now(),
                 'data_sync' => 0
             );

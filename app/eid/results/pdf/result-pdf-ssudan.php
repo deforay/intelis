@@ -197,7 +197,7 @@ if (sizeof($requestResult) > 0) {
         $showMessage = '';
         $tndMessage = '';
         $messageTextSize = '12px';
-        if ($result['result'] != NULL && trim($result['result']) != '') {
+        if ($result['result'] != null && trim($result['result']) != '') {
             $resultType = is_numeric($result['result']);
             if ($result['result'] == 'positive') {
                 $finalResult = $result['result'];
@@ -564,7 +564,7 @@ if (sizeof($requestResult) > 0) {
             //Update print datetime in VL tbl.
             $vlQuery = "SELECT result_printed_datetime FROM form_eid as vl WHERE vl.eid_id ='" . $result['eid_id'] . "'";
             $eidResult = $db->query($vlQuery);
-            if ($eidResult[0]['result_printed_datetime'] == NULL || trim($eidResult[0]['result_printed_datetime']) == '' || $eidResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+            if ($eidResult[0]['result_printed_datetime'] == null || trim($eidResult[0]['result_printed_datetime']) == '' || $eidResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                 $db = $db->where('eid_id', $result['eid_id']);
                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
             }

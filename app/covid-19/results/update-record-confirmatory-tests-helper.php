@@ -18,14 +18,14 @@ try {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
 		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
-		$_POST['sampleReceivedDate'] = NULL;
+		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
 		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
-		$_POST['sampleTestedDateTime'] = NULL;
+		$_POST['sampleTestedDateTime'] = null;
 	}
 
 
@@ -66,7 +66,7 @@ try {
 					$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
 					$_POST['testDate'][$testKey] = $general->isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
 				} else {
-					$_POST['testDate'][$testKey] = NULL;
+					$_POST['testDate'][$testKey] = null;
 				}
 				$covid19TestData = array(
 					'covid19_id'			=> $_POST['covid19SampleId'],

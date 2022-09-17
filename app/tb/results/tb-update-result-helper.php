@@ -34,7 +34,7 @@ try {
         $sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
         $_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
-        $_POST['sampleCollectionDate'] = NULL;
+        $_POST['sampleCollectionDate'] = null;
     }
 
     //Set sample received date
@@ -42,37 +42,37 @@ try {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
         $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
-        $_POST['sampleReceivedDate'] = NULL;
+        $_POST['sampleReceivedDate'] = null;
     }
     if (!empty($_POST['resultDispatchedDatetime']) && trim($_POST['resultDispatchedDatetime']) != "") {
         $resultDispatchedDatetime = explode(" ", $_POST['resultDispatchedDatetime']);
         $_POST['resultDispatchedDatetime'] = $general->isoDateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
     } else {
-        $_POST['resultDispatchedDatetime'] = NULL;
+        $_POST['resultDispatchedDatetime'] = null;
     }
     if (!empty($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
         $sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
         $_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
-        $_POST['sampleTestedDateTime'] = NULL;
+        $_POST['sampleTestedDateTime'] = null;
     }
 
     if (!empty($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
         $arrivalDate = explode(" ", $_POST['arrivalDateTime']);
         $_POST['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
-        $_POST['arrivalDateTime'] = NULL;
+        $_POST['arrivalDateTime'] = null;
     }
 
     if (!empty($_POST['requestedDate']) && trim($_POST['requestedDate']) != "") {
         $arrivalDate = explode(" ", $_POST['requestedDate']);
         $_POST['requestedDate'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
-        $_POST['requestedDate'] = NULL;
+        $_POST['requestedDate'] = null;
     }
 
     if (empty(trim($_POST['sampleCode']))) {
-        $_POST['sampleCode'] = NULL;
+        $_POST['sampleCode'] = null;
     }
 
     if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -107,14 +107,14 @@ try {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
         $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
-        $_POST['reviewedOn'] = NULL;
+        $_POST['reviewedOn'] = null;
     }
 
     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
         $approvedOn = explode(" ", $_POST['approvedOn']);
         $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
-        $_POST['approvedOn'] = NULL;
+        $_POST['approvedOn'] = null;
     }
     if (isset($_POST['province']) && $_POST['province'] != "") {
         $province = explode("##", $_POST['province']);

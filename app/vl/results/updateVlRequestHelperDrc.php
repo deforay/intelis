@@ -12,7 +12,7 @@ $vlModel = new \Vlsm\Models\Vl();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";
-$vl_result_category = NULL;
+$vl_result_category = null;
 $isRejected = false;
 $logVal = null;
 $absDecimalVal = null;
@@ -42,7 +42,7 @@ try {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
         $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
-        $_POST['sampleReceivedDate'] = NULL;
+        $_POST['sampleReceivedDate'] = null;
     }
 
     //Set result prinetd date time
@@ -50,17 +50,17 @@ try {
         $sampleTestingDateLab = explode(" ", $_POST['sampleTestingDateAtLab']);
         $_POST['sampleTestingDateAtLab'] = $general->isoDateFormat($sampleTestingDateLab[0]) . " " . $sampleTestingDateLab[1];
     } else {
-        $_POST['sampleTestingDateAtLab'] = NULL;
+        $_POST['sampleTestingDateAtLab'] = null;
     }
     //Set sample testing date
     if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletionOfViralLoad']) != "") {
         $dateofCompletionofViralLoad = explode(" ", $_POST['dateOfCompletionOfViralLoad']);
         $_POST['dateOfCompletionOfViralLoad'] = $general->isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
     } else {
-        $_POST['dateOfCompletionOfViralLoad'] = NULL;
+        $_POST['dateOfCompletionOfViralLoad'] = null;
     }
     //if(!isset($_POST['sampleCode']) || trim($_POST['sampleCode'])== ''){
-    //    $_POST['sampleCode'] = NULL;
+    //    $_POST['sampleCode'] = null;
     //}
     $testingPlatform = '';
     if (isset($_POST['testingPlatform']) && trim($_POST['testingPlatform']) != '') {
@@ -127,16 +127,16 @@ try {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
         $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
-        $_POST['reviewedOn'] = NULL;
+        $_POST['reviewedOn'] = null;
     }
     $vldata = array(
-        'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  NULL,
+        'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  null,
         'reason_for_sample_rejection' => $_POST['rejectionReason'] ?: null,
         'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['noResult'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['dateOfCompletionOfViralLoad'],
-        'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  NULL,
-        'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  NULL,
+        'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  null,
+        'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
         'vl_test_platform' => $testingPlatform,
         'result_value_absolute'                 => $absVal ?: null,
         'result_value_absolute_decimal'         => $absDecimalVal ?: null,
@@ -145,16 +145,16 @@ try {
         'result_value_log'                      => $logVal ?: null,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-        'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] :  NULL),
+        'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] : null),
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
         'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
-        'result_dispatched_datetime' => NULL,
+        'result_dispatched_datetime' => null,
         'reason_for_vl_result_changes' => $allChange,
         'last_modified_datetime' => $db->now(),
         'manual_result_entry' => 'yes',
         'result_status' => $resultStatus,
         'data_sync' => 0,
-        'result_printed_datetime' => NULL
+        'result_printed_datetime' => null
     );
     // if (isset($_POST['status']) && trim($_POST['status']) != '') {
     //     $vldata['result_status'] = $_POST['status'];
