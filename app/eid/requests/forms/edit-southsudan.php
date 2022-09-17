@@ -101,13 +101,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <table class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                            <td><label for="sampleCode">Sample ID </label></td>
+                                            <td class="labels"><label for="sampleCode">Sample ID </label></td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $eidInfo['sample_code'] ?></span>
                                                 <input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo $eidInfo['sample_code'] ?>" />
                                             </td>
                                         <?php } else { ?>
-                                            <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
+                                            <td class="labels"><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                             <td>
                                                 <input type="text" readonly value="<?php echo $eidInfo['sample_code'] ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
                                             </td>
@@ -118,19 +118,19 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
+                                        <td class="labels"><label for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                        <td><label for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
+                                        <td class="labels"><label for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
-                                        <td><label for="facilityId">Health Facility/POE </label><span class="mandatory">*</span></td>
+                                        <td class="labels"><label for="facilityId">Health Facility/POE </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
                                                 <?php echo $facility; ?>
@@ -138,7 +138,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><label for="supportPartner">Implementing Partner </label></td>
+                                        <td class="labels"><label for="supportPartner">Implementing Partner </label></td>
                                         <td>
                                             <!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
                                             <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
@@ -150,7 +150,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <td><label for="fundingSource">Funding Partner</label></td>
+                                        <td class="labels"><label for="fundingSource">Funding Partner</label></td>
                                         <td>
                                             <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
@@ -162,7 +162,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </select>
                                         </td>
                                         <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
-                                            <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+                                            <td class="labels"><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
@@ -185,21 +185,21 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <table class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
+                                        <th style="width:15% !important" class="labels"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" oninput="showPatientList($(this).val(),1500);" />
                                         </td>
-                                        <th style="width:15% !important"><label for="childName">Infant name </label></th>
+                                        <th style="width:15% !important" class="labels"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?php echo $eidInfo['child_name']; ?>" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="childDob">Date of Birth </label></th>
+                                        <th scope="row" class="labels"><label for="childDob">Date of Birth </label></th>
                                         <td>
                                             <input type="text" class="form-control" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                         </td>
-                                        <th scope="row"><label for="childGender">Gender <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" class="labels"><label for="childGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="childGender" id="childGender">
                                                 <option value=''> -- Select -- </option>
@@ -210,16 +210,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Infant Age (months) <span class="mandatory">*</span></th>
+                                        <th scope="row" class="labels">Infant Age (months) <span class="mandatory">*</span></th>
                                         <td><input type="number" step=".1" max="60" maxlength="4" class="form-control isRequired" id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?php echo $eidInfo['child_age']; ?>" /></td>
-                                        <th scope="row">Mother ART Number</th>
+                                        <th scope="row" class="labels">Mother ART Number</th>
                                         <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?php echo $eidInfo['mother_id'] ?>" onchange="" /></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Caretaker phone number</th>
+                                        <th scope="row" class="labels">Caretaker phone number</th>
                                         <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?php echo $eidInfo['caretaker_phone_number'] ?>" onchange="" /></td>
 
-                                        <th scope="row">Infant caretaker address</th>
+                                        <th scope="row" class="labels">Infant caretaker address</th>
                                         <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?php echo $eidInfo['caretaker_address'] ?></textarea></td>
 
                                     </tr>
@@ -237,7 +237,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Mother's HIV Status:</th>
+                                        <th style="width:15% !important" class="labels">Mother's HIV Status:</th>
                                         <td style="width:35% !important">
                                             <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus">
                                                 <option value=''> -- Select -- </option>
@@ -247,7 +247,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </select>
                                         </td>
 
-                                        <th style="width:15% !important">ART given to the Mother during:</th>
+                                        <th style="width:15% !important" class="labels">ART given to the Mother during:</th>
                                         <td style="width:35% !important">
                                             <input type="checkbox" name="motherTreatment[]" value="No ART given" <?php echo in_array('No ART given', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> No ART given <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Pregnancy" <?php echo in_array('Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Pregnancy <br>
@@ -259,7 +259,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </tr>
 
                                     <tr>
-                                        <th scope="row">Infant Rapid HIV Test Done</th>
+                                        <th scope="row" class="labels">Infant Rapid HIV Test Done</th>
                                         <td>
                                             <select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
                                                 <option value=''> -- Select -- </option>
@@ -269,13 +269,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </select>
                                         </td>
 
-                                        <th scope="row">If yes, test date :</th>
+                                        <th scope="row" class="labels">If yes, test date :</th>
                                         <td>
                                             <input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="if yes, test date" value="<?php echo $general->humanReadableDateFormat($eidInfo['rapid_test_date']); ?>">
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Rapid Test Result</th>
+                                        <th scope="row" class="labels">Rapid Test Result</th>
                                         <td>
                                             <select class="form-control" name="rapidTestResult" id="rapidTestResult">
                                                 <option value=''> -- Select -- </option>
@@ -286,7 +286,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </select>
                                         </td>
 
-                                        <th scope="row">Infant still breastfeeding?</th>
+                                        <th scope="row" class="labels">Infant still breastfeeding?</th>
                                         <td>
                                             <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
                                                 <option value=''> -- Select -- </option>
@@ -297,12 +297,12 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Age (months) breastfeeding stopped :</th>
+                                        <th scope="row" class="labels">Age (months) breastfeeding stopped :</th>
                                         <td>
                                             <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
                                         </td>
 
-                                        <th scope="row">PCR test performed on child before :</th>
+                                        <th scope="row" class="labels">PCR test performed on child before :</th>
                                         <td>
                                             <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
                                                 <option value=''> -- Select -- </option>
@@ -312,7 +312,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Previous PCR Test Result :</th>
+                                        <th scope="row" class="labels">Previous PCR Test Result :</th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
                                                 <option value=''> -- Select -- </option>
@@ -322,13 +322,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </select>
                                         </td>
 
-                                        <th scope="row">Previous PCR test date :</th>
+                                        <th scope="row" class="labels">Previous PCR test date :</th>
                                         <td>
                                             <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo $general->humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Reason for 2nd PCR :</th>
+                                        <th scope="row" class="labels">Reason for 2nd PCR :</th>
                                         <td>
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
@@ -351,29 +351,29 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
+                                        <th style="width:15% !important" class="labels">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
                                         </td>
-                                        <th style="width:15% !important">Sample Dispatched On <span class="mandatory">*</span> </th>
+                                        <th style="width:15% !important" class="labels">Sample Dispatched On <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" value="<?php echo date('d-M-Y H:i:s', strtotime($eidInfo['sample_dispatched_datetime'])); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Sample Type <span class="mandatory">*</span> </th>
+                                        <th style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $eidInfo['specimen_type'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th scope="row">Requesting Officer</th>
+                                        <th scope="row" class="labels">Requesting Officer</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?php echo $eidInfo['sample_requestor_name']; ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Sample Requestor Phone</th>
+                                        <th scope="row" class="labels">Sample Requestor Phone</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
                                         </td>
@@ -396,24 +396,24 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </div>
                                     <table class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <td><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+                                            <td><label for="labId" class="labels">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <td><label for="">Testing Platform </label></td>
+                                            <td><label for="" class="labels">Testing Platform </label></td>
                                             <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><label>Machine used to test </label></td>
+                                            <td class="labels"><label>Machine used to test </label></td>
                                             <td>
                                                 <select class="form-control result-optional" id="machineName" name="machineName" title="Please select the machine name"></select>
                                             </td>
-                                            <th scope="row">Is Sample Rejected?</th>
+                                            <th scope="row" class="labels">Is Sample Rejected?</th>
                                             <td>
                                                 <select class=" form-control" name="isSampleRejected" id="isSampleRejected" title="Please select if sample is rejected or not">
                                                     <option value=''> -- Select -- </option>
@@ -423,7 +423,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr class="rejected" style="display: none;">
-                                            <th class="rejected" style="display: none;">Reason for Rejection</th>
+                                            <th class="rejected labels" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the sample rejection reason">
                                                     <option value="">-- Select --</option>
@@ -439,16 +439,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     <?php }  ?>
                                                 </select>
                                             </td>
-                                            <td class="rejected" style="display: none;">Rejection Date<span class="mandatory">*</span></td>
+                                            <td class="rejected labels" style="display: none;">Rejection Date<span class="mandatory">*</span></td>
                                             <td class="rejected" style="display: none;"><input value="<?php echo $general->humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
                                         <tr>
-                                            <td style="width:25%;"><label for="">Sample Test Date </label></td>
+                                            <td style="width:25%;" class="labels"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                             </td>
 
-                                            <th scope="row">Result</th>
+                                            <th scope="row" class="labels">Result</th>
                                             <td>
                                                 <select class="form-control" name="result" id="result" data-result="<?= $eidInfo['result']; ?>" title="Please select the result">
                                                     <option value=''> -- Select -- </option>
@@ -459,11 +459,11 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Results Dispatched Date</th>
+                                            <th scope="row" class="labels">Results Dispatched Date</th>
                                             <td>
                                                 <input type="text" value="<?php echo $eidInfo['result_dispatched_datetime']; ?>" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                             </td>
-                                            <th scope="row">Tested By</th>
+                                            <th scope="row" class="labels">Tested By</th>
                                             <td>
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by">
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['tested_by'], '-- Select --'); ?>
@@ -471,33 +471,33 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Reviewed By</th>
+                                            <th scope="row" class="labels">Reviewed By</th>
                                             <td>
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row">Reviewed on</td>
+                                            <th scope="row" class="labels">Reviewed on</td>
                                             <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter reviewed on" /></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Approved By</th>
+                                            <th scope="row" class="labels">Approved By</th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row">Approved On</th>
+                                            <th scope="row" class="labels">Approved On</th>
                                             <td style="width:25%;">
                                                 <input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on" />
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Lab Tech. Comments </th>
+                                            <th scope="row" class="labels">Lab Tech. Comments </th>
                                             <td style="width:25%;">
                                                 <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Comments from the Lab Technician " title="Please Comments from the Lab Technician "><?php echo $eidInfo['lab_tech_comments']; ?></textarea>
                                             </td>
-                                            <th style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
+                                            <th style="display: none;" class="labels">Reason for Changing <span class="mandatory">*</span></td>
                                             <td style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                     </table>

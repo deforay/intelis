@@ -268,6 +268,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 		.select2-container .select2-selection--single .select2-selection__rendered {
 			margin-top: 0px !important;
 		}
+
+		.labels,
+		.labels>label {
+			font-weight: bold;
+		}
 	</style>
 </head>
 
