@@ -402,6 +402,7 @@ $batResult = $db->rawQuery($batQuery);
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
+	let searchExecuted = false;
 	var oTableViralLoad = null;
 	var oTableRjtReport = null;
 	var oTablenotAvailReport = null;
@@ -442,6 +443,9 @@ $batResult = $db->rawQuery($batQuery);
 		sampleRjtReport();
 		notAvailReport();
 		incompleteForm();
+		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select").on("change", function(){
+			searchExecuted = false;
+		});
 	});
 
 	function highViralLoadReport() {
@@ -780,6 +784,7 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function searchVlRequestData() {
+		searchExecuted = true;
 		$.blockUI();
 		oTableViralLoad.fnDraw();
 		oTableRjtReport.fnDraw();
@@ -806,6 +811,10 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function exportHighViralLoadInexcel() {
+		if(searchExecuted === false)
+		{
+			searchVlRequestData();
+		}
 		var markAsComplete = false;
 		confm = confirm("<?php echo _("Do you want to mark these as complete ?"); ?>");
 		if (confm) {
@@ -832,6 +841,10 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function exportRejectedResultInexcel() {
+		if(searchExecuted === false)
+		{
+			searchVlRequestData();
+		}
 		$.blockUI();
 		$.post("/covid-19/management/covid19RejectedResultExportInExcel.php", {
 				Sample_Test_Date: $("#rjtSampleTestDate").val(),
@@ -852,6 +865,10 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function exportNotAvailableResultInexcel() {
+		if(searchExecuted === false)
+		{
+			searchVlRequestData();
+		}
 		$.blockUI();
 		$.post("/covid-19/management/covid19NotAvailableResultExportInExcel.php", {
 				Sample_Test_Date: $("#noResultSampleTestDate").val(),
@@ -872,6 +889,10 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function exportDataQualityInexcel() {
+		if(searchExecuted === false)
+		{
+			searchVlRequestData();
+		}
 		$.blockUI();
 		$.post("/covid-19/management/covid19DataQualityExportInExcel.php", {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),

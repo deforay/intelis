@@ -49,7 +49,7 @@ $batResult = $db->rawQuery($batQuery);
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box">
+				<div class="box" id="filterDiv">
 					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
@@ -145,6 +145,7 @@ $batResult = $db->rawQuery($batQuery);
 <script src="/assets/js/exporting.js"></script>
 <script src="/assets/js/accessibility.js"></script>
 <script>
+	let searchExecuted = false;
 	$(function() {
 		$("#labName").select2({
 			placeholder: "<?php echo _("Select Testing Lab"); ?>"
@@ -177,9 +178,13 @@ $batResult = $db->rawQuery($batQuery);
 		searchResultData();
 		loadVlTATData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
+		$("#filterDiv input, #filterDiv select").on("change", function(){
+			searchExecuted = false;
+		});
 	});
 
 	function searchResultData() {
+		searchExecuted = true;
 		$.blockUI();
 		$.post("/vl/program-management/getSampleStatus.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
@@ -279,6 +284,10 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function exportInexcel() {
+		if(searchExecuted === false)
+		{
+			searchResultData();
+		}
 		$.blockUI();
 		oTable.fnDraw();
 		$.post("/vl/program-management/vlSampleTATDetailsExportInExcel.php", {

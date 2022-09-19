@@ -453,6 +453,7 @@ $batResult = $db->rawQuery($batQuery);
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
+	let searchExecuted = false;
 	var oTableViralLoad = null;
 	var oTableRjtReport = null;
 	var oTablenotAvailReport = null;
@@ -499,6 +500,11 @@ startDate: moment().subtract(28, 'days'),
 		sampleRjtReport();
 		notAvailReport();
 		incompleteForm();
+
+		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select").on("change", function(){
+			searchExecuted = false;
+		});
+
 	});
 
 	function highViralLoadReport() {
@@ -861,6 +867,7 @@ startDate: moment().subtract(28, 'days'),
 	}
 
 	function searchVlRequestData() {
+		searchExecuted = true;
 		$.blockUI();
 		oTableViralLoad.fnDraw();
 		oTableRjtReport.fnDraw();
@@ -887,6 +894,10 @@ startDate: moment().subtract(28, 'days'),
 	}
 
 	function exportHighViralLoadInexcel() {
+		if(searchExecuted === false)
+		{
+			searchVlRequestData();
+		}
 		var markAsComplete = false;
 		confm = confirm("<?php echo _("Do you want to mark these as complete ?");?>");
 		if (confm) {
@@ -915,6 +926,10 @@ startDate: moment().subtract(28, 'days'),
 	}
 
 	function exportRejectedResultInexcel() {
+		if(searchExecuted === false)
+		{
+			searchVlRequestData();
+		}
 		$.blockUI();
 		$.post("/vl/program-management/vlRejectedResultExportInExcel.php", {
 				Sample_Test_Date: $("#rjtSampleTestDate").val(),
@@ -937,6 +952,10 @@ startDate: moment().subtract(28, 'days'),
 	}
 
 	function exportNotAvailableResultInexcel() {
+		if(searchExecuted === false)
+		{
+			searchVlRequestData();
+		}
 		$.blockUI();
 		$.post("/vl/program-management/vlNotAvailableResultExportInExcel.php", {
 				Sample_Test_Date: $("#noResultSampleTestDate").val(),
@@ -959,6 +978,10 @@ startDate: moment().subtract(28, 'days'),
 	}
 
 	function exportDataQualityInexcel() {
+		if(searchExecuted === false)
+		{
+			searchVlRequestData();
+		}
 		$.blockUI();
 		$.post("/vl/program-management/vlDataQualityExportInExcel.php", {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
