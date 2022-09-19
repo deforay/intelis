@@ -269,6 +269,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 			margin-top: 0px !important;
 		}
 
+		form table tr th,
+		form table tr td>label,
+		form div label,
+		form table tr th,
+		form table tr td>label,
 		.labels,
 		.labels>label {
 			font-weight: bold;
