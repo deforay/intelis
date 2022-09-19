@@ -143,7 +143,8 @@ if(isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult'])!=""
      }
      if($_POST['markAsComplete']=='true'){
           $vlId = implode(",",$vlSampleId);
-          $db->rawQuery("UPDATE form_vl SET contact_complete_status = 'yes' WHERE vl_sample_id IN (".$vlId.")");
+          if(!empty($vlId))
+               $db->rawQuery("UPDATE form_vl SET contact_complete_status = 'yes' WHERE vl_sample_id IN (".$vlId.")");
      }
 
      $start = (count($output))+2;

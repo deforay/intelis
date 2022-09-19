@@ -173,7 +173,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   <section class="content">
     <div class="row">
       <div class="col-xs-12">
-        <div class="box">
+        <div class="box" id="filterDiv">
           <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
               <td><strong><?php echo _("Sample Test Date");?>&nbsp;:</strong></td>
@@ -241,6 +241,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
+  let searchExecuted = false;
   var startDate = "";
   var endDate = "";
   var oTable = null;
@@ -275,6 +276,9 @@ startDate: moment().subtract(28, 'days'),
       });
     $('#sampleTestDate').val("");
     loadVlRequestData();
+    $("#filterDiv input, #filterDiv select").on("change", function(){
+			searchExecuted = false;
+		});
   });
 
   function loadVlRequestData() {
@@ -341,12 +345,17 @@ startDate: moment().subtract(28, 'days'),
   }
 
   function searchVlRequestData() {
+    searchExecuted = true;
     $.blockUI();
     oTable.fnDraw();
     $.unblockUI();
   }
 
   function exportInexcel() {
+    if(searchExecuted === false)
+    {
+      searchVlRequestData();
+    }
     $.blockUI();
     oTable.fnDraw();
     $.post("/hepatitis/management/hepatitis-testing-target-in-excel.php", {
