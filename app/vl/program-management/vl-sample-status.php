@@ -115,11 +115,13 @@ $batResult = $db->rawQuery($batQuery);
 							<thead>
 								<tr>
 									<th><?php echo _("Sample ID"); ?></th>
+									<th><?php echo _("Remote Sample Code"); ?></th>
+									<th><?php echo _("External Sample Code"); ?></th>
 									<th><?php echo _("Sample Collection Date"); ?></th>
+									<th><?php echo _("Sample Dispatch Date"); ?></th>
 									<th><?php echo _("Sample Received Date in Lab"); ?></th>
 									<th><?php echo _("Sample Test Date"); ?></th>
 									<th><?php echo _("Sample Print Date"); ?></th>
-									<th><?php echo _("Sample Email Date"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -222,6 +224,12 @@ $batResult = $db->rawQuery($batQuery);
 			"iDisplayLength": 10,
 			"bRetrieve": true,
 			"aoColumns": [{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{

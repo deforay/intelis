@@ -21,7 +21,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 $general = new \Vlsm\Models\General();
-$whereCondition = '';
+//$whereCondition = '';
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
@@ -108,7 +108,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 $aWhere = '';
-$sQuery = "SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.remote_sample_code,vl.external_sample_code,vl.sample_dispatched_datetime,vl.request_created_by,vl." . $sampleCode . " from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
                         AND vl.result is not null
                         AND vl.result != '' ";
@@ -200,27 +200,21 @@ if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
+/* Data set length after filtering 
 $rUser = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rUser = $rUser . $whereCondition;
 } else {
 	$rUser = " AND vl.result_status!=9";
-}
-$aResultFilterTotal = $db->rawQuery("SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
-                        AND vl.result is not null
-                        AND vl.result != '' $sWhere $rUser");
-$iFilteredTotal = count($aResultFilterTotal);
+}*/
 
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
-                        AND vl.result is not null
-                        AND vl.result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' AND vl.result_status!=9 $rUser");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
-$iTotal = count($aResultTotal);
+
+/* Data set length after filtering */
+
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
          * Output
@@ -257,19 +251,22 @@ foreach ($rResult as $aRow) {
 	} else {
 		$aRow['result_printed_datetime'] = '';
 	}
-	if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['result_mail_datetime']);
-		$aRow['result_mail_datetime'] = $general->humanReadableDateFormat($xplodDate[0]);
+	if (isset($aRow['sample_dispatched_datetime']) && trim($aRow['sample_dispatched_datetime']) != '' && $aRow['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+		$xplodDate = explode(" ", $aRow['sample_dispatched_datetime']);
+		$aRow['sample_dispatched_datetime'] = $general->humanReadableDateFormat($xplodDate[0]);
 	} else {
-		$aRow['result_mail_datetime'] = '';
+		$aRow['sample_dispatched_datetime'] = '';
 	}
 	$row = array();
 	$row[] = $aRow[$sampleCode];
+	$row[] = $aRow['remote_sample_code'];
+	$row[] = $aRow['external_sample_code'];
 	$row[] = $aRow['sample_collection_date'];
+	$row[] = $aRow['sample_dispatched_datetime'];
 	$row[] = $aRow['sample_received_at_vl_lab_datetime'];
 	$row[] = $aRow['sample_tested_datetime'];
 	$row[] = $aRow['result_printed_datetime'];
-	$row[] = $aRow['result_mail_datetime'];
+	
 	$output['aaData'][] = $row;
 }
 
