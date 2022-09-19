@@ -30,7 +30,7 @@ try {
 		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
 		$_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
 	} else {
-		$_POST['sampleCollectionDate'] = NULL;
+		$_POST['sampleCollectionDate'] = null;
 	}
 
 	//Set sample received date
@@ -38,14 +38,14 @@ try {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
 		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
-		$_POST['sampleReceivedDate'] = NULL;
+		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
 		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
-		$_POST['sampleTestedDateTime'] = NULL;
+		$_POST['sampleTestedDateTime'] = null;
 	}
 
 
@@ -53,7 +53,7 @@ try {
 		$arrivalDate = explode(" ", $_POST['arrivalDateTime']);
 		$_POST['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
 	} else {
-		$_POST['arrivalDateTime'] = NULL;
+		$_POST['arrivalDateTime'] = null;
 	}
 
 
@@ -105,7 +105,7 @@ try {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
 		$_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
-		$_POST['reviewedOn'] = NULL;
+		$_POST['reviewedOn'] = null;
 	}
 
 	$hepatitisData = array(

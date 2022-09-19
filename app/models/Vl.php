@@ -214,7 +214,7 @@ class Vl
                 }
             } else {
 
-                $textResult = NULL;
+                $textResult = null;
 
                 if (in_array(strtolower($orignalResultValue), $this->suppressedArray)) {
                     $textResult = 10;

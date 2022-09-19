@@ -10,55 +10,55 @@ $general = new \Vlsm\Models\General();
 if (isset($_POST['instance_facility_name']) && trim($_POST['instance_facility_name']) != "") {
     $instanceName = $_POST['instance_facility_name'];
 } else {
-    $instanceName = NULL;
+    $instanceName = null;
 }
 
 if (isset($_POST['instance_facility_code']) && trim($_POST['instance_facility_code']) != "") {
     $instanceCode = $_POST['instance_facility_code'];
 } else {
-    $instanceCode = NULL;
+    $instanceCode = null;
 }
 
 if (isset($_POST['vl_last_dash_sync']) && trim($_POST['vl_last_dash_sync']) != "") {
     $vlLastSync = explode(" ", $_POST['vl_last_dash_sync']);
 $_POST['vl_last_dash_sync'] = $general->isoDateFormat($vlLastSync[0]) . " " . $vlLastSync[1];
 } else {
-    $_POST['vl_last_dash_sync'] = NULL;
+    $_POST['vl_last_dash_sync'] = null;
 }
 
 if (isset($_POST['eid_last_dash_sync']) && trim($_POST['eid_last_dash_sync']) != "") {
     $eidLastSync = explode(" ", $_POST['eid_last_dash_sync']);
 $_POST['eid_last_dash_sync'] = $general->isoDateFormat($eidLastSync[0]) . " " . $eidLastSync[1];
 } else {
-    $_POST['eid_last_dash_sync'] = NULL;
+    $_POST['eid_last_dash_sync'] = null;
 }
 
 if (isset($_POST['covid19_last_dash_sync']) && trim($_POST['covid19_last_dash_sync']) != "") {
     $covid19LastSync = explode(" ", $_POST['covid19_last_dash_sync']);
 $_POST['covid19_last_dash_sync'] = $general->isoDateFormat($covid19LastSync[0]) . " " . $covid19LastSync[1];
 } else {
-    $_POST['covid19_last_dash_sync'] = NULL;
+    $_POST['covid19_last_dash_sync'] = null;
 }
 
 if (isset($_POST['last_remote_requests_sync']) && trim($_POST['last_remote_requests_sync']) != "") {
     $lastRemoteRequestSync = explode(" ", $_POST['last_remote_requests_sync']);
 $_POST['last_remote_requests_sync'] = $general->isoDateFormat($lastRemoteRequestSync[0]) . " " . $lastRemoteRequestSync[1];
 } else {
-    $_POST['last_remote_requests_sync'] = NULL;
+    $_POST['last_remote_requests_sync'] = null;
 }
 
 if (isset($_POST['last_remote_results_sync']) && trim($_POST['last_remote_results_sync']) != "") {
     $lastRemoteResultsSync = explode(" ", $_POST['last_remote_results_sync']);
 $_POST['last_remote_results_sync'] = $general->isoDateFormat($lastRemoteResultsSync[0]) . " " . $lastRemoteResultsSync[1];
 } else {
-    $_POST['last_remote_results_sync'] = NULL;
+    $_POST['last_remote_results_sync'] = null;
 }
 
 if (isset($_POST['last_remote_reference_data_sync']) && trim($_POST['last_remote_reference_data_sync']) != "") {
     $lastRemoteReferenceSync = explode(" ", $_POST['last_remote_reference_data_sync']);
 $_POST['last_remote_reference_data_sync'] = $general->isoDateFormat($lastRemoteReferenceSync[0]) . " " . $lastRemoteReferenceSync[1];
 } else {
-    $_POST['last_remote_reference_data_sync'] = NULL;
+    $_POST['last_remote_reference_data_sync'] = null;
 }
 
 if(($_POST['action'] == 'edit') && !empty($_POST['id'])){

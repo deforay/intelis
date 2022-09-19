@@ -36,14 +36,14 @@ try {
 		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
 		$_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
 	} else {
-		$_POST['sampleCollectionDate'] = NULL;
+		$_POST['sampleCollectionDate'] = null;
 	}
 
 	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
 		$sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
 		$_POST['sampleDispatchedDate'] = $general->isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
 	} else {
-		$_POST['sampleDispatchedDate'] = NULL;
+		$_POST['sampleDispatchedDate'] = null;
 	}
 
 	//Set sample received date
@@ -51,14 +51,14 @@ try {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
 		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
-		$_POST['sampleReceivedDate'] = NULL;
+		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
 		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
-		$_POST['sampleTestedDateTime'] = NULL;
+		$_POST['sampleTestedDateTime'] = null;
 	}
 
 
@@ -66,7 +66,7 @@ try {
 		$arrivalDate = explode(" ", $_POST['arrivalDateTime']);
 		$_POST['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
 	} else {
-		$_POST['arrivalDateTime'] = NULL;
+		$_POST['arrivalDateTime'] = null;
 	}
 
 
@@ -119,14 +119,14 @@ try {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
 		$_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
-		$_POST['reviewedOn'] = NULL;
+		$_POST['reviewedOn'] = null;
 	}
 
 	if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
 		$approvedOn = explode(" ", $_POST['approvedOn']);
 		$_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
 	} else {
-		$_POST['approvedOn'] = NULL;
+		$_POST['approvedOn'] = null;
 	}
 
 
@@ -209,8 +209,8 @@ try {
 		'other_diseases'                      => (!empty($_POST['otherDiseases']) && $_POST['result'] != 'positive') ? $_POST['otherDiseases'] : null,
 		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
 		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-		'result_approved_by' 				  => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
-		'result_approved_datetime' 			  => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  NULL,
+		'result_approved_by' 				  => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
+		'result_approved_datetime' 			  => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
 		'tested_by'                			  => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
 		'is_result_authorised'                => !empty($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
 		'authorized_by'                       => !empty($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
@@ -330,7 +330,7 @@ try {
 						$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
 						$_POST['testDate'][$testKey] = $general->isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
 					} else {
-						$_POST['testDate'][$testKey] = NULL;
+						$_POST['testDate'][$testKey] = null;
 					}
 					$covid19TestData = array(
 						'covid19_id'			=> $_POST['covid19SampleId'],

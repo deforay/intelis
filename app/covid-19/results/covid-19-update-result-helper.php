@@ -17,14 +17,14 @@ try {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
 		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
-		$_POST['sampleReceivedDate'] = NULL;
+		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
 		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
-		$_POST['sampleTestedDateTime'] = NULL;
+		$_POST['sampleTestedDateTime'] = null;
 	}
 
 	$resultSentToSource = null;
@@ -42,7 +42,7 @@ try {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
 		$_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
-		$_POST['reviewedOn'] = NULL;
+		$_POST['reviewedOn'] = null;
 	}
 
 	$covid19Data = array(
@@ -56,8 +56,8 @@ try {
 		'result_sent_to_source'               => $resultSentToSource,
 		'other_diseases'        			  => (isset($_POST['otherDiseases']) && $_POST['result'] != 'positive') ? $_POST['otherDiseases'] : null,
 		'tested_by'                       	  => isset($_POST['testedBy']) ? $_POST['testedBy'] : null,
-		'result_approved_by' 				  => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  NULL,
-		'result_approved_datetime' 			  => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  NULL,
+		'result_approved_by' 				  => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
+		'result_approved_datetime' 			  => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
 		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->isoDateFormat($_POST['authorizedOn']) : null,
@@ -71,8 +71,8 @@ try {
 		'data_sync'                           => 0,
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'last_modified_by'                     => $_SESSION['userId'],
-		'result_printed_datetime' 			  => NULL,
-		'result_dispatched_datetime' 		  => NULL,
+		'result_printed_datetime' 			  => null,
+		'result_dispatched_datetime' 		  => null,
 		'last_modified_datetime'               => $general->getCurrentDateTime()
 	);
 
@@ -102,7 +102,7 @@ try {
 						$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
 						$_POST['testDate'][$testKey] = $general->isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
 					} else {
-						$_POST['testDate'][$testKey] = NULL;
+						$_POST['testDate'][$testKey] = null;
 					}
 					$covid19TestData = array(
 						'covid19_id'			=> $_POST['covid19SampleId'],

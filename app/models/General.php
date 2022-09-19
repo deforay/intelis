@@ -430,7 +430,7 @@ class General
 
         $result = $this->db->rawQueryOne($query);
 
-        if (isset($result[$modifiedDateTimeColName]) && $result[$modifiedDateTimeColName] != '' && $result[$modifiedDateTimeColName] != NULL && !$this->startsWith($result[$modifiedDateTimeColName], '0000-00-00')) {
+        if (isset($result[$modifiedDateTimeColName]) && $result[$modifiedDateTimeColName] != '' && $result[$modifiedDateTimeColName] != null && !$this->startsWith($result[$modifiedDateTimeColName], '0000-00-00')) {
             return $result[$modifiedDateTimeColName];
         } else {
             return null;
@@ -744,7 +744,7 @@ class General
         $batchQuery = 'SELECT MAX(batch_code_key) FROM batch_details as bd WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
         $batchResult = $this->db->query($batchQuery);
 
-        if ($batchResult[0]['MAX(batch_code_key)'] != '' && $batchResult[0]['MAX(batch_code_key)'] != NULL) {
+        if ($batchResult[0]['MAX(batch_code_key)'] != '' && $batchResult[0]['MAX(batch_code_key)'] != null) {
             $code = $batchResult[0]['MAX(batch_code_key)'] + 1;
             $length = strlen($code);
             if ($length == 1) {

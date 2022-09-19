@@ -164,12 +164,12 @@ if (trim($id) != '') {
         foreach ($result as $sample) {
             //var_dump($sample);die;
             $collectionDate = '';
-            if (isset($sample['sample_collection_date']) && $sample['sample_collection_date'] != '' && $sample['sample_collection_date'] != NULL && $sample['sample_collection_date'] != '0000-00-00 00:00:00') {
+            if (isset($sample['sample_collection_date']) && $sample['sample_collection_date'] != '' && $sample['sample_collection_date'] != null && $sample['sample_collection_date'] != '0000-00-00 00:00:00') {
                 $cDate = explode(" ", $sample['sample_collection_date']);
                 $collectionDate = $general->humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
             }
             $patientDOB = '';
-            if (isset($sample['child_dob']) && $sample['child_dob'] != '' && $sample['child_dob'] != NULL && $sample['child_dob'] != '0000-00-00') {
+            if (isset($sample['child_dob']) && $sample['child_dob'] != '' && $sample['child_dob'] != null && $sample['child_dob'] != '0000-00-00') {
                 $patientDOB = $general->humanReadableDateFormat($sample['child_dob']);
             }
             $params = $pdf->serializeTCPDFtagParameters(array($sample['remote_sample_code'], 'C39', '', '', '', 9, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 10, 'stretchtext' => 2), 'N'));

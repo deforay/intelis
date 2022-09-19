@@ -74,11 +74,11 @@ if ($id > 0) {
     $dateResult = $db->query($dateQuery);
     $resulted = '';
     $reviewed = '';
-    if (isset($dateResult[0]['sample_tested_datetime']) && $dateResult[0]['sample_tested_datetime'] != '' && $dateResult[0]['sample_tested_datetime'] != NULL && $dateResult[0]['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($dateResult[0]['sample_tested_datetime']) && $dateResult[0]['sample_tested_datetime'] != '' && $dateResult[0]['sample_tested_datetime'] != null && $dateResult[0]['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $sampleTestedDate = explode(" ", $dateResult[0]['sample_tested_datetime']);
         $resulted = $general->humanReadableDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     }
-    if (isset($dateResult[0]['result_reviewed_datetime']) && $dateResult[0]['result_reviewed_datetime'] != '' && $dateResult[0]['result_reviewed_datetime'] != NULL && $dateResult[0]['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($dateResult[0]['result_reviewed_datetime']) && $dateResult[0]['result_reviewed_datetime'] != '' && $dateResult[0]['result_reviewed_datetime'] != null && $dateResult[0]['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
         $resultReviewdDate = explode(" ", $dateResult[0]['result_reviewed_datetime']);
         $reviewed = $general->humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
     }
@@ -258,7 +258,7 @@ if ($id > 0) {
                         $params = $pdf->serializeTCPDFtagParameters(array($sampleResult[0]['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
                         $lotDetails = '';
                         $lotExpirationDate = '';
-                        if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != NULL && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
+                        if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != null && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
@@ -315,7 +315,7 @@ if ($id > 0) {
                         $params = $pdf->serializeTCPDFtagParameters(array($sampleResult[0]['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
                         $lotDetails = '';
                         $lotExpirationDate = '';
-                        if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != NULL && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
+                        if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != null && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
@@ -363,7 +363,7 @@ if ($id > 0) {
             }
         } else {
             $noOfInHouseControls = 0;
-            if (isset($bResult[0]['number_of_in_house_controls']) && $bResult[0]['number_of_in_house_controls'] != '' && $bResult[0]['number_of_in_house_controls'] != NULL) {
+            if (isset($bResult[0]['number_of_in_house_controls']) && $bResult[0]['number_of_in_house_controls'] != '' && $bResult[0]['number_of_in_house_controls'] != null) {
                 $noOfInHouseControls = $bResult[0]['number_of_in_house_controls'];
                 for ($i = 1; $i <= $bResult[0]['number_of_in_house_controls']; $i++) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
@@ -379,7 +379,7 @@ if ($id > 0) {
                 }
             }
             $noOfManufacturerControls = 0;
-            if (isset($bResult[0]['number_of_manufacturer_controls']) && $bResult[0]['number_of_manufacturer_controls'] != '' && $bResult[0]['number_of_manufacturer_controls'] != NULL) {
+            if (isset($bResult[0]['number_of_manufacturer_controls']) && $bResult[0]['number_of_manufacturer_controls'] != '' && $bResult[0]['number_of_manufacturer_controls'] != null) {
                 $noOfManufacturerControls = $bResult[0]['number_of_manufacturer_controls'];
                 for ($i = 1; $i <= $bResult[0]['number_of_manufacturer_controls']; $i++) {
                     $sNo = $noOfInHouseControls + $i;
@@ -396,7 +396,7 @@ if ($id > 0) {
                 }
             }
             $noOfCalibrators = 0;
-            if (isset($bResult[0]['number_of_calibrators']) && $bResult[0]['number_of_calibrators'] != '' && $bResult[0]['number_of_calibrators'] != NULL) {
+            if (isset($bResult[0]['number_of_calibrators']) && $bResult[0]['number_of_calibrators'] != '' && $bResult[0]['number_of_calibrators'] != null) {
                 $noOfCalibrators = $bResult[0]['number_of_calibrators'];
                 for ($i = 1; $i <= $bResult[0]['number_of_calibrators']; $i++) {
                     $sNo = $noOfInHouseControls + $noOfManufacturerControls + $i;
@@ -432,7 +432,7 @@ if ($id > 0) {
                 $params = $pdf->serializeTCPDFtagParameters(array($sample['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
                 $lotDetails = '';
                 $lotExpirationDate = '';
-                if (isset($sample['lot_expiration_date']) && $sample['lot_expiration_date'] != '' && $sample['lot_expiration_date'] != NULL && $sample['lot_expiration_date'] != '0000-00-00') {
+                if (isset($sample['lot_expiration_date']) && $sample['lot_expiration_date'] != '' && $sample['lot_expiration_date'] != null && $sample['lot_expiration_date'] != '0000-00-00') {
                     if (trim($sample['lot_number']) != '') {
                         $lotExpirationDate .= '<br>';
                     }

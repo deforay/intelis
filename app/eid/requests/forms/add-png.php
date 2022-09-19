@@ -81,7 +81,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label></td>
@@ -157,7 +157,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                 </table>
                                 <br><br>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
@@ -205,7 +205,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
                                 <br><br>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th colspan=4>
                                             <h4>Infant and Mother's Health Information</h4>
@@ -315,7 +315,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
 
                                 <br><br>
-                                <table class="table" aria-hidden="true" >
+                                <table class="table" aria-hidden="true">
                                     <tr>
                                         <th colspan=4>
                                             <h4>Sample Information</h4>
@@ -351,7 +351,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <div class="box-header with-border">
                                         <h3 class="box-title">B. Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
@@ -380,6 +380,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr class="show-rejection rejected" style="display:none;">
+                                            <td>Rejection Date<span class="mandatory">*</span></td>
+                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                         <tr>
                                             <td style="width:25%;"><label for="">Sample Test Date </label></td>

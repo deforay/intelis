@@ -133,7 +133,7 @@ try {
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $data['sampleCollectionDate'] = $general->isoDateFormat($data['sampleCollectionDate'], true);
         } else {
-            $data['sampleCollectionDate'] = NULL;
+            $data['sampleCollectionDate'] = null;
         }
 
         $data['instanceId'] = $data['instanceId'] ?: $instanceId;
@@ -194,7 +194,7 @@ try {
 
 
         if (empty(trim($data['sampleCode']))) {
-            $data['sampleCode'] = NULL;
+            $data['sampleCode'] = null;
         }
 
         $status = 6;
@@ -219,50 +219,50 @@ try {
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
             $data['approvedOn'] = $general->isoDateFormat($data['approvedOn'], true);
         } else {
-            $data['approvedOn'] = NULL;
+            $data['approvedOn'] = null;
         }
 
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
             $data['sampleReceivedDate'] = $general->isoDateFormat($data['sampleReceivedDate'], true);
         } else {
-            $data['sampleReceivedDate'] = NULL;
+            $data['sampleReceivedDate'] = null;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
             $data['sampleTestedDateTime'] = $general->isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
-            $data['sampleTestedDateTime'] = NULL;
+            $data['sampleTestedDateTime'] = null;
         }
 
         if (isset($data['rapidtestDate']) && trim($data['rapidtestDate']) != "") {
             $data['rapidtestDate'] = $general->isoDateFormat($data['rapidtestDate']);
         } else {
-            $data['rapidtestDate'] = NULL;
+            $data['rapidtestDate'] = null;
         }
 
         if (isset($data['childDob']) && trim($data['childDob']) != "") {
             $data['childDob'] = $general->isoDateFormat($data['childDob']);
         } else {
-            $data['childDob'] = NULL;
+            $data['childDob'] = null;
         }
 
         if (isset($data['mothersDob']) && trim($data['mothersDob']) != "") {
             $data['mothersDob'] = $general->isoDateFormat($data['mothersDob']);
         } else {
-            $data['mothersDob'] = NULL;
+            $data['mothersDob'] = null;
         }
 
 
         if (isset($data['motherTreatmentInitiationDate']) && trim($data['motherTreatmentInitiationDate']) != "") {
             $data['motherTreatmentInitiationDate'] = $general->isoDateFormat($data['motherTreatmentInitiationDate']);
         } else {
-            $data['motherTreatmentInitiationDate'] = NULL;
+            $data['motherTreatmentInitiationDate'] = null;
         }
 
         if (isset($data['previousPCRTestDate']) && trim($data['previousPCRTestDate']) != "") {
             $data['previousPCRTestDate'] = $general->isoDateFormat($data['previousPCRTestDate']);
         } else {
-            $data['previousPCRTestDate'] = NULL;
+            $data['previousPCRTestDate'] = null;
         }
 
         if (isset($data['motherViralLoadCopiesPerMl']) && $data['motherViralLoadCopiesPerMl'] != "") {
@@ -275,25 +275,25 @@ try {
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
             $data['reviewedOn'] = $general->isoDateFormat($data['reviewedOn']);
         } else {
-            $data['reviewedOn'] = NULL;
+            $data['reviewedOn'] = null;
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
             $data['resultDispatchedOn'] = $general->isoDateFormat($data['resultDispatchedOn'], true);
         } else {
-            $data['resultDispatchedOn'] = NULL;
+            $data['resultDispatchedOn'] = null;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
             $data['sampleDispatchedOn'] = $general->isoDateFormat($data['sampleDispatchedOn'], true);
         } else {
-            $data['sampleDispatchedOn'] = NULL;
+            $data['sampleDispatchedOn'] = null;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
             $data['revisedOn'] = $general->isoDateFormat($data['revisedOn'], true);
         } else {
-            $data['revisedOn'] = NULL;
+            $data['revisedOn'] = null;
         }
 
         $eidData = array(
@@ -352,8 +352,8 @@ try {
             'is_sample_rejected'                                => isset($data['isSampleRejected']) ? $data['isSampleRejected'] : null,
             'result'                                            => isset($data['result']) ? $data['result'] : null,
             'tested_by'                                         => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  $user['user_id'],
-            'result_approved_by'                                => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  NULL,
-            'result_approved_datetime'                          => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  NULL,
+            'result_approved_by'                                => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  null,
+            'result_approved_datetime'                          => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  null,
             'lab_tech_comments'                                 => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'result_reviewed_by'                                => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : null,
             'result_reviewed_datetime'                          => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
@@ -392,6 +392,7 @@ try {
             $responseData[$rootKey] = array(
                 'status' => 'success',
                 'sampleCode' => $eidSampleCode,
+                'transactionId' => $transactionId,
                 'uniqueId' => $eidData['unique_id'],
                 'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $eidData['app_sample_code'] : null,
             );

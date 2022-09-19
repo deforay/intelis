@@ -102,11 +102,11 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           //sample collecion date
           $sampleCollectionDate = '';
           $sampleTestDate = '';
-          if ($aRow['sample_collection_date'] != NULL && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", $aRow['sample_collection_date']);
                $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
           }
-          if ($aRow['sample_tested_datetime'] != NULL && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", $aRow['sample_tested_datetime']);
                $sampleTestDate =  date("d-m-Y", strtotime($expStr[0]));
           }

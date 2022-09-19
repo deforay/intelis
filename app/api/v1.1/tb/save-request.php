@@ -177,12 +177,12 @@ try {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
             $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
         } else {
-            $data['arrivalDateTime'] = NULL;
+            $data['arrivalDateTime'] = null;
         }
 
 
         if (empty(trim($data['sampleCode']))) {
-            $data['sampleCode'] = NULL;
+            $data['sampleCode'] = null;
         }
 
         $status = 6;
@@ -208,7 +208,7 @@ try {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
             $data['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
         } else {
-            $data['sampleCollectionDate'] = NULL;
+            $data['sampleCollectionDate'] = null;
         }
 
         //Set sample received date
@@ -216,55 +216,55 @@ try {
             $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
             $data['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
         } else {
-            $data['sampleReceivedDate'] = NULL;
+            $data['sampleReceivedDate'] = null;
         }
 
         if (!empty($data['sampleReceivedHubDate']) && trim($data['sampleReceivedHubDate']) != "") {
             $sampleReceivedHubDate = explode(" ", $data['sampleReceivedHubDate']);
             $data['sampleReceivedHubDate'] = $general->isoDateFormat($sampleReceivedHubDate[0]) . " " . $sampleReceivedHubDate[1];
         } else {
-            $data['sampleReceivedHubDate'] = NULL;
+            $data['sampleReceivedHubDate'] = null;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
             $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
             $data['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
         } else {
-            $data['sampleTestedDateTime'] = NULL;
+            $data['sampleTestedDateTime'] = null;
         }
 
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
             $data['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
         } else {
-            $data['arrivalDateTime'] = NULL;
+            $data['arrivalDateTime'] = null;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
             $revisedOn = explode(" ", $data['revisedOn']);
             $data['revisedOn'] = $general->isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
         } else {
-            $data['revisedOn'] = NULL;
+            $data['revisedOn'] = null;
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
             $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
             $data['resultDispatchedOn'] = $general->isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
         } else {
-            $data['resultDispatchedOn'] = NULL;
+            $data['resultDispatchedOn'] = null;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
             $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
             $data['sampleDispatchedOn'] = $general->isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
         } else {
-            $data['sampleDispatchedOn'] = NULL;
+            $data['sampleDispatchedOn'] = null;
         }
 
         if (isset($data['sampleDispatchedDate']) && trim($data['sampleDispatchedDate']) != "") {
             $sampleDispatchedDate = explode(" ", $data['sampleDispatchedDate']);
             $data['sampleDispatchedDate'] = $general->isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
         } else {
-            $data['sampleDispatchedDate'] = NULL;
+            $data['sampleDispatchedDate'] = null;
         }
 
         $tbData = array(
@@ -369,6 +369,7 @@ try {
             $responseData[$rootKey] = array(
                 'status' => 'success',
                 'sampleCode' => $tbSampleCode,
+                'transactionId' => $transactionId,
                 'uniqueId' => $tbData['unique_id'],
                 'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $tbData['app_sample_code'] : null,
             );

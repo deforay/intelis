@@ -33,7 +33,7 @@ $vlQuery = "SELECT $table2PrimaryColumn from $tableName2 as vl where sample_batc
 $vlInfo = $db->query($vlQuery);
 if (count($vlInfo) > 0) {
 
-    $value = array('sample_batch_id' => NULL);
+    $value = array('sample_batch_id' => null);
     $db = $db->where('sample_batch_id', $batchId);
 
     $db->update($tableName2, $value);
