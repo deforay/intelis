@@ -87,7 +87,7 @@ $activeTestModules = $general->getActiveTestModules();
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="sampleReportsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table id="sampleReportsDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th><?php echo _("Lab Name"); ?></th>
@@ -99,11 +99,12 @@ $activeTestModules = $general->getActiveTestModules();
                                     <th><?php echo _("No. of Results returned"); ?></th>
                                     <th><?php echo _("Source of Request"); ?></th>
                                     <th><?php echo _("Last Request Created On"); ?></th>
+                                    <th><?php echo _("Action"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="9" class="dataTables_empty"><?php echo _("Please select the date range and test type to see the source of requests"); ?></td>
+                                    <td colspan="10" class="dataTables_empty"><?php echo _("Please select the date range and test type to see the source of requests"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -207,6 +208,9 @@ $activeTestModules = $general->getActiveTestModules();
                 "sClass": "center"
             }, {
                 "sClass": "center"
+            }, {
+                "sClass": "center",
+                "bSortable": false
             }],
             "aaSorting": [0, "desc"],
             "bProcessing": true,

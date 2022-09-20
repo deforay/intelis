@@ -21,3 +21,66 @@
 select[readonly] {
     pointer-events: none;
 }
+
+.dataTables_empty {
+    text-align: center;
+}
+
+.dataTables_wrapper {
+    position: relative;
+    clear: both;
+    overflow-x: scroll !important;
+    overflow-y: visible !important;
+    padding: 15px 0 !important;
+}
+
+.select2-selection__choice__remove {
+    color: red !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    /* background-color: #00c0ef;
+    border-color: #00acd6; */
+    color: #000 !important;
+    font-family: helvetica, arial, sans-serif;
+}
+
+.skin-blue .sidebar-menu>li.header {
+    background: #ddd;
+    color: #333;
+    font-weight: bold;
+}
+
+.skin-red .sidebar-menu>li.header {
+    background: #ddd;
+    color: #333;
+    font-weight: bold;
+}
+
+.select2-container .select2-selection--single {
+    height: 34px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    top: 6px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 22px !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    margin-top: 0px !important;
+}
+
+label,
+form table tr th,
+form table tr td>label,
+form div label,
+form table tr th,
+form table tr td>label,
+.labels,
+.labels>label,
+.control-label {
+    font-weight: bold !important;
+}
