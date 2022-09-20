@@ -221,16 +221,7 @@ require($fileArray[$arr['vl_form']]);
                 },
                 function(data) {
                     if (data != 0) {
-                        <?php if ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone') { ?>
-                            alert(alrt);
-                            $("#" + id).val('');
-                            <?php if ($arr['vl_form'] == '3') { ?>
-                                $("#sampleCodeValue").html('').hide();
-                            <?php }
-                        } else { ?>
-                            data = data.split("##");
-                            document.location.href = "/covid-19/requests/covid-19-edit-request.php?id=" + data[0] + "&c=" + data[1];
-                        <?php } ?>
+                        sampleCodeGeneration();
                     }
                 });
             $.unblockUI();

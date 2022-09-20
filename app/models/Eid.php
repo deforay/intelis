@@ -97,12 +97,10 @@ class Eid
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
             $remotePrefix = $remotePrefix . "R";
-            //$sampleCodeFormat = 'auto2';
         }
 
 
         if ($sampleCodeFormat == 'auto') {
-            //$pNameVal = explode("##", $provinceCode);
             $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
@@ -365,11 +363,9 @@ class Eid
             }
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
-            if ($globalConfig['vl_form'] == 5) {
-                if (empty($provinceId)) {
+            if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
                     echo 0;
                     exit();
-                }
             }
 
             $rowData = false;
