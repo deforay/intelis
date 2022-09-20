@@ -1,6 +1,13 @@
 <?php
 $title = _("View All Requests");
-
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+	$decode = base64_decode($_GET['id']);
+	$params = explode("##", $decode);
+	echo "<pre>";
+	print_r($params);
+	die;
+	die("hi");
+}
 require_once(APPLICATION_PATH . '/header.php');
 
 $interopConfig = array();
@@ -294,7 +301,7 @@ foreach ($srcResults as $list) {
 					</span>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->

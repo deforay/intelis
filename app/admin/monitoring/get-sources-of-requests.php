@@ -22,22 +22,27 @@ if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 }
 
 if (isset($testType) && $testType == 'vl') {
+    $url = "/vl/requests/vlRequest.php";
     $table = "form_vl";
     $testName = 'Viral Load';
 }
 if (isset($testType) && $testType == 'eid') {
+    $url = "/eid/requests/eid-requests.php";
     $table = "form_eid";
     $testName = 'EID';
 }
 if (isset($testType) && $testType == 'covid19') {
+    $url = "/covid-19/requests/covid-19-requests.php";
     $table = "form_covid19";
     $testName = 'Covid-19';
 }
 if (isset($testType) && $testType == 'hepatitis') {
+    $url = "/hepatitis/requests/hepatitis-requests.php";
     $table = "form_hepatitis";
     $testName = 'Hepatitis';
 }
 if (isset($testType) && $testType == 'tb') {
+    $url = "/tb/requests/tb-requests.php";
     $table = "form_tb";
     $testName = 'TB';
     $sampleReceivedfield = "sample_received_at_lab_datetime";
@@ -185,6 +190,8 @@ $output = array(
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => array()
 );
+$_POST['request'] = 'src-of-req';
+$params = implode("##", array(0 => $_POST['dateRange'], 1 => $_POST['labName'], 2 => $_POST['srcRequest']));
 
 foreach ($rResult as $key => $aRow) {
     $row = array();
@@ -197,6 +204,7 @@ foreach ($rResult as $key => $aRow) {
     $row[] = $aRow['noOfResultsReturned'];
     $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper($aRow['source_of_request']);
     $row[] = $general->humanReadableDateFormat($aRow['lastRequest']);
+    $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($params) . '\',1200,720);"> View more</a>';
 
     $output['aaData'][] = $row;
 }
