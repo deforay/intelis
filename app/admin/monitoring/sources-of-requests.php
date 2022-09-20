@@ -256,6 +256,11 @@ $activeTestModules = $general->getActiveTestModules();
                 }
             });
     }
+
+    function viewMore(url) {
+        params = $("#dateRange").val() + '##' + $("#labName").val() + '##' + $("#srcRequest").val();
+        showModal(url + '?id=' + params, 1200, 720);
+    }
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

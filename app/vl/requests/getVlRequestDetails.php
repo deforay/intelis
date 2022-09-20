@@ -153,6 +153,18 @@ if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateA
      }
 }
 
+$startDateRangeModel = '';
+$endDateRangeModel = '';
+if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+     $s_c_date = explode("to", $_POST['dateRangeModel']);
+     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+          $startDateRangeModel = $general->isoDateFormat(trim($s_c_date[0]));
+     }
+     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+          $endDateRangeModel = $general->isoDateFormat(trim($s_c_date[1]));
+     }
+}
+
 $testedStartDate = '';
 $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
@@ -189,6 +201,13 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
           $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+     }
+}
+if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+     if (trim($startDateRangeModel) == trim($endDateRangeModel)) {
+          $sWhere[] = ' DATE(vl.request_created_datetime) = "' . $startDateRangeModel . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.request_created_datetime) >= "' . $startDateRangeModel . '" AND DATE(vl.request_created_datetime) <= "' . $endDateRangeModel . '"';
      }
 }
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
@@ -240,6 +259,14 @@ if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '" ';
 }
 
+if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
+     $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
+}
+
+if (isset($_POST['labIdModel']) && trim($_POST['labIdModel']) != '') {
+     $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
+}
+
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      if (!empty($facilityMap)) {
@@ -264,8 +291,8 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 
 /* echo ($sQuery);
-die; */
-
+die;
+ */
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */

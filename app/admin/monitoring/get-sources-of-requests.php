@@ -190,8 +190,6 @@ $output = array(
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => array()
 );
-$_POST['request'] = 'src-of-req';
-$params = implode("##", array(0 => $_POST['dateRange'], 1 => $_POST['labName'], 2 => $_POST['srcRequest']));
 
 foreach ($rResult as $key => $aRow) {
     $row = array();
@@ -204,7 +202,7 @@ foreach ($rResult as $key => $aRow) {
     $row[] = $aRow['noOfResultsReturned'];
     $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper($aRow['source_of_request']);
     $row[] = $general->humanReadableDateFormat($aRow['lastRequest']);
-    $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($params) . '\',1200,720);"> View more</a>';
+    $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="View History" onclick="viewMore(\'' . $url . '\');"> View more</a>';
 
     $output['aaData'][] = $row;
 }
