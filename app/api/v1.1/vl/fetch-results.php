@@ -32,9 +32,6 @@ $app = new \Vlsm\Models\App();
 $arr = $general->getGlobalConfig();
 $user = null;
 
-/* echo "<pre>";
-print_r($input);
-die; */
 /* For API Tracking params */
 $requestUrl .= $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
@@ -52,22 +49,13 @@ if (!empty($auth)) {
     /* Check if API token exists */
     $user = $userDb->getAuthToken($authToken);
 }
-// If authentication fails then do not proceed
-if (empty($user) || empty($user['user_id'])) {
-    // $response = array(
-    //     'status' => 'failed',
-    //     'timestamp' => time(),
-    //     'error' => 'Bearer Token Invalid',
-    //     'data' => array()
-    // );
-    http_response_code(401);
-    throw new \Exception('Bearer Token Invalid');
-}
-
-$transactionId = $general->generateUUID();
-
 try {
-
+    // If authentication fails then do not proceed
+    if (empty($user) || empty($user['user_id'])) {
+        http_response_code(401);
+        throw new \Exception('Bearer Token Invalid');
+    }
+    $transactionId = $general->generateUUID();
     $sQuery = "SELECT 
         vl.app_sample_code                             as appSampleCode,
         vl.unique_id                                         as uniqueId,
@@ -246,7 +234,7 @@ try {
 
     // No data found
     if (!$rowData) {
-        $response = array(
+        $payload = array(
             'status' => 'success',
             'timestamp' => time(),
             'error' => 'No matching data',
@@ -255,23 +243,20 @@ try {
         );
 
         http_response_code(200);
-        echo json_encode($response);
-        exit(0);
-    }
-    $payload = array(
-        'status' => 'success',
-        'timestamp' => time(),
-        'data' => $rowData
-    );
-    if (isset($user['token_updated']) && $user['token_updated'] === true) {
-        $payload['token'] = $user['new_token'];
     } else {
-        $payload['token'] = null;
-    }
+        $payload = array(
+            'status' => 'success',
+            'timestamp' => time(),
+            'data' => $rowData
+        );
+        if (isset($user['token_updated']) && $user['token_updated'] === true) {
+            $payload['token'] = $user['new_token'];
+        } else {
+            $payload['token'] = null;
+        }
 
-    http_response_code(200);
-    // echo json_encode($payload);
-    // exit(0);
+        http_response_code(200);
+    }
 } catch (Exception $exc) {
 
     // http_response_code(500);
@@ -281,13 +266,10 @@ try {
         'error' => $exc->getMessage(),
         'data' => array()
     );
-
-
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
-
+$payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, $payload, 'json');
-
-echo json_encode($payload);
+echo $payload;
 exit(0);
