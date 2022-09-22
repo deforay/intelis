@@ -1,8 +1,13 @@
 <?php
 $title = _("Hepatitis | View All Requests");
-// echo "<pre>";
-// var_dump($_SESSION['privileges']);die;
-
+$hidesrcofreq = false;
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+	$params = explode("##", base64_decode($_GET['id']));
+	$dateRange = $params[0];
+	$labName = $params[1];
+	$srcOfReq = $params[2];
+	$hidesrcofreq = true;
+}
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
@@ -36,18 +41,33 @@ foreach ($srcResults as $list) {
 	.select2-selection__choice {
 		color: black !important;
 	}
+
+	<?php if (isset($_GET['id']) && !empty($_GET['id'])) { ?>header {
+		display: none;
+	}
+
+	.main-sidebar {
+		z-index: -9;
+	}
+
+	.content-wrapper {
+		margin-left: 0px;
+	}
+
+	<?php } ?>
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-	<!-- Content Header (Page header) -->
-	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em><?php echo _("Hepatitis Test Requests"); ?></h1>
-		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Test Request"); ?></li>
-		</ol>
-	</section>
-
+	<?php if (!$hidesrcofreq) { ?>
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<h1><em class="fa-solid fa-pen-to-square"></em><?php echo _("Hepatitis Test Requests"); ?></h1>
+			<ol class="breadcrumb">
+				<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+				<li class="active"><?php echo _("Test Request"); ?></li>
+			</ol>
+		</section>
+	<?php } ?>
 	<!-- Main content -->
 	<section class="content">
 		<div class="row">
@@ -169,7 +189,7 @@ foreach ($srcResults as $list) {
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
 							</td>
 							<td colspan="4">
-								<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
+								<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<a style=" margin: 0px 5px; " href="/hepatitis/requests/hepatitis-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add new Hepatitis Request"); ?></a>
 								<?php } ?>
 								<?php if (isset($_SESSION['privileges']) && in_array("export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
@@ -181,7 +201,7 @@ foreach ($srcResults as $list) {
 					<table id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
-								<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
+								<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<a style=" margin: 0px 5px; " href="/hepatitis/requests/hepatitis-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add new Hepatitis Request"); ?></a>
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
@@ -194,7 +214,7 @@ foreach ($srcResults as $list) {
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -214,7 +234,7 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("HBV VL Count"); ?></th>
 									<th><?php echo _("Last Modified On"); ?></th>
 									<th><?php echo _("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges'])) || (in_array("hepatitis-view-request.php", $_SESSION['privileges']))) { ?>
+									<?php if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges'])) || (in_array("hepatitis-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
 										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -306,14 +326,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		});
 		loadVlRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -399,7 +419,7 @@ startDate: moment().subtract(28, 'days'),
 				}, {
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges'])) || (in_array("hepatitis-view-request.php", $_SESSION['privileges']))) { ?> {
+				<?php if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges'])) || (in_array("hepatitis-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},
@@ -480,6 +500,22 @@ startDate: moment().subtract(28, 'days'),
 				aoData.push({
 					"name": "srcOfReq",
 					"value": $("#srcOfReq").val()
+				});
+				aoData.push({
+					"name": "dateRangeModel",
+					"value": '<?php echo $dateRange; ?>'
+				});
+				aoData.push({
+					"name": "labIdModel",
+					"value": '<?php echo $labName; ?>'
+				});
+				aoData.push({
+					"name": "srcOfReqModel",
+					"value": '<?php echo $srcOfReq; ?>'
+				});
+				aoData.push({
+					"name": "hidesrcofreq",
+					"value": '<?php echo $hidesrcofreq; ?>'
 				});
 				$.ajax({
 					"dataType": 'json',

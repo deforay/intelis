@@ -2,7 +2,7 @@
 $title = _("View All Requests");
 $hidesrcofreq = false;
 if (isset($_GET['id']) && !empty($_GET['id'])) {
-	$params = explode("##", $_GET['id']);
+	$params = explode("##", base64_decode($_GET['id']));
 	$dateRange = $params[0];
 	$labName = $params[1];
 	$srcOfReq = $params[2];
@@ -65,8 +65,8 @@ foreach ($srcResults as $list) {
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-	<!-- Content Header (Page header) -->
 	<?php if (!$hidesrcofreq) { ?>
+		<!-- Content Header (Page header) -->
 		<section class="content-header">
 			<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Viral Load Test Requests"); ?></h1>
 			<ol class="breadcrumb">
@@ -337,7 +337,7 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified Date"); ?></th>
 									<th><?php echo _("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?>
+									<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
 										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -543,7 +543,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?> {
+				<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},
@@ -644,6 +644,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "srcOfReqModel",
 					"value": '<?php echo $srcOfReq; ?>'
+				});
+				aoData.push({
+					"name": "hidesrcofreq",
+					"value": '<?php echo $hidesrcofreq; ?>'
 				});
 				$.ajax({
 					"dataType": 'json',

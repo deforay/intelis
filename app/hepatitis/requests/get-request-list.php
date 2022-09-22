@@ -141,6 +141,17 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
           $testedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
+$startDateRangeModel = '';
+$endDateRangeModel = '';
+if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+     $s_c_date = explode("to", $_POST['dateRangeModel']);
+     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+          $startDateRangeModel = $general->isoDateFormat(trim($s_c_date[0]));
+     }
+     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+          $endDateRangeModel = $general->isoDateFormat(trim($s_c_date[1]));
+     }
+}
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -168,7 +179,13 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
      }
 }
-
+if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+     if (trim($startDateRangeModel) == trim($endDateRangeModel)) {
+          $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $startDateRangeModel . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $startDateRangeModel . '" AND DATE(vl.sample_collection_date) <= "' . $endDateRangeModel . '"';
+     }
+}
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
@@ -211,7 +228,13 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
 if (isset($_POST['source']) && trim($_POST['source']) == 'dhis2') {
      $sWhere[] = ' `source_of_request` like "dhis2%" ';
 }
+if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
+     $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
+}
 
+if (isset($_POST['labIdModel']) && trim($_POST['labIdModel']) != '') {
+     $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
+}
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
@@ -329,7 +352,9 @@ foreach ($rResult as $aRow) {
      if ($syncRequest) {
           $actions .= $sync;
      }
-     $row[] = $actions . $barcode;
+     if (!$_POST['hidesrcofreq']) {
+          $row[] = $actions . $barcode;
+     }
      // echo '<pre>';print_r($row);die;
      $output['aaData'][] = $row;
 }

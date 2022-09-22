@@ -153,18 +153,6 @@ if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateA
      }
 }
 
-$startDateRangeModel = '';
-$endDateRangeModel = '';
-if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
-     $s_c_date = explode("to", $_POST['dateRangeModel']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $startDateRangeModel = $general->isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $endDateRangeModel = $general->isoDateFormat(trim($s_c_date[1]));
-     }
-}
-
 $testedStartDate = '';
 $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
@@ -176,7 +164,17 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
           $testedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
-
+$startDateRangeModel = '';
+$endDateRangeModel = '';
+if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+     $s_c_date = explode("to", $_POST['dateRangeModel']);
+     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+          $startDateRangeModel = $general->isoDateFormat(trim($s_c_date[0]));
+     }
+     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+          $endDateRangeModel = $general->isoDateFormat(trim($s_c_date[1]));
+     }
+}
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -190,7 +188,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
      if (trim($labStartDate) == trim($labEnddate)) {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $labStartDate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) like "' . $labStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEnddate . '"';
      }
@@ -198,16 +196,16 @@ if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateA
 
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
      if (trim($testedStartDate) == trim($testedEndDate)) {
-          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) like "' . $testedStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
      }
 }
 if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
      if (trim($startDateRangeModel) == trim($endDateRangeModel)) {
-          $sWhere[] = ' DATE(vl.request_created_datetime) = "' . $startDateRangeModel . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $startDateRangeModel . '"';
      } else {
-          $sWhere[] = ' DATE(vl.request_created_datetime) >= "' . $startDateRangeModel . '" AND DATE(vl.request_created_datetime) <= "' . $endDateRangeModel . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $startDateRangeModel . '" AND DATE(vl.sample_collection_date) <= "' . $endDateRangeModel . '"';
      }
 }
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
@@ -290,9 +288,6 @@ if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 
-/* echo ($sQuery);
-die;
- */
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */
@@ -392,7 +387,9 @@ foreach ($rResult as $aRow) {
      if ($syncRequest) {
           $actions .= $sync;
      }
-     $row[] = $actions . $barcode;
+     if (!$_POST['hidesrcofreq']) {
+          $row[] = $actions . $barcode;
+     }
 
      $output['aaData'][] = $row;
 }

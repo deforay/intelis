@@ -120,6 +120,7 @@ $activeTestModules = $general->getActiveTestModules();
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/js/base64.js"></script>
 <script type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
@@ -259,7 +260,8 @@ $activeTestModules = $general->getActiveTestModules();
 
     function viewMore(url) {
         params = $("#dateRange").val() + '##' + $("#labName").val() + '##' + $("#srcRequest").val();
-        showModal(url + '?id=' + params, 1200, 720);
+        console.log(Base64.encode(params));
+        showModal(url + '?id=' + Base64.encode(params), 1200, 720);
     }
 </script>
 <?php
