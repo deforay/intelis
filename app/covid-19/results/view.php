@@ -14,10 +14,23 @@ $decryption = openssl_decrypt(
 );
 $data = explode('&&&', urldecode($decryption));
 
+$invalidRequest = _("INVALID REQUEST");
+
+if (empty($data) || empty($data[0])) {
+    die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
+}
+
 $uniqueId = $data[0];
+
 $db = MysqliDb::getInstance();
 $db->where("unique_id", $uniqueId);
 $res = $db->getOne("form_covid19", "covid19_id");
+
+if (empty($res)) {
+    http_response_code(400);
+    die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
+}
+
 $id = $res['covid19_id'];
 ?>
 <style>

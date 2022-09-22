@@ -120,7 +120,6 @@ $activeTestModules = $general->getActiveTestModules();
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript" src="/assets/js/base64.js"></script>
 <script type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
