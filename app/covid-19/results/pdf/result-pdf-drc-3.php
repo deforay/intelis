@@ -372,7 +372,7 @@ if (!empty($result['lab_manager'])) {
 }
 
 $html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:10px;font-size:12px;text-align:center;"><br><br><strong>' . $labManager . '</strong><br>Chef de laboratoire de l&lsquo;hôpital Saint Joseph<br><span style="font-size:8;font-weight:normal;">(Lab Manager)</span></td>';
+$html .= '<td colspan="3" style="line-height:12px;font-size:12px;text-align:center;"><br><br><strong>' . $labManager . '</strong><br>Chef de laboratoire de l&lsquo;hôpital Saint Joseph<br><span style="font-size:8;font-weight:normal;">(Lab Manager)</span></td>';
 $html .= '</tr>';
 
 

@@ -354,14 +354,22 @@ if (empty($result['lab_manager'])) {
 }
 $labManager = "";
 if (!empty($result['lab_manager'])) {
-    $labManagerRes = $users->getUserInfo($result['lab_manager'], 'user_name');
+    $labManagerRes = $users->getUserInfo($result['lab_manager'], array('user_name', 'user_signature'));
     if ($labManagerRes) {
         $labManager = $labManagerRes['user_name'];
+    }
+
+    $labManagerSignature = '';
+    if (!empty($labManagerRes['user_signature'])) {
+        $labManagerSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $labManagerRes['user_signature'];
+        if ($general->fileExists($labManagerSignaturePath)) {
+            $labManagerSignature = '<img src="' . $labManagerSignaturePath . '" style="width:70px;" /><br>';
+        }
     }
 }
 
 $html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:10px;font-size:12px;text-align:center;"><br><br><strong>' . $labManager . '</strong><br><span style="font-size:8;font-weight:normal;">(Lab Manager)</span></td>';
+$html .= '<td colspan="3" style="line-height:12px;font-size:12px;text-align:center;"><strong>' . $labManagerSignature . $labManager . '</strong><br>Chef de Laboratoire<br><span style="font-size:8;font-weight:normal;">(Lab Manager)</span><br></td>';
 $html .= '</tr>';
 
 
