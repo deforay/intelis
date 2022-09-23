@@ -6,6 +6,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 	$dateRange = $params[0];
 	$labName = $params[1];
 	$srcOfReq = $params[2];
+	$srcStatus = $params[3];
 	$hidesrcofreq = true;
 }
 require_once(APPLICATION_PATH . '/header.php');
@@ -234,7 +235,7 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("HBV VL Count"); ?></th>
 									<th><?php echo _("Last Modified On"); ?></th>
 									<th><?php echo _("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges'])) || (in_array("hepatitis-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
+									<?php if ((isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges']) || in_array("hepatitis-view-request.php", $_SESSION['privileges']))) && !$hidesrcofreq) { ?>
 										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -379,51 +380,50 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	function loadVlRequestData() {
 		$.blockUI();
 		oTable = $('#vlRequestDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
-			"bJQueryUI": false,
-			"bAutoWidth": false,
-			"bInfo": true,
-			"bScrollCollapse": true,
-			//"bStateSave" : true,
-			"bRetrieve": true,
-			"aoColumns": [{
-					"sClass": "center"
+				"oLanguage": {
+					"sLengthMenu": "_MENU_ records per page"
 				},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+				"bJQueryUI": false,
+				"bAutoWidth": false,
+				"bInfo": true,
+				"bScrollCollapse": true,
+				//"bStateSave" : true,
+				"bRetrieve": true,
+				"aoColumns": [{
 						"sClass": "center"
 					},
-				<?php } ?> {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				},
-				<?php if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges'])) || (in_array("hepatitis-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
-						"sClass": "center",
-						"bSortable": false
+					<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+							"sClass": "center"
+						},
+					<?php } ?> {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
+					}, {
+						"sClass": "center"
 					},
-				<?php } ?>
+					<?php if ((isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges']) || in_array("hepatitis-view-request.php", $_SESSION['privileges']))) && !$hidesrcofreq) { ?> "sClass": "center",
+						"bSortable": false
+				},
+			<?php } ?>
 			],
 			"aaSorting": [
 				[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 12 : 11 ?>, "desc"]
@@ -514,6 +514,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					"value": '<?php echo $srcOfReq; ?>'
 				});
 				aoData.push({
+					"name": "srcStatus",
+					"value": '<?php echo $srcStatus; ?>'
+				});
+				aoData.push({
 					"name": "hidesrcofreq",
 					"value": '<?php echo $hidesrcofreq; ?>'
 				});
@@ -526,7 +530,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				});
 			}
 		});
-		$.unblockUI();
+	$.unblockUI();
 	}
 
 	function searchVlRequestData() {

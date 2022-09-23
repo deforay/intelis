@@ -164,17 +164,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
           $testedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
      }
 }
-$startDateRangeModel = '';
-$endDateRangeModel = '';
-if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
-     $s_c_date = explode("to", $_POST['dateRangeModel']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $startDateRangeModel = $general->isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $endDateRangeModel = $general->isoDateFormat(trim($s_c_date[1]));
-     }
-}
+
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -201,13 +191,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
      }
 }
-if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
-     if (trim($startDateRangeModel) == trim($endDateRangeModel)) {
-          $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $startDateRangeModel . '"';
-     } else {
-          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $startDateRangeModel . '" AND DATE(vl.sample_collection_date) <= "' . $endDateRangeModel . '"';
-     }
-}
+
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
@@ -256,21 +240,34 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
 if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '" ';
 }
-
+/* Source of request show model conditions */
+if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+     $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $general->isoDateFormat($_POST['dateRangeModel']) . '"';
+}
 if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
 }
-
 if (isset($_POST['labIdModel']) && trim($_POST['labIdModel']) != '') {
      $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
 }
-
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
+     $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
+     $sWhere[] = ' vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like ""';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
+     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = 7';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
+     $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
+}
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      if (!empty($facilityMap)) {
           $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")  ";
      }
-} else {
+} else if (!$_POST['hidesrcofreq']) {
      $sWhere[] = ' vl.result_status!=9';
 }
 
@@ -283,11 +280,11 @@ if (isset($sOrder) && $sOrder != "") {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-//echo $sQuery; DIE;
+// echo $sQuery;die;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */

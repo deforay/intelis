@@ -6,6 +6,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 	$dateRange = $params[0];
 	$labName = $params[1];
 	$srcOfReq = $params[2];
+	$srcStatus = $params[3];
 	$hidesrcofreq = true;
 }
 require_once(APPLICATION_PATH . '/header.php');
@@ -644,6 +645,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "srcOfReqModel",
 					"value": '<?php echo $srcOfReq; ?>'
+				});
+				aoData.push({
+					"name": "srcStatus",
+					"value": '<?php echo $srcStatus; ?>'
 				});
 				aoData.push({
 					"name": "hidesrcofreq",

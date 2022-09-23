@@ -125,7 +125,9 @@ $sQuery = '';
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
         vl.source_of_request,
+        vl.sample_collection_date, 
         count(*) as 'samples',
+        vl.lab_id,
         SUM(CASE WHEN (vl.result is not null AND vl.result not like '' AND result_status = 7) THEN 1 ELSE 0 END) AS 'samplesWithResults',
         SUM(CASE WHEN (vl.is_sample_rejected is not null AND vl.is_sample_rejected like 'yes') THEN 1 ELSE 0 END) AS 'rejected',
         SUM(CASE WHEN (vl." . $sampleReceivedfield . " is not null AND vl." . $sampleReceivedfield . " not like '') THEN 1 ELSE 0 END) AS 'noOfSampleReceivedAtLab',
@@ -165,7 +167,7 @@ if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id';
+$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.sample_collection_date)';
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -174,8 +176,7 @@ $_SESSION['sourceOfRequestsQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// echo $sQuery;
-// die;
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */
@@ -193,17 +194,68 @@ $output = array(
 );
 
 foreach ($rResult as $key => $aRow) {
+    $params = array($aRow['sample_collection_date'], $aRow['lab_id'], $aRow['source_of_request']);
+    if (isset($aRow['samples']) && $aRow['samples'] > 0) {
+        $samples = $params;
+        $samples[] = 9;
+        $samplesParams = implode("##", $samples);
+    }
+
+    if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
+        $register = $params;
+        $register[] = 6;
+        $registerParams = implode("##", $register);
+    }
+
+    if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
+        $tested = $params;
+        $tested[] = 7;
+        $testedParams = implode("##", $tested);
+    }
+
+    if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
+        $rejected = $params;
+        $rejected[] = 4;
+        $rejectedParams = implode("##", $rejected);
+    }
+
+    if (isset($aRow['noOfResultsReturned']) && $aRow['noOfResultsReturned'] > 0) {
+        $returned = $params;
+        $returned[] = "sent";
+        $returnedParams = implode("##", $returned);
+    }
+
     $row = array();
     $row[] = $aRow['labname'];
     $row[] = $testName;
-    $row[] = $aRow['samples'];
-    $row[] = $aRow['noOfSampleReceivedAtLab'];
-    $row[] = $aRow['samplesWithResults'];
-    $row[] = $aRow['rejected'];
-    $row[] = $aRow['noOfResultsReturned'];
+    if (isset($aRow['samples']) && $aRow['samples'] > 0) {
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['samples'] . '</a>';
+    } else {
+        $row[] = $aRow['samples'];
+    }
+    if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['noOfSampleReceivedAtLab'] . '</a>';
+    } else {
+        $row[] = $aRow['noOfSampleReceivedAtLab'];
+    }
+    if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($testedParams) . '\',1200,700);"> ' . $aRow['samplesWithResults'] . '</a>';
+    } else {
+        $row[] = $aRow['samplesWithResults'];
+    }
+    if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($rejectedParams) . '\',1200,700);"> ' . $aRow['rejected'] . '</a>';
+    } else {
+        $row[] = $aRow['rejected'];
+    }
+    if (isset($aRow['noOfResultsReturned']) && $aRow['noOfResultsReturned'] > 0) {
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($returnedParams) . '\',1200,700);"> ' . $aRow['noOfResultsReturned'] . '</a>';
+    } else {
+        $row[] = $aRow['noOfResultsReturned'];
+    }
     $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper($aRow['source_of_request']);
     $row[] = $general->humanReadableDateFormat($aRow['lastRequest']);
-    $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="View History" onclick="viewMore(\'' . $url . '\');"> View more</a>';
+    // $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '\',?id=' . base64_encode() . ');"> View more</a>';
 
     $output['aaData'][] = $row;
 }
