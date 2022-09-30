@@ -1192,11 +1192,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-     $('#failed').change(function() {
-          if ($('#failed').prop('checked')) {
+     $('#vlResult').change(function() {
+          if ($(this).val() == 'Failed' || $(this).val() == 'Error') {
                $('.reasonForFailure').show();
                $('#reasonForFailure').addClass('isRequired');
-               $('#vlResult').removeClass('isRequired');
           } else {
                $('.reasonForFailure').hide();
                $('#reasonForFailure').removeClass('isRequired');

@@ -747,7 +747,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
 													</div>
 												</div>
-												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
+												<div class="col-md-4 rejectionReason" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
 														<input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'isRequired' : ''; ?>" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
@@ -767,11 +767,11 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 											<div class="row">
 											<?php } ?>
-											<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
+											<div class="col-md-4 vlResult" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 												<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'block' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
 													<input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
-													<datalist id="possibleVlResults">
+													<datalist id="possibleVlResults" title="Please enter viral load result">
 														<option value="No Result" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'No Result') ? "selected='selected'" : ""; ?>>
 														<option value="Failed" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Failed') ? "selected='selected'" : ""; ?>>
 														<option value="Error" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Error') ? "selected='selected'" : ""; ?>>
@@ -786,8 +786,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<?php if (count($reasonForFailure) > 0) { ?>
-												<div class="col-md-4 rlabSection easonForFailure result-fields vlResult" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
-													<label class="col-lg-5 control-label vlResult" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
+												<div class="col-md-4 labSection reasonForFailure result-fields" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
+													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
 														<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
 															<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
@@ -795,7 +795,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 											<?php } ?>
-											<div class="col-md-4 vlResult">
+											<div class="col-md-4 vlResult" style="margin-top: 10px;">
 												<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
@@ -803,7 +803,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 											</div>
 											<div class="row">
-												<div class="col-md-4">
+												<div class="col-md-4" style="margin-top: 10px;">
 													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
@@ -837,7 +837,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 											</div>
 											<div class="row">
-												<div class="col-md-4">
+												<div class="col-md-4" style="margin-top: 10px;">
 													<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
@@ -897,7 +897,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	let resultValue = null;
 
 	$(document).ready(function() {
-
 
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
@@ -1132,6 +1131,16 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 					});
 			}
 			$.unblockUI();
+		});
+
+		$('#vlResult').change(function() {
+			if ($(this).val() == 'Failed' || $(this).val() == 'Error') {
+				$('.reasonForFailure').show();
+				$('#reasonForFailure').addClass('isRequired');
+			} else {
+				$('.reasonForFailure').hide();
+				$('#reasonForFailure').removeClass('isRequired');
+			}
 		});
 	});
 
@@ -1370,18 +1379,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$("#hivDetection").val("");
 		}
 	}
-
-	$('#failed').change(function() {
-		if ($('#failed').prop('checked')) {
-			$('.reasonForFailure').show();
-			$('#reasonForFailure').addClass('isRequired');
-			$('#vlResult').removeClass('isRequired');
-		} else {
-			$('.reasonForFailure').hide();
-			$('#reasonForFailure').removeClass('isRequired');
-		}
-	});
-
 
 	function checkRejectionReason() {
 		var rejectionReason = $("#rejectionReason").val();
