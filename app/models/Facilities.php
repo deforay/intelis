@@ -54,7 +54,7 @@ class Facilities
         if (!empty($facilityName)) {
             $this->db->where("facility_name", $facilityName);
         }
-        $this->db->join("province_details p", "p.province_name=f.facility_state", "INNER");
+        $this->db->join("geographical_divisions g", "g.geo_id=f.facility_state_id", "INNER");
         return $this->db->get("facility_details f");
     }
 

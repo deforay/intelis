@@ -637,8 +637,8 @@ $sFormat = '';
                                                                  <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
-                                                                           <datalist id="possibleVlResults" style=" display: none;">
+                                                                           <input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
+                                                                           <datalist id="possibleVlResults">
                                                                                 <option value="No Result">
                                                                                 <option value="Failed">
                                                                                 <option value="Error">

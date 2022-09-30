@@ -770,8 +770,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 												<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'block' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
-													<input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
-													<datalist id="possibleVlResults" style=" display: none;">
+													<input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
+													<datalist id="possibleVlResults">
 														<option value="No Result" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'No Result') ? "selected='selected'" : ""; ?>>
 														<option value="Failed" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Failed') ? "selected='selected'" : ""; ?>>
 														<option value="Error" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Error') ? "selected='selected'" : ""; ?>>

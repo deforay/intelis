@@ -189,7 +189,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $facilityDetails = $facilityDb->getFacilityByName($msh->getField(4));
         if (!empty($facilityDetails[0]) && $facilityDetails[0] != "") {
             $data['fName'] = $facilityDetails[0]['facility_id'];
-            $data['provinceCode'] = $facilityDetails[0]['province_code'];
+            $data['provinceCode'] = $facilityDetails[0]['geo_code'];
         }
 
         if ($msh->getField(6) != "" && !empty($msh->getField(6))) {
