@@ -87,14 +87,12 @@ try {
         $resultStatus = 4;
     }
 
-    if (isset($_POST['bdl']) && $_POST['bdl'] === 'yes' && $isRejected === false) {
+    if (isset($_POST['vlResult']) && $_POST['vlResult'] == 'Below Detection Level' && $isRejected === false) {
         $_POST['vlResult'] = 'Below Detection Level';
+        $_POST['vlLog'] = null;
     }
 
-    if (
-        (isset($_POST['failed']) && $_POST['failed'] === 'yes')
-        || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
-    ) {
+    if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Failed') || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])) {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
         $_POST['vlLog'] = null;
         $resultStatus = 5; // Invalid/Failed
@@ -134,8 +132,8 @@ try {
     }
     //echo $reasonForChanges;die;
 
-    $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection']. ' ' . $finalResult :  $finalResult;
-        
+    $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
+
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] :  null,
