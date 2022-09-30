@@ -643,9 +643,6 @@ $sFormat = '';
                                                                                 <option value="Failed">
                                                                                 <option value="Error">
                                                                                 <option value="Below Detection Level">
-                                                                                <option value="< 20">
-                                                                                <option value="< 40">
-                                                                                <option value="< 400">
                                                                            </datalist>
                                                                       </div>
                                                                  </div>

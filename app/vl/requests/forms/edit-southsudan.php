@@ -776,9 +776,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<option value="Failed" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Failed') ? "selected='selected'" : ""; ?>>
 														<option value="Error" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Error') ? "selected='selected'" : ""; ?>>
 														<option value="Below Detection Level" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Below Detection Level') ? "selected='selected'" : ""; ?>>
-														<option value="< 20" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>>
-														<option value="< 40" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 40') ? "selected='selected'" : ""; ?>>
-														<option value="< 400" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 400') ? "selected='selected'" : ""; ?>>
 													</datalist>
 												</div>
 											</div>
