@@ -12,7 +12,7 @@ $general = new \Vlsm\Models\General();
 $data = array();
 
 // if forceSync is set as true, we will drop and create tables on VL Dashboard DB
-$data['forceSync'] = true;
+$data['forceSync'] = false;
 
 
 $referenceTables = array(

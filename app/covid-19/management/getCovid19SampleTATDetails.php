@@ -195,7 +195,7 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 }
 
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
 	$sQuery = $sQuery . ' AND ' . implode(' AND ',$sWhere) ;
 } 
 if (isset($seWhere) && count($seWhere) > 0) {

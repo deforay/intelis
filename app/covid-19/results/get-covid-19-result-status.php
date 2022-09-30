@@ -161,7 +161,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 }
 

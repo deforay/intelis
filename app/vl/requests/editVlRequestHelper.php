@@ -258,8 +258,8 @@ try {
           $_POST['reviewedOn'] = null;
      }
 
-     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection']. ' ' . $finalResult :  $finalResult;
-     
+     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
+
      $vldata = array(
           'vlsm_instance_id'                      => $instanceId,
           'sample_reordered'                      => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',
@@ -268,6 +268,7 @@ try {
           'sample_collection_date'                => $_POST['sampleCollectionDate'],
           'sample_dispatched_datetime'            => $_POST['sampleDispatchedDate'],
           'patient_first_name'                    => (isset($_POST['patientFirstName']) && $_POST['patientFirstName'] != '') ? $_POST['patientFirstName'] :  null,
+          'patient_last_name'                    => (isset($_POST['patientLastName']) && $_POST['patientLastName'] != '') ? $_POST['patientLastName'] :  null,
           'patient_gender'                        => (isset($_POST['gender']) && $_POST['gender'] != '') ? $_POST['gender'] :  null,
           'patient_dob'                           => $_POST['dob'],
           'patient_age_in_years'                  => (isset($_POST['ageInYears']) && $_POST['ageInYears'] != '') ? $_POST['ageInYears'] :  null,

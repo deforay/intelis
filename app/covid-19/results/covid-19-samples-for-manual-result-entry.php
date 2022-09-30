@@ -153,7 +153,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 }
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      //$sWhere = ' where ' . $sWhere;
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -246,7 +246,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      }
 }
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = implode(' AND ', $sWhere);
 }
 

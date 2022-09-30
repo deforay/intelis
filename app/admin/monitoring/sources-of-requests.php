@@ -135,7 +135,7 @@ $activeTestModules = $general->getActiveTestModules();
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },
-                startDate: moment().subtract(12, 'months'),
+                startDate: moment().subtract(14, 'days'),
                 endDate: moment(),
                 maxDate: moment(),
                 ranges: {

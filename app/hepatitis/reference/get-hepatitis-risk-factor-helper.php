@@ -95,7 +95,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_hepatitis_risk_factors";
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ' ,$sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }

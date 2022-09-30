@@ -271,7 +271,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sWhere[] = ' vl.result_status!=9';
 }
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
@@ -293,8 +293,8 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $aResultFilterTotal['totalCount'];
 
 /*
-          * Output
-          */
+* Output
+*/
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,
