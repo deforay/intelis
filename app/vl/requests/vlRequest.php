@@ -60,23 +60,15 @@ foreach ($srcResults as $list) {
 				<div class="box">
 					<table id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
-							<td><strong><?php echo _("Sample Collection Date"); ?> :</strong></td>
+						<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" />
 							</td>
-							<td><strong><?php echo _("Batch Code"); ?> :</strong></td>
+							<td><strong><?php echo _("Sample Received at Lab Date"); ?>&nbsp;:</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>">
-									<option value=""> <?php echo _("-- Select --"); ?> </option>
-									<?php
-									foreach ($batResult as $code) {
-									?>
-										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-									<?php
-									}
-									?>
-								</select>
+								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
 							</td>
+							
 							<td><strong><?php echo _("Sample Type"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
@@ -98,32 +90,19 @@ foreach ($srcResults as $list) {
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
-							</td>
-							<td><strong><?php echo _("District/County"); ?> :</strong></td>
-							<td>
-								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
-							</td>
-						</tr>
-						<tr>
 							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 							<td>
-								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
-									<option value=""> <?php echo _("-- Select --"); ?> </option>
-									<option value="male"><?php echo _("Male"); ?></option>
-									<option value="female"><?php echo _("Female"); ?></option>
-									<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
-								</select>
+								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
 							</td>
-							<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
 									<option value=""> -- Select -- </option>
@@ -131,8 +110,6 @@ foreach ($srcResults as $list) {
 									<option value="no"><?php echo _("No"); ?></option>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<td colspan="2">
 								<div class="col-md-12">
 									<div class="col-md-6">
@@ -153,7 +130,22 @@ foreach ($srcResults as $list) {
 									</div>
 								</div>
 							</td>
-							<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Batch Code"); ?> :</strong></td>
+							<td>
+								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<?php
+									foreach ($batResult as $code) {
+									?>
+										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -164,6 +156,8 @@ foreach ($srcResults as $list) {
 									<?php } ?>
 								</select>
 							</td>
+							
+							
 							<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
@@ -173,6 +167,15 @@ foreach ($srcResults as $list) {
 									?>
 										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
 									<?php } ?>
+								</select>
+							</td>
+							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<option value="male"><?php echo _("Male"); ?></option>
+									<option value="female"><?php echo _("Female"); ?></option>
+									<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 								</select>
 							</td>
 						</tr>
@@ -191,15 +194,15 @@ foreach ($srcResults as $list) {
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Select Sample Received Date At Lab"); ?> :</strong></td>
+							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 						</tr>
 						<tr>
-							<td><strong><?php echo _("Sample Tested Date"); ?> :</strong></td>
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 						</tr>
 						<tr>
