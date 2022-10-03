@@ -23,9 +23,9 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_coll
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name','vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'l.facility_name','vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-}    
+     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'l.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+}
 
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -206,13 +206,35 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
      $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
 }
+/* Source of request show model conditions */
+if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+     $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $general->isoDateFormat($_POST['dateRangeModel']) . '"';
+}
+if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
+     $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
+}
+if (isset($_POST['labIdModel']) && trim($_POST['labIdModel']) != '') {
+     $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
+     $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
+     $sWhere[] = ' vl.sample_received_at_lab_datetime is not null AND vl.sample_received_at_lab_datetime not like ""';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
+     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = 7';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
+     $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
+}
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
      if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
           $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
-} else {
+} else if (!$_POST['hidesrcofreq']) {
      $sWhere[] = 'vl.result_status!=9 ';
 }
 if (isset($sWhere) && !empty($sWhere)) {
@@ -317,7 +339,9 @@ foreach ($rResult as $aRow) {
      if ($syncRequest) {
           $actions .= $sync;
      }
-     $row[] = $actions . $barcode;
+     if (!$_POST['hidesrcofreq']) {
+          $row[] = $actions . $barcode;
+     }
 
      $output['aaData'][] = $row;
 }

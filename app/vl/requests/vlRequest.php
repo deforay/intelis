@@ -1,6 +1,14 @@
 <?php
 $title = _("View All Requests");
-
+$hidesrcofreq = false;
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+	$params = explode("##", base64_decode($_GET['id']));
+	$dateRange = $params[0];
+	$labName = $params[1];
+	$srcOfReq = $params[2];
+	$srcStatus = $params[3];
+	$hidesrcofreq = true;
+}
 require_once(APPLICATION_PATH . '/header.php');
 
 $interopConfig = array();
@@ -41,17 +49,33 @@ foreach ($srcResults as $list) {
 	.select2-selection__choice {
 		color: black !important;
 	}
+
+	<?php if (isset($_GET['id']) && !empty($_GET['id'])) { ?>header {
+		display: none;
+	}
+
+	.main-sidebar {
+		z-index: -9;
+	}
+
+	.content-wrapper {
+		margin-left: 0px;
+	}
+
+	<?php } ?>
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-	<!-- Content Header (Page header) -->
-	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Viral Load Test Requests"); ?></h1>
-		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Test Request"); ?></li>
-		</ol>
-	</section>
+	<?php if (!$hidesrcofreq) { ?>
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Viral Load Test Requests"); ?></h1>
+			<ol class="breadcrumb">
+				<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+				<li class="active"><?php echo _("Test Request"); ?></li>
+			</ol>
+		</section>
+	<?php } ?>
 
 	<!-- Main content -->
 	<section class="content">
@@ -212,7 +236,7 @@ foreach ($srcResults as $list) {
 							</td>
 							<td colspan="4">
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<a href="addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add VL Request Form"); ?></a>
 								<?php }
 								?>
@@ -229,7 +253,7 @@ foreach ($srcResults as $list) {
 							<td>
 
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<a href="addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add VL Request Form"); ?></a>
 								<?php }
 								?>
@@ -297,7 +321,7 @@ foreach ($srcResults as $list) {
 					</span>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -317,7 +341,7 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified Date"); ?></th>
 									<th><?php echo _("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?>
+									<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
 										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -469,7 +493,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function loadVlRequestData() {
 		$.blockUI();
-
 		oTable = $('#vlRequestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
@@ -524,7 +547,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?> {
+				<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},
@@ -613,6 +636,26 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "srcOfReq",
 					"value": $("#srcOfReq").val()
+				});
+				aoData.push({
+					"name": "dateRangeModel",
+					"value": '<?php echo $dateRange; ?>'
+				});
+				aoData.push({
+					"name": "labIdModel",
+					"value": '<?php echo $labName; ?>'
+				});
+				aoData.push({
+					"name": "srcOfReqModel",
+					"value": '<?php echo $srcOfReq; ?>'
+				});
+				aoData.push({
+					"name": "srcStatus",
+					"value": '<?php echo $srcStatus; ?>'
+				});
+				aoData.push({
+					"name": "hidesrcofreq",
+					"value": '<?php echo $hidesrcofreq; ?>'
 				});
 				$.ajax({
 					"dataType": 'json',

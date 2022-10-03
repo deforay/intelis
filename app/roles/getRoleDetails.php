@@ -88,7 +88,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT * FROM roles";
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ',$sWhere);
 }
 $sQuery = $sQuery . ' ' . $sWhere;

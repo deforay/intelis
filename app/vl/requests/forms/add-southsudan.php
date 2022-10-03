@@ -528,7 +528,7 @@ $sFormat = '';
                                                        <div class="box-body">
                                                             <div class="row">
                                                                  <!-- <div class="col-md-4">
-                                                                      <label for="labId" class="col-lg-5 control-label">Lab Name </label>
+                                                                      <label for="labId" class="col-lg-5 control-label labels">Lab Name </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="labId" id="labId" class="select2 form-control" title="Please choose the testing lab" onchange="autoFillFocalDetails();">
                                                                                 <option value="">-- Select --</option>
@@ -539,13 +539,13 @@ $sFormat = '';
                                                                       </div>
                                                                  </div> -->
                                                                  <div class="col-md-4">
-                                                                      <label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
+                                                                      <label for="vlFocalPerson" class="col-lg-5 control-label labels">VL Focal Person </label>
                                                                       <div class="col-lg-7">
                                                                            <select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name"></select>
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number</label>
+                                                                      <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels">VL Focal Person Phone Number</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control forceNumeric" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
                                                                       </div>
@@ -553,19 +553,19 @@ $sFormat = '';
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) <span class="mandatory">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) <span class="mandatory">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime isRequired" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" onchange="checkSampleReceviedDate()" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span" style="display: none;">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span" style="display: none;">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
                                                                       </div>
@@ -574,7 +574,7 @@ $sFormat = '';
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
+                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="testingPlatform" id="testingPlatform" class="form-control result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
                                                                                 <option value="">-- Select --</option>
@@ -585,7 +585,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="noResult">Sample Rejected? </label>
+                                                                      <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
                                                                                 <option value="">-- Select --</option>
@@ -595,7 +595,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4 rejectionReason" style="display:none;">
-                                                                      <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
+                                                                      <label class="col-lg-5 control-label labels" for="rejectionReason">Rejection Reason </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
                                                                                 <option value="">-- Select --</option>
@@ -617,13 +617,13 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4 rejectionReason" style="display:none;">
-                                                                      <label class="col-lg-5 control-label" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4 hivDetection" style="display: none;">
-                                                                      <label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
+                                                                      <label for="hivDetection" class="col-lg-5 control-label labels">HIV Detection </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="hivDetection" id="hivDetection" class="form-control hivDetection" title="Please choose HIV detection">
                                                                                 <option value="">-- Select --</option>
@@ -635,16 +635,19 @@ $sFormat = '';
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4 vlResult">
-                                                                      <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: none;">*</span> </label>
+                                                                      <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" style="width:100%;" onchange="calculateLogValue(this)" disabled />
-                                                                           <!-- <span style="display: none;"><input type="hidden" class="" id="tnd" name="tnd" value="yes" title="Please check tnd"> Target Not Detected<br></span> -->
-                                                                           <input type="checkbox" class="labSection specialResults" id="bdl" name="bdl" value="yes" title="Please check bdl" disabled> Below Detection Level<br>
-                                                                           <input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed" disabled> Failed<br>
+                                                                           <input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
+                                                                           <datalist id="possibleVlResults">
+                                                                                <option value="No Result">
+                                                                                <option value="Failed">
+                                                                                <option value="Error">
+                                                                                <option value="Below Detection Level">
+                                                                           </datalist>
                                                                       </div>
                                                                  </div>
                                                                  <div class="vlLog col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
+                                                                      <label class="col-lg-5 control-label  labels" for="vlLog">Viral Load Log </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" style="width:100%;" onchange="calculateLogValue(this);" />
                                                                       </div>
@@ -660,7 +663,7 @@ $sFormat = '';
                                                                       </div>
                                                                  <?php } ?>
                                                                  <div class="col-md-4 vlResult">
-                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched</label>
+                                                                      <label class="col-lg-5 control-label  labels" for="resultDispatchedOn">Date Results Dispatched</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
@@ -670,19 +673,19 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+                                                                           <select name="reviewedBy" id="reviewedBy" class="select2 form-control labels" title="Please choose reviewed by" style="width: 100%;">
                                                                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                                            </select>
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                                      <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="testedBy">Tested By </label>
+                                                                      <label class="col-lg-5 control-label labels" for="testedBy">Tested By </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
                                                                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
@@ -692,7 +695,7 @@ $sFormat = '';
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                                      <label class="col-lg-5 control-label labels" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by">
                                                                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
@@ -700,13 +703,13 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                                      <label class="col-lg-5 control-label labels" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" style="width:100%;" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
+                                                                      <label class="col-lg-2 control-label labels" for="labComments">Lab Tech. Comments </label>
                                                                       <div class="col-lg-10">
                                                                            <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" style="width: 90% !important;margin-left: 24px;"></textarea>
                                                                       </div>
@@ -1101,7 +1104,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      });
      $("#sampleTestingDateAtLab").on("change", function() {
           if ($(this).val() != "") {
-               $(".result-fields, .specialResults").attr("disabled", false);
+               $(".result-fields").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
                $(".result-span").show();
                $('.vlResult').css('display', 'block');
@@ -1122,10 +1125,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.vlResult, .hivDetection').css('display', 'none');
                $('.vlLog').css('display', 'none');
                $("#sampleTestingDateAtLab, #vlResult, .hivDetection").val("");
-               $('.specialResults').prop('checked', false);
                $(".result-fields").val("");
-               $(".result-fields, .specialResults").attr("disabled", true);
-               $(".result-fields, .specialResults").removeClass("isRequired");
+               $(".result-fields").attr("disabled", true);
+               $(".result-fields").removeClass("isRequired");
                $(".result-span").hide();
                $(".review-approve-span").show();
                $('#rejectionReason').addClass('isRequired');
@@ -1137,7 +1139,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".result-optional").removeClass("isRequired");
                $("#reasonForFailure").removeClass('isRequired');
           } else if ($(this).val() == 'no') {
-               $(".result-fields, .specialResults").attr("disabled", false);
+               $(".result-fields").attr("disabled", false);
                $(".result-fields").addClass("isRequired");
                $(".result-span").show();
                $(".review-approve-span").show();
@@ -1152,7 +1154,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#approvedOnDateTime').addClass('isRequired');
                //$(".hivDetection").trigger("change");
           } else {
-               $(".result-fields, .specialResults").attr("disabled", false);
+               $(".result-fields").attr("disabled", false);
                $(".result-fields").removeClass("isRequired");
                $(".result-optional").removeClass("isRequired");
                $(".result-span").show();
@@ -1176,7 +1178,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                return false;
           } else if (this.value === 'HIV-1 Not Detected') {
                $("#noResult").val("no");
-               $('.specialResults').prop('checked', false).removeAttr('checked');
                $('#vlResult').attr('disabled', false);
                $('#vlLog').attr('disabled', false);
                $("#vlResult,#vlLog").val('');
@@ -1191,34 +1192,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-
-     $('.specialResults').change(function() {
-          if ($('.specialResults').is(':checked')) {
-               $('.specialResults, .hivDetection').not(this).prop('checked', false).attr('disabled', true);
-               $('#vlResult,#vlLog, .hivDetection').attr('readonly', true);
-               $('#vlResult,#vlLog').val('');
-               $('#vlResult').removeClass('isRequired');
-          } else {
-               $('#vlResult,#vlLog, .hivDetection').attr('readonly', false);
-               $('.specialResults').attr('disabled', false);
-               if ($('#noResult').val() == 'no') {
-                    $('#vlResult').addClass('isRequired');
-               }
-          }
-     });
-
-     $('#vlResult,#vlLog').on('input', function(e) {
-          if (this.value == null || this.value != '') {
-               $('.specialResults').prop('checked', false).attr('disabled', true);
-          } else {
-               $('.specialResults').attr('disabled', false);
-          }
-     });
-     $('#failed').change(function() {
-          if ($('#failed').prop('checked')) {
+     $('#vlResult').change(function() {
+          if ($(this).val() == 'Failed' || $(this).val() == 'Error') {
                $('.reasonForFailure').show();
                $('#reasonForFailure').addClass('isRequired');
-               $('#vlResult').removeClass('isRequired');
           } else {
                $('.reasonForFailure').hide();
                $('#reasonForFailure').removeClass('isRequired');
@@ -1411,6 +1388,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                } else {
                     $("#vlResult").val('');
                }
+          }
+     }
+
+     function vlResultChange(value) {
+          if (value != "") {
+               $('#vlResult').val(value);
           }
      }
 </script>

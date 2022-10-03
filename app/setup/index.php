@@ -48,6 +48,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
   <!-- Theme style -->
   <link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
   <link href="/assets/css/deforayModal.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.6.1.1.css">
+  
   <!-- iCheck -->
   <style>
     body {

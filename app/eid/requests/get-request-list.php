@@ -2,9 +2,6 @@
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-
-
-
 $formConfigQuery = "SELECT * FROM global_config";
 $configResult = $db->query($formConfigQuery);
 $gconfig = array();
@@ -202,7 +199,6 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
      }
 }
-
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
@@ -241,6 +237,29 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
      $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
 }
+/* Source of request show model conditions */
+if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+     $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $general->isoDateFormat($_POST['dateRangeModel']) . '"';
+}
+if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
+     $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
+}
+if (isset($_POST['labIdModel']) && trim($_POST['labIdModel']) != '') {
+     $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
+     $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
+     $sWhere[] = ' vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like ""';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
+     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = 7';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
+     $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
+}
+
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
@@ -249,7 +268,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
           $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
      }
-} else {
+} else if (!$_POST['hidesrcofreq']) {
      $sWhere[] = ' vl.result_status!=9';
      $sFilter = ' AND result_status!=9';
 }
@@ -266,8 +285,7 @@ $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// echo $sQuery;
-// die;
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 /* Data set length after filtering */
@@ -368,8 +386,9 @@ foreach ($rResult as $aRow) {
      if ($syncRequest) {
           $actions .= $sync;
      }
-     $row[] = $actions . $barcode;
-
+     if (!$_POST['hidesrcofreq']) {
+          $row[] = $actions . $barcode;
+     }
      $output['aaData'][] = $row;
 }
 echo json_encode($output);

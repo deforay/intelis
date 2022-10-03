@@ -130,7 +130,6 @@ class Vl
         }
 
         if ($sampleCodeFormat == 'auto') {
-            //$pNameVal = explode("##", $provinceCode);
             $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
@@ -411,11 +410,9 @@ class Vl
             }
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
-            if ($globalConfig['vl_form'] == 5) {
-                if (empty($provinceId)) {
+            if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
                     echo 0;
                     exit();
-                }
             }
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;

@@ -87,7 +87,7 @@ $activeTestModules = $general->getActiveTestModules();
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="sampleReportsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table id="sampleReportsDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th><?php echo _("Lab Name"); ?></th>
@@ -135,7 +135,7 @@ $activeTestModules = $general->getActiveTestModules();
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },
-                startDate: moment().subtract(12, 'months'),
+                startDate: moment().subtract(14, 'days'),
                 endDate: moment(),
                 maxDate: moment(),
                 ranges: {
@@ -251,6 +251,12 @@ $activeTestModules = $general->getActiveTestModules();
                     $("#srcRequest").html(data);
                 }
             });
+    }
+
+    function viewMore(url) {
+        params = $("#dateRange").val() + '##' + $("#labName").val() + '##' + $("#srcRequest").val();
+        console.log(Base64.encode(params));
+        showModal(url + '?id=' + Base64.encode(params), 1200, 720);
     }
 </script>
 <?php

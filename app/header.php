@@ -217,68 +217,6 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<link href="/assets/css/select2.live.min.css" rel="stylesheet" />
 	<script src="/assets/js/select2.min.js"></script>
 	<!--<script type="text/javascript" src="/assets/js/jquery-ui-sliderAccess.js"></script>-->
-	<style>
-		.dataTables_empty {
-			text-align: center;
-		}
-
-		.dataTables_wrapper {
-			position: relative;
-			clear: both;
-			overflow-x: scroll !important;
-			overflow-y: visible !important;
-			padding: 15px 0 !important;
-		}
-
-		.select2-selection__choice__remove {
-			color: red !important;
-		}
-
-		.select2-container--default .select2-selection--multiple .select2-selection__choice {
-			/* background-color: #00c0ef;
-			border-color: #00acd6; */
-			color: #000 !important;
-			font-family: helvetica, arial, sans-serif;
-		}
-
-		.skin-blue .sidebar-menu>li.header {
-			background: #ddd;
-			color: #333;
-			font-weight: bold;
-		}
-
-		.skin-red .sidebar-menu>li.header {
-			background: #ddd;
-			color: #333;
-			font-weight: bold;
-		}
-
-		.select2-container .select2-selection--single {
-			height: 34px !important;
-		}
-
-		.select2-container--default .select2-selection--single .select2-selection__arrow {
-			top: 6px !important;
-		}
-
-		.select2-container--default .select2-selection--single .select2-selection__rendered {
-			line-height: 22px !important;
-		}
-
-		.select2-container .select2-selection--single .select2-selection__rendered {
-			margin-top: 0px !important;
-		}
-
-		form table tr th,
-		form table tr td>label,
-		form div label,
-		form table tr th,
-		form table tr td>label,
-		.labels,
-		.labels>label {
-			font-weight: bold;
-		}
-	</style>
 </head>
 
 <body class="hold-transition <?php echo $skin; ?> sidebar-mini">

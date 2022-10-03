@@ -196,8 +196,9 @@ $tatSampleQuery = "SELECT
         AND DATE(vl.sample_tested_datetime) <= '$end_date'  ";
 
 $sWhere = array();
-if (!empty($whereCondition))
+if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
+}
 
 $sWhere[] = $recencyWhere;
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
@@ -218,11 +219,15 @@ if (!empty($_POST['labName'])) {
 }
 
 if (isset($sWhere) && !empty($sWhere)) {
-    $vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
+    $tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tatSampleQuery .= " GROUP BY monthDate";
 //$tatSampleQuery .= " HAVING ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) < 120";
 $tatSampleQuery .= " ORDER BY sample_tested_datetime";
+
+// $general->var_error_log($_POST['labName']);
+// error_log($tatSampleQuery);
+
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;
 foreach ($tatResult as $sRow) {

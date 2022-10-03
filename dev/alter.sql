@@ -3248,3 +3248,5 @@ UPDATE form_tb set result_sent_to_source = 'sent' where source_of_request = 'vls
 -- Amit 14-Sep-2022
 ALTER TABLE `track_api_requests` ADD `transaction_id` VARCHAR(256) NULL DEFAULT NULL AFTER `api_track_id`;
 
+-- Amit 30-Sep-2022
+INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES (11, 'No Result', 'active');

@@ -169,7 +169,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 $sWhere[] = ' (vl.hcv_vl_count !="" OR vl.hbv_vl_count !="") ';
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere =  implode(' AND ', $sWhere);
 } else {
     $sWhere = "";

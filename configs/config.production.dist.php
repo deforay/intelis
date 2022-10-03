@@ -70,6 +70,8 @@ $systemConfig['interfacing']['dbName'] = 'interfacing';
 $systemConfig['interfacing']['dbPort'] = 3306;
 $systemConfig['interfacing']['dbCharset'] = 'utf8mb4';
 
+$systemConfig['interfacing']['sqlite3Path'] = '';
+
 $systemConfig['recency'] = array();
 
 // Enable/Disable Cross Login with Recency

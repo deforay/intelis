@@ -350,7 +350,7 @@ try {
             'consent_to_receive_sms'                => (isset($data['receiveSms']) && $data['receiveSms'] != '') ? $data['receiveSms'] :  null,
             'sample_type'                           => (isset($data['specimenType']) && $data['specimenType'] != '') ? $data['specimenType'] :  null,
             'arv_adherance_percentage'              => (isset($data['arvAdherence']) && $data['arvAdherence'] != '') ? $data['arvAdherence'] :  null,
-            'reason_for_vl_testing'                 => (isset($data['reasonForVLTesting'])) ? $data['reasonForVLTesting'] : null,
+            'reason_for_vl_testing'                 => $data['reasonForVLTesting'] ?: $data['vlTestReason'] ?: null,
             'community_sample'                      => (isset($data['communitySample'])) ? $data['communitySample'] : null,
             'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? $general->isoDateFormat($data['rmTestingLastVLDate']) :  null,
             'last_vl_result_routine'                => (isset($data['rmTestingVlValue']) && $data['rmTestingVlValue'] != '') ? $data['rmTestingVlValue'] :  null,

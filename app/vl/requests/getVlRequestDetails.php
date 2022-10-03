@@ -178,7 +178,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
      if (trim($labStartDate) == trim($labEnddate)) {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $labStartDate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) like "' . $labStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEnddate . '"';
      }
@@ -186,11 +186,12 @@ if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateA
 
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
      if (trim($testedStartDate) == trim($testedEndDate)) {
-          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) like "' . $testedStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
      }
 }
+
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
@@ -239,17 +240,38 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
 if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '" ';
 }
-
+/* Source of request show model conditions */
+if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+     $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $general->isoDateFormat($_POST['dateRangeModel']) . '"';
+}
+if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
+     $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
+}
+if (isset($_POST['labIdModel']) && trim($_POST['labIdModel']) != '') {
+     $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
+     $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
+     $sWhere[] = ' vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like ""';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
+     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = 7';
+}
+if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
+     $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
+}
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      if (!empty($facilityMap)) {
           $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")  ";
      }
-} else {
+} else if (!$_POST['hidesrcofreq']) {
      $sWhere[] = ' vl.result_status!=9';
 }
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
@@ -258,14 +280,11 @@ if (isset($sOrder) && $sOrder != "") {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-//echo $sQuery; DIE;
+// echo $sQuery;die;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-
-/* echo ($sQuery);
-die; */
-
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */
@@ -274,8 +293,8 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $aResultFilterTotal['totalCount'];
 
 /*
-          * Output
-          */
+* Output
+*/
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,
@@ -365,7 +384,9 @@ foreach ($rResult as $aRow) {
      if ($syncRequest) {
           $actions .= $sync;
      }
-     $row[] = $actions . $barcode;
+     if (!$_POST['hidesrcofreq']) {
+          $row[] = $actions . $barcode;
+     }
 
      $output['aaData'][] = $row;
 }

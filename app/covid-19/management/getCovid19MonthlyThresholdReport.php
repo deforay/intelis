@@ -130,7 +130,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      }
 }
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           if (trim($sTestDate) == trim($eTestDate)) {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';

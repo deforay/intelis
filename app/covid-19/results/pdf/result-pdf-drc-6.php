@@ -9,29 +9,26 @@ if (!class_exists('DRC_PDF')) {
             // Logo
             if ($this->htitle != '') {
 
-                if (trim($this->logo) != '') {
-                    // Check facility have the logo
-                    // if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
-                    //     $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                    //     $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-                    // } else {
-                    if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . "inrb.png")) {
-                        $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . "inrb.png";
-                        $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-                    }
-                    //}
-                }
-                if (trim($this->logo) != '') {
-                    if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
-                        $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                        $this->Image($image_file, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-                    } else {
-                        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                            $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                            $this->Image($image_file, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-                        }
+
+                $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "inrb.png";
+
+                //left logo
+                if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) &&   $this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                    $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
+                    $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                } else {
+                    if ($this->fileExists($inrbImage)) {
+                        $this->Image($inrbImage, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }
                 }
+
+                //right logo
+                if ($this->fileExists($inrbImage)) {
+                    $this->Image($inrbImage, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                }
+
+
+
                 $this->SetFont('helvetica', 'B', 12);
                 $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C', true);
                 $this->SetFont('helvetica', 'B', 10);
@@ -55,20 +52,12 @@ if (!class_exists('DRC_PDF')) {
                 $this->writeHTMLCell(0, 0, 10, 48, '<hr>', 0, 0, 0, true, 'C', true);
 
                 // Define the path to the image that you want to use as watermark.
-                $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-inrb.png";
-                if (!empty($this->logo) && file_exists($img_file)) {
-                } else if (!empty($this->logo) && UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . "actual-inrb.png") {
-                    if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . "actual-inrb.png")) {
-                        $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR  . "actual-inrb.png";
-                    }
-                } else {
-                    $img_file = "";
-                }
-                // Render the image
-                if ($img_file != "") {
+                $watermarkImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-inrb.png";
+                if ($this->fileExists($watermarkImage)) {
                     $this->SetAlpha(0.1);
-                    $this->Image($img_file, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);
+                    $this->Image($watermarkImage, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);
                 }
+
                 $stamp = "";
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png')) {
                     $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png';
@@ -93,8 +82,8 @@ if (!class_exists('DRC_PDF')) {
             } else {
                 $generatedAtTestingLab = "";
             }
-            $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'],IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
-            $this->writeHTML($formatter->format(strtotime($this->resultPrintedDate)) . ' ' .$generatedAtTestingLab);
+            $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'], IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
+            $this->writeHTML($formatter->format(strtotime($this->resultPrintedDate)) . ' ' . $generatedAtTestingLab);
             //$this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . $generatedAtTestingLab);
             $this->writeHTMLCell(0, 0, 10, 280, 'Service de Biologie Médicale', 0, 0, false, true, 'C', true);
             // Page number
@@ -372,7 +361,7 @@ if (!empty($result['lab_manager'])) {
 }
 
 $html .= '<tr>';
-$html .= '<td colspan="3" style="line-height:10px;font-size:12px;text-align:center;"><br><br><strong>' . $labManager . '</strong><br>Chef de Service de Biologie Médicale<br><span style="font-size:8;font-weight:normal;">(Lab Manager)</span></td>';
+$html .= '<td colspan="3" style="line-height:12px;font-size:12px;text-align:center;"><br><br><strong>' . $labManager . '</strong><br>Chef de Service de Biologie Médicale<br><span style="font-size:8;font-weight:normal;">(Lab Manager)</span></td>';
 $html .= '</tr>';
 
 

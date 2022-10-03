@@ -94,7 +94,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS ud.user_id,
                             FROM user_details as ud 
                             LEFT JOIN roles as r ON ud.role_id=r.role_id ";
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ',$sWhere);
 }
 else

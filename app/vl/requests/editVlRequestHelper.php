@@ -188,18 +188,24 @@ try {
           $_POST['vlLog'] = '';
      }
 
-     if (isset($_POST['bdl']) && $_POST['bdl'] == 'yes' && $isRejected === false) {
+     if (isset($_POST['vlResult']) && $_POST['vlResult'] == 'Below Detection Level' && $isRejected === false) {
           $_POST['vlResult'] = 'Below Detection Level';
-          $_POST['vlLog'] = '';
-     }
-
-     if (
-          (isset($_POST['failed']) && $_POST['failed'] == 'yes')
-          || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
-     ) {
+          $_POST['vlLog'] = null;
+     } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Failed') || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
           $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
-          $_POST['vlLog'] = '';
-          $resultStatus = 5; //Invalid/Failed
+          $_POST['vlLog'] = null;
+          $_POST['hivDetection'] = null;
+          $resultStatus = 5; // Invalid/Failed
+     } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Error') || in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
+          $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Error';
+          $_POST['vlLog'] = null;
+          $_POST['hivDetection'] = null;
+          $resultStatus = 5; // Invalid/Failed
+     } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'No Result') || in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
+          $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'No Result';
+          $_POST['vlLog'] = null;
+          $_POST['hivDetection'] = null;
+          $resultStatus = 11; // No Result
      } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
 
           $resultStatus = 8; // Awaiting Approval
@@ -258,8 +264,8 @@ try {
           $_POST['reviewedOn'] = null;
      }
 
-     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection']. ' ' . $finalResult :  $finalResult;
-     
+     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
+
      $vldata = array(
           'vlsm_instance_id'                      => $instanceId,
           'sample_reordered'                      => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',
@@ -268,6 +274,7 @@ try {
           'sample_collection_date'                => $_POST['sampleCollectionDate'],
           'sample_dispatched_datetime'            => $_POST['sampleDispatchedDate'],
           'patient_first_name'                    => (isset($_POST['patientFirstName']) && $_POST['patientFirstName'] != '') ? $_POST['patientFirstName'] :  null,
+          'patient_last_name'                    => (isset($_POST['patientLastName']) && $_POST['patientLastName'] != '') ? $_POST['patientLastName'] :  null,
           'patient_gender'                        => (isset($_POST['gender']) && $_POST['gender'] != '') ? $_POST['gender'] :  null,
           'patient_dob'                           => $_POST['dob'],
           'patient_age_in_years'                  => (isset($_POST['ageInYears']) && $_POST['ageInYears'] != '') ? $_POST['ageInYears'] :  null,

@@ -29,7 +29,7 @@ class Covid19
         $vlsmSystemConfig = $general->getSystemConfig();
 
         $dateUtils = new \Vlsm\Utilities\DateUtils();
-        if($dateUtils->verifyIfDateValid($sampleCollectionDate) === false){
+        if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new \DateTimeImmutable($sampleCollectionDate);
@@ -102,12 +102,10 @@ class Covid19
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
             $remotePrefix = $remotePrefix . "R";
-            //$sampleCodeFormat = 'auto2';
         }
 
 
         if ($sampleCodeFormat == 'auto') {
-            //$pNameVal = explode("##", $provinceCode);
             $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
@@ -168,11 +166,16 @@ class Covid19
 
     public function checkAllCovid19TestsForPositive($covid19SampleId)
     {
-        if (empty($covid19SampleId)) return false;
+        if (empty($covid19SampleId)) {
+            return false;
+        }
+        
         $response = $this->db->rawQuery("SELECT * FROM covid19_tests WHERE `covid19_id` = $covid19SampleId ORDER BY test_id ASC");
 
         foreach ($response as $row) {
-            if ($row['result'] == 'positive') return true;
+            if ($row['result'] == 'positive') {
+                return true;
+            }
         }
 
         return false;
@@ -399,11 +402,9 @@ class Covid19
             }
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
-            if ($globalConfig['vl_form'] == 5) {
-                if (empty($provinceId)) {
-                    echo 0;
-                    exit();
-                }
+            if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
+                echo 0;
+                exit();
             }
 
 

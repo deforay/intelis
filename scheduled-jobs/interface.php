@@ -20,18 +20,39 @@ if (empty($labId)) {
     exit(0);
 }
 
-$db->addConnection('interface', array(
-    'host' => SYSTEM_CONFIG['interfacing']['dbHost'],
-    'username' => SYSTEM_CONFIG['interfacing']['dbUser'],
-    'password' => SYSTEM_CONFIG['interfacing']['dbPassword'],
-    'db' =>  SYSTEM_CONFIG['interfacing']['dbName'],
-    'port' => (!empty(SYSTEM_CONFIG['interfacing']['dbPort']) ? SYSTEM_CONFIG['interfacing']['dbPort'] : 3306),
-    'charset' => (!empty(SYSTEM_CONFIG['interfacing']['dbCharset']) ? SYSTEM_CONFIG['interfacing']['dbCharset'] : 'utf8mb4')
-));
+$mysqlConnected = false;
+$sqliteConnected = false;
+
+if (!empty(SYSTEM_CONFIG['interfacing']['dbHost']) && !empty(SYSTEM_CONFIG['interfacing']['dbUser'])) {
+
+    $mysqlConnected = true;
+    $db->addConnection('interface', array(
+        'host' => SYSTEM_CONFIG['interfacing']['dbHost'],
+        'username' => SYSTEM_CONFIG['interfacing']['dbUser'],
+        'password' => SYSTEM_CONFIG['interfacing']['dbPassword'],
+        'db' =>  SYSTEM_CONFIG['interfacing']['dbName'],
+        'port' => (!empty(SYSTEM_CONFIG['interfacing']['dbPort']) ? SYSTEM_CONFIG['interfacing']['dbPort'] : 3306),
+        'charset' => (!empty(SYSTEM_CONFIG['interfacing']['dbCharset']) ? SYSTEM_CONFIG['interfacing']['dbCharset'] : 'utf8mb4')
+    ));
+}
+
+if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
+    $sqliteConnected = true;
+    //$sqliteDb = new SQLite3(SYSTEM_CONFIG['interfacing']['sqlite3Path']);
+    $sqliteDb = new \PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
+
+}
 
 //get the value from interfacing DB
 $interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1 AND `lims_sync_status`= 0";
-$interfaceInfo = $db->connection('interface')->rawQuery($interfaceQuery);
+if ($mysqlConnected) {
+    $interfaceInfo = $db->connection('interface')->rawQuery($interfaceQuery);
+} else if ($sqliteConnected) {
+    $interfaceInfo = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    exit(0);
+}
+
 
 $numberOfResults = 0;
 if (count($interfaceInfo) > 0) {
@@ -218,7 +239,7 @@ if (count($interfaceInfo) > 0) {
             }
         } else if (isset($tableInfo['covid19_id'])) {
 
-                // TBD
+            // TBD
 
         } else if (isset($tableInfo['hepatitis_id'])) {
 
