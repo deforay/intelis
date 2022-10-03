@@ -80,7 +80,7 @@ $sFormat = '';
 								</div>
 								<!-- <h4>exemple de code</h4> -->
 								<!--<h4 style="display:none;" id="sampleCodeValue"></h4>-->
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
@@ -186,7 +186,7 @@ $sFormat = '';
 									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td style="width:10% !important;"><label for="">Date de naissance </label></td>
 										<td style="width:15% !important;">
@@ -376,7 +376,7 @@ $sFormat = '';
 								<div class="box-header with-border">
 									<h3 class="box-title">Informations sur le prélèvement <small>(A remplir par le préleveur)</small> </h3>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td><label for="">Date du prélèvement <span class="mandatory">*</span></label></td>
 										<td>
@@ -430,7 +430,7 @@ $sFormat = '';
 									<div class="box-header with-border">
 										<h3 class="box-title">2. Réservé au Laboratoire de biologie moléculaire </h3>
 									</div>
-									<table class="table" aria-hidden="true"  style="width:100%">
+									<table class="table" aria-hidden="true" style="width:100%">
 										<tr>
 											<td style="width: 25%;"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
 											<td style="width: 25%;">
@@ -483,7 +483,7 @@ $sFormat = '';
 										<tr class="rejectionReason" style="display:none;">
 											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
-											<td class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></td>
+											<th class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></th>
 											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
 										<tr>
@@ -492,15 +492,13 @@ $sFormat = '';
 										<tr class="resultSection">
 											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat </label></td>
 											<td>
-												<input type="text" class="vlResult form-control forceNumeric other-failed-results" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />
-												<input type="checkbox" class="specialResults other-failed-results" id="vlLt20" name="vlLt20" value="yes" title="Please check VL Result">
-												< 20<br>
-													<input type="checkbox" class="specialResults other-failed-results" id="vlLt40" name="vlLt40" value="yes" title="Please check VL Result">
-													< 40<br>
-														<input type="checkbox" class="specialResults other-failed-results" id="vlLt400" name="vlLt400" value="yes" title="Please check VL Result">
-														< 400<br>
-															<input type="checkbox" class="specialResults other-failed-results" id="vlTND" name="vlTND" value="yes" title="Please check VL Result"> Target Not Detected / Non Détecté<br>
-															<input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed"> Failed<br>
+												<input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)">
+												<datalist id="possibleVlResults">
+													<option value="< 20">
+													<option value="< 40">
+													<option value="< 400">
+													<option value="Target Not Detected">
+												</datalist>
 											</td>
 											<td style="text-align:center;"><label for="vlLog">Log </label></td>
 											<td>
@@ -530,11 +528,11 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-											<td>Approuvé le</td>
+											<th>Approuvé le</th>
 											<td>
 												<input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
-											<td>Approuvé par</td>
+											<th>Approuvé par</th>
 											<td>
 												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
@@ -733,7 +731,6 @@ $sFormat = '';
 			$("#rejectionReason").addClass('isRequired');
 			$("#vlResult").val('').css('pointer-events', 'none');
 			$("#vlLog").val('').css('pointer-events', 'none');
-			$('.specialResults').prop('checked', false).removeAttr('checked');
 		} else {
 			$(".resultSection").show();
 			$("#rejectionReason").val('');
@@ -745,18 +742,13 @@ $sFormat = '';
 		}
 	}
 
-	$('#failed').change(function() {
-		if ($('#failed').prop('checked')) {
+	$('#vlResult').change(function() {
+		if ($(this).val() == 'Failed' || $(this).val() == 'Error') {
 			$('.reasonForFailure').show();
 			$('#reasonForFailure').addClass('isRequired');
-			$('.other-failed-results').removeClass('isRequired');
-			$('.other-failed-results').prop('checked', false);
-			$('.other-failed-results').val('');
-			$('.other-failed-results').prop('disabled', true);
 		} else {
 			$('.reasonForFailure').hide();
 			$('#reasonForFailure').removeClass('isRequired');
-			$('.other-failed-results').prop('disabled', false);
 		}
 	});
 
@@ -858,27 +850,6 @@ $sFormat = '';
 
 
 	$(document).ready(function() {
-
-		$('#vlResult, #vlLog').on('input', function(e) {
-			if (this.value != '') {
-				$('.specialResults').attr('disabled', true);
-			} else {
-				$('.specialResults').attr('disabled', false);
-			}
-		});
-
-		$('.specialResults').change(function() {
-			if ($(this).is(':checked')) {
-				$('#vlResult, #vlLog').val('');
-				$('#vlResult,#vlLog').attr('readonly', true);
-				$(".specialResults").not(this).attr('disabled', true);
-				//$('.specialResults').not(this).prop('checked', false).removeAttr('checked');
-			} else {
-				$('#vlResult,#vlLog').attr('readonly', false);
-				$(".specialResults").not(this).attr('disabled', false);
-			}
-		});
-
 
 		$('#clinicName').select2({
 			placeholder: "Select Clinic/Health Center"

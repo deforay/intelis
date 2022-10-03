@@ -90,7 +90,7 @@ $disable = "disabled = 'disabled'";
 									<h3 class="box-title">Information sur la structure de soins</h3>
 								</div>
 								<!-- <h4 id="sampleCodeValue">exemple de code:< ?php echo $vlQueryInfo['sample_code']; ?></h4>-->
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td><label for="sampleCode">Échantillon id </label></td>
 										<td>
@@ -186,7 +186,7 @@ $disable = "disabled = 'disabled'";
 								<div class="box-header with-border">
 									<h3 class="box-title">Information sur le patient </h3>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td style="width:10%;"><label for="">Date de naissance </label></td>
 										<td style="width:15%;">
@@ -383,7 +383,7 @@ $disable = "disabled = 'disabled'";
 								<div class="box-header with-border">
 									<h3 class="box-title">Informations sur le prélèvement </h3>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td><label for="">Date du prélèvement </label></td>
 										<td>
@@ -442,7 +442,7 @@ $disable = "disabled = 'disabled'";
 								<div class="box-header with-border">
 									<h3 class="box-title">2. Réservé au Laboratoire de biologie moléculaire </h3>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table class="table" aria-hidden="true" style="width:100%">
 									<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 										<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
 										<td>
@@ -492,22 +492,20 @@ $disable = "disabled = 'disabled'";
 											</select>
 											<input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" />
 										</td>
-										<td class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></td>
+										<th class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></th>
 										<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 									</tr>
 									<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
 										<td class="vlResult"><label for="vlResult">Résultat</label></td>
 										<td class="vlResult">
-
-											<input type="text" class="vlResult form-control forceNumeric other-failed-results" id="vlResult" name="vlResult" placeholder="Résultat (copies/ml)" title="Please enter résultat" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)" style="width:100%;" />
-											<input type="checkbox" class="specialResults other-failed-results" id="vlLt20" name="vlLt20" value="yes" title="Please check VL Result" <?php echo ($vlQueryInfo['result'] == '< 20' || $vlQueryInfo['result'] == '<20') ? 'checked="checked"' : ''; ?>>
-											&lt; 20<br>
-											<input type="checkbox" class="specialResults other-failed-results" id="vlLt40" name="vlLt40" value="yes" title="Please check VL Result" <?php echo ($vlQueryInfo['result'] == '< 40' || $vlQueryInfo['result'] == '<40') ? 'checked="checked"' : ''; ?>>
-											&lt; 40<br>
-											<input type="checkbox" class="specialResults other-failed-results" id="vlLt400" name="vlLt400" value="yes" title="Please check VL Result" <?php echo ($vlQueryInfo['result'] == '< 400' || $vlQueryInfo['result'] == '<400') ? 'checked="checked"' : ''; ?>>
-											&lt; 400<br>
-											<input type="checkbox" class="specialResults other-failed-results" id="vlTND" name="vlTND" value="yes" title="Please check VL Result" <?php echo in_array(strtolower($vlQueryInfo['result']), array('target not detected', 'non détecté', 'non détecté', 'non detecte', 'non detectee', 'tnd', 'bdl', 'below detection level')) ? 'checked="checked"' : ''; ?>> Target Not Detected / Non Détecté<br>
-											<input type="checkbox" class="labSection specialResults" id="failed" name="failed" value="yes" title="Please check failed" <?php echo ($vlQueryInfo['result'] == 'Failed') ? 'checked="checked"' : ''; ?>> Failed<br>
+											<input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
+											<datalist id="possibleVlResults" title="Please enter viral load result">
+												<option value="< 20" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>>
+												<option value="< 40" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 40') ? "selected='selected'" : ""; ?>>
+												<option value="< 400" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 400') ? "selected='selected'" : ""; ?>>
+												<option value="Target Not Detected" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Target Not Detected') ? "selected='selected'" : ""; ?>>
+												<option value="Failed" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Failed') ? "selected='selected'" : ""; ?>>
+											</datalist>
 										</td>
 										<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label></td>
 										<td class="vlLog">
@@ -516,7 +514,7 @@ $disable = "disabled = 'disabled'";
 									</tr>
 									<?php if (count($reasonForFailure) > 0) { ?>
 										<tr class="reasonForFailure vlResult" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
-											<td class="reasonForFailure"><?php echo _("Reason for Failure"); ?></td>
+											<th class="reasonForFailure"><?php echo _("Reason for Failure"); ?></th>
 											<td class="reasonForFailure">
 												<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
 													<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
@@ -537,11 +535,11 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr>
-										<td>Approuvé le</td>
+										<th>Approuvé le</th>
 										<td>
 											<input type="text" name="approvedOn" id="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 										</td>
-										<td>Approuvé par</td>
+										<th>Approuvé par</th>
 										<td>
 											<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
@@ -584,46 +582,6 @@ $disable = "disabled = 'disabled'";
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
-
-
-		$('#vlResult, #vlLog').on('input', function(e) {
-			if (this.value != '') {
-				$('.specialResults').attr('disabled', true);
-			} else {
-				$('.specialResults').attr('disabled', false);
-			}
-		});
-
-		$('.specialResults').change(function() {
-			if ($(this).is(':checked')) {
-				$('#vlResult, #vlLog').val('');
-				$('#vlResult,#vlLog').attr('readonly', true);
-				$('#vlResult, #vlLog').removeClass('isRequired');
-				$(".specialResults").not(this).attr('disabled', true);
-				$('.specialResults').not(this).prop('checked', false).removeAttr('checked');
-			} else {
-				$('#vlResult,#vlLog').attr('readonly', false);
-				$('#vlResult').addClass('isRequired');
-				$(".specialResults").not(this).attr('disabled', false);
-			}
-		});
-
-
-
-		if ($(".specialResults:checked").length > 0) {
-			$('#vlResult, #vlLog').val('');
-			$('#vlResult,#vlLog').attr('readonly', true);
-			$('#vlResult, #vlLog').removeClass('isRequired');
-			//$(".specialResults").not(this).attr('disabled',true);
-			//$('.specialResults').not(this).prop('checked', false).removeAttr('checked');
-		}
-		if ($('#vlResult, #vlLog').val() != '') {
-			$(".specialResults").attr('disabled', true);
-			$('#vlResult').addClass('isRequired');
-		}
-
-
-
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -666,7 +624,6 @@ $disable = "disabled = 'disabled'";
 	function checkTestStatus() {
 		var status = $("#isSampleRejected").val();
 		if (status == 'yes') {
-			$('.specialResults').prop('checked', false).removeAttr('checked');
 			$('#vlResult').attr('disabled', false);
 			$('#vlLog').attr('disabled', false);
 			$(".rejectionReason").show();
@@ -689,18 +646,13 @@ $disable = "disabled = 'disabled'";
 		}
 	}
 
-	$('#failed').change(function() {
-		if ($('#failed').prop('checked')) {
+	$('#vlResult').change(function() {
+		if ($(this).val() == 'Failed' || $(this).val() == 'Error') {
 			$('.reasonForFailure').show();
 			$('#reasonForFailure').addClass('isRequired');
-			$('.other-failed-results').removeClass('isRequired');
-			$('.other-failed-results').prop('checked', false);
-			$('.other-failed-results').val('');
-			$('.other-failed-results').prop('disabled', true);
 		} else {
 			$('.reasonForFailure').hide();
 			$('#reasonForFailure').removeClass('isRequired');
-			$('.other-failed-results').prop('disabled', false);
 		}
 	});
 
