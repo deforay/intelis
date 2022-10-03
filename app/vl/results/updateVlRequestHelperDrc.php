@@ -84,34 +84,28 @@ try {
         }
     }
 
-    if (isset($_POST['vlTND']) && $_POST['vlTND'] == 'yes' && $isRejected === false) {
-        $finalResult = $_POST['vlResult'] = 'Target not Detected';
-        $_POST['vlLog'] = '';
-    } else if (isset($_POST['vlLt20']) && $_POST['vlLt20'] == 'yes' && $isRejected === false) {
-        $finalResult = $_POST['vlResult'] = '< 20';
-        $_POST['vlLog'] = '';
-    } else if (isset($_POST['vlLt40']) && $_POST['vlLt40'] == 'yes' && $isRejected === false) {
-        $finalResult = $_POST['vlResult'] = '< 40';
-        $_POST['vlLog'] = '';
-    } else if (isset($_POST['vlLt400']) && $_POST['vlLt400'] == 'yes' && $isRejected === false) {
-        $finalResult = $_POST['vlResult'] = '< 400';
-        $_POST['vlLog'] = '';
-    }
-
-    if (
-        (isset($_POST['failed']) && $_POST['failed'] == 'yes')
-        || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
-    ) {
+    if (isset($_POST['vlResult']) && $_POST['vlResult'] == 'Below Detection Level' && $isRejected === false) {
+        $_POST['vlResult'] = 'Below Detection Level';
+        $_POST['vlLog'] = null;
+    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Failed') || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
-        $_POST['vlLog'] = '';
+        $_POST['vlLog'] = null;
+        $_POST['hivDetection'] = null;
         $resultStatus = 5; // Invalid/Failed
-    } else if (isset($_POST['invalid']) && $_POST['invalid'] == 'yes' && $isRejected === false) {
-        $finalResult = $_POST['vlResult'] = 'Invalid';
-        $_POST['vlLog'] = '';
+    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Error') || in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
+        $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Error';
+        $_POST['vlLog'] = null;
+        $_POST['hivDetection'] = null;
         $resultStatus = 5; // Invalid/Failed
+    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'No Result') || in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
+        $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'No Result';
+        $_POST['vlLog'] = null;
+        $_POST['hivDetection'] = null;
+        $resultStatus = 11; // No Result
     } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
 
         $resultStatus = 8; // Awaiting Approval
+
         $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
 
         //Result is saved as entered

@@ -786,7 +786,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<?php if (count($reasonForFailure) > 0) { ?>
-												<div class="col-md-4 labSection reasonForFailure result-fields" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
+												<div class="col-md-4 labSection reasonForFailure result-fields" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
 													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
 														<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
@@ -1393,9 +1393,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 
 	function validateNow() {
-		if ($('#failed').prop('checked')) {
-			$('#vlResult').removeClass('isRequired');
-		}
 		flag = deforayValidator.init({
 			formId: 'vlRequestFormRwd'
 		});
