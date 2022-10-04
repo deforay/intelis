@@ -497,14 +497,13 @@ $disable = "disabled = 'disabled'";
 									</tr>
 									<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
 										<td class="vlResult"><label for="vlResult">Résultat</label></td>
-										<td class="vlResult">
-											<input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
-											<datalist id="possibleVlResults" title="Please enter viral load result">
-												<option value="< 20" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>>
-												<option value="< 40" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 40') ? "selected='selected'" : ""; ?>>
-												<option value="< 400" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 400') ? "selected='selected'" : ""; ?>>
-												<option value="Target Not Detected" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Target Not Detected') ? "selected='selected'" : ""; ?>>
-												<option value="Failed" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Failed') ? "selected='selected'" : ""; ?>>
+										<td class="vlResult resultInputContainer">
+											<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
+											<datalist id="possibleVlResults">
+												<option value="< 20" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>> &lt; 20 </option>
+												<option value="< 40" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 40') ? "selected='selected'" : ""; ?>> &lt; 40 </option>
+												<option value="< 400" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 400') ? "selected='selected'" : ""; ?>> &lt; 400 </option>
+												<option value="Target Not Detected" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Target Not Detected') ? "selected='selected'" : ""; ?>> Target Not Detected </option>
 											</datalist>
 										</td>
 										<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label></td>
@@ -580,6 +579,7 @@ $disable = "disabled = 'disabled'";
 	</section>
 	<!-- /.content -->
 </div>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('.date').datepicker({
@@ -646,13 +646,17 @@ $disable = "disabled = 'disabled'";
 		}
 	}
 
-	$('#vlResult').change(function() {
-		if ($(this).val() == 'Failed' || $(this).val() == 'Error') {
-			$('.reasonForFailure').show();
-			$('#reasonForFailure').addClass('isRequired');
+	$('#vlResult').on('change', function() {
+		if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error') {
+			if ($(this).val().trim().toLowerCase() == 'failed') {
+				$('.reasonForFailure').show();
+				$('#reasonForFailure').addClass('isRequired');
+			}
+			$('#vlLog').attr('readonly', true);
 		} else {
 			$('.reasonForFailure').hide();
 			$('#reasonForFailure').removeClass('isRequired');
+			$('#vlLog').attr('readonly', false);
 		}
 	});
 

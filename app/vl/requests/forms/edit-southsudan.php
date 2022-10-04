@@ -654,7 +654,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<div class="box-header with-border">
 											<h3 class="box-title">Laboratory Information</h3>
 										</div>
-										<div class="box-body">
+										<div class="box-body labSectionBody">
 											<div class="row">
 												<!-- <div class="col-md-4">
 													<label for="labId" class="col-lg-5 control-label">Lab Name </label>
@@ -769,13 +769,13 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<?php } ?>
 											<div class="col-md-4 vlResult" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 												<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'block' : 'none'; ?>;">*</span></label>
-												<div class="col-lg-7">
-													<input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
+												<div class="col-lg-7 resultInputContainer">
+													<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
 													<datalist id="possibleVlResults" title="Please enter viral load result">
-														<option value="No Result" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'No Result') ? "selected='selected'" : ""; ?>>
-														<option value="Failed" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Failed') ? "selected='selected'" : ""; ?>>
-														<option value="Error" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Error') ? "selected='selected'" : ""; ?>>
-														<option value="Below Detection Level" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Below Detection Level') ? "selected='selected'" : ""; ?>>
+														<option value="No Result" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'No Result') ? "selected='selected'" : ""; ?>> No Result </option>
+														<option value="Failed" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Failed') ? "selected='selected'" : ""; ?>> Failed </option>
+														<option value="Error" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Error') ? "selected='selected'" : ""; ?>> Error </option>
+														<option value="Below Detection Level" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Below Detection Level') ? "selected='selected'" : ""; ?>> Below Detection Level </option>
 													</datalist>
 												</div>
 											</div>
@@ -888,7 +888,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			</div>
 	</section>
 </div>
-<script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
+<script type="text/javascript">
 	let provinceName = true;
 	let facilityName = true;
 
@@ -922,19 +923,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		});
 
 
-
-
-
-		// $(document).on('select2:open', (e) => {
-		// 	const selectId = e.target.id
-
-		// 	$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
-		// 		key,
-		// 		value,
-		// 	) {
-		// 		value.focus();
-		// 	})
-		// });
 
 		$("#sampleCollectionDate").datetimepicker({
 			changeMonth: true,
@@ -999,7 +987,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		$("#labId,#fName,#sampleCollectionDate").trigger('change');
 
 		setTimeout(function() {
-			__clone = $(".labSection").clone();
+			__clone = $(".labSectionBody").clone();
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 			resultValue = $("#vlResult").val();
 
@@ -1133,13 +1121,17 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$.unblockUI();
 		});
 
-		$('#vlResult').change(function() {
-			if ($(this).val() == 'Failed' || $(this).val() == 'Error') {
-				$('.reasonForFailure').show();
-				$('#reasonForFailure').addClass('isRequired');
+		$('#vlResult').on('change', function() {
+			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error') {
+				if ($(this).val().trim().toLowerCase() == 'failed') {
+					$('.reasonForFailure').show();
+					$('#reasonForFailure').addClass('isRequired');
+				}
+				$('#vlLog, .hivDetection').attr('readonly', true);
 			} else {
 				$('.reasonForFailure').hide();
 				$('#reasonForFailure').removeClass('isRequired');
+				$('#vlLog, .hivDetection').attr('readonly', false);
 			}
 		});
 	});

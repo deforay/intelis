@@ -636,13 +636,13 @@ $sFormat = '';
                                                             <div class="row">
                                                                  <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: none;">*</span> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
+                                                                      <div class="col-lg-7 resultInputContainer">
+                                                                           <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
                                                                            <datalist id="possibleVlResults">
-                                                                                <option value="No Result">
-                                                                                <option value="Failed">
-                                                                                <option value="Error">
-                                                                                <option value="Below Detection Level">
+                                                                                <option value="No Result"> No Result </option>
+                                                                                <option value="Failed"> Failed </option>
+                                                                                <option value="Error"> Error </option>
+                                                                                <option value="Below Detection Level"> Below Detection Level </option>
                                                                            </datalist>
                                                                       </div>
                                                                  </div>
@@ -776,6 +776,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 }
 ?>
 <!-- BARCODESTUFF END -->
+
+<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>
      let provinceName = true;
@@ -1192,13 +1194,17 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-     $('#vlResult').change(function() {
-          if ($(this).val() == 'Failed' || $(this).val() == 'Error') {
-               $('.reasonForFailure').show();
-               $('#reasonForFailure').addClass('isRequired');
+     $('#vlResult').on('change', function() {
+          if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error') {
+               if ($(this).val().trim().toLowerCase() == 'failed') {
+                    $('.reasonForFailure').show();
+                    $('#reasonForFailure').addClass('isRequired');
+               }
+               $('#vlLog, .hivDetection').attr('readonly', true);
           } else {
                $('.reasonForFailure').hide();
                $('#reasonForFailure').removeClass('isRequired');
+               $('#vlLog, .hivDetection').attr('readonly', false);
           }
      });
 

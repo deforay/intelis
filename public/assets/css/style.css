@@ -84,3 +84,33 @@ form table tr td>label,
 .control-label {
     font-weight: bold !important;
 }
+
+
+.resultInputContainer{
+    position: relative;
+}
+
+.resultInputContainer datalist {
+    position: absolute;
+    max-height: 20em;
+    border: 0 none;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 9999;
+}
+
+.resultInputContainer datalist option {
+    font-size: 1em;
+    padding: 0.3em 1em;
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+/* option active styles */
+.resultInputContainer datalist option:hover,
+.resultInputContainer datalist option:focus {
+    color: #fff;
+    background-color: #3C8DBC;
+    outline: 0 none;
+}

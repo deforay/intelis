@@ -57,7 +57,7 @@ class Vl
         $vlsmSystemConfig = $general->getSystemConfig();
 
         $dateUtils = new \Vlsm\Utilities\DateUtils();
-        if($dateUtils->verifyIfDateValid($sampleCollectionDate) === false){
+        if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new \DateTimeImmutable($sampleCollectionDate);
@@ -291,28 +291,28 @@ class Vl
             $logVal = 2.92;
             $txtVal = null;
         } else if (strpos($result, "<") !== false) {
-            if (!empty($unit)) {
-                if (strpos($unit, 'Log') !== false) {
-                    $logVal = (float) trim(str_replace("<", "", $result));
-                    $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                } else {
-                    $absDecimalVal = (float) trim(str_replace("<", "", $result));
-                    $logVal = round(log10($absDecimalVal), 2);
-                }
+            $result = (float) trim(str_replace("<", "", $result));
+            if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                $logVal = $result;
+                $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                $originalResultValue = "< " . $absDecimalVal;
+            } else {
+                $absVal = $absDecimalVal = $result;
+                $logVal = round(log10($absDecimalVal), 2);
+            }
+            $txtVal = null;
+        } else if (strpos($result, ">") !== false) {
+            $result = (float) trim(str_replace(">", "", $result));
+            if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                $logVal = $result;
+                $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                $originalResultValue = ">" . $absDecimalVal;
+            } else {
+                $absVal = $absDecimalVal = $result;
+                $logVal = round(log10($absDecimalVal), 2);
             }
 
-            $txtVal = $vlResult = $absVal = "< " . trim($absDecimalVal);
-        } else if (strpos($result, ">") !== false) {
-            if (!empty($unit)) {
-                if (strpos($unit, 'Log') !== false) {
-                    $logVal = (float) trim(str_replace(">", "", $result));
-                    $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                } else {
-                    $absDecimalVal = (float) trim(str_replace(">", "", $result));
-                    $logVal = round(log10($absDecimalVal), 2);
-                }
-            }
-            $txtVal = $vlResult = $absVal = "> " . trim($absDecimalVal);
+            $txtVal = null;
         } else {
             $vlResult = $txtVal = $result;
         }
@@ -337,15 +337,15 @@ class Vl
 
         $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
         $originalResultValue = $result;
-        if (strpos($unit, '10') !== false) {
+        if (strpos($unit, 'Log') !== false && is_numeric($result)) {
+            $logVal = $result;
+            $originalResultValue = $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+        } else if (strpos($unit, '10') !== false) {
             $unitArray = explode(".", $unit);
             $exponentArray = explode("*", $unitArray[0]);
             $multiplier = pow($exponentArray[0], $exponentArray[1]);
             $vlResult = $result * $multiplier;
             $unit = $unitArray[1];
-        } else if (strpos($unit, 'Log') !== false && is_numeric($result)) {
-            $logVal = $result;
-            $originalResultValue = $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
         } else if (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
             if (strpos($result, '< 2.00E+1') !== false) {
                 $vlResult = "< 20";
@@ -411,8 +411,8 @@ class Vl
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-                    echo 0;
-                    exit();
+                echo 0;
+                exit();
             }
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
