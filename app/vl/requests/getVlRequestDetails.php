@@ -191,7 +191,25 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
      }
 }
-
+/* Viral load filter */
+if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
+     if ($_POST['vLoad'] === 'suppressed') {
+          $sWhere[] =   " vl.vl_result_category like 'suppressed' AND vl.vl_result_category is NOT NULL ";
+     } else {
+          $sWhere[] =   "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
+     }
+}
+$sPrintDate = '';
+$ePrintDate = '';
+if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
+     $s_p_date = explode("to", $_POST['printDate']);
+     if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
+          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
+     }
+     if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
+          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
+     }
+}
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
@@ -207,6 +225,9 @@ if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
      } else {
           $sWhere[] = ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
      }
+}
+if (isset($_POST['communitySample']) && trim($_POST['communitySample']) != '') {
+     $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
 }
 if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
      $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
@@ -261,6 +282,32 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
+}
+if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDatetime']) != '') {
+     $sRequestCreatedDatetime = '';
+     $eRequestCreatedDatetime = '';
+
+     $date = explode("to", $_POST['requestCreatedDatetime']);
+     if (isset($date[0]) && trim($date[0]) != "") {
+          $sRequestCreatedDatetime = $general->isoDateFormat(trim($date[0]));
+     }
+     if (isset($date[1]) && trim($date[1]) != "") {
+          $eRequestCreatedDatetime = $general->isoDateFormat(trim($date[1]));
+     }
+
+     if (trim($sRequestCreatedDatetime) == trim($eRequestCreatedDatetime)) {
+          $sWhere[] =  '  DATE(vl.request_created_datetime) like "' . $sRequestCreatedDatetime . '"';
+     } else {
+          $sWhere[] =  '  DATE(vl.request_created_datetime) >= "' . $sRequestCreatedDatetime . '" AND DATE(vl.request_created_datetime) <= "' . $eRequestCreatedDatetime . '"';
+     }
+}
+
+if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
+     if (trim($sPrintDate) == trim($eTestDate)) {
+          $sWhere[] =  '  DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+     } else {
+          $sWhere[] =  '  DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
+     }
 }
 
 if ($_SESSION['instanceType'] == 'remoteuser') {

@@ -126,6 +126,27 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
+							<td><strong><?php echo _("Viral Load"); ?> &nbsp;:</strong></td>
+							<td>
+								<select class="form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<option value="suppressed">
+										<= <?php echo $arr['viral_load_threshold_limit']; ?> <?php echo _("cp/ml"); ?> </option>
+									<option value="not suppressed">
+										> <?php echo $arr['viral_load_threshold_limit']; ?> <?php echo _("cp/ml"); ?>
+									</option>
+								</select>
+							</td>
+							<td><strong><?php echo _("Last Print Date"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="printDate" name="printDate" class="form-control daterangefield" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
+							</td>
+							<td><strong><?php echo _("Request Creation Date"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="requestCreatedDatetime" name="requestCreatedDatetime" class="form-control daterangefield" placeholder="<?php echo _('Select Request Created Datetime'); ?>" readonly style="width:220px;background:#fff;" />
+							</td>
+						</tr>
+						<tr>
 						<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
@@ -218,16 +239,26 @@ foreach ($srcResults as $list) {
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
+							</td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
-						</tr>
-						<tr>
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
 								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
+
 						</tr>
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
@@ -432,7 +463,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			placeholder: "<?php echo _("Select Batch Code'"); ?>"
 		});
 		loadVlRequestData();
-		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
+		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
@@ -460,7 +491,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
+		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
 
 		$(".showhideCheckBox").change(function() {
 			if ($(this).attr('checked')) {
@@ -578,6 +609,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					"value": $("#sampleCollectionDate").val()
 				});
 				aoData.push({
+					"name": "requestCreatedDatetime",
+					"value": $("#requestCreatedDatetime").val()
+				});
+				aoData.push({
 					"name": "facilityName",
 					"value": $("#facilityName").val()
 				});
@@ -588,6 +623,19 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "district",
 					"value": $("#district").val()
+				});
+				aoData.push({
+					"name": "printDate",
+					"value": $("#printDate").val()
+				});
+				aoData.push({
+					"name": "vLoad",
+					"value": $("#vLoad").val()
+				});
+
+				aoData.push({
+					"name": "communitySample",
+					"value": $("#communitySample").val()
 				});
 				aoData.push({
 					"name": "vlLab",
