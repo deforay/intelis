@@ -180,8 +180,8 @@ foreach ($srcResults as $list) {
 							<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
-									<option value=""><?php echo _("All Status"); ?></option>
-									<option value="7" selected=selected><?php echo _("Accepted"); ?></option>
+									<option value="" selected=selected><?php echo _("All Status"); ?></option>
+									<option value="7"><?php echo _("Accepted"); ?></option>
 									<option value="4"><?php echo _("Rejected"); ?></option>
 									<option value="8"><?php echo _("Awaiting Approval"); ?></option>
 									<option value="6"><?php echo _("Registered At Testing Lab"); ?></option>
