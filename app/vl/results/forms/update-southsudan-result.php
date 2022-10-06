@@ -894,11 +894,17 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
+		
 		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('99-aaa-9999 99:99');
 
-		$("#hivDetection, #noResult").trigger('change');
+		//$("#hivDetection, #noResult").trigger('change');
 
 		setTimeout(function() {
+			$("#vlResult").trigger('change');
+			$("#hivDetection, #noResult").trigger('change');
+			// just triggering sample collection date is enough,
+			// it will automatically do everything that labId and fName changes will do
+			$("#sampleCollectionDate").trigger('change');			
 			__clone = $(".labSection").clone();
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 			resultValue = $("#vlResult").val();

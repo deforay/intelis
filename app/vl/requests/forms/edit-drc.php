@@ -58,6 +58,7 @@ $sampleSuggestionDisplay = 'display:none;';
 
 
 ?>
+
 <style>
 	.translate-content {
 		color: #0000FF;

@@ -983,10 +983,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 		getfacilityProvinceDetails($("#fName").val());
 
-		$("#hivDetection, #noResult").trigger('change');
-		$("#labId,#fName,#sampleCollectionDate").trigger('change');
+
+
 
 		setTimeout(function() {
+			$("#vlResult").trigger('change');
+			$("#hivDetection, #noResult").trigger('change');
+			// just triggering sample collection date is enough,
+			// it will automatically do everything that labId and fName changes will do
+			$("#sampleCollectionDate").trigger('change');
 			__clone = $(".labSectionBody").clone();
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 			resultValue = $("#vlResult").val();
