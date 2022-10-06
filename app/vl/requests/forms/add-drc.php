@@ -41,6 +41,7 @@ $aResult = $db->query($aQuery);
 $sKey = '';
 $sFormat = '';
 ?>
+
 <style>
 	.translate-content {
 		color: #0000FF;
@@ -491,13 +492,13 @@ $sFormat = '';
 										</tr>
 										<tr class="resultSection">
 											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat </label></td>
-											<td>
-												<input list="possibleVlResults" class="form-control result-fields" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)">
+											<td class="resultInputContainer">
+												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this);">
 												<datalist id="possibleVlResults">
-													<option value="< 20">
-													<option value="< 40">
-													<option value="< 400">
-													<option value="Target Not Detected">
+													<option value="< 20"> &lt; 20 </option>
+													<option value="< 40"> &lt; 40 </option>
+													<option value="< 400"> &lt; 400 </option>
+													<option value="Target Not Detected"> Target Not Detected </option>
 												</datalist>
 											</td>
 											<td style="text-align:center;"><label for="vlLog">Log </label></td>
@@ -569,6 +570,7 @@ $sFormat = '';
 	</section>
 	<!-- /.content -->
 </div>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
 <script type="text/javascript">
 	changeProvince = true;
 	changeFacility = true;
@@ -742,13 +744,17 @@ $sFormat = '';
 		}
 	}
 
-	$('#vlResult').change(function() {
-		if ($(this).val() == 'Failed' || $(this).val() == 'Error') {
-			$('.reasonForFailure').show();
-			$('#reasonForFailure').addClass('isRequired');
+	$('#vlResult').on('change', function() {
+		if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error') {
+			if ($(this).val().trim().toLowerCase() == 'failed') {
+				$('.reasonForFailure').show();
+				$('#reasonForFailure').addClass('isRequired');
+			}
+			$('#vlLog').attr('readonly', true);
 		} else {
 			$('.reasonForFailure').hide();
 			$('#reasonForFailure').removeClass('isRequired');
+			$('#vlLog').attr('readonly', false);
 		}
 	});
 
