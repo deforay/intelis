@@ -647,9 +647,9 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="vlLog col-md-4">
-                                                                      <label class="col-lg-5 control-label  labels" for="vlLog">Viral Load Log </label>
+                                                                      <label class="col-lg-5 control-label  labels" for="vlLog">Viral Load (Log) </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" style="width:100%;" onchange="calculateLogValue(this);" />
+                                                                           <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load result in Log" style="width:100%;" onchange="calculateLogValue(this);" />
                                                                       </div>
                                                                  </div>
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
