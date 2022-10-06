@@ -147,6 +147,17 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
+						<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+									<option value=""><?php echo _("All Status"); ?></option>
+									<option value="7" selected=selected><?php echo _("Accepted"); ?></option>
+									<option value="4"><?php echo _("Rejected"); ?></option>
+									<option value="8"><?php echo _("Awaiting Approval"); ?></option>
+									<option value="6"><?php echo _("Registered At Testing Lab"); ?></option>
+									<option value="10"><?php echo _("Expired"); ?></option>
+								</select>
+							</td>
 						<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
@@ -175,7 +186,10 @@ foreach ($srcResults as $list) {
 									</div>
 								</div>
 							</td>
-							<td><strong><?php echo _("Batch Code"); ?> :</strong></td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Batch Code"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -188,8 +202,6 @@ foreach ($srcResults as $list) {
 									?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 						<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
@@ -214,7 +226,10 @@ foreach ($srcResults as $list) {
 									<?php } ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -223,8 +238,6 @@ foreach ($srcResults as $list) {
 									<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<td><strong><?php echo _("Req. Sample Type"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _('Please select request sample type'); ?>">
@@ -239,7 +252,10 @@ foreach ($srcResults as $list) {
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
+						
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -248,8 +264,6 @@ foreach ($srcResults as $list) {
 								</select>
 							</td>
 							
-						</tr>
-						<tr>
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
@@ -644,6 +658,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "gender",
 					"value": $("#gender").val()
+				});
+				aoData.push({
+					"name": "status",
+					"value": $("#status").val()
 				});
 				aoData.push({
 					"name": "showReordSample",

@@ -226,13 +226,17 @@ if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
           $sWhere[] = ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
      }
 }
-if (isset($_POST['communitySample']) && trim($_POST['communitySample']) != '') {
-     $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
+
+/* Sample status filter */
+if (isset($_POST['status']) && trim($_POST['status']) != '') {
+     $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
 }
 if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
      $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
 }
-
+if (isset($_POST['communitySample']) && trim($_POST['communitySample']) != '') {
+     $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
+}
 if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
      $sWhere[] = ' vl.is_patient_pregnant IN ("' . $_POST['patientPregnant'] . '")';
 }
@@ -327,11 +331,10 @@ if (isset($sOrder) && $sOrder != "") {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-// echo $sQuery;die;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
+ //die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */

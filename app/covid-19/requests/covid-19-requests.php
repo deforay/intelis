@@ -177,7 +177,21 @@ foreach ($srcResults as $list) {
 									<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 								</select>
 							</td>
-							<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+									<option value=""><?php echo _("All Status"); ?></option>
+									<option value="7" selected=selected><?php echo _("Accepted"); ?></option>
+									<option value="4"><?php echo _("Rejected"); ?></option>
+									<option value="8"><?php echo _("Awaiting Approval"); ?></option>
+									<option value="6"><?php echo _("Registered At Testing Lab"); ?></option>
+									<option value="10"><?php echo _("Expired"); ?></option>
+								</select>
+							</td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -186,8 +200,6 @@ foreach ($srcResults as $list) {
 								</select>
 							</td>
 							
-						</tr>
-						<tr>
 							<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
@@ -198,12 +210,15 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
-							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
 								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 							
-						</tr>
+							</tr>
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -517,6 +532,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "patientId",
 					"value": $("#patientId").val()
+				});
+				aoData.push({
+					"name": "status",
+					"value": $("#status").val()
 				});
 				aoData.push({
 					"name": "showReordSample",

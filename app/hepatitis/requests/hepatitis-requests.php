@@ -162,7 +162,17 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
 							</td>
-							
+							<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+									<option value=""><?php echo _("All Status"); ?></option>
+									<option value="7" selected=selected><?php echo _("Accepted"); ?></option>
+									<option value="4"><?php echo _("Rejected"); ?></option>
+									<option value="8"><?php echo _("Awaiting Approval"); ?></option>
+									<option value="6"><?php echo _("Registered At Testing Lab"); ?></option>
+									<option value="10"><?php echo _("Expired"); ?></option>
+								</select>
+							</td>
 						<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
@@ -171,15 +181,16 @@ foreach ($srcResults as $list) {
 									<option value="no"><?php echo _("No"); ?></option>
 								</select>
 							</td>
-							<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
 							
-						</tr>
-						<tr>
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
@@ -482,6 +493,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "gender",
 					"value": $("#gender").val()
+				});
+				aoData.push({
+					"name": "status",
+					"value": $("#status").val()
 				});
 				aoData.push({
 					"name": "showReordSample",

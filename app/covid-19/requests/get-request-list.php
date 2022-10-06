@@ -226,6 +226,10 @@ if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
           $sWhere[] = ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
      }
 }
+/* Sample status filter */
+if (isset($_POST['status']) && trim($_POST['status']) != '') {
+     $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
+}
 if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
      $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
 }
