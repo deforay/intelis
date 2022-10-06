@@ -113,9 +113,9 @@ $sFormat = '';
 												<option value=""> -- Sélectionner -- </option>
 											</select>
 										</td>
-										<td><label for="clinicName">POINT DE COLLECT </label><span class="mandatory">*</span></td>
+										<td><label for="fName">POINT DE COLLECT </label><span class="mandatory">*</span></td>
 										<td>
-											<select class="form-control isRequired " name="clinicName" id="clinicName" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
+											<select class="form-control isRequired " name="fName" id="fName" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility;  ?>
 											</select>
 										</td>
@@ -580,7 +580,7 @@ $sFormat = '';
 
 	function getfacilityDetails(obj) {
 		$.blockUI();
-		var cName = $("#clinicName").val();
+		var cName = $("#fName").val();
 		var pName = $("#province").val();
 		if (pName != '' && provinceName && facilityName) {
 			facilityName = false;
@@ -594,7 +594,7 @@ $sFormat = '';
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#clinicName").html(details[0]);
+						$("#fName").html(details[0]);
 						$("#district").html(details[1]);
 						$("#clinicianName").val(details[2]);
 					}
@@ -605,8 +605,8 @@ $sFormat = '';
 			provinceName = true;
 			facilityName = true;
 			$("#province").html("<?php echo $province; ?>");
-			$("#clinicName").html("<?php echo $facility; ?>");
-			$("#clinicName").select2("val", "");
+			$("#fName").html("<?php echo $facility; ?>");
+			$("#fName").select2("val", "");
 			$("#district").html("<option value=''> -- Sélectionner -- </option>");
 		}
 		$.unblockUI();
@@ -635,7 +635,7 @@ $sFormat = '';
 	function getfacilityDistrictwise(obj) {
 		$.blockUI();
 		var dName = $("#district").val();
-		var cName = $("#clinicName").val();
+		var cName = $("#fName").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					dName: dName,
@@ -645,11 +645,11 @@ $sFormat = '';
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#clinicName").html(details[0]);
+						$("#fName").html(details[0]);
 					}
 				});
 		} else {
-			$("#clinicName").html("<option value=''> -- Sélectionner -- </option>");
+			$("#fName").html("<option value=''> -- Sélectionner -- </option>");
 		}
 		$.unblockUI();
 	}
@@ -657,7 +657,7 @@ $sFormat = '';
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
 		//check facility name
-		var cName = $("#clinicName").val();
+		var cName = $("#fName").val();
 		var pName = $("#province").val();
 		if (cName != '' && provinceName && facilityName) {
 			provinceName = false;
@@ -679,7 +679,7 @@ $sFormat = '';
 			provinceName = true;
 			facilityName = true;
 			$("#province").html("<?php echo $province; ?>");
-			$("#clinicName").html("<?php echo $facility; ?>");
+			$("#fName").html("<?php echo $facility; ?>");
 		}
 		$.unblockUI();
 	}
@@ -857,7 +857,7 @@ $sFormat = '';
 
 	$(document).ready(function() {
 
-		$('#clinicName').select2({
+		$('#fName').select2({
 			placeholder: "Select Clinic/Health Center"
 		});
 		$('#district').select2({

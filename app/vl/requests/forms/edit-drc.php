@@ -168,9 +168,9 @@ $sampleSuggestionDisplay = 'display:none;';
 												<?php } ?>
 											</select>
 										</td>
-										<td><label for="clinicName">POINT DE COLLECT </label><span class="mandatory">*</span></td>
+										<td><label for="fName">POINT DE COLLECT </label><span class="mandatory">*</span></td>
 										<td>
-											<select class="form-control isRequired" name="clinicName" id="clinicName" title="Veuillez choisir le POINT DE COLLECT" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
+											<select class="form-control isRequired" name="fName" id="fName" title="Veuillez choisir le POINT DE COLLECT" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
 												<?= $facility; ?>
 											</select>
 										</td>
@@ -657,7 +657,7 @@ $sampleSuggestionDisplay = 'display:none;';
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#clinicName").html(details[0]);
+						$("#fName").html(details[0]);
 						$("#district").html(details[1]);
 					}
 				});
@@ -670,7 +670,7 @@ $sampleSuggestionDisplay = 'display:none;';
 	function getfacilityDistrictwise(obj) {
 		$.blockUI();
 		var dName = $("#district").val();
-		var cName = $("#clinicName").val();
+		var cName = $("#fName").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					dName: dName,
@@ -680,11 +680,11 @@ $sampleSuggestionDisplay = 'display:none;';
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#clinicName").html(details[0]);
+						$("#fName").html(details[0]);
 					}
 				});
 		} else {
-			$("#clinicName").html("<option value=''> -- Sélectionner -- </option>");
+			$("#fName").html("<option value=''> -- Sélectionner -- </option>");
 		}
 		$.unblockUI();
 	}
@@ -722,35 +722,6 @@ $sampleSuggestionDisplay = 'display:none;';
 		}
 	}
 
-	function getfacilityProvinceDetails(obj) {
-		$.blockUI();
-		//check facility name
-		var cName = $("#clinicName").val();
-		var pName = $("#province").val();
-		if (cName != '' && provinceName && facilityName) {
-			provinceName = false;
-		}
-		if (cName != '' && facilityName) {
-			$.post("/includes/siteInformationDropdownOptions.php", {
-					cName: cName,
-					testType: 'vl'
-				},
-				function(data) {
-					if (data != "") {
-						details = data.split("###");
-						$("#province").html(details[0]);
-						$("#district").html(details[1]);
-						$("#clinicianName").val(details[2]);
-					}
-				});
-		} else if (pName == '' && cName == '') {
-			provinceName = true;
-			facilityName = true;
-			$("#province").html("<?php echo $province; ?>");
-			$("#facilityId").html("<?php echo $facility; ?>");
-		}
-		$.unblockUI();
-	}
 
 	$("input:radio[name=hasChangedRegimen]").click(function() {
 		if ($(this).val() == 'yes') {
@@ -892,7 +863,7 @@ $sampleSuggestionDisplay = 'display:none;';
 
 
 	$(document).ready(function() {
-		$('#clinicName').select2({
+		$('#fName').select2({
 			placeholder: "Select Clinic/Health Center"
 		});
 		$('#district').select2({

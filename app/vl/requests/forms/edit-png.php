@@ -275,10 +275,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											</select>
 										</td>
 										<td style="width:14%" class="labels">
-											<label for="clinicName">Clinic/Ward <span class="mandatory">*</span></label>
+											<label for="fName">Clinic/Ward <span class="mandatory">*</span></label>
 										</td>
 										<td style="width:20%">
-											<select class="form-control isRequired" id="clinicName" name="clinicName" title="Please select clinic/ward" style="width:100%;" onchange="getfacilityProvinceDetails(this)">
+											<select class="form-control isRequired" id="fName" name="fName" title="Please select clinic/ward" style="width:100%;" onchange="getfacilityProvinceDetails(this)">
 												<?= $facility; ?>
 											</select>
 										</td>
@@ -777,7 +777,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 	$(document).ready(function() {
 
-		//getfacilityProvinceDetails($("#clinicName").val());
+		//getfacilityProvinceDetails($("#fName").val());
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -843,7 +843,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 	function getfacilityDetails(obj) {
 		$.blockUI();
-		var cName = $("#clinicName").val();
+		var cName = $("#fName").val();
 		var pName = $("#province").val();
 		$('#telephone').val('');
 		if (pName != '' && provinceName && facilityName) {
@@ -858,7 +858,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 					function(data) {
 						if (data != "") {
 							details = data.split("###");
-							$("#clinicName").html(details[0]);
+							$("#fName").html(details[0]);
 							$("#district").html(details[1]);
 							$("#clinicianName").val(details[2]);
 						}
@@ -868,7 +868,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 			provinceName = true;
 			facilityName = true;
 			$("#province").html("<?php echo $province; ?>");
-			$("#clinicName").html("<?php echo $facility; ?>");
+			$("#fName").html("<?php echo $facility; ?>");
 		}
 		$.unblockUI();
 	}
@@ -876,7 +876,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 	function getfacilityDistrictwise(obj) {
 		$.blockUI();
 		var dName = $("#district").val();
-		var cName = $("#clinicName").val();
+		var cName = $("#fName").val();
 		$('#telephone').val('');
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
@@ -887,7 +887,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
-						$("#clinicName").html(details[0]);
+						$("#fName").html(details[0]);
 					}
 				});
 		}
@@ -896,10 +896,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
-		//$('#telephone').val($("#clinicName").find(":selected").attr("data-mobile-nos"));
+		//$('#telephone').val($("#fName").find(":selected").attr("data-mobile-nos"));
 		$.unblockUI();
 		//   check facility name
-		//    var cName = $("#clinicName").val();
+		//    var cName = $("#fName").val();
 		//    var pName = $("#province").val();
 		//    if(cName!='' && provinceName && facilityName){
 		//      provinceName = false;
@@ -918,7 +918,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		//      provinceName = true;
 		//      facilityName = true;
 		//      $("#province").html("< ?php echo $province;?>");
-		//      $("#clinicName").html("< ?php echo $facility;?>");
+		//      $("#fName").html("< ?php echo $facility;?>");
 		//    }
 	}
 
