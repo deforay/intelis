@@ -2,7 +2,9 @@
 ob_start();
  
 require_once(APPLICATION_PATH . '/header.php');
+$general = new \Vlsm\Models\General();
 
+$activeTestModules = $general->getActiveTestModules();
 $activeModules = array('admin', 'common');
 
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
@@ -79,7 +81,22 @@ $rInfo = $db->query($resourcesQuery);
 											<option value=""> <?php echo _("-- Select --");?> </option>
 											<option value="/dashboard/index.php"><?php echo _("Dashboard");?></option>
 											<option value="/vl/requests/addVlRequest.php"><?php echo _("Add New VL Request");?></option>
-											<option value="/import-result/addImportResult.php"><?php echo _("Import VL Result");?></option>
+											<!--<option value="/import-result/addImportResult.php"><?php echo _("Import VL Result");?></option>-->
+										<?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_vl') ? "selected='selected'" : ""; ?> value="/vl/requests/vlRequest.php"><?php echo _("VL View Test Requests"); ?></option>
+										<?php }
+										if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_eid') ? "selected='selected'" : ""; ?> value="/eid/requests/eid-requests.php"><?php echo _("EID View Test Requests"); ?></option>
+										<?php }
+										if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_covid19') ? "selected='selected'" : ""; ?> value="/covid-19/requests/covid-19-requests.php"><?php echo _("Covid-19 View Test Requests"); ?></option>
+										<?php }
+										if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_hepatitis') ? "selected='selected'" : ""; ?> value='/hepatitis/requests/hepatitis-requests.php'><?php echo _("Hepatitis View Test Requests"); ?></option>
+										<?php }
+										if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_tb') ? "selected='selected'" : ""; ?> value='/tb/requests/tb-requests.php'><?php echo _("TB View Test Requests"); ?></option>
+										<?php } ?>
 										</select>
 									</div>
 								</div>
