@@ -296,7 +296,7 @@ try {
         'vlsm_country_id' => 3,
         'is_sample_rejected' => ($isRejected === true) ? 'yes' : 'no',
         'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] : null),
-        'facility_id' => $_POST['clinicName'],
+        'facility_id' => $_POST['fName'],
         'province_id' => (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  null,
         'request_clinician_name' => $_POST['clinicianName'],
         'request_clinician_phone_number' => $_POST['clinicanTelephone'],

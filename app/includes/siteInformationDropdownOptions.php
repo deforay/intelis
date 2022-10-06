@@ -48,7 +48,7 @@ if (!empty($facilityIdRequested)) {
 	$facilityInfo = $db->getOne('facility_details f');
 
 	$labContactUser = $usersDb->getUserInfo($facilityInfo['contact_person']);
-	if(!empty($labContactUser)){
+	if (!empty($labContactUser)) {
 		$facilityInfo['contact_person'] = $labContactUser['user_name'];
 	}
 
@@ -185,10 +185,9 @@ function getFacilitiesDropdown($provinceName = null, $districtRequested = null, 
 			$fcode = (isset($fDetails['facility_code']) && $fDetails['facility_code'] != "") ? ' - ' . $fDetails['facility_code'] : '';
 
 			$labContactUser = $usersDb->getUserInfo($fDetails['contact_person']);
-			var_dump($labContactUser);
-			if(!empty($labContactUser)){
+			if (!empty($labContactUser)) {
 				$fDetails['contact_person'] = $labContactUser['user_name'];
-			}			
+			}
 
 			$facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (addslashes($fDetails['facility_name'])) . $fcode . "</option>";
 		}

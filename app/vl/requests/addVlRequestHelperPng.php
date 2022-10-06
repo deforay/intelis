@@ -149,7 +149,7 @@ try {
           //'sample_code_key'=>(isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey']!='')? $_POST['sampleCodeKey'] :  null,
           'vlsm_instance_id' => $instanceId,
           'vlsm_country_id' => '5',
-          'facility_id' => (isset($_POST['clinicName']) && trim($_POST['clinicName']) != '') ? $_POST['clinicName'] : null,
+          'facility_id' => (isset($_POST['fName']) && trim($_POST['fName']) != '') ? $_POST['fName'] : null,
           'province_id' => (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  null,
           //'ward'=>(isset($_POST['wardData']) && $_POST['wardData']!='' ? $_POST['wardData'] : null),
           'patient_art_no' => (isset($_POST['patientARTNo']) && trim($_POST['patientARTNo']) != '') ? $_POST['patientARTNo'] : null,
