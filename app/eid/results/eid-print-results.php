@@ -8,6 +8,9 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
+$testingLabs = $facilitiesDb->getTestingLabs('eid');
+$labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
+
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
 

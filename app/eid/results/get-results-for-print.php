@@ -280,7 +280,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['child_id'];
     $row[] = ucwords($patientFname);
     $row[] = ucwords($aRow['facility_name']);
-    $row[] = $aRow['lab_name'];
+    $row[] = $aRow['labName'];
     $row[] = $eidResults[$aRow['result']];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
