@@ -66,7 +66,7 @@ $rInfo = $db->query($resourcesQuery);
 }
 
 .switch-field input:checked + label {
-	background-color: #3c8dbc;
+	background-color: #87CEFA;
 	box-shadow: none;
 }
 
@@ -203,17 +203,21 @@ h2 {
 								</div>
 							</div>
 							<div class="form-group" style="padding-left:138px;">
-								<strong><?php echo _("Select All");?></strong> <a style="color: #333;" href="javascript:void(0);" id="cekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll' /> <em class="fa-solid fa-check"></em></a>
-								&nbsp;&nbsp;&nbsp;&nbsp;<strong><?php echo _("Unselect All");?></strong> <a style="color: #333;" href="javascript:void(0);" id="unCekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll' /> <em class='fa-solid fa-x'></em></a>
-							</div>
+							<div class="switch-field">
 
+		<input type="radio" class='layCek' id="cekAllPrivileges" name='cekUnCekAll' value="yes"/></a>
+		<label for="cekAllPrivileges"><?php echo _("Select All");?></label>
+		<input type="radio" class='layCek' name='cekUnCekAll' id="unCekAllPrivileges" name="switch-one" value="no" /></a>
+		<label for="unCekAllPrivileges"><?php echo _("Unselect All");?></label>
+	</div>			
+										</div>
 							<?php
 							foreach ($rInfo as $moduleRow) {
 								echo "<table class='table table-striped responsive-utilities jambo_table'>";
 								echo "<tr><th class='bg-primary'><h3>" . strtoupper($moduleRow['module']) . "</h3></th></tr>";
 
 								$moduleResources = explode("##", $moduleRow['module_resources']);
-
+								$i=1;
 								foreach ($moduleResources as $mRes) {
 
 									$mRes = explode(",", $mRes);
@@ -223,8 +227,10 @@ h2 {
 									echo ($mRes[1]);
 							?>
 									<small class="pull-right toggler">
-										&nbsp;&nbsp;&nbsp;<input type='radio' class='' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource(<?= $mRes[0]; ?>,true);'> <?php echo _("All");?>
-										&nbsp;&nbsp;&nbsp;<input type='radio' class='' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource(<?= $mRes[0]; ?>,false);'> <?php echo _("None");?>
+									<div class="switch-field"> 
+											<input type='radio' class='' id='all<?= $i; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'> <label for='all<?= $i; ?>'><?php echo _("All");?></label>
+											<input type='radio' class='' id='none<?= $i; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'> <label for='none<?= $i; ?>'><?php echo _("None");?></label>
+									</div>
 									</small>
 							<?php
 									echo "</h4></th>";
@@ -245,6 +251,7 @@ h2 {
                                 </div>";
 									}
 									echo "</td></tr>";
+									$i++;
 								}
 								echo "</table>";
 							}
