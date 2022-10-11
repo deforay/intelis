@@ -204,62 +204,88 @@ h2 {
 		<label for="unCekAllPrivileges"><?php echo _("Unselect All");?></label>
 	</div>			
 							</div>
-							<table class="table table-striped table-hover responsive-utilities jambo_table">
+							<div class="bs-example bs-example-tabs">
+									<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
+									<?php
+									$a=0;
+									
+							foreach ($rInfo as $moduleRow) {
+								if($a==0)
+								$cls = "active";
+							else
+								$cls = "";
+								?>
+								<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleRow['module']); ?> </a></li>
 								<?php
-								foreach ($rInfo as $moduleRow) {
-									echo "<table class='table table-striped responsive-utilities jambo_table'>";
-									echo "<tr><th class='bg-primary'><h3>" . strtoupper($moduleRow['module']) . "</h3></th></tr>";
+								$a++;
+							}
+							?>
+							</ul>
 
+							<div id="myTabContent" class="tab-content">
+								<?php
+								$b=0;
+								$j=1;
+								foreach ($rInfo as $moduleRow) {
+									if($b==0)
+									$tabCls = "active";
+								else
+									$tabCls = "";
+									echo '<div class="tab-pane fade in '.$tabCls.'" id="'.$moduleRow['module'].'">';
+									echo "<table class='table table-striped responsive-utilities jambo_table'>";
+	
 									$moduleResources = explode("##", $moduleRow['module_resources']);
 									$i=1;
 									foreach ($moduleResources as $mRes) {
-
+	
 										$mRes = explode(",", $mRes);
-
+	
 										echo "<tr>";
 										echo "<th><h4>";
 										echo ($mRes[1]);
 								?>
-										<small class="pull-right toggler">
-										<div class="switch-field"> 
-											<input type='radio' class='' id='all<?= $i; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'> <label for='all<?= $i; ?>'><?php echo _("All");?></label>
-											<input type='radio' class='' id='none<?= $i; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'> <label for='none<?= $i; ?>'><?php echo _("None");?></label>
+								<small class="pull-right toggler">
+									<div class="switch-field"> 
+											<input type='radio' class='' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'> <label for='all<?= $mRes[0]; ?>'><?php echo _("All");?></label>
+											<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'> <label for='none<?= $mRes[0]; ?>'><?php echo _("None");?></label>
 									</div>
-										</small>
-								<?php
-										echo "</h4></td>";
-										echo "</tr>";
-										echo "<tr class=''>";
-										$pQuery = "SELECT * FROM privileges WHERE resource_id='" . $mRes[0] . "' order by display_name ASC";
-										$pInfo = $db->query($pQuery);
-										echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
-										foreach ($pInfo as $privilege) {
-											if (in_array($privilege['privilege_id'], $priId)) {
-												$allowChecked = " checked='' ";
-												$denyChecked = "";
-											} else {
-												$denyChecked = " checked='' ";
-												$allowChecked = "";
-											}
-											echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
-                              <strong>" . $privilege['display_name'] . "</strong>
-                              <br>
-						<div class='switch-field'> 
-                            <input type='radio' class='cekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one".$privilege['privilege_id']."' $allowChecked><label for='radio-one".$privilege['privilege_id']."'>Yes</label>
-							<input type='radio' class='unCekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two".$privilege['privilege_id']."' $denyChecked> <label for='radio-two".$privilege['privilege_id']."'> No</label>
-                        </div>
-							  </div>";
+									</small>
+									<?php
+									echo "</h4></th>";
+									echo "</tr>";
+									$pQuery = "SELECT * FROM privileges WHERE resource_id='" . $mRes[0] . "' order by display_name ASC";
+									$pInfo = $db->query($pQuery);
+									echo "<tr class=''>";
+									echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
+									foreach ($pInfo as $privilege) {
+										if (in_array($privilege['privilege_id'], $priId)) {
+											$allowChecked = " checked='' ";
+											$denyChecked = "";
+										} else {
+											$denyChecked = " checked='' ";
+											$allowChecked = "";
 										}
-										echo "</td></tr>";
-										$i++;
-									}
-									
-									echo "</table>";
-								}
-								?>
+										echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
+                                  <strong>" . ($privilege['display_name']) . "</strong>
+                                  <br>
+                                  
+								  <div class='switch-field'> 
+								  <input type='radio' class='cekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one".$privilege['privilege_id']."' $allowChecked><label for='radio-one".$privilege['privilege_id']."'>Yes</label>
+								  <input type='radio' class='unCekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two".$privilege['privilege_id']."' $denyChecked> <label for='radio-two".$privilege['privilege_id']."'> No</label>
+                            </div>
+                                </div>";
+							}
+							echo "</td></tr>";
+							$i++;
+						}
+						echo "</table></div>";
+						$b++;
+						$j++;
+					}
+					?>
+						</div>
 
-						</fieldset>
-
+				</div>
 
 					</div>
 					<!-- /.box-body -->
