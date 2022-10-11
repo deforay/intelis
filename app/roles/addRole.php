@@ -35,7 +35,6 @@ $rInfo = $db->query($resourcesQuery);
 
 	.switch-field {
 	display: flex;
-	margin: 30px 0 36px 90px;
 	overflow: hidden;
 }
 
@@ -248,17 +247,17 @@ h2 {
 										$mRes = explode(",", $mRes);
 	
 										echo "<tr>";
-										echo "<th><h4>";
-										echo ($mRes[1]);
+										echo "<th>";
 								?>
-								<small class="pull-right toggler">
-									<div class="switch-field"> 
+								<small class="toggler">
+									<h4 style="font-weight: bold;"><?= $mRes[1]; ?></h4>
+									<div class="switch-field pull-right"> 
 											<input type='radio' class='' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'> <label for='all<?= $mRes[0]; ?>'><?php echo _("All");?></label>
 											<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'> <label for='none<?= $mRes[0]; ?>'><?php echo _("None");?></label>
 									</div>
 									</small>
 									<?php
-									echo "</h4></th>";
+									echo "</th>";
 									echo "</tr>";
 									$pQuery = "SELECT * FROM privileges WHERE resource_id='" . $mRes[0] . "' order by display_name ASC";
 									$pInfo = $db->query($pQuery);
@@ -269,7 +268,7 @@ h2 {
                                   <strong>" . ($privilege['display_name']) . "</strong>
                                   <br>
                                   
-								  <div class='switch-field'> 
+								  <div class='switch-field' style='margin: 30px 0 36px 90px;'> 
 								  <input type='radio' class='cekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one".$privilege['privilege_id']."'><label for='radio-one".$privilege['privilege_id']."'>Yes</label>
 								  <input type='radio' class='unCekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two".$privilege['privilege_id']."'> <label for='radio-two".$privilege['privilege_id']."'> No</label>
                             </div>
