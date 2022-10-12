@@ -154,7 +154,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 								<input type="text" style="height: 70%;" id="challengeResponse" name="captcha" placeholder="<?php echo _('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _('Please enter the text from the image'); ?>." maxlength="40">
 							</div>
 							<div>
-								<img id="capChaw" width="254px" height="100px" alt="verification" src="/includes/captcha.php/<?php echo random_int(0, PHP_INT_MAX); ?>" />
+								<img id="capChaw" width="254px" height="100px" alt="verification" src="/includes/captcha.php" />
 								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?php echo _("Get New Image"); ?></a>
 							</div>
 						</div>
@@ -188,9 +188,9 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		let captchaflag = false;
 
 		function getCaptcha(captchaDivId) {
-			var d = new Date();
-			var randstr = d.getFullYear() + d.getSeconds() + d.getMilliseconds() + Math.random();
-			$("#" + captchaDivId).attr("src", '/includes/captcha.php/' + randstr);
+			//var d = new Date();
+			//var randstr = d.getFullYear() + d.getSeconds() + d.getMilliseconds() + Math.random();
+			$("#" + captchaDivId).attr("src", '/includes/captcha.php');
 			$("#" + captchaDivId).load(function() {
 				$.blockUI();
 			});
@@ -216,8 +216,8 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 									document.getElementById("challengeResponse").value = "";
 									return false;
 								} else {
-									// $.blockUI();
-									// document.getElementById('loginForm').submit();
+									 $.blockUI();
+									 document.getElementById('loginForm').submit();
 								}
 							});
 					} else {

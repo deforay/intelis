@@ -86,15 +86,14 @@ try {
                                                 SUM(CASE WHEN login_id = ? THEN 1 ELSE 0 END) AS LoginIdCount,
                                                 SUM(CASE WHEN ip_address = ? THEN 1 ELSE 0 END) AS IpCount
                                                 FROM user_login_history
-                                                WHERE login_status='failed' AND login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 15 minute)",
-                array($userName, $userName)
+                                                WHERE login_status='failed' AND login_attempted_datetime < DATE_SUB(NOW(), INTERVAL 15 minute)",
+                array($userName, $ipaddress)
             );
-
             if ($loginAttemptCount['LoginIdCount'] >= 3 || $loginAttemptCount['IpCount'] >= 3) {
                 if (!isset($_POST['captcha']) || empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode']) {
                     $user->userHistoryLog($userName, 'failed');
                     $_SESSION['alertMsg'] = _("You have exhausted maximum number of login attempts. Please retry login after sometime.");
-                    header("location:/login/login.php");
+                    header("Location:/login/login.php"); 
                 }
             }
 
@@ -111,7 +110,7 @@ try {
                         )
                     );
                 } else {
-                    throw new Exception(_("Please check your login credentials"));
+                    throw new Exception(_("Please checkss your login credentials"));
                 }
             } else if ($userRow['hash_algorithm'] == 'phb') {
                 if (!password_verify($_POST['password'], $userRow['password'])) {
@@ -199,7 +198,7 @@ try {
                     $_SESSION['alertMsg'] = _("Please change your password to proceed.");
                 }
 
-                header("location:" . $redirect);
+                header("Location:" . $redirect);
                 
             } else {
                 $user->userHistoryLog($userName, 'failed');
@@ -214,5 +213,5 @@ try {
     $_SESSION['alertMsg'] = _("Please check your login credentials");
     error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
     error_log($exc->getTraceAsString());
-    header("location:/login/login.php");
+    header("Location:/login/login.php");
 }

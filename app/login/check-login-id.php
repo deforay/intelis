@@ -31,7 +31,7 @@ if ($value != '') {
 											SUM(CASE WHEN login_id = ? THEN 1 ELSE 0 END) AS LoginIdCount,
 											SUM(CASE WHEN ip_address = ? THEN 1 ELSE 0 END) AS IpCount
 											FROM user_login_history
-											WHERE login_status='failed' AND login_attempted_datetime > DATE_SUB(NOW(), INTERVAL 15 minute)",
+											WHERE login_status='failed' AND login_attempted_datetime < DATE_SUB(NOW(), INTERVAL 15 minute)",
 			array($value, $ipaddress)
 		);
 		$ipdata = $attemptCount['IpCount'];
