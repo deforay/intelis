@@ -74,7 +74,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<link rel="stylesheet" href="/assets/css/fonts.css">
 	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 
-	<link rel="stylesheet" href="/assets/css/font-awesome.min.6.1.1.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
 
 	<!-- Theme style -->
 	<link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
@@ -142,20 +142,22 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-							<input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter the user name'); ?>" onblur="checkLoginAttempts('user_login_history','login_id', this.id,'')">
+							<input id="username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
 						</div>
 
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-							<input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>">
+							<input id="password" type="password" class="form-control isRequired" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter your password'); ?>">
 						</div>
-						<div style="margin-bottom: 5px;display:none" class="input-group" id="captcha">
+						<div style="margin-bottom: 5px;display:none" id="captcha">
 							<div>
-								<input type="text" style="height: 70%;" id="challengeResponse" name="captcha" placeholder="<?php echo _('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _('Please enter the text from the image'); ?>." maxlength="40">
-							</div>
-							<div>
-								<img id="capChaw" width="254px" height="100px" alt="verification" src="/includes/captcha.php" />
+								<img id="capChaw" width="180px" alt="verification" src="/includes/captcha.php" />
 								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?php echo _("Get New Image"); ?></a>
+							</div>
+
+							<div style="margin-bottom: 5px" class="input-group">
+								<span class="input-group-addon"><em class="fa-solid fa-shield-halved"></em></span>
+								<input type="text" style="" id="challengeResponse" name="captcha" placeholder="<?php echo _('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _('Please enter the text from the image'); ?>." maxlength="40">
 							</div>
 						</div>
 
@@ -216,8 +218,8 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 									document.getElementById("challengeResponse").value = "";
 									return false;
 								} else {
-									 $.blockUI();
-									 document.getElementById('loginForm').submit();
+									$.blockUI();
+									document.getElementById('loginForm').submit();
 								}
 							});
 					} else {
@@ -248,17 +250,14 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 
 
-		function checkLoginAttempts(tableName, fieldName, id, fnct) {
-			if ($.trim($("#" + id).val()) != '') {
-				$.post("/login/check-login-id.php", {
-						tableName: tableName,
-						fieldName: fieldName,
-						value: $("#" + id).val(),
-						fnct: fnct,
+		function checkLoginAttempts() {
+			if ($.trim($("#username").val()) != '') {
+				$.post("/login/check-login-attempts.php", {
+						loginId: $("#username").val(),
 						format: "html"
 					},
 					function(data) {
-						if (data >= 3) {
+						if (data == 1) {
 							captchaflag = true;
 							$('#captcha').show();
 							$("#challengeResponse").addClass("isRequired");

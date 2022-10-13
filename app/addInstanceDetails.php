@@ -8,7 +8,7 @@ ob_start();
 <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 <link href="/assets/css/style.css" rel="stylesheet" />
 <!-- Font Awesome -->
-<link rel="stylesheet" href="/assets/css/font-awesome.min.6.1.1.css">
+<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
 <!-- DataTables -->
 <link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
 <link href="/assets/css/deforayModal.css" rel="stylesheet" />

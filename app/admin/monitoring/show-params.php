@@ -11,7 +11,7 @@ $result = $db->getOne('track_api_requests');
 <script src="/assets/js/bootstrap.min.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />
 <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-<link rel="stylesheet" href="/assets/css/font-awesome.min.6.1.1.css">
+<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
 <link rel="stylesheet" href="/assets/css/skins/_all-skins.min.css">
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>

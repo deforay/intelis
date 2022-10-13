@@ -49,7 +49,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
   <link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
   <link href="/assets/css/deforayModal.css" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/assets/css/font-awesome.min.6.1.1.css">
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
   
   <!-- iCheck -->
   <style>
