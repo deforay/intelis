@@ -415,6 +415,7 @@ try {
             }
         } else {
             $_SESSION['alertMsg'] = _("Please try again later");
+            header("location:vlRequest.php");
         }
     }
 } catch (Exception $exc) {

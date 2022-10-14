@@ -619,7 +619,7 @@ $sFormat = '';
                                                                  <div class="col-md-4 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date <span class="mandatory">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" />
+                                                                           <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4 hivDetection" style="display: none;">
@@ -653,7 +653,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
-                                                                      <div class="col-md-4 reasonForFailure" style="display: none;">
+                                                                      <div class="col-md-4" style="display: none;">
                                                                            <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
                                                                            <div class="col-lg-7">
                                                                                 <select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
@@ -663,7 +663,7 @@ $sFormat = '';
                                                                       </div>
                                                                  <?php } ?>
                                                                  <div class="col-md-4 vlResult">
-                                                                      <label class="col-lg-5 control-label  labels" for="resultDispatchedOn">Date Results Dispatched</label>
+                                                                      <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
@@ -705,13 +705,13 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label labels" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" style="width:100%;" />
+                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" title="Please choose Approved On" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" style="width:100%;" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-2 control-label labels" for="labComments">Lab Tech. Comments </label>
                                                                       <div class="col-lg-10">
-                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" style="width: 90% !important;margin-left: 24px;"></textarea>
+                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" title="Please enter LabComments" style=" width: 90% !important;margin-left: 24px;"></textarea>
                                                                       </div>
                                                                  </div>
                                                             </div>
