@@ -2,7 +2,8 @@
 $title = _("Facilities");
  
 require_once(APPLICATION_PATH . '/header.php');
-
+$fQuery = "SELECT * FROM facility_type";
+$fResult = $db->rawQuery($fQuery);
 // if($sarr['sc_user_type']=='vluser'){
 //   include('../remote/pullDataFromRemote.php');
 // }
@@ -21,6 +22,49 @@ require_once(APPLICATION_PATH . '/header.php');
   <!-- Main content -->
   <section class="content">
     <div class="row">
+    <div class="col-xs-12">
+				<div class="box">
+					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+						<tbody><tr>
+						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
+							</td>
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
+							</td>
+
+						</tr>
+						<tr>
+							<td>&nbsp;<strong>Facility Type &nbsp;:</strong></td>
+							<td>
+              <select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?>; getTestType(); showSignature(this.value);">
+											<option value=""> <?php echo _("-- Select --"); ?> </option>
+											<?php
+											foreach ($fResult as $type) {
+											?>
+												<option value="<?php echo $type['facility_type_id']; ?>"><?php echo ucwords($type['facility_type_name']); ?></option>
+											<?php
+											}
+											?>
+										</select>
+							</td>
+							
+						</tr><tr>
+							
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="Search" class="btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+							</td>
+						</tr>
+
+					</tbody></table>
+				</div>
+			</div>
       <div class="col-xs-12">
         <div class="box">
           <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;margin-left: 325px;" id="showhide" class="">
@@ -129,6 +173,18 @@ require_once(APPLICATION_PATH . '/header.php');
       "bServerSide": true,
       "sAjaxSource": "getFacilityDetails.php",
       "fnServerData": function(sSource, aoData, fnCallback) {
+        aoData.push({
+					"name": "state",
+					"value": $("#state").val()
+				});
+        aoData.push({
+					"name": "district",
+					"value": $("#district").val()
+				});
+        aoData.push({
+					"name": "facilityType",
+					"value": $("#facilityType").val()
+				});
         $.ajax({
           "dataType": 'json',
           "type": "POST",
@@ -140,6 +196,15 @@ require_once(APPLICATION_PATH . '/header.php');
     });
     $.unblockUI();
   });
+  function searchResultData() {
+		$.blockUI();
+		oTable.fnDraw();
+		$.unblockUI();
+	}
+
+	function loadVlRequestStateDistrict() {
+		oTable.fnDraw();
+	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

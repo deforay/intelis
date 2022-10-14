@@ -56,7 +56,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -77,20 +77,25 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
+            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+       
     }
 }
-
+if (isset($_POST['facilityType']) && trim($_POST['facilityType']) != '') {
+    $sWhere[] = ' f_t.facility_type_id = "' . $_POST['facilityType'] . '"';
+}
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
+    $sWhere[] = " d.geo_name LIKE '%" . $_POST['district'] . "%' ";
+}
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+    $sWhere[] = " p.geo_name LIKE '%" . $_POST['state'] . "%' ";
+}
 /*
          * SQL queries
          * Get data to display
@@ -102,8 +107,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS f_d.*, f_t.*,p.geo_name as province ,d.geo
             LEFT JOIN geographical_divisions as p ON f_d.facility_state_id = p.geo_id
             LEFT JOIN geographical_divisions as d ON f_d.facility_district_id = d.geo_id";
 
-if (isset($sWhere) && $sWhere != "") {
-    $sWhere = ' where ' . $sWhere;
+if (isset($sWhere) && !empty($sWhere)) {
+    $sWhere = ' where ' . implode(' AND ',$sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
