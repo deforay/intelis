@@ -4,6 +4,10 @@ $title = _("Facilities");
 require_once(APPLICATION_PATH . '/header.php');
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
+
+$general = new \Vlsm\Models\General();
+
+$activeTestModules = $general->getActiveTestModules();
 // if($sarr['sc_user_type']=='vluser'){
 //   include('../remote/pullDataFromRemote.php');
 // }
@@ -50,7 +54,27 @@ $fResult = $db->rawQuery($fQuery);
 											?>
 										</select>
 							</td>
-							
+              <td>&nbsp;<strong>Test Type &nbsp;:</strong></td>
+							<td>
+              <select type="text" id="testType" name="testType" onchange="return checkFacilityType();" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+										<option value="">-- Choose Test Type--</option>
+										<?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _("Viral Load"); ?></option>
+										<?php }
+										if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+										<?php }
+										if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'covid19') ? "selected='selected'" : ""; ?> value="covid19"><?php echo _("Covid-19"); ?></option>
+										<?php }
+										if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'hepatitis') ? "selected='selected'" : ""; ?> value='hepatitis'><?php echo _("Hepatitis"); ?></option>
+										<?php }
+										if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'tb') ? "selected='selected'" : ""; ?> value='tb'><?php echo _("TB"); ?></option>
+										<?php } ?>
+									</select>
+							</td>
 						</tr><tr>
 							
 							<td></td>
@@ -185,6 +209,10 @@ $fResult = $db->rawQuery($fQuery);
 					"name": "facilityType",
 					"value": $("#facilityType").val()
 				});
+        aoData.push({
+					"name": "testType",
+					"value": $("#testType").val()
+				});
         $.ajax({
           "dataType": 'json',
           "type": "POST",
@@ -205,6 +233,17 @@ $fResult = $db->rawQuery($fQuery);
 	function loadVlRequestStateDistrict() {
 		oTable.fnDraw();
 	}
+
+  function checkFacilityType()
+  {
+    fType = $("#facilityType").val();
+    if(fType=="")
+    {   alert("Please choose facility type first");
+      $("#testType").val("");
+        return false;
+    }
+    return true;
+  }
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

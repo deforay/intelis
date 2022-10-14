@@ -84,10 +84,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
             $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-       
     }
 }
-if (isset($_POST['facilityType']) && trim($_POST['facilityType']) != '') {
+$facilityType = $_POST['facilityType'];
+if (isset($facilityType) && trim($facilityType) != '') {
     $sWhere[] = ' f_t.facility_type_id = "' . $_POST['facilityType'] . '"';
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
@@ -95,6 +95,21 @@ if (isset($_POST['district']) && trim($_POST['district']) != '') {
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
     $sWhere[] = " p.geo_name LIKE '%" . $_POST['state'] . "%' ";
+}
+$qry = "";
+if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
+   if(!empty($facilityType))
+   {
+        if($facilityType=='2'){
+            $qry = " LEFT JOIN testing_labs tl ON tl.facility_id=f_d.facility_id";
+            $sWhere[] = ' tl.test_type = "' . $_POST['testType'] . '"';
+        }
+        else
+        {
+            $qry = " LEFT JOIN health_facilities hf ON hf.facility_id=f_d.facility_id";
+            $sWhere[] = ' hf.test_type = "' . $_POST['testType'] . '"';
+        }
+    }
 }
 /*
          * SQL queries
@@ -105,7 +120,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS f_d.*, f_t.*,p.geo_name as province ,d.geo
             FROM facility_details as f_d 
             LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type
             LEFT JOIN geographical_divisions as p ON f_d.facility_state_id = p.geo_id
-            LEFT JOIN geographical_divisions as d ON f_d.facility_district_id = d.geo_id";
+            LEFT JOIN geographical_divisions as d ON f_d.facility_district_id = d.geo_id $qry ";
 
 if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ',$sWhere);
