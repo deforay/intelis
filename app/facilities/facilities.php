@@ -58,6 +58,8 @@ require_once(APPLICATION_PATH . '/header.php');
                   <th><?php echo _("Facility Name");?></th>
                   <th><?php echo _("Facility Type");?></th>
                   <th><?php echo _("Status");?></th>
+                  <th><?php echo _("Province");?></th>
+                  <th><?php echo _("District");?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
                     <th><?php echo _("Action");?></th>
                   <?php } ?>
@@ -97,6 +99,12 @@ require_once(APPLICATION_PATH . '/header.php');
       "bStateSave": true,
       "bRetrieve": true,
       "aoColumns": [{
+          "sClass": "center"
+        },
+        {
+          "sClass": "center"
+        },
+        {
           "sClass": "center"
         },
         {

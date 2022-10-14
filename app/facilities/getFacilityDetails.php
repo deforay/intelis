@@ -18,7 +18,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('facility_code', 'facility_name', 'facility_type_name', 'status');
+$aColumns = array('facility_code', 'facility_name', 'facility_type_name', 'status','p.geo_name', 'd.geo_name');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -96,9 +96,11 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS f_d.*, f_t.*,p.geo_name as province ,d.geo_name as district
             FROM facility_details as f_d 
-            LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type";
+            LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type
+            LEFT JOIN geographical_divisions as p ON f_d.facility_state_id = p.geo_id
+            LEFT JOIN geographical_divisions as d ON f_d.facility_district_id = d.geo_id";
 
 if (isset($sWhere) && $sWhere != "") {
     $sWhere = ' where ' . $sWhere;
@@ -137,6 +139,8 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['facility_name']);
     $row[] = ucwords($aRow['facility_type_name']);
     $row[] = ucwords($aRow['status']);
+    $row[] = ucwords($aRow['province']);
+    $row[] = ucwords($aRow['district']);
     if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) {
         $row[] = '<a href="editFacility.php?id=' . base64_encode($aRow['facility_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     }
