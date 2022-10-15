@@ -119,6 +119,7 @@ $activeTestModules = $general->getActiveTestModules();
           </div>
           <!-- /.box-header -->
           <div class="box-body">
+          <button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> Export to excel</button>
             <table id="facilityDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
@@ -244,6 +245,28 @@ $activeTestModules = $general->getActiveTestModules();
     }
     return true;
   }
+
+  function exportInexcel() {
+		
+		$.blockUI();
+		oTable.fnDraw();
+		$.post("/facilities/facilityExportInExcel.php", {
+      state: $("#state").val(),
+      district: $("#district").val(),
+      facilityType: $("#facilityType").val(),
+      testType: $("#testType").val(),
+			},
+			function(data) {
+				if (data == "" || data == null || data == undefined) {
+					$.unblockUI();
+					alert("<?php echo _("Unable to generate excel"); ?>");
+				} else {
+					$.unblockUI();
+					window.open('/download.php?f=' + data, '_blank');
+				}
+			});
+
+	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
