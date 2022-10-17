@@ -53,6 +53,9 @@ if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 $rResult = $db->rawQuery($sQuery);
+/*   Added to activity log */ 
+$general->activityLog('Export-facilities', $_SESSION['userName'] . ' Exported facilities details to excelsheet' . $_POST['facilityName'], 'facility');
+
 $headings = array("Facility Code", "Facility Name","Facility Type","status","Province/State", "District");
 
 $colNo = 1;
