@@ -11,6 +11,9 @@ $activeTestModules = $general->getActiveTestModules();
 // if($sarr['sc_user_type']=='vluser'){
 //   include('../remote/pullDataFromRemote.php');
 // }
+$provinceQuery = "SELECT * FROM geographical_divisions where geo_parent = 0 and geo_status = 'active'";
+$provinceList = $db->rawQuery($provinceQuery);
+
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -32,7 +35,16 @@ $activeTestModules = $general->getActiveTestModules();
 						<tbody><tr>
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
+              <select class="form-control" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<?php
+									foreach ($provinceList as $province) {
+									?>
+										<option value="<?php echo $province['geo_id']; ?>"><?php echo $province['geo_name']; ?></option>
+									<?php
+									}
+									?>
+								</select>
 							</td>
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
@@ -156,6 +168,12 @@ $activeTestModules = $general->getActiveTestModules();
   var oTable = null;
 
   $(document).ready(function() {
+    $("#state").select2({
+			placeholder: "<?php echo _("Select Province/State'"); ?>"
+		});
+    $("#district").select2({
+			placeholder: "<?php echo _("Select District'"); ?>"
+		});
     $.blockUI();
     oTable = $('#facilityDataTable').dataTable({
       "oLanguage": {
@@ -267,6 +285,17 @@ $activeTestModules = $general->getActiveTestModules();
 			});
 
 	}
+
+  function getDistrictByProvince(provinceId)
+  {
+    $("#district").html('');
+    $.post("/common/get-district-by-province-id.php", {
+      provinceId : provinceId,
+			},
+			function(data) {
+        $("#district").html(data);
+			});
+  }
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
