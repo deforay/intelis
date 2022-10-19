@@ -288,19 +288,15 @@ $state = $geoLocationDb->getProvinces("yes");
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$("#state").change(function() {
+			provinceId = $(this).val();
 			$.blockUI();
-			var pName = $(this).val();
-			if ($.trim(pName) != '') {
-				$.post("/includes/siteInformationDropdownOptions.php", {
-						pName: pName,
-					},
-					function(data) {
-						if (data != "") {
-							details = data.split("###");
-							$("#district").html(details[1]);
-						}
-					});
-			}
+			$("#district").html('');
+    $.post("/common/get-district-by-province-id.php", {
+      provinceId : provinceId,
+			},
+			function(data) {
+        $("#district").html(data);
+			});
 			$.unblockUI();
 		});
 		loadVlRequestData();

@@ -16,7 +16,8 @@ $facilitiesDb = new \Vlsm\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
 /* Global config data */
 $arr = $general->getGlobalConfig();
-
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$state = $geoLocationDb->getProvinces("yes");
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
@@ -80,12 +81,7 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" />
 							</td>
-							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
-							<td>
-								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
-									<?= $facilitiesDropdown; ?>
-								</select>
-							</td>
+							
 							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
@@ -93,7 +89,13 @@ foreach ($srcResults as $list) {
 								</select>
 							</td>
 						
-
+							<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
+							<td>
+								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
+									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
+								</select>
+							</td>
+							
 						</tr>
 						<tr>
 						<td><strong><?php echo _("Sample Tested Date"); ?> :</strong></td>
@@ -184,22 +186,24 @@ foreach ($srcResults as $list) {
 							
 						</tr>
 						<tr>
-						<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
-							<td>
-								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
-									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
-								</select>
-							</td>
-							
+						
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
+							<select name="state" id="state" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
 							</td>
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
+							<select class="form-control" id="district" onchange="getFacilityByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+                </select>
 							</td>
-							
+							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
+							<td>
+								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
+									<?= $facilitiesDropdown; ?>
+								</select>
+							</td>
 						</tr>
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
@@ -637,6 +641,28 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				}
 			});
 	}
+
+	function getDistrictByProvince(provinceId)
+  	{
+		$("#district").html('');
+		$.post("/common/get-district-by-province-id.php", {
+		provinceId : provinceId,
+				},
+				function(data) {
+			$("#district").html(data);
+				});
+  	}
+
+function getFacilityByDistrict(districtId)
+{
+	$("#facilityName").html('');
+    $.post("/common/get-facilities-by-district-id.php", {
+		districtId : districtId,
+			},
+			function(data) {
+        $("#facilityName").html(data);
+			});
+}
 </script>
 <?php
 include(APPLICATION_PATH . '/footer.php');
