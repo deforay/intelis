@@ -15,6 +15,9 @@ $provinceQuery = "SELECT * FROM geographical_divisions where geo_parent = 0 and 
 $provinceList = $db->rawQuery($provinceQuery);
 
 ?>
+<style>
+select { width:50px; !important}
+  </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -31,7 +34,7 @@ $provinceList = $db->rawQuery($provinceQuery);
     <div class="row">
     <div class="col-xs-12">
 				<div class="box">
-					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table class="table" id="advanceFilter" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%; display:none;">
 						<tbody><tr>
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
@@ -48,7 +51,8 @@ $provinceList = $db->rawQuery($provinceQuery);
 							</td>
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
+              <select class="form-control" id="district" onchange="getDistrictByProvince(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+                </select>
 							</td>
 
 						</tr>
@@ -95,7 +99,8 @@ $provinceList = $db->rawQuery($provinceQuery);
 						<tr>
 							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="Search" class="btn btn-success btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-							</td>
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>Hide Advanced Search Options</span></button>
+              </td>
 						</tr>
 
 					</tbody></table>
@@ -126,7 +131,9 @@ $provinceList = $db->rawQuery($provinceQuery);
               <a href="addFacility.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Facility");?></a>
               <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _("Manage Testing Lab");?></a>
               <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _("Manage Health Facilities");?></a>
-            <?php } ?>
+           
+              <?php } ?>
+              &nbsp;<button id="filter" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
           <!-- /.box-header -->
@@ -168,12 +175,7 @@ $provinceList = $db->rawQuery($provinceQuery);
   var oTable = null;
 
   $(document).ready(function() {
-    $("#state").select2({
-			placeholder: "<?php echo _("Select Province/State'"); ?>"
-		});
-    $("#district").select2({
-			placeholder: "<?php echo _("Select District'"); ?>"
-		});
+   
     $.blockUI();
     oTable = $('#facilityDataTable').dataTable({
       "oLanguage": {
@@ -185,6 +187,7 @@ $provinceList = $db->rawQuery($provinceQuery);
       "bScrollCollapse": true,
       "bStateSave": true,
       "bRetrieve": true,
+      "aaSorting": [2, "asc"],
       "aoColumns": [{
           "sClass": "center"
         },
@@ -208,9 +211,6 @@ $provinceList = $db->rawQuery($provinceQuery);
             "bSortable": false
           },
         <?php } ?>
-      ],
-      "aaSorting": [
-        [0, "asc"]
       ],
       "bProcessing": true,
       "bServerSide": true,
@@ -296,6 +296,12 @@ $provinceList = $db->rawQuery($provinceQuery);
         $("#district").html(data);
 			});
   }
+
+  
+	function hideAdvanceSearch(hideId, showId) {
+		$("#" + hideId).hide();
+		$("#" + showId).show();
+	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
