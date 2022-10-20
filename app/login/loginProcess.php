@@ -152,11 +152,15 @@ try {
                 $_SESSION['email'] = $userRow['email'];
                 $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
                 $_SESSION['facilityMap'] = $facilityDb->getUserFacilityMap($userRow['user_id']);
+                $_SESSION['mappedProvinces']=null;
+                if (!empty($_SESSION['facilityMap'])) {
+                    $provinceResult = $db->rawQuery("SELECT DISTINCT f.facility_state_id FROM facility_details as f WHERE f.facility_id IN (".$_SESSION['facilityMap'].")");
+                    $_SESSION['mappedProvinces'] = implode(',', array_column($provinceResult, 'facility_state_id'));
+                }
                 $_SESSION['crossLoginPass'] = null;
                 if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
                     $_SESSION['crossLoginPass'] = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
                 }
-
                 //Add event log
                 $eventType = 'login';
                 $action = ucwords($userRow['user_name']) . ' logged in';

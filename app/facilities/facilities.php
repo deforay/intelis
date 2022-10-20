@@ -11,9 +11,8 @@ $activeTestModules = $general->getActiveTestModules();
 // if($sarr['sc_user_type']=='vluser'){
 //   include('../remote/pullDataFromRemote.php');
 // }
-$provinceQuery = "SELECT * FROM geographical_divisions where geo_parent = 0 and geo_status = 'active'";
-$provinceList = $db->rawQuery($provinceQuery);
-
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$state = $geoLocationDb->getProvinces("yes");
 ?>
 <style>
 select { width:50px; !important}
@@ -39,19 +38,12 @@ select { width:50px; !important}
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
               <select class="form-control" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-									<option value=""> <?php echo _("-- Select --"); ?> </option>
-									<?php
-									foreach ($provinceList as $province) {
-									?>
-										<option value="<?php echo $province['geo_id']; ?>"><?php echo $province['geo_name']; ?></option>
-									<?php
-									}
-									?>
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-              <select class="form-control" id="district" onchange="getDistrictByProvince(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+              <select class="form-control" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>">
                 </select>
 							</td>
 
