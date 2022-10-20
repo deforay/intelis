@@ -46,6 +46,9 @@ class GeoLocations
         } else {
             $this->db->where('geo_parent', 0);
         }
+        if(isset($_SESSION['mappedProvinces']) && !empty($_SESSION['mappedProvinces'])){
+            $this->db->where('geo_id', $_SESSION['mappedProvinces']);
+        }
 
         if (!empty($facilityMap)) {
             $this->db->join("facility_details", "facility_state_id=geo_id", "INNER");
