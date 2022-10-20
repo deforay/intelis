@@ -10,8 +10,14 @@ session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General($db);
-$userDb = new \Vlsm\Models\Users($db);
+$general = new \Vlsm\Models\General();
+$userDb = new \Vlsm\Models\Users();
+
+$requestUrl = $_SERVER['HTTP_HOST'];
+$requestUrl .= $_SERVER['REQUEST_URI'];
+
+$transactionId = $general->generateUUID();
+
 $user = null;
 // The request has to send an Authorization Bearer token 
 $auth = $general->getHeader('Authorization');
@@ -23,15 +29,8 @@ if (!empty($auth)) {
 
 // If authentication fails then do not proceed
 if (empty($user) || empty($user['user_id'])) {
-    $response = array(
-        'status' => 'failed',
-        'timestamp' => time(),
-        'error' => 'Bearer Token Invalid',
-        'data' => array()
-    );
     http_response_code(401);
-    echo json_encode($response);
-    exit(0);
+    throw new \Exception("Bearer token is invalid");
 }
 
 $sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
@@ -41,18 +40,8 @@ $to = !empty($_REQUEST['t']) ? $db->escape($_REQUEST['t']) : null;
 $orderSortType = !empty($_REQUEST['orderSortType']) ? $db->escape($_REQUEST['orderSortType']) : null;
 
 if (!$sampleCode && !$recencyId && (!$from || !$to)) {
-    $response = array(
-        'status' => 'failed',
-        'timestamp' => time(),
-        'error' => 'Mandatory request params missing in request. Expected Recency ID(s) or a Date Range',
-        'data' => array()
-    );
-    if (isset($user['token-updated']) && $user['token-updated'] == true) {
-        $response['token'] = $user['newToken'];
-    }
     http_response_code(400);
-    echo json_encode($response);
-    exit(0);
+    throw new \Exception("Mandatory request params missing in request. Expected Recency ID(s) or a Date Range");
 }
 
 try {
@@ -109,19 +98,8 @@ try {
 
     // No data found
     if (!$rowData) {
-        $response = array(
-            'status' => 'failed',
-            'timestamp' => time(),
-            'error' => 'No matching data',
-            'data' => $rowData
-
-        );
-        if (isset($user['token-updated']) && $user['token-updated'] == true) {
-            $response['token'] = $user['newToken'];
-        }
         http_response_code(200);
-        echo json_encode($response);
-        exit(0);
+        throw new \Exception("No Matching Data");
     }
 
     $payload = array(
@@ -129,15 +107,13 @@ try {
         'timestamp' => time(),
         'data' => $rowData
     );
-    if (isset($user['token_updated']) && $user['token_updated'] == true) {
+    if (isset($user['token_updated']) && $user['token_updated'] === true) {
         $payload['token'] = $user['new_token'];
     } else {
         $payload['token'] = null;
     }
 
     http_response_code(200);
-    echo json_encode($payload);
-    exit(0);
 } catch (Exception $exc) {
 
     // http_response_code(500);
@@ -147,15 +123,17 @@ try {
         'error' => $exc->getMessage(),
         'data' => array()
     );
-    if (isset($user['token_updated']) && $user['token_updated'] == true) {
+    if (isset($user['token_updated']) && $user['token_updated'] === true) {
         $payload['token'] = $user['new_token'];
     } else {
         $payload['token'] = null;
     }
 
-    echo json_encode($payload);
-
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
 }
+
+echo json_encode($payload);
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-recency-vl-result', 'vl', $requestUrl, $_REQUEST, $payload, 'json');
+
+exit(0);

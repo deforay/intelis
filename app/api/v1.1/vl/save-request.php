@@ -27,7 +27,7 @@ try {
     }
 
     /* For API Tracking params */
-    $requestUrl .= $_SERVER['HTTP_HOST'];
+    $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
 
     $auth = $general->getHeader('Authorization');
@@ -418,6 +418,31 @@ try {
         if (isset($data['patientLastName']) && $data['patientLastName'] != "") {
             $vlFulldata['patient_last_name'] = $general->crypto('encrypt', $data['patientLastName'], $vlFulldata['patient_art_no']);
         }
+
+        // South Sudan specific
+        if ($formId === 1) {
+
+            $patientFullName = [];
+            if (trim($vlFulldata['patient_first_name']) != '') {
+                $patientFullName[] = trim($vlFulldata['patient_first_name']);
+            }
+            if (trim($vlFulldata['patient_middle_name']) != '') {
+                $patientFullName[] = trim($vlFulldata['patient_middle_name']);
+            }
+            if (trim($vlFulldata['patient_last_name']) != '') {
+                $patientFullName[] = trim($vlFulldata['patient_last_name']);
+            }
+
+            if (!empty($patientFullName)) {
+                $patientFullName = implode(" ", $patientFullName);
+            } else {
+                $patientFullName = '';
+            }
+            $vlFulldata['patient_first_name'] = $patientFullName;
+            $vlFulldata['patient_middle_name'] = null;
+            $vlFulldata['patient_last_name'] = null;
+        }
+
         if ($rowData) {
             $vlFulldata['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime();
             $vlFulldata['last_modified_by']  = $user['user_id'];

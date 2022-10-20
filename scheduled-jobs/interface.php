@@ -40,7 +40,6 @@ if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteConnected = true;
     //$sqliteDb = new SQLite3(SYSTEM_CONFIG['interfacing']['sqlite3Path']);
     $sqliteDb = new \PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
-
 }
 
 //get the value from interfacing DB
@@ -127,17 +126,31 @@ if (count($interfaceInfo) > 0) {
                     $vlResult = "Not Detected";
                 }
 
-                if (!is_numeric($vlResult)) {
+                if ((isset($vlResult) && $vlResult == 'Failed') || in_array(strtolower($vlResult), ['fail', 'failed', 'failure'])) {
+                    $logVal = null;
+                    $absDecimalVal = null;
+                    $absVal = null;
+                    $txtVal = null;
+                } elseif ((isset($vlResult) && $vlResult == 'Error') || in_array(strtolower($vlResult), ['error', 'err'])) {
+                    $logVal = null;
+                    $absDecimalVal = null;
+                    $absVal = null;
+                    $txtVal = null;
+                } elseif (!is_numeric($vlResult)) {
                     $interpretedResults = $vlDb->interpretViralLoadTextResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
+                    $logVal = $interpretedResults['logVal'];
+                    $vlResult = $interpretedResults['result'];
+                    $absDecimalVal = $interpretedResults['absDecimalVal'];
+                    $absVal = $interpretedResults['absVal'];
+                    $txtVal = $interpretedResults['txtVal'];
                 } else {
                     $interpretedResults = $vlDb->interpretViralLoadNumericResult($vlResult, $unit);
+                    $logVal = $interpretedResults['logVal'];
+                    $vlResult = $interpretedResults['result'];
+                    $absDecimalVal = $interpretedResults['absDecimalVal'];
+                    $absVal = $interpretedResults['absVal'];
+                    $txtVal = $interpretedResults['txtVal'];
                 }
-
-                $logVal = $interpretedResults['logVal'];
-                $vlResult = $interpretedResults['result'];
-                $absDecimalVal = $interpretedResults['absDecimalVal'];
-                $absVal = $interpretedResults['absVal'];
-                $txtVal = $interpretedResults['txtVal'];
             }
 
             $testedByUserId = $approvedByUserId = $reviewedByUserId = null;

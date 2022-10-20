@@ -179,6 +179,7 @@ if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result
      $vlQueryInfo['result_reviewed_datetime'] = '';
 }
 
+
 if ($vlQueryInfo['patient_first_name'] != '') {
      $patientFirstName = $general->crypto('decrypt', $vlQueryInfo['patient_first_name'], $vlQueryInfo['patient_art_no']);
 } else {
@@ -194,8 +195,23 @@ if ($vlQueryInfo['patient_last_name'] != '') {
 } else {
      $patientLastName = '';
 }
+$patientFullName = [];
+if (trim($patientFirstName) != '') {
+     $patientFullName[] = trim($patientFirstName);
+}
+if (trim($patientMiddleName) != '') {
+     $patientFullName[] = trim($patientMiddleName);
+}
+if (trim($patientLastName) != '') {
+     $patientFullName[] = trim($patientLastName);
+}
 
-$patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
+if (!empty($patientFullName)) {
+     $patientFullName = implode(" ", $patientFullName);
+} else {
+     $patientFullName = '';
+}
+
 
 ?>
 <style>

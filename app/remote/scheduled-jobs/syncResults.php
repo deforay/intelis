@@ -6,11 +6,12 @@ if (php_sapi_name() == 'cli') {
     require_once(dirname(__FILE__) . "/../../../startup.php");
 }
 
-$general = new \Vlsm\Models\General();
 
-// $arr = $general->getGlobalConfig();
+$general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
+$version = VERSION;
 
 // putting this into a variable to make this editable
 $systemConfig = SYSTEM_CONFIG;
@@ -22,7 +23,7 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 
 // Checking if the network connection is available
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
-$headers = @get_headers($remoteUrl . '/api/version.php');
+$headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
 if (strpos($headers[0], '200') === false) {
     error_log("No network connectivity while trying remote sync.");
     return false;
