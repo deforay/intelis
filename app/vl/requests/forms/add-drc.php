@@ -508,7 +508,7 @@ $sFormat = '';
 										</tr>
 										<?php if (count($reasonForFailure) > 0) { ?>
 											<tr class="reasonForFailure vlResult" style="display: none;">
-												<td class="reasonForFailure" style="display: none;"><?php echo _("Reason for Failure"); ?></td>
+												<td class="reasonForFailure" style="display: none;"><label for="reasonForFailure"> <?php echo _("Reason for Failure"); ?></label></td>
 												<td class="reasonForFailure" style="display: none;">
 													<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
 														<?= $general->generateSelectOptions($reasonForFailure, null, '-- Select --'); ?>

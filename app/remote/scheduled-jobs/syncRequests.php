@@ -5,7 +5,13 @@ if (php_sapi_name() == 'cli') {
     require_once(dirname(__FILE__) . "/../../../startup.php");
 }
 
+
 $general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
+
+$labId = $general->getSystemConfig('sc_testing_lab_id');
+$version = VERSION;
+
 //$dateUtils = new \vlsm\Utilities\DateUtils();
 
 $systemConfig = SYSTEM_CONFIG;
@@ -17,16 +23,13 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
 
-$headers = @get_headers($remoteUrl . '/api/version.php');
+$headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
 
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
     return false;
 }
 $arr = $general->getGlobalConfig();
-
-
-$labId = $general->getSystemConfig('sc_testing_lab_id');
 
 
 $transactionId = $general->generateUUID();

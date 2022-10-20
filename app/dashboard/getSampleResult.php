@@ -133,16 +133,16 @@ if ($waitingResult[$i][0]['total'] != 0) {
 
 // Samples Accession
 if ($table == "form_eid") {
-    $accessionQuery = 'SELECT DATE(eid.sample_collection_date) as `collection_date`, COUNT(eid_id) as `count` FROM ' . $table . ' as eid INNER JOIN facility_details as f ON f.facility_id=eid.facility_id WHERE ' . $whereCondition . ' DATE(eid.sample_collection_date) <= "' . $cDate . '" AND DATE(eid.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(eid.sample_collection_date) as `collection_date`, COUNT(eid_id) as `count` FROM ' . $table . ' as eid LEFT JOIN facility_details as f ON f.facility_id=eid.facility_id WHERE ' . $whereCondition . ' DATE(eid.sample_collection_date) <= "' . $cDate . '" AND DATE(eid.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "eid_id";
 } else if ($table == "form_covid19") {
-    $accessionQuery = 'SELECT DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 INNER JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE ' . $whereCondition . ' DATE(covid19.sample_collection_date) <= "' . $cDate . '" AND DATE(covid19.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE ' . $whereCondition . ' DATE(covid19.sample_collection_date) <= "' . $cDate . '" AND DATE(covid19.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "covid19_id";
 } else if ($table == "form_hepatitis") {
-    $accessionQuery = 'SELECT DATE(req.sample_collection_date) as `collection_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req INNER JOIN facility_details as f ON f.facility_id=req.facility_id WHERE ' . $whereCondition . ' DATE(req.sample_collection_date) <= "' . $cDate . '" AND DATE(req.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(req.sample_collection_date) as `collection_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req LEFT JOIN facility_details as f ON f.facility_id=req.facility_id WHERE ' . $whereCondition . ' DATE(req.sample_collection_date) <= "' . $cDate . '" AND DATE(req.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "hepatitis_id";
 } else if ($table == "form_tb") {
-    $accessionQuery = 'SELECT DATE(tb.sample_collection_date) as `collection_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb INNER JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE ' . $whereCondition . ' DATE(tb.sample_collection_date) <= "' . $cDate . '" AND DATE(tb.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(tb.sample_collection_date) as `collection_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb LEFT JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE ' . $whereCondition . ' DATE(tb.sample_collection_date) <= "' . $cDate . '" AND DATE(tb.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "tb_id";
 } else {
     if ($whereCondition == "") {
@@ -150,7 +150,7 @@ if ($table == "form_eid") {
     } else {
         $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
     }
-    $accessionQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(vl_sample_id) as `count` FROM ' . $table . ' as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE ' . $vlWhereCondition . ' DATE(vl.sample_collection_date) <= "' . $cDate . '" AND DATE(vl.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
+    $accessionQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(vl_sample_id) as `count` FROM ' . $table . ' as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE ' . $vlWhereCondition . ' DATE(vl.sample_collection_date) <= "' . $cDate . '" AND DATE(vl.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "vl_sample_id";
 }
 

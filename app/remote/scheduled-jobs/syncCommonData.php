@@ -12,11 +12,16 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     exit(0);
 }
 
+$general = new \Vlsm\Models\General();
+$app = new \Vlsm\Models\App();
+
+$labId = $general->getSystemConfig('sc_testing_lab_id');
+$version = VERSION;
 
 //update common data from remote to lab db
 $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
 
-$headers = @get_headers($remoteUrl . '/api/version.php');
+$headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
 
 if (strpos($headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
@@ -24,10 +29,7 @@ if (strpos($headers[0], '200') === false) {
 }
 
 
-$general = new \Vlsm\Models\General();
-$app = new \Vlsm\Models\App();
 
-$labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $dataToSync = array();
 $commonDataToSync = array();
