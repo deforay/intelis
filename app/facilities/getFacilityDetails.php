@@ -91,10 +91,10 @@ if (isset($facilityType) && trim($facilityType) != '') {
     $sWhere[] = ' f_t.facility_type_id = "' . $_POST['facilityType'] . '"';
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-    $sWhere[] = " d.geo_name LIKE '%" . $_POST['district'] . "%' ";
+    $sWhere[] = " d.geo_id = '" . $_POST['district'] . "' ";
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-    $sWhere[] = " p.geo_name LIKE '%" . $_POST['state'] . "%' ";
+    $sWhere[] = " p.geo_id = '" . $_POST['state'] . "' ";
 }
 $qry = "";
 if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
@@ -126,7 +126,6 @@ if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ',$sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
-
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;

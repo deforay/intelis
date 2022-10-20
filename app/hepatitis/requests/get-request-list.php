@@ -173,10 +173,10 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-     $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+     $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-     $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+     $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }
 if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
      $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
