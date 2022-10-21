@@ -185,7 +185,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 							<div class="col-md-6"><a href="editBatchControlsPosition.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
-							<div class="col-md-8">
+							<!--<div class="col-md-8">
 								<div class="form-group">
 									<div class="col-md-12">
 										<div class="col-md-12">
@@ -204,7 +204,31 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 										</div>
 									</div>
 								</div>
-							</div>
+							</div>-->
+							<h4> <?php echo _("Sample Code"); ?></h4>
+                                   <div class="col-md-5">
+                                        <!-- <div class="col-lg-5"> -->
+                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+										<?php
+												foreach ($result as $key => $sample) {
+												?>
+													<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ucwords($sample['facility_name']); ?></option>
+												<?php
+												}
+												?>
+                                        </select>
+                                   </div>
+
+                                   <div class="col-md-2">
+                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                                   </div>
+
+                                   <div class="col-md-5">
+                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+                                   </div>
 						</div>
 						<div class="row" id="alertText" style="font-size:18px;"></div>
 					</div>
@@ -226,8 +250,8 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 	<!-- /.content -->
 </div>
 
-<script src="/assets/js/jquery.multi-select.js"></script>
-<script src="/assets/js/jquery.quicksearch.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
@@ -236,19 +260,65 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 	var resultSampleArray = [];
 
 	function validateNow() {
-		flag = deforayValidator.init({
-			formId: 'editBatchForm'
-		});
+		
+		var selVal = [];
+          $('#search_to option').each(function(i, selected) {
+               selVal[i] = $(selected).val();
+          });
+          $("#selectedFacility").val(selVal);
 
-		if (flag) {
+          flag = deforayValidator.init({
+               formId: 'editBatchForm'
+          });
+          if (flag) {
 			$("#positions").val($('#positions-type').val());
-			$.blockUI();
-			document.getElementById('editBatchForm').submit();
-		}
+                    $.blockUI();
+                    document.getElementById('editBatchForm').submit();
+          }
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		noOfSamples = 0;
+		$('#search').multiselect({
+               search: {
+                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+               },
+               fireSearch: function(value) {
+                    return value.length > 3;
+               }
+          });
+		  $("#facilityName").select2({
+			placeholder: "Select Facilities"
+		});
+		$('#sampleCollectionDate').daterangepicker({
+                locale: {
+                    cancelLabel: "<?= _("Clear"); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
+				showDropdowns: true,
+alwaysShowCalendars: false,
+startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+				}
+			},
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
+		/*noOfSamples = 0;
 		<?php
 		if (isset($batchInfo[0]['max_no_of_samples_in_a_batch']) && trim($batchInfo[0]['max_no_of_samples_in_a_batch']) > 0) {
 		?>
@@ -288,7 +358,7 @@ startDate: moment().subtract(28, 'days'),
 			});
 		$('#sampleCollectionDate').val("");
 		var unSelectedLength = $('.search > option').length - $(".search :selected").length;
-		$('.search').multiSelect({
+		/*$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
 			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(" + unSelectedLength + ")</div>",
@@ -394,7 +464,7 @@ startDate: moment().subtract(28, 'days'),
 		$("#resultSample").val(resultSampleArray);
 		if ($("#machine option:selected").text() != ' -- Select -- ') {
 			$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
-		}
+		}*/
 	});
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
@@ -421,12 +491,14 @@ startDate: moment().subtract(28, 'days'),
 
 	function getSampleCodeDetails() {
 		$.blockUI();
-		var urgent = $("input:radio[name=urgency]");
+		
+		/*var urgent = $("input:radio[name=urgency]");
 		if ((urgent[0].checked == false && urgent[1].checked == false) || urgent == 'undefined') {
 			urgent = '';
 		} else {
 			urgent = $('input[name=urgency]:checked').val();
-		}
+		}*/
+
 		var fName = $("#facilityName").val();
 		var sName = $("#sampleType").val();
 		var gender = $("#gender").val();
@@ -443,7 +515,6 @@ startDate: moment().subtract(28, 'days'),
 			breastfeeding = $('input[name=breastfeeding]:checked').val();
 		}
 		$.post("/vl/batch/getSampleCodeDetails.php", {
-				urgent: urgent,
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				fName: fName,
 				sName: sName,
@@ -454,8 +525,8 @@ startDate: moment().subtract(28, 'days'),
 			function(data) {
 				if (data != "") {
 					$("#sampleDetails").html(data);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
+					//$("#batchSubmit").attr("disabled", true);
+					//$("#batchSubmit").css("pointer-events", "none");
 				}
 			});
 		$.unblockUI();

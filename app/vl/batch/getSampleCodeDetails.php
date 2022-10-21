@@ -81,29 +81,48 @@ $query = $query . " ORDER BY vl.sample_code ASC";
 // echo $query;die;
 $result = $db->rawQuery($query);
 ?>
-<div class="col-md-8">
-	<div class="form-group">
-		<div class="col-md-12">
-			<div class="col-md-12">
-				<div style="width:60%;margin:0 auto;clear:both;">
-					<a href="#" id="select-all-samplecode" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All");?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All");?></a>
-				</div><br /><br />
-				<select id="sampleCode" name="sampleCode[]" multiple="multiple" class="search">
-					<?php
-					foreach ($result as $sample) {
-					?>
-						<option value="<?php echo $sample['vl_sample_id']; ?>"><?php echo ucwords($sample['sample_code']) . " - " . ucwords($sample['facility_name']); ?></option>
-					<?php
-					}
-					?>
-				</select>
-			</div>
-		</div>
-	</div>
-</div>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<div class="row" style="margin: 15px;">
+                                   <h4> <?php echo _("Sample Code"); ?></h4>
+                                   <div class="col-md-5">
+                                        <!-- <div class="col-lg-5"> -->
+                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+										<?php
+                                             if ($result > 0) {
+                                                  foreach ($result as $sample) {
+                                             ?>
+                                                       <option value="<?php echo $sample['vl_sample_id']; ?>"><?php echo ucwords($sample['sample_code'])." - ".ucwords($sample['facility_name']); ?></option>
+                                             <?php
+                                                  }
+                                             }
+                                             ?> 
+                                        </select>
+                                   </div>
+
+                                   <div class="col-md-2">
+                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                                   </div>
+
+                                   <div class="col-md-5">
+                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+                                   </div>
+                              </div>
 <script>
 	$(document).ready(function() {
-		$('.search').multiSelect({
+		$('#search').multiselect({
+               search: {
+                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+               },
+               fireSearch: function(value) {
+                    return value.length > 3;
+               }
+          });
+		/*$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code");?>'>",
 			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'><?php echo _("Available samples");?>(<?php echo count($result); ?>)</div>",
@@ -181,6 +200,6 @@ $result = $db->rawQuery($query);
 			$("#batchSubmit").attr("disabled", true);
 			$("#batchSubmit").css("pointer-events", "none");
 			return false;
-		});
+		});*/
 	});
 </script>

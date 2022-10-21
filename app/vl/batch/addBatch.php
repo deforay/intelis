@@ -193,25 +193,35 @@ foreach ($testPlatformResult as $machine) {
 							</div>
 						</div>
 
-						<div class="row" id="sampleDetails">
-							<div class="col-md-8">
-								<div class="form-group">
-									<div class="col-md-12">
-										<div class="col-md-12">
-											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All"); ?></a>
-											</div><br /><br />
-											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+						<div class="row" id="sampleDetails" style="margin: 15px;<?php echo $display; ?>">
+                                   <h4> <?php echo _("Sample Code"); ?></h4>
+                                   <div class="col-md-5">
+                                        <!-- <div class="col-lg-5"> -->
+                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+                                            
+                                        </select>
+                                   </div>
+
+                                   <div class="col-md-2">
+                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                                   </div>
+
+                                   <div class="col-md-5">
+                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+                                   </div>
+                              </div>
+
+
+
 						<div class="row col-md-12" id="alertText" style="font-size:20px;"></div>
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine'); ?>" onclick="validateNow();return false;" style="pointer-events:none;" disabled><?php echo _("Save and Next"); ?></a>
+					<input type="hidden" name="selectedFacility" id="selectedFacility" />
+						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _("Save and Next"); ?></a>
 						<a href="batchcode.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
@@ -225,8 +235,8 @@ foreach ($testPlatformResult as $machine) {
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/jquery.multi-select.js"></script>
-<script src="/assets/js/jquery.quicksearch.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
@@ -235,7 +245,16 @@ foreach ($testPlatformResult as $machine) {
 	noOfSamples = 0;
 	sortedTitle = [];
 	$(document).ready(function() {
-
+		$('#search').multiselect({
+               search: {
+                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+               },
+               fireSearch: function(value) {
+                    return value.length > 3;
+               }
+          });
+	
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
@@ -272,94 +291,25 @@ foreach ($testPlatformResult as $machine) {
 	});
 
 	function validateNow() {
-		flag = deforayValidator.init({
-			formId: 'addBatchForm'
-		});
+		
+		var selVal = [];
+          $('#search_to option').each(function(i, selected) {
+               selVal[i] = $(selected).val();
+          });
+          $("#selectedFacility").val(selVal);
 
-		if (flag) {
+          flag = deforayValidator.init({
+               formId: 'addBatchForm'
+          });
+          if (flag) {
 			$("#positions").val($('#positions-type').val());
-			$.blockUI();
-			document.getElementById('addBatchForm').submit();
-		}
+                    $.blockUI();
+                    document.getElementById('addBatchForm').submit();
+          }
 	}
 
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
-	$(document).ready(function() {
-		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
-			afterInit: function(ms) {
-				var that = this,
-					$selectableSearch = that.$selectableUl.prev(),
-					$selectionSearch = that.$selectionUl.prev(),
-					selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
-				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
-						if (e.which === 40) {
-							that.$selectableUl.focus();
-							return false;
-						}
-					});
-
-				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
-						if (e.which == 40) {
-							that.$selectionUl.focus();
-							return false;
-						}
-					});
-			},
-			afterSelect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("<?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					alert("<?php echo _('You have already selected Maximum no. of sample'); ?> " + noOfSamples);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-			},
-			afterDeselect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == 0) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("<?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-			}
-		});
-
-		$('#select-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('select_all');
-			return false;
-		});
-		$('#deselect-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('deselect_all');
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-			return false;
-		});
-	});
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
@@ -421,8 +371,8 @@ foreach ($testPlatformResult as $machine) {
 			function(data) {
 				if (data != "") {
 					$("#sampleDetails").html(data);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
+					//$("#batchSubmit").attr("disabled", true);
+					//$("#batchSubmit").css("pointer-events", "none");
 				}
 			});
 		$.unblockUI();
