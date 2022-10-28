@@ -19,8 +19,8 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 // $showUrgency = ($configResult[0]['value'] == 1 || $configResult[0]['value'] == 2) ? true : false;
 //Get active machines
 
-$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id where sample_batch_id is NULL OR sample_batch_id='' ORDER BY f.facility_name ASC";
-$result = $db->rawQuery($query);
+//$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id where sample_batch_id is NULL OR sample_batch_id='' ORDER BY f.facility_name ASC";
+//$result = $db->rawQuery($query);
 
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
@@ -220,7 +220,7 @@ foreach ($testPlatformResult as $machine) {
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-					<input type="hidden" name="selectedFacility" id="selectedFacility" />
+					<input type="hidden" name="selectedSample" id="selectedSample" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _("Save and Next"); ?></a>
 						<a href="batchcode.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 					</div>
@@ -296,8 +296,20 @@ foreach ($testPlatformResult as $machine) {
           $('#search_to option').each(function(i, selected) {
                selVal[i] = $(selected).val();
           });
-          $("#selectedFacility").val(selVal);
-
+          $("#selectedSample").val(selVal);
+		  var selected = $("#machine").find('option:selected');
+            noOfSamples = selected.data('no-of-samples');
+            if(noOfSamples < selVal.length)
+			{
+				alert("You have selected maximum number of samples");
+				return false;
+			}
+			if(selVal=="")
+			{
+				alert("Please select sample code");
+				return false;
+			}
+		
           flag = deforayValidator.init({
                formId: 'addBatchForm'
           });
@@ -392,7 +404,7 @@ foreach ($testPlatformResult as $machine) {
 	$("#machine").change(function() {
 		var self = this.value;
 		if (self != '') {
-			//getSampleCodeDetails();
+			getSampleCodeDetails();
 			$("#platform").val($("#machine").val());
 			var selected = $(this).find('option:selected');
 			noOfSamples = selected.data('no-of-samples');

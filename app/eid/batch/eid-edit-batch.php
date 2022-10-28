@@ -153,7 +153,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 							<div class="col-md-6"><a href="eid-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
-							<div class="col-md-8">
+							<!--<div class="col-md-8">
 								<div class="form-group">
 									<div class="col-md-12">
 										<div class="col-md-12">
@@ -161,25 +161,43 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
-												<?php
+												
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>-->
+							<h4> <?php echo _("Sample Code"); ?></h4>
+                                   <div class="col-md-5">
+                                        <!-- <div class="col-lg-5"> -->
+                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+										<?php
 												foreach ($result as $key => $sample) {
 												?>
 													<option value="<?php echo $sample['eid_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ucwords($sample['facility_name']); ?></option>
 												<?php
 												}
 												?>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
+                                        </select>
+                                   </div>
+
+                                   <div class="col-md-2">
+                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                                   </div>
+
+                                   <div class="col-md-5">
+                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+                                   </div>
 						</div>
 						<div class="row" id="alertText" style="font-size:18px;"></div>
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
-						<input type="hidden" name="resultSample" id="resultSample" />
+						<input type="hidden" name="selectedSample" id="selectedSample" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 						<a href="eid-batches.php" class="btn btn-default"> Cancel</a>
@@ -194,8 +212,8 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 	<!-- /.content -->
 </div>
 
-<script src="/assets/js/jquery.multi-select.js"></script>
-<script src="/assets/js/jquery.quicksearch.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
@@ -204,28 +222,55 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 	var resultSampleArray = [];
 
 	function validateNow() {
-		flag = deforayValidator.init({
-			formId: 'editBatchForm'
-		});
 
-		if (flag) {
-			$("#positions").val($('#positions-type').val());
-			$.blockUI();
-			document.getElementById('editBatchForm').submit();
+		var selVal = [];
+          $('#search_to option').each(function(i, selected) {
+               selVal[i] = $(selected).val();
+          });
+		  var selected = $("#machine").find('option:selected');
+            noOfSamples = selected.data('no-of-samples');
+            if(noOfSamples < selVal.length)
+			{
+				alert("You have selected maximum number of samples");
+				return false;
+			}
+          $("#selectedSample").val(selVal);
+		  if(selVal=="")
+		{
+			alert("Please select sample code");
+			return false;
 		}
+		
+          flag = deforayValidator.init({
+               formId: 'editBatchForm'
+          });
+          if (flag) {
+			$("#positions").val($('#positions-type').val());
+                    $.blockUI();
+                    document.getElementById('editBatchForm').submit();
+          }
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		noOfSamples = 0;
-		<?php
-		if (isset($batchInfo[0]['max_no_of_samples_in_a_batch']) && trim($batchInfo[0]['max_no_of_samples_in_a_batch']) > 0) {
-		?>
-			noOfSamples = <?php echo intval($batchInfo[0]['max_no_of_samples_in_a_batch']); ?>;
-		<?php }
-		?>
+		
+		$('#search').multiselect({
+               search: {
+                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+               },
+               fireSearch: function(value) {
+                    return value.length > 3;
+               }
+          });
+		  setTimeout(function() {
+		$("#search_rightSelected").trigger('click');
+		},10);
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
+		setTimeout(function() {
+		$("#search_rightSelected").trigger('click');
+		},10);
 		$('#sampleCollectionDate').daterangepicker({
                 locale: {
                     cancelLabel: "<?= _("Clear"); ?>",
@@ -233,8 +278,8 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
                     separator: ' to ',
                 },
 				showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -252,7 +297,7 @@ startDate: moment().subtract(28, 'days'),
 			});
 		$('#sampleCollectionDate').val("");
 		var unSelectedLength = $('.search > option').length - $(".search :selected").length;
-		$('.search').multiSelect({
+	/*	$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
 			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(" + unSelectedLength + ")</div>",
@@ -358,7 +403,7 @@ startDate: moment().subtract(28, 'days'),
 		$("#resultSample").val(resultSampleArray);
 		if ($("#machine option:selected").text() != ' -- Select -- ') {
 			$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
-		}
+		}*/
 	});
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
@@ -395,8 +440,8 @@ startDate: moment().subtract(28, 'days'),
 			function(data) {
 				if (data != "") {
 					$("#sampleDetails").html(data);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
+					//$("#batchSubmit").attr("disabled", true);
+					//$("#batchSubmit").css("pointer-events", "none");
 				}
 			});
 		$.unblockUI();

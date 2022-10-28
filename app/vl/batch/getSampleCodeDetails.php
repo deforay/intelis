@@ -1,7 +1,5 @@
 <?php
 
-
-
 $general = new \Vlsm\Models\General();
 $start_date = '';
 $end_date = '';

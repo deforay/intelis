@@ -227,7 +227,9 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
                                    </div>
 
                                    <div class="col-md-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+
+										</select>
                                    </div>
 						</div>
 						<div class="row" id="alertText" style="font-size:18px;"></div>
@@ -235,7 +237,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
-						<input type="hidden" name="resultSample" id="resultSample" />
+						<input type="hidden" name="selectedSample" id="selectedSample" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 						<a href="batchcode.php" class="btn btn-default"> Cancel</a>
@@ -265,8 +267,21 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
           $('#search_to option').each(function(i, selected) {
                selVal[i] = $(selected).val();
           });
-          $("#selectedFacility").val(selVal);
-
+          $("#selectedSample").val(selVal);
+		  var selected = $("#machine").find('option:selected');
+            noOfSamples = selected.data('no-of-samples');
+            if(noOfSamples < selVal.length)
+			{
+				alert("You have selected maximum number of samples");
+				return false;
+			}
+		
+		if(selVal=="")
+		{
+			alert("Please select sample code");
+			return false;
+		}
+		
           flag = deforayValidator.init({
                formId: 'editBatchForm'
           });
@@ -278,6 +293,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
+		
 		$('#search').multiselect({
                search: {
                     left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
@@ -287,6 +303,9 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
                     return value.length > 3;
                }
           });
+		  setTimeout(function() {
+		$("#search_rightSelected").trigger('click');
+		},10);
 		  $("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});

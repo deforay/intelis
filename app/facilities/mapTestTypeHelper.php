@@ -15,16 +15,16 @@ if ($params == "testing-labs") {
 }
 
 try {
-    $_POST['mappedFacilities'] = json_decode($_POST['mappedFacilities'], true);
-    if (isset($_POST['mappedFacilities']) && count($_POST['mappedFacilities']) > 0) {
+    $mappedFacility = explode(',',$_POST['selectedSample']);
+   // $_POST['mappedFacilities'] = json_decode($_POST['mappedFacilities'], true);
+    if (isset($mappedFacility) && count($mappedFacility) > 0) {
 
         $db->where('test_type', $testType);
         //$db->where('facility_id', $_POST['mappedFacilities'], 'NOT IN');
         $db->delete($tableName);
-
         $currentDateTime = $general->getCurrentDateTime();
         $data = array();
-        foreach ($_POST['mappedFacilities'] as $facility) {
+        foreach ($mappedFacility as $facility) {
             $data[] = array(
                 'test_type'     => $testType,
                 'facility_id'   => $facility,
@@ -39,7 +39,7 @@ try {
             'updated_datetime'  => $currentDateTime
         );
 
-        $db->where('facility_id', $_POST['mappedFacilities'], 'IN');
+        $db->where('facility_id', $mappedFacility, 'IN');
         $db->update($tableName, $data);
 
 

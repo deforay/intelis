@@ -23,8 +23,8 @@ try {
 			$db = $db->where('sample_batch_id', $id);
 			$db->update($tableName2, $value);
 			$xplodResultSample = array();
-			if (isset($_POST['resultSample']) && trim($_POST['resultSample']) != "") {
-				$xplodResultSample = explode(",", $_POST['resultSample']);
+			if (isset($_POST['selectedSample']) && trim($_POST['selectedSample']) != "") {
+				$xplodResultSample = explode(",", $_POST['selectedSample']);
 			}
 			$sample = array();
 			//Mergeing disabled samples into existing samples

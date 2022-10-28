@@ -145,26 +145,31 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 							<div class="col-md-6"><a href="hepatitis-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
-							<div class="col-md-8">
-								<div class="form-group">
-									<div class="col-md-12">
-										<div class="col-md-12">
-											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-											</div><br /><br />
-											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
-												<?php
+						<div class="col-md-5">
+                                        <!-- <div class="col-lg-5"> -->
+                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+										<?php
 												foreach ($result as $key => $sample) {
 												?>
 													<option value="<?php echo $sample['hepatitis_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ucwords($sample['facility_name']); ?></option>
 												<?php
 												}
 												?>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
+                                        </select>
+                                   </div>
+
+                                   <div class="col-md-2">
+                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                                   </div>
+
+                                   <div class="col-md-5">
+                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+
+										</select>
+                                   </div>
 						</div>
 						<div class="row" id="alertText" style="font-size:18px;"></div>
 					</div>
@@ -172,6 +177,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 					<div class="box-footer">
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
 						<input type="hidden" name="resultSample" id="resultSample" />
+						<input type="hidden" name="selectedSample" id="selectedSample" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 						<a href="hepatitis-batches.php" class="btn btn-default"> Cancel</a>
 					</div>
@@ -185,8 +191,8 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 	<!-- /.content -->
 </div>
 
-<script src="/assets/js/jquery.multi-select.js"></script>
-<script src="/assets/js/jquery.quicksearch.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
@@ -195,24 +201,48 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 	var resultSampleArray = [];
 
 	function validateNow() {
-		flag = deforayValidator.init({
-			formId: 'editBatchForm'
-		});
-
-		if (flag) {
-			$.blockUI();
-			document.getElementById('editBatchForm').submit();
+		var selVal = [];
+          $('#search_to option').each(function(i, selected) {
+               selVal[i] = $(selected).val();
+          });
+          $("#selectedSample").val(selVal);
+		  var selected = $("#machine").find('option:selected');
+            noOfSamples = selected.data('no-of-samples');
+            if(noOfSamples < selVal.length)
+			{
+				alert("You have selected maximum number of samples");
+				return false;
+			}
+		
+		if(selVal=="")
+		{
+			alert("Please select sample code");
+			return false;
 		}
+		
+          flag = deforayValidator.init({
+               formId: 'editBatchForm'
+          });
+          if (flag) {
+			$("#positions").val($('#positions-type').val());
+                    $.blockUI();
+                    document.getElementById('editBatchForm').submit();
+          }
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		noOfSamples = 0;
-		<?php
-		if (isset($batchInfo[0]['max_no_of_samples_in_a_batch']) && trim($batchInfo[0]['max_no_of_samples_in_a_batch']) > 0) {
-		?>
-			noOfSamples = <?php echo intval($batchInfo[0]['max_no_of_samples_in_a_batch']); ?>;
-		<?php }
-		?>
+		$('#search').multiselect({
+               search: {
+                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+               },
+               fireSearch: function(value) {
+                    return value.length > 3;
+               }
+          });
+		  setTimeout(function() {
+		$("#search_rightSelected").trigger('click');
+		},10);
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
@@ -241,114 +271,7 @@ startDate: moment().subtract(28, 'days'),
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate').val("");
-		var unSelectedLength = $('.search > option').length - $(".search :selected").length;
-		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(" + unSelectedLength + ")</div>",
-			selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'>Selected samples(" + $(".search :selected").length + ")</div>",
-			afterInit: function(ms) {
-				var that = this,
-					$selectableSearch = that.$selectableUl.prev(),
-					$selectionSearch = that.$selectionUl.prev(),
-					selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
-
-				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
-						if (e.which === 40) {
-							that.$selectableUl.focus();
-							return false;
-						}
-					});
-
-				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
-						if (e.which == 40) {
-							that.$selectionUl.focus();
-							return false;
-						}
-					});
-			},
-			afterSelect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					alert("You have already selected Maximum no. of sample " + noOfSamples);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-				$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
-			},
-			afterDeselect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == 0) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-				$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
-			}
-		});
-		$('#select-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('select_all');
-			return false;
-		});
-		$('#deselect-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('deselect_all');
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-			return false;
-		});
-
-		if (noOfSamples == 0) {
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-		} else if ($("#sampleCode :selected").length > noOfSamples) {
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-		}
-
-		<?php
-		$r = 1;
-		foreach ($result as $sample) {
-			if (isset($sample['batch_id']) && trim($sample['batch_id']) == $id) {
-				if (isset($sample['result']) && trim($sample['result']) != '') {
-					if ($r == 1) {
-		?>
-						$("#deselect-all-samplecode").remove();
-					<?php } ?>
-					resultSampleArray.push('<?php echo $sample['form_hepatitis']; ?>');
-		<?php $r++;
-				}
-			}
-		}
-		?>
-		$("#resultSample").val(resultSampleArray);
-		if ($("#machine option:selected").text() != ' -- Select -- ') {
-			$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
-		}
+		
 	});
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
@@ -385,8 +308,8 @@ startDate: moment().subtract(28, 'days'),
 			function(data) {
 				if (data != "") {
 					$("#sampleDetails").html(data);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
+					//$("#batchSubmit").attr("disabled", true);
+					//$("#batchSubmit").css("pointer-events", "none");
 				}
 			});
 		$.unblockUI();

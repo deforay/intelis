@@ -28,12 +28,17 @@ try {
             $db->insert($tableName1, $data);
             $lastId = $db->getInsertId();
 
-            if ($lastId > 0) {
-                for ($j = 0; $j < count($_POST['sampleCode']); $j++) {
-                    $vlSampleId = $_POST['sampleCode'][$j];
-                    $value = array('sample_batch_id' => $lastId);
-                    $db = $db->where('covid19_id', $vlSampleId);
-                    $db->update($tableName2, $value);
+            if ($lastId > 0 && trim($_POST['selectedSample']) != '') {
+                $selectedSample = explode(",", $_POST['selectedSample']);
+                $uniqueSampleId = array_unique($selectedSample);
+                for ($j = 0; $j <= count($selectedSample); $j++) {
+                    if (isset($uniqueSampleId[$j])) {
+                      
+                        $vlSampleId = $uniqueSampleId[$j];
+                        $value = array('sample_batch_id' => $lastId);
+                        $db = $db->where('covid19_id', $vlSampleId);
+                        $db->update($tableName2, $value);
+                    }
                 }
                 header("location:covid-19-add-batch-position.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
             }
