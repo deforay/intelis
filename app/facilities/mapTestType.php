@@ -164,7 +164,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 	function validateNow() {
 
-		let mappedFacilities = JSON.stringify($("#facilities").val());
+		let mappedFacilities = JSON.stringify($("#search").val());
 		$("#mappedFacilities").val(mappedFacilities);
 		$("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES		
 		var selVal = [];

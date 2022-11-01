@@ -23,7 +23,7 @@ $bQuery = "SELECT vl.sample_code,vl.sample_batch_id,vl.covid19_id,vl.facility_id
 //error_log($bQuery);die;
 $batchResultresult = $db->rawQuery($bQuery, array($id));
 
-$query = "SELECT vl.sample_code,vl.sample_batch_id,vl.covid19_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_covid19 as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '') AND (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!='' AND vl.vlsm_country_id = ? ORDER BY vl.last_modified_datetime ASC";
+$query = "SELECT vl.sample_code,vl.sample_batch_id,vl.covid19_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_covid19 as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '') AND (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!='' ORDER BY vl.last_modified_datetime ASC";
 //error_log($query);die;
 $result = $db->rawQuery($query, array($arr['vl_form']));
 $result = array_merge($batchResultresult, $result);
@@ -145,7 +145,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 											<?php
 											foreach ($testPlatformResult as $machine) {
 											?>
-												<option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
+												<option value="<?php echo $machine['config_id']; ?>" <?php if($batchInfo[0]['machine']==$machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -211,7 +211,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 <script type="text/javascript">
 	var startDate = "";
 	var endDate = "";
-
+	var resultSampleArray = [];
 	function validateNow() {
 		var selVal = [];
           $('#search_to option').each(function(i, selected) {
@@ -283,7 +283,23 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate').val("");
+		var unSelectedLength = $('.search > option').length - $(".search :selected").length;
 
+		<?php
+		$r = 1;
+		foreach ($result as $sample) {
+			if (isset($sample['batch_id']) && trim($sample['batch_id']) == $id) {
+				if (isset($sample['result']) && trim($sample['result']) != '') {
+					if ($r == 1) {
+		?>
+						$("#deselect-all-samplecode").remove();
+					<?php } ?>
+					resultSampleArray.push('<?php echo $sample['eid_id']; ?>');
+		<?php $r++;
+				}
+			}
+		}
+		?>
 	});
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
@@ -320,8 +336,8 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 			function(data) {
 				if (data != "") {
 					$("#sampleDetails").html(data);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
+					//$("#batchSubmit").attr("disabled", true);
+					//$("#batchSubmit").css("pointer-events", "none");
 				}
 			});
 		$.unblockUI();

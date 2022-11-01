@@ -128,7 +128,7 @@ try {
         'reason_for_tb_test'                  => !empty($_POST['reasonForTbTest']) ? json_encode($_POST['reasonForTbTest']) : null,
         'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
-        'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
+      //  'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
         'sample_received_at_lab_datetime'     => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
         'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
         'result'                              => !empty($_POST['result']) ? $_POST['result'] : null,
@@ -152,7 +152,7 @@ try {
         'last_modified_by'                    => $_SESSION['userId'],
         'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
     );
-
+//echo '<pre>'; print_r($tbData); die;
     $id = 0;
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
@@ -179,6 +179,7 @@ try {
     if (!empty($_POST['tbSampleId'])) {
         $db = $db->where('tb_id', $_POST['tbSampleId']);
         $id = $db->update($tableName, $tbData);
+        error_log($db->getLastError());
     }
 
     if ($id > 0) {

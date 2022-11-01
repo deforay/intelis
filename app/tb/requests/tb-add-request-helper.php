@@ -210,6 +210,7 @@ try {
     if (!empty($_POST['tbSampleId'])) {
         $db = $db->where('tb_id', $_POST['tbSampleId']);
         $id = $db->update($tableName, $tbData);
+        error_log($db->getLastError());
     }
     if ($id > 0) {
         $_SESSION['alertMsg'] = _("TB test request added successfully");

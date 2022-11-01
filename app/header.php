@@ -109,7 +109,6 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	$covid19ManagementMenuAccess = false;
 }
 // COVID-19 Menu end
-
 // HEPATITIS Menu start
 if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("hepatitis-requests.php", "hepatitis-add-request.php", "hepatitis-edit-request.php", "add-Samples-from-manifest.php"))) {
 	$hepatitisTestRequestMenuAccess = true;

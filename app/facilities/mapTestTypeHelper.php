@@ -7,20 +7,19 @@ if (session_status() == PHP_SESSION_NONE) {
 $general = new \Vlsm\Models\General();
 $params     = $_POST['facilityType'];
 $testType   = $_POST['testType'];
-
+//print_r($_POST); die;
 if ($params == "testing-labs") {
     $tableName = "testing_labs";
 } else {
     $tableName = "health_facilities";
 }
-
 try {
     $mappedFacility = explode(',',$_POST['selectedSample']);
    // $_POST['mappedFacilities'] = json_decode($_POST['mappedFacilities'], true);
     if (isset($mappedFacility) && count($mappedFacility) > 0) {
 
         $db->where('test_type', $testType);
-        //$db->where('facility_id', $_POST['mappedFacilities'], 'NOT IN');
+       // $db->where('facility_id', $mappedFacility, 'NOT IN');
         $db->delete($tableName);
         $currentDateTime = $general->getCurrentDateTime();
         $data = array();

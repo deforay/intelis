@@ -13,7 +13,7 @@ $healthFacilites = $facilitiesDb->getHealthFacilities('tb');
 //$formId = $general->getGlobalConfig('vl_form');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-
+$testPlatformResult = $general->getTestingPlatforms('tb');
 $id = base64_decode($_GET['id']);
 //global config
 
@@ -27,6 +27,17 @@ $query = "SELECT vl.sample_code,vl.sample_batch_id,vl.tb_id,vl.facility_id,vl.re
 //error_log($query);die;
 $result = $db->rawQuery($query, array($arr['vl_form']));
 $result = array_merge($batchResultresult, $result);
+
+$machinesLabelOrder = array();
+foreach ($testPlatformResult as $machine) {
+    $lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
+    $lastOrderInfo = $db->query($lastOrderQuery);
+    if (isset($lastOrderInfo[0]['label_order']) && trim($lastOrderInfo[0]['label_order']) != '') {
+        $machinesLabelOrder[$machine['config_id']] = implode(",", json_decode($lastOrderInfo[0]['label_order'], true));
+    } else {
+        $machinesLabelOrder[$machine['config_id']] = '';
+    }
+}
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -78,7 +89,7 @@ $result = array_merge($batchResultresult, $result);
 			</div>
 			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
-
+				
 					<th scope="col">Facility</th>
 					<td>
 						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
@@ -91,6 +102,7 @@ $result = array_merge($batchResultresult, $result);
 					</td>
 				</tr>
 				<tr>
+				
 					<th scope="col">Date Sample Receieved at Lab</th>
 					<td>
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
@@ -118,6 +130,24 @@ $result = array_merge($batchResultresult, $result);
 								</div>
 							</div>
 							<div class="col-md-6"><a href="tb-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="machine" class="col-lg-4 control-label">Testing Platform <span class="mandatory">*</span></label>
+									<div class="col-lg-7" style="margin-left:3%;">
+										<select name="machine" id="machine" class="form-control isRequired" title="Please choose machine">
+											<option value=""> -- Select -- </option>
+											<?php
+											foreach ($testPlatformResult as $machine) {
+											?>
+												<option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6"><a href="hepatitis-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 						<h4> <?php echo _("Sample Code"); ?></h4>

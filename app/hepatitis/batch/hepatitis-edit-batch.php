@@ -16,7 +16,6 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 $id = base64_decode($_GET['id']);
 //global config
-
 $batchQuery = "SELECT * from batch_details as b_d LEFT JOIN import_config as i_c ON i_c.config_id=b_d.machine where batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, array($id));
 $bQuery = "SELECT vl.sample_code,vl.sample_batch_id,vl.hepatitis_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_hepatitis as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE  (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND vl.sample_code!='' AND vl.sample_batch_id = ? ORDER BY vl.last_modified_datetime ASC";
@@ -83,7 +82,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 			</div>
 			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
-
+		
 					<th scope="col">Facility</th>
 					<td>
 						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
@@ -92,12 +91,13 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 					</td>
 					<th scope="col"></th>
 					<td></td>
-				</tr>
-				<tr>
 					<th scope="col">Sample Collection Date</th>
 					<td>
 						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
 					</td>
+				</tr>
+				<tr>
+					
 					<th scope="col">Date Sample Receieved at Lab</th>
 					<td>
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />

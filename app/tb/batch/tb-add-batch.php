@@ -10,10 +10,20 @@ $healthFacilites = $facilitiesDb->getHealthFacilities('tb');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
-
+$testPlatformResult = $general->getTestingPlatforms('tb');
 $start_date = date('Y-m-d');
 $end_date = date('Y-m-d');
 $maxId = $general->createBatchCode();
+$machinesLabelOrder = array();
+foreach ($testPlatformResult as $machine) {
+    $lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
+    $lastOrderInfo = $db->query($lastOrderQuery);
+    if (isset($lastOrderInfo[0]['label_order']) && trim($lastOrderInfo[0]['label_order']) != '') {
+        $machinesLabelOrder[$machine['config_id']] = implode(",", json_decode($lastOrderInfo[0]['label_order'], true));
+    } else {
+        $machinesLabelOrder[$machine['config_id']] = '';
+    }
+}
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -65,18 +75,31 @@ $maxId = $general->createBatchCode();
             </div>
             <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
                 <tr>
+                <th scope="col"><?php echo _("Testing Platform");?>&nbsp;<span class="mandatory">*</span> </th>
+                    <td>
+                        <select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine');?>" style="width:280px;">
+                            <option value=""> <?php echo _("-- Select --");?> </option>
+                            <?php
+                            foreach ($testPlatformResult as $machine) {
+                                $labelOrder = $machinesLabelOrder[$machine['config_id']];
+                            ?>
+                                <option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?php echo ($machine['machine_name']); ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
                     <th scope="col"><?php echo _("Facility"); ?></th>
                     <td>
                         <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
                             <?= $facilitiesDropdown; ?>
                         </select>
                     </td>
-                    <th scope="col"><?php echo _("Sample Collection Date"); ?></th>
+                   
+                </tr>
+                <tr>
+                <th scope="col"><?php echo _("Sample Collection Date"); ?></th>
                     <td>
                         <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:275px;background:#fff;" />
                     </td>
-                </tr>
-                <tr>
                     <th scope="col"><?php echo _("Date Sample Receieved at Lab"); ?></th>
                     <td>
                         <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:275px;background:#fff;" />
@@ -247,13 +270,13 @@ $maxId = $general->createBatchCode();
     }
 
     function getSampleCodeDetails() {
-
-        var fName = $("#facilityName").val();
-        if (fName == null || fName == '') {
+        var machine = $("#machine").val();
+        if (machine == null || machine == '') {
             $.unblockUI();
-            alert("<?php echo _("You have to choose a facility to proceed"); ?>");
+            alert("<?php echo _("You have to choose a testing platform to proceed");?>");
             return false;
         }
+        var fName = $("#facilityName").val();
 
         $.blockUI();
         $.post("/tb/batch/get-tb-samples-batch.php", {

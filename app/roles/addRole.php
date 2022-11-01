@@ -17,13 +17,12 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
 	$activeModules[] = 'covid19';
 }
-if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['hepatitis']['tb'] == true) {
+if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] == true) {
 	$activeModules[] = 'hepatitis';
 }
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
 	$activeModules[] = 'tb';
 }
-
 
 $resourcesQuery = "SELECT module, GROUP_CONCAT( DISTINCT CONCAT(resources.resource_id,',',resources.display_name) ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources' FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
 $rInfo = $db->query($resourcesQuery);
@@ -214,7 +213,7 @@ h2 {
 									<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 									<?php
 									$a=0;
-									
+								
 							foreach ($rInfo as $moduleRow) {
 								if($a==0)
 								$cls = "active";

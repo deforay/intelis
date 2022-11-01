@@ -33,7 +33,7 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
     }
 }
 
-$query = "SELECT vl.sample_code, vl.tb_id, vl.facility_id, vl.result_status, vl.sample_batch_id, f.facility_name, f.facility_code FROM form_tb as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vlsm_country_id = $country  AND vl.sample_code!=''";
+$query = "SELECT vl.sample_code, vl.tb_id, vl.facility_id, vl.result_status, vl.sample_batch_id, f.facility_name, f.facility_code FROM form_tb as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!=''";
 if (isset($_POST['batchId'])) {
     $query = $query . " AND (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
 } else {
@@ -60,7 +60,7 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
     }
 }
 $query = $query . " ORDER BY vl.sample_code ASC";
-// echo $query;die;
+
 $result = $db->rawQuery($query);
 ?>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>

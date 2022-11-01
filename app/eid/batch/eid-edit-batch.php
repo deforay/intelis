@@ -144,7 +144,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 											<?php
 											foreach ($testPlatformResult as $machine) {
 											?>
-												<option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
+												<option value="<?php echo $machine['config_id']; ?>" <?php if($batchInfo[0]['machine']==$machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -268,9 +268,6 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
-		setTimeout(function() {
-		$("#search_rightSelected").trigger('click');
-		},10);
 		$('#sampleCollectionDate').daterangepicker({
                 locale: {
                     cancelLabel: "<?= _("Clear"); ?>",

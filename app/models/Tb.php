@@ -285,15 +285,15 @@ class Tb
                 echo 0;
                 exit();
             }
-
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
+
                     echo 0;
                     exit();
             }
 
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
+            $oldSampleCodeKey = isset($params['oldSampleCodeKey']) ? $params['oldSampleCodeKey'] : null;
             $sampleJson = $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
@@ -370,6 +370,7 @@ class Tb
             }
 
             $id = 0;
+           
             if ($rowData) {
                 // $this->db = $this->db->where('tb_id', $rowData['tb_id']);
                 // $id = $this->db->update("form_tb", $tbData);
@@ -381,6 +382,7 @@ class Tb
                 if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                     $tbData['unique_id'] = $general->generateUUID();
                     $id = $this->db->insert("form_tb", $tbData);
+                    //error_log($this->db->getLastError()); die;
                 }
             }
 

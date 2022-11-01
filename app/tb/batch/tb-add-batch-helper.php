@@ -35,7 +35,7 @@ try {
                       
                         $vlSampleId = $uniqueSampleId[$j];
                         $value = array('sample_batch_id' => $lastId);
-                        $db = $db->where('vl_sample_id', $vlSampleId);
+                        $db = $db->where('tb_id', $vlSampleId);
                         $db->update($tableName2, $value);
                     }
                 }

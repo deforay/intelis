@@ -23,8 +23,8 @@ $batchQuery = "SELECT * from batch_details as b_d LEFT JOIN import_config as i_c
 $batchInfo = $db->rawQuery($batchQuery, array($id));
 $bQuery = "SELECT vl.sample_code,vl.sample_batch_id,vl.vl_sample_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE  (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND vl.sample_code!='' AND vl.sample_batch_id = $id ORDER BY vl.last_modified_datetime ASC";
 //error_log($bQuery);die;
+//echo '<pre>'; print_r($batchInfo); die;
 $batchResultresult = $db->rawQuery($bQuery);
-
 $query = "SELECT vl.sample_code,vl.sample_batch_id,vl.vl_sample_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '') AND (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!='' AND vl.vlsm_country_id = ? ORDER BY vl.last_modified_datetime ASC";
 //error_log($query);die;
 $result = $db->rawQuery($query, array($arr['vl_form']));
@@ -176,7 +176,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 											<?php
 											foreach ($testPlatformResult as $machine) {
 											?>
-												<option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
+												<option value="<?php echo $machine['config_id']; ?>" <?php if($batchInfo[0]['machine']==$machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
