@@ -20,7 +20,7 @@ class Instruments
     }
 
 
-    public function getInstruments($testType = null)
+    public function getInstruments($testType = null,$dropDown = false)
     {
         $db = $this->db;
         $db->where('status', 'active');
@@ -28,7 +28,18 @@ class Instruments
             $db->where("(JSON_SEARCH(supported_tests, 'all', '$testType') IS NOT NULL) AND (supported_tests IS NOT NULL)");
         }
         $db->orderBy('machine_name', 'ASC');
-        return $db->get($this->table);
+        $result = $db->get($this->table);
+        if($dropDown)
+        {
+            foreach ($result as $row) {
+                $response[$row['config_id']] = $row['machine_name'];
+            }
+            return $response;
+        }
+        else
+        {
+            return $result;
+        }
     }
     public function getInstrumentByName($instrumentName)
     {
