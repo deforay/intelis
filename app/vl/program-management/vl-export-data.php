@@ -287,7 +287,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -354,7 +354,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 				},
 				showDropdowns: true,
 				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),	
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -409,7 +409,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 			}
 		}
 
-		$("#filterDiv input, #filterDiv select").on("change", function(){
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 
@@ -582,9 +582,9 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 	}
 
 	function exportInexcel() {
-		if(searchExecuted === false){
-     searchVlRequestData();
-  }
+		if (searchExecuted === false) {
+			searchVlRequestData();
+		}
 		var withAlphaNum = null;
 		$.blockUI();
 		oTable.fnDraw();
