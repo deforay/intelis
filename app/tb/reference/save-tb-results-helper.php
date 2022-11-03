@@ -3,25 +3,24 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-  
+
 $general = new \Vlsm\Models\General();
 $tableName = "r_tb_results";
 $primaryKey = "result_id";
-// print_r(base64_decode($_POST['resultId']));die;
 try {
 	if (isset($_POST['resultName']) && trim($_POST['resultName']) != "") {
 		$data = array(
-			'result_id'     => $_POST['resultName'],
 			'result_type' 		=> ucfirst($_POST['resultType']),
 			'result' 		=> ucfirst($_POST['resultName']),
 			'status' 	    => $_POST['resultStatus'],
 			'updated_datetime' 	=> $general->getCurrentDateTime(),
 		);
 		if(isset($_POST['resultId']) && $_POST['resultId'] != ""){
-			$db = $db->where($primaryKey, base64_decode($_POST['resultId']))->where('result', $_POST['oldResultName'])->where('result_type', $_POST['oldResultType']);
+			$db = $db->where($primaryKey, base64_decode($_POST['resultId']));
         	$lastId = $db->update($tableName, $data);
 		} else{
-			$lastId = $db->insert($tableName, $data);
+			$db->insert($tableName, $data);
+			$lastId = $db->getInsertId();
 		}
 
 		if($lastId > 0){

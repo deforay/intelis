@@ -16,7 +16,6 @@ try {
             'updated_datetime'              => $general->getCurrentDateTime(),
         );
 
-        // echo "<pre>";print_r($data);die;
         if (isset($_POST['qcTestId']) && $_POST['qcTestId'] != "") {
             $db = $db->where($primaryKey, base64_decode($_POST['qcTestId']));
             $lastId = $db->update($tableName, $data);

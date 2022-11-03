@@ -16,7 +16,6 @@ $tableName = "r_covid19_symptoms";
 try {
 	if (isset($_POST['symptomsName']) && trim($_POST['symptomsName']) != "") {
 
-
 		$data = array(
             'symptom_name' => $_POST['symptomsName'],
             'parent_symptom' => $_POST['parentSymptom'],

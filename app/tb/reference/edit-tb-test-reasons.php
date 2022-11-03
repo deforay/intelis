@@ -45,8 +45,8 @@ $tstInfo = $db->query($tstQuery);
                 <div class="form-group">
                   <label for="parentReason" class="col-lg-4 control-label">Parent Reason</label>
                   <div class="col-lg-7">
-                    <select class="form-control isRequired" id="parentReason" name="parentReason" placeholder="Parent Reason" title="Please enter Parent Reason">
-                      <option value=""> -- Select -- </option>
+                    <select class="form-control" id="parentReason" name="parentReason" placeholder="Parent Reason" title="Please enter Parent Reason">
+                      <option value="0"> -- Select -- </option>
                       <?php
                       foreach ($rejInfo as $type) {
                       ?>

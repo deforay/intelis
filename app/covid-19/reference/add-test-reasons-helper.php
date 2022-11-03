@@ -6,7 +6,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
   
 
-
 $general = new \Vlsm\Models\General();
 
 
@@ -27,7 +26,7 @@ try {
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();
 
-		$_SESSION['alertMsg'] = _("Test reasons details added successfully");
+		$_SESSION['alertMsg'] = _("COVID 19 Test reasons details added successfully");
 		$general->activityLog('add-test-reasons', $_SESSION['userName'] . ' added new reference test reasons' . $_POST['testReasonName'], 'reference-covid19-test-reasons');
 	}
 	header("location:covid19-test-reasons.php");

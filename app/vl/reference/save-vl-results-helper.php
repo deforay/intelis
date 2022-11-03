@@ -25,7 +25,7 @@ try {
 			'updated_datetime' 	=> $general->getCurrentDateTime(),
 		);
 		if (isset($_POST['resultId']) && $_POST['resultId'] != "") {
-			$db = $db->where($primaryKey, base64_decode($_POST['resultId']))->where('result', $_POST['oldResultName']);
+			$db = $db->where($primaryKey, base64_decode($_POST['resultId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$db->insert($tableName, $data);

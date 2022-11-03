@@ -11,13 +11,12 @@ $primaryKey = "result_id";
 try {
 	if (isset($_POST['resultName']) && trim($_POST['resultName']) != "") {
 		$data = array(
-            'result_id'     => strtolower($_POST['resultName']),
 			'result' 		=> ucfirst($_POST['resultName']),
 			'status' 	    => $_POST['resultStatus'],
 			'updated_datetime' 	=> $general->getCurrentDateTime(),
 		);
 		if(isset($_POST['resultId']) && $_POST['resultId'] != ""){
-			$db = $db->where($primaryKey, base64_decode($_POST['resultId']))->where('result', $_POST['oldResultName']);
+			$db = $db->where($primaryKey, base64_decode($_POST['resultId']));
         	$lastId = $db->update($tableName, $data);
 		} else{
 			$db->insert($tableName, $data);
