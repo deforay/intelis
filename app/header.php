@@ -444,6 +444,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<li class="allMenu vl-sample-type">
 												<a href="/vl/reference/vl-sample-type.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Type"); ?></a>
 											</li>
+											<li class="allMenu vl-results">
+												<a href="/vl/reference/vl-results.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Results"); ?></a>
+											</li>
 											<li class="allMenu vl-test-reasons">
 												<a href="/vl/reference/vl-test-reasons.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Reasons"); ?></a>
 											</li>
