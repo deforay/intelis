@@ -542,8 +542,11 @@ class Vl
         }
     }
 
-    public function getVlResults()
-    {
+    public function getVlResults($instrumentId = null){
+
+        if( !empty($instrumentId) ){
+            $this->db->where("(JSON_SEARCH(available_for_instruments, 'all','$instrumentId') IS NOT NULL)");
+        }
         $results = $this->db->get('r_vl_results');
         return $results;
     }

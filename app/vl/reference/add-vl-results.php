@@ -60,6 +60,8 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null,
                                         <option value="">--Select--</option>
                                             <option value="suppressed">Suppressed</option>
                                             <option value="not suppressed">Not Suppressed</option>
+											<option value="error">Error</option>
+											<option value="failed">Failed</option>
                                         </select>
 									</div>
 								</div>

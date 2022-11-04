@@ -67,7 +67,9 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
                                         <option value="">--Select--</option>
                                             <option value="suppressed" <?php if($resultInfo[0]['interpretation'] == "suppressed") echo "selected='selected'"; ?>>Suppressed</option>
                                             <option value="not suppressed" <?php if($resultInfo[0]['interpretation'] == "not suppressed") echo "selected='selected'"; ?>>Not Suppressed</option>
-                                        </select>
+											<option value="error">Error</option>
+											<option value="failed">Failed</option>
+										</select>
 									</div>
 								</div>
 							</div>

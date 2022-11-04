@@ -639,10 +639,7 @@ $sFormat = '';
                                                                       <div class="col-lg-7 resultInputContainer">
                                                                            <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)">
                                                                            <datalist id="possibleVlResults">
-                                                                                <option value="No Result"> No Result </option>
-                                                                                <option value="Failed"> Failed </option>
-                                                                                <option value="Error"> Error </option>
-                                                                                <option value="Below Detection Level"> Below Detection Level </option>
+                                                                               
                                                                            </datalist>
                                                                       </div>
                                                                  </div>

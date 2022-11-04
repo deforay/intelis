@@ -3250,3 +3250,17 @@ ALTER TABLE `track_api_requests` ADD `transaction_id` VARCHAR(256) NULL DEFAULT 
 
 -- Amit 30-Sep-2022
 INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES (11, 'No Result', 'active');
+
+-- Jeyabanu 04-Nov-2022
+CREATE TABLE `r_vl_results` (
+ `result_id` int NOT NULL AUTO_INCREMENT,
+ `result` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+ `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+ `available_for_instruments` json DEFAULT NULL,
+ `interpretation` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+ `updated_datetime` datetime DEFAULT NULL,
+ `data_sync` int NOT NULL DEFAULT '0',
+ PRIMARY KEY (`result_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+ALTER TABLE `r_tb_results` CHANGE `result_id` `result_id` INT(11) NOT NULL AUTO_INCREMENT;

@@ -9,14 +9,10 @@ if (isset($_POST['instrumentId'])) {
   $configId = $_POST['instrumentId'];
 }
 
-$vlResults = $vLModel->getVlResults();
+$vlResults = $vLModel->getVlResults($configId);
 $option = "";
 foreach($vlResults as $res)
 {
-    $insArr = json_decode($res['available_for_instruments']);
-    if(in_array($configId,$insArr))
-    {
-        $option .= "<option value='".$res['result']."'>".$res['result']."</option>";
-    }
+    $option .= "<option value='".$res['result']."'>".$res['result']."</option>";
 }
 echo $option;

@@ -682,7 +682,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															<select name="testingPlatform" id="testingPlatform" class="isRequired result-optional form-control labSection" title="Please choose the VL Testing Platform">
 																<option value="">-- Select --</option>
 																<?php foreach ($importResult as $mName) { ?>
-																	<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
+																	<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
 																<?php } ?>
 															</select>
 														</div>
@@ -742,10 +742,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-lg-7 resultInputContainer">
 														<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
 														<datalist id="possibleVlResults">
-															<option value="No Result" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'No Result') ? "selected='selected'" : ""; ?>> No Result </option>
+															<!--<option value="No Result" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'No Result') ? "selected='selected'" : ""; ?>> No Result </option>
 															<option value="Failed" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Failed') ? "selected='selected'" : ""; ?>> Failed </option>
 															<option value="Error" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Error') ? "selected='selected'" : ""; ?>> Error </option>
-															<option value="Below Detection Level" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Below Detection Level') ? "selected='selected'" : ""; ?>> Below Detection Level </option>
+															<option value="Below Detection Level" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Below Detection Level') ? "selected='selected'" : ""; ?>> Below Detection Level </option>-->
 														</datalist>
 													</div>
 												</div>
@@ -1051,6 +1051,19 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('.hivDetection').hide();
 			$("#hivDetection").val("");
 		}
+
+		 //Get VL results by platform id
+		 var platformId = str1[3];
+          $("#possibleVlResults").html('');
+          $.post("/vl/requests/getVlResults.php", {
+                              instrumentId : platformId,
+                         },
+                         function(data) {
+                             // alert(data);
+                              if (data != "") {
+                                   $("#possibleVlResults").html(data);
+                              }
+                         });
 	}
 
 
