@@ -579,7 +579,7 @@ $sFormat = '';
                                                                            <select name="testingPlatform" id="testingPlatform" class="form-control result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
-                                                                                     <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
+                                                                                     <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
                                                                                 <?php } ?>
                                                                            </select>
                                                                       </div>
@@ -637,7 +637,7 @@ $sFormat = '';
                                                                  <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
-                                                                           <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
+                                                                           <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)">
                                                                            <datalist id="possibleVlResults">
                                                                                 <option value="No Result"> No Result </option>
                                                                                 <option value="Failed"> Failed </option>
@@ -1240,6 +1240,20 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.hivDetection').hide();
                $("#hivDetection").val("");
           }
+
+          //Get VL results by platform id
+          var platformId = str1[3];
+          $("#possibleVlResults").html('');
+          $.post("/vl/requests/getVlResults.php", {
+                              instrumentId : platformId,
+                         },
+                         function(data) {
+                             // alert(data);
+                              if (data != "") {
+                                   $("#possibleVlResults").html(data);
+                              }
+                         });
+
      }
 
      function setSampleDispatchDate() {

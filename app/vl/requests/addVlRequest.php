@@ -102,7 +102,6 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
 // }
 
 
-
 $fileArray = array(
     1 => 'forms/add-southsudan.php',
     2 => 'forms/add-zimbabwe.php',

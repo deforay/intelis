@@ -541,4 +541,10 @@ class Vl
             return $results;
         }
     }
+
+    public function getVlResults()
+    {
+        $results = $this->db->get('r_vl_results');
+        return $results;
+    }
 }
