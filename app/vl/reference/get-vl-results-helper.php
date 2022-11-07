@@ -135,20 +135,27 @@ $output = array(
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => array()
 );
-
 foreach ($rResult as $aRow) {
+    $instruments = json_decode($aRow['available_for_instruments']);
+    $idValues = implode(',',$instruments);
+    $sqlInstrument = "select group_concat(machine_name) as machine_name from import_config where config_id in ($idValues)";
+    $instrumentRes = $db->rawQuery($sqlInstrument);
     $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
                <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
                </select><br><br>';
     $row = array();
     $row[] = ucwords($aRow['result']);
+    $row[] = $instrumentRes[0]['machine_name'];
+    
     if (isset($_SESSION['privileges']) && in_array("vl-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
         $row[] = $status;
+        $row[] = '<a href="edit-vl-results.php?id=' . base64_encode($aRow['result_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     }
     else {
         $row[] = ucwords($aRow['status']);
     }
+   
     $output['aaData'][] = $row;
 }
 
