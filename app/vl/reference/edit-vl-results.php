@@ -40,7 +40,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 								<div class="form-group">
 									<label for="resultName" class="col-lg-4 control-label">Result Name<span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Result Name" title="Please enter Result name" onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars($id); ?>','The Result name that you entered already exists.Enter another name',null)" />
+										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Result Name" title="Please enter Result name" readonly onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars($id); ?>','The Result name that you entered already exists.Enter another name',null)" />
 										<input type="hidden" class="form-control" id="resultId" name="resultId" value="<?php echo base64_encode($id); ?>" />
                                         <input type="hidden" class="form-control" id="oldResultName" name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
 									</div>
@@ -67,9 +67,9 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
                                         <option value="">--Select--</option>
                                             <option value="suppressed" <?php if($resultInfo[0]['interpretation'] == "suppressed") echo "selected='selected'"; ?>>Suppressed</option>
                                             <option value="not suppressed" <?php if($resultInfo[0]['interpretation'] == "not suppressed") echo "selected='selected'"; ?>>Not Suppressed</option>
-											<option value="error">Error</option>
-											<option value="failed">Failed</option>
-											<option value="no result">No Result</option>
+											<option value="error" <?php if($resultInfo[0]['interpretation'] == "error") echo "selected='selected'"; ?>>Error</option>
+											<option value="failed" <?php if($resultInfo[0]['interpretation'] == "failed") echo "selected='selected'"; ?>>Failed</option>
+											<option value="no result" <?php if($resultInfo[0]['interpretation'] == "no result") echo "selected='selected'"; ?>>No Result</option>
 										</select>
 									</div>
 								</div>

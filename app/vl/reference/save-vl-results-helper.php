@@ -15,7 +15,7 @@ try {
         }
         else
         {
-            $jsonInstruments=NULL;
+            $jsonInstruments = NULL;
         }
 		$data = array(
 			'result' 		=> ucfirst($_POST['resultName']),

@@ -30,9 +30,10 @@ require_once(APPLICATION_PATH . '/header.php');
 							<thead>
 								<tr>
 									<th scope="row"><?php echo _("Result Name");?></th>
+									<th scope="row"><?php echo _("Instruments");?></th>
 									<th scope="row"><?php echo _("Status");?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("vl-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<!-- <th scope="row">Action</th> -->
+									<th scope="row">Action</th> 
 									<?php } ?>
 								</tr>
 							</thead>
@@ -75,6 +76,12 @@ require_once(APPLICATION_PATH . '/header.php');
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
 				[0, "asc"]
@@ -98,7 +105,7 @@ require_once(APPLICATION_PATH . '/header.php');
     if (obj.value != '') {
       conf = confirm("<?php echo _("Are you sure you want to change the status?");?>");
       if (conf) {
-        $.post("update-eid-result-status.php", {
+        $.post("update-vl-result-status.php", {
             status: obj.value,
             id: obj.id
           },
