@@ -16,10 +16,10 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-child"></em> Edit EID Results</h1>
+		<h1><em class="fa-solid fa-child"></em> Edit VL Results</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-			<li class="active">EID Results</li>
+			<li class="active">VL Results</li>
 		</ol>
 	</section>
 
@@ -40,7 +40,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 								<div class="form-group">
 									<label for="resultName" class="col-lg-4 control-label">Result Name<span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Result Name" title="Please enter Result name" onblur="checkNameValidation('r_eid_results','result',this,'<?php echo "result_id##" . htmlspecialchars($id); ?>','The Result name that you entered already exists.Enter another name',null)" />
+										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Result Name" title="Please enter Result name" onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars($id); ?>','The Result name that you entered already exists.Enter another name',null)" />
 										<input type="hidden" class="form-control" id="resultId" name="resultId" value="<?php echo base64_encode($id); ?>" />
                                         <input type="hidden" class="form-control" id="oldResultName" name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
 									</div>
@@ -69,6 +69,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
                                             <option value="not suppressed" <?php if($resultInfo[0]['interpretation'] == "not suppressed") echo "selected='selected'"; ?>>Not Suppressed</option>
 											<option value="error">Error</option>
 											<option value="failed">Failed</option>
+											<option value="no result">No Result</option>
 										</select>
 									</div>
 								</div>
