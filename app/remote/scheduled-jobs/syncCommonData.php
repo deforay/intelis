@@ -99,6 +99,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     $payload['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
     $payload['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
     $payload['vlFailureReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_test_failure_reasons');
+    $payload['vlResultsLastModified'] = $general->getLastModifiedDateTime('r_vl_results');
 
 
 
@@ -120,6 +121,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
         'vlFailureReasons' => array(
             'primaryKey' => 'failure_id',
             'tableName' => 'r_vl_test_failure_reasons',
+        ),
+        'vlResults' => array(
+            'primaryKey' => 'result_id',
+            'tableName' => 'r_vl_results',
         )
     );
 }
