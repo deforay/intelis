@@ -354,6 +354,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
         array('value' => '1', 'show' => 'Pending'),
         array('value' => '4', 'show' => 'Rejected')
     );
+    $data['vl']['vlResults'] = $general->fetchDataFromTable('r_vl_results');
     $status = true;
 }
 
