@@ -3264,3 +3264,5 @@ CREATE TABLE `r_vl_results` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 ALTER TABLE `r_tb_results` CHANGE `result_id` `result_id` INT(11) NOT NULL AUTO_INCREMENT;
+
+INSERT INTO `privileges` ( `resource_id`, `privilege_name`, `display_name`) VALUES ( 'vl-reference', 'vl-sample-type.php', 'Manage VL Reference');
