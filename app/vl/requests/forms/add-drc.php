@@ -451,10 +451,10 @@ $sFormat = '';
 											</td>
 											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label></td>
 											<td style="width: 25%;">
-												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
+												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value="">-- Sélectionner --</option>
 													<?php foreach ($importResult as $mName) { ?>
-														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
+														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -495,10 +495,10 @@ $sFormat = '';
 											<td class="resultInputContainer">
 												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this);">
 												<datalist id="possibleVlResults">
-													<option value="< 20"> &lt; 20 </option>
+													<!--<option value="< 20"> &lt; 20 </option>
 													<option value="< 40"> &lt; 40 </option>
 													<option value="< 400"> &lt; 400 </option>
-													<option value="Target Not Detected"> Target Not Detected </option>
+													<option value="Target Not Detected"> Target Not Detected </option>-->
 												</datalist>
 											</td>
 											<td style="text-align:center;"><label for="vlLog">Log </label></td>
@@ -876,4 +876,20 @@ $sFormat = '';
 			placeholder: "Select Approuvé par"
 		});
 	});
+
+	function getVlResults(platformInfo)
+	{
+		var str1 = platformInfo.split("##");
+          //Get VL results by platform id
+          var platformId = str1[3];
+          $("#possibleVlResults").html('');
+          $.post("/vl/requests/getVlResults.php", {
+                              instrumentId : platformId,
+                         },
+                         function(data) {
+                              if (data != "") {
+                                   $("#possibleVlResults").html(data);
+                              }
+                         });
+	}
 </script>

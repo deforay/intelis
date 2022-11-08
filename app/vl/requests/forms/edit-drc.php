@@ -502,10 +502,10 @@ $sampleSuggestionDisplay = 'display:none;';
 											</td>
 											<td><label for="testingPlatform">Technique utilisée </label></td>
 											<td>
-												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
+												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value="">-- Sélectionner --</option>
 													<?php foreach ($importResult as $mName) { ?>
-														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
+														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -882,4 +882,20 @@ $sampleSuggestionDisplay = 'display:none;';
 			placeholder: "Select Approuvé par"
 		});
 	});
+
+	function getVlResults(platformInfo)
+	{
+		var str1 = platformInfo.split("##");
+          //Get VL results by platform id
+          var platformId = str1[3];
+          $("#possibleVlResults").html('');
+          $.post("/vl/requests/getVlResults.php", {
+                              instrumentId : platformId,
+                         },
+                         function(data) {
+                              if (data != "") {
+                                   $("#possibleVlResults").html(data);
+                              }
+                         });
+	}
 </script>
