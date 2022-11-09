@@ -348,7 +348,7 @@ $tableResult = $db->rawQuery($sQuery);
         }
     }
     <?php
-    if (isset($collectionTotal) && $collectionTotal > 0) { ?>
+    if (isset($tableResult) && $tableResult > 0) { ?>
         $('#<?php echo $samplesCollectionChart; ?>').highcharts({
             chart: {
                 type: 'column',
@@ -365,7 +365,7 @@ $tableResult = $db->rawQuery($sQuery);
             },
             xAxis: {
                 categories: [<?php
-                                foreach ($collectionResult as $tRow) {
+                                foreach ($tableResult as $tRow) {
                                     echo "'" . addslashes($tRow['facility_name']) . "',";
                                 }
                                 ?>],
@@ -399,8 +399,8 @@ $tableResult = $db->rawQuery($sQuery);
                 showInLegend: false,
                 name: 'Samples',
                 data: [<?php
-                        foreach ($collectionResult as $tRow) {
-                            echo ucwords($tRow['total']) . ",";
+                        foreach ($tableResult as $tRow) {
+                            echo ucwords($tRow['totalCount']) . ",";
                         }
                         ?>]
 
