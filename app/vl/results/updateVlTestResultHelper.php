@@ -186,9 +186,15 @@ try {
         $vldata['result_status'] = 4;
     }
     /* Updating the high and low viral load data */
-    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
+
     $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    //}
+    
+
+    if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
+        $vldata['result_status'] = 5;
+    } elseif ($vldata['vl_result_category'] == 'rejected') {
+        $vldata['result_status'] = 4;
+    }
 
     //echo "<pre>";var_dump($vldata);
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);

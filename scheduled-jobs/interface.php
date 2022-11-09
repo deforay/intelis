@@ -190,7 +190,11 @@ if (count($interfaceInfo) > 0) {
             }
 
             $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
-
+            if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
+                $data['result_status'] = 5;
+            } elseif ($data['vl_result_category'] == 'rejected') {
+                $data['result_status'] = 4;
+            }
             $db = $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
             $vlUpdateId = $db->update('form_vl', $data);
             $numberOfResults++;

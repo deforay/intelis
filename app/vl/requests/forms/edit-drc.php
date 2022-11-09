@@ -542,10 +542,10 @@ $sampleSuggestionDisplay = 'display:none;';
 											<td class="vlResult resultInputContainer">
 												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
 												<datalist id="possibleVlResults">
-													<option value="< 20" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>> &lt; 20 </option>
+													<!--<option value="< 20" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>> &lt; 20 </option>
 													<option value="< 40" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 40') ? "selected='selected'" : ""; ?>> &lt; 40 </option>
 													<option value="< 400" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 400') ? "selected='selected'" : ""; ?>> &lt; 400 </option>
-													<option value="Target Not Detected" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Target Not Detected') ? "selected='selected'" : ""; ?>> Target Not Detected </option>
+													<option value="Target Not Detected" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == 'Target Not Detected') ? "selected='selected'" : ""; ?>> Target Not Detected </option>-->
 												</datalist>
 											</td>
 											<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label></td>
@@ -631,6 +631,7 @@ $sampleSuggestionDisplay = 'display:none;';
 
 
 	$(document).ready(function() {
+	getVlResults($("#testingPlatform").val());
 		if ($("#status").val() == 4) {
 			$(".rejectionReason").show();
 			$("#rejectionReason").addClass('isRequired');
@@ -644,6 +645,26 @@ $sampleSuggestionDisplay = 'display:none;';
 			$("#vlLog").css('pointer-events', 'auto');
 			$(".vlResult, .vlLog").show();
 		}
+
+		$('#fName').select2({
+			placeholder: "Select Clinic/Health Center"
+		});
+		$('#district').select2({
+			placeholder: "District"
+		});
+		$('#province').select2({
+			placeholder: "Province"
+		});
+		$('#labId').select2({
+			placeholder: "Select Nom du laboratoire"
+		});
+		$('#reviewedBy').select2({
+			placeholder: "Select Revu par"
+		});
+		$('#approvedBy').select2({
+			placeholder: "Select Approuvé par"
+		});
+
 	});
 
 	function getfacilityDetails(obj) {
@@ -859,29 +880,6 @@ $sampleSuggestionDisplay = 'display:none;';
 			document.getElementById('editVlRequestForm').submit();
 		}
 	}
-
-
-
-	$(document).ready(function() {
-		$('#fName').select2({
-			placeholder: "Select Clinic/Health Center"
-		});
-		$('#district').select2({
-			placeholder: "District"
-		});
-		$('#province').select2({
-			placeholder: "Province"
-		});
-		$('#labId').select2({
-			placeholder: "Select Nom du laboratoire"
-		});
-		$('#reviewedBy').select2({
-			placeholder: "Select Revu par"
-		});
-		$('#approvedBy').select2({
-			placeholder: "Select Approuvé par"
-		});
-	});
 
 	function getVlResults(platformInfo)
 	{
