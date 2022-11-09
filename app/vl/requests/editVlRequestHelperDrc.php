@@ -350,10 +350,12 @@ try {
         $vldata['result_status'] = $resultStatus;
     }
 
-    /* Updating the high and low viral load data */
-    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
     $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    //}
+    if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
+        $vldata['result_status'] = 5;
+    } elseif ($vldata['vl_result_category'] == 'rejected') {
+        $vldata['result_status'] = 4;
+    }
     if ($_SESSION['instanceType'] == 'remoteuser') {
         $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
     } else {

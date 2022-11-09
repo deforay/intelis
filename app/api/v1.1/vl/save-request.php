@@ -455,7 +455,12 @@ try {
         $vlFulldata['last_modified_by'] =  $user['user_id'];
 
         $vlFulldata['vl_result_category'] = $vlModel->getVLResultCategory($vlFulldata['result_status'], $vlFulldata['result']);
-
+        if ($vlFulldata['vl_result_category'] == 'failed' || $vlFulldata['vl_result_category'] == 'invalid') {
+            $vlFulldata['result_status'] = 5;
+        } elseif ($vldata['vl_result_category'] == 'rejected') {
+            $vlFulldata['result_status'] = 4;
+        }
+        
         $id = 0;
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);

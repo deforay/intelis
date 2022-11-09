@@ -161,7 +161,7 @@ try {
         $_POST['vlLog'] = '';
     } else if (isset($_POST['lt20']) && $_POST['lt20'] == 'yes' && $isRejected === false) {
         $_POST['vlResult'] = '< 20';
-        $_POST['vlLog'] = '';   
+        $_POST['vlLog'] = '';
     } else if (isset($_POST['lt40']) && $_POST['lt40'] == 'yes' && $isRejected === false) {
         $_POST['vlResult'] = '< 40';
         $_POST['vlLog'] = '';
@@ -327,10 +327,13 @@ try {
         $vldata['source_of_request'] = 'api';
     }
 
-    /* Updating the high and low viral load data */
-    //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
     $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    //}
+    if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
+        $vldata['result_status'] = 5;
+    } elseif ($vldata['vl_result_category'] == 'rejected') {
+        $vldata['result_status'] = 4;
+    }
+
     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {

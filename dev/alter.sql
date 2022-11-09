@@ -3261,7 +3261,7 @@ CREATE TABLE `r_vl_results` (
  `updated_datetime` datetime DEFAULT NULL,
  `data_sync` int NOT NULL DEFAULT '0',
  PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `r_tb_results` CHANGE `result_id` `result_id` INT(11) NOT NULL AUTO_INCREMENT;
 
@@ -3274,3 +3274,8 @@ ALTER TABLE `audit_form_vl` ADD `samples_referred_datetime` DATETIME NULL DEFAUL
 ALTER TABLE `audit_form_eid` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
 ALTER TABLE `audit_form_covid19` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
 ALTER TABLE `audit_form_hepatitis` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
+
+
+-- Amit 09-Nov-2022
+UPDATE `form_vl` set result_status = 4 where vl_result_category like 'reject%';
+UPDATE `form_vl` set result_status = 5 where vl_result_category like 'fail%';

@@ -33,12 +33,15 @@ try {
             $status['is_sample_rejected'] = 'no';
         }
 
-        
 
-        /* Updating the high and low viral load data */
-        if ($status['result_status'] == 4 || $status['result_status'] == 7) {
-            $vlDb = new \Vlsm\Models\Vl();
-            $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $vlRow['result']);
+
+
+        $vlDb = new \Vlsm\Models\Vl();
+        $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $vlRow['result']);
+        if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
+            $status['result_status'] = 5;
+        } elseif ($vldata['vl_result_category'] == 'rejected') {
+            $status['result_status'] = 4;
         }
 
         // echo "<pre>";print_r($status);die;
