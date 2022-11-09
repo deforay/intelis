@@ -130,11 +130,11 @@ $tResult = $db->rawQuery($tQuery);
 $sWhere = array();
 $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         SUM(CASE
-                WHEN (vl.vl_result_category like 'not suppressed') THEN 1
+                WHEN (LOWER(vl.vl_result_category) like 'not suppressed') THEN 1
                     ELSE 0
                 END) AS highVL,
         (SUM(CASE
-                WHEN (vl.vl_result_category like 'suppressed') THEN 1
+                WHEN (LOWER(vl.vl_result_category) like 'suppressed') THEN 1
                     ELSE 0
                 END)) AS lowVL
         
@@ -269,7 +269,18 @@ foreach ($tatResult as $sRow) {
 <script>
     <?php
     if (isset($tResult) && count($tResult) > 0) {
+        $total = 0;
     ?>
+    var _value = [
+                    <?php foreach ($tResult as $tRow) { 
+                        $total += $tRow['total'];?> {
+                            name: '<?php echo ($tRow['status_name']); ?>',
+                            y: <?php echo ($tRow['total']); ?>,
+                            color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
+                            url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>'
+                        },
+                    <?php } ?>
+                ];
         $('#<?php echo $sampleStatusOverviewContainer; ?>').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -278,7 +289,7 @@ foreach ($tatResult as $sRow) {
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Samples Status Overview"); ?>"
+                text: "<?php echo _("Samples Status Overview (N = ".$total.")"); ?>"
             },
             credits: {
                 enabled: false
@@ -317,15 +328,7 @@ foreach ($tatResult as $sRow) {
                         }
                     }
                 },
-                data: [
-                    <?php foreach ($tResult as $tRow) { ?> {
-                            name: '<?php echo ($tRow['status_name']); ?>',
-                            y: <?php echo ($tRow['total']); ?>,
-                            color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
-                            url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>'
-                        },
-                    <?php } ?>
-                ]
+                data: _value
             }]
         });
 
@@ -347,7 +350,7 @@ foreach ($tatResult as $sRow) {
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("VL Suppression"); ?>"
+                text: "<?php echo _("VL Suppression (N = ".($vlSuppressionResult['highVL'] + $vlSuppressionResult['lowVL']).")"); ?>"
             },
             credits: {
                 enabled: false
