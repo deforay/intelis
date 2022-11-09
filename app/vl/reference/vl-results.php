@@ -7,7 +7,7 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-child"></em> <?php echo _("VL Results");?></h1>
+		<h1><em class="fa-solid fa-flask-vial"></em> <?php echo _("Viral Load Results");?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
 			<li class="active"><?php echo _("VL Results");?></li>
@@ -29,11 +29,11 @@ require_once(APPLICATION_PATH . '/header.php');
 						<table id="sampTypDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Result Name");?></th>
+									<th scope="row"><?php echo _("Viral Load Result");?></th>
 									<th scope="row"><?php echo _("Instruments");?></th>
 									<th scope="row"><?php echo _("Status");?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("vl-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-									<th scope="row">Action</th> 
+									<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
 							</thead>

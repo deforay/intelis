@@ -216,6 +216,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<link href="/assets/css/select2.live.min.css" rel="stylesheet" />
 	<script src="/assets/js/select2.min.js"></script>
 	<!--<script type="text/javascript" src="/assets/js/jquery-ui-sliderAccess.js"></script>-->
+<style>
+	.select2-selection--multiple{ height:70px; width: 330px; overflow-y:scroll !important; }
+	</style>
 </head>
 
 <body class="hold-transition <?php echo $skin; ?> sidebar-mini">

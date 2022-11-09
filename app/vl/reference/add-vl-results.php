@@ -11,7 +11,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null,
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-child"></em> <?php echo _("Add VL Results");?></h1>
+		<h1><em class="fa-solid fa-flask-vial"></em> <?php echo _("Add VL Results");?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
 			<li class="active"><?php echo _("VL Results");?></li>
@@ -33,9 +33,9 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null,
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="resultName" class="col-lg-4 control-label"><?php echo _("Result Name");?><span class="mandatory">*</span></label>
+									<label for="viralLoadResult" class="col-lg-4 control-label"><?php echo _("Viral Load Result");?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" placeholder="<?php echo _('Result Name');?>" title="<?php echo _('Please enter Result name');?>" onblur='checkNameValidation("r_vl_results","result",this,null,"<?php echo _("The Result name that you entered already exists.Enter another name");?>",null)' />
+										<input type="text" class="form-control isRequired" id="resultName" name="resultName" placeholder="<?php echo _('Viral Load Result');?>" title="<?php echo _('Please enter Result name');?>" onblur='checkNameValidation("r_vl_results","result",this,null,"<?php echo _("The Result name that you entered already exists.Enter another name");?>",null)' />
 									</div>
 								</div>
 							</div>

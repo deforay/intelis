@@ -16,7 +16,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-child"></em> Edit VL Results</h1>
+		<h1><em class="fa-solid fa-flask-vial"></em> Edit VL Results</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">VL Results</li>
@@ -38,9 +38,9 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="resultName" class="col-lg-4 control-label">Result Name<span class="mandatory">*</span></label>
+									<label for="viralLoadResult" class="col-lg-4 control-label">Viral Load Result<span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Result Name" title="Please enter Result name" readonly onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars($id); ?>','The Result name that you entered already exists.Enter another name',null)" />
+										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Viral Load Result" title="Please enter Result name" readonly onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars($id); ?>','The Result name that you entered already exists.Enter another name',null)" />
 										<input type="hidden" class="form-control" id="resultId" name="resultId" value="<?php echo base64_encode($id); ?>" />
                                         <input type="hidden" class="form-control" id="oldResultName" name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
 									</div>

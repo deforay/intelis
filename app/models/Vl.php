@@ -547,6 +547,7 @@ class Vl
         if( !empty($instrumentId) ){
             $this->db->where("(JSON_SEARCH(available_for_instruments, 'all','$instrumentId') IS NOT NULL)");
         }
+        $this->db->where('status', 'active');
         $results = $this->db->get('r_vl_results');
         return $results;
     }
